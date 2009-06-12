@@ -28,6 +28,16 @@ static long lminarg2;
 // is reported per element
 // a vector "matches" of length n_elements has to be provided
 void pmatchi(long* elements, long* n_elements, long* set, long* n_set, long* matches){
+//	printf("n_elements = %ld\n", *n_elements);
+//	printf("n_set = %ld\n", *n_set);
+//	long ii;
+//	for( ii = 0 ; ii < *n_elements ; ii++){
+//		printf("elements[%ld]=%ld\n", ii , elements[ii]);
+//		printf("matches[%ld]=%ld\n", ii , matches[ii]);
+//	}
+//	for( ii = 0 ; ii < *n_set ; ii++){
+//		printf("set[%ld]=%ld\n", ii , set[ii]);
+//	}
 
 	long	i;
 	for (i = 0; i < *n_elements; i++){

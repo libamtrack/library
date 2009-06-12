@@ -205,6 +205,7 @@ void SGP_BortfeldTransportProton(	float*	E_initial_MeV,
 
 	float*	density_g_cm3			= (float*)calloc(nMaterials, sizeof(float));
 	float*	electron_density_m3		= (float*)calloc(nMaterials, sizeof(float));
+	float*	I_eV					= (float*)calloc(nMaterials, sizeof(float));
 	float*	alpha_g_cm2_MeV			= (float*)calloc(nMaterials, sizeof(float));
 	float*	alpha_cm_MeV			= (float*)calloc(nMaterials, sizeof(float));
 	float*	p_MeV					= (float*)calloc(nMaterials, sizeof(float));
@@ -225,6 +226,7 @@ void SGP_BortfeldTransportProton(	float*	E_initial_MeV,
 							materials,
 							density_g_cm3,
 							electron_density_m3,
+							I_eV,
 							alpha_g_cm2_MeV,
 							p_MeV,
 							m_g_cm2);

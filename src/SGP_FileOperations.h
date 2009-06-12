@@ -64,6 +64,44 @@ void SGP_readInputS(char**	fileName,
 					gamma_model,
 					gamma_parameter);};
 
+void SGP_browseSpectrum(	char*	fileName,
+							// return:
+							long*	nLines);
+
+void SGP_browseSpectrumS(	char**	fileName,
+							// return:
+							long*	nLines){
+	SGP_browseSpectrum(	*fileName,
+						// return:
+						nLines);
+};
+
+
+void SGP_readSpectrum(	char*	fileName,
+						long*	nLines,
+						// return:
+						float*	E_MeV_u,
+						long*	particle_no,
+						float*	fluence_cm2,
+						long*	slab_no);
+
+void SGP_readSpectrumS(	char**	fileName,
+						long*	nLines,
+						// return:
+						float*	E_MeV_u,
+						long*	particle_no,
+						float*	fluence_cm2,
+						long*	slab_no){
+	SGP_readSpectrum(	*fileName,
+						nLines,
+						// return:
+						E_MeV_u,
+						particle_no,
+						fluence_cm2,
+						slab_no);
+};
+
+
 /////////////////////////////////////////////////////////////////////////////////
 
 
@@ -245,6 +283,63 @@ void SGP_readInput(	char*	fileName,
 	return;
 }
 
+void SGP_browseSpectrum(	char*	fileName,
+							// return:
+							long*	nLines){
+	*nLines = 0;
+
+	FILE*	inputFile;
+	inputFile	=	fopen(	fileName, "r");
+
+	if (inputFile == 0) {
+		*nLines = -1;
+		return;
+	}
+
+    char line[256];
+
+	while (fgets(line, 256, inputFile) != NULL){
+		*nLines		+=	1;}
+
+	return;
+}
+
+void SGP_readSpectrum(	char*	fileName,
+						long*	nLines,
+						// return:
+						float*	E_MeV_u,
+						long*	particle_no,
+						float*	fluence_cm2,
+						long*	slab_no){
+	long 	i = 0;
+
+	FILE*	inputFile;
+	inputFile	=	fopen(	fileName, "r");
+
+	if (inputFile == 0) return;
+
+    char line[256];
+
+	for (i = 0; i < *nLines; i++){
+		if(fgets(line, 256, inputFile) != NULL){
+			// isolate energy, particle no., fluence, slab no.
+			char	seps[]	= ",;\t";									// delimiters can be ",", ";", or tab
+			char*	token;
+
+			token = strtok( line, seps );
+			E_MeV_u[i]		=	(float)atof(token);
+
+			token = strtok( NULL, seps );
+			particle_no[i]	=	atol(token);
+
+			token = strtok( NULL, seps );
+			fluence_cm2[i]	=	(float)atof(token);						// if < 0 --> D.set.Gy
+
+			token = strtok( NULL, seps );
+			slab_no[i]		=	atol(token);
+		}
+	}
+}
 
 
 #endif // SGP_FILEOPERATIONS_H_

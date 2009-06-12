@@ -120,6 +120,10 @@ void SGP_max_electron_range_m(	long*	n,
 								char*	material_name,
 								float*	max_electron_range_m);
 
+void SGP_Z_from_particle_index(	long*	n,								// should rather be SGP_ParticleProperties(particle.index)
+								long*	particle_no,
+								long*	Z);
+
 ///////////////////////////////////////////////////////////////////////
 // Routines to access PARTICLE data
 ///////////////////////////////////////////////////////////////////////
@@ -158,6 +162,7 @@ void SGP_getMaterialData(		long*	n,
 								char**	material_names,
 								float*	density_g_cm3,
 								float*	electron_density_m3,
+								float*	I_eV,
 								float*	alpha_g_cm2_MeV,
 								float*	p_MeV,
 								float*	m_g_cm2)
@@ -173,12 +178,32 @@ void SGP_getMaterialData(		long*	n,
 	for(i = 0; i < *n; i++){
 		density_g_cm3[i]		= SGP_Material_Data.density_g_cm3[match[i]];
 		electron_density_m3[i]	= SGP_Material_Data.electron_density_m3[match[i]];
+		I_eV[i]					= SGP_Material_Data.I_eV[match[i]];
 		alpha_g_cm2_MeV[i]		= SGP_Material_Data.alpha_g_cm2_MeV[match[i]];
 		p_MeV[i]				= SGP_Material_Data.p_MeV[match[i]];
 		m_g_cm2[i]				= SGP_Material_Data.m_g_cm2[match[i]];
 	}
 
 	free(match);
+}
+
+void SGP_getMaterialDataS(		char**	material_name,
+								float*	density_g_cm3,
+								float*	electron_density_m3,
+								float*	I_eV,
+								float*	alpha_g_cm2_MeV,
+								float*	p_MeV,
+								float*	m_g_cm2){
+	long	n;
+	n		= 1;
+	SGP_getMaterialData(		&n,
+								material_name,
+								density_g_cm3,
+								electron_density_m3,
+								I_eV,
+								alpha_g_cm2_MeV,
+								p_MeV,
+								m_g_cm2);
 }
 
 #define matchIt			long	n_mat	= 1;									\
@@ -196,6 +221,14 @@ void SGP_density_g_cm3(			long*	n,
 	for(i = 0; i < *n; i++){
 		density_g_cm3[i]		= SGP_Material_Data.density_g_cm3[match];}}
 
+void SGP_density_g_cm3S(		char**	material_name,
+								float*	density_g_cm3){
+	long	n;
+	n		= 1;
+	SGP_density_g_cm3(	&n,
+						*material_name,
+						density_g_cm3);
+}
 void SGP_electron_density_m3(	long*	n,
 								char*	material_name,
 								float*	electron_density_m3)
@@ -203,6 +236,15 @@ void SGP_electron_density_m3(	long*	n,
 	long	i;
 	for(i = 0; i < *n; i++){
 		electron_density_m3[i]	= SGP_Material_Data.electron_density_m3[match];}}
+
+void SGP_electron_density_m3S(	char**	material_name,
+								float*	electron_density_m3){
+	long	n;
+	n		= 1;
+	SGP_electron_density_m3(	&n,
+								*material_name,
+								electron_density_m3);
+}
 
 void SGP_alpha_g_cm2_MeV(		long*	n,
 								char*	material_name,
@@ -240,12 +282,28 @@ void SGP_LET_MeV_cm2_g(	long*	n,
 						char*	material_name,
 						float*	LET_MeV_cm2_g)
 {
+
+//	printf("begin SGP_LET_MeV_cm2_g\n");
+//
+//	printf("n = %ld, material_name = %s\n", *n, material_name);
+//	long ii;
+//	for( ii = 0 ; ii < *n ; ii++){
+//		printf("E_MeV_u[%d]=%e\n", ii , E_MeV_u[ii]);
+//		printf("particle_no[%d]=%d\n", ii , particle_no[ii]);
+//	}
+
+
+//	printf("E_MeV_u=%e\n", E_MeV_u[0]);
+//	printf("particle_no=%ld\n", particle_no[0]);
+
 	// get scaled energies for all given particles and energies
 	float*	sE	=	(float*)calloc(*n, sizeof(float));
 	SGP_scaled_energy(	n,
 						E_MeV_u,
 						particle_no,
 						sE);
+
+//	printf("sE[0]=%e\n",  sE[0]);
 
 	// get effective charge for all given particles and energies
 	float*	eC	=	(float*)calloc(*n, sizeof(float));
@@ -307,6 +365,9 @@ void SGP_LET_MeV_cm2_g(	long*	n,
 	free(eC);
 	free(sE);
 	free(matches);
+
+//	printf("end SGP_LET_MeV_cm2_g\n");
+
 }
 
 
@@ -558,6 +619,14 @@ void SGP_scaled_energy(	long*	n,
 						long*	particle_index,
 						float*	scaled_energy)
 {
+//	printf("begin SGP_scaled_energy\n");
+//	printf("n = %ld\n", *n);
+//	long ii;
+//	for( ii = 0 ; ii < *n ; ii++){
+//		printf("E_MeV_u[%ld]=%e\n", ii , E_MeV_u[ii]);
+//		printf("particle_index[%ld]=%ld\n", ii , particle_index[ii]);
+//	}
+
 	// find look-up indices for A's for particle numbers in particle data
 	long*	matches	=	(long*)calloc(*n, sizeof(long));
 	pmatchi(	particle_index,
@@ -570,16 +639,25 @@ void SGP_scaled_energy(	long*	n,
 	long	i;
 	for(i = 0; i < *n; i++){
 
+//		printf("matches[0] = %d\n", matches[i]);
+
 		float	E_MeV		=	E_MeV_u[i] * SGP_Particle_Data.mass[matches[i]];
+
+		//printf("E_MeV = %d\n", E_MeV);
 
 		// Get rest energy
 		float	E0_MeV		=	(float)proton_mass_MeV_c2 * SGP_Particle_Data.mass[matches[i]];
+
+		//printf("E0_MeV = %d\n", E0_MeV);
 
 		// Return mass-scaled energy
 		scaled_energy[i]	=	E_MeV / E0_MeV * proton_mass_MeV_c2;
 	}
 
 	free(matches);
+
+	//printf("end SGP_scaled_energy\n");
+
 }
 
 void SGP_max_E_transfer_MeV(	long*	n,
@@ -625,10 +703,10 @@ void SGP_max_E_transfer_MeV(	long*	n,
 // Models available:
 // 0 - Test
 // 1 - Chatterjee & Holley (1993)
-// 2 - Butts & Katz (1967), Chunxiang et al., 1985, Waligórski et al., 1986, Zhang et al., 1994 fitted to data from
+// 2 - Butts & Katz (1967), Chunxiang et al., 1985, Waligï¿½rski et al., 1986, Zhang et al., 1994 fitted to data from
 //     Kobetich and Katz, 1968; Iskef et al., 1983; Kanter and Sternglass, 1962
 // 3 - Kiefer & Straaten (1986)
-// 4 - Geiß, 1998
+// 4 - Geiï¿½, 1998
 // 5 - Scholz, 2001
 
 void SGP_max_electron_range_m(	long*	n,
@@ -637,6 +715,9 @@ void SGP_max_electron_range_m(	long*	n,
 								char*	material_name,
 								float*	max_electron_range_m)
 {
+
+//	printf("begin SGP_max_electron_range_m\n");
+
 	// Get density matching to material_name (only 1 name therefore n_mat = 1)
 	long	n_mat	= 1;
 	long	match;
@@ -659,7 +740,12 @@ void SGP_max_electron_range_m(	long*	n,
 		*/
 		// Scale maximum el. range with material density relative to water (1/rho)
 		max_electron_range_m[i]		/= SGP_Material_Data.density_g_cm3[match];
+//		printf("max_electron_range_m[%d] = %g\n", i , max_electron_range_m[i]);
+
 	}
+
+//	printf("end SGP_max_electron_range_m\n");
+
 }
 
 void SGP_Bohr_Energy_Straggling_g_cm2(	long*	n,
@@ -682,5 +768,25 @@ void SGP_Bohr_Energy_Straggling_g_cm2(	long*	n,
 	}
 }
 
+void SGP_Z_from_particle_index(	long*	n,
+								long*	particle_index,
+								long*	Z)
+{
+	// find look-up indices for A's for particle numbers in particle data
+	long*	matches	=	(long*)calloc(*n, sizeof(long));
+
+	pmatchi(	particle_index,
+				n,
+				SGP_Particle_Data.particle_index,
+				&SGP_Particle_Data.n,
+				matches);
+
+	// loop over n to find Z for all given particles and energies
+	long	i;
+	for(i = 0; i < *n; i++){
+		Z[i]	= SGP_Particle_Data.Z[matches[i]];}
+
+	free(matches);
+}
 
 #endif // SGP_FUNCTIONS_H_
