@@ -20,4 +20,23 @@ double	m_to_um						=	1e6;
 
 double	pi							=	3.14159265;
 
+enum GammaResponseModels{
+    GR_Test					= 0,
+    GR_GeneralTarget		= 1,
+    GR_Radioluminescence	= 2,
+    GR_ExpSaturation		= 3
+};
+
+enum RDDModels{
+	RDD_Test				= 0,
+	RDD_KatzPoint			= 1,
+	RDD_Geiss				= 2
+};
+
+enum ERModels{
+	ER_Test					= 0,
+	ER_PowerLawZBeta		= 1,
+	ER_PowerLawLET			= 2
+};
+
 #endif // SGP_CONSTANTS_H_

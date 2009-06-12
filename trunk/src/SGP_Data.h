@@ -88,6 +88,7 @@ typedef struct {
 	long		n;
 	float		density_g_cm3[MATERIAL_DATA_N];
 	float		electron_density_m3[MATERIAL_DATA_N];
+	float		I_eV[MATERIAL_DATA_N];
 	float		alpha_g_cm2_MeV[MATERIAL_DATA_N];
 	float		p_MeV[MATERIAL_DATA_N];
 	float		m_g_cm2[MATERIAL_DATA_N];
@@ -98,6 +99,7 @@ material_data SGP_Material_Data = {
 	{	MATERIAL_DATA_N},
 	{	1.00f,				3.97f,				2.6989f,		1.19f},
 	{	3.3456e29f,			1.1719e30f,			7.8314e+29f,	3.8698e29f},
+	{	75.0f,				145.2f,				166.0f,			74.0f},
 	{	0.00231f,			0.003058f,			0.003266f,		0.001988f},
 	{	1.761f,				1.748f,				1.745f,			1.762f},
 	{	0.01153f,			0.01305f,			0.01230f,		0.01338f},
