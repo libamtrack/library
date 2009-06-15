@@ -2,7 +2,6 @@
 # SGParticle library
 #
 # Wrapping function interfacing SGParticle.dll
-#
 # This script replaces (together with the SGP.dll) the old S-Plus or mixed S-Plus/C-versions
 # v1.0 - v2.x of the SGP particle library (or LGC, TIM, ...)
 #
@@ -11,7 +10,7 @@
 #
 # 2009-Apr-27: Started, sgre
 # 2009-Jun-12: Some minor typo correction before adding to the new repository system, sgre
-#
+# 2009-Jun-16: Wrapping function for general RDD methods, debugging printouts, lgrz
 ################################################################################################
 
 ################################################################################################
@@ -48,6 +47,7 @@
 #
 ################################################################################################
 
+debug <- T
 
 ##################
 SGP.beta.from.mass	<-	function(	E.MeV.u,
@@ -277,7 +277,7 @@ SGP.Bortfeld.Transport.Protons				<-	function(	E.initial.MeV,
 																shielding.thickness.m,
 																shielding.material.name,
 																n.detector.slabs,
-																detector.thickness.m
+																detector.thickness.m,
 																detector.material.name){
 
 	if(F){
@@ -357,7 +357,7 @@ SGP.Bortfeld.Transport.Proton.Spectrum			<-	function(	E.initial.spectrum.MeV,
 																		shielding.thickness.m,
 																		shielding.material.name,
 																		n.detector.slabs,
-																		detector.thickness.m
+																		detector.thickness.m,
 																		detector.material.name){
 	
 	n.bins								<-	length(E.initial.spectrum.MeV)
@@ -388,7 +388,7 @@ SGP.Bortfeld.Transport.Proton.Spectrum			<-	function(	E.initial.spectrum.MeV,
 																							shielding.thickness.m,
 																							shielding.material.name,
 																							n.detector.slabs,
-																							detector.thickness.m
+																							detector.thickness.m,
 																							detector.material.name)
 		ii										<-		df$E.MeV == cur.E.initial.MeV
 		df$norm.fluence[ii]					<-		rep(fluence.norm[i], sum (ii))
@@ -452,6 +452,52 @@ SGP.Bortfeld.Transport.Proton.Spectrum			<-	function(	E.initial.spectrum.MeV,
 #							Katz	(1: E.MeV.u (Z if neg), 2: particle.index (beta if neg), 3: a0)
 
 ############
+SGP.RDD.D.Gy.L					<-	function(	r.m,
+												RDD.model,
+												RDD.parameters){
+	n					<-	length(r.m)
+	RDD.n					<-	length(RDD.parameters)
+	D.Gy				<-	numeric(n)
+  {	
+  
+  ER.model <- 0
+  ER.parameters <- c(1,1)
+ 	ER.n					<-	length(ER.parameters)
+
+ 	if(debug == T) if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("r.m=",r.m,"\n")
+
+	 if( RDD.model == 0 ){ 
+	 	if(debug == T) cat("RDD_test model\n")
+			if(debug == T) cat("a0=",RDD.parameters[1],"\n")
+		}
+	 if( RDD.model == 1 ){ 
+	 	if(debug == T) cat("RDD_KatzPoint model\n")
+		}
+	 if( RDD.model == 2 ){ 
+	  if(debug == T) cat("RDD_Geiss model\n")
+	 	if(debug == T) cat("E.MeV.u=",RDD.parameters[1],"\n")
+ 		if(debug == T) cat("particle.index=",RDD.parameters[2],"\n")
+	 	if(debug == T) cat("material.name=",RDD.parameters[3],"\n")
+			if(debug == T) cat("parameter a0=",RDD.parameters[4],"\n")
+		}
+				
+		res					<-	.C(	"SGP_D_RDD_Gy",	n						=	as.integer(n),
+															r.m						=	as.single(r.m),
+															RDD.model				=	as.integer(RDD.model),
+															RDD.n				=	as.integer(RDD.n),
+															RDD.parameters		=	as.single(RDD.parameters),
+															ER.model				=	as.integer(ER.model),
+															ER.n				=	as.integer(ER.n),
+															ER.parameters		=	as.single(ER.parameters),
+															D.Gy					=	as.single(D.Gy))		
+		}
+
+	 return(res$D.Gy)						
+}
+
+
+############
 SGP.RDD.D.Gy					<-	function(	r.m,
 												model,
 												RDD.parameters,
@@ -460,57 +506,72 @@ SGP.RDD.D.Gy					<-	function(	r.m,
 	n					<-	length(r.m)
 	D.Gy				<-	numeric(n)
 	mat.data			<-	SGP.get.material.data(material.name)
-	
+{	
 	if(model == "LEM"){
+
+ 	if(debug == T) cat("n=",n,"\n")
+ 	if(debug == T) cat("r.m=",r.m,"\n")
+ 	if(debug == T) cat("E.MeV.u=",RDD.parameters[1],"\n")
+ 	if(debug == T) cat("particle.index=",RDD.parameters[2],"\n")
+	 if(debug == T) cat("material.name=",material.name,"\n")
 		
-		res					<-	.C(	"SGP_D_Geiss_GyS",	n						=	as.integer(n),
+		E.MeV.u <- rep( RDD.parameters[1] , times=n )
+ 	if(debug == T) cat("E.MeV.u=",E.MeV.u,"\n")
+  particle.index		<-	rep( RDD.parameters[2] , times=n )
+		if(debug == T) cat("particle.index=",particle.index,"\n")
+		
+		res					<-	.C(	"SGP_D_RDD_GyS",	n						=	as.integer(n),
 															r.m						=	as.single(r.m),
-															E.MeV.u				=	as.single(RDD.parameters[1]),
-															particle.index		=	as.integer(RDD.parameters[2]),
+															E.MeV.u				=	as.single(E.MeV.u),
+															particle.index		=	as.integer(particle.index),
 															material.name			=	as.character(material.name),
 															parameter				=	as.single(RDD.parameters[3]),
-															D.Gy					=	as.single(D.Gy))
-		
+															D.Gy					=	as.single(D.Gy))		
 		}
 
-	# At the moment: point dose distribution as given by Butts and Katz (1967) and Katz (1977), other varieties (extended target, Waligórski, Sawakuchi) to be implemented
+	if(debug == T) cat("res$D.Gy=",res$D.Gy,"\n")
+
+
+	# At the moment: point dose distribution as given by Butts and Katz (1967) and Katz (1977), other varieties (extended target, Waligï¿½rski, Sawakuchi) to be implemented
 	
 	if(model == "Katz"){
 		#RDD.parameters	<- c(-1, -0.428)
 
-		if (parameters[1] < 0){
+		if (RRD.parameters[1] < 0){
 			Z				<-	-RDD.parameters[1]
 		}else{
-			dummy			<-	0
+			
 		}
+			beta			<-	RDD.parameters[2]
 
-		beta			<-	RDD.parameters[2]
-		Z.eff			<-	SGP.effective.charge.from.beta(beta, Z)
+			Z.eff			<-	SGP.effective.charge.from.beta(beta, Z)
 			
-		N.el.cm3		<-	mat.data$el.dens.m3 / (100^3)
-		p.g.cm3		<-	mat.data$density.g.cm3
-		I.erg			<-	mat.data$I.eV / 6.24150974e11
+			N.el.cm3		<-	mat.data$el.dens.m3 / (100^3)
+			p.g.cm3		<-	mat.data$density.g.cm3
+			I.erg			<-	mat.data$I.eV / 6.24150974e11
 
-		m.el.g			<-	9.10938215e-28
-		m.el.MeV		<-	0.510998910
-		c.cm.s			<-	29979245800
+			m.el.g			<-	9.10938215e-28
+			m.el.MeV		<-	0.510998910
+			c.cm.s			<-	29979245800
 
-		e.C				<-	-1.602176487e-19
-		e.esu			<-	e.C / 3.33564e-10
+			e.C				<-	-1.602176487e-19
+			e.esu			<-	e.C / 3.33564e-10
 
-		m.el.g			<-	9.10938215e-28
+			m.el.g			<-	9.10938215e-28
 
-		C				<-	2 * pi * N.el.cm3 * e.esu^4 / (m.el.MeV * c.cm.s^2)
-		w.max.keV		<-	2 * m.el.MeV * 1000 * beta^2 / (1 - beta^2)
+			C				<-	2 * pi * N.el.cm3 * e.esu^4 / (m.el.MeV * c.cm.s^2)
+
+			w.max.keV		<-	2 * m.el.MeV * 1000 * beta^2 / (1 - beta^2)
 			
-		#r.max.cm		<-	6e-6 * w.max.keV^1.667 				# generell
-		r.max.cm		<-	10e-6 * w.max.keV
-		
-		D.Gy			<-	C * Z.eff^2 / (2 * pi * r.cm * beta^2) * (1 / r.cm - 1 / r.max.cm)
+			#r.max.cm		<-	6e-6 * w.max.keV^1.667 				# generell
+			r.max.cm		<-	10e-6 * w.max.keV
+			
+			D.Gy			<-	C * Z.eff^2 / (2 * pi * r.cm * beta^2) * (1 / r.cm - 1 / r.max.cm)
+		}
 	}
 
 	return(res$D.Gy)						
-													
+	
 }
 												
 #####################
@@ -558,10 +619,17 @@ SGP.SC.do.SC	<-	function(	f.list,
 								shrink.tails.under = 1e-30,
 								adjust.N2 = T){
 
+	if(debug == T) cat("Hello world\n")
+
 	n.bins.f				<-	integer(1)
 	u.start				<-	numeric(1)
 	n.convolutions		<-	integer(1)
-	
+
+	if(debug == T) cat("1 n.convolutions = ",n.convolutions,"\n")
+	if(debug == T) cat("1 n.bins.f1 = ",nrow(f.list$f1),"\n")
+	if(debug == T) cat("1 f1.dd.Gy = ",f.list$f1$f1.dd.Gy,"\n")
+	if(debug == T) cat("1 f1 = ",f.list$f1$f1,"\n")
+		
 	res						<-	.C("SGP_SC_get_f_array_size", 	u						= as.single(unique(f.list$f1$u)),
 																	fluence.factor		= as.single(fluence.factor),
 																	N2						= as.integer(unique(f.list$f1$N2)),
@@ -576,12 +644,18 @@ SGP.SC.do.SC	<-	function(	f.list,
 	u.start				<-	res$u.start
 	n.convolutions		<-	res$n.convolutions
 	
+	if(debug == T) cat("2 n.convolutions = ",n.convolutions,"\n")
+	
 	f.list$f				<-	data.frame(	f.d.Gy			= numeric(n.bins.f),
 												f.dd.Gy		= numeric(n.bins.f),
 												f				= numeric(n.bins.f),
 												n.bins.f		= rep(n.bins.f, n.bins.f),
 												N2				= rep(unique(f.list$f1$N2), n.bins.f),
 												u.start		= rep(u.start, n.bins.f))
+
+	if(debug == T) cat("3\n")
+	if(debug == T) cat("3 n.bins.f1 = ",nrow(f.list$f1),"\n")
+	if(debug == T) cat("3 unique(f.list$f1$N2) = ",unique(f.list$f1$N2),"\n")
 												
 	res						<-	.C("SGP_SC_get_f_start", 		u						= as.single(unique(f.list$f1$u)),
 																	n.bins.f1				= as.integer(nrow(f.list$f1)),
@@ -593,6 +667,7 @@ SGP.SC.do.SC	<-	function(	f.list,
 																	f.d.Gy					= as.single(f.list$f$f.d.Gy),
 																	f.dd.Gy				= as.single(f.list$f$f.dd.Gy),
 																	f						= as.single(f.list$f$f))
+	
 	f.list$f$f.d.Gy				<- res$f.d.Gy
 	f.list$f$f.dd.Gy				<- res$f.dd.Gy
 	f.list$f$f						<- res$f
@@ -605,6 +680,8 @@ SGP.SC.do.SC	<-	function(	f.list,
 	f0						<- numeric(1)
 	d						<- numeric(1)
 	
+	if(debug == T) cat("5\n")
+
 	res						<-	.C("SGP_SuccessiveConvolutions", 	u						= as.single(unique(f.list$f1$u)),
 																		n.bins.f				= as.integer(n.bins.f),
 																		N2						= as.integer(unique(f.list$f1$N2)),
@@ -620,23 +697,39 @@ SGP.SC.do.SC	<-	function(	f.list,
 																		shrink.tails			= as.integer(shrink.tails),
 																		shrink.tails.under	= as.single(shrink.tails.under),
 																		adjust.N2				= as.integer(adjust.N2))
+																		
+	if(debug == T) cat("6\n")
+																		
 	f.list$f$f.d.Gy				<-	res$f.d.Gy
 	f.list$f$f.dd.Gy				<-	res$f.dd.Gy
 	f.list$f$f						<-	res$f
+
+	if(debug == T) cat("6a\n")
+
 	f.list$f$fdd					<-	res$fdd
 	f.list$f$dfdd					<-	res$dfdd
 	f.list$f$f0					<-	rep(res$f0, n.bins.f)
 	f.list$f$d						<-	rep(res$d, n.bins.f)
+		if(debug == T) cat("6b\n")
+
 	f.list$f$u.start				<-	rep(u.start, n.bins.f)
 	f.list$f$u						<-	rep(res$u, n.bins.f)
 	f.list$f$n.convolutions		<-	rep(n.convolutions, n.bins.f)
 	f.list$f$n.bins.f.used		<-	rep(res$n.bins.f.used, n.bins.f)
 	f.list$f$write.output		<-	rep(write.output, n.bins.f)
 	f.list$f$shrink.tails		<-	rep(shrink.tails, n.bins.f)
+	
+		if(debug == T) cat("6c\n")
+	
 	f.list$f$shrink.tails.under	<-	rep(shrink.tails.under, n.bins.f)
 	f.list$f$adjust.N2			<-	rep(adjust.N2, n.bins.f)
 	f.list$f$N2.adjusted			<-	rep(res$N2, n.bins.f)
+	tmp <- res$n.bins.f.used
+		if(debug == T) cat("6d",tmp,"\n")
+	
 	f.list$f						<-	f.list$f[1:res$n.bins.f.used,]
+
+	if(debug == T) cat("7\n")
 
 	return(f.list)
 }
