@@ -35,7 +35,11 @@ void SGP_SC_get_f1_array_sizeS(	long*	n,
 		long*	n_bins_f1,
 		bool*	debug){
 
-	printf("begin SGP_SC_get_f1_array_sizeS\n");
+#ifdef _DEBUG
+	indnt_init();
+	indnt_inc();
+	fprintf(debf,"%sbegin SGP_SC_get_f1_array_sizeS\n", isp);
+#endif
 
 	// conversion through int
 #ifdef _R
@@ -53,8 +57,6 @@ void SGP_SC_get_f1_array_sizeS(	long*	n,
 	}
 #endif
 
-	printf("middle SGP_SC_get_f1_array_sizeS\n");
-
 	SGP_SC_get_f1_array_size(	n,
 			E_MeV_u,
 			particle_no,
@@ -65,8 +67,11 @@ void SGP_SC_get_f1_array_sizeS(	long*	n,
 			n_bins_f1,
 			debug);
 
-	printf("end SGP_SC_get_f1_array_sizeS\n");
-
+#ifdef _DEBUG
+	fprintf(debf,"%soutput: n_bins_f1 = %ld\n",isp,*n_bins_f1);
+	fprintf(debf,"%send SGP_SC_get_f1_array_sizeS\n",isp);
+	indnt_dec();
+#endif
 
 };
 
@@ -131,8 +136,12 @@ void SGP_SC_get_f1S(	long*	n,
 		float*	f1_dd_Gy,
 		float*	f1,
 		bool*	debug){
-	printf("begin SGP_SC_get_f1S\n");
 
+#ifdef _DEBUG
+	indnt_init();
+	indnt_inc();
+	fprintf(debf,"%sbegin SGP_SC_get_f1S\n",isp);
+#endif
 
 	// conversion through int
 #ifdef _R
@@ -184,8 +193,33 @@ void SGP_SC_get_f1S(	long*	n,
 			f1,
 			debug);
 
-	printf("end SGP_SC_get_f1S\n");
-
+#ifdef _DEBUG
+	fprintf(debf,"%soutput - norm_fluence[0] = %g\n", isp, norm_fluence[0]);
+	fprintf(debf,"%soutput - LET_MeV_cm2_g[0] = %g\n",isp, LET_MeV_cm2_g[0]);
+	fprintf(debf,"%soutput - r_min_m[0] = %g\n", isp, r_min_m[0]);
+	fprintf(debf,"%soutput - r_max_m[0] = %g\n", isp, r_max_m[0]);
+	fprintf(debf,"%soutput - d_min_Gy[0] = %g\n", isp, d_min_Gy[0]);
+	fprintf(debf,"%soutput - d_max_Gy[0] = %g\n", isp, d_max_Gy[0]);
+	fprintf(debf,"%soutput - k_Gy[0] = %g\n", isp, k_Gy[0]);
+	fprintf(debf,"%soutput - single_impact_fluence_cm2[0] = %g\n", isp, single_impact_fluence_cm2[0]);
+	fprintf(debf,"%soutput - single_impact_dose_Gy[0] = %g\n", isp, single_impact_dose_Gy[0]);
+	fprintf(debf,"%soutput - dose_contribution_Gy[0] = %g\n", isp, dose_contribution_Gy[0]);
+	fprintf(debf,"%soutput - total_fluence_cm2 = %g\n", isp, *total_fluence_cm2);
+	fprintf(debf,"%soutput - total_dose_Gy = %g\n", isp, *total_dose_Gy);
+	fprintf(debf,"%soutput - ave_E_MeV = %g\n", isp, *ave_E_MeV);
+	fprintf(debf,"%soutput - dw_E_MeV = %g\n", isp, *dw_E_MeV);
+	fprintf(debf,"%soutput - ave_LET_MeV_cm2_g = %g\n", isp, *ave_LET_MeV_cm2_g);
+	fprintf(debf,"%soutput - dw_LET_MeV_cm2_g = %g\n", isp, *dw_LET_MeV_cm2_g);
+	fprintf(debf,"%soutput - u = %g\n", isp, *u);
+	fprintf(debf,"%soutput - f1_d_Gy[] = %g,%g,%g,...\n", isp, f1_d_Gy[0], f1_d_Gy[1], f1_d_Gy[2]);
+	long q;
+	fprintf(debf,"%soutput - f1_d_Gy[] = ", isp);
+	for( q = 0 ; q < *n_bins_f1 ; q++ ){ fprintf(debf,"%g,",f1_d_Gy[q]);};	fprintf(debf,"\n");
+	fprintf(debf,"%soutput - f1_dd_Gy[] = %g,%g,%g,...\n", isp, f1_dd_Gy[0], f1_dd_Gy[1], f1_dd_Gy[2]);
+	fprintf(debf,"%soutput - f1[] = %g,%g,%g,...\n", isp, f1[0], f1[1], f1[2]);
+	fprintf(debf,"%send SGP_SC_get_f1S\n",isp);
+	indnt_dec();
+#endif
 
 };
 
@@ -320,8 +354,11 @@ void	SGP_SC_get_f1_array_size(	long*	n,
 		long*	n_bins_f1,
 		bool*	debug)
 {
-
-	printf("begin SGP_SC_get_f1_array_size\n");
+#ifdef _DEBUG
+	indnt_init();
+	indnt_inc();
+	fprintf(debf,"%sbegin SGP_SC_get_f1_array_size\n",isp);
+#endif
 
 	// Allocate memory, also for the return variable not needed here (dummy1 - dummy6)
 	float*	dummy1			=	(float*)calloc(*n, sizeof(float));
@@ -357,10 +394,12 @@ void	SGP_SC_get_f1_array_size(	long*	n,
 	long 	i;
 	for (i = 1; i < *n; i++){
 		d_max					=	FMAX(d_max_Gy[i], d_max);
-		d_min					=	FMIN(d_min_Gy[i], d_min);}
+		d_min					=	FMIN(d_min_Gy[i], d_min);
+	}
 
 	// get number of bins needed to span that dose range
-	*n_bins_f1				=	(long)floor((float)(log10(d_max/d_min) / log10(2.0f) * ((float)*N2))) + 1;
+	float tmp = (log10(d_max/d_min) / log10(2.0f) * ((float)*N2));
+	*n_bins_f1				=	(long)floor(tmp) + 1;
 
 
 	// DEBUG //
@@ -368,8 +407,10 @@ void	SGP_SC_get_f1_array_size(	long*	n,
 		*n_bins_f1	=	*N2 * DEBUG_INTERVALS;
 	}
 
-	printf("end SGP_SC_get_f1_array_size\n");
-
+#ifdef _DEBUG
+	fprintf(debf,"%send SGP_SC_get_f1_array_size\n",isp);
+	indnt_dec();
+#endif
 	return;
 }
 
@@ -406,7 +447,10 @@ void	SGP_SC_get_f1(	long*	n,
 		bool*	debug)
 {
 
-	printf("begin SGP_SC_get_f1\n");
+#ifdef _DEBUG
+	indnt_inc();
+	fprintf(debf,"%sbegin SGP_SC_get_f1\n",isp);
+#endif
 
 	// get RDD parameters for all particles and energies
 	SGP_RDD_f1_parameters_Geiss(	n,
@@ -424,8 +468,6 @@ void	SGP_SC_get_f1(	long*	n,
 			single_impact_fluence_cm2,
 			single_impact_dose_Gy);
 
-	printf("begin2 SGP_SC_get_f1\n");
-
 	// normalize fluence, get total fluence and dose, eff. LET and mean impact parameter u,
 	*total_fluence_cm2		= 0.0f;
 	*total_dose_Gy			= 0.0f;
@@ -438,7 +480,9 @@ void	SGP_SC_get_f1(	long*	n,
 	if (fluence_cm2[0] >= 0){
 		for (i = 0; i < *n; i++){
 			fluence_cm2_local[i]		= fluence_cm2[i];
-			printf("fluence_cm2_local[%ld]=%g\n", i , fluence_cm2_local[i]);
+#ifdef _DEBUG
+			fprintf(debf,"%sfluence_cm2_local[%ld]=%g\n", isp, i , fluence_cm2_local[i]);
+#endif
 		}
 	}
 	else{
@@ -475,7 +519,9 @@ void	SGP_SC_get_f1(	long*	n,
 	*dw_LET_MeV_cm2_g			/= *total_dose_Gy;
 	*u							= *total_dose_Gy / *u;
 
-	printf("u=%g, n = %ld\n", *u, *n);
+#ifdef _DEBUG
+	fprintf(debf,"%su=%g, n = %ld\n", isp, *u, *n);
+#endif
 
 	//  create all-over f1-data-frame
 	float	d_max			=	d_max_Gy[0];
@@ -486,7 +532,9 @@ void	SGP_SC_get_f1(	long*	n,
 		d_min					=	FMIN(d_min_Gy[i], d_min);
 	}
 
-	printf("d_max=%g,d_min=%g\n", d_max, d_min);
+#ifdef _DEBUG
+	fprintf(debf,"%sd_max=%g,d_min=%g\n", isp, d_max, d_min);
+#endif
 
 	float	U				=	(float)(log(2.0f) / (float)(*N2));
 
@@ -525,7 +573,9 @@ void	SGP_SC_get_f1(	long*	n,
 
 		long	n_bins_df			=	i_high - i_low + 1;  // changed from + 2
 
-		printf("k = %d , n_bins_df = %d\n", k, n_bins_df);
+#ifdef _DEBUG
+		fprintf(debf,"%sk = %ld , n_bins_df = %ld\n", isp, k, n_bins_df);
+#endif
 
 		if (n_bins_df > 1){
 			float*	d_low				=	(float*)calloc(n_bins_df, sizeof(float));
@@ -542,7 +592,7 @@ void	SGP_SC_get_f1(	long*	n,
 				d_high[i]					= 	d_df_high[i_low + i];
 				d_mid[i]					=	d_df_mid[i_low + i];
 				dd[i]						=	d_high[i] - d_low[i];
-			}
+			};
 
 			// and adjust the edges
 			d_low[1-1]					=	d_min_k;
@@ -621,7 +671,6 @@ void	SGP_SC_get_f1(	long*	n,
 			f1_d_Gy[i]		=	d_min_debug * (float)exp(((float)i + 0.5f) * U);
 			f1_dd_Gy[i]		=	d_min_debug * (float)(exp(((float)i + 1.0f) * U) - exp(((float)i) * U));
 			f1[i]			=	1. / DEBUG_SIGMA * (float)exp(-0.5f * pow((f1_d_Gy[i] - DEBUG_MEAN)/DEBUG_SIGMA, 2));
-			printf("f1[%ld] = %g\n", i, f1[i]);
 		}
 	}
 	// DEBUG //
@@ -634,11 +683,11 @@ void	SGP_SC_get_f1(	long*	n,
 	}
 	for (i = 0; i < *n_bins_f1; i++){
 		f1[i]		/=		f1_norm;
-		printf("2 f1[%ld] = %g\n", i, f1[i]);
 	}
-
-	printf("end SGP_SC_get_f1\n");
-
+#ifdef _DEBUG
+	fprintf(debf,"%send SGP_SC_get_f1\n", isp);
+	indnt_dec();
+#endif
 	return;
 }
 
@@ -658,15 +707,18 @@ void	SGP_SC_get_f_array_size(	float*	u,
 	// Get expectation value of dose from f1
 	float	d_f1_Gy		=	0.0f;
 
-	printf("begin SGP_SC_get_f_array_size\n");
-
-	printf("SGP_SC_get_f_array_size 1, u = %g\n", *u);
-	printf("SGP_SC_get_f_array_size 1, fluence_factor = %g\n", *fluence_factor);
-	printf("SGP_SC_get_f_array_size 1, N2 = %ld\n", *N2);
-	printf("SGP_SC_get_f_array_size 1, n_bins_f1 = %ld\n", *n_bins_f1);
-	printf("SGP_SC_get_f_array_size 1, f1_d_Gy = %g\n", f1_d_Gy[0]);
-	printf("SGP_SC_get_f_array_size 1, f1_dd_Gy = %g\n", f1_dd_Gy[0]);
-	printf("SGP_SC_get_f_array_size 1, f1 = %g\n", f1[0]);
+#ifdef _DEBUG
+	indnt_init();
+	indnt_inc();
+	fprintf(debf,"%sbegin SGP_SC_get_f_array_size\n", isp);
+	fprintf(debf,"%sinput - u = %g\n", isp, *u);
+//	fprintf(debf,"%sSGP_SC_get_f_array_size 1, fluence_factor = %g\n", isp, *fluence_factor);
+//	fprintf(debf,"%sSGP_SC_get_f_array_size 1, N2 = %ld\n", isp, *N2);
+//	fprintf(debf,"%sSGP_SC_get_f_array_size 1, n_bins_f1 = %ld\n", isp, *n_bins_f1);
+//	fprintf(debf,"%sSGP_SC_get_f_array_size 1, f1_d_Gy = %g\n", isp, f1_d_Gy[0]);
+//	fprintf(debf,"%sSGP_SC_get_f_array_size 1, f1_dd_Gy = %g\n", isp, f1_dd_Gy[0]);
+//	fprintf(debf,"%sSGP_SC_get_f_array_size 1, f1 = %g\n", isp, f1[0]);
+#endif
 
 	// conversion through int
 #ifdef _R
@@ -700,8 +752,13 @@ void	SGP_SC_get_f_array_size(	float*	u,
 	*n_bins_f			=	(*n_convolutions + 1) * (*N2);
 	*n_bins_f			+=	*n_bins_f1;
 
-	printf("end SGP_SC_get_f_array_size\n");
-
+#ifdef _DEBUG
+	fprintf(debf,"%soutput - n_bins_f = %ld\n", isp, *n_bins_f);
+	fprintf(debf,"%soutput - u_start = %g\n", isp, *u_start);
+	fprintf(debf,"%soutput - n_convolutions = %ld\n", isp, *n_convolutions);
+	fprintf(debf,"%send SGP_SC_get_f_array_size\n",isp);
+	indnt_dec();
+#endif
 
 	return;
 }
@@ -719,6 +776,32 @@ void	SGP_SC_get_f_start(			float*	u_start,
 		float*	f_dd_Gy,
 		float*	f_start)
 {
+#ifdef _DEBUG
+	indnt_init();
+	indnt_inc();
+	long q;
+	fprintf(debf,"%sbegin SGP_SC_get_f_start\n", isp);
+	fprintf(debf,"%sinput - u_start = %g\n", isp, *u_start);
+	fprintf(debf,"%sinput - n_bins_f1 = %ld\n", isp, *n_bins_f1);
+	fprintf(debf,"%sinput - n_bins_f = %ld\n", isp, *n_bins_f);
+	fprintf(debf,"%sinput - N2 = %ld\n", isp, *N2);
+	//fprintf(debf,"%sinput - f1_d_Gy[] = ", isp);
+	//for( q = 0 ; q < *n_bins_f1 ; q++ ){ fprintf(debf,"%g,",f1_d_Gy[q]);};	fprintf(debf,"\n");
+#endif
+
+	// conversion through int
+#ifdef _R
+	int N2_int = (int)(*N2);
+	*N2 = (long)N2_int;
+
+	int n_bins_f1_int = (int)(*n_bins_f1);
+	*n_bins_f1 = (long)n_bins_f1_int;
+
+	int n_bins_f_int = (int)(*n_bins_f);
+	*n_bins_f = (long)n_bins_f_int;
+#endif
+
+
 	// temporary arrays
 	float*	d_low				=	(float*)calloc(*n_bins_f, sizeof(float));
 	float*	d_high				=	(float*)calloc(*n_bins_f, sizeof(float));
@@ -741,6 +824,16 @@ void	SGP_SC_get_f_start(			float*	u_start,
 
 	free(d_low);
 	free(d_high);
+
+#ifdef _DEBUG
+	fprintf(debf,"%soutput - f_d_Gy[] = ", isp);
+	for( q = 0 ; q < *n_bins_f ; q++ ){ fprintf(debf,"%g,",f_d_Gy[q]);};	fprintf(debf,"\n");
+	fprintf(debf,"%soutput - f_d_Gy[] = %g,%g,%g,...\n", isp, f_d_Gy[0], f_d_Gy[1], f_d_Gy[2]);
+	fprintf(debf,"%soutput - f_dd_Gy[] = %g,%g,%g,...\n", isp, f_dd_Gy[0], f_dd_Gy[1], f_dd_Gy[2]);
+	fprintf(debf,"%soutput - f_start[] = %g,%g,%g,...\n", isp, f_start[0], f_start[1], f_start[2]);
+	fprintf(debf,"%send SGP_SC_get_f_start\n",isp);
+	indnt_dec();
+#endif
 
 	return;
 }
@@ -821,6 +914,7 @@ aKList	SGP_SC_NORMAL(aKList theKList){
 	for (L = 1; L <= theKList.LEH; L++){
 		long		LE					=		L + N;
 		float	S					=		theKList.H[L-1] * theKList.DE[LE-1];
+
 		CM0					=		CM0 + S;
 		theKList.CM1		=		theKList.CM1 + S * theKList.E[LE-1];
 	}
@@ -907,7 +1001,7 @@ aKList	SGP_SC_OUTPUT(aKList theKList){
 				D, S4);
 
 		fprintf(	theKList.output_file,
-				"\nMIF: %ld, LEF: %d, MIH: %d, LEH: %d, MIE: %d\n\n",
+				"\nMIF: %ld, LEF: %ld, MIH: %ld, LEH: %ld, MIE: %ld\n\n",
 				theKList.MIF,
 				theKList.LEF,
 				theKList.MIH,
@@ -968,34 +1062,6 @@ aKList	SGP_SC_RESET(aKList theKList){
 
 	if (theKList.N2 <= 256){
 		if(theKList.LEF <= 64){
-
-			/*			/////////////////////////////////////////////////////////////////////////////
-			FILE* checkResetFile	=	fopen("CheckReset.log","w");
-
-			fprintf(	checkResetFile,
-						"BEFORE RESET:\nN2: %d, MIF: %d, LEF: %d, MIH: %d, LEH: %d, MIE: %d, E0: %4.3g\n\n",
-						theKList.N2,
-						theKList.MIF,
-						theKList.LEF,
-						theKList.MIH,
-						theKList.LEH,
-						theKList.MIE,
-						theKList.E0);
-
-			fprintf(	checkResetFile,
-						"i\tE\t\t\tDE\t\t\tH\t\t\tF\n");
-
-			for (long L = 1; L <= theKList.array_size; L++){
-				fprintf(	checkResetFile,
-							"%d\t%4.3e\t%4.3e\t%4.3e\t%4.3e\n",
-							L,
-							theKList.E[L-1],
-							theKList.DE[L-1],
-							theKList.H[L-1],
-							theKList.F[L-1]);}
-
-			///////////////////////////////////////////////////////////////////////////// */
-
 			float S							=	(float)log(2.0f);
 			float TT						=	(float)theKList.N2;
 			//			theKList.N2						=	theKList.N2 * 2;
@@ -1006,7 +1072,7 @@ aKList	SGP_SC_RESET(aKList theKList){
 			if(theKList.write_output){
 				fprintf(theKList.output_file,			"\n\nThis is subroutine SGP_SC_RESET\n");
 				fprintf(theKList.output_file,			"========================\n");
-				fprintf(theKList.output_file,			"\nCoordinate change with new N2: %d\n", theKList.N2);
+				fprintf(theKList.output_file,			"\nCoordinate change with new N2: %ld\n", theKList.N2);
 			}
 
 			theKList						=	SGP_SC_INTERP(theKList);
@@ -1063,32 +1129,6 @@ aKList	SGP_SC_RESET(aKList theKList){
 				theKList.DE[J -1]			=	high_E[J -1] - theKList.E[J -1];
 				free(high_E);
 			}
-
-			/*			/////////////////////////////////////////////////////////////////////////////
-			fprintf(	checkResetFile,
-						"###################################################################\nAFTER RESET:\nN2: %d, MIF: %d, LEF: %d, MIH: %d, LEH: %d, MIE: %d, E0: %4.3g\n\n",
-						theKList.N2,
-						theKList.MIF,
-						theKList.LEF,
-						theKList.MIH,
-						theKList.LEH,
-						theKList.MIE,
-						theKList.E0);
-
-			fprintf(	checkResetFile,
-						"i\tE\t\t\tDE\t\t\tH\t\t\tF\n");
-
-			for ( L = 1; L <= theKList.array_size; L++){
-				fprintf(	checkResetFile,
-							"%d\t%4.3e\t%4.3e\t%4.3e\t%4.3e\n",
-							L,
-							theKList.E[L-1],
-							theKList.DE[L-1],
-							theKList.H[L-1],
-							theKList.F[L-1]);}
-
-			fclose(checkResetFile);
-			///////////////////////////////////////////////////////////////////////////// */
 		}else{
 			return(theKList);
 		}
@@ -1177,7 +1217,7 @@ aKList	SGP_SC_ZERO(aKList theKList){
 aKList	SGP_SC_SHRINK(aKList theKList){
 
 	float	EX						=	theKList.shrink_tails_under;
-	float	S						=	0.0f;
+	float	S						=	0.0;
 	long	N						=	theKList.MIH - theKList.MIE;
 
 	long 	L;
@@ -1202,9 +1242,7 @@ aKList	SGP_SC_SHRINK(aKList theKList){
 		}
 	}
 
-	printf("3X (KList.LEH = %ld)\n", theKList.LEH);
 	theKList.LEH					=	L - M;
-	printf("3Y (KList.LEH = %ld)\n", theKList.LEH);
 	for (L = 1; L <= theKList.LEH; L++){
 		K								=	L + M;
 		theKList.H[L -1]				=	theKList.H[K -1];
@@ -1227,17 +1265,16 @@ aKList	SGP_SC_SHRINK(aKList theKList){
 
 aKList	SGP_SC_FOLD(aKList theKList){
 
-	printf("begin SGP_SC_FOLD, size = %ld\n", theKList.array_size);
+//#ifdef _DEBUG
+//	indnt_inc();
+//	fprintf(debf,"%sbegin SGP_SC_FOLD, size = %ld\n", isp, theKList.array_size);
+//#endif
 
 	float*	FDE					=	(float*)calloc(theKList.array_size, sizeof(float));
-
-	printf("1 SGP_SC_FOLD\n");
 
 	if((theKList.CN >= 10.0) && (theKList.adjust_N2 == true)){
 		theKList					=	SGP_SC_RESET(theKList);
 	}
-
-	printf("2 SGP_SC_FOLD\n");
 
 	theKList.H0					=	theKList.F0 * theKList.F0;
 	theKList.MIH				=	theKList.MIF + theKList.N2;
@@ -1253,14 +1290,10 @@ aKList	SGP_SC_FOLD(aKList theKList){
 	theKList					=	SGP_SC_INTERP(theKList);
 	long N						=	theKList.MIF - theKList.MIE;
 
-	printf("3 SGP_SC_FOLD\n");
-
-	for (L = 1; (L <= theKList.LEH) && (L <= theKList.array_size); L++){
+	for (L = 1; L <= theKList.LEH; L++){
 		K							=	L + N;
 		FDE[L -1]					=	theKList.F[L -1] * theKList.DE[K -1];
 	}
-
-	printf("4 SGP_SC_FOLD\n");
 
 	long 	LH;
 	for (LH = 1; LH <= theKList.LEH; LH++){
@@ -1284,8 +1317,6 @@ aKList	SGP_SC_FOLD(aKList theKList){
 		theKList.H[LH -1]			=	HLH - FDE[LH -1] * theKList.F[LH -1] * 0.5f;
 	}
 
-	printf("5 SGP_SC_FOLD\n");
-
 	free(FDE);
 
 	if (theKList.F0 < 1e-10){
@@ -1294,13 +1325,12 @@ aKList	SGP_SC_FOLD(aKList theKList){
 		theKList						=	SGP_SC_ZERO(theKList);
 	}
 
-	printf("6 SGP_SC_FOLD\n");
-
-
-	printf("end SGP_SC_FOLD\n");
+//#ifdef _DEBUG
+//	fprintf(debf,"%send SGP_SC_FOLD\n", isp);
+//	indnt_dec();
+//#endif
 
 	return(theKList);
-
 }
 
 
@@ -1322,11 +1352,30 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 		bool*	adjust_N2)
 {
 
-	printf("begin SGP_SuccessiveConvolutions\n");
-
+#ifdef _DEBUG
+	indnt_init();
+	indnt_inc();
+	long q;
+	fprintf(debf,"%sbegin SGP_SuccessiveConvolutions\n", isp);
+	fprintf(debf,"%sinput - u = %g\n", isp, *u);
+	fprintf(debf,"%sinput - n_bins_f = %ld\n", isp, *n_bins_f);
+	fprintf(debf,"%sinput - N2 = %ld\n", isp, *N2);
+	fprintf(debf,"%sinput - n_bins_f_used = %ld\n", isp, *n_bins_f_used);
+	fprintf(debf,"%sinput - f_d_Gy[] = ", isp);
+	for( q = 0 ; q < *n_bins_f ; q++ ){ fprintf(debf,"%g,",f_d_Gy[q]);};	fprintf(debf,"\n");
+	fprintf(debf,"%sinput - f_dd_Gy[] = %g,%g,%g,...\n", isp, f_dd_Gy[0], f_dd_Gy[1], f_dd_Gy[2]);
+	fprintf(debf,"%sinput - f[] = %g,%g,%g,...\n", isp, f[0], f[1], f[2]);
+	fprintf(debf,"%sinput - f0 = %g\n", isp, *f0);
+	fprintf(debf,"%sinput - fdd[] = %g,%g,%g,...\n", isp, fdd[0], fdd[1], fdd[2]);
+	fprintf(debf,"%sinput - dfdd[] = %g,%g,%g,...\n", isp, dfdd[0], dfdd[1], dfdd[2]);
+	fprintf(debf,"%sinput - d = %g\n", isp, *d);
+	fprintf(debf,"%sinput - shrink_tails_under = %g\n", isp, *shrink_tails_under);
+	fprintf(debf,"%sinput - write_output = %d\n", isp, *write_output);
+	fprintf(debf,"%sinput - shrink_tails = %d\n", isp, *shrink_tails);
+	fprintf(debf,"%sinput - adjust_N2 = %d\n", isp, *adjust_N2);
+#endif
 	// index variables
 	long		i;
-
 
 	// conversion through int
 #ifdef _R
@@ -1340,18 +1389,17 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 	*n_bins_f_used = (long)n_bins_f_used_int;
 #endif
 
-	printf("1 SGP_SuccessiveConvolutions (n_bins_f_used = %ld)\n", *n_bins_f_used);
-
+#ifdef _DEBUG
+	fprintf(debf,"%sn_bins_f_used = %ld\n", isp, *n_bins_f_used);
+#endif
 
 	//////////////////////////////////////////
 	// Init KList structure
 	// (Constructor)
 	//////////////////////////////////////////
-	aKList				KList;
-
+	aKList KList;
 
 	KList.array_size	= *n_bins_f;
-
 	KList.N2			= *N2;
 	KList.U				= (float)log(2.0f) / KList.N2;
 
@@ -1367,8 +1415,6 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 		fprintf(KList.output_file, "This is LGC2.2 core - successive convolution mode (2008/08/12).\n");
 	}
 
-	printf("2 SGP_SuccessiveConvolutions\n");
-
 	//////////////////////////////////
 
 	KList.shrink_tails		=	*shrink_tails;
@@ -1377,7 +1423,9 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 
 	//////////////////////////////////
 
-	printf("1 SGP_SuccessiveConvolutions KList.array_size = %ld\n", KList.array_size);
+#ifdef _DEBUG
+	fprintf(debf,"%sKList.array_size = %ld\n", isp, KList.array_size);
+#endif
 
 	KList.F				= (float*)calloc(KList.array_size, sizeof(float));
 	KList.H				= (float*)calloc(KList.array_size, sizeof(float));
@@ -1397,6 +1445,10 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 	KList.CM1			= 1;
 	KList.CM2			= 1;
 
+	// Added by Leszek
+	KList.MIF			= 0;
+	KList.LEF			= 0;
+
 
 	if(KList.write_output){
 		fprintf(KList.output_file,	"\n\nThis is main\n");
@@ -1404,19 +1456,16 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 	}
 
 	// Copy input data
-	KList.E0			= f_d_Gy[1 -1] * (float)exp(-1.0f * KList.U);
+	KList.E0			= f_d_Gy[1-1] * (float)exp(-1.0f * KList.U);
 
 	long 	L;
 	for (L = 1; L <= KList.array_size; L++){
 		KList.E[L -1]			= f_d_Gy[L -1];
 		KList.DE[L -1]			= f_dd_Gy[L -1];
-		KList.H[L -1]			= f[L -1];}
+		KList.H[L -1]			= f[L -1];
+	}
 
-	printf("XX (n_bins_f_used = %ld)\n", *n_bins_f_used);
 	KList.LEH				= *n_bins_f_used;
-	printf("XY (n_bins_f_used = %ld)\n", *n_bins_f_used);
-	printf("1 (KList.LEH = %ld)\n", KList.LEH);
-
 
 	///////////////////////////////////////
 	// Fill array for auxilary function that enables easy index operations
@@ -1425,12 +1474,12 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 		float tmp			= (float)(-1.0f * log(1.0f - 0.5f * exp(-S)) / KList.U);
 		KList.DI[L -1]		= tmp - (float)KList.N2;}		// type casts necessary to prevent round of errors (that will eventually yield negative H-values in SGP_SC_FOLD
 
+
+
 	///////////////////////////////////////
 	// Normalize distribution
 	///////////////////////////////////////
 	KList	= SGP_SC_NORMAL(KList);
-
-	printf("2 (KList.LEH = %ld)\n", KList.LEH);
 
 	if(KList.write_output){
 		fprintf(KList.output_file,	"\n\nThis is main\n");
@@ -1491,29 +1540,27 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 				TT);
 	}
 
+
 	///////////////////////////////////////
 	// SGP_SC_SHRINK distribution
 	///////////////////////////////////////
 	if(KList.shrink_tails){
-		KList	= SGP_SC_SHRINK(KList);}
-
-	printf("3 (KList.LEH = %ld)\n", KList.LEH);
+		KList	= SGP_SC_SHRINK(KList);
+	}
 
 	///////////////////////////////////////
 	// SGP_SC_OUTPUT
 	///////////////////////////////////////
 	KList	= SGP_SC_OUTPUT(KList);
 
-	printf("4 (KList.LEH = %ld)\n", KList.LEH);
-
 	///////////////////////////////////////
 	// Get approximation for small hit
 	// numbers
 	///////////////////////////////////////
 
-	KList.FINAL				= *u * KList.D1;													// Final mean impact number
+	KList.FINAL				= *u * KList.D1;	// Final mean impact number
 
-	long	n_convolutions		= 0;
+	long n_convolutions		= 0;
 	KList.CN				=		KList.FINAL	/ KList.D1;
 	while(KList.CN > MEAN_HIT_NUMBER_LINEAR_APPROX_LIMIT){
 		KList.CN				=		0.5f * KList.CN;
@@ -1526,7 +1573,7 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 
 		fprintf(	KList.output_file,	"\nSmall hit number approximation:\n");
 		fprintf(	KList.output_file,
-				"\nTarget hit value:\t%4.3e\t\tStart hit value:\t%4.3e\t\tNumber of convolutions:\t%d\n",
+				"\nTarget hit value:\t%4.3e\t\tStart hit value:\t%4.3e\t\tNumber of convolutions:\t%ld\n",
 				*u,
 				KList.CN,
 				n_convolutions);
@@ -1538,8 +1585,6 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 		KList.H[L -1]			=	KList.H[L -1] * KList.CN;
 	}
 
-	printf("5 (KList.LEH = %ld)\n", KList.LEH);
-
 	///////////////////////////////////////
 	// Convolution loop
 	///////////////////////////////////////
@@ -1548,8 +1593,10 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 		KList.N1				=	KList.N1 + 1;
 		KList.CN				=	KList.CN * 2;
 
-		printf("3 SGP_SuccessiveConvolutions j = %ld out ouf %ld\n", j , n_convolutions);
-		printf("3 (KList.LEH = %ld)\n", KList.LEH);
+//#ifdef _DEBUG
+//		fprintf(debf,"%sj = %ld out ouf %ld\n", isp, j , n_convolutions);
+//		fprintf(debf,"%sKList.LEH = %ld\n", isp, KList.LEH);
+//#endif
 
 		if(KList.write_output){
 			fprintf(	KList.output_file,
@@ -1558,28 +1605,24 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 			fprintf(	KList.output_file,	    "============\n");
 
 			fprintf(	KList.output_file,
-					"\nConvolution number:\t\t%d\nMean hit number:\t\t%4.3e\n",
+					"\nConvolution number:\t\t%ld\nMean hit number:\t\t%4.3e\n",
 					KList.N1,
 					KList.CN);
 		}
 
 		for (L = 1; L <= KList.LEH; L++){
-			KList.F[L -1]			=	KList.H[L -1];}
+			KList.F[L -1]			=	KList.H[L -1];
+		}
 
 		KList.F0				=	KList.H0;
 		KList.LEF				=	KList.LEH;
 		KList.MIF				=	KList.MIH;
 		KList					=	SGP_SC_FOLD(KList);
-		printf("3a (KList.LEH = %ld)\n", KList.LEH);
 		if(KList.shrink_tails){
 			KList					=	SGP_SC_SHRINK(KList);
 		}
-		printf("3b (KList.LEH = %ld)\n", KList.LEH);
 		KList					=	SGP_SC_NORMAL(KList);
-		printf("3c (KList.LEH = %ld)\n", KList.LEH);
 		KList					=	SGP_SC_OUTPUT(KList);
-		printf("3d (KList.LEH = %ld)\n", KList.LEH);
-		printf("3 SGP_SuccessiveConvolutions j = %ld out ouf %ld end \n", j , n_convolutions);
 	}
 
 
@@ -1587,9 +1630,6 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 	// Copy results back to input structure
 	// and adjust according to MIH, MIE
 	//////////////////////////////////////////
-
-	printf("4 SGP_SuccessiveConvolutions\n");
-
 
 	*d		= 0.0f;
 
@@ -1600,8 +1640,6 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 		fdd[L -1]				=	0.0f;
 		dfdd[L -1]				=	0.0f;}
 
-	printf("5 SGP_SuccessiveConvolutions\n");
-
 	long	N				= KList.MIH - KList.MIE;
 	for (L = 1; L <= KList.LEH; L++){
 		long LE					=	L + N;
@@ -1610,32 +1648,25 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 		f[L -1]					=	KList.H[L-1];
 		fdd[L -1]				=	f[L -1] * f_dd_Gy[L -1];
 		dfdd[L -1]				=	fdd[L -1] * f_d_Gy[L -1];
-		*d						+=	dfdd[L -1];}
+		*d						+=	dfdd[L -1];
+	}
 
-	printf("X (n_bins_f_used = %ld)\n", *n_bins_f_used);
 	*n_bins_f_used = KList.LEH;
-	printf("Y (n_bins_f_used = %ld)\n", *n_bins_f_used);
-
 
 	*f0						= KList.H0;
-
 	*N2						= KList.N2;			// could have been changed by RESET --> report back
-
-	printf("6 SGP_SuccessiveConvolutions\n");
 
 	//////////////////////////////////////////
 	// Free allocated KList structures
 	// (Destructor)
 	//////////////////////////////////////////
-//	free(KList.F);
-//	free(KList.H);
-//	free(KList.E);
-//	free(KList.DE);
-//	free(KList.DI);
-//	free(KList.A);
-//	free(KList.BI);
-
-	printf("7 SGP_SuccessiveConvolutions\n");
+	free(KList.F);
+	free(KList.H);
+	free(KList.E);
+	free(KList.DE);
+	free(KList.DI);
+	free(KList.A);
+	free(KList.BI);
 
 	if(KList.write_output){
 		fprintf(KList.output_file, "\n\nThis is main\n");
@@ -1648,8 +1679,18 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 		fclose(KList.output_file);
 	}
 
-	printf("end SGP_SuccessiveConvolutions (n_bins_f_used = %ld)\n", *n_bins_f_used);
-
+#ifdef _DEBUG
+	fprintf(debf,"%soutput - n_bins_f_used = %ld\n", isp, *n_bins_f_used);
+	fprintf(debf,"%soutput - f_d_Gy[] = %g,%g,%g,...\n", isp, f_d_Gy[0], f_d_Gy[1], f_d_Gy[2]);
+	fprintf(debf,"%soutput - f_dd_Gy[] = %g,%g,%g,...\n", isp, f_dd_Gy[0], f_dd_Gy[1], f_dd_Gy[2]);
+	fprintf(debf,"%soutput - f[] = %g,%g,%g,...\n", isp, f[0], f[1], f[2]);
+	fprintf(debf,"%soutput - f0 = %g\n", isp, *f0);
+	fprintf(debf,"%soutput - fdd[] = %g,%g,%g,...\n", isp, fdd[0], fdd[1], fdd[2]);
+	fprintf(debf,"%soutput - dfdd[] = %g,%g,%g,...\n", isp, dfdd[0], dfdd[1], dfdd[2]);
+	fprintf(debf,"%soutput - d = %g\n", isp, *d);
+	fprintf(debf,"%send SGP_SuccessiveConvolutions\n", isp);
+	indnt_dec();
+#endif
 	return;
 }
 
@@ -1680,10 +1721,10 @@ void SGP_SC_Loop(	long*	n,
 		float*	efficiency_total)
 
 {
-	//	FILE* output_file	=	fopen(output_fileName,"w");
-	//	if (output_file == NULL) return;											// File error
+	FILE* output_file	=	fopen(output_fileName,"w");
+	if (output_file == NULL) return;											// File error
 
-	FILE* output_file	=	stdout;
+	//FILE* output_file	=	stdout;
 	//		if (output_file == NULL) return;											// File error
 
 
@@ -1698,9 +1739,9 @@ void SGP_SC_Loop(	long*	n,
 		fprintf(output_file,	"N2, material, r.min.m");
 
 		for (i = 0; i < *n_gamma_parameter; i++){
-			fprintf(output_file,	", parameter.%d", i);}
+			fprintf(output_file,	", parameter.%ld", i);}
 
-		fprintf(output_file,	"\n%d, \"%s\", %4.3g",
+		fprintf(output_file,	"\n%ld, \"%s\", %4.3g",
 				*N2, material_name, parameter[0]);
 		fprintf(output_file,	", %4.3g", gamma_parameter[0]);
 		for (i = 1; i < *n_gamma_parameter; i++){
@@ -1714,15 +1755,15 @@ void SGP_SC_Loop(	long*	n,
 		fprintf(output_file,	"###################################################################\n");
 		fprintf(output_file,	"# This is LGC3 - SC loop\n");
 		fprintf(output_file,	"###################################################################\n");
-		fprintf(output_file,	"\nLooping over %d uniform slabs (in beam direction) of same size of a extended detector.\n",
+		fprintf(output_file,	"\nLooping over %ld uniform slabs (in beam direction) of same size of a extended detector.\n",
 				*n_slabs);
-		fprintf(output_file,	"\n%d steps within a factor of two (N2).\n",
+		fprintf(output_file,	"\n%ld steps within a factor of two (N2).\n",
 				*N2);
 		fprintf(output_file,	"\nMaterial: %s.\n",
 				material_name);
-		fprintf(output_file,	"\nRadial dose distribution according to Gei� (1997), r.min = %3.2g m.\n",
+		fprintf(output_file,	"\nRadial dose distribution according to Geiss (1997), r.min = %3.2g m.\n",
 				parameter[0]);
-		fprintf(output_file,	"\nUsing gamma response model %d with parameters (",
+		fprintf(output_file,	"\nUsing gamma response model %ld with parameters (",
 				*gamma_model);
 
 		for (i = 0; i < *n_gamma_parameter; i++){
@@ -1806,8 +1847,6 @@ void SGP_SC_Loop(	long*	n,
 
 			float	total_fluence_cm2			=	0.0f;
 
-			fprintf(output_file,	"dupa1\n" , nLines);
-
 			// ...and get f1
 			SGP_SC_get_f1(	&nLines,
 					E_MeV_u_slab,
@@ -1839,9 +1878,6 @@ void SGP_SC_Loop(	long*	n,
 					f1_dd_Gy,
 					f1,
 					&debug);
-
-			fprintf(output_file,	"dupa2\n" , nLines);
-
 
 			float	fluence_factor	=	1.0f;
 
@@ -1889,7 +1925,7 @@ void SGP_SC_Loop(	long*	n,
 			bool	shrink_tails				=	true;
 			float	shrink_tails_under			=	1e-40f;
 
-			bool	adjust_N2					=	true;
+			bool	adjust_N2					=	false;
 
 			long	n_bins_f_used				=	n_bins_f1;
 
@@ -1948,14 +1984,14 @@ void SGP_SC_Loop(	long*	n,
 			// Output results
 
 			if(*verbose_level == 0){
-				fprintf(output_file,	"%4d, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4d, %4.3g, %4.3g, %4.3g\n",
+				fprintf(output_file,	"%4ld, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4ld, %4.3g, %4.3g, %4.3g\n",
 						i+1, ave_E_MeV, dw_E_MeV, ave_LET_MeV_cm2_g, dw_LET_MeV_cm2_g,
 						total_fluence_cm2, u[i], fluence_factor, total_d_Gy[i], total_d_Gy[i] * fluence_factor, d[i],
 						n_bins_f_used, S_HCP[i], S_gamma[i], efficiency[i]);
 			}
 			else{
 				fprintf(output_file,	"\n###################################################################\n");
-				fprintf(output_file,	"Slab no. %d, %d entries in particle spectrum\n",
+				fprintf(output_file,	"Slab no. %ld, %ld entries in particle spectrum\n",
 						i + 1,
 						nLines);
 				fprintf(output_file,	"\n dose from spectrum/ Gy:\t\t\t%4.3g\n",			total_d_Gy[i]);
@@ -1964,7 +2000,7 @@ void SGP_SC_Loop(	long*	n,
 				fprintf(output_file,	" average LET / (MeV*cm2/g):\t\t\t%4.3g\n",			ave_LET_MeV_cm2_g);
 				fprintf(output_file,	" dose-weigthed LET / (MeV*cm2/g):\t%4.3g\n",		dw_LET_MeV_cm2_g);
 				fprintf(output_file,	" total fluence / cm-2:\t\t\t\t%4.3g\n",			total_fluence_cm2);
-				fprintf(output_file,	" mean hit number �:\t\t\t\t\t%4.3g\n",				u[i]);
+				fprintf(output_file,	" mean hit number :\t\t\t\t\t%4.3g\n",				u[i]);
 				fprintf(output_file,	" fluence factor:\t\t\t\t\t%4.3g\n",				fluence_factor);
 				fprintf(output_file,	" dose set/ Gy:\t\t\t\t\t\t%4.3g\n",				total_d_Gy[i] * fluence_factor);
 				fprintf(output_file,	"\n average dose from SC / Gy:\t\t\t%4.3g\n",				d[i]);
