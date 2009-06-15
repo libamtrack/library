@@ -604,6 +604,7 @@ SGP.RDD.f1.parameters	<-	function(	E.MeV.u,
 															single.impact.fluence.cm2	= as.single(single.impact.fluence.cm2),
 															single.impact.dose.Gy		= as.single(single.impact.dose.Gy))
 
+	return(res)
 }
 											
 
