@@ -24,6 +24,34 @@ static long lminarg1;
 static long lminarg2;
 #define LMIN(a,b) (lminarg1=(a),lminarg2=(b),(lminarg1) < (lminarg2) ? (lminarg1) : (lminarg2))
 
+//
+#ifdef _DEBUG
+int indent_counter = 0;
+char isp[30] = "\0                            ";
+FILE * debf;
+
+void indnt_inc();
+void indnt_dec();
+void indnt_init();
+
+void indnt_init(){
+	debf = stderr;
+};
+
+void indnt_inc(){
+   indent_counter++;
+   isp[indent_counter] = '\0';
+   isp[indent_counter-1] = ' ';
+}
+
+void indnt_dec(){
+   indent_counter--;
+   isp[indent_counter+1] = ' ';
+   isp[indent_counter] = '\0';
+}
+#endif
+
+
 // finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
 // is reported per element
 // a vector "matches" of length n_elements has to be provided

@@ -283,18 +283,18 @@ void SGP_LET_MeV_cm2_g(	long*	n,
 						float*	LET_MeV_cm2_g)
 {
 
-//	printf("begin SGP_LET_MeV_cm2_g\n");
-//
-//	printf("n = %ld, material_name = %s\n", *n, material_name);
-//	long ii;
-//	for( ii = 0 ; ii < *n ; ii++){
-//		printf("E_MeV_u[%d]=%e\n", ii , E_MeV_u[ii]);
-//		printf("particle_no[%d]=%d\n", ii , particle_no[ii]);
-//	}
+#ifdef _DEBUG
+	indnt_init();
+	indnt_inc();
+	fprintf(debf,"%sbegin SGP_LET_MeV_cm2_g\n",isp);
 
-
-//	printf("E_MeV_u=%e\n", E_MeV_u[0]);
-//	printf("particle_no=%ld\n", particle_no[0]);
+	fprintf(debf,"%sn = %ld, material_name = %s\n", isp, *n, material_name);
+	long ii;
+	for( ii = 0 ; ii < *n ; ii++){
+		fprintf(debf,"%sE_MeV_u[%ld]=%e\n", isp, ii , E_MeV_u[ii]);
+		fprintf(debf,"%sparticle_no[%ld]=%ld\n", isp, ii , particle_no[ii]);
+	}
+#endif
 
 	// get scaled energies for all given particles and energies
 	float*	sE	=	(float*)calloc(*n, sizeof(float));
@@ -303,7 +303,9 @@ void SGP_LET_MeV_cm2_g(	long*	n,
 						particle_no,
 						sE);
 
-//	printf("sE[0]=%e\n",  sE[0]);
+#ifdef _DEBUG
+	fprintf(debf,"%sE[0]=%e\n", isp, sE[0]);
+#endif
 
 	// get effective charge for all given particles and energies
 	float*	eC	=	(float*)calloc(*n, sizeof(float));
@@ -366,7 +368,10 @@ void SGP_LET_MeV_cm2_g(	long*	n,
 	free(sE);
 	free(matches);
 
-//	printf("end SGP_LET_MeV_cm2_g\n");
+#ifdef _DEBUG
+	fprintf(debf,"%send SGP_LET_MeV_cm2_g\n", isp);
+	indnt_dec();
+#endif
 
 }
 

@@ -18,7 +18,7 @@ typedef struct {
 } particle_data;
 
 particle_data SGP_Particle_Data = {
-	{	PARTICLE_DATA_N},
+	{	PARTICLE_DATA_N },
 	{	1,		2,		3,
 		4,		5,
 		6,		7,		8,

@@ -122,16 +122,17 @@ void SGP_RDD_f1_parameters(	long*			n,
 		float * f1_parameters
 )
 {
-	printf("begin SGP_RDD_f1_parameters\n");
+#ifdef _DEBUG
+	indnt_inc();
+	fprintf(debf,"%sbegin SGP_RDD_f1_parameters\n",isp);
+#endif
 
 	if( *rdd_model == RDD_Test){
 		f1_parameters[0] = 137.;
-		printf("137\n");
 	}
 
 	if( *rdd_model == RDD_KatzPoint){
 		f1_parameters[0] = 137.;
-		printf("137\n");
 	}
 
 	if( *rdd_model == RDD_Geiss){
@@ -210,22 +211,23 @@ void SGP_RDD_f1_parameters(	long*			n,
 
 		// Loop over all particles and energies given
 		for (i = 0; i < *n; i++){
-		//		printf("r_max_m[%ld] = %e\n", i, r_max_m[i]);
+		//		fprintf(debf,"%sr_max_m[%ld] = %e\n", i, r_max_m[i]);
 			r_min_m[i]	= parameter[0];
-			//printf("r_min_m[%ld] = %e\n", i, r_min_m[i]);
+			//fprintf(debf,"%sr_min_m[%ld] = %e\n", i, r_min_m[i]);
 			if(r_min_m[i] >= r_max_m[i]){
 				r_min_m[i] = r_max_m[i];
 			}
 
 			// Normalization to match with LET
 			float	tmp						=	(float)(0.5f + log(r_max_m[i] / r_min_m[i]));
-			printf("tmp = %e\n", tmp);
 
 				tmp								*=	2.0f * pi * (r_min_m[i] * m_to_cm) * (r_min_m[i] * m_to_cm);
-				//printf("tmp = %e\n", tmp);
+				//fprintf(debf,"%stmp = %e\n", tmp);
 
 				k_Gy[i]							=	LET_MeV_cm2_g[0] * MeV_g_to_J_kg / tmp;
-				printf("LET[%ld] = %e\n", i, LET_MeV_cm2_g[0]);
+#ifdef _DEBUG
+				fprintf(debf,"%sLET[%ld] = %e\n", isp, i, LET_MeV_cm2_g[0]);
+#endif
 
 				tmp								=	1 / (pi * (r_max_m[i] * m_to_cm) * (r_max_m[i] * m_to_cm));
 				single_impact_fluence_cm2[i]	=	tmp;
@@ -256,12 +258,13 @@ void SGP_RDD_f1_parameters(	long*			n,
 		free(particle_no);
 		free(parameter);
 
-		printf("SGP_RDD_f1_parameters 1\n");
 	}
 
 
-
-	printf("end SGP_RDD_f1_parameters\n");
+#ifdef _DEBUG
+	fprintf(debf,"%send SGP_RDD_f1_parameters\n",isp);
+	indnt_dec();
+#endif
 
 }
 
@@ -392,7 +395,11 @@ void SGP_D_RDD_Gy	(	long*	n,
 //						float*	parameter,
 //						float*	D_RDD_Gy)
 {
-	//printf("begin SGP_D_RDD_Gy\n");
+#ifdef _DEBUG
+	indnt_init();
+	indnt_inc();
+	fprintf(debf,"%sbegin SGP_D_RDD_Gy\n",isp);
+#endif
 
 	// conversion through int
 #ifdef _R
@@ -413,15 +420,18 @@ void SGP_D_RDD_Gy	(	long*	n,
 
 #endif
 
-	printf("SGP_D_RDD_Gy 1, n = %ld\n", *n);
-
-	printf("Model = %ld (no of parameters : %ld) \n", *rdd_model, *n_rdd_parameter);
+#ifdef _DEBUG
+	fprintf(debf,"%sn = %ld\n", isp, *n);
+	fprintf(debf,"%sModel = %ld (no of parameters : %ld) \n", isp, *rdd_model, *n_rdd_parameter);
+#endif
 
 	long i;
 
 	if( *rdd_model == RDD_Test){
 
-		printf("RDD_Test, rdd_parameter[0] = %g\n", rdd_parameter[0]);
+#ifdef _DEBUG
+		fprintf(debf,"%sRDD_Test, rdd_parameter[0] = %g\n", isp, rdd_parameter[0]);
+#endif
 
 		long n_f1_parameters = 1;
 		float*	f1_parameters = (float*)calloc(n_f1_parameters, sizeof(float));
@@ -460,8 +470,6 @@ void SGP_D_RDD_Gy	(	long*	n,
 		}
 
 	}
-
-	printf("SGP_D_RDD_Gy 2\n");
 
 	if( *rdd_model == RDD_Geiss){
 
@@ -503,12 +511,12 @@ void SGP_D_RDD_Gy	(	long*	n,
 		}
 		free(f1_parameters);
 
-		printf("SGP_D_RDD_Gy 2\n");
-
 		//long	i;
 		for (i = 0; i < *n; i++){
-			printf("r_m[%ld] = %g\n", i , r_m[i]);
-			printf("k_Gy[%ld] = %g\n", i , k_Gy[i]);
+#ifdef _DEBUG
+			fprintf(debf,"%sr_m[%ld] = %g\n", isp, i , r_m[i]);
+			fprintf(debf,"%sk_Gy[%ld] = %g\n", isp, i , k_Gy[i]);
+#endif
 
 			// Differentiate between the three cases (i) r < r_min (ii) r_min <= r <= r_max (iii) r > r_max
 			D_RDD_Gy[i]		=	0.0f;
@@ -518,7 +526,6 @@ void SGP_D_RDD_Gy	(	long*	n,
 			if ((r_min_m[i] <= r_m[i]) && (r_m[i] <= r_max_m[i])){
 				D_RDD_Gy[i]		=	k_Gy[i] * (r_min_m[i] / r_m[i]) * (r_min_m[i] / r_m[i]);}
 		}
-		printf("SGP_D_RDD_Gy 3\n");
 
 		free(LET_MeV_cm2_g);
 		free(r_min_m);
@@ -532,7 +539,10 @@ void SGP_D_RDD_Gy	(	long*	n,
 
 	}
 
-	printf("end SGP_D_RDD_Gy\n");
+#ifdef _DEBUG
+	fprintf(debf,"%send SGP_D_RDD_Gy\n", isp);
+	indnt_dec();
+#endif
 }
 
 
@@ -544,14 +554,13 @@ void SGP_D_RDD_GyS(		long*	n,
 		float*	parameter,
 		float*	D_RDD_Gy){
 
-	//
-	////	printf("begin SGP_D_RDD_GyS\n");
-	////	printf("n = %ld, material_name = %s, parameter = %e\n", *n, *material_name, *parameter);
+	////	fprintf(debf,"%sbegin SGP_D_RDD_GyS\n");
+	////	fprintf(debf,"%sn = %ld, material_name = %s, parameter = %e\n", *n, *material_name, *parameter);
 	////	long i;
 	////	for( i = 0 ; i < *n ; i++){
-	////		printf("r_m[%ld]=%e\n", i , r_m[i]);
-	////		printf("E_MeV_u[%ld]=%e\n", i , E_MeV_u[i]);
-	////		printf("particle_no[%ld]=%d\n", i , particle_no[i]);
+	////		fprintf(debf,"%sr_m[%ld]=%e\n", i , r_m[i]);
+	////		fprintf(debf,"%sE_MeV_u[%ld]=%e\n", i , E_MeV_u[i]);
+	////		fprintf(debf,"%sparticle_no[%ld]=%d\n", i , particle_no[i]);
 	////	}
 	//
 	//	long particle_no_long = (long)(*particle_no);
@@ -564,7 +573,7 @@ void SGP_D_RDD_GyS(		long*	n,
 	//						parameter,
 	//						D_RDD_Gy);
 	//
-	//	printf("end SGP_D_RDD_GyS\n");
+	//	fprintf(debf,"%send SGP_D_RDD_GyS\n");
 
 };
 
