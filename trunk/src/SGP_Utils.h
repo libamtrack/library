@@ -284,4 +284,65 @@ float erff(float x)
 	return x < 0.0f ? -gammp(0.5f, x*x) : gammp(0.5f, x*x);
 }
 
+void nrerror(char error_text[])
+/* Numerical Recipes standard error handler */
+{
+	fprintf(stderr,"Numerical Recipes run-time error...\n");
+	fprintf(stderr,"%s\n",error_text);
+	fprintf(stderr,"...now exiting to system...\n");
+	exit(1);
+}
+
+#define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
+#define MAXIT 60
+#define UNUSED (-1.11e30)
+float zriddr(float (*func)(float), float x1, float x2, float xacc)
+/* 	From Numerical Recipes in C, 2nd ed., 1992:
+	Using Ridders' method, return the root of a function func known to lie between x1 and x2.
+	The root, returned as zriddr, will be refined to an approximate accuracy xacc.
+ */
+{
+	int j;
+	float ans,fh,fl,fm,fnew,s,xh,xl,xm,xnew;
+	fl=(*func)(x1);
+	fh=(*func)(x2);
+	if ((fl > 0.0 && fh < 0.0) || (fl < 0.0 && fh > 0.0)) {
+		xl=x1;
+		xh=x2;
+		ans=UNUSED; 												//	Any highly unlikely value, to simplify logic below.
+		for (j=1;j<=MAXIT;j++) {
+			xm=0.5*(xl+xh);
+			fm=(*func)(xm); 										// First of two function evaluations per its=
+				sqrt(fm*fm-fl*fh); 									// eration.
+				if (s == 0.0) return ans;
+				xnew=xm+(xm-xl)*((fl >= fh ? 1.0 : -1.0)*fm/s); 	// Updating formula.
+				if (fabs(xnew-ans) <= xacc) return ans;
+				ans=xnew;
+				fnew=(*func)(ans); 									// Second of two function evaluations per
+				if (fnew == 0.0) return ans; 						// iteration.
+				if (SIGN(fm,fnew) != fm) { 							// Bookkeeping to keep the root bracketed
+					xl=xm; 											// on next iteration.
+					fl=fm;
+					xh=ans;
+					fh=fnew;
+				} else if (SIGN(fl,fnew) != fl) {
+					xh=ans;
+					fh=fnew;
+				} else if (SIGN(fh,fnew) != fh) {
+					xl=ans;
+					fl=fnew;
+				} else nrerror("never get here.");
+				if (fabs(xh-xl) <= xacc) return ans;
+		}
+		nrerror("zriddr exceed maximum iterations");
+	}
+	else {
+		if (fl == 0.0) return x1;
+		if (fh == 0.0) return x2;
+		nrerror("root must be bracketed in zriddr.");
+	}
+	return 0.0; 												// Never get here.
+}
+
+
 #endif // SGP_UTILS_H_

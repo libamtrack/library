@@ -13,6 +13,7 @@
 #include <string.h>
 
 //#include "SGP_Constants.h"
+//#include "SGP_RDD.h"
 //#include "SGP_SuccessiveConvolutions.h"
 
 void SGP_SC_get_f1_array_sizeS(	long*	n,
@@ -125,29 +126,49 @@ void SGP_SC_Loop(	long*	n,
 
 void testRDD(){
 
-    long n = 5;
-    float r_m[] = {1e-6, 1e-7, 1e-8, 1e-9, 1e-10};
-    float E_MeV_u[] = {60, 60, 60, 60, 60};
-    long particle_no[] = {1, 1, 1, 1, 1};
-    char material_name[50] = "Water, Liquid";
-    char ** mn = (char**)calloc(1, sizeof(char*));
-    *mn = material_name;
-    float parameter = 1e-8;
-	float D_RDD_Gy[] = { 0, 0, 0, 0, 0 };
+    long 	n 					= 5;
+    float 	r_m[] 				= {1e-6, 1e-7, 1e-8, 1e-9, 1e-10};
+    char 	material_name[50] 	= "Water, Liquid";
+    char** 	mn 					= (char**)calloc(1, sizeof(char*));
+    *mn 						= material_name;
+    long	rdd_model			= 2;
+	long	n_rdd_parameter		= 4;
+    float 	rdd_parameter[]		= {60.0f, 1, 0, 1e-8f};
+	long	er_model			= 0;
+	long	n_er_parameter		= 0;
+    float 	er_parameter[]		= {0.0f};
+	float	D_RDD_Gy[] 			= { 0, 0, 0, 0, 0 };
+	float	r_RDD_m_back[]		= { 0, 0, 0, 0, 0 };
 	int i;
 
 	printf("begin %s\n", *mn);
 
-//	SGP_D_RDD_Gy( &n, r_m, &E_MeV_u, &particle_no, material_name, &parameter, &D_RDD_Gy);
-	SGP_D_RDD_GyS( &n, r_m, &E_MeV_u, &particle_no, mn, &parameter, &D_RDD_Gy);
 
-	free(mn);
+	SGP_D_RDD_Gy( &n, r_m, &rdd_model, &n_rdd_parameter, rdd_parameter, &er_model, &n_er_parameter, er_parameter, D_RDD_Gy);
+	SGP_r_RDD_m( &n, D_RDD_Gy, &rdd_model, &n_rdd_parameter, rdd_parameter, &er_model, &n_er_parameter, er_parameter, r_RDD_m_back);
+//	SGP_D_RDD_GyS( &n, r_m, &E_MeV_u, &particle_no, mn, &parameter, &D_RDD_Gy);
+
+
 
 	for( i = 0 ; i < n ; i++){
-		printf("end, D_RRD_Gy[%g] = %g\n", r_m[i], D_RDD_Gy[i]);
+		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);
 	}
 
+	n 					= 5;
+	rdd_model			= 1;
+	n_rdd_parameter		= 3;
+	float	rdd_parameter2[]	= {0.428, 1, 0};
 
+	printf("begin %s\n", *mn);
+
+	SGP_D_RDD_Gy( &n, r_m, &rdd_model, &n_rdd_parameter, rdd_parameter2, &er_model, &n_er_parameter, er_parameter, D_RDD_Gy);
+//	SGP_r_RDD_m( &n, D_RDD_Gy, &rdd_model, &n_rdd_parameter, rdd_parameter, &er_model, &n_er_parameter, er_parameter, r_RDD_m_back);
+
+	for( i = 0 ; i < n ; i++){
+		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);
+	}
+
+	free(mn);
 }
 
 
@@ -364,8 +385,8 @@ void test_SGP_SC_2(){
 
 int main(){
 
-	//testRDD();
-	test_SGP_SC_1();
+	testRDD();
+	//test_SGP_SC_1();
 	//test_SGP_SC_2();
 
 	return 1;
