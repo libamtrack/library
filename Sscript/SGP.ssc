@@ -10,7 +10,8 @@
 #
 # 2009-Apr-27: Started, sgre
 # 2009-Jun-12: Some minor typo correction before adding to the new repository system, sgre
-# 2009-Jun-16: Wrapping function for general RDD methods, debugging printouts, lgrz
+# 2009-Jun-15: Wrapping function for general RDD methods, debugging printouts, lgrz
+# 2009-Jun-16: New wrapping function for r(D) inverse RDDs, sgre
 ################################################################################################
 
 ################################################################################################
@@ -37,7 +38,9 @@
 # SGP.Bortfeld.Transport.Proton.Spectrum
 #
 # :::RADIAL DOSE FUNCTIONS:::
-# SGP.RDD.D.Gy
+# SGP.RDD.D.Gy								# old style
+# SGP.RDD.D.Gy.L								# new style
+# SGP.RDD.r.m
 # SGP.RDD.f1.parameters
 #
 # :::Successive convolution FUNCTIONS:::
@@ -495,6 +498,52 @@ SGP.RDD.D.Gy.L					<-	function(	r.m,
 
 	 return(res$D.Gy)						
 }
+
+############
+SGP.RDD.r.m					<-	function(	D.Gy,
+												RDD.model,
+												RDD.parameters){
+	n					<-	length(D.Gy)
+	RDD.n					<-	length(RDD.parameters)
+	r.m				<-	numeric(n)
+  {	
+  
+  ER.model <- 0
+  ER.parameters <- c(1,1)
+ 	ER.n					<-	length(ER.parameters)
+
+ 	if(debug == T) if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("r.m=",r.m,"\n")
+
+	 if( RDD.model == 0 ){ 
+	 	if(debug == T) cat("RDD_test model\n")
+			if(debug == T) cat("a0=",RDD.parameters[1],"\n")
+		}
+	 if( RDD.model == 1 ){ 
+	 	if(debug == T) cat("RDD_KatzPoint model\n")
+		}
+	 if( RDD.model == 2 ){ 
+	  if(debug == T) cat("RDD_Geiss model\n")
+	 	if(debug == T) cat("E.MeV.u=",RDD.parameters[1],"\n")
+ 		if(debug == T) cat("particle.index=",RDD.parameters[2],"\n")
+	 	if(debug == T) cat("material.name=",RDD.parameters[3],"\n")
+			if(debug == T) cat("parameter a0=",RDD.parameters[4],"\n")
+		}
+				
+		res					<-	.C(	"SGP_r_RDD_m",	n						=	as.integer(n),
+															D.Gy						=	as.single(D.Gy),
+															RDD.model				=	as.integer(RDD.model),
+															RDD.n				=	as.integer(RDD.n),
+															RDD.parameters		=	as.single(RDD.parameters),
+															ER.model				=	as.integer(ER.model),
+															ER.n				=	as.integer(ER.n),
+															ER.parameters		=	as.single(ER.parameters),
+															r.m					=	as.single(r.m))		
+		}
+
+	 return(res$r.m)						
+}
+
 
 
 ############
