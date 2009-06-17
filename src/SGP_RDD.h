@@ -78,21 +78,34 @@ void SGP_D_RDD_Gy	(	long*	n,
 						float*	parameter,
 						float*	D_RDD_Gy);*/
 
+/* obsolete: to be deleted*/
 void SGP_D_RDD_GyS(		long*	n,
 		float*	r_m,
 		float*	E_MeV_u,
 		int*	particle_no,
 		char**	material_name,
 		float*	parameter,
-		float*	D_RDD_Gy);
+		float*	D_RDD_Gy){};
 
 void SGP_r_RDD_m	(	long*	n,
-		float*	D_Gy,
-		float*	E_MeV_u,
-		long*	particle_no,
-		char*	material_name,
-		float*	parameter,
-		float*	r_RDD_m);
+		float*	D_RDD_Gy,
+		/* radial dose distribution model */
+		long*	rdd_model,       /* */
+		long*	n_rdd_parameter, /* number of rdd parameters */
+		float*	rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+		/* electron range model */
+		long*	er_model,
+		long*	n_er_parameter,
+		float*	er_parameter,
+		float*	r_m);
+
+void SGP_r_RDD_m_old	(	long*	n,
+				float*	D_Gy,
+				float*	E_MeV_u,
+				long*	particle_no,
+				char*	material_name,
+				float*	parameter,
+				float*	r_RDD_m);
 
 //void SGP_RDD_f1_parameters(	long*			n,
 //							float*			E_MeV_u,
@@ -119,8 +132,7 @@ void SGP_RDD_f1_parameters(	long*			n,
 		float*	er_parameter,
 		/* calculated parameters */
 		long * n_f1_parameters,
-		float * f1_parameters
-)
+		float * f1_parameters)
 {
 #ifdef _DEBUG
 	indnt_inc();
@@ -374,12 +386,19 @@ void SGP_RDD_f1_parametersS(	long*			n,
 //						float*	er_parameter,
 //						float*	D_RDD_Gy);
 
+/*
+float RDD_TEST_Gy(	float	r_m,
+					long*	rdd_model,
+					long*	n_rdd_parameter,
+					float*	rdd_parameter,
+					long*	er
+*/
 void SGP_D_RDD_Gy	(	long*	n,
 		float*	r_m,
 		/* radial dose distribution model */
-		long*	rdd_model,       /* */
-		long*	n_rdd_parameter, /* number of rdd parameters */
-		float*	rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+		long*	rdd_model,
+		long*	n_rdd_parameter,
+		float*	rdd_parameter,
 		/* electron range model */
 		long*	er_model,
 		long*	n_er_parameter,
@@ -427,6 +446,85 @@ void SGP_D_RDD_Gy	(	long*	n,
 
 	long i;
 
+	if( *rdd_model == RDD_KatzPoint){
+
+#ifdef _DEBUG
+		fprintf(debf,"%sRDD_KatzPoint, rdd_parameter[0] = %g, rdd_parameter[1] = %g, rdd_parameter[2] = %g\n",
+				isp, rdd_parameter[0], rdd_parameter[1], rdd_parameter[2]);
+#endif
+
+		long	n_tmp		= 1;
+		float	beta		= 0.0f;
+		long	Z			= 0;
+		if(rdd_parameter[0]	< 0){
+			beta		= -1.0f * rdd_parameter[0];
+			Z			= (long)rdd_parameter[1];
+		}else{
+			float	E_MeV_u		= rdd_parameter[0];
+			long	particle_no	= (long)rdd_parameter[1];
+			beta		= 0.0f;
+			SGP_beta_from_particle_index(	&n_tmp,
+										&E_MeV_u,
+										&particle_no,
+										&beta);
+			// PRELIMINARY!!!
+			Z			= 1;
+		}
+		long	material_no	= (long)rdd_parameter[2];
+		float	Z_eff		= 0.0f;
+		SGP_effective_charge_from_beta(	&n_tmp,
+										&beta,
+										&Z,
+										&Z_eff);
+
+		char	material_name[256];
+		char*	pmn[1];
+		pmn[0]	= (char*)&material_name;
+		getMaterialName(&material_no, material_name);
+
+		float 	density_g_cm3;
+		float	electron_density_m3;
+		float	I_eV;
+		float	alpha_g_cm2_MeV;
+		float	p_MeV;
+		float	m_g_cm2;
+
+		SGP_getMaterialData(	&n_tmp,
+						pmn,
+						&density_g_cm3,
+						&electron_density_m3,
+						&I_eV,
+						&alpha_g_cm2_MeV,
+						&p_MeV,
+						&m_g_cm2);
+
+		float	N_el_cm3		=	electron_density_m3 / (100*100*100);
+		float	p_g_cm3			=	density_g_cm3;
+		float	I_erg			=	I_eV / 6.24150974e11;
+
+		float	C				=	2.0f * pi * N_el_cm3 * (e_esu*e_esu*e_esu*e_esu) / (electron_mass_g * c_cm_s *c_cm_s) * 1e-7;   // energy constant [J/cm] not [erg/cm] hence 10^-7
+
+		float	w_max_keV		=	2.0f * electron_mass_MeV_c2 * 1000 * beta*beta / (1.0f - beta*beta);
+
+		float	alpha			=	1.667;
+		float	k_el			=	6.13e-6f;			// range constant [g*cm^(-2)*keV^(-alpha)]
+		if(w_max_keV <= 1){								// low E alpha (< 1 keV)
+			alpha			=	1.079;
+		}
+
+		float	r_max_cm		=	10e-6f * w_max_keV;
+
+		long i;
+		for (i = 0; i < *n; i++){
+			float	r_cm			=	r_m[i] * 100.0f;
+			if (r_cm <= r_max_cm){
+				D_RDD_Gy[i]				=	C * Z_eff*Z_eff / (2.0f * pi * r_cm * beta*beta) * pow(1.0f / r_cm - 1.0f / r_max_cm, 1.0f / alpha);
+			}else{
+				D_RDD_Gy[i]				=	0.0f;
+			}
+		}
+	}
+
 	if( *rdd_model == RDD_Test){
 
 #ifdef _DEBUG
@@ -437,9 +535,9 @@ void SGP_D_RDD_Gy	(	long*	n,
 		float*	f1_parameters = (float*)calloc(n_f1_parameters, sizeof(float));
 
 		SGP_RDD_f1_parameters(	n,
-				rdd_model,       /* model: 0 - test, 1 - Katz, 2 - LEM*/
-				n_rdd_parameter, /* number of rdd parameters */
-				rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+				rdd_model,
+				n_rdd_parameter,
+				rdd_parameter,
 				/* electron range model */
 				er_model,
 				n_er_parameter,
@@ -471,15 +569,20 @@ void SGP_D_RDD_Gy	(	long*	n,
 
 	}
 
+
 	if( *rdd_model == RDD_Geiss){
 
+#ifdef _DEBUG
+		fprintf(debf,"%sRDD_Geiss, rdd_parameter[0] = %g, rdd_parameter[1] = %g, rdd_parameter[2], rdd_parameter[3] = %g\n",
+				isp, rdd_parameter[0], rdd_parameter[1], rdd_parameter[2], rdd_parameter[3]);
+#endif
 		long n_f1_parameters = 8;
 		float*	f1_parameters = (float*)calloc(n_f1_parameters, sizeof(float));
 
 		SGP_RDD_f1_parameters(	n,
-				rdd_model,       /* model: 0 - test, 1 - Katz, 2 - LEM*/
-				n_rdd_parameter, /* number of rdd parameters */
-				rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+				rdd_model,
+				n_rdd_parameter,
+				rdd_parameter,
 				/* electron range model */
 				er_model,
 				n_er_parameter,
@@ -539,13 +642,57 @@ void SGP_D_RDD_Gy	(	long*	n,
 
 	}
 
+	if( *rdd_model == RDD_Site){
+
+#ifdef _DEBUG
+		fprintf(debf,"%sRDD_Site, rdd_parameter[0] = %g\n", isp, rdd_parameter[0]);
+#endif
+
+		long n_f1_parameters = 1;
+		float*	f1_parameters = (float*)calloc(n_f1_parameters, sizeof(float));
+
+		SGP_RDD_f1_parameters(	n,
+				rdd_model,       /* model: 0 - test, 1 - Katz, 2 - LEM*/
+				n_rdd_parameter, /* number of rdd parameters */
+				rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+				/* electron range model */
+				er_model,
+				n_er_parameter,
+				er_parameter,
+				/* calculated parameters */
+				&n_f1_parameters,
+				f1_parameters);
+
+		/* rewriting output of SGP_RDD_f1_parameters function
+		 * to more convenient format
+		 */
+		float*	factor = (float*)calloc(*n, sizeof(float));
+		for( i = 0 ; i < *n ; i++){
+			factor[i] = f1_parameters[0];
+		}
+		free(f1_parameters);
+
+		/*
+		 * calculation of dose
+		 */
+		for (i = 0; i < *n; i++){
+			D_RDD_Gy[i]		=	0.0f;
+			if (r_m[i] < rdd_parameter[0]){
+				D_RDD_Gy[i]		=	factor[i];
+			} else {
+				D_RDD_Gy[i]		=	0;
+			}
+		}
+
+	}
+
 #ifdef _DEBUG
 	fprintf(debf,"%send SGP_D_RDD_Gy\n", isp);
 	indnt_dec();
 #endif
 }
 
-
+/* obsolete: to be deleted
 void SGP_D_RDD_GyS(		long*	n,
 		float*	r_m,
 		float*	E_MeV_u,
@@ -576,52 +723,213 @@ void SGP_D_RDD_GyS(		long*	n,
 	//	fprintf(debf,"%send SGP_D_RDD_GyS\n");
 
 };
-
-
+*/
 
 
 
 void SGP_r_RDD_m	(	long*	n,
+		float*	D_RDD_Gy,
+		/* radial dose distribution model */
+		long*	rdd_model,       /* */
+		long*	n_rdd_parameter, /* number of rdd parameters */
+		float*	rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+		/* electron range model */
+		long*	er_model,
+		long*	n_er_parameter,
+		float*	er_parameter,
+		float*	r_RDD_m)
+/*void SGP_r_RDD_m	(	long*	n,
 		float*	D_Gy,
 		float*	E_MeV_u,
 		long*	particle_no,
 		char*	material_name,
 		float*	parameter,
-		float*	r_RDD_m)
+		float*	r_RDD_m)*/
 {
-		long		n_particle	=	1;
-		float		LET_MeV_cm2_g;
-		float		r_min_m;
-		float		r_max_m;
-		float		d_min_Gy;
-		float		d_max_Gy;
-		float		k_Gy;
-		float		single_impact_fluence_cm2;
-		float		single_impact_dose_Gy;
+	#ifdef _DEBUG
+		indnt_init();
+		indnt_inc();
+		fprintf(debf,"%sbegin SGP_r_RDD_m\n",isp);
+	#endif
 
-		SGP_RDD_f1_parameters_Geiss(	&n_particle,
-									E_MeV_u,
-									particle_no,
-									material_name,
-									parameter,
-									&LET_MeV_cm2_g,
-									&r_min_m,
-									&r_max_m,
-									&d_min_Gy,
-									&d_max_Gy,
-									&k_Gy,
-									&single_impact_fluence_cm2,
-									&single_impact_dose_Gy);
+		// conversion through int
+	#ifdef _R
+		int n_int = (int)(*n);
+		*n = (long)n_int;
 
-		long	i;
-		for (i = 0; i < *n; i++){
-			// if D is outside the definition, return -1
-			r_RDD_m[i]		=	-1.0f;
+		int n_rdd_parameter_int = (int)(*n_rdd_parameter);
+		*n_rdd_parameter = (long)n_rdd_parameter_int;
 
-			if ((d_min_Gy <= D_Gy[i]) && (D_Gy[i] <= d_max_Gy)){
-				r_RDD_m[i]		=	r_min_m * (float)sqrt(k_Gy/D_Gy[i]);}
+		int n_er_parameter_int = (int)(*n_er_parameter);
+		*n_er_parameter = (long)n_er_parameter_int;
+
+		int rdd_model_int = (int)(*rdd_model);
+		*rdd_model = (long)rdd_model_int;
+
+		int er_model_int = (int)(*er_model);
+		*er_model = (long)er_model_int;
+	#endif
+
+	#ifdef _DEBUG
+		fprintf(debf,"%sn = %ld\n", isp, *n);
+		fprintf(debf,"%sModel = %ld (no of parameters : %ld) \n", isp, *rdd_model, *n_rdd_parameter);
+	#endif
+
+
+		long i;
+
+		if( *rdd_model == RDD_Test){
+
+	#ifdef _DEBUG
+			fprintf(debf,"%sRDD_Test, rdd_parameter[0] = %g\n", isp, rdd_parameter[0]);
+	#endif
+
+			long n_f1_parameters = 1;
+			float*	f1_parameters = (float*)calloc(n_f1_parameters, sizeof(float));
+
+			SGP_RDD_f1_parameters(	n,
+					rdd_model,       /* model: 0 - test, 1 - Katz, 2 - LEM*/
+					n_rdd_parameter, /* number of rdd parameters */
+					rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+					/* electron range model */
+					er_model,
+					n_er_parameter,
+					er_parameter,
+					/* calculated parameters */
+					&n_f1_parameters,
+					f1_parameters);
+
+			/* rewriting output of SGP_RDD_f1_parameters function
+			 * to more convenient format
+			 */
+			float*	factor = (float*)calloc(*n, sizeof(float));
+			for( i = 0 ; i < *n ; i++){
+				factor[i] = f1_parameters[0];
+			}
+			free(f1_parameters);
+
+			/*
+			 * calculation of radius from dose (to be revised!)
+			 */
+			for (i = 0; i < *n; i++){
+				r_RDD_m[i]		=	0.0f;
+				if (D_RDD_Gy[i] > 0.0f){
+					r_RDD_m[i]		=	666.6f;}
+			}
+
 		}
+
+		if( *rdd_model == RDD_Geiss){
+
+			long n_f1_parameters = 8;
+			float*	f1_parameters = (float*)calloc(n_f1_parameters, sizeof(float));
+
+			SGP_RDD_f1_parameters(	n,
+					rdd_model,       /* model: 0 - test, 1 - Katz, 2 - LEM*/
+					n_rdd_parameter, /* number of rdd parameters */
+					rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+					/* electron range model */
+					er_model,
+					n_er_parameter,
+					er_parameter,
+					/* calculated parameters */
+					&n_f1_parameters,
+					f1_parameters);
+
+			/* rewriting output of SGP_RDD_f1_parameters function
+			 * to more convenient format
+			 */
+			float*	LET_MeV_cm2_g				=	(float*)calloc(*n, sizeof(float));
+			float*	r_min_m						=	(float*)calloc(*n, sizeof(float));
+			float*	r_max_m						=	(float*)calloc(*n, sizeof(float));
+			float*	d_min_Gy					=	(float*)calloc(*n, sizeof(float));
+			float*	d_max_Gy					=	(float*)calloc(*n, sizeof(float));
+			float*	k_Gy						=	(float*)calloc(*n, sizeof(float));
+			float*	single_impact_fluence_cm2	=	(float*)calloc(*n, sizeof(float));
+			float*	single_impact_dose_Gy		=	(float*)calloc(*n, sizeof(float));
+			for( i = 0 ; i < *n ; i++){
+				LET_MeV_cm2_g[i] = f1_parameters[0];
+				r_min_m[i] = f1_parameters[1];
+				r_max_m[i] = f1_parameters[2];
+				d_min_Gy[i] = f1_parameters[3];
+				d_max_Gy[i] = f1_parameters[4];
+				k_Gy[i] = f1_parameters[5];
+				single_impact_fluence_cm2[i] = f1_parameters[6];
+				single_impact_dose_Gy[i] = f1_parameters[7];
+			}
+			free(f1_parameters);
+
+			for (i = 0; i < *n; i++){
+	#ifdef _DEBUG
+				fprintf(debf,"%sD_RDD_Gy[%ld] = %g\n", isp, i , D_RDD_Gy[i]);
+				fprintf(debf,"%sk_Gy[%ld] = %g\n", isp, i , k_Gy[i]);
+	#endif
+
+				// if D is outside the definition, return -1
+				r_RDD_m[i]		=	-1.0f;
+
+				if ((d_min_Gy[i] <= D_RDD_Gy[i]) && (D_RDD_Gy[i] <= d_max_Gy[i])){
+					r_RDD_m[i]		=	r_min_m[i] * (float)sqrt(k_Gy[i] / D_RDD_Gy[i]);}
+			}
+
+			free(LET_MeV_cm2_g);
+			free(r_min_m);
+			free(r_max_m);
+			free(d_min_Gy);
+			free(d_max_Gy);
+			free(k_Gy);
+			free(single_impact_fluence_cm2);
+			free(single_impact_dose_Gy);
+
+
+		}
+
+	#ifdef _DEBUG
+		fprintf(debf,"%send SGP_r_RDD_m\n", isp);
+		indnt_dec();
+	#endif
 }
 
+void SGP_r_RDD_m_old	(	long*	n,
+				float*	D_Gy,
+				float*	E_MeV_u,
+				long*	particle_no,
+				char*	material_name,
+				float*	parameter,
+				float*	r_RDD_m)
+		{
+			long		n_particle	=	1;
+			float		LET_MeV_cm2_g;
+			float		r_min_m;
+			float		r_max_m;
+			float		d_min_Gy;
+			float		d_max_Gy;
+			float		k_Gy;
+			float		single_impact_fluence_cm2;
+			float		single_impact_dose_Gy;
+
+			SGP_RDD_f1_parameters_Geiss(	&n_particle,
+					E_MeV_u,
+					particle_no,
+					material_name,
+					parameter,
+					&LET_MeV_cm2_g,
+					&r_min_m,
+					&r_max_m,
+					&d_min_Gy,
+					&d_max_Gy,
+					&k_Gy,
+					&single_impact_fluence_cm2,
+					&single_impact_dose_Gy);
+
+			long	i;
+			for (i = 0; i < *n; i++){
+				// if D is outside the definition, return -1
+				r_RDD_m[i]		=	-1.0f;
+
+				if ((d_min_Gy <= D_Gy[i]) && (D_Gy[i] <= d_max_Gy)){
+					r_RDD_m[i]		=	r_min_m * (float)sqrt(k_Gy/D_Gy[i]);}
+			}
+		}
 
 #endif // SGP_RDD_H_

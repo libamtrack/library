@@ -609,7 +609,7 @@ void	SGP_SC_get_f1(	long*	n,
 
 
 			// now compute r, F1, and f1, this could be any RDD if implemented
-			SGP_r_RDD_m	(	&n_bins_df,
+			SGP_r_RDD_m_old	(	&n_bins_df,
 					d_low,
 					&E_MeV_u[k],
 					&particle_no[k],

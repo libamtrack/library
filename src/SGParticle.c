@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define _LINUX // [_LINUX or _WINDOWS] : in Linux we have isnan function while in Windows we have _isnan
-#define _R // [_S or _R] in S we can pass long type to the function via as.single, but in R we pass int type
+#define _WINDOWS // [_LINUX or _WINDOWS] : in Linux we have isnan function while in Windows we have _isnan
+#define _S // [_S or _R] in S we can pass long type to the function via as.single, but in R we pass int type
 #define _DEBUG // debugging printouts
+#define _SOLVER	// use SOLVER instead of analytical inversion in r_RDD_m
 
 #include "SGP_Constants.h"
 #include "SGP_Data.h"
