@@ -118,7 +118,25 @@ void SGP_max_electron_range_m(	long*	n,
 								float*	E_MeV_u,
 								long*	particle_no,
 								char*	material_name,
+								long*	er_model,
 								float*	max_electron_range_m);
+
+#ifdef _R
+void SGP_max_electron_range_mS(	long*	n,
+								float*	E_MeV_u,
+								int*	particle_index,
+								char**	material_name,
+								long*   er_model,
+								float*	max_electron_range_m);
+#endif
+#ifdef _S
+void SGP_max_electron_range_mS(	long*	n,
+								float*	E_MeV_u,
+								long*	particle_no,
+								char**	material_name,
+								long*	er_model,
+								float*	max_electron_range_m);
+#endif
 
 void SGP_Z_from_particle_index(	long*	n,								// should rather be SGP_ParticleProperties(particle.index)
 								long*	particle_no,
@@ -536,7 +554,9 @@ void SGP_beta_from_particle_index(	long*	n,
 	for(i = 0; i < *n; i++){
 		mass[i]	= SGP_Particle_Data.mass[matches[i]];}
 
+#ifdef _DEBUG
 	fprintf(debf,"%smass = %g", isp, mass[0]);
+#endif
 
 	SGP_beta_from_mass(	n,
 						E_MeV_u,
@@ -706,6 +726,60 @@ void SGP_max_E_transfer_MeV(	long*	n,
 }
 
 // ELECTRON RANGE
+#ifdef _R
+void SGP_max_electron_range_mS(	long*	n,
+								float*	E_MeV_u,
+								int*	particle_index,
+								char**	material_name,
+								long*   er_model,
+								float*	max_electron_range_m)
+{
+
+	// conversion through int
+	int n_int = (int)(*n);
+	*n = (long)n_int;
+
+	int er_model_int = (int)(*er_model);
+	*er_model = (long)er_model_int;
+
+	long i;
+	long * particle_index_long = (long*)calloc(*n,sizeof(long));
+	int particle_index_int;
+	for(i = 0 ; i < *n ; i++){
+		particle_index_long[i] = (long)particle_index[i];
+//		printf("output particle_no[%ld]=%ld\n", i , particle_index_long[i]);
+	}
+
+	SGP_max_electron_range_m( n,
+								E_MeV_u,
+								particle_index_long,
+								*material_name,
+								er_model,
+								max_electron_range_m);
+
+	free(particle_index_long);
+
+}
+
+#elif
+
+void SGP_max_electron_range_mS(	long*	n,
+								float*	E_MeV_u,
+								long*	particle_index,
+								char**	material_name,
+								long*   er_model,
+								float*	max_electron_range_m)
+{
+
+	SGP_max_electron_range_m( n,
+								E_MeV_u,
+								particle_index,
+								*material_name,
+								er_model,
+								max_electron_range_m);
+
+}
+#endif
 
 // Models available:
 // 0 - Test
@@ -720,10 +794,21 @@ void SGP_max_electron_range_m(	long*	n,
 								float*	E_MeV_u,
 								long*	particle_index,
 								char*	material_name,
+								long*   er_model,
 								float*	max_electron_range_m)
 {
+#ifdef _DEBUG
+	indnt_init();
+	indnt_inc();
+	fprintf(debf,"%sbegin SGP_max_electron_range_m\n",isp);
+	fprintf(debf,"%sn = %ld, material_name = %s, er_model = %ld\n", isp, *n, material_name, *er_model);
+	long ii;
+	for( ii = 0 ; ii < *n ; ii++){
+		fprintf(debf,"%sE_MeV_u[%ld]=%e\n", isp, ii , E_MeV_u[ii]);
+		fprintf(debf,"%sparticle_no[%ld]=%ld\n", isp, ii , particle_index[ii]);
+	}
+#endif
 
-//	printf("begin SGP_max_electron_range_m\n");
 
 	// Get density matching to material_name (only 1 name therefore n_mat = 1)
 	long	n_mat	= 1;
@@ -734,24 +819,59 @@ void SGP_max_electron_range_m(	long*	n,
 				&SGP_Material_Data.n,
 				&match);
 
+	long*	matches	=	(long*)calloc(*n, sizeof(long));
+	float*	mass	=	(float*)calloc(*n, sizeof(float));
+
+	pmatchi(	particle_index,
+				n,
+				SGP_Particle_Data.particle_index,
+				&SGP_Particle_Data.n,
+				matches);
+
+	// loop over n to find beta for all given particles and energies
+
+
 	long	i;
 	for (i = 0; i < *n; i++){
 		float tmpE	= E_MeV_u[i];
 		if (tmpE < 0) {tmpE *= -1.0f;}	// E can be set neg. if non-PSTAR are given --> use pos. value
+
+		mass[i]	= SGP_Particle_Data.mass[matches[i]];
+		float E_div_E0 = E_MeV_u[i] / (mass[i]*proton_mass_MeV_c2);
+		float w_keV;
+		if( *er_model == ER_ButtsKatz ){
+			w_keV = 2 * electron_mass_MeV_c2 * ( E_div_E0*E_div_E0 + 2*E_div_E0) * 1e3;
+			max_electron_range_m[i] = 1e-6 * w_keV;
+		}
+		if( *er_model == ER_Katz ){
+			double alpha = 1.667;
+			w_keV = 2 * electron_mass_MeV_c2 * ( E_div_E0*E_div_E0 + 2*E_div_E0) * 1e3;
+			if( w_keV < 1e-3 ) alpha = 1.079;
+			max_electron_range_m[i] = 6e-6 * (float)pow( w_keV, alpha );
+#ifdef _DEBUG
+		fprintf(debf,"%sE_div_E0[%ld]=%e\n", isp, i , E_div_E0);
+		fprintf(debf,"%sw_keV[%ld]=%e\n", isp, i , w_keV);
+#endif
+
+		}
+		if( *er_model == ER_Geiss ){
+			max_electron_range_m[i] = 1e-6 * 5e-2 * (float)pow(tmpE, 1.7);
+		}
 		// Simple power law to get electron range in water (Scholz, Habil 2001)
-		max_electron_range_m[i]		=	5.0e-2f * (float)pow(tmpE, 1.7f);
-		max_electron_range_m[i]		/=	m_to_um;
-/*		# Alternatively, use the one of Geiss (1997) as (wrongly = E is the particle energy!) ref. in Sawakuchi (2007)
-		#r.max.cm		<-	4e-5 * E.MeV.u^1.5
-		#r.max.m		<-	r.max.cm / m.to.cm
-		*/
-		// Scale maximum el. range with material density relative to water (1/rho)
+//		max_electron_range_m[i]		=	5.0e-2f * (float)pow(tmpE, 1.7f);
+//		max_electron_range_m[i]		/=	m_to_um;
+//		// Scale maximum el. range with material density relative to water (1/rho)
 		max_electron_range_m[i]		/= SGP_Material_Data.density_g_cm3[match];
-//		printf("max_electron_range_m[%d] = %g\n", i , max_electron_range_m[i]);
+		max_electron_range_m[i]		/= 1e2;
 
+}
+#ifdef _DEBUG
+	for( ii = 0 ; ii < *n ; ii++){
+		fprintf(debf,"%srange[%ld]=%e\n", isp, ii , max_electron_range_m[ii]);
 	}
-
-//	printf("end SGP_max_electron_range_m\n");
+	fprintf(debf,"%send SGP_max_electron_range_m\n",isp);
+	indnt_dec();
+#endif
 
 }
 
