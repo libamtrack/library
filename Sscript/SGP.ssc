@@ -12,6 +12,7 @@
 # 2009-Jun-12: Some minor typo correction before adding to the new repository system, sgre
 # 2009-Jun-15: Wrapping function for general RDD methods, debugging printouts, lgrz
 # 2009-Jun-16: New wrapping function for r(D) inverse RDDs, sgre
+# 2009-Jun-18: New wrapping function for delta electron range models, lgrz
 ################################################################################################
 
 ################################################################################################
@@ -26,7 +27,8 @@
 # SGP.max.E.transfer.MeV
 # SGP.particle.properties							(particle.name)
 # SGP.read.spectrum
-#
+# SGP.max.electron.range
+# 
 # :::MATERIAL FUNCTIONS:::
 # SGP.get.material.data
 # SGP.density.g.cm3
@@ -446,6 +448,28 @@ SGP.Bortfeld.Transport.Proton.Spectrum			<-	function(	E.initial.spectrum.MeV,
 	df			<-	df[order(df$detector.z.cm, df$E.bins.mid.MeV),]
 	return(df)
 }
+
+################################################################################################
+# Max delta electron range
+################################################################################################
+
+
+############
+SGP.max.electron.range					<-	function(	E.MeV.u,
+												particle.index,
+												material.name,
+												er.model){
+	n					<-	length(E.MeV.u)
+	range.m				<-	numeric(n)
+	res				<-	.C("SGP_max_electron_range_mS", 	n						= as.integer(n),
+															E.MeV.u					= as.single(E.MeV.u),
+															particle.index			= as.integer(particle.index),
+															material.name			= as.character(material.name),
+															er.model				= as.integer(er.model),
+															range.m					= as.single(range.m))
+	return(res$range.m)
+}
+
 
 ################################################################################################
 # RDD functions
