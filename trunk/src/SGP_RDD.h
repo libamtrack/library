@@ -193,6 +193,7 @@ void SGP_RDD_f1_parameters(	long*			n,
 										E_MeV_u,
 										particle_no,
 										material_name,
+										er_model,
 										r_max_m);
 
 		f1_parameters[2] = r_max_m[0];

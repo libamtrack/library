@@ -80,8 +80,10 @@ void getMaterialNo(char* material_name, long* material_no){
 
 enum ERModels{
 	ER_Test					= 0,
-	ER_PowerLawZBeta		= 1,
-	ER_PowerLawLET			= 2
+	ER_ButtsKatz			= 1,
+	ER_Katz					= 2,
+	ER_Geiss				= 3,
+	ER_Scholz				= 4
 };
 
 #endif // SGP_CONSTANTS_H_
