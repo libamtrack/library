@@ -536,6 +536,8 @@ void SGP_beta_from_particle_index(	long*	n,
 	for(i = 0; i < *n; i++){
 		mass[i]	= SGP_Particle_Data.mass[matches[i]];}
 
+	fprintf(debf,"%smass = %g", isp, mass[0]);
+
 	SGP_beta_from_mass(	n,
 						E_MeV_u,
 						mass,

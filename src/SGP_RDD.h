@@ -446,22 +446,30 @@ void SGP_D_RDD_Gy	(	long*	n,
 
 	long i;
 
-	if( *rdd_model == RDD_KatzPoint){
+	if( *rdd_model == RDD_KatzPoint || *rdd_model == RDD_Site){
 
 #ifdef _DEBUG
-		fprintf(debf,"%sRDD_KatzPoint, rdd_parameter[0] = %g, rdd_parameter[1] = %g, rdd_parameter[2] = %g\n",
-				isp, rdd_parameter[0], rdd_parameter[1], rdd_parameter[2]);
+		if(*rdd_model == RDD_KatzPoint){
+			fprintf(debf,"%sRDD_KatzPoint, rdd_parameter[0] = %g, rdd_parameter[1] = %g, rdd_parameter[2] = %g\n",
+					isp, rdd_parameter[0], rdd_parameter[1], rdd_parameter[2]);
+		}else{
+			fprintf(debf,"%sRDD_Site, rdd_parameter[0] = %g, rdd_parameter[1] = %g, rdd_parameter[2] = %g, rdd_parameter[3] = %g\n",
+					isp, rdd_parameter[0], rdd_parameter[1], rdd_parameter[2], rdd_parameter[3]);
+		}
 #endif
 
 		long	n_tmp		= 1;
 		float	beta		= 0.0f;
 		long	Z			= 0;
+		float	E_MeV_u		= 0.0f;
+		long	particle_no	= 0;
+
 		if(rdd_parameter[0]	< 0){
 			beta		= -1.0f * rdd_parameter[0];
 			Z			= (long)rdd_parameter[1];
 		}else{
-			float	E_MeV_u		= rdd_parameter[0];
-			long	particle_no	= (long)rdd_parameter[1];
+			E_MeV_u		= rdd_parameter[0];
+			particle_no	= (long)rdd_parameter[1];
 			beta		= 0.0f;
 			SGP_beta_from_particle_index(	&n_tmp,
 										&E_MeV_u,
@@ -502,7 +510,11 @@ void SGP_D_RDD_Gy	(	long*	n,
 		float	p_g_cm3			=	density_g_cm3;
 		float	I_erg			=	I_eV / 6.24150974e11;
 
-		float	C				=	2.0f * pi * N_el_cm3 * (e_esu*e_esu*e_esu*e_esu) / (electron_mass_g * c_cm_s *c_cm_s) * 1e-7;   // energy constant [J/cm] not [erg/cm] hence 10^-7
+		float	C_J_cm			=	2.0f * pi * N_el_cm3 * (e_esu*e_esu*e_esu*e_esu) / (electron_mass_g * c_cm_s *c_cm_s) * 1e-7;   // energy constant [J/cm] not [erg/cm] hence 10^-7
+		float	C_J_m			=	C_J_cm * 100.0f;
+
+		fprintf(debf,"%sC[J/m] = %g|", isp, C_J_m);
+		fprintf(debf,"%sbeta = %g|", isp, beta);
 
 		float	w_max_keV		=	2.0f * electron_mass_MeV_c2 * 1000 * beta*beta / (1.0f - beta*beta);
 
@@ -512,18 +524,97 @@ void SGP_D_RDD_Gy	(	long*	n,
 			alpha			=	1.079;
 		}
 
-		float	r_max_cm		=	10e-6f * w_max_keV;
+		float	r_max_g_cm2		=	k_el * pow(w_max_keV, alpha);
+		float	r_max_cm		=	r_max_g_cm2 / density_g_cm3;
+		float	r_max_m			=	r_max_cm / 100.0f;
+
+		fprintf(debf,"%sw_max [keV] = %g|", isp, w_max_keV);
+		fprintf(debf,"%sr_max [m] = %g|", isp, r_max_m);
+
+		float	density_kg_m3	=	density_g_cm3 * 100.0f * 100.0f* 100.0f / 1000.0f;
+		fprintf(debf,"%sdens [kg/m3] = %g|", isp, density_kg_m3);
+		fprintf(debf,"%sZeff = %g|", isp, Z_eff);
+		fprintf(debf,"%salpha = %g|", isp, alpha);
+
+		float 	a0				= 	0.0f;
+		float	D_core_Gy		= 	0.0f;
+		float	dEdx			=	0.0f;
+		float	LET_J_m			=	0.0f;
+
+		if(*rdd_model == RDD_Site){
+			a0						=	rdd_parameter[3];
+			float	LET_MeV_cm2_g;
+			SGP_LET_MeV_cm2_g(	&n_tmp,
+								&E_MeV_u,
+								&particle_no,
+								material_name,
+								&LET_MeV_cm2_g);
+
+			float	LET_J_cm 		=	LET_MeV_cm2_g * 1.602e-13 * density_g_cm3;
+					LET_J_m 		=	LET_J_cm * 100.0f;
+
+			long 	j;
+			long 	n_steps = 100;
+			float 	log_a0			=	log10(a0);
+			float 	log_r_max_m		=	log10(r_max_m);
+			float	log_step_size	=	(log_r_max_m - log_a0) / n_steps;
+			for (j = 0; j < n_steps; j++){
+				float	r_int_m			=	pow(10, log_a0 + (j + 0.5f) * log_step_size);
+				float	dr_int_m		=	pow(10, log_a0 + (j + 1.0f) * log_step_size) - pow(10, log_a0 + (j + 0.0f) * log_step_size);
+				dEdx					+=	r_int_m * dr_int_m *		\
+											C_J_m * Z_eff*Z_eff / (2.0f * pi * r_int_m*r_int_m * beta*beta * alpha * density_kg_m3) * pow(1.0f - r_int_m / r_max_m, 1.0f / alpha);
+				fprintf(debf,"%s%d: r_int [m] = %g|", isp, j, r_int_m);
+				fprintf(debf,"%sdEdx = %g\n", isp, dEdx);
+			}
+			dEdx					*	2.0f * pi * density_kg_m3;
+			fprintf(debf,"%s\ntotal dEdx = %g\n", isp, dEdx);
+		}
+/*
+			# Energy deposited outside core
+			ii <- r>R.max; r[ii]<- R.max # modification
+			D <- r;
+			ii <- r > a0
+			D[ii] <- point.dose(r[ii],N.el=N.el,E.p=E.p,dens=dens)
+			D[!ii] <- D.core
+			return (D)
+*/
 
 		long i;
 		for (i = 0; i < *n; i++){
-			float	r_cm			=	r_m[i] * 100.0f;
-			if (r_cm <= r_max_cm){
-				D_RDD_Gy[i]				=	C * Z_eff*Z_eff / (2.0f * pi * r_cm * beta*beta) * pow(1.0f / r_cm - 1.0f / r_max_cm, 1.0f / alpha);
+			if (r_m[i] <= r_max_m){
+				if(a0 < r_m[i]){			// as a0 == 0 this is never true in case of RDD_KatzPoint
+					D_RDD_Gy[i]				=	C_J_m * Z_eff*Z_eff / (2.0f * pi * r_m[i]*r_m[i] * beta*beta * alpha * density_kg_m3) * pow(1.0f - r_m[i] / r_max_m, 1.0f / alpha);
+				}else{
+					D_RDD_Gy[i]				=	1.0f / (density_kg_m3 * pi * a0*a0) * (LET_J_m - dEdx);
+				}
 			}else{
 				D_RDD_Gy[i]				=	0.0f;
 			}
 		}
 	}
+
+	/*
+	E.p <- energy				# energy proton			[cm]
+	R.max 	<- R.e(E.p)		# max. elec. range  	[cm]
+	a0 <- core				# core radius				[cm]
+	# Total energy deposited by 1 proton
+	D.total.LET	<- approx(prot.dat$MeV,prot.dat$LET,E.p)$y*1.602e-13*dens # J/cm
+
+	# Total energy deposited in track
+
+	E.track <- E.integrand # J/cm
+
+	# Energy deposited in core
+	D.core <- (D.total.LET-E.track)/(pi*a0^2*dens*1e-3) # Gy in "volume" pi*low.1^2
+
+	# Energy deposited outside core
+	ii <- r>R.max; r[ii]<- R.max # modification
+	D <- r;
+	ii <- r > a0
+	D[ii] <- point.dose(r[ii],N.el=N.el,E.p=E.p,dens=dens)
+	D[!ii] <- D.core
+	return (D)
+*/
 
 	if( *rdd_model == RDD_Test){
 
@@ -614,6 +705,33 @@ void SGP_D_RDD_Gy	(	long*	n,
 		}
 		free(f1_parameters);
 
+		///////////////////////////////////////////////////////////// PRELIMINARY //////////////////////////////////////////
+		float beta		= 0.0f;
+		long n_tmp		= 1;
+		SGP_beta_from_particle_index(	&n_tmp,
+									&rdd_parameter[0],
+									&rdd_parameter[1],
+									&beta);
+		float	w_max_keV		=	2.0f * electron_mass_MeV_c2 * 1000 * beta*beta / (1.0f - beta*beta);
+
+		float	alpha			=	1.667;
+		float	k_el			=	6.13e-6f;			// range constant [g*cm^(-2)*keV^(-alpha)]
+		if(w_max_keV <= 1){								// low E alpha (< 1 keV)
+			alpha			=	1.079;
+		}
+
+		float tmp		=	k_el * pow(w_max_keV, alpha) / 100.0f;
+		for( i = 0; i < *n; i++){
+			r_max_m[i]		= tmp;
+		}
+
+		fprintf(debf,"%sw_max_keV = %g", isp, w_max_keV);
+		fprintf(debf,"%sr_max_m = %g", isp, r_max_m);
+
+
+		///////////////////////////////////////////////////////////// PRELIMINARY //////////////////////////////////////////
+
+
 		//long	i;
 		for (i = 0; i < *n; i++){
 #ifdef _DEBUG
@@ -642,49 +760,6 @@ void SGP_D_RDD_Gy	(	long*	n,
 
 	}
 
-	if( *rdd_model == RDD_Site){
-
-#ifdef _DEBUG
-		fprintf(debf,"%sRDD_Site, rdd_parameter[0] = %g\n", isp, rdd_parameter[0]);
-#endif
-
-		long n_f1_parameters = 1;
-		float*	f1_parameters = (float*)calloc(n_f1_parameters, sizeof(float));
-
-		SGP_RDD_f1_parameters(	n,
-				rdd_model,       /* model: 0 - test, 1 - Katz, 2 - LEM*/
-				n_rdd_parameter, /* number of rdd parameters */
-				rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
-				/* electron range model */
-				er_model,
-				n_er_parameter,
-				er_parameter,
-				/* calculated parameters */
-				&n_f1_parameters,
-				f1_parameters);
-
-		/* rewriting output of SGP_RDD_f1_parameters function
-		 * to more convenient format
-		 */
-		float*	factor = (float*)calloc(*n, sizeof(float));
-		for( i = 0 ; i < *n ; i++){
-			factor[i] = f1_parameters[0];
-		}
-		free(f1_parameters);
-
-		/*
-		 * calculation of dose
-		 */
-		for (i = 0; i < *n; i++){
-			D_RDD_Gy[i]		=	0.0f;
-			if (r_m[i] < rdd_parameter[0]){
-				D_RDD_Gy[i]		=	factor[i];
-			} else {
-				D_RDD_Gy[i]		=	0;
-			}
-		}
-
-	}
 
 #ifdef _DEBUG
 	fprintf(debf,"%send SGP_D_RDD_Gy\n", isp);
