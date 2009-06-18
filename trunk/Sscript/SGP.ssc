@@ -585,13 +585,13 @@ SGP.RDD.D.Gy					<-	function(	r.m,
 	
 	if(model == "Katz"){
 		#RDD.parameters	<- c(-1, -0.428)
-
+		#r.m <- 10^(-6:-10)
 		if (RRD.parameters[1] < 0){
 			Z				<-	-RDD.parameters[1]
 		}else{
 			
 		}
-			beta			<-	RDD.parameters[2]
+			beta			<-	-RDD.parameters[2]
 
 			Z.eff			<-	SGP.effective.charge.from.beta(beta, Z)
 			
@@ -614,7 +614,7 @@ SGP.RDD.D.Gy					<-	function(	r.m,
 			
 			#r.max.cm		<-	6e-6 * w.max.keV^1.667 				# generell
 			r.max.cm		<-	10e-6 * w.max.keV
-			
+			#r.cm <- 1e-4
 			D.Gy			<-	C * Z.eff^2 / (2 * pi * r.cm * beta^2) * (1 / r.cm - 1 / r.max.cm)
 		}
 	}
