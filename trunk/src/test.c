@@ -157,7 +157,7 @@ void testRDD(){
 	n 					= 5;
 	rdd_model			= 1;
 	n_rdd_parameter		= 3;
-	float	rdd_parameter2[]	= {0.428, 1, 0};
+	float	rdd_parameter2[]	= {100, 1, 0};
 
 	printf("begin %s\n", *mn);
 
@@ -168,6 +168,19 @@ void testRDD(){
 		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);
 	}
 
+	n 					= 5;
+	rdd_model			= 3;
+	n_rdd_parameter		= 4;
+	float	rdd_parameter3[]	= {100, 1, 0, 5e-8};
+
+	printf("begin %s\n", *mn);
+
+	SGP_D_RDD_Gy( &n, r_m, &rdd_model, &n_rdd_parameter, rdd_parameter3, &er_model, &n_er_parameter, er_parameter, D_RDD_Gy);
+//	SGP_r_RDD_m( &n, D_RDD_Gy, &rdd_model, &n_rdd_parameter, rdd_parameter, &er_model, &n_er_parameter, er_parameter, r_RDD_m_back);
+
+	for( i = 0 ; i < n ; i++){
+		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);
+	}
 	free(mn);
 }
 
