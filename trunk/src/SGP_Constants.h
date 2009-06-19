@@ -33,8 +33,8 @@ enum GammaResponseModels{
 };
 
 enum RDDModels{
-	RDD_Test				= 0,
-	RDD_KatzPoint			= 1,			/* parameters: 0 - beta,	1 - Z,			 2 - material-no */
+	RDD_Test				= 0,			/* no parameters */
+	RDD_KatzPoint			= 1,			/* parameters: 0 - beta,	1 - Z,			 2 - material-no, 3 - r_min [m] (lower integration limit) */
 	RDD_Geiss				= 2,			/* parameters: 0 - E_MeV_u, 1 - particle_no, 2 - material_no, 3 - a0 [m] */
 	RDD_Site				= 3				/* parameters: 0 - E_MeV_u, 1 - particle_no, 2 - material_no, 3 - a0 [m] */ //as defined in Edmund et al. , 2007
 };
