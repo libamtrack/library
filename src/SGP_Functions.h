@@ -585,6 +585,53 @@ void SGP_beta_from_mass(	long*	n,
 	}
 }
 
+void SGP_E_from_beta_and_mass(	long*	n,
+								float*	beta,
+								float*	mass,
+								float*	E_MeV_u)
+{
+	// loop over n to find beta for all given particles and energies
+	long	i;
+	for(i = 0; i < *n; i++){
+
+
+		// Get rest energy
+		float	E0_MeV		=	(float)proton_mass_MeV_c2 * mass[i];
+
+		E_MeV_u[i]			=	E0_MeV * (1.0f / (1 - beta[i]*beta[i]) - 1);
+
+		E_MeV_u[i]			/=	mass[i];
+	}
+}
+
+void SGP_E_from_beta_and_particle_index(	long*	n,
+											float*	beta,
+											long*	particle_index,
+											float*	E_MeV_u)
+{
+	// find look-up indices for A's for particle numbers in particle data
+	long*	matches	=	(long*)calloc(*n, sizeof(long));
+	float*	mass	=	(float*)calloc(*n, sizeof(float));
+
+	pmatchi(	particle_index,
+				n,
+				SGP_Particle_Data.particle_index,
+				&SGP_Particle_Data.n,
+				matches);
+
+	// loop over n to find beta for all given particles and energies
+	long	i;
+	for(i = 0; i < *n; i++){
+		mass[i]	= SGP_Particle_Data.mass[matches[i]];}
+
+	SGP_E_from_beta_and_mass(	n,
+								beta,
+								mass,
+								E_MeV_u);
+	free(mass);
+	free(matches);
+}
+
 
 void SGP_effective_charge_from_particle_index(	long*	n,
 												float*	E_MeV_u,
@@ -760,9 +807,8 @@ void SGP_max_electron_range_mS(	long*	n,
 	free(particle_index_long);
 
 }
-
-#elif
-
+#endif
+#ifdef _S
 void SGP_max_electron_range_mS(	long*	n,
 								float*	E_MeV_u,
 								long*	particle_index,
