@@ -151,7 +151,8 @@ void SGP_RDD_f1_parameters(	/* radial dose distribution model */
 
 		// Get energy constant C == k
 		float 	density_g_cm3, density_kg_m3, electron_density_m3, I_eV, alpha_g_cm2_MeV, p_MeV, m_g_cm2;
-		char**	pmn			= (char**)&material_name;
+		char**	pmn		= (char**)calloc(1, sizeof(char[100]));
+		pmn[0]			= &material_name;
 		SGP_getMaterialData(	&n_tmp,
 						pmn,
 						&density_g_cm3,
@@ -329,7 +330,8 @@ void SGP_D_RDD_Gy	(	long*	n,
 		long	tmp			 	= (long)(rdd_parameter[2]);
 		getMaterialName(&tmp, material_name);
 		float 	density_g_cm3, density_kg_m3, electron_density_m3, I_eV, alpha_g_cm2_MeV, p_MeV, m_g_cm2;
-		char**	pmn			= (char**)&material_name;
+		char**	pmn		= (char**)calloc(1, sizeof(char[100]));
+		pmn[0]			= &material_name;
 		SGP_getMaterialData(	&n_tmp,
 						pmn,
 						&density_g_cm3,
@@ -356,6 +358,7 @@ void SGP_D_RDD_Gy	(	long*	n,
 			}
 			if (r_m[i] <= f1_parameters[1] && *rdd_model == RDD_Site){						// r < r_min_m (for RDD_Site) --> D = d_max_Gy
 				D_RDD_Gy[i]				= f1_parameters[4];
+			}
 		}
 	}
 
@@ -416,10 +419,9 @@ void SGP_D_RDD_Gy	(	long*	n,
 				D_RDD_Gy[i]		=	f1_parameters[5];}
 			if ((f1_parameters[1] <= r_m[i]) && (r_m[i] <= f1_parameters[2])){
 				D_RDD_Gy[i]		=	f1_parameters[5] * (f1_parameters[1] / r_m[i]) * (f1_parameters[1] / r_m[i]);}
-		}
+			}
 		free(f1_parameters);
 	}
-
 
 #ifdef _DEBUG
 	fprintf(debf,"%send SGP_D_RDD_Gy\n", isp);
@@ -572,8 +574,6 @@ void SGP_r_RDD_m	(	long*	n,
 			free(k_Gy);
 			free(single_impact_fluence_cm2);
 			free(single_impact_dose_Gy);
-
-
 		}
 
 	#ifdef _DEBUG
@@ -581,5 +581,5 @@ void SGP_r_RDD_m	(	long*	n,
 		indnt_dec();
 	#endif
 }
-}
+
 #endif // SGP_RDD_H_
