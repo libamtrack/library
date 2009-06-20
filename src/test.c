@@ -131,56 +131,40 @@ void testRDD(){
     char 	material_name[50] 	= "Water, Liquid";
     char** 	mn 					= (char**)calloc(1, sizeof(char*));
     *mn 						= material_name;
-    long	rdd_model			= 2;
+    long	rdd_model			= 1;
 	long	n_rdd_parameter		= 4;
-    float 	rdd_parameter[]		= {60.0f, 1, 0, 1e-8f};
-	long	er_model			= 0;
+    float 	rdd_parameter[]		= {100.0f, 1, 0, 1e-10f};
+	long	er_model			= 2;
 	long	n_er_parameter		= 0;
     float 	er_parameter[]		= {0.0f};
 	float	D_RDD_Gy[] 			= { 0, 0, 0, 0, 0 };
 	float	r_RDD_m_back[]		= { 0, 0, 0, 0, 0 };
 	int i;
 
-	printf("begin %s\n", *mn);
-
-
+	printf("begin model %d\n", rdd_model);
 	SGP_D_RDD_Gy( &n, r_m, &rdd_model, &n_rdd_parameter, rdd_parameter, &er_model, &n_er_parameter, er_parameter, D_RDD_Gy);
-//	SGP_r_RDD_m( &n, D_RDD_Gy, &rdd_model, &n_rdd_parameter, rdd_parameter, &er_model, &n_er_parameter, er_parameter, r_RDD_m_back);
-//	SGP_D_RDD_GyS( &n, r_m, &E_MeV_u, &particle_no, mn, &parameter, &D_RDD_Gy);
-
-
-
 	for( i = 0 ; i < n ; i++){
-		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);
-	}
+		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);}
 
 	n 					= 5;
-	rdd_model			= 1;
-	n_rdd_parameter		= 3;
-	float	rdd_parameter2[]	= {100, 1, 0};
-
-	printf("begin %s\n", *mn);
-
+	rdd_model			= 2;
+	n_rdd_parameter		= 4;
+	float	rdd_parameter2[]	= {100, 1, 0, 5e-8};
+	printf("begin model %d\n", rdd_model);
 	SGP_D_RDD_Gy( &n, r_m, &rdd_model, &n_rdd_parameter, rdd_parameter2, &er_model, &n_er_parameter, er_parameter, D_RDD_Gy);
-//	SGP_r_RDD_m( &n, D_RDD_Gy, &rdd_model, &n_rdd_parameter, rdd_parameter, &er_model, &n_er_parameter, er_parameter, r_RDD_m_back);
-
 	for( i = 0 ; i < n ; i++){
-		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);
-	}
+		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);}
 
 	n 					= 5;
 	rdd_model			= 3;
 	n_rdd_parameter		= 4;
 	float	rdd_parameter3[]	= {100, 1, 0, 5e-8};
-
-	printf("begin %s\n", *mn);
-
+	printf("begin model %d\n", rdd_model);
 	SGP_D_RDD_Gy( &n, r_m, &rdd_model, &n_rdd_parameter, rdd_parameter3, &er_model, &n_er_parameter, er_parameter, D_RDD_Gy);
-//	SGP_r_RDD_m( &n, D_RDD_Gy, &rdd_model, &n_rdd_parameter, rdd_parameter, &er_model, &n_er_parameter, er_parameter, r_RDD_m_back);
-
 	for( i = 0 ; i < n ; i++){
 		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);
 	}
+
 	free(mn);
 }
 
