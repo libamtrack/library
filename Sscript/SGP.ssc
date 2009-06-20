@@ -487,7 +487,7 @@ SGP.RDD.D.Gy.L					<-	function(	r.m,
 	D.Gy				<-	numeric(n)
   {	
   
-  ER.model <- 0
+  ER.model <- 2
   ER.parameters <- c(1,1)
  	ER.n					<-	length(ER.parameters)
 
