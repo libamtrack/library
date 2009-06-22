@@ -296,7 +296,7 @@ void nrerror(char error_text[])
 #define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 #define MAXIT 60
 #define UNUSED (-1.11e30)
-float zriddr(float (*func)(float), float x1, float x2, float xacc)
+float zriddr(float (*func)(float,void*), void * params, float x1, float x2, float xacc)
 /* 	From Numerical Recipes in C, 2nd ed., 1992:
 	Using Ridders' method, return the root of a function func known to lie between x1 and x2.
 	The root, returned as zriddr, will be refined to an approximate accuracy xacc.
@@ -304,35 +304,35 @@ float zriddr(float (*func)(float), float x1, float x2, float xacc)
 {
 	int j;
 	float ans,fh,fl,fm,fnew,s,xh,xl,xm,xnew;
-	fl=(*func)(x1);
-	fh=(*func)(x2);
+	fl=(*func)(x1,params);
+	fh=(*func)(x2,params);
 	if ((fl > 0.0 && fh < 0.0) || (fl < 0.0 && fh > 0.0)) {
 		xl=x1;
 		xh=x2;
 		ans=UNUSED; 												//	Any highly unlikely value, to simplify logic below.
 		for (j=1;j<=MAXIT;j++) {
 			xm=0.5*(xl+xh);
-			fm=(*func)(xm); 										// First of two function evaluations per its=
-				sqrt(fm*fm-fl*fh); 									// eration.
-				if (s == 0.0) return ans;
-				xnew=xm+(xm-xl)*((fl >= fh ? 1.0 : -1.0)*fm/s); 	// Updating formula.
-				if (fabs(xnew-ans) <= xacc) return ans;
-				ans=xnew;
-				fnew=(*func)(ans); 									// Second of two function evaluations per
-				if (fnew == 0.0) return ans; 						// iteration.
-				if (SIGN(fm,fnew) != fm) { 							// Bookkeeping to keep the root bracketed
-					xl=xm; 											// on next iteration.
-					fl=fm;
-					xh=ans;
-					fh=fnew;
-				} else if (SIGN(fl,fnew) != fl) {
-					xh=ans;
-					fh=fnew;
-				} else if (SIGN(fh,fnew) != fh) {
-					xl=ans;
-					fl=fnew;
-				} else nrerror("never get here.");
-				if (fabs(xh-xl) <= xacc) return ans;
+			fm=(*func)(xm,params); 										// First of two function evaluations per its=
+			s=sqrt(fm*fm-fl*fh); 									// eration.
+			if (s == 0.0) return ans;
+			xnew=xm+(xm-xl)*((fl >= fh ? 1.0 : -1.0)*fm/s); 	// Updating formula.
+			if (fabs(xnew-ans) <= xacc) return ans;
+			ans=xnew;
+			fnew=(*func)(ans,params); 									// Second of two function evaluations per
+			if (fnew == 0.0) return ans; 						// iteration.
+			if (SIGN(fm,fnew) != fm) { 							// Bookkeeping to keep the root bracketed
+				xl=xm; 											// on next iteration.
+				fl=fm;
+				xh=ans;
+				fh=fnew;
+			} else if (SIGN(fl,fnew) != fl) {
+				xh=ans;
+				fh=fnew;
+			} else if (SIGN(fh,fnew) != fh) {
+				xl=ans;
+				fl=fnew;
+			} else nrerror("never get here.");
+			if (fabs(xh-xl) <= xacc) return ans;
 		}
 		nrerror("zriddr exceed maximum iterations");
 	}
