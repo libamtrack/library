@@ -40,8 +40,7 @@
 # SGP.Bortfeld.Transport.Proton.Spectrum
 #
 # :::RADIAL DOSE FUNCTIONS:::
-# SGP.RDD.D.Gy								# old style
-# SGP.RDD.D.Gy.L								# new style
+# SGP.RDD.D.Gy
 # SGP.RDD.r.m
 # SGP.RDD.f1.parameters
 #
@@ -475,23 +474,21 @@ SGP.max.electron.range					<-	function(	E.MeV.u,
 # RDD functions
 ################################################################################################
 
-# RDD functions:			LEM		(1: E.MeV.u (Z if neg), 2: particle.index (beta if neg), 3: a0)
-#							Katz	(1: E.MeV.u (Z if neg), 2: particle.index (beta if neg), 3: a0)
+# RDD functions:	
 
 ############
-SGP.RDD.D.Gy.L					<-	function(	r.m,
+SGP.RDD.D.Gy					<-	function(	r.m,
+												ER.model,
 												RDD.model,
 												RDD.parameters){
 	n					<-	length(r.m)
 	RDD.n					<-	length(RDD.parameters)
 	D.Gy				<-	numeric(n)
-  {	
   
-  ER.model <- 2
   ER.parameters <- c(1,1)
  	ER.n					<-	length(ER.parameters)
 
- 	if(debug == T) if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("n =",n,"\n")
  	if(debug == T) cat("r.m=",r.m,"\n")
 
 	 if( RDD.model == 0 ){ 
@@ -500,9 +497,20 @@ SGP.RDD.D.Gy.L					<-	function(	r.m,
 		}
 	 if( RDD.model == 1 ){ 
 	 	if(debug == T) cat("RDD_KatzPoint model\n")
+	 	if(debug == T) cat("E.MeV.u=",RDD.parameters[1],"\n")
+ 		if(debug == T) cat("particle.index=",RDD.parameters[2],"\n")
+	 	if(debug == T) cat("material.name=",RDD.parameters[3],"\n")
+	 	if(debug == T) cat("parameter a0=",RDD.parameters[4],"\n")
 		}
 	 if( RDD.model == 2 ){ 
 	  if(debug == T) cat("RDD_Geiss model\n")
+	 	if(debug == T) cat("E.MeV.u=",RDD.parameters[1],"\n")
+ 		if(debug == T) cat("particle.index=",RDD.parameters[2],"\n")
+	 	if(debug == T) cat("material.name=",RDD.parameters[3],"\n")
+			if(debug == T) cat("parameter a0=",RDD.parameters[4],"\n")
+		}
+	 if( RDD.model == 3 ){ 
+	  if(debug == T) cat("RDD_Site model\n")
 	 	if(debug == T) cat("E.MeV.u=",RDD.parameters[1],"\n")
  		if(debug == T) cat("particle.index=",RDD.parameters[2],"\n")
 	 	if(debug == T) cat("material.name=",RDD.parameters[3],"\n")
@@ -518,21 +526,21 @@ SGP.RDD.D.Gy.L					<-	function(	r.m,
 															ER.n				=	as.integer(ER.n),
 															ER.parameters		=	as.single(ER.parameters),
 															D.Gy					=	as.single(D.Gy))		
-		}
 
+			if(debug == T) cat("dose=",res$D.Gy,"\n")
+			
 	 return(res$D.Gy)						
 }
 
 ############
 SGP.RDD.r.m					<-	function(	D.Gy,
+												ER.model,
 												RDD.model,
 												RDD.parameters){
 	n					<-	length(D.Gy)
 	RDD.n					<-	length(RDD.parameters)
 	r.m				<-	numeric(n)
-  {	
-  
-  ER.model <- 0
+
   ER.parameters <- c(1,1)
  	ER.n					<-	length(ER.parameters)
 
@@ -563,89 +571,10 @@ SGP.RDD.r.m					<-	function(	D.Gy,
 															ER.n				=	as.integer(ER.n),
 															ER.parameters		=	as.single(ER.parameters),
 															r.m					=	as.single(r.m))		
-		}
-
+		
 	 return(res$r.m)						
 }
 
-
-
-############
-SGP.RDD.D.Gy					<-	function(	r.m,
-												model,
-												RDD.parameters,
-												material.name,
-												parameter){
-	n					<-	length(r.m)
-	D.Gy				<-	numeric(n)
-	mat.data			<-	SGP.get.material.data(material.name)
-{	
-	if(model == "LEM"){
-
- 	if(debug == T) cat("n=",n,"\n")
- 	if(debug == T) cat("r.m=",r.m,"\n")
- 	if(debug == T) cat("E.MeV.u=",RDD.parameters[1],"\n")
- 	if(debug == T) cat("particle.index=",RDD.parameters[2],"\n")
-	 if(debug == T) cat("material.name=",material.name,"\n")
-		
-		E.MeV.u <- rep( RDD.parameters[1] , times=n )
- 	if(debug == T) cat("E.MeV.u=",E.MeV.u,"\n")
-  particle.index		<-	rep( RDD.parameters[2] , times=n )
-		if(debug == T) cat("particle.index=",particle.index,"\n")
-		
-		res					<-	.C(	"SGP_D_RDD_GyS",	n						=	as.integer(n),
-															r.m						=	as.single(r.m),
-															E.MeV.u				=	as.single(E.MeV.u),
-															particle.index		=	as.integer(particle.index),
-															material.name			=	as.character(material.name),
-															parameter				=	as.single(RDD.parameters[3]),
-															D.Gy					=	as.single(D.Gy))		
-		}
-
-	if(debug == T) cat("res$D.Gy=",res$D.Gy,"\n")
-
-
-	# At the moment: point dose distribution as given by Butts and Katz (1967) and Katz (1977), other varieties (extended target, Walig�rski, Sawakuchi) to be implemented
-	
-	if(model == "Katz"){
-		#RDD.parameters	<- c(-1, -0.428)
-		#r.m <- 10^(-6:-10)
-		if (RRD.parameters[1] < 0){
-			Z				<-	-RDD.parameters[1]
-		}else{
-			
-		}
-			beta			<-	-RDD.parameters[2]
-
-			Z.eff			<-	SGP.effective.charge.from.beta(beta, Z)
-			
-			N.el.cm3		<-	mat.data$el.dens.m3 / (100^3)
-			p.g.cm3		<-	mat.data$density.g.cm3
-			I.erg			<-	mat.data$I.eV / 6.24150974e11
-
-			m.el.g			<-	9.10938215e-28
-			m.el.MeV		<-	0.510998910
-			c.cm.s			<-	29979245800
-
-			e.C				<-	-1.602176487e-19
-			e.esu			<-	e.C / 3.33564e-10
-
-			m.el.g			<-	9.10938215e-28
-
-			C				<-	2 * pi * N.el.cm3 * e.esu^4 / (m.el.MeV * c.cm.s^2)
-
-			w.max.keV		<-	2 * m.el.MeV * 1000 * beta^2 / (1 - beta^2)
-			
-			#r.max.cm		<-	6e-6 * w.max.keV^1.667 				# generell
-			r.max.cm		<-	10e-6 * w.max.keV
-			#r.cm <- 1e-4
-			D.Gy			<-	C * Z.eff^2 / (2 * pi * r.cm * beta^2) * (1 / r.cm - 1 / r.max.cm)
-		}
-	}
-
-	return(res$D.Gy)						
-	
-}
 												
 #####################
 SGP.RDD.f1.parameters	<-	function(	E.MeV.u,
@@ -976,4 +905,3 @@ SGP.SC.get.gamma.response		<-	function(		f.list,
 	
 	return(f.list)
 }
-																									
