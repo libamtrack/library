@@ -554,10 +554,6 @@ void SGP_beta_from_particle_index(	long*	n,
 	for(i = 0; i < *n; i++){
 		mass[i]	= SGP_Particle_Data.mass[matches[i]];}
 
-#ifdef _DEBUG
-	fprintf(debf,"%smass = %g", isp, mass[0]);
-#endif
-
 	SGP_beta_from_mass(	n,
 						E_MeV_u,
 						mass,
@@ -807,8 +803,9 @@ void SGP_max_electron_range_mS(	long*	n,
 	free(particle_index_long);
 
 }
-#endif
-#ifdef _S
+
+#elif
+
 void SGP_max_electron_range_mS(	long*	n,
 								float*	E_MeV_u,
 								long*	particle_index,
@@ -829,12 +826,10 @@ void SGP_max_electron_range_mS(	long*	n,
 
 // Models available:
 // 0 - Test
-// 1 - Chatterjee & Holley (1993)
-// 2 - Butts & Katz (1967), Chunxiang et al., 1985, Walig�rski et al., 1986, Zhang et al., 1994 fitted to data from
-//     Kobetich and Katz, 1968; Iskef et al., 1983; Kanter and Sternglass, 1962
-// 3 - Kiefer & Straaten (1986)
-// 4 - Gei�, 1998
-// 5 - Scholz, 2001
+// 1 - Test
+// 2 - Test
+// 3 - Test
+// 4 - Test
 
 void SGP_max_electron_range_m(	long*	n,
 								float*	E_MeV_u,
@@ -874,9 +869,6 @@ void SGP_max_electron_range_m(	long*	n,
 				&SGP_Particle_Data.n,
 				matches);
 
-	// loop over n to find beta for all given particles and energies
-
-
 	long	i;
 	for (i = 0; i < *n; i++){
 		float tmpE	= E_MeV_u[i];
@@ -887,28 +879,26 @@ void SGP_max_electron_range_m(	long*	n,
 		float w_keV;
 		if( *er_model == ER_ButtsKatz ){
 			w_keV = 2 * electron_mass_MeV_c2 * ( E_div_E0*E_div_E0 + 2*E_div_E0) * 1e3;
-			max_electron_range_m[i] = 1e-6 * w_keV;
+			max_electron_range_m[i] = 1e-5 * w_keV;
 		}
-		if( *er_model == ER_Katz ){
+		if( *er_model == ER_Waligorski ){
 			double alpha = 1.667;
 			w_keV = 2 * electron_mass_MeV_c2 * ( E_div_E0*E_div_E0 + 2*E_div_E0) * 1e3;
-			if( w_keV < 1e-3 ) alpha = 1.079;
-			max_electron_range_m[i] = 6e-6 * (float)pow( w_keV, alpha );
-#ifdef _DEBUG
-		fprintf(debf,"%sE_div_E0[%ld]=%e\n", isp, i , E_div_E0);
-		fprintf(debf,"%sw_keV[%ld]=%e\n", isp, i , w_keV);
-#endif
-
+			if( w_keV < 1. ) alpha = 1.079;
+			max_electron_range_m[i] =  6* 1e-6 * (float)pow( w_keV, alpha );
 		}
 		if( *er_model == ER_Geiss ){
-			max_electron_range_m[i] = 1e-6 * 5e-2 * (float)pow(tmpE, 1.7);
+			max_electron_range_m[i] = 4e-5 * (float)pow(tmpE, 1.5);
 		}
-		// Simple power law to get electron range in water (Scholz, Habil 2001)
-//		max_electron_range_m[i]		=	5.0e-2f * (float)pow(tmpE, 1.7f);
-//		max_electron_range_m[i]		/=	m_to_um;
-//		// Scale maximum el. range with material density relative to water (1/rho)
+		if( *er_model == ER_Scholz ){
+			max_electron_range_m[i] = 5e-5 * (float)pow(tmpE, 1.7);
+		}
+
+		// Scale maximum el. range with material density relative to water (1/rho)
 		max_electron_range_m[i]		/= SGP_Material_Data.density_g_cm3[match];
-		max_electron_range_m[i]		/= 1e2;
+
+		// covert cm to m
+		max_electron_range_m[i]		/= 1e2;  // cm to m
 
 }
 #ifdef _DEBUG
