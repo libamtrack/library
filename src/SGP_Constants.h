@@ -4,7 +4,7 @@
 #include <string.h>
 
 double	c_m_s						=	299792458.0; 						// speed of light [m/s]
-double	c_cm_s						=	29979245800.0;						// speed of light [cm/s]
+double	c_cm_s						=	29979245800.0; 						// speed of light [cm/s]
 double	proton_mass_MeV_c2			=	938.272029;							// proton mass
 double	proton_mass_kg				=	1.67262171e-27;
 double	electron_mass_MeV_c2		=	0.510998918;						// electron mass
@@ -36,7 +36,8 @@ enum RDDModels{
 	RDD_Test				= 0,			/* no parameters */
 	RDD_KatzPoint			= 1,			/* parameters: 0 - r_min [m] (lower integration limit) */
 	RDD_Geiss				= 2,			/* parameters: 0 - a0 [m] (core diameter) */
-	RDD_Site				= 3				/* parameters: 0 - a0 [m] (core diameter) */ //as defined in Edmund et al. , 2007
+	RDD_Site				= 3,			/* parameters: 0 - a0 [m] (core diameter) */ //as defined in Edmund et al. , 2007
+	RDD_ExtTarget			= 4				/* parameters: TODO */
 };
 
 enum material_no{
@@ -81,7 +82,7 @@ void getMaterialNo(char* material_name, long* material_no){
 enum ERModels{
 	ER_Test					= 0,
 	ER_ButtsKatz			= 1,
-	ER_Katz					= 2,
+	ER_Waligorski			= 2,
 	ER_Geiss				= 3,
 	ER_Scholz				= 4
 };

@@ -684,7 +684,7 @@ void SGP_max_electron_range_m(	long*	n,
 			w_keV = 2 * electron_mass_MeV_c2 * ( E_div_E0*E_div_E0 + 2*E_div_E0) * 1e3;
 			max_electron_range_m[i] = 1e-5 * w_keV;
 		}
-		if( *er_model == ER_Katz ){
+		if( *er_model == ER_Waligorski ){
 			double alpha = 1.667;
 			w_keV = 2 * electron_mass_MeV_c2 * ( E_div_E0*E_div_E0 + 2*E_div_E0) * 1e3;
 			if( w_keV < 1. ) alpha = 1.079;
