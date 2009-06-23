@@ -44,25 +44,24 @@ void SGP_fDyx(	float*	fy,
 /*       http://jin.ece.uiuc.edu/routines/mpbdv.for */
 /*       Downloaded and converted to C using f2c by */
 /*       S. Greilich, Risoe National Laboratory, Denmark */
-/*       Reworked as subroutine for SGParticle.dll, abandoning
-/*       f2c.h and libf2c.lib
+/*       Reworked as subroutine for SGParticle.dll, abandoning */
+/*       f2c.h and libf2c.lib */
 /*       ========================================================= */
 
-/* mpbdv.f -- translated by f2c (version 20060506).
-*/
+/* mpbdv.f -- translated by f2c (version 20060506).*/
 
 /* Table of constant values */
 
-static int c__9 = 9;
-static int c__1 = 1;
-static int c__5 = 5;
+//static int c__9 = 9;
+//static int c__1 = 1;
+//static int c__5 = 5;
 static double c_b31 = 1.;
 static double c_b40 = 2.;
 
 void SGP_Dyx(	double*	y,	double*	x,	double*	Dyx)
 {
     /* Local variables */
-    static int na;
+//    static int na;
     static double dp[101], dv[101];
     static double pdd, pdf;
     extern /* Subroutine */ int pbdv_(double *, double *, double *

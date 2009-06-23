@@ -2,7 +2,6 @@
 #define SGP_TRANSPORT_H_
 
 #include "SGP_ParabolicCylinderFunction.h"
-#include "SGP_Constants.h"
 
 void SGP_BortfeldTransportProton(	float*	E_initial_MeV,
 									float*	sE_initial_MeV,
@@ -223,7 +222,7 @@ void SGP_BortfeldTransportProton(	float*	E_initial_MeV,
 	}
 
 	SGP_getMaterialData(	&nMaterials,
-							materials,
+							(long*)materials,
 							density_g_cm3,
 							electron_density_m3,
 							I_eV,

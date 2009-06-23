@@ -6,222 +6,66 @@
 #include <math.h>
 #include <malloc.h>
 
-#include "SGP_Utils.h"
-#include "SGP_GammaResponse.h"
-
 #define MEAN_HIT_NUMBER_LINEAR_APPROX_LIMIT		0.002
 #define	DEBUG_INTERVALS							8
 #define DEBUG_MEAN								10.0f
 #define DEBUG_SIGMA								1.0f
 
 
-void SGP_SC_get_f1_array_size(	long*	n,
-		float*	E_MeV_u,
-		long*	particle_no,
-		char*	material_name,
-		float*	parameter,
-		long*	N2,
-		// from here: return values
-		long*	n_bins_f1,
-		bool*	debug);
+void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
+									long*	n,
+									float*	E_MeV_u,
+									long*	particle_no,
+									/* detector parameters */
+									long*	material_no,
+									long*	rdd_model,
+									long*	n_rdd_parameter,
+									float*	rdd_parameter,
+									/* electron range model */
+									long*	er_model,
+									long*	n_er_parameter,
+									float*	er_parameter,
+									/* algorith parameters*/
+									long*	N2,
+									bool*	debug,
+									// from here: return values
+									long*	n_bins_f1,
+									float*	f1_parameters);
 
-void SGP_SC_get_f1_array_sizeS(	long*	n,
-		float*	E_MeV_u,
-		long*	particle_no,
-		char**	material_name,
-		float*	parameter,
-		long*	N2,
-		// from here: return values
-		long*	n_bins_f1,
-		bool*	debug){
-
-#ifdef _DEBUG
-	indnt_init();
-	indnt_inc();
-	fprintf(debf,"%sbegin SGP_SC_get_f1_array_sizeS\n", isp);
-#endif
-
-	// conversion through int
-#ifdef _R
-	int n_int = (int)(*n);
-	*n = (long)n_int;
-
-	int N2_int = (int)(*N2);
-	*N2 = (long)N2_int;
-
-	long i;
-	int particle_no_int;
-	for(i = 0 ; i < *n ; i++){
-		particle_no_int = (int)(particle_no[i]);
-		particle_no[i] = (long)particle_no_int;
-	}
-#endif
-
-	SGP_SC_get_f1_array_size(	n,
-			E_MeV_u,
-			particle_no,
-			*material_name,
-			parameter,
-			N2,
-			// return values
-			n_bins_f1,
-			debug);
-
-#ifdef _DEBUG
-	fprintf(debf,"%soutput: n_bins_f1 = %ld\n",isp,*n_bins_f1);
-	fprintf(debf,"%send SGP_SC_get_f1_array_sizeS\n",isp);
-	indnt_dec();
-#endif
-
-};
-
-void SGP_SC_get_f1(	long*	n,
-		float*	E_MeV_u,
-		long*	particle_no,
-		float*	fluence_cm2,
-		char*	material_name,
-		float*	parameter,
-		long*	N2,
-		long*	n_bins_f1,
-		// return values
-		float*	norm_fluence,
-		float*	LET_MeV_cm2_g,
-		float*	r_min_m,
-		float*	r_max_m,
-		float*	d_min_Gy,
-		float*	d_max_Gy,
-		float*	k_Gy,
-		float*	single_impact_fluence_cm2,
-		float*	single_impact_dose_Gy,
-		float*	dose_contribution_Gy,
-		float*	total_fluence_cm2,
-		float*	total_dose_Gy,
-		float*	ave_E_MeV,
-		float*	dw_E_MeV,
-		float*	ave_LET_MeV_cm2_g,
-		float*	dw_LET_MeV_cm2_g,
-		float*	u,
-		float*	f1_d_Gy,
-		float*	f1_dd_Gy,
-		float*	f1,
-		bool*	debug);
-
-void SGP_SC_get_f1S(	long*	n,
-		float*	E_MeV_u,
-		long*	particle_no,
-		float*	fluence_cm2,
-		char**	material_name,
-		float*	parameter,
-		long*	N2,
-		long*	n_bins_f1,
-		// return values
-		float*	norm_fluence,
-		float*	LET_MeV_cm2_g,
-		float*	r_min_m,
-		float*	r_max_m,
-		float*	d_min_Gy,
-		float*	d_max_Gy,
-		float*	k_Gy,
-		float*	single_impact_fluence_cm2,
-		float*	single_impact_dose_Gy,
-		float*	dose_contribution_Gy,
-		float*	total_fluence_cm2,
-		float*	total_dose_Gy,
-		float*	ave_E_MeV,
-		float*	dw_E_MeV,
-		float*	ave_LET_MeV_cm2_g,
-		float*	dw_LET_MeV_cm2_g,
-		float*	u,
-		float*	f1_d_Gy,
-		float*	f1_dd_Gy,
-		float*	f1,
-		bool*	debug){
-
-#ifdef _DEBUG
-	indnt_init();
-	indnt_inc();
-	fprintf(debf,"%sbegin SGP_SC_get_f1S\n",isp);
-#endif
-
-	// conversion through int
-#ifdef _R
-	int n_int = (int)(*n);
-	*n = (long)n_int;
-
-	int N2_int = (int)(*N2);
-	*N2 = (long)N2_int;
-
-	int n_bins_f1_int = (int)(*n_bins_f1);
-	*n_bins_f1 = (long)n_bins_f1_int;
-
-	long i;
-	int particle_no_int;
-	for(i = 0 ; i < *n ; i++){
-		particle_no_int = (int)(particle_no[i]);
-		particle_no[i] = (long)particle_no_int;
-	}
-#endif
-
-	SGP_SC_get_f1(	n,
-			E_MeV_u,
-			particle_no,
-			fluence_cm2,
-			*material_name,
-			parameter,
-			N2,
-			n_bins_f1,
-			// return values
-			norm_fluence,
-			LET_MeV_cm2_g,
-			r_min_m,
-			r_max_m,
-			d_min_Gy,
-			d_max_Gy,
-			k_Gy,
-			single_impact_fluence_cm2,
-			single_impact_dose_Gy,
-			dose_contribution_Gy,
-			total_fluence_cm2,
-			total_dose_Gy,
-			ave_E_MeV,
-			dw_E_MeV,
-			ave_LET_MeV_cm2_g,
-			dw_LET_MeV_cm2_g,
-			u,
-			f1_d_Gy,
-			f1_dd_Gy,
-			f1,
-			debug);
-
-#ifdef _DEBUG
-	fprintf(debf,"%soutput - norm_fluence[0] = %g\n", isp, norm_fluence[0]);
-	fprintf(debf,"%soutput - LET_MeV_cm2_g[0] = %g\n",isp, LET_MeV_cm2_g[0]);
-	fprintf(debf,"%soutput - r_min_m[0] = %g\n", isp, r_min_m[0]);
-	fprintf(debf,"%soutput - r_max_m[0] = %g\n", isp, r_max_m[0]);
-	fprintf(debf,"%soutput - d_min_Gy[0] = %g\n", isp, d_min_Gy[0]);
-	fprintf(debf,"%soutput - d_max_Gy[0] = %g\n", isp, d_max_Gy[0]);
-	fprintf(debf,"%soutput - k_Gy[0] = %g\n", isp, k_Gy[0]);
-	fprintf(debf,"%soutput - single_impact_fluence_cm2[0] = %g\n", isp, single_impact_fluence_cm2[0]);
-	fprintf(debf,"%soutput - single_impact_dose_Gy[0] = %g\n", isp, single_impact_dose_Gy[0]);
-	fprintf(debf,"%soutput - dose_contribution_Gy[0] = %g\n", isp, dose_contribution_Gy[0]);
-	fprintf(debf,"%soutput - total_fluence_cm2 = %g\n", isp, *total_fluence_cm2);
-	fprintf(debf,"%soutput - total_dose_Gy = %g\n", isp, *total_dose_Gy);
-	fprintf(debf,"%soutput - ave_E_MeV = %g\n", isp, *ave_E_MeV);
-	fprintf(debf,"%soutput - dw_E_MeV = %g\n", isp, *dw_E_MeV);
-	fprintf(debf,"%soutput - ave_LET_MeV_cm2_g = %g\n", isp, *ave_LET_MeV_cm2_g);
-	fprintf(debf,"%soutput - dw_LET_MeV_cm2_g = %g\n", isp, *dw_LET_MeV_cm2_g);
-	fprintf(debf,"%soutput - u = %g\n", isp, *u);
-	fprintf(debf,"%soutput - f1_d_Gy[] = %g,%g,%g,...\n", isp, f1_d_Gy[0], f1_d_Gy[1], f1_d_Gy[2]);
-	long q;
-	fprintf(debf,"%soutput - f1_d_Gy[] = ", isp);
-	for( q = 0 ; q < *n_bins_f1 ; q++ ){ fprintf(debf,"%g,",f1_d_Gy[q]);};	fprintf(debf,"\n");
-	fprintf(debf,"%soutput - f1_dd_Gy[] = %g,%g,%g,...\n", isp, f1_dd_Gy[0], f1_dd_Gy[1], f1_dd_Gy[2]);
-	fprintf(debf,"%soutput - f1[] = %g,%g,%g,...\n", isp, f1[0], f1[1], f1[2]);
-	fprintf(debf,"%send SGP_SC_get_f1S\n",isp);
-	indnt_dec();
-#endif
-
-};
+void	SGP_SC_get_f1(	/* radiation field parameters */
+						long*	n,
+						float*	E_MeV_u,
+						long*	particle_no,
+						float*	fluence_cm2,
+						/* detector parameters */
+						long*	material_no,
+						long*	rdd_model,
+						long*	n_rdd_parameter,
+						float*	rdd_parameter,
+						/* electron range model */
+						long*	er_model,
+						long*	n_er_parameter,
+						float*	er_parameter,
+						/* algorith parameters*/
+						long*	N2,
+						long*	n_bins_f1,
+						/* f1 parameters*/
+						float*	f1_parameters,
+						// from here: return values
+						float*	norm_fluence,
+						float*	dose_contribution_Gy,
+						float*	f_parameters,
+						/*  1 - total fluence_cm2
+						 *  2 - total_dose_Gy
+						 *  3 - ave_E_MeV
+						 *  4 - dw_E_MeV
+						 *  5 - ave_LET_MeV_cm2_g
+						 *  6 - dw_LET_MeV_cm2_g
+						 *  0 - u
+						 */
+						float*	f1_d_Gy,
+						float*	f1_dd_Gy,
+						float*	f1);
 
 void SGP_SC_get_f_array_size(	float*	u,
 		float*	fluence_factor,
@@ -267,101 +111,55 @@ void SGP_SuccessiveConvolutions(	float*	u,
 		float*	shrink_tails_under,
 		bool*	adjust_N2);
 
+//void SGP_SC_Loop(	long*	n,
+//		/* radiation field parameters */
+//		float*	E_MeV_u,
+//		long*	particle_no,
+//		float*	fluence_cm2,
+//		long*	slab_no,
+//		char*	material_name,
+//		float*	parameter,
+//		long*	N2,
+//		long*	n_slabs,
+//		long*	n_gamma_parameter,
+//		long*	gamma_model,
+//		float*	gamma_parameter,
+//		long*	verbose_level,
+//		char*	output_fileName,
+//		// return values
+//		float*	u,
+//		float*	total_d_Gy,
+//		float*	d,
+//		float*	S_HCP,
+//		float*	S_gamma,
+//		float*	efficiency,
+//		float*	S_HCP_total,
+//		float*	S_gamma_total,
+//		float*	efficiency_total);
+//
 
-void SGP_SC_Loop(	long*	n,
-		float*	E_MeV_u,
-		long*	particle_no,
-		float*	fluence_cm2,
-		long*	slab_no,
-		char*	material_name,
-		float*	parameter,
-		long*	N2,
-		long*	n_slabs,
-		long*	n_gamma_parameter,
-		long*	gamma_model,
-		float*	gamma_parameter,
-		long*	verbose_level,
-		char*	output_fileName,
-		// return values
-		float*	u,
-		float*	total_d_Gy,
-		float*	d,
-		float*	S_HCP,
-		float*	S_gamma,
-		float*	efficiency,
-		float*	S_HCP_total,
-		float*	S_gamma_total,
-		float*	efficiency_total);
+//////////////////////////////////////////
 
 
-void SGP_SC_LoopS(	long*	n,
-		float*	E_MeV_u,
-		long*	particle_no,
-		float*	fluence_cm2,
-		long*	slab_no,
-		char**	material_name,
-		float*	parameter,
-		long*	N2,
-		long*	n_slabs,
-		long*	n_gamma_parameter,
-		long*	gamma_model,
-		float*	gamma_parameter,
-		long*	verbose_level,
-		char**	output_fileName,
-		// return values
-		float*	u,
-		float*	total_d_Gy,
-		float*	d,
-		float*	S_HCP,
-		float*	S_gamma,
-		float*	efficiency,
-		float*	S_HCP_total,
-		float*	S_gamma_total,
-		float*	efficiency_total){
-	SGP_SC_Loop(	n,
-			E_MeV_u,
-			particle_no,
-			fluence_cm2,
-			slab_no,
-			*material_name,
-			parameter,
-			N2,
-			n_slabs,
-			n_gamma_parameter,
-			gamma_model,
-			gamma_parameter,
-			verbose_level,
-			*output_fileName,
-			// return values
-			u,
-			total_d_Gy,
-			d,
-			S_HCP,
-			S_gamma,
-			efficiency,
-			S_HCP_total,
-			S_gamma_total,
-			efficiency_total);
-};
-
-void	SGP_SC_get_f1_array_size(	long*	n,
-		float*	E_MeV_u,
-		long*	particle_no,
-		char*	material_name,
-		long*	rdd_model,
-		long*	n_rdd_parameter,
-		float*	rdd_parameter,
-		/* electron range model */
-		long*	er_model,
-		long*	n_er_parameter,
-		float*	er_parameter,
-		/* calculated parameters */
-		long* 	n_f1_parameters,
-		float* 	f1_parameters);
-		long*	N2,
-		// from here: return values
-		long*	n_bins_f1,
-		bool*	debug)
+void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
+									long*	n,
+									float*	E_MeV_u,
+									long*	particle_no,
+									/* detector parameters */
+									long*	material_no,
+									long*	rdd_model,
+									long*	n_rdd_parameter,
+									float*	rdd_parameter,
+									/* electron range model */
+									long*	er_model,
+									long*	n_er_parameter,
+									float*	er_parameter,
+									/* algorith parameters*/
+									long*	N2,
+									bool*	debug,
+									// from here: return values
+									long*	n_bins_f1,
+									float*	f1_parameters)
 {
 #ifdef _DEBUG
 	indnt_init();
@@ -369,53 +167,40 @@ void	SGP_SC_get_f1_array_size(	long*	n,
 	fprintf(debf,"%sbegin SGP_SC_get_f1_array_size\n",isp);
 #endif
 
-	// Allocate memory, also for the return variable not needed here (dummy1 - dummy6)
-	float*	dummy1			=	(float*)calloc(*n, sizeof(float));
-	float*	dummy2			=	(float*)calloc(*n, sizeof(float));
-	float*	dummy3			=	(float*)calloc(*n, sizeof(float));
-	float*	dummy4			=	(float*)calloc(*n, sizeof(float));
-	float*	dummy5			=	(float*)calloc(*n, sizeof(float));
-	float*	dummy6			=	(float*)calloc(*n, sizeof(float));
-
-	float*	d_min_Gy		=	(float*)calloc(*n, sizeof(float));
-	float*	d_max_Gy		=	(float*)calloc(*n, sizeof(float));
-
-	long	n_f1parameters	=	9;
-	float*	f1_parameters	=	(float*)calloc(n_f1parameters, sizeof(float));
-	for (i = 0; i < *n; i++){
-			// get RDD parameters for all particles and energies
-			SGP_RDD_f1_parameters_Geiss(	n,
-				E_MeV_u,
-				particle_no,
-				material_name,
-				parameter,
-				// return:
-				dummy1,
-				dummy2,
-				dummy3,
-				d_min_Gy,
-				d_max_Gy,
-				dummy4,
-				dummy5,
-				dummy6);
-	}
-	free(f1_parameters);
-
-
 	// get lowest and highest dose
-	float	d_max			=	d_max_Gy[0];
-	float	d_min			=	d_min_Gy[0];
+	float	d_max_Gy		=	0.0f;
+	float	d_min_Gy		=	0.0f;
 
-	long 	i;
-	for (i = 1; i < *n; i++){
-		d_max					=	FMAX(d_max_Gy[i], d_max);
-		d_min					=	FMIN(d_min_Gy[i], d_min);
+	long	n_f1_parameters	=	9;
+	long	i;
+	for (i = 0; i < *n; i++){
+		// get RDD parameters for all particles and energies
+		SGP_RDD_f1_parameters(	&E_MeV_u[i],
+								&particle_no[i],
+								material_no,
+								rdd_model,
+								n_rdd_parameter,
+								rdd_parameter,
+								/* electron range model */
+								er_model,
+								n_er_parameter,
+								er_parameter,
+								/* calculated parameters */
+								&n_f1_parameters,
+								&f1_parameters[i*n_f1_parameters]);
+		if(i == 0){
+			d_min_Gy			=	f1_parameters[i*n_f1_parameters + 3];
+			d_max_Gy			=	f1_parameters[i*n_f1_parameters + 4];
+		}
+		else{
+			d_min_Gy			=	FMIN(d_min_Gy, f1_parameters[i*n_f1_parameters + 3]);
+			d_max_Gy			=	FMAX(d_max_Gy, f1_parameters[i*n_f1_parameters + 4]);
+		}
 	}
 
 	// get number of bins needed to span that dose range
-	float tmp = (log10(d_max/d_min) / log10(2.0f) * ((float)*N2));
+	float tmp = (log10(d_max_Gy/d_min_Gy) / log10(2.0f) * ((float)*N2));
 	*n_bins_f1				=	(long)floor(tmp) + 1;
-
 
 	// DEBUG //
 	if(*debug){
@@ -430,36 +215,40 @@ void	SGP_SC_get_f1_array_size(	long*	n,
 }
 
 
-void	SGP_SC_get_f1(	long*	n,
-		float*	E_MeV_u,
-		long*	particle_no,
-		float*	fluence_cm2,
-		char*	material_name,
-		float*	parameter,
-		long*	N2,
-		long*	n_bins_f1,
-		// from here: return values
-		float*	norm_fluence,
-		float*	LET_MeV_cm2_g,
-		float*	r_min_m,
-		float*	r_max_m,
-		float*	d_min_Gy,
-		float*	d_max_Gy,
-		float*	k_Gy,
-		float*	single_impact_fluence_cm2,
-		float*	single_impact_dose_Gy,
-		float*	dose_contribution_Gy,
-		float*	total_fluence_cm2,
-		float*	total_dose_Gy,
-		float*	ave_E_MeV,
-		float*	dw_E_MeV,
-		float*	ave_LET_MeV_cm2_g,
-		float*	dw_LET_MeV_cm2_g,
-		float*	u,
-		float*	f1_d_Gy,
-		float*	f1_dd_Gy,
-		float*	f1,
-		bool*	debug)
+void	SGP_SC_get_f1(	/* radiation field parameters */
+						long*	n,
+						float*	E_MeV_u,
+						long*	particle_no,
+						float*	fluence_cm2,
+						/* detector parameters */
+						long*	material_no,
+						long*	rdd_model,
+						long*	n_rdd_parameter,
+						float*	rdd_parameter,
+						/* electron range model */
+						long*	er_model,
+						long*	n_er_parameter,
+						float*	er_parameter,
+						/* algorith parameters*/
+						long*	N2,
+						long*	n_bins_f1,
+						/* f1 parameters*/
+						float*	f1_parameters,
+						// from here: return values
+						float*	norm_fluence,
+						float*	dose_contribution_Gy,
+						float*	f_parameters,
+						/*  1 - total fluence_cm2
+						 *  2 - total_dose_Gy
+						 *  3 - ave_E_MeV
+						 *  4 - dw_E_MeV
+						 *  5 - ave_LET_MeV_cm2_g
+						 *  6 - dw_LET_MeV_cm2_g
+						 *  0 - u
+						 */
+						float*	f1_d_Gy,
+						float*	f1_dd_Gy,
+						float*	f1)
 {
 
 #ifdef _DEBUG
@@ -467,25 +256,9 @@ void	SGP_SC_get_f1(	long*	n,
 	fprintf(debf,"%sbegin SGP_SC_get_f1\n",isp);
 #endif
 
-	// get RDD parameters for all particles and energies
-	SGP_RDD_f1_parameters_Geiss(	n,
-			E_MeV_u,
-			particle_no,
-			material_name,
-			parameter,
-			// return:
-			LET_MeV_cm2_g,
-			r_min_m,
-			r_max_m,
-			d_min_Gy,
-			d_max_Gy,
-			k_Gy,
-			single_impact_fluence_cm2,
-			single_impact_dose_Gy);
-
-	// normalize fluence, get total fluence and dose, eff. LET and mean impact parameter u,
-	*total_fluence_cm2		= 0.0f;
-	*total_dose_Gy			= 0.0f;
+	////////////////////////////////////////////////////////////////////////////////////////////
+	// 1. normalize fluence, get total fluence and dose, eff. LET and mean impact parameter u,
+	f_parameters[1]		= 0.0f;
 
 	// if fluences < 0 they are supposed to be D.set.Gy, so in that case convert them first
 	// only the first entry will be check
@@ -495,61 +268,51 @@ void	SGP_SC_get_f1(	long*	n,
 	if (fluence_cm2[0] >= 0){
 		for (i = 0; i < *n; i++){
 			fluence_cm2_local[i]		= fluence_cm2[i];
-#ifdef _DEBUG
-			fprintf(debf,"%sfluence_cm2_local[%ld]=%g\n", isp, i , fluence_cm2_local[i]);
-#endif
 		}
 	}
 	else{
 		for (i = 0; i < *n; i++){
-			fluence_cm2_local[i]		= -1.0f * fluence_cm2[i] / (LET_MeV_cm2_g[i] * MeV_g_to_J_kg);
+			fluence_cm2_local[i]		= -1.0f * fluence_cm2[i] / (f1_parameters[i*9] * MeV_g_to_J_kg);			// fluence / LET
 			fluence_cm2[i]				= fluence_cm2_local[i];}
 	}
 
 	for (i = 0; i < *n; i++){
-		*total_fluence_cm2	+=	fluence_cm2_local[i];
+		f_parameters[1]	+=	fluence_cm2_local[i];
 	}
-
 
 	float u_single;
-	*u								=	0.0f;
-	*ave_E_MeV						=	0.0f;
-	*dw_E_MeV						=	0.0f;
-	*ave_LET_MeV_cm2_g				=	0.0f;
-	*dw_LET_MeV_cm2_g				=	0.0f;
+	f_parameters[0]				=	0.0f;
+	f_parameters[2]				= 	0.0f;
+	f_parameters[3]				=	0.0f;
+	f_parameters[4]				=	0.0f;
+	f_parameters[5]				=	0.0f;
+	f_parameters[6]				=	0.0f;
 
 	for (i = 0; i < *n; i++){
-		norm_fluence[i]				=	fluence_cm2_local[i] / *total_fluence_cm2;
-		u_single					=	fluence_cm2_local[i] / single_impact_fluence_cm2[i];
-		dose_contribution_Gy[i]		=	u_single * single_impact_dose_Gy[i];
-		*total_dose_Gy				+=	dose_contribution_Gy[i];
-		*ave_E_MeV					+=	norm_fluence[i] * E_MeV_u[i];
-		*dw_E_MeV					+=	dose_contribution_Gy[i] * E_MeV_u[i];
-		*ave_LET_MeV_cm2_g			+=	norm_fluence[i] * LET_MeV_cm2_g[i];
-		*dw_LET_MeV_cm2_g			+=	dose_contribution_Gy[i] * LET_MeV_cm2_g[i];
-		*u							+=	norm_fluence[i] * single_impact_dose_Gy[i];
+		norm_fluence[i]				=	fluence_cm2_local[i] / f_parameters[1];
+		u_single					=	fluence_cm2_local[i] / f1_parameters[i*9 + 6];
+		dose_contribution_Gy[i]		=	u_single * f1_parameters[i*9 + 7];
+		f_parameters[2]				+=	dose_contribution_Gy[i];
+		f_parameters[3]				+=	norm_fluence[i] * E_MeV_u[i];
+		f_parameters[4]				+=	dose_contribution_Gy[i] * E_MeV_u[i];
+		f_parameters[5]				+=	norm_fluence[i] * f1_parameters[i*9 + 0];
+		f_parameters[6]				+=	dose_contribution_Gy[i] * f1_parameters[i*9 + 0];
+		f_parameters[0]				+=	norm_fluence[i] * f1_parameters[i*9 + 7];
 	}
 
-	*dw_E_MeV					/= *total_dose_Gy;
-	*dw_LET_MeV_cm2_g			/= *total_dose_Gy;
-	*u							= *total_dose_Gy / *u;
+	f_parameters[4]				/= f_parameters[2];
+	f_parameters[6]				/= f_parameters[2];
+	f_parameters[0]				= f_parameters[2] / f_parameters[0];
 
-#ifdef _DEBUG
-	fprintf(debf,"%su=%g, n = %ld\n", isp, *u, *n);
-#endif
-
-	//  create all-over f1-data-frame
-	float	d_max			=	d_max_Gy[0];
-	float	d_min			=	d_min_Gy[0];
+	////////////////////////////////////////////////////////////////////////////////////////////
+	//  2. create all-over f1-data-frame
+	float	d_min			=	f1_parameters[0*9 + 3];
+	float	d_max			=	f1_parameters[0*9 + 4];
 
 	for (i = 1; i < *n; i++){
-		d_max					=	FMAX(d_max_Gy[i], d_max);
-		d_min					=	FMIN(d_min_Gy[i], d_min);
+		d_min					=	FMIN(f1_parameters[i*9 + 3], d_min);
+		d_max					=	FMAX(f1_parameters[i*9 + 4], d_max);
 	}
-
-#ifdef _DEBUG
-	fprintf(debf,"%sd_max=%g,d_min=%g\n", isp, d_max, d_min);
-#endif
 
 	float	U				=	(float)(log(2.0f) / (float)(*N2));
 
@@ -576,8 +339,8 @@ void	SGP_SC_get_f1(	long*	n,
 	long 	k;
 	for (k = 0; k < *n; k++){
 
-		float	d_max_k				=	d_max_Gy[k];
-		float	d_min_k				=	d_min_Gy[k];
+		float	d_min_k				=	f1_parameters[k*9 + 3];
+		float	d_max_k				=	f1_parameters[k*9 + 4];
 
 		// find first and last bin to fit this particle's contribution into the all-over f1-frame
 		long	i_low, i_high;
@@ -622,18 +385,25 @@ void	SGP_SC_get_f1(	long*	n,
 
 			dd[n_bins_df-1]				=	0.0f;
 
-
 			// now compute r, F1, and f1, this could be any RDD if implemented
-			SGP_r_RDD_m_old	(	&n_bins_df,
+			SGP_r_RDD_m	(	&n_bins_df,
 					d_low,
 					&E_MeV_u[k],
 					&particle_no[k],
-					material_name,
-					parameter,
+					/* detector parameters */
+					material_no,
+					/* radial dose distribution model */
+					rdd_model,
+					n_rdd_parameter,
+					rdd_parameter,
+					/* electron range model */
+					er_model,
+					n_er_parameter,
+					er_parameter,
 					r);
 
 			for (i = 0; i < n_bins_df; i++){
-				F1_1[i]						= (r[i] / r_max_m[k]) * (r[i] / r_max_m[k]);}				// F1 - 1 instead of F1 to avoid numeric cut-off problems
+				F1_1[i]						= (r[i] / f1_parameters[k*9 + 2]) * (r[i] / f1_parameters[k*9 + 2]);}				// F1 - 1 instead of F1 to avoid numeric cut-off problems
 
 			F1_1[n_bins_df-1]		=	0.0f;
 
@@ -680,7 +450,7 @@ void	SGP_SC_get_f1(	long*	n,
 	free(fluence_cm2_local);
 
 	// DEBUG //
-	if(*debug){
+/*	if(*debug){
 		float d_min_debug	=	DEBUG_MEAN / (float)pow(2, DEBUG_INTERVALS / 2);
 		for (i = 0; i <*n_bins_f1; i++){
 			f1_d_Gy[i]		=	d_min_debug * (float)exp(((float)i + 0.5f) * U);
@@ -689,7 +459,7 @@ void	SGP_SC_get_f1(	long*	n,
 		}
 	}
 	// DEBUG //
-
+*/
 
 	// normalize f1 (should be ok anyway but there could be small round-off errors)
 	float	f1_norm		=	0.0f;
@@ -1710,367 +1480,367 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 }
 
 
-void SGP_SC_Loop(	long*	n,
-		float*	E_MeV_u,
-		long*	particle_no,
-		float*	fluence_cm2,
-		long*	slab_no,
-		char*	material_name,
-		float*	parameter,
-		long*	N2,
-		long*	n_slabs,
-		long*	n_gamma_parameter,
-		long*	gamma_model,
-		float*	gamma_parameter,
-		long*	verbose_level,
-		char*	output_fileName,
-		// return values
-		float*	u,
-		float*	total_d_Gy,
-		float*	d,
-		float*	S_HCP,
-		float*	S_gamma,
-		float*	efficiency,
-		float*	S_HCP_total,
-		float*	S_gamma_total,
-		float*	efficiency_total)
-
-{
-	FILE* output_file	=	fopen(output_fileName,"w");
-	if (output_file == NULL) return;											// File error
-
-	//FILE* output_file	=	stdout;
-	//		if (output_file == NULL) return;											// File error
-
-
-	*S_HCP_total		=	0.0f;
-	*S_gamma_total		=	0.0f;
-	*efficiency_total	=	0.0f;
-
-	long 	i, j;
-	if(*verbose_level == 0){
-		fprintf(output_file,	"LCG3 run\n");
-
-		fprintf(output_file,	"N2, material, r.min.m");
-
-		for (i = 0; i < *n_gamma_parameter; i++){
-			fprintf(output_file,	", parameter.%ld", i);}
-
-		fprintf(output_file,	"\n%ld, \"%s\", %4.3g",
-				*N2, material_name, parameter[0]);
-		fprintf(output_file,	", %4.3g", gamma_parameter[0]);
-		for (i = 1; i < *n_gamma_parameter; i++){
-			fprintf(output_file,	", %4.3g", gamma_parameter[i]);}
-		fprintf(output_file,	"\n");
-		fprintf(output_file,	"\nslab.no, E.ave.MeV, E.dw.MeV, LET.ave.MeV.cm2.g, LET.dw.MeV.cm2.g, ");
-		fprintf(output_file,	"total.fluence.cm2, mean.hit.number, fluence.factor, d.spectrum.Gy, ");
-		fprintf(output_file,	"d.set.Gy, dose.SC.Gy, n.bins.used, S.HCP, S.gamma, efficiency\n");
-	}
-	else{
-		fprintf(output_file,	"###################################################################\n");
-		fprintf(output_file,	"# This is LGC3 - SC loop\n");
-		fprintf(output_file,	"###################################################################\n");
-		fprintf(output_file,	"\nLooping over %ld uniform slabs (in beam direction) of same size of a extended detector.\n",
-				*n_slabs);
-		fprintf(output_file,	"\n%ld steps within a factor of two (N2).\n",
-				*N2);
-		fprintf(output_file,	"\nMaterial: %s.\n",
-				material_name);
-		fprintf(output_file,	"\nRadial dose distribution according to Geiss (1997), r.min = %3.2g m.\n",
-				parameter[0]);
-		fprintf(output_file,	"\nUsing gamma response model %ld with parameters (",
-				*gamma_model);
-
-		for (i = 0; i < *n_gamma_parameter; i++){
-			if(i != 0)	{	fprintf(output_file,	", %4.3f",	gamma_parameter[i]);}
-			else		{	fprintf(output_file,	"%4.3f",	gamma_parameter[i]);}
-		}
-
-		fprintf(output_file,	")\n\n");
-	}
-
-	for (i = 0; i < *n_slabs; i++){
-
-		// How many particles for this slab?
-		long	nLines						=	0;
-		for (j = 0; j < *n; j++){
-			if (slab_no[j]	== i+1){
-				nLines++;
-			}
-		}
-
-		if(nLines > 0){
-			float*	E_MeV_u_slab;
-			if (E_MeV_u[0] > 0){																			// If E < 0 are passed, non PSTAR-LET are provided, see SGP_RDD_Parameters
-				E_MeV_u_slab				=	(float*)calloc(nLines, sizeof(float));}
-			else{
-				E_MeV_u_slab				=	(float*)calloc(2 * nLines, sizeof(float));}
-			long*	particle_no_slab			=	(long*)calloc(nLines, sizeof(long));
-			float*	fluence_cm2_slab			=	(float*)calloc(nLines, sizeof(float));
-
-			// extract E, F, p for current slab
-			long	m	=	0;
-			for (j = 0; j < *n; j++){
-				if (slab_no[j]	== i+1){
-					if(E_MeV_u[0] > 0){																	// If E < 0 are passed, non PSTAR-LET are provided, see SGP_RDD_Parameters
-						E_MeV_u_slab[m]			=	E_MeV_u[j];}
-					else{
-						E_MeV_u_slab[m]			=	E_MeV_u[j];
-						E_MeV_u_slab[m+nLines]	=	E_MeV_u[j+(*n)];
-					}
-					particle_no_slab[m]		=	particle_no[j];
-					fluence_cm2_slab[m++]	=	fluence_cm2[j];
-				}
-			}
-
-			// Get array size for f1
-			long	n_bins_f1;
-			bool	debug	= false;
-			SGP_SC_get_f1_array_size(	&nLines,
-					E_MeV_u_slab,
-					particle_no_slab,
-					material_name,
-					parameter,
-					N2,
-					// from here: return values
-					&n_bins_f1,
-					&debug);
-
-
-
-			// Allocate memory for f1 and f1-particle information return data
-			float*	f1_d_Gy						=	(float*)calloc(n_bins_f1, sizeof(float));
-			float*	f1_dd_Gy					=	(float*)calloc(n_bins_f1, sizeof(float));
-			float*	f1							=	(float*)calloc(n_bins_f1, sizeof(float));
-
-			float*	norm_fluence				=	(float*)calloc(nLines, sizeof(float));
-			float*	LET_MeV_cm2_g				=	(float*)calloc(nLines, sizeof(float));
-			float*	r_min_m						=	(float*)calloc(nLines, sizeof(float));
-			float*	r_max_m						=	(float*)calloc(nLines, sizeof(float));
-			float*	d_min_Gy					=	(float*)calloc(nLines, sizeof(float));
-			float*	d_max_Gy					=	(float*)calloc(nLines, sizeof(float));
-			float*	k_Gy						=	(float*)calloc(nLines, sizeof(float));
-			float*	single_impact_fluence_cm2	=	(float*)calloc(nLines, sizeof(float));
-			float*	single_impact_dose_Gy		=	(float*)calloc(nLines, sizeof(float));
-			float*	dose_contribution_Gy		=	(float*)calloc(nLines, sizeof(float));
-
-			float	ave_E_MeV					=	0.0f;
-			float	dw_E_MeV					=	0.0f;
-
-			float	ave_LET_MeV_cm2_g			=	0.0f;
-			float	dw_LET_MeV_cm2_g			=	0.0f;
-
-			float	total_fluence_cm2			=	0.0f;
-
-			// ...and get f1
-			SGP_SC_get_f1(	&nLines,
-					E_MeV_u_slab,
-					particle_no_slab,
-					fluence_cm2_slab,
-					material_name,
-					parameter,
-					N2,
-					&n_bins_f1,
-					// from here: return values
-					norm_fluence,
-					LET_MeV_cm2_g,
-					r_min_m,
-					r_max_m,
-					d_min_Gy,
-					d_max_Gy,
-					k_Gy,
-					single_impact_fluence_cm2,
-					single_impact_dose_Gy,
-					dose_contribution_Gy,
-					&total_fluence_cm2,
-					&total_d_Gy[i],
-					&ave_E_MeV,
-					&dw_E_MeV,
-					&ave_LET_MeV_cm2_g,
-					&dw_LET_MeV_cm2_g,
-					&u[i],
-					f1_d_Gy,
-					f1_dd_Gy,
-					f1,
-					&debug);
-
-			float	fluence_factor	=	1.0f;
-
-			// Get array size for f, u_start and number
-			// of convolutions
-			long	n_bins_f;
-			float	u_start;
-			long	n_convolutions;
-			SGP_SC_get_f_array_size(	u,
-					&fluence_factor,
-					N2,
-					&n_bins_f1,
-					f1_d_Gy,
-					f1_dd_Gy,
-					f1,
-					// from here: return values
-					&n_bins_f,
-					&u_start,
-					&n_convolutions);
-
-			// Allocate memory for f(_start)
-			float*	f_d_Gy						=	(float*)calloc(n_bins_f, sizeof(float));
-			float*	f_dd_Gy						=	(float*)calloc(n_bins_f, sizeof(float));
-			float*	f							=	(float*)calloc(n_bins_f, sizeof(float));
-
-			// Get f_start
-			SGP_SC_get_f_start(	&u_start,
-					&n_bins_f1,
-					N2,
-					f1_d_Gy,
-					f1_dd_Gy,
-					f1,
-					&n_bins_f,
-					// from here: return values
-					f_d_Gy,
-					f_dd_Gy,
-					f);
-
-			// Allocate memory for convolutions
-			float*	fdd							=	(float*)calloc(n_bins_f, sizeof(float));
-			float*	dfdd						=	(float*)calloc(n_bins_f, sizeof(float));
-			float	f0							=	0.0f;
-			bool	write_output				=	false;
-
-			bool	shrink_tails				=	true;
-			float	shrink_tails_under			=	1e-40f;
-
-			bool	adjust_N2					=	false;
-
-			long	n_bins_f_used				=	n_bins_f1;
-
-			SGP_SuccessiveConvolutions(	&u[i],
-					&n_bins_f,
-					N2,
-					&n_bins_f_used,
-					f_d_Gy,
-					f_dd_Gy,
-					f,
-					&f0,
-					fdd,
-					dfdd,
-					&d[i],
-					&write_output,
-					&shrink_tails,
-					&shrink_tails_under,
-					&adjust_N2);
-
-
-			// Allocate memory for gamma response
-			float*	S							=	(float*)calloc(n_bins_f, sizeof(float));
-
-			// Apply gamma response
-			SGP_get_gamma_response(	&n_bins_f_used,				// only the first XXX bins are used
-					f_d_Gy,
-					f_dd_Gy,
-					f,
-					&f0,
-					n_gamma_parameter,
-					gamma_model,
-					gamma_parameter,
-					S,
-					// return
-					&S_HCP[i],
-					&S_gamma[i],
-					&efficiency[i]);
-
-
-#ifdef _LINUX
-			if(!isnan(S_HCP[i])){
-				*S_HCP_total		+=	S_HCP[i];}
-			if(!isnan(S_gamma[i])){
-				*S_gamma_total		+=	S_gamma[i];}
-			if(!isnan(S_HCP[i]) && S_HCP[i] > 0){
-				*efficiency_total	+=	S_HCP[i];}
-#else
-			if(!_isnan(S_HCP[i])){
-				*S_HCP_total		+=	S_HCP[i];}
-			if(!_isnan(S_gamma[i])){
-				*S_gamma_total		+=	S_gamma[i];}
-			if(!_isnan(S_HCP[i]) && S_HCP[i] > 0){
-				*efficiency_total	+=	S_HCP[i];}
-#endif // _LINUX
-
-			// Output results
-
-			if(*verbose_level == 0){
-				fprintf(output_file,	"%4ld, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4ld, %4.3g, %4.3g, %4.3g\n",
-						i+1, ave_E_MeV, dw_E_MeV, ave_LET_MeV_cm2_g, dw_LET_MeV_cm2_g,
-						total_fluence_cm2, u[i], fluence_factor, total_d_Gy[i], total_d_Gy[i] * fluence_factor, d[i],
-						n_bins_f_used, S_HCP[i], S_gamma[i], efficiency[i]);
-			}
-			else{
-				fprintf(output_file,	"\n###################################################################\n");
-				fprintf(output_file,	"Slab no. %ld, %ld entries in particle spectrum\n",
-						i + 1,
-						nLines);
-				fprintf(output_file,	"\n dose from spectrum/ Gy:\t\t\t%4.3g\n",			total_d_Gy[i]);
-				fprintf(output_file,	" average E / MeV:\t\t\t\t\t%4.3g\n",				ave_E_MeV);
-				fprintf(output_file,	" dose-weigthed E / MeV):\t\t\t%4.3g\n",			dw_E_MeV);
-				fprintf(output_file,	" average LET / (MeV*cm2/g):\t\t\t%4.3g\n",			ave_LET_MeV_cm2_g);
-				fprintf(output_file,	" dose-weigthed LET / (MeV*cm2/g):\t%4.3g\n",		dw_LET_MeV_cm2_g);
-				fprintf(output_file,	" total fluence / cm-2:\t\t\t\t%4.3g\n",			total_fluence_cm2);
-				fprintf(output_file,	" mean hit number :\t\t\t\t\t%4.3g\n",				u[i]);
-				fprintf(output_file,	" fluence factor:\t\t\t\t\t%4.3g\n",				fluence_factor);
-				fprintf(output_file,	" dose set/ Gy:\t\t\t\t\t\t%4.3g\n",				total_d_Gy[i] * fluence_factor);
-				fprintf(output_file,	"\n average dose from SC / Gy:\t\t\t%4.3g\n",				d[i]);
-				fprintf(output_file,	"\n HCP response:\t\t\t\t\t\t%4.3g\n",				S_HCP[i]);
-				fprintf(output_file,	" gamma response:\t\t\t\t\t%4.3g\n",				S_gamma[i]);
-				fprintf(output_file,	" efficiency:\t\t\t\t\t\t%4.3g\n",					efficiency[i]);
-			}
-
-			// free slab related memory again
-			free(E_MeV_u_slab);
-			free(particle_no_slab);
-			free(fluence_cm2_slab);
-
-			free(norm_fluence);
-			free(LET_MeV_cm2_g);
-			free(r_min_m);
-			free(r_max_m);
-			free(d_min_Gy);
-			free(d_max_Gy);
-			free(k_Gy);
-			free(single_impact_fluence_cm2);
-			free(single_impact_dose_Gy);
-
-			free(f1_d_Gy);
-			free(f1_dd_Gy);
-			free(f1);
-
-			free(f_d_Gy);
-			free(f_dd_Gy);
-			free(f);
-
-			free(fdd);
-			free(dfdd);
-
-			free(S);
-		}
-		else{	// nLines == 0
-
-			// Write: nix in slab, eff = 0
-		}
-	}
-
-	*efficiency_total	/=	(*n_slabs * S_HCP[0]) ;
-
-	if(*verbose_level > 0){
-		fprintf(output_file,	"\n###################################################################\n");
-		fprintf(output_file,	"\n total detector efficiency:\t\t\t%4.3g\n",				*efficiency_total);
-
-		fprintf(output_file,	"\n###################################################################\n");
-		fprintf(output_file,	"# Done.\n");
-		fprintf(output_file,	"###################################################################\n");
-	}
-
-	fclose(output_file);
-}
-
-
+//void SGP_SC_Loop(	long*	n,
+//		float*	E_MeV_u,
+//		long*	particle_no,
+//		float*	fluence_cm2,
+//		long*	slab_no,
+//		char*	material_name,
+//		float*	parameter,
+//		long*	N2,
+//		long*	n_slabs,
+//		long*	n_gamma_parameter,
+//		long*	gamma_model,
+//		float*	gamma_parameter,
+//		long*	verbose_level,
+//		char*	output_fileName,
+//		// return values
+//		float*	u,
+//		float*	total_d_Gy,
+//		float*	d,
+//		float*	S_HCP,
+//		float*	S_gamma,
+//		float*	efficiency,
+//		float*	S_HCP_total,
+//		float*	S_gamma_total,
+//		float*	efficiency_total)
+//
+//{
+//	FILE* output_file	=	fopen(output_fileName,"w");
+//	if (output_file == NULL) return;											// File error
+//
+//	//FILE* output_file	=	stdout;
+//	//		if (output_file == NULL) return;											// File error
+//
+//
+//	*S_HCP_total		=	0.0f;
+//	*S_gamma_total		=	0.0f;
+//	*efficiency_total	=	0.0f;
+//
+//	long 	i, j;
+//	if(*verbose_level == 0){
+//		fprintf(output_file,	"LCG3 run\n");
+//
+//		fprintf(output_file,	"N2, material, r.min.m");
+//
+//		for (i = 0; i < *n_gamma_parameter; i++){
+//			fprintf(output_file,	", parameter.%ld", i);}
+//
+//		fprintf(output_file,	"\n%ld, \"%s\", %4.3g",
+//				*N2, material_name, parameter[0]);
+//		fprintf(output_file,	", %4.3g", gamma_parameter[0]);
+//		for (i = 1; i < *n_gamma_parameter; i++){
+//			fprintf(output_file,	", %4.3g", gamma_parameter[i]);}
+//		fprintf(output_file,	"\n");
+//		fprintf(output_file,	"\nslab.no, E.ave.MeV, E.dw.MeV, LET.ave.MeV.cm2.g, LET.dw.MeV.cm2.g, ");
+//		fprintf(output_file,	"total.fluence.cm2, mean.hit.number, fluence.factor, d.spectrum.Gy, ");
+//		fprintf(output_file,	"d.set.Gy, dose.SC.Gy, n.bins.used, S.HCP, S.gamma, efficiency\n");
+//	}
+//	else{
+//		fprintf(output_file,	"###################################################################\n");
+//		fprintf(output_file,	"# This is LGC3 - SC loop\n");
+//		fprintf(output_file,	"###################################################################\n");
+//		fprintf(output_file,	"\nLooping over %ld uniform slabs (in beam direction) of same size of a extended detector.\n",
+//				*n_slabs);
+//		fprintf(output_file,	"\n%ld steps within a factor of two (N2).\n",
+//				*N2);
+//		fprintf(output_file,	"\nMaterial: %s.\n",
+//				material_name);
+//		fprintf(output_file,	"\nRadial dose distribution according to Geiss (1997), r.min = %3.2g m.\n",
+//				parameter[0]);
+//		fprintf(output_file,	"\nUsing gamma response model %ld with parameters (",
+//				*gamma_model);
+//
+//		for (i = 0; i < *n_gamma_parameter; i++){
+//			if(i != 0)	{	fprintf(output_file,	", %4.3f",	gamma_parameter[i]);}
+//			else		{	fprintf(output_file,	"%4.3f",	gamma_parameter[i]);}
+//		}
+//
+//		fprintf(output_file,	")\n\n");
+//	}
+//
+//	for (i = 0; i < *n_slabs; i++){
+//
+//		// How many particles for this slab?
+//		long	nLines						=	0;
+//		for (j = 0; j < *n; j++){
+//			if (slab_no[j]	== i+1){
+//				nLines++;
+//			}
+//		}
+//
+//		if(nLines > 0){
+//			float*	E_MeV_u_slab;
+//			if (E_MeV_u[0] > 0){																			// If E < 0 are passed, non PSTAR-LET are provided, see SGP_RDD_Parameters
+//				E_MeV_u_slab				=	(float*)calloc(nLines, sizeof(float));}
+//			else{
+//				E_MeV_u_slab				=	(float*)calloc(2 * nLines, sizeof(float));}
+//			long*	particle_no_slab			=	(long*)calloc(nLines, sizeof(long));
+//			float*	fluence_cm2_slab			=	(float*)calloc(nLines, sizeof(float));
+//
+//			// extract E, F, p for current slab
+//			long	m	=	0;
+//			for (j = 0; j < *n; j++){
+//				if (slab_no[j]	== i+1){
+//					if(E_MeV_u[0] > 0){																	// If E < 0 are passed, non PSTAR-LET are provided, see SGP_RDD_Parameters
+//						E_MeV_u_slab[m]			=	E_MeV_u[j];}
+//					else{
+//						E_MeV_u_slab[m]			=	E_MeV_u[j];
+//						E_MeV_u_slab[m+nLines]	=	E_MeV_u[j+(*n)];
+//					}
+//					particle_no_slab[m]		=	particle_no[j];
+//					fluence_cm2_slab[m++]	=	fluence_cm2[j];
+//				}
+//			}
+//
+//			// Get array size for f1
+//			long	n_bins_f1;
+//			bool	debug	= false;
+//			SGP_SC_get_f1_array_size(	&nLines,
+//					E_MeV_u_slab,
+//					particle_no_slab,
+//					material_name,
+//					parameter,
+//					N2,
+//					// from here: return values
+//					&n_bins_f1,
+//					&debug);
+//
+//
+//
+//			// Allocate memory for f1 and f1-particle information return data
+//			float*	f1_d_Gy						=	(float*)calloc(n_bins_f1, sizeof(float));
+//			float*	f1_dd_Gy					=	(float*)calloc(n_bins_f1, sizeof(float));
+//			float*	f1							=	(float*)calloc(n_bins_f1, sizeof(float));
+//
+//			float*	norm_fluence				=	(float*)calloc(nLines, sizeof(float));
+//			float*	LET_MeV_cm2_g				=	(float*)calloc(nLines, sizeof(float));
+//			float*	r_min_m						=	(float*)calloc(nLines, sizeof(float));
+//			float*	r_max_m						=	(float*)calloc(nLines, sizeof(float));
+//			float*	d_min_Gy					=	(float*)calloc(nLines, sizeof(float));
+//			float*	d_max_Gy					=	(float*)calloc(nLines, sizeof(float));
+//			float*	k_Gy						=	(float*)calloc(nLines, sizeof(float));
+//			float*	single_impact_fluence_cm2	=	(float*)calloc(nLines, sizeof(float));
+//			float*	single_impact_dose_Gy		=	(float*)calloc(nLines, sizeof(float));
+//			float*	dose_contribution_Gy		=	(float*)calloc(nLines, sizeof(float));
+//
+//			float	ave_E_MeV					=	0.0f;
+//			float	dw_E_MeV					=	0.0f;
+//
+//			float	ave_LET_MeV_cm2_g			=	0.0f;
+//			float	dw_LET_MeV_cm2_g			=	0.0f;
+//
+//			float	total_fluence_cm2			=	0.0f;
+//
+//			// ...and get f1
+//			SGP_SC_get_f1(	&nLines,
+//					E_MeV_u_slab,
+//					particle_no_slab,
+//					fluence_cm2_slab,
+//					material_name,
+//					parameter,
+//					N2,
+//					&n_bins_f1,
+//					// from here: return values
+//					norm_fluence,
+//					LET_MeV_cm2_g,
+//					r_min_m,
+//					r_max_m,
+//					d_min_Gy,
+//					d_max_Gy,
+//					k_Gy,
+//					single_impact_fluence_cm2,
+//					single_impact_dose_Gy,
+//					dose_contribution_Gy,
+//					&total_fluence_cm2,
+//					&total_d_Gy[i],
+//					&ave_E_MeV,
+//					&dw_E_MeV,
+//					&ave_LET_MeV_cm2_g,
+//					&dw_LET_MeV_cm2_g,
+//					&u[i],
+//					f1_d_Gy,
+//					f1_dd_Gy,
+//					f1,
+//					&debug);
+//
+//			float	fluence_factor	=	1.0f;
+//
+//			// Get array size for f, u_start and number
+//			// of convolutions
+//			long	n_bins_f;
+//			float	u_start;
+//			long	n_convolutions;
+//			SGP_SC_get_f_array_size(	u,
+//					&fluence_factor,
+//					N2,
+//					&n_bins_f1,
+//					f1_d_Gy,
+//					f1_dd_Gy,
+//					f1,
+//					// from here: return values
+//					&n_bins_f,
+//					&u_start,
+//					&n_convolutions);
+//
+//			// Allocate memory for f(_start)
+//			float*	f_d_Gy						=	(float*)calloc(n_bins_f, sizeof(float));
+//			float*	f_dd_Gy						=	(float*)calloc(n_bins_f, sizeof(float));
+//			float*	f							=	(float*)calloc(n_bins_f, sizeof(float));
+//
+//			// Get f_start
+//			SGP_SC_get_f_start(	&u_start,
+//					&n_bins_f1,
+//					N2,
+//					f1_d_Gy,
+//					f1_dd_Gy,
+//					f1,
+//					&n_bins_f,
+//					// from here: return values
+//					f_d_Gy,
+//					f_dd_Gy,
+//					f);
+//
+//			// Allocate memory for convolutions
+//			float*	fdd							=	(float*)calloc(n_bins_f, sizeof(float));
+//			float*	dfdd						=	(float*)calloc(n_bins_f, sizeof(float));
+//			float	f0							=	0.0f;
+//			bool	write_output				=	false;
+//
+//			bool	shrink_tails				=	true;
+//			float	shrink_tails_under			=	1e-40f;
+//
+//			bool	adjust_N2					=	false;
+//
+//			long	n_bins_f_used				=	n_bins_f1;
+//
+//			SGP_SuccessiveConvolutions(	&u[i],
+//					&n_bins_f,
+//					N2,
+//					&n_bins_f_used,
+//					f_d_Gy,
+//					f_dd_Gy,
+//					f,
+//					&f0,
+//					fdd,
+//					dfdd,
+//					&d[i],
+//					&write_output,
+//					&shrink_tails,
+//					&shrink_tails_under,
+//					&adjust_N2);
+//
+//
+//			// Allocate memory for gamma response
+//			float*	S							=	(float*)calloc(n_bins_f, sizeof(float));
+//
+//			// Apply gamma response
+//			SGP_get_gamma_response(	&n_bins_f_used,				// only the first XXX bins are used
+//					f_d_Gy,
+//					f_dd_Gy,
+//					f,
+//					&f0,
+//					n_gamma_parameter,
+//					gamma_model,
+//					gamma_parameter,
+//					S,
+//					// return
+//					&S_HCP[i],
+//					&S_gamma[i],
+//					&efficiency[i]);
+//
+//
+//#ifdef _LINUX
+//			if(!isnan(S_HCP[i])){
+//				*S_HCP_total		+=	S_HCP[i];}
+//			if(!isnan(S_gamma[i])){
+//				*S_gamma_total		+=	S_gamma[i];}
+//			if(!isnan(S_HCP[i]) && S_HCP[i] > 0){
+//				*efficiency_total	+=	S_HCP[i];}
+//#else
+//			if(!_isnan(S_HCP[i])){
+//				*S_HCP_total		+=	S_HCP[i];}
+//			if(!_isnan(S_gamma[i])){
+//				*S_gamma_total		+=	S_gamma[i];}
+//			if(!_isnan(S_HCP[i]) && S_HCP[i] > 0){
+//				*efficiency_total	+=	S_HCP[i];}
+//#endif // _LINUX
+//
+//			// Output results
+//
+//			if(*verbose_level == 0){
+//				fprintf(output_file,	"%4ld, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4.3g, %4ld, %4.3g, %4.3g, %4.3g\n",
+//						i+1, ave_E_MeV, dw_E_MeV, ave_LET_MeV_cm2_g, dw_LET_MeV_cm2_g,
+//						total_fluence_cm2, u[i], fluence_factor, total_d_Gy[i], total_d_Gy[i] * fluence_factor, d[i],
+//						n_bins_f_used, S_HCP[i], S_gamma[i], efficiency[i]);
+//			}
+//			else{
+//				fprintf(output_file,	"\n###################################################################\n");
+//				fprintf(output_file,	"Slab no. %ld, %ld entries in particle spectrum\n",
+//						i + 1,
+//						nLines);
+//				fprintf(output_file,	"\n dose from spectrum/ Gy:\t\t\t%4.3g\n",			total_d_Gy[i]);
+//				fprintf(output_file,	" average E / MeV:\t\t\t\t\t%4.3g\n",				ave_E_MeV);
+//				fprintf(output_file,	" dose-weigthed E / MeV):\t\t\t%4.3g\n",			dw_E_MeV);
+//				fprintf(output_file,	" average LET / (MeV*cm2/g):\t\t\t%4.3g\n",			ave_LET_MeV_cm2_g);
+//				fprintf(output_file,	" dose-weigthed LET / (MeV*cm2/g):\t%4.3g\n",		dw_LET_MeV_cm2_g);
+//				fprintf(output_file,	" total fluence / cm-2:\t\t\t\t%4.3g\n",			total_fluence_cm2);
+//				fprintf(output_file,	" mean hit number :\t\t\t\t\t%4.3g\n",				u[i]);
+//				fprintf(output_file,	" fluence factor:\t\t\t\t\t%4.3g\n",				fluence_factor);
+//				fprintf(output_file,	" dose set/ Gy:\t\t\t\t\t\t%4.3g\n",				total_d_Gy[i] * fluence_factor);
+//				fprintf(output_file,	"\n average dose from SC / Gy:\t\t\t%4.3g\n",				d[i]);
+//				fprintf(output_file,	"\n HCP response:\t\t\t\t\t\t%4.3g\n",				S_HCP[i]);
+//				fprintf(output_file,	" gamma response:\t\t\t\t\t%4.3g\n",				S_gamma[i]);
+//				fprintf(output_file,	" efficiency:\t\t\t\t\t\t%4.3g\n",					efficiency[i]);
+//			}
+//
+//			// free slab related memory again
+//			free(E_MeV_u_slab);
+//			free(particle_no_slab);
+//			free(fluence_cm2_slab);
+//
+//			free(norm_fluence);
+//			free(LET_MeV_cm2_g);
+//			free(r_min_m);
+//			free(r_max_m);
+//			free(d_min_Gy);
+//			free(d_max_Gy);
+//			free(k_Gy);
+//			free(single_impact_fluence_cm2);
+//			free(single_impact_dose_Gy);
+//
+//			free(f1_d_Gy);
+//			free(f1_dd_Gy);
+//			free(f1);
+//
+//			free(f_d_Gy);
+//			free(f_dd_Gy);
+//			free(f);
+//
+//			free(fdd);
+//			free(dfdd);
+//
+//			free(S);
+//		}
+//		else{	// nLines == 0
+//
+//			// Write: nix in slab, eff = 0
+//		}
+//	}
+//
+//	*efficiency_total	/=	(*n_slabs * S_HCP[0]) ;
+//
+//	if(*verbose_level > 0){
+//		fprintf(output_file,	"\n###################################################################\n");
+//		fprintf(output_file,	"\n total detector efficiency:\t\t\t%4.3g\n",				*efficiency_total);
+//
+//		fprintf(output_file,	"\n###################################################################\n");
+//		fprintf(output_file,	"# Done.\n");
+//		fprintf(output_file,	"###################################################################\n");
+//	}
+//
+//	fclose(output_file);
+//}
+//
+//
 #endif // SGP_SUCCESSIVECONVOLUTIONS_H_

@@ -3,48 +3,31 @@
 
 #include <math.h>
 #include <stdbool.h>
-#include "SGP_Constants.h"
-#include "SGP_Data.h"
-#include "SGP_Utils.h"
 
 ///////////////////////////////////////////////////////////////////////
 // DATA ACCESS ROUTINE EXPORT (MAINLY FOR DEBUGGING)
 void SGP_LET_MeV_cm2_g(	long*	n,
 						float*	E_MeV_u,
 						long*	particle_no,
-						char*	material_name,
+						long*	material_no,
 						float*	LET_MeV_cm2_g);
-
-void SGP_LET_MeV_cm2_gS(	long*	n,
-							float*	E_MeV_u,
-							long*	particle_no,
-							char**	material_name,
-							float*	LET_MeV_cm2_g)
-{
-	SGP_LET_MeV_cm2_g(	n,
-						E_MeV_u,
-						particle_no,
-						*material_name,
-						LET_MeV_cm2_g);
-};
-
 
 void SGP_LET_keV_um(	long*	n,
 						float*	E_MeV_u,
 						long*	particle_no,
-						char*	material_name,
+						long*	material_no,
 						float*	LET_keV_um);
 
 void SGP_CSDA_range_g_cm2(	long*	n,
 							float*	E_MeV_u,
 							long*	particle_no,
-							char*	material_name,
+							long*	material_no,
 							float*	CSDA_range_g_cm2);
 
 void SGP_E_MeV(	long*	n,
 				float*	CSDA_range_g_cm2,
 				long*	particle_no,
-				char*	material_name,
+				long*	material_no,
 				float*	E_MeV);
 
 void SGP_Particle_Properties(	long*	n,
@@ -57,30 +40,7 @@ void SGP_Particle_Properties(	long*	n,
 								long*	A,
 								float*	mass);
 
-/* As S-Plus does not allow to pass character arrays
- * to subroutines this wrapping routine handles
- * S-Plus calls of SGP_Particle_Properties
- */
-void SGP_Particle_PropertiesS(	char**	particle_name,
-								/* return values*/
-								long*	particle_index,
-								char**	USRTRACK_name,
-								char**	element_name,
-								long*	Z,
-								long*	A,
-								float*	mass)
-{
-	long n	= 1;
-	SGP_Particle_Properties(	&n,
-								particle_name,
-								/* return values*/
-								particle_index,
-								USRTRACK_name,
-								element_name,
-								Z,
-								A,
-								mass);
-};
+
 
 ///////////////////////////////////////////////////////////////////////
 // MISC CONV. ROUTINES
@@ -94,7 +54,7 @@ void SGP_beta_from_mass(	long*	n,
 							float*	mass,
 							float*	beta);
 
-void SGP_effective_charge_from_particle_index(	long*	n,
+void SGP_effective_charge_from_particle_no(	long*	n,
 												float*	E_MeV_u,
 												long*	particle_no,
 												float*	effective_charge);
@@ -117,7 +77,7 @@ void SGP_max_E_transfer_MeV(	long*	n,
 void SGP_max_electron_range_m(	long*	n,
 								float*	E_MeV_u,
 								long*	particle_no,
-								char*	material_name,
+								long*	material_no,
 								long*	er_model,
 								float*	max_electron_range_m);
 
@@ -125,7 +85,7 @@ void SGP_max_electron_range_m(	long*	n,
 void SGP_max_electron_range_mS(	long*	n,
 								float*	E_MeV_u,
 								int*	particle_index,
-								char**	material_name,
+								int*	material_no,
 								long*   er_model,
 								float*	max_electron_range_m);
 #endif
@@ -133,7 +93,7 @@ void SGP_max_electron_range_mS(	long*	n,
 void SGP_max_electron_range_mS(	long*	n,
 								float*	E_MeV_u,
 								long*	particle_no,
-								char**	material_name,
+								long*	material_no,
 								long*	er_model,
 								float*	max_electron_range_m);
 #endif
@@ -164,7 +124,7 @@ void SGP_Particle_Properties(	long*	n,
 
 	long i;
 	for(i = 0; i < *n; i++){
-		particle_index[i]			= SGP_Particle_Data.particle_index[match[i]];
+		particle_index[i]			= SGP_Particle_Data.particle_no[match[i]];
 		strcpy(USRTRACK_name[i], SGP_Particle_Data.USRTRACK_name[match[i]]);
 		strcpy(element_name[i], SGP_Particle_Data.element_name[match[i]]);
 		Z[i]						= SGP_Particle_Data.Z[match[i]];
@@ -177,7 +137,7 @@ void SGP_Particle_Properties(	long*	n,
 // Routines to access MATERIAL data
 ///////////////////////////////////////////////////////////////////////
 void SGP_getMaterialData(		long*	n,
-								char**	material_names,
+								long*	material_no,
 								float*	density_g_cm3,
 								float*	electron_density_m3,
 								float*	I_eV,
@@ -186,9 +146,9 @@ void SGP_getMaterialData(		long*	n,
 								float*	m_g_cm2)
 {
 	long*	match	=	(long*)calloc(*n, sizeof(long));
-	pmatchc(	material_names,
+	pmatchi(	material_no,
 				n,
-				SGP_Material_Data.material_name,
+				SGP_Material_Data.material_no,
 				&SGP_Material_Data.n,
 				match);
 
@@ -205,24 +165,6 @@ void SGP_getMaterialData(		long*	n,
 	free(match);
 }
 
-void SGP_getMaterialDataS(		char**	material_name,
-								float*	density_g_cm3,
-								float*	electron_density_m3,
-								float*	I_eV,
-								float*	alpha_g_cm2_MeV,
-								float*	p_MeV,
-								float*	m_g_cm2){
-	long	n;
-	n		= 1;
-	SGP_getMaterialData(		&n,
-								material_name,
-								density_g_cm3,
-								electron_density_m3,
-								I_eV,
-								alpha_g_cm2_MeV,
-								p_MeV,
-								m_g_cm2);
-}
 
 #define matchIt			long	n_mat	= 1;									\
 						pmatchc(	&material_name,								\
@@ -297,7 +239,7 @@ void SGP_m_g_cm2(				long*	n,
 void SGP_LET_MeV_cm2_g(	long*	n,
 						float*	E_MeV_u,
 						long*	particle_no,
-						char*	material_name,
+						long*	material_no,
 						float*	LET_MeV_cm2_g)
 {
 
@@ -327,64 +269,19 @@ void SGP_LET_MeV_cm2_g(	long*	n,
 
 	// get effective charge for all given particles and energies
 	float*	eC	=	(float*)calloc(*n, sizeof(float));
-	SGP_effective_charge_from_particle_index(	n,
-												E_MeV_u,
-												particle_no,
-												eC);
+	SGP_effective_charge_from_particle_no(	n,
+											E_MeV_u,
+											particle_no,
+											eC);
 
-	// get LET-data for given material:
-	// first: find all those PSTAR entries that match the material name
-	bool*	matches	=	(bool*)calloc(SGP_PSTAR_Data.n, sizeof(bool));
-	matchc(	material_name,
-			SGP_PSTAR_Data.material_name,
-			&SGP_PSTAR_Data.n,
-			matches);
-
-	// how many are this?
-	long	n_entries	= 0;
-	long	i;
-	for (i = 0; i < SGP_PSTAR_Data.n; i++){
-		if (matches[i]) {n_entries++;}
-	}
-
-	// allocate vectors for extracted LET entries
-	float*	E	=	(float*)calloc(n_entries, sizeof(float));
-	float*	L	=	(float*)calloc(n_entries, sizeof(float));
-
-	// and get the values
-	long j = 0;
-	for (i = 0; i < SGP_PSTAR_Data.n; i++){
-		if(matches[i]){
-			E[j]	= SGP_PSTAR_Data.kin_E_MeV[i];
-			L[j]	= SGP_PSTAR_Data.stp_pow_tot_MeV_cm2_g[i];
-			j++;
-		}
-	}
-
-	long	n_pol			= 4 + 1;
+	getPSTARvalue(n, sE, material_no, SGP_PSTAR_Data.kin_E_MeV, SGP_PSTAR_Data.stp_pow_el_MeV_cm2_g, LET_MeV_cm2_g);
+	long 	i;
 	for (i = 0; i < *n; i++){
-
-		// Get proton-LET for scaled energy from table E, L using 4th degree polynomial (n_pol - 1 = 2) interpolation
-		float	proton_LET		= 0.0f;
-		float	err_proton_LET	= 0.0f;		// dummy
-		interp(		E,
-					L,
-					&n_entries,
-					&n_pol,
-					&sE[i],
-					&proton_LET,
-					&err_proton_LET);
-
-		// and get LET by scaling with effective charge^2
-		LET_MeV_cm2_g[i] = 	eC[i] * eC[i] * proton_LET;
-
+		LET_MeV_cm2_g[i] *= 	eC[i] * eC[i];
 	}
 
-	free(E);
-	free(L);
 	free(eC);
 	free(sE);
-	free(matches);
 
 #ifdef _DEBUG
 	fprintf(debf,"%send SGP_LET_MeV_cm2_g\n", isp);
@@ -397,22 +294,22 @@ void SGP_LET_MeV_cm2_g(	long*	n,
 void SGP_LET_keV_um(	long*	n,
 						float*	E_MeV_u,
 						long*	particle_no,
-						char*	material_name,
+						long*	material_no,
 						float*	LET_keV_um)
 {
 	// Get mass-norm. LET
 	SGP_LET_MeV_cm2_g(	n,
 						E_MeV_u,
 						particle_no,
-						material_name,
+						material_no,
 						LET_keV_um);
 
 	// Get density matching to material_name (only 1 name therefore n_mat = 1)
 	long	n_mat	= 1;
 	long	match;
-	pmatchc(	&material_name,
+	pmatchi(	material_no,
 				&n_mat,
-				SGP_Material_Data.material_name,
+				SGP_Material_Data.material_no,
 				&SGP_Material_Data.n,
 				&match);
 
@@ -426,107 +323,20 @@ void SGP_LET_keV_um(	long*	n,
 void SGP_CSDA_range_g_cm2(	long*	n,
 							float*	E_MeV_u,
 							long*	particle_no,
-							char*	material_name,
+							long*	material_no,
 							float*	CSDA_range_g_cm2)
 {
-	// first: find all those PSTAR entries that match the material name
-	bool*	matches	=	(bool*)calloc(SGP_PSTAR_Data.n, sizeof(bool));
-	matchc(	material_name,
-			SGP_PSTAR_Data.material_name,
-			&SGP_PSTAR_Data.n,
-			matches);
-
-	// how many are this?
-	long	n_entries	= 0;
-	long	i;
-	for (i = 0; i < SGP_PSTAR_Data.n; i++){
-		if (matches[i]) {n_entries++;}
-	}
-
-	// allocate vectors for extracted CDSA range entries
-	float*	E	=	(float*)calloc(n_entries, sizeof(float));
-	float*	r	=	(float*)calloc(n_entries, sizeof(float));
-
-	// and get the values
-	long j = 0;
-	for (i = 0; i < SGP_PSTAR_Data.n; i++){
-		if(matches[i]){
-			E[j]	= SGP_PSTAR_Data.kin_E_MeV[i];
-			r[j]	= SGP_PSTAR_Data.range_cdsa_g_cm2[i];
-			j++;
-		}
-	}
-
-	long	n_pol			= 4 + 1;
-	for (i = 0; i < *n; i++){
-
-		// Get CSDA range from table E, r using quadratic (n_pol = 2) interpolation
-		float	err_range	= 0.0f;		// dummy
-		interp(		E,
-					r,
-					&n_entries,
-					&n_pol,
-					&E_MeV_u[i],
-					&CSDA_range_g_cm2[i],
-					&err_range);
-	}
-
-	free(E);
-	free(r);
-	free(matches);
+	getPSTARvalue(n, E_MeV_u, material_no, SGP_PSTAR_Data.kin_E_MeV, SGP_PSTAR_Data.range_cdsa_g_cm2, CSDA_range_g_cm2);
 }
 
 void SGP_E_MeV(	long*	n,
 				float*	CSDA_range_g_cm2,
-				long*	particle_index,
-				char*	material_name,
+				long*	particle_no,
+				long*	material_no,
 				float*	E_MeV)
 {
-	// first: find all those PSTAR entries that match the material name
-	bool*	matches	=	(bool*)calloc(SGP_PSTAR_Data.n, sizeof(bool));
-	matchc(	material_name,
-			SGP_PSTAR_Data.material_name,
-			&SGP_PSTAR_Data.n,
-			matches);
-
-	// how many are this?
-	long	n_entries	= 0;
-	long	i;
-	for (i = 0; i < SGP_PSTAR_Data.n; i++){
-		if (matches[i]) {n_entries++;}
-	}
-
-	// allocate vectors for extracted energy entries
-	float*	r	=	(float*)calloc(n_entries, sizeof(float));
-	float*	E	=	(float*)calloc(n_entries, sizeof(float));
-
-	// and get the values
-	long j = 0;
-	for (i = 0; i < SGP_PSTAR_Data.n; i++){
-		if(matches[i]){
-			r[j]	= SGP_PSTAR_Data.range_cdsa_g_cm2[i];
-			E[j]	= SGP_PSTAR_Data.kin_E_MeV[i];
-			j++;
-		}
-	}
-
-	long	n_pol			= 2;
-	for (i = 0; i < *n; i++){
-
-		// Get energy from table r, E using quadratic (n_pol = 2) interpolation
-		float	err_range	= 0.0f;		// dummy
-		interp(		r,
-					E,
-					&n_entries,
-					&n_pol,
-					&CSDA_range_g_cm2[i],
-					&E_MeV[i],
-					&err_range);
-	}
-
-	free(r);
-	free(E);
-	free(matches);
+	getPSTARvalue(n, CSDA_range_g_cm2, material_no, SGP_PSTAR_Data.range_cdsa_g_cm2, SGP_PSTAR_Data.kin_E_MeV, CSDA_range_g_cm2);
+	// TO DO: scale energy back!
 }
 
 
@@ -534,18 +344,18 @@ void SGP_E_MeV(	long*	n,
 // MISC ROUTINES
 //////////////////////////////////////////////////
 
-void SGP_beta_from_particle_index(	long*	n,
+void SGP_beta_from_particle_no(	long*	n,
 									float*	E_MeV_u,
-									long*	particle_index,
+									long*	particle_no,
 									float*	beta)
 {
 	// find look-up indices for A's for particle numbers in particle data
 	long*	matches	=	(long*)calloc(*n, sizeof(long));
 	float*	mass	=	(float*)calloc(*n, sizeof(float));
 
-	pmatchi(	particle_index,
+	pmatchi(	particle_no,
 				n,
-				SGP_Particle_Data.particle_index,
+				SGP_Particle_Data.particle_no,
 				&SGP_Particle_Data.n,
 				matches);
 
@@ -600,18 +410,18 @@ void SGP_E_from_beta_and_mass(	long*	n,
 	}
 }
 
-void SGP_E_from_beta_and_particle_index(	long*	n,
+void SGP_E_from_beta_and_particle_no(	long*	n,
 											float*	beta,
-											long*	particle_index,
+											long*	particle_no,
 											float*	E_MeV_u)
 {
 	// find look-up indices for A's for particle numbers in particle data
 	long*	matches	=	(long*)calloc(*n, sizeof(long));
 	float*	mass	=	(float*)calloc(*n, sizeof(float));
 
-	pmatchi(	particle_index,
+	pmatchi(	particle_no,
 				n,
-				SGP_Particle_Data.particle_index,
+				SGP_Particle_Data.particle_no,
 				&SGP_Particle_Data.n,
 				matches);
 
@@ -629,25 +439,25 @@ void SGP_E_from_beta_and_particle_index(	long*	n,
 }
 
 
-void SGP_effective_charge_from_particle_index(	long*	n,
+void SGP_effective_charge_from_particle_no(	long*	n,
 												float*	E_MeV_u,
-												long*	particle_index,
+												long*	particle_no,
 												float*	effective_charge)
 {
 	// get relativistic speeds for all given particles and energies
 	float*	beta	=	(float*)calloc(*n, sizeof(float));
 	long*	Z		=	(long*)calloc(*n, sizeof(long));
 
-	SGP_beta_from_particle_index(	n,
+	SGP_beta_from_particle_no(	n,
 									E_MeV_u,
-									particle_index,
+									particle_no,
 									beta);
 
 	// find look-up indices for Z's for particle numbers in particle data
 	long*	matches	=	(long*)calloc(*n, sizeof(long));
-	pmatchi(	particle_index,
+	pmatchi(	particle_no,
 				n,
-				SGP_Particle_Data.particle_index,
+				SGP_Particle_Data.particle_no,
 				&SGP_Particle_Data.n,
 				matches);
 
@@ -686,7 +496,7 @@ void SGP_effective_charge_from_beta(	long*	n,
 
 void SGP_scaled_energy(	long*	n,
 						float*	E_MeV_u,
-						long*	particle_index,
+						long*	particle_no,
 						float*	scaled_energy)
 {
 //	printf("begin SGP_scaled_energy\n");
@@ -694,14 +504,14 @@ void SGP_scaled_energy(	long*	n,
 //	long ii;
 //	for( ii = 0 ; ii < *n ; ii++){
 //		printf("E_MeV_u[%ld]=%e\n", ii , E_MeV_u[ii]);
-//		printf("particle_index[%ld]=%ld\n", ii , particle_index[ii]);
+//		printf("particle_no[%ld]=%ld\n", ii , particle_no[ii]);
 //	}
 
 	// find look-up indices for A's for particle numbers in particle data
 	long*	matches	=	(long*)calloc(*n, sizeof(long));
-	pmatchi(	particle_index,
+	pmatchi(	particle_no,
 				n,
-				SGP_Particle_Data.particle_index,
+				SGP_Particle_Data.particle_no,
 				&SGP_Particle_Data.n,
 				matches);
 
@@ -732,7 +542,7 @@ void SGP_scaled_energy(	long*	n,
 
 void SGP_max_E_transfer_MeV(	long*	n,
 								float*	E_MeV_u,
-								long*	particle_index,
+								long*	particle_no,
 								float*	max_E_transfer_MeV)
 {
 	/* if E_MeV_u < 0:		use non-relativistic formula
@@ -751,9 +561,9 @@ void SGP_max_E_transfer_MeV(	long*	n,
 
 	// get relativistic speeds for all given particles and energies
 	float*	beta	=	(float*)calloc(*n, sizeof(float));
-	SGP_beta_from_particle_index(	n,
+	SGP_beta_from_particle_no(	n,
 									E_MeV_u,
-									particle_index,
+									particle_no,
 									beta);
 
 	for (i = 0; i < *n; i++){
@@ -772,9 +582,9 @@ void SGP_max_E_transfer_MeV(	long*	n,
 #ifdef _R
 void SGP_max_electron_range_mS(	long*	n,
 								float*	E_MeV_u,
-								int*	particle_index,
-								char**	material_name,
-								long*   er_model,
+								int*	particle_no,
+								int*	material_no,
+								int*   er_model,
 								float*	max_electron_range_m)
 {
 
@@ -786,55 +596,49 @@ void SGP_max_electron_range_mS(	long*	n,
 	*er_model = (long)er_model_int;
 
 	long i;
-	long * particle_index_long = (long*)calloc(*n,sizeof(long));
-	int particle_index_int;
+	long * particle_no_long = (long*)calloc(*n,sizeof(long));
+	int particle_no_int;
 	for(i = 0 ; i < *n ; i++){
-		particle_index_long[i] = (long)particle_index[i];
-//		printf("output particle_no[%ld]=%ld\n", i , particle_index_long[i]);
+		particle_no_long[i] = (long)particle_no[i];
+//		printf("output particle_no[%ld]=%ld\n", i , particle_no_long[i]);
 	}
 
 	SGP_max_electron_range_m( n,
 								E_MeV_u,
-								particle_index_long,
-								*material_name,
+								particle_no_long,
+								material_no,
 								er_model,
 								max_electron_range_m);
 
-	free(particle_index_long);
+	free(particle_no_long);
 
 }
 
-#elif
+#endif
+#ifdef _S
 
 void SGP_max_electron_range_mS(	long*	n,
 								float*	E_MeV_u,
-								long*	particle_index,
-								char**	material_name,
+								long*	particle_no,
+								long*	material_no,
 								long*   er_model,
 								float*	max_electron_range_m)
 {
 
 	SGP_max_electron_range_m( n,
 								E_MeV_u,
-								particle_index,
-								*material_name,
+								particle_no,
+								material_no,
 								er_model,
 								max_electron_range_m);
 
 }
 #endif
 
-// Models available:
-// 0 - Test
-// 1 - Test
-// 2 - Test
-// 3 - Test
-// 4 - Test
-
 void SGP_max_electron_range_m(	long*	n,
 								float*	E_MeV_u,
-								long*	particle_index,
-								char*	material_name,
+								long*	particle_no,
+								long*	material_no,
 								long*   er_model,
 								float*	max_electron_range_m)
 {
@@ -846,26 +650,25 @@ void SGP_max_electron_range_m(	long*	n,
 	long ii;
 	for( ii = 0 ; ii < *n ; ii++){
 		fprintf(debf,"%sE_MeV_u[%ld]=%e\n", isp, ii , E_MeV_u[ii]);
-		fprintf(debf,"%sparticle_no[%ld]=%ld\n", isp, ii , particle_index[ii]);
+		fprintf(debf,"%sparticle_no[%ld]=%ld\n", isp, ii , particle_no[ii]);
 	}
 #endif
-
 
 	// Get density matching to material_name (only 1 name therefore n_mat = 1)
 	long	n_mat	= 1;
 	long	match;
-	pmatchc(	&material_name,
+	pmatchi(	material_no,
 				&n_mat,
-				SGP_Material_Data.material_name,
+				SGP_Material_Data.material_no,
 				&SGP_Material_Data.n,
 				&match);
 
 	long*	matches	=	(long*)calloc(*n, sizeof(long));
 	float*	mass	=	(float*)calloc(*n, sizeof(float));
 
-	pmatchi(	particle_index,
+	pmatchi(	particle_no,
 				n,
-				SGP_Particle_Data.particle_index,
+				SGP_Particle_Data.particle_no,
 				&SGP_Particle_Data.n,
 				matches);
 
@@ -881,7 +684,7 @@ void SGP_max_electron_range_m(	long*	n,
 			w_keV = 2 * electron_mass_MeV_c2 * ( E_div_E0*E_div_E0 + 2*E_div_E0) * 1e3;
 			max_electron_range_m[i] = 1e-5 * w_keV;
 		}
-		if( *er_model == ER_Waligorski ){
+		if( *er_model == ER_Katz ){
 			double alpha = 1.667;
 			w_keV = 2 * electron_mass_MeV_c2 * ( E_div_E0*E_div_E0 + 2*E_div_E0) * 1e3;
 			if( w_keV < 1. ) alpha = 1.079;
@@ -931,16 +734,16 @@ void SGP_Bohr_Energy_Straggling_g_cm2(	long*	n,
 	}
 }
 
-void SGP_Z_from_particle_index(	long*	n,
-								long*	particle_index,
+void SGP_Z_from_particle_no(	long*	n,
+								long*	particle_no,
 								long*	Z)
 {
 	// find look-up indices for A's for particle numbers in particle data
 	long*	matches	=	(long*)calloc(*n, sizeof(long));
 
-	pmatchi(	particle_index,
+	pmatchi(	particle_no,
 				n,
-				SGP_Particle_Data.particle_index,
+				SGP_Particle_Data.particle_no,
 				&SGP_Particle_Data.n,
 				matches);
 

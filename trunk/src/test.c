@@ -128,44 +128,188 @@ void testRDD(){
 
     long 	n 					= 5;
     float 	r_m[] 				= {1e-6, 1e-7, 1e-8, 1e-9, 1e-10};
-    char 	material_name[50] 	= "Water, Liquid";
-    char** 	mn 					= (char**)calloc(1, sizeof(char*));
-    *mn 						= material_name;
+
+    float	E_MeV_u				= 100;
+    long	particle_no			= 1;
+    long 	material_no		 	= 1;
+
     long	rdd_model			= 1;
-	long	n_rdd_parameter		= 4;
-    float 	rdd_parameter[]		= {100.0f, 1, 0, 1e-10f};
+	long	n_rdd_parameter		= 1;
+    float 	rdd_parameter		= 1e-10f;
+
 	long	er_model			= 2;
 	long	n_er_parameter		= 0;
-    float 	er_parameter[]		= {0.0f};
-	float	D_RDD_Gy[] 			= { 0, 0, 0, 0, 0 };
+    float 	er_parameter		= 0.0f;
+
+    float	D_RDD_Gy[] 			= { 0, 0, 0, 0, 0 };
 	float	r_RDD_m_back[]		= { 0, 0, 0, 0, 0 };
+
 	int i;
 
 	printf("begin model %d\n", rdd_model);
-	SGP_D_RDD_Gy( &n, r_m, &rdd_model, &n_rdd_parameter, rdd_parameter, &er_model, &n_er_parameter, er_parameter, D_RDD_Gy);
+	SGP_D_RDD_Gy( 	&n,
+					r_m,
+					&E_MeV_u,	&particle_no, 		&material_no,
+					&rdd_model, &n_rdd_parameter, 	&rdd_parameter,
+					&er_model, 	&n_er_parameter, 	&er_parameter,
+					D_RDD_Gy);
+
 	for( i = 0 ; i < n ; i++){
 		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);}
 
-	n 					= 5;
 	rdd_model			= 2;
-	n_rdd_parameter		= 4;
-	float	rdd_parameter2[]	= {100, 1, 0, 5e-8};
+	rdd_parameter		= 5e-8;
 	printf("begin model %d\n", rdd_model);
-	SGP_D_RDD_Gy( &n, r_m, &rdd_model, &n_rdd_parameter, rdd_parameter2, &er_model, &n_er_parameter, er_parameter, D_RDD_Gy);
+	SGP_D_RDD_Gy( 	&n,
+					r_m,
+					&E_MeV_u,	&particle_no, 		&material_no,
+					&rdd_model, &n_rdd_parameter, 	&rdd_parameter,
+					&er_model, 	&n_er_parameter, 	&er_parameter,
+					D_RDD_Gy);
 	for( i = 0 ; i < n ; i++){
 		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);}
 
-	n 					= 5;
 	rdd_model			= 3;
-	n_rdd_parameter		= 4;
-	float	rdd_parameter3[]	= {100, 1, 0, 5e-8};
+	n_rdd_parameter		= 1;
+	rdd_parameter		= 5e-8;
 	printf("begin model %d\n", rdd_model);
-	SGP_D_RDD_Gy( &n, r_m, &rdd_model, &n_rdd_parameter, rdd_parameter3, &er_model, &n_er_parameter, er_parameter, D_RDD_Gy);
+	SGP_D_RDD_Gy( 	&n,
+					r_m,
+					&E_MeV_u,	&particle_no, 		&material_no,
+					&rdd_model, &n_rdd_parameter, 	&rdd_parameter,
+					&er_model, 	&n_er_parameter, 	&er_parameter,
+					D_RDD_Gy);
 	for( i = 0 ; i < n ; i++){
 		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);
 	}
 
-	free(mn);
+	n						= 3;
+	float	p_E_MeV_u[]		= {100, 10, 1};
+	long	p_particle_no[]	= {1, 1, 1};
+	rdd_model				= 1;
+	long	N2				= 10;
+	bool	debug			= false;
+	long	n_bins_f1;
+	float*	f1_parameters	= (float*)calloc(n * 9, sizeof(float));
+
+	SGP_SC_get_f1_array_size(	/* radiation field parameters */
+								&n,
+								p_E_MeV_u,
+								p_particle_no,
+								/* detector parameters */
+								&material_no,
+								&rdd_model,
+								&n_rdd_parameter,
+								&rdd_parameter,
+								/* electron range model */
+								&er_model,
+								&n_er_parameter,
+								&er_parameter,
+								/* algorith parameters*/
+								&N2,
+								&debug,
+								// from here: return values
+								&n_bins_f1,
+								f1_parameters);
+
+	float	p_fluence_cm2[]			=	{1e8, 1e8, 1e8};
+	float*	norm_fluence			= 	(float*)calloc(n, sizeof(float));
+	float*	dose_contribution_Gy	= 	(float*)calloc(n, sizeof(float));
+	float*	f_parameters			= 	(float*)calloc(7, sizeof(float));
+	float*	f1_d_Gy					= 	(float*)calloc(n_bins_f1, sizeof(float));
+	float*	f1_dd_Gy				= 	(float*)calloc(n_bins_f1, sizeof(float));
+	float*	f1						= 	(float*)calloc(n_bins_f1, sizeof(float));
+
+	SGP_SC_get_f1(	/* radiation field parameters */
+							&n,
+							p_E_MeV_u,
+							p_particle_no,
+							p_fluence_cm2,
+							/* detector parameters */
+							&material_no,
+							&rdd_model,
+							&n_rdd_parameter,
+							&rdd_parameter,
+							/* electron range model */
+							&er_model,
+							&n_er_parameter,
+							&er_parameter,
+							/* algorith parameters*/
+							&N2,
+							&n_bins_f1,
+							/* f1 parameters*/
+							f1_parameters,
+							// from here: return values
+							norm_fluence,
+							dose_contribution_Gy,
+							f_parameters,
+							f1_d_Gy,
+							f1_dd_Gy,
+							f1);
+
+	float	fluence_factor = 1.0f;
+	long	n_bins_f;
+	float	u_start;
+	long	n_convolutions;
+	SGP_SC_get_f_array_size(	&f_parameters[0],
+			&fluence_factor,
+			&N2,
+			&n_bins_f1,
+			f1_d_Gy,
+			f1_dd_Gy,
+			f1,
+			// from here: return values
+			&n_bins_f,
+			&u_start,
+			&n_convolutions);
+
+	float*	f_d_Gy					= 	(float*)calloc(n_bins_f, sizeof(float));
+	float*	f_dd_Gy					= 	(float*)calloc(n_bins_f, sizeof(float));
+	float*	f_start					= 	(float*)calloc(n_bins_f, sizeof(float));
+
+	SGP_SC_get_f_start(	&f_parameters[0],
+			&n_bins_f1,
+			&N2,
+			f1_d_Gy,
+			f1_dd_Gy,
+			f1,
+			&n_bins_f,
+			// from here: return values
+			f_d_Gy,
+			f_dd_Gy,
+			f_start);
+
+	bool 	write_output = true;
+	bool	shrink_tails 			= true;
+	float	shrink_tails_under		= 1e-30f;
+	bool	adjust_N2				= true;
+	long	n_bins_f_used			= n_bins_f;
+
+	float	f0;
+	float*	fdd						= 	(float*)calloc(n_bins_f, sizeof(float));
+	float*	dfdd					= 	(float*)calloc(n_bins_f, sizeof(float));
+	float	d;
+
+	SGP_SuccessiveConvolutions(	&f_parameters[0],
+			&n_bins_f,
+			&N2,
+			// input + return values
+			&n_bins_f_used,
+			f_d_Gy,
+			f_dd_Gy,
+			f_start,
+			// return values
+			&f0,
+			fdd,
+			dfdd,
+			&d,
+			&write_output,
+			&shrink_tails,
+			&shrink_tails_under,
+			&adjust_N2);
+
+
+	free(f1_parameters);
 }
 
 //

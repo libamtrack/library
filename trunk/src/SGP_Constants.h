@@ -4,7 +4,7 @@
 #include <string.h>
 
 double	c_m_s						=	299792458.0; 						// speed of light [m/s]
-double	c_cm_s						=	29979245800; 						// speed of light [cm/s]
+double	c_cm_s						=	29979245800.0;						// speed of light [cm/s]
 double	proton_mass_MeV_c2			=	938.272029;							// proton mass
 double	proton_mass_kg				=	1.67262171e-27;
 double	electron_mass_MeV_c2		=	0.510998918;						// electron mass
@@ -34,9 +34,9 @@ enum GammaResponseModels{
 
 enum RDDModels{
 	RDD_Test				= 0,			/* no parameters */
-	RDD_KatzPoint			= 1,			/* parameters: 0 - beta,	1 - Z,			 2 - material-no, 3 - r_min [m] (lower integration limit) */
-	RDD_Geiss				= 2,			/* parameters: 0 - E_MeV_u, 1 - particle_no, 2 - material_no, 3 - a0 [m] */
-	RDD_Site				= 3				/* parameters: 0 - E_MeV_u, 1 - particle_no, 2 - material_no, 3 - a0 [m] */ //as defined in Edmund et al. , 2007
+	RDD_KatzPoint			= 1,			/* parameters: 0 - r_min [m] (lower integration limit) */
+	RDD_Geiss				= 2,			/* parameters: 0 - a0 [m] (core diameter) */
+	RDD_Site				= 3				/* parameters: 0 - a0 [m] (core diameter) */ //as defined in Edmund et al. , 2007
 };
 
 enum material_no{
