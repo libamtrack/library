@@ -6,10 +6,8 @@
 #include <float.h>
 #include <math.h>
 #include <malloc.h>
-#include "SGP_Constants.h"
-#include "SGP_Data.h"
 #include <string.h>
-
+#include <stdbool.h>
 
 static float maxarg1;
 static float maxarg2;
@@ -56,17 +54,6 @@ void indnt_dec(){
 // is reported per element
 // a vector "matches" of length n_elements has to be provided
 void pmatchi(long* elements, long* n_elements, long* set, long* n_set, long* matches){
-//	printf("n_elements = %ld\n", *n_elements);
-//	printf("n_set = %ld\n", *n_set);
-//	long ii;
-//	for( ii = 0 ; ii < *n_elements ; ii++){
-//		printf("elements[%ld]=%ld\n", ii , elements[ii]);
-//		printf("matches[%ld]=%ld\n", ii , matches[ii]);
-//	}
-//	for( ii = 0 ; ii < *n_set ; ii++){
-//		printf("set[%ld]=%ld\n", ii , set[ii]);
-//	}
-
 	long	i;
 	for (i = 0; i < *n_elements; i++){
 		matches[i] = 0;
@@ -111,6 +98,18 @@ void matchc(char* element, char** set, long* n_set, bool* matches){
 	}
 }
 
+// finds a integer element in a set and returns boolean match vector
+// a vector "matches" of length n_set has to be provided
+void matchi(long* element, long* set, long* n_set, bool* matches){
+
+	long	i;
+	for (i = 0; i < *n_set; i++){
+		if(*element == set[i]){
+			matches[i]	= true;}
+		else{
+			matches[i]	= false;}
+	}
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,6 +190,51 @@ void interp(float* xa, float* ya, long* n, long* n_pol, float* x, float *y, floa
 			dy);
 	return;
 }
+
+// get LET-data for given material
+void getPSTARvalue(long* n, float* x, long* material_no, float* x_table, float* y_table, float* y)
+{
+	// first: find those PSTAR entries that match the material name
+	bool*		matches		=	(bool*)calloc(SGP_PSTAR_Data.n, sizeof(bool));
+	matchi(		material_no,
+				SGP_PSTAR_Data.material_no,
+				&SGP_PSTAR_Data.n,
+				matches);
+
+	long		n_matches	= 0;
+	long		i;
+	for (i = 0; i < SGP_PSTAR_Data.n; i++){
+		if (matches[i]){n_matches++;}
+	}
+
+	// allocate vectors for extracted LET entries
+	float*	x_c	=	(float*)calloc(n_matches, sizeof(float));
+	float*	y_c	=	(float*)calloc(n_matches, sizeof(float));
+
+	// and get the values
+	long 		j	= 0;
+	for (i = 0; i < SGP_PSTAR_Data.n; i++){
+		if (matches[i]){
+			x_c[j]	= x_table[i];
+			y_c[j]	= y_table[i];
+			j++;
+		}
+	}
+	long	n_pol			= 4 + 1;
+	for (i = 0; i < *n; i++){
+		// Get proton-LET for scaled energy from table E, L using 4th degree polynomial (n_pol - 1 = 2) interpolation
+		float	err_y_tmp	= 0.0f;		// dummy
+		interp(		x_c,
+					y_c,
+					&n_matches,
+					&n_pol,
+					&x[i],
+					&y[i],
+					&err_y_tmp);
+	}
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 float gammln(float xx)
@@ -293,6 +337,7 @@ void nrerror(char error_text[])
 	exit(1);
 }
 
+
 #define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 #define MAXIT 60
 #define UNUSED (-1.11e30)
@@ -343,6 +388,5 @@ float zriddr(float (*func)(float,void*), void * params, float x1, float x2, floa
 	}
 	return 0.0; 												// Never get here.
 }
-
 
 #endif // SGP_UTILS_H_

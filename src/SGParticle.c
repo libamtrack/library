@@ -8,11 +8,13 @@
 
 #include "SGP_Constants.h"
 #include "SGP_Data.h"
+#include "SGP_Utils.h"
 #include "SGP_Functions.h"
 #include "SGP_RDD.h"
 #include "SGP_SuccessiveConvolutions.h"
 #include "SGP_GammaResponse.h"
 #include "SGP_FileOperations.h"
+#include "SGP_ParabolicCylinderFunction.h"
 #include "SGP_Transport.h"
 
 /*

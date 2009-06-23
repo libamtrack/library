@@ -8,7 +8,7 @@
 
 typedef struct {
 	long		n;
-	long		particle_index[PARTICLE_DATA_N];
+	long		particle_no[PARTICLE_DATA_N];
 	char*		particle_name[PARTICLE_DATA_N];
 	char*		element_name[PARTICLE_DATA_N];
 	long		Z[PARTICLE_DATA_N];
@@ -18,7 +18,7 @@ typedef struct {
 } particle_data;
 
 particle_data SGP_Particle_Data = {
-	{	PARTICLE_DATA_N },
+		PARTICLE_DATA_N ,
 	{	1,		2,		3,
 		4,		5,
 		6,		7,		8,
@@ -86,6 +86,7 @@ particle_data SGP_Particle_Data = {
 
 typedef struct {
 	long		n;
+	long		material_no[MATERIAL_DATA_N];
 	float		density_g_cm3[MATERIAL_DATA_N];
 	float		electron_density_m3[MATERIAL_DATA_N];
 	float		I_eV[MATERIAL_DATA_N];
@@ -96,7 +97,8 @@ typedef struct {
 } material_data;
 
 material_data SGP_Material_Data = {
-	{	MATERIAL_DATA_N},
+		MATERIAL_DATA_N,
+	{	1,					2,					3,				4},
 	{	1.00f,				3.97f,				2.6989f,		1.19f},
 	{	3.3456e29f,			1.1719e30f,			7.8314e+29f,	3.8698e29f},
 	{	75.0f,				145.2f,				166.0f,			74.0f},
@@ -121,11 +123,11 @@ typedef struct {
 	float		range_cdsa_g_cm2[PSTAR_DATA_N];
 	float		range_proj_g_cm2[PSTAR_DATA_N];
 	float		detour_factor[PSTAR_DATA_N];
-	char*		material_name[PSTAR_DATA_N];
+	long		material_no[PSTAR_DATA_N];
 } pstar_data;
 
 pstar_data SGP_PSTAR_Data = {
-	{	PSTAR_DATA_N},
+	PSTAR_DATA_N,
 
 ///////////////////////////////////////////////////////////////////////
 // ENTER RESULTS FROM S-SCRIPT "FORMAT_PSTAR.DATA.BASE_FOR_C.SSC" HERE
@@ -516,59 +518,59 @@ pstar_data SGP_PSTAR_Data = {
 		9.9960e-1f,		9.9960e-1f,		9.9970e-1f,		9.9970e-1f,		9.9970e-1f,		9.9970e-1f,		9.9980e-1f,		9.9980e-1f
 	},
 	{
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",		"Water, Liquid",
-		"Water, Liquid",		"Water, Liquid",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",
-		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum Oxide",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",
-		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"Aluminum",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",
-		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA",		"PMMA"
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+		0,		0,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,
+		1,		1,		1,		1,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		2,		2,		2,		2,
+		2,		2,		2,		2,		2,		2,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4,		4,		4,
+		4,		4,		4,		4,		4,		4,		4,		4
 	}
 
 
