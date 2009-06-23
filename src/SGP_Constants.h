@@ -26,25 +26,25 @@ double	m_to_um						=	1e6;
 double	pi							=	3.14159265;
 
 enum GammaResponseModels{
-    GR_Test					= 0,
-    GR_GeneralTarget		= 1,
-    GR_Radioluminescence	= 2,
-    GR_ExpSaturation		= 3
+    GR_Test					= 1,
+    GR_GeneralTarget		= 2,
+    GR_Radioluminescence	= 3,
+    GR_ExpSaturation		= 4
 };
 
 enum RDDModels{
-	RDD_Test				= 0,			/* no parameters */
-	RDD_KatzPoint			= 1,			/* parameters: 0 - r_min [m] (lower integration limit) */
-	RDD_Geiss				= 2,			/* parameters: 0 - a0 [m] (core diameter) */
-	RDD_Site				= 3,			/* parameters: 0 - a0 [m] (core diameter) */ //as defined in Edmund et al. , 2007
-	RDD_ExtTarget			= 4				/* parameters: TODO */
+	RDD_Test				= 1,			/* no parameters */
+	RDD_KatzPoint			= 2,			/* parameters: 0 - r_min [m] (lower integration limit) */
+	RDD_Geiss				= 3,			/* parameters: 0 - a0 [m] (core diameter) */
+	RDD_Site				= 4,			/* parameters: 0 - a0 [m] (core diameter) */ //as defined in Edmund et al. , 2007
+	RDD_ExtTarget			= 5				/* parameters: TODO */
 };
 
 enum material_no{
-	Water_Liquid			= 0,
-	Aluminum_Oxide			= 1,
- 	Aluminum				= 2,
- 	PMMA					= 3
+	Water_Liquid			= 1,
+	Aluminum_Oxide			= 2,
+ 	Aluminum				= 3,
+ 	PMMA					= 4
 };
 
 void getMaterialName(long* material_no, char* material_name){

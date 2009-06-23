@@ -33,7 +33,7 @@ void SGP_E_MeV(	long*	n,
 void SGP_Particle_Properties(	long*	n,
 								char**	particle_name,
 								/* return values*/
-								long*	particle_index,
+								long*	particle_no,
 								char**	USRTRACK_name,
 								char**	element_name,
 								long*	Z,
@@ -44,7 +44,7 @@ void SGP_Particle_Properties(	long*	n,
 
 ///////////////////////////////////////////////////////////////////////
 // MISC CONV. ROUTINES
-void SGP_beta_from_particle_index(	long*	n,
+void SGP_beta_from_particle_no(	long*	n,
 									float*	E_MeV_u,
 									long*	particle_no,
 									float*	beta);
@@ -84,7 +84,7 @@ void SGP_max_electron_range_m(	long*	n,
 #ifdef _R
 void SGP_max_electron_range_mS(	long*	n,
 								float*	E_MeV_u,
-								int*	particle_index,
+								int*	particle_no,
 								int*	material_no,
 								long*   er_model,
 								float*	max_electron_range_m);
@@ -98,7 +98,7 @@ void SGP_max_electron_range_mS(	long*	n,
 								float*	max_electron_range_m);
 #endif
 
-void SGP_Z_from_particle_index(	long*	n,								// should rather be SGP_ParticleProperties(particle.index)
+void SGP_Z_from_particle_no(	long*	n,								// should rather be SGP_ParticleProperties(particle.index)
 								long*	particle_no,
 								long*	Z);
 
@@ -108,7 +108,7 @@ void SGP_Z_from_particle_index(	long*	n,								// should rather be SGP_Particle
 void SGP_Particle_Properties(	long*	n,
 								char**	particle_name,
 								/* return values*/
-								long*	particle_index,
+								long*	particle_no,
 								char**	USRTRACK_name,
 								char**	element_name,
 								long*	Z,
@@ -124,7 +124,7 @@ void SGP_Particle_Properties(	long*	n,
 
 	long i;
 	for(i = 0; i < *n; i++){
-		particle_index[i]			= SGP_Particle_Data.particle_no[match[i]];
+		particle_no[i]			= SGP_Particle_Data.particle_no[match[i]];
 		strcpy(USRTRACK_name[i], SGP_Particle_Data.USRTRACK_name[match[i]]);
 		strcpy(element_name[i], SGP_Particle_Data.element_name[match[i]]);
 		Z[i]						= SGP_Particle_Data.Z[match[i]];
