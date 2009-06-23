@@ -3,13 +3,18 @@ replaceSDLL <- function(){
 	attach("d:\\05 - HIT\\Workspaces\\S\\General")
 	detach(what = 1)
 
-	dos('copy \"d:\\05 - HIT\\Workspaces\\Eclipse\\SGParticleLibrary\\Debug\\SGParticle.dll" \"d:\\05 - HIT\\Workspaces\\S\\SGParticle (temp testbed)\\S.dll"')
+	dos('copy \"d:\\05 - HIT\\Workspaces\\Eclipse\\SGParticleLibrary\\Release\\SGParticle.dll" \"d:\\05 - HIT\\Workspaces\\S\\SGParticle (temp testbed)\\S.dll"')
 
 	# attach again
-	attach("d:\\05 - HIT\\Workspaces\\S\\SGParticle (temp testbed)")
+	attach("d:\\05 - HIT\\Workspaces\\S\\SGParticle (temp testbed)\\")
 	detach(what = 1)
 	
 	# update wrapping functions
-	source("d:\\05 - HIT\\Workspaces\\Eclipse\\SGParticleLibrary\\Sscript\\SGP.ssc")}
+	source("d:\\05 - HIT\\Workspaces\\Eclipse\\SGParticleLibrary\\Sscript\\SGP.ssc")
+	
+	cat("Done!")
+}
+
+
 
 
