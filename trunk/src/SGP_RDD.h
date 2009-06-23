@@ -291,6 +291,18 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 									&Z,
 									&Z_eff);
 
+	// Get energy constant C == k
+	float 	density_g_cm3, density_kg_m3, electron_density_m3, I_eV, alpha_g_cm2_MeV, p_MeV, m_g_cm2;
+	SGP_getMaterialData(	&n_tmp,
+							material_no,
+							&density_g_cm3,
+							&electron_density_m3,
+							&I_eV,
+							&alpha_g_cm2_MeV,
+							&p_MeV,
+							&m_g_cm2);
+	density_kg_m3			=	density_g_cm3 * 1000.0f;
+
 	///////////////////////////////////////////////////////////////
 	// PARAMETER 0: Get the LET (same for all models)
 	SGP_LET_MeV_cm2_g(	&n_tmp,
@@ -312,14 +324,13 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 	/////////////////////////////////////////////////////////////////////////////
 	// MODEL SPEZIFIC PARAMETERS
 	if( *rdd_model == RDD_Test){
-		f1_parameters[1] 	= 0.0f;													// r_min_m
-		f1_parameters[6]	= 1.0f / (pi * f1_parameters[2]*f1_parameters[2]);		// pi * r_max_m^2 = Track area -> single_impact_fluence [1/m2]
-		f1_parameters[5]	= f1_parameters[0] * f1_parameters[6];					// LET / track area = Norm.constant k
-		f1_parameters[3]	= f1_parameters[5];										// d_min_Gy = k
-		f1_parameters[4]	= f1_parameters[5];										// d_max_Gy = k
-		f1_parameters[7]	= f1_parameters[0] * f1_parameters[5] * MeV_g_to_J_kg;	// single_impact_dose = LET * fluence;
-		f1_parameters[6]	/= 10000;												// single_impact_fluence [1/cm2]
-		f1_parameters[8]	= f1_parameters[0];										// dEdx = LET
+		f1_parameters[1] 	= 0.0f;																								// r_min_m
+		f1_parameters[6]	= 1.0f / (pi * f1_parameters[2]*f1_parameters[2] * m_to_cm * m_to_cm);								// pi * r_max_m^2 = Track area -> single_impact_fluence [1/cm2]
+		f1_parameters[5]	= f1_parameters[6] * f1_parameters[0] * MeV_to_J * 1000.0f;											// LET  / track area = Norm.constant k
+		f1_parameters[3]	= f1_parameters[5];																					// d_min_Gy = k
+		f1_parameters[4]	= f1_parameters[5];																					// d_max_Gy = k
+		f1_parameters[7]	= f1_parameters[0] * f1_parameters[5] * MeV_g_to_J_kg;												// single_impact_dose = LET * fluence;
+		f1_parameters[8]	= f1_parameters[0];																					// dEdx = LET
 	}
 
 	if( *rdd_model == RDD_KatzPoint || *rdd_model == RDD_Site){
@@ -332,17 +343,6 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 		//////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
 		f1_parameters[1]		=	rdd_parameter[0];								// r_min_m
 
-		// Get energy constant C == k
-		float 	density_g_cm3, density_kg_m3, electron_density_m3, I_eV, alpha_g_cm2_MeV, p_MeV, m_g_cm2;
-		SGP_getMaterialData(	&n_tmp,
-						material_no,
-						&density_g_cm3,
-						&electron_density_m3,
-						&I_eV,
-						&alpha_g_cm2_MeV,
-						&p_MeV,
-						&m_g_cm2);
-		density_kg_m3			=	density_g_cm3 * 1000.0f;
 		float	N_el_cm3		=	electron_density_m3 / (100*100*100);
 		float	C_J_cm			=	2.0f * pi * N_el_cm3 * (e_esu*e_esu*e_esu*e_esu) / (electron_mass_g * c_cm_s *c_cm_s) * 1e-7;   // energy constant [J/cm] not [erg/cm] hence 10^-7
 		float	C_J_m			=	C_J_cm * 100.0f;
@@ -351,7 +351,7 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 
 		// Get dEdx by simple integration from r_min_m (in case of RDD_Site = a0) to r_max_m
 		float	dEdx_J_m		=	0.0f;
-		float	LET_J_m 		=	f1_parameters[0] * 1.602e-13 * density_g_cm3 * 100.0f;
+		float	LET_J_m 		=	f1_parameters[0] * MeV_to_J * density_g_cm3 * 100.0f;
 		long 	j;
 		long 	n_steps = 100;
 		float 	log_r_min_m		=	log10(f1_parameters[1]);

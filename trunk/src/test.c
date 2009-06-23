@@ -186,7 +186,7 @@ void testRDD(){
 	n						= 3;
 	float	p_E_MeV_u[]		= {100, 10, 1};
 	long	p_particle_no[]	= {1, 1, 1};
-	rdd_model				= 1;
+	rdd_model				= 2;
 	long	N2				= 10;
 	bool	debug			= false;
 	long	n_bins_f1;
