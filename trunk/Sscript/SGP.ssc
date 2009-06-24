@@ -41,6 +41,13 @@
 # SGP.Bortfeld.Transport.Protons
 # SGP.Bortfeld.Transport.Proton.Spectrum
 #
+# ::: KATZ MODEL TEST FUNCTIONS:::
+# SGP.RDD.Katz.point.kernel
+# SGP.RDD.Katz.point.D.Gy
+# SGP.RDD.Katz.dEdx.kernel
+# SGP.RDD.Katz.site.D.Gy
+# SGP.RDD.Katz.ext.kernel.D.Gy
+#
 # :::RADIAL DOSE FUNCTIONS:::
 # SGP.RDD.D.Gy
 # SGP.RDD.r.m
@@ -159,6 +166,7 @@ SGP.get.material.data	<-	function(	material.name){
 }
 
 
+
 #################
 SGP.LET.MeV.cm2.g		<-	function(	E.MeV.u,
 										particle.no,
@@ -269,7 +277,6 @@ SGP.scaled.energy.from.particle.no	<-	function(	energy 				= E.MeV.u,
 																					scaled.energy		=	as.single(scaled.energy))
 	return(res$scaled.energy)						
 }
-
 ################################################################################################
 # Transport functions
 ################################################################################################
@@ -449,8 +456,7 @@ SGP.Bortfeld.Transport.Proton.Spectrum			<-	function(	E.initial.spectrum.MeV,
 	df			<-	df[order(df$detector.z.cm, df$E.bins.mid.MeV),]
 	return(df)
 }
-
-################################################################################################
+################################################################################################
 # Max delta electron range
 ################################################################################################
 
@@ -458,25 +464,162 @@ SGP.Bortfeld.Transport.Proton.Spectrum			<-	function(	E.initial.spectrum.MeV,
 ############
 SGP.max.electron.range					<-	function(	E.MeV.u,
 												particle.no,
-												material.name,
+												material.no,
 												er.model){
 	n					<-	length(E.MeV.u)
 	range.m				<-	numeric(n)
 	res				<-	.C("SGP_max_electron_range_mS", 	n						= as.integer(n),
 															E.MeV.u					= as.single(E.MeV.u),
 															particle.no			= as.integer(particle.no),
-															material.name			= as.character(material.name),
+															material.no			= as.integer(material.no),
 															er.model				= as.integer(er.model),
 															range.m					= as.single(range.m))
 	return(res$range.m)
 }
 
+################################################################################################
+# Katz model test functions
+################################################################################################
+
+# Katz model test functions:	
+
+############
+SGP.RDD.Katz.point.kernel					<-	function(	x,
+												alpha){
+	n					<-	length(x)
+	f				<-	numeric(n)
+  
+ 	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("alpha=",alpha,"\n")
+				
+		res					<-	.C(	"SGP_RDD_Katz_point_kernelS",	n						=	as.integer(n),
+															x								=	as.single(x),
+															alpha				=	as.single(alpha),
+															f								=	as.single(f))		
+
+		if(debug == T) cat("res=",res$f,"\n")
+			
+	 return(res$f)						
+}
+
+############
+SGP.RDD.Katz.point.D.Gy					<-	function(	r.m,
+												alpha,
+												r.max.m,
+												poin.coef){
+	n					<-	length(r.m)
+	D.Gy		<-	numeric(n)
+  
+ 	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("alpha=",alpha,"\n")
+				
+		res					<-	.C(	"SGP_RDD_Katz_point_GyS",	n						=	as.integer(n),
+															r.m						=	as.single(r.m),
+															alpha				=	as.single(alpha),
+															r.max.m		= as.single(r.max.m),
+															point.coef = as.single(point.coef),
+															D.Gy					=	as.single(D.Gy))		
+
+		if(debug == T) cat("res=",res$D.Gy,"\n")
+			
+	 return(res$D.Gy)						
+}
+
+############
+SGP.RDD.Katz.dEdx.kernel					<-	function(	x,
+												alpha){
+	n					<-	length(x)
+	f				<-	numeric(n)
+  
+ 	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("alpha=",alpha,"\n")
+				
+		res					<-	.C(	"SGP_RDD_Katz_dEdx_kernelS",	n						=	as.integer(n),
+															x								=	as.single(x),
+															alpha				=	as.single(alpha),
+															f								=	as.single(f))		
+
+		if(debug == T) cat("res=",res$f,"\n")
+			
+	 return(res$f)						
+}
+
+
+############
+SGP.RDD.Katz.site.D.Gy					<-	function(	r.m,
+												alpha,
+												r.min.m,
+												r.max.m,
+												LET,
+												density,
+												dEdx,
+												poin.coef){
+	n					<-	length(r.m)
+	D.Gy		<-	numeric(n)
+  
+ 	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("alpha=",alpha,"\n")
+				
+		res					<-	.C(	"SGP_RDD_Katz_site_GyS",	n						=	as.integer(n),
+															r.m						=	as.single(r.m),
+															alpha				=	as.single(alpha),
+															r.min.m		= as.single(r.min.m),
+															r.max.m		= as.single(r.max.m),
+															LET						= as.single(LET),
+															density		= as.single(density),
+															dEdx					= as.single(dEdx),					
+															point.coef = as.single(point.coef),
+															D.Gy					=	as.single(D.Gy))		
+
+		if(debug == T) cat("res=",res$D.Gy,"\n")
+			
+	 return(res$D.Gy)						
+}
+
+############
+SGP.RDD.Katz.ext.kernel.D.Gy					<-	function(	t.m,
+												r.m,
+												a0.m,
+												alpha,
+												r.min.m,
+												r.max.m,
+												poin.coef){
+	n					<-	length(t.m)
+	D.Gy		<-	numeric(n)
+  
+ 	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("t.m=",t.m,"\n")
+ 	if(debug == T) cat("r.m=",r.m,"\n")
+ 	if(debug == T) cat("a0.m=",a0.m,"\n")
+ 	if(debug == T) cat("alpha=",alpha,"\n")
+ 	if(debug == T) cat("r.min.m=",r.min.m,"\n")
+ 	if(debug == T) cat("r.max.m=",r.max.m,"\n")
+ 	if(debug == T) cat("poin.coef=",poin.coef,"\n")
+								
+# SGP_RDD_Katz_ext_kernel_GyS(int *n, float* t_m, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy, float * D_Gy)
+								
+		res					<-	.C(	"SGP_RDD_Katz_ext_kernel_GyS",	n						=	as.integer(n),
+															t.m						=	as.single(t.m),
+															r.m						=	as.single(r.m),
+															a0.m						=	as.single(a0.m),
+															alpha				=	as.single(alpha),
+															r.min.m		= as.single(r.min.m),
+															r.max.m		= as.single(r.max.m),
+															point.coef = as.single(point.coef),
+															D.Gy					=	as.single(D.Gy))		
+
+		if(debug == T) cat("res=",res$D.Gy,"\n")
+			
+	 return(res$D.Gy)						
+}
 
 ################################################################################################
 # RDD functions
 ################################################################################################
 
 # RDD functions:	
+
+############
 
 ############
 SGP.RDD.D.Gy					<-	function(	r.m,
@@ -501,15 +644,15 @@ SGP.RDD.D.Gy					<-	function(	r.m,
 
 	 if( RDD.model == 1 ){ 
 	 	if(debug == T) cat("RDD_KatzPoint model\n")
-	 	if(debug == T) cat("parameter r.min.m = ",RDD.parameters[0],"\n")}
+	 	if(debug == T) cat("parameter a0=",RDD.parameters[0],"\n")}
 
 	 if( RDD.model == 2 ){ 
 	  if(debug == T) cat("RDD_Geiss model\n")
-	  if(debug == T) cat("parameter a0.m = ",RDD.parameters[0],"\n")}
+	  if(debug == T) cat("parameter a0=",RDD.parameters[0],"\n")}
 
 	 if( RDD.model == 3 ){ 
-	  if(debug == T) cat("RDD_Site model\n")
-  	  if(debug == T) cat("parameter a0.m = ",RDD.parameters[0],"\n")}
+		if(debug == T) cat("parameter a0=",RDD.parameters[0],"\n")
+		}
 				
 		res					<-	.C(	"SGP_D_RDD_Gy",	n						=	as.integer(n),
 														r.m						=	as.single(r.m),
@@ -580,7 +723,7 @@ SGP.RDD.r.m					<-	function(	D.Gy,
 	 return(res$r.m)						
 }
 
-						
+												
 #####################
 SGP.RDD.f1.parameters	<-	function(	E.MeV.u,
 											particle.no,
@@ -613,8 +756,7 @@ SGP.RDD.f1.parameters	<-	function(	E.MeV.u,
 
 	return(res)
 }
-											
-
+										
 ################################################################################################
 # Successive convolutions functions
 ################################################################################################
