@@ -135,7 +135,7 @@ void testRDD(){
 
     long	rdd_model			= 1;
 	long	n_rdd_parameter		= 1;
-    float 	rdd_parameter		= 1e-10f;
+    float 	rdd_parameter		= 1e-11f;
 
 	long	er_model			= 2;
 	long	n_er_parameter		= 0;
@@ -183,10 +183,12 @@ void testRDD(){
 		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);
 	}
 
-	n						= 3;
-	float	p_E_MeV_u[]		= {100, 10, 1};
-	long	p_particle_no[]	= {1, 1, 1};
-	rdd_model				= 2;
+	n						= 1;
+	float	p_E_MeV_u[]		= {100}; //{100, 10, 1};
+	long	p_particle_no[]	= {1}; //{1, 1, 1};
+	rdd_model				= 4;
+    float	rdd_parameter2[]= {5e-8f, 1e-11f};
+    n_rdd_parameter			= 2;
 	long	N2				= 10;
 	bool	debug			= false;
 	long	n_bins_f1;
@@ -200,7 +202,7 @@ void testRDD(){
 								&material_no,
 								&rdd_model,
 								&n_rdd_parameter,
-								&rdd_parameter,
+								&rdd_parameter2,
 								/* electron range model */
 								&er_model,
 								&n_er_parameter,
@@ -212,7 +214,7 @@ void testRDD(){
 								&n_bins_f1,
 								f1_parameters);
 
-	float	p_fluence_cm2[]			=	{1e8, 1e8, 1e8};
+	float	p_fluence_cm2[]			=	{1e8}; //{1e8, 1e8, 1e8};
 	float*	norm_fluence			= 	(float*)calloc(n, sizeof(float));
 	float*	dose_contribution_Gy	= 	(float*)calloc(n, sizeof(float));
 	float*	f_parameters			= 	(float*)calloc(7, sizeof(float));
