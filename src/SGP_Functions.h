@@ -82,11 +82,11 @@ void SGP_max_electron_range_m(	long*	n,
 								float*	max_electron_range_m);
 
 #ifdef _R
-void SGP_max_electron_range_mS(	long*	n,
+void SGP_max_electron_range_mS(	int*	n,
 								float*	E_MeV_u,
 								int*	particle_no,
 								int*	material_no,
-								long*   er_model,
+								int*   er_model,
 								float*	max_electron_range_m);
 #endif
 #ifdef _S
@@ -248,7 +248,7 @@ void SGP_LET_MeV_cm2_g(	long*	n,
 	indnt_inc();
 	fprintf(debf,"%sbegin SGP_LET_MeV_cm2_g\n",isp);
 
-	fprintf(debf,"%sn = %ld, material_name = %s\n", isp, *n, material_name);
+	fprintf(debf,"%sn = %ld, material_no = %ld\n", isp, *n, *material_no);
 	long ii;
 	for( ii = 0 ; ii < *n ; ii++){
 		fprintf(debf,"%sE_MeV_u[%ld]=%e\n", isp, ii , E_MeV_u[ii]);
@@ -580,34 +580,29 @@ void SGP_max_E_transfer_MeV(	long*	n,
 
 // ELECTRON RANGE
 #ifdef _R
-void SGP_max_electron_range_mS(	long*	n,
+void SGP_max_electron_range_mS(	int*	n,
 								float*	E_MeV_u,
 								int*	particle_no,
 								int*	material_no,
 								int*   er_model,
 								float*	max_electron_range_m)
 {
-
-	// conversion through int
-	int n_int = (int)(*n);
-	*n = (long)n_int;
-
-	int er_model_int = (int)(*er_model);
-	*er_model = (long)er_model_int;
+	long n_long = (long)(*n);
+	long material_no_long = (long)(*material_no);
+	long er_model_long = (long)(*er_model);
 
 	long i;
 	long * particle_no_long = (long*)calloc(*n,sizeof(long));
-	int particle_no_int;
 	for(i = 0 ; i < *n ; i++){
 		particle_no_long[i] = (long)particle_no[i];
 //		printf("output particle_no[%ld]=%ld\n", i , particle_no_long[i]);
 	}
 
-	SGP_max_electron_range_m( n,
+	SGP_max_electron_range_m( &n_long,
 								E_MeV_u,
 								particle_no_long,
-								material_no,
-								er_model,
+								&material_no_long,
+								&er_model_long,
 								max_electron_range_m);
 
 	free(particle_no_long);
@@ -646,7 +641,7 @@ void SGP_max_electron_range_m(	long*	n,
 	indnt_init();
 	indnt_inc();
 	fprintf(debf,"%sbegin SGP_max_electron_range_m\n",isp);
-	fprintf(debf,"%sn = %ld, material_name = %s, er_model = %ld\n", isp, *n, material_name, *er_model);
+	fprintf(debf,"%sn = %ld, material_no = %ld, er_model = %ld\n", isp, *n, *material_no, *er_model);
 	long ii;
 	for( ii = 0 ; ii < *n ; ii++){
 		fprintf(debf,"%sE_MeV_u[%ld]=%e\n", isp, ii , E_MeV_u[ii]);
@@ -655,13 +650,13 @@ void SGP_max_electron_range_m(	long*	n,
 #endif
 
 	// Get density matching to material_name (only 1 name therefore n_mat = 1)
-	long	n_mat	= 1;
-	long	match;
-	pmatchi(	material_no,
-				&n_mat,
-				SGP_Material_Data.material_no,
-				&SGP_Material_Data.n,
-				&match);
+	//long	n_mat	= 1;
+	//long	match;
+	//pmatchi(	material_no,
+	//			&n_mat,
+	//			SGP_Material_Data.material_no,
+	//			&SGP_Material_Data.n,
+	//			&match);
 
 	long*	matches	=	(long*)calloc(*n, sizeof(long));
 	float*	mass	=	(float*)calloc(*n, sizeof(float));
@@ -698,7 +693,7 @@ void SGP_max_electron_range_m(	long*	n,
 		}
 
 		// Scale maximum el. range with material density relative to water (1/rho)
-		max_electron_range_m[i]		/= SGP_Material_Data.density_g_cm3[match];
+		max_electron_range_m[i]		/= SGP_Material_Data.density_g_cm3[*material_no];
 
 		// covert cm to m
 		max_electron_range_m[i]		/= 1e2;  // cm to m

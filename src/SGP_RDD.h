@@ -69,6 +69,13 @@ inline float SGP_RDD_Katz_point_kernel(float* x, float* alpha){
 	return (1.0f/((*x)*(*x)) )*pow(1.0f - (*x), 1.0f / (*alpha));
 }
 
+void SGP_RDD_Katz_point_kernelS(int *n, float* x, float* alpha, float* f){
+	int i;
+	for( i = 0 ; i < *n ; i++){
+		f[i] = SGP_RDD_Katz_point_kernel(&(x[i]),alpha);
+	};
+}
+
 inline float SGP_RDD_Katz_point_coeff_Gy(float* C_J_m,float* Z_eff, float* beta, float* alpha, float* density_kg_m3, float* r_max_m){
 	return (*C_J_m) * (*Z_eff)*(*Z_eff) / (2.0f * M_PI * (*beta)*(*beta) * (*alpha) * (*density_kg_m3) * (*r_max_m));
 }
@@ -78,8 +85,22 @@ inline float SGP_RDD_Katz_point_Gy(float* r_m, float* alpha, float* r_max_m, flo
 	return (*Katz_point_coeff_Gy) * SGP_RDD_Katz_point_kernel(&x,alpha);
 }
 
+void SGP_RDD_Katz_point_GyS(int *n, float* r_m, float* alpha, float* r_max_m,float* Katz_point_coeff_Gy, float * D){
+	int i;
+	for( i = 0 ; i < *n ; i++){
+		D[i] = SGP_RDD_Katz_point_Gy(&(r_m[i]),alpha,r_max_m,Katz_point_coeff_Gy);
+	};
+}
+
 inline float SGP_RDD_Katz_dEdx_kernel(float* x, float* alpha){
 	return (1.0f/(*x) )*pow(1.0f - (*x), 1.0f / (*alpha));
+}
+
+void SGP_RDD_Katz_dEdx_kernelS(int *n, float* x, float* alpha, float* f){
+	int i;
+	for( i = 0 ; i < *n ; i++){
+		f[i] = SGP_RDD_Katz_dEdx_kernel(&(x[i]),alpha);
+	};
 }
 
 double SGP_RDD_Katz_dEdx_integrand(double x, void * params){
@@ -101,7 +122,15 @@ float SGP_RDD_Katz_dEdx_J_m(float* alpha, float* r_min_m, float* r_max_m, float*
 	F.function = &SGP_RDD_Katz_dEdx_integrand;
 	float params[] = {*alpha};
 	F.params = params;
-	gsl_integration_qags (&F, (*r_min_m)/(*r_max_m), 1.0, 0, 1e-5, 1000, w1, &dEdx_integral, &error);
+	int status = gsl_integration_qags (&F, (*r_min_m)/(*r_max_m), 1.0, 0, 1e-5, 1000, w1, &dEdx_integral, &error);
+	if (status == GSL_EROUND || status == GSL_ESING){
+#ifdef _DEBUG
+		indnt_inc();
+		fprintf(debf,"%s status == %d\n",isp,status);
+#endif
+		dEdx_integral = -1.0f;
+	}
+
 	gsl_integration_workspace_free (w1);
 
 	return (*Katz_dEdx_coeff_J_m)*(float)dEdx_integral;
@@ -116,129 +145,126 @@ inline float SGP_RDD_Katz_site_Gy(float* r_m, float* alpha, float* r_min_m, floa
 	return 0.0f;
 }
 
-
-//double SGP_RDD_f1_dEdx_integrand(double r, void * params){
-////	float LET = ((float*)params)[0];
-//	float density_g_cm3 = ((float*)params)[1];
-////	float r_min_m = ((float*)params)[2];
-//	float r_max_m = ((float*)params)[3];
-//	float C_J_m = ((float*)params)[4];
-//	float Z_eff = ((float*)params)[5];
-//	float beta = ((float*)params)[6];
-//	float alpha = ((float*)params)[7];
-//	float	res		=	0.0f;
-//	float 	density_kg_m3 	=   1e3 * density_g_cm3;
-//	res = r * SGP_RDD_Katz_coeff(C_J_m,Z_eff, beta, alpha, density_kg_m3) * SGP_RDD_Katz_kernel(r_m, r_max_m, alpha);
-//	//res	+=	r * C_J_m * Z_eff*Z_eff / (2.0f * M_PI * r * r * beta * beta * alpha * density_kg_m3) * pow(1.0f - r / r_max_m, 1.0f / alpha);
-//	res	*=	2.0f * M_PI * density_kg_m3;
-//	res	/= 100.0f / density_g_cm3 / MeV_to_J;
-//	return	res;
-//}
-//
-//
-//
-float SGP_RDD_f1_getdEdx(float LET, float density_g_cm3, float r_min_m, float r_max_m, float C_J_m, float Z_eff, float beta, float alpha)
-{
-	double result, error;
-
-//	gsl_integration_workspace *w1 = gsl_integration_workspace_alloc (1000);
-//
-//	gsl_function F;
-//	F.function = &SGP_RDD_f1_dEdx_integrand;
-//	float params[8] = {LET, density_g_cm3, r_min_m, r_max_m, C_J_m, Z_eff, beta, alpha};
-//	F.params = params;
-//
-//	gsl_integration_qags (&F, r_min_m, r_max_m, 0, 1e-5, 1000, w1, &result, &error);
-//
-//	gsl_integration_workspace_free (w1);
-
-	return	result;
+void SGP_RDD_Katz_site_GyS(int *n, float* r_m, float* alpha, float* r_min_m, float* r_max_m, float* LET_J_m, float* density_kg_m3, float* Katz_dEdx_J_m, float* Katz_point_coeff_Gy, float * D_Gy){
+	int i;
+	for( i = 0 ; i < *n ; i++){
+		D_Gy[i] = SGP_RDD_Katz_site_Gy(&(r_m[i]),alpha,r_min_m,r_max_m,LET_J_m,density_kg_m3,Katz_dEdx_J_m,Katz_point_coeff_Gy);
+	};
 }
 
-//double
-//geometryFunctionPhi (double r0, double a0, double r)
-//{
-//	double res = 0.;
-//	double factor = 0.;
-//	gsl_complex carg, cres;
-//	if (r <= fabs (r0 - a0))
-//	{
-//		if (r0 >= a0)
-//			res = 0.;
-//		else
-//			res = M_PI;
-//	}
-//	else
-//	{
-//		factor = gsl_pow_2 (a0) - gsl_pow_2 (r0 - r);
-//		factor /= gsl_pow_2 (r + r0) - gsl_pow_2 (a0);
-//		GSL_SET_COMPLEX (&carg, sqrt (factor), 0.);
-//		cres = gsl_complex_arctan (carg);
-//		res = 2. * GSL_REAL (cres);
-//	}
-//	return res;
-//}
-//
-//double SGP_RDD_f1_extTarget_integrand(double r, void * params){
-//
-//	float LET = ((float*)params)[0];
-//	float density_g_cm3 = ((float*)params)[1];
-//	float r_min_m = ((float*)params)[2];
-//	float r_max_m = ((float*)params)[3];
-//	float C_J_m = ((float*)params)[4];
-//	float Z_eff = ((float*)params)[5];
-//	float beta = ((float*)params)[6];
-//	float alpha = ((float*)params)[7];
-//
-//	float dEdx_MeV_g_cm2 = SGP_RDD_f1_getdEdx(LET,density_g_cm3,r_min_m,r_max_m,C_J_m,Z_eff,beta,alpha);
-//
-//	float doseSite = 0.0f;
-//
-////	f1_parameters[3]		=	C_J_m * Z_eff*Z_eff / (2.0f * pi * f1_parameters[2]*f1_parameters[2] * beta*beta * alpha * density_kg_m3) * pow(1.0f - f1_parameters[2] / f1_parameters[2], 1.0f / alpha);
-////
-////	// single impact fluence
-////	f1_parameters[6]	= 1.0f / (pi * (f1_parameters[2] * m_to_cm) * (f1_parameters[2] * m_to_cm));	// single_impact_fluence [1/cm2]
-////	// single_impact_dose
-//
-////	f1_parameters[7]		=	f1_parameters[0] * MeV_g_to_J_kg * f1_parameters[6];				// LET * fluence
-//
-//	float	dEdx_J_m		=	dEdx_MeV_g_cm2 * 100.0f * density_g_cm3 * MeV_to_J;
-//	float 	density_kg_m3	= 	density_g_cm3 * 1e3;
-//	float 	LET_J_m			=	LET * 1.602e-13 * density_g_cm3 * 100.0f;
-//
-//	if (r >= r_min_m && r <= r_max_m){					// in between r_min and r_max --> D = KatzPoint
-//		doseSite = C_J_m * Z_eff*Z_eff / (2.0f * pi * r*r * beta*beta * alpha * density_kg_m3) * pow(1.0f - r / r_max_m, 1.0f / alpha);
-//	}
-//	if (r <= r_min_m){						// r < r_min_m (for RDD_Site) --> D = d_max_Gy
-//		doseSite = 1.0f / (density_kg_m3 * pi * r_min_m*r_min_m) * (LET_J_m - dEdx_J_m);
-//	}
-//
-//	float	res		=	0.0f;
-//	float 	a0		= 	1e-8;
-//
-//	res = (1 / (pi* a0*a0)) * doseSite * geometryFunctionPhi(r_min_m,a0,r);
-//
-//	return	res;
-//}
-//
-//
-//float SGP_RDD_f1_getExtTargetDose(float LET, float density_g_cm3, float r_min_m, float r_max_m, float C_J_m, float Z_eff, float beta, float alpha)
-//{
-//	double result, error;
-//
-//	gsl_integration_workspace *w1 = gsl_integration_workspace_alloc (1000);
-//
-//	gsl_function F;
-//	F.function = &SGP_RDD_f1_extTarget_integrand;
-//	float params[8] = {LET, density_g_cm3, r_min_m, r_max_m, C_J_m, Z_eff, beta, alpha};
-//	F.params = params;
-//
-//	gsl_integration_qags (&F, r_min_m, r_max_m, 0, 1e-5, 1000, w1, &result, &error);
-//
-//	gsl_integration_workspace_free (w1);
-//
-//	return	result;
-//}
+float
+geometryFunctionPhi (float* r0_m, float* a0_m, float* r_m)
+{
+//#ifdef _DEBUG
+//		indnt_init();
+//		fprintf(debf,"%sr0_m = %g , a0_m = %g , r_m = %g\n",isp,*r0_m,*a0_m, *r_m);
+//#endif
+	float res = 0.;
+	double factor = 0.;
+	gsl_complex carg, cres;
+	if ((*r_m) <= fabs ((*r0_m) - (*a0_m)))
+	{
+		if ((*r0_m) >= (*a0_m))
+			res = 0.0f;
+		else
+			res = (float)M_PI;
+//#ifdef _DEBUG
+//		indnt_init();
+//		fprintf(debf,"%sA res = %g\n",isp,res);
+//#endif
+	}
+	else
+	{
+		factor = gsl_pow_2 (*a0_m) - gsl_pow_2 ((*r0_m) - (*r_m));
+		factor /= gsl_pow_2 ((*r_m) + (*r0_m)) - gsl_pow_2 (*a0_m);
+//#ifdef _DEBUG
+//		indnt_init();
+//		fprintf(debf,"%sB factor = %g\n",isp,factor);
+//#endif
+		GSL_SET_COMPLEX (&carg, sqrt (factor), 0.);
+		cres = gsl_complex_arctan (carg);
+		res = 2.0f * (float)(GSL_REAL (cres));
+//#ifdef _DEBUG
+//		indnt_init();
+//		fprintf(debf,"%sB res = %g\n",isp,res);
+//#endif
+	}
+	return res;
+}
+
+inline float SGP_RDD_Katz_ext_kernel_Gy(float* t_m, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy){
+//#ifdef _DEBUG
+//		indnt_init();
+//		fprintf(debf,"%st_m = %g , a0_m = %g , r_m = %g\n",isp,*t_m,*a0_m, *r_m);
+//		fprintf(debf,"%sf1 = %g\n",isp,(1.0f/ (M_PI * (*a0_m)*(*a0_m))));
+//		fprintf(debf,"%sf2 = %g\n",isp,SGP_RDD_Katz_point_Gy(t_m,alpha,r_max_m,Katz_point_coeff_Gy));
+//		fprintf(debf,"%sf3 = %g\n",isp,geometryFunctionPhi(r_m,a0_m,t_m));
+//#endif
+	if( (*t_m) < (*r_min_m ) )
+		return 0.0;
+	if( (*t_m) >= (*a0_m) + (*r_m) )
+		return 0.0;
+	if( ((*r_m) >= (*a0_m)) && ((*t_m) <= (*r_m) - (*a0_m)))
+		return 0.0;
+	else
+		return  (1.0f/ (M_PI * (*a0_m)*(*a0_m))) * SGP_RDD_Katz_point_Gy(t_m,alpha,r_max_m,Katz_point_coeff_Gy) *  geometryFunctionPhi(r_m,a0_m,t_m) * (*t_m);
+}
+
+void SGP_RDD_Katz_ext_kernel_GyS(int *n, float* t_m, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy, float * D_Gy){
+	int i;
+	for( i = 0 ; i < *n ; i++){
+//#ifdef _DEBUG
+//		indnt_init();
+//		fprintf(debf,"%st_m[%d] = %g\n",isp,i,t_m[i]);
+//#endif
+		D_Gy[i] = SGP_RDD_Katz_ext_kernel_Gy(&(t_m[i]),r_m,a0_m,alpha,r_min_m,r_max_m,Katz_point_coeff_Gy);
+	};
+}
+
+double SGP_RDD_Katz_ext_integrand_Gy(double t_m, void * params){
+	float r_m = ((float*)params)[0];
+	float a0_m = ((float*)params)[1];
+	float alpha = ((float*)params)[2];
+	float r_min_m = ((float*)params)[3];
+    float r_max_m = ((float*)params)[4];
+    float Katz_point_coeff_Gy = ((float*)params)[5];
+	float f_t_m = (float)(t_m);
+	return (double)SGP_RDD_Katz_ext_kernel_Gy(&f_t_m, &r_m, &a0_m, &alpha, &r_min_m, &r_max_m, &Katz_point_coeff_Gy);
+}
+
+inline float SGP_RDD_Katz_ext_Gy(float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy){
+	double int_lim_m = 0.0f;
+	if( (*r_m) > (*a0_m) ){
+		int_lim_m = GSL_MAX((*r_m) - (*a0_m),*r_min_m);
+	}
+    gsl_set_error_handler_off();
+
+	double ext_integral_Gy;
+	double error;
+	gsl_integration_workspace *w1 = gsl_integration_workspace_alloc (1000);
+	gsl_function F;
+	F.function = &SGP_RDD_Katz_ext_integrand_Gy;
+	float params[] = {*r_m,*a0_m,*alpha,*r_min_m,*r_max_m,*Katz_point_coeff_Gy};
+	F.params = params;
+	int status = gsl_integration_qags (&F, int_lim_m, (*r_m)+(*a0_m), 0, 1e-5, 1000, w1, &ext_integral_Gy, &error);
+	if (status == GSL_EROUND || status == GSL_ESING){
+#ifdef _DEBUG
+		indnt_init();
+		fprintf(debf,"%s status == %d\n",isp,status);
+#endif
+		ext_integral_Gy = -1.0f;
+	}
+	gsl_integration_workspace_free (w1);
+
+	return ext_integral_Gy;
+}
+
+void SGP_RDD_Katz_ext_GyS(int *n, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy, float * D_Gy){
+	int i;
+	for( i = 0 ; i < *n ; i++){
+		D_Gy[i] = SGP_RDD_Katz_ext_Gy(&(r_m[i]), a0_m, alpha, r_min_m, r_max_m, Katz_point_coeff_Gy);
+	};
+}
 
 /*	f1_parameters:
  * 		0 - LET_MeV_cm2_g
@@ -272,6 +298,7 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 	indnt_inc();
 	fprintf(debf,"%sbegin SGP_RDD_f1_parameters\n",isp);
 	fprintf(debf,"%sbegin RDD model = %ld\n",isp,*rdd_model);
+	fprintf(debf,"%sMaterial = %ld\n", isp, *material_no);
 #endif
 
 	// Get beta, Z and Zeff
@@ -333,7 +360,7 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 		f1_parameters[8]	= f1_parameters[0];																					// dEdx = LET
 	}
 
-	if( *rdd_model == RDD_KatzPoint || *rdd_model == RDD_Site){
+	if( *rdd_model == RDD_KatzPoint || *rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget){
 		//////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
 		float alpha				= 	1.667f;
 		float w_el_keV			=	2.0f * electron_mass_MeV_c2 * 1000.0f * beta*beta / (1 - beta*beta);
@@ -351,30 +378,36 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 
 		// Get dEdx by simple integration from r_min_m (in case of RDD_Site = a0) to r_max_m
 		float	dEdx_J_m		=	0.0f;
-		float	LET_J_m 		=	f1_parameters[0] * MeV_to_J * density_g_cm3 * 100.0f;
-		long 	j;
-		long 	n_steps = 100;
-		float 	log_r_min_m		=	log10(f1_parameters[1]);
-		float 	log_r_max_m		=	log10(f1_parameters[2]);
-		float	log_step_size	=	(log_r_max_m - log_r_min_m) / n_steps;
-		for (j = 0; j < n_steps; j++){
-			float	r_int_m			=	pow(10, log_r_min_m + (j + 0.5f) * log_step_size);
-			float	dr_int_m		=	pow(10, log_r_min_m + (j + 1.0f) * log_step_size) - pow(10, log_r_min_m + (j + 0.0f) * log_step_size);
-			dEdx_J_m				+=	r_int_m * dr_int_m *		\
-										C_J_m * Z_eff*Z_eff / (2.0f * pi * r_int_m*r_int_m * beta*beta * alpha * density_kg_m3) * pow(1.0f - r_int_m / f1_parameters[2], 1.0f / alpha);
-		}
-		dEdx_J_m					*=	2.0f * pi * density_kg_m3;
+		float	LET_J_m 		=	f1_parameters[0] * 1.602e-13 * density_g_cm3 * 100.0f;
+
+		float Katz_point_coeff_Gy = SGP_RDD_Katz_point_coeff_Gy(&C_J_m,&Z_eff,&beta,&alpha,&density_kg_m3,&(f1_parameters[2]));
+		float Katz_dEdx_coeff_J_m = SGP_RDD_Katz_dEdx_coeff_J_m(&(f1_parameters[2]),&density_kg_m3,&Katz_point_coeff_Gy);
+		dEdx_J_m = SGP_RDD_Katz_dEdx_J_m(&alpha,&(f1_parameters[1]),&(f1_parameters[2]),&Katz_dEdx_coeff_J_m);
+
 		float	dEdx_MeV_g_cm2		=	dEdx_J_m / 100.0f / density_g_cm3 / MeV_to_J;
+
+#ifdef _DEBUG
+	fprintf(debf,"%sLET_J_m = %g\n",isp,LET_J_m);
+	fprintf(debf,"%sKatz_point_coeff_Gy = %g\n",isp,Katz_point_coeff_Gy);
+	fprintf(debf,"%sKatz_dEdx_coeff_J_m = %g\n",isp,Katz_dEdx_coeff_J_m);
+#endif
 
 		f1_parameters[8]		= 	dEdx_MeV_g_cm2;
 
-		// d_min_Gy
-		f1_parameters[3]		=	rdd_parameter[1];
+		// d_min_Gy = 0 --> causes problem in SPIFF algorithm. Replaced therefore by minimal dose
+		if( *rdd_model != RDD_ExtTarget )
+			f1_parameters[3]		=	rdd_parameter[1];
+
 		// d_max_Gy
 		if(*rdd_model == RDD_Site){
-			f1_parameters[4]		=	1.0f / (density_kg_m3 * pi * f1_parameters[1]*f1_parameters[1]) * (LET_J_m - dEdx_J_m);
-		}else{
-			f1_parameters[4]		=	C_J_m * Z_eff*Z_eff / (2.0f * pi * f1_parameters[1]*f1_parameters[1] * beta*beta * alpha * density_kg_m3) * pow(1.0f - f1_parameters[1] / f1_parameters[2], 1.0f / alpha);
+			float tmp = 0.0f;
+//			f1_parameters[4]		=	1.0f / (density_kg_m3 * pi * f1_parameters[1]*f1_parameters[1]) * (LET_J_m - dEdx_J_m);
+			f1_parameters[4]		=	SGP_RDD_Katz_site_Gy(&tmp,&alpha,&(f1_parameters[1]),&(f1_parameters[2]),&LET_J_m,&density_kg_m3,&Katz_dEdx_coeff_J_m,&Katz_point_coeff_Gy);
+		}else if(*rdd_model == RDD_KatzPoint){
+//			f1_parameters[4]		=	C_J_m * Z_eff*Z_eff / (2.0f * pi * f1_parameters[1]*f1_parameters[1] * beta*beta * alpha * density_kg_m3) * pow(1.0f - f1_parameters[1] / f1_parameters[2], 1.0f / alpha);
+			f1_parameters[4]		=	SGP_RDD_Katz_point_Gy(&(f1_parameters[1]),&alpha,&(f1_parameters[2]),&Katz_point_coeff_Gy);
+		} else {
+			f1_parameters[4]		=	0.;
 		}
 
 		// single impact fluence
@@ -447,11 +480,22 @@ void SGP_D_RDD_Gy	(	long*	n,
 	int er_model_int = (int)(*er_model);
 	*er_model = (long)er_model_int;
 
+	int material_no_int	= (int)(*material_no);
+	*material_no = (long)material_no_int;
+
+	long ii;
+	int particle_no_int;
+	for(ii = 0 ; ii < *n ; ii++){
+		particle_no_int = (int)(particle_no[ii]);
+		particle_no[ii] = (long)particle_no_int;
+//		printf("output particle_no[%ld]=%ld\n", i , particle_no_long[i]);
+	}
 #endif
 
 #ifdef _DEBUG
 	fprintf(debf,"%sn = %ld\n", isp, *n);
 	fprintf(debf,"%sModel = %ld (no of parameters : %ld) \n", isp, *rdd_model, *n_rdd_parameter);
+	fprintf(debf,"%sMaterial = %ld\n", isp, *material_no);
 #endif
 
 	long 		i;
@@ -502,7 +546,7 @@ void SGP_D_RDD_Gy	(	long*	n,
 	}// end RDD_Test
 
 
-	if( *rdd_model == RDD_KatzPoint || *rdd_model == RDD_Site){
+	if( *rdd_model == RDD_KatzPoint || *rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget){
 		// Get beta, Z and Zeff
 		float	beta		= 0.0f;
 		long	Z			= 0;
@@ -528,14 +572,23 @@ void SGP_D_RDD_Gy	(	long*	n,
 		//////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
 
 		// Loop over all r_m given
+		float Katz_point_coeff_Gy = SGP_RDD_Katz_point_coeff_Gy(&(f1_parameters[5]),&Z_eff,&beta,&alpha,&density_kg_m3,&(f1_parameters[2]));
+		float a0 			  = rdd_parameter[1];
+#ifdef _DEBUG
+	fprintf(debf,"%sKatzPoint_coeff = %g\n", isp, Katz_point_coeff_Gy);
+#endif
 		for (i = 0; i < *n; i++){
 			D_RDD_Gy[i]				=	0.0f;												// r < r_min_m (for RDD_KatzPoint) or r > r_max_m --> D = 0
-			if (r_m[i] >= f1_parameters[1] && r_m[i] <= f1_parameters[2]){					// in between r_min and r_max --> D = KatzPoint
-				D_RDD_Gy[i]				= f1_parameters[5] * Z_eff*Z_eff / (2.0f * pi * r_m[i]*r_m[i] * beta*beta * alpha * density_kg_m3) * pow(1.0f - r_m[i] / f1_parameters[2], 1.0f / alpha);
+			if (r_m[i] >= f1_parameters[1] && r_m[i] <= f1_parameters[2] && *rdd_model != RDD_ExtTarget){					// in between r_min and r_max --> D = KatzPoint
+				//D_RDD_Gy[i]				= f1_parameters[5] * Z_eff*Z_eff / (2.0f * pi * r_m[i]*r_m[i] * beta*beta * alpha * density_kg_m3) * pow(1.0f - r_m[i] / f1_parameters[2], 1.0f / alpha);
+				D_RDD_Gy[i]				= SGP_RDD_Katz_point_Gy(&(r_m[i]),&alpha,&(f1_parameters[2]),&Katz_point_coeff_Gy);
 				D_RDD_Gy[i]				= FMAX(D_RDD_Gy[i], f1_parameters[3]);				// Cut-off low doses
 			}
 			if (r_m[i] <= f1_parameters[1] && *rdd_model == RDD_Site){						// r < r_min_m (for RDD_Site) --> D = d_max_Gy
 				D_RDD_Gy[i]				= f1_parameters[4];
+			}
+			if (r_m[i] <= f1_parameters[2] && *rdd_model == RDD_ExtTarget){
+				D_RDD_Gy[i]				= SGP_RDD_Katz_ext_Gy(&(r_m[i]),&a0,&alpha,&(f1_parameters[1]),&(f1_parameters[2]),&Katz_point_coeff_Gy);
 			}
 		}
 	}// end RDD_KatzPoint & RDD_Site
@@ -740,21 +793,22 @@ void SGP_r_RDD_m	(	long*	n,
 		}
 		printf("Critical radius = %e m, critical dose = %e Gy\n", critical_r_m, critical_d_Gy);
 
+
 		for (i = 0; i < *n; i++){
 			params->D0 = D_RDD_Gy[i];
 			// if D is outside the definition, return -1
 			r_RDD_m[i]				=	-1.0f;
 			float	solver_accuracy	=	1e-13f;
 			if ((f1_parameters[3] <= D_RDD_Gy[i]) && (D_RDD_Gy[i] <= f1_parameters[4])){
-					if(*rdd_model == RDD_Site && D_RDD_Gy[i] >= critical_d_Gy){
-						r_RDD_m[i] = rdd_parameter[0];
-					}else{
-						r_RDD_m[i] = zriddr(SGP_D_RDD_Gy_solver,
-											(void*)params,
-											f1_parameters[1],
-											f1_parameters[2],
-											solver_accuracy);
-					}
+				if(*rdd_model == RDD_Site && D_RDD_Gy[i] >= critical_d_Gy){
+					r_RDD_m[i] = rdd_parameter[0];
+				}else{
+					r_RDD_m[i] = zriddr(SGP_D_RDD_Gy_solver,
+										(void*)params,
+										f1_parameters[1],
+										f1_parameters[2],
+										solver_accuracy);
+				}
 			}
 		}
 		free(params->n);
