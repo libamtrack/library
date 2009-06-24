@@ -368,9 +368,8 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 
 		f1_parameters[8]		= 	dEdx_MeV_g_cm2;
 
-		// d_min_Gy = 0 --> causes problem in SPIFF algorithm. Replaced therefore by minimal dose
-		f1_parameters[3]		=	1e-30f;
-//		f1_parameters[3]		=	C_J_m * Z_eff*Z_eff / (2.0f * pi * f1_parameters[2]*f1_parameters[2] * beta*beta * alpha * density_kg_m3) * pow(1.0f - f1_parameters[2] / f1_parameters[2], 1.0f / alpha);
+		// d_min_Gy
+		f1_parameters[3]		=	rdd_parameter[1];
 		// d_max_Gy
 		if(*rdd_model == RDD_Site){
 			f1_parameters[4]		=	1.0f / (density_kg_m3 * pi * f1_parameters[1]*f1_parameters[1]) * (LET_J_m - dEdx_J_m);
@@ -533,6 +532,7 @@ void SGP_D_RDD_Gy	(	long*	n,
 			D_RDD_Gy[i]				=	0.0f;												// r < r_min_m (for RDD_KatzPoint) or r > r_max_m --> D = 0
 			if (r_m[i] >= f1_parameters[1] && r_m[i] <= f1_parameters[2]){					// in between r_min and r_max --> D = KatzPoint
 				D_RDD_Gy[i]				= f1_parameters[5] * Z_eff*Z_eff / (2.0f * pi * r_m[i]*r_m[i] * beta*beta * alpha * density_kg_m3) * pow(1.0f - r_m[i] / f1_parameters[2], 1.0f / alpha);
+				D_RDD_Gy[i]				= FMAX(D_RDD_Gy[i], f1_parameters[3]);				// Cut-off low doses
 			}
 			if (r_m[i] <= f1_parameters[1] && *rdd_model == RDD_Site){						// r < r_min_m (for RDD_Site) --> D = d_max_Gy
 				D_RDD_Gy[i]				= f1_parameters[4];
@@ -717,17 +717,44 @@ void SGP_r_RDD_m	(	long*	n,
 		params->er_parameter 	= er_parameter;
 		params->D_RDD_Gy 		= (float*)calloc(1,sizeof(float));
 		// Loop over all doses given
+
+		float critical_d_Gy		= 0.0f;
+		float critical_r_m		= rdd_parameter[0] * (1.0f + 1e-6f);
+		if(*rdd_model == RDD_Site){
+			SGP_D_RDD_Gy	(	&n_tmp,										// Use D(r) to find dose at jump of D_Site
+								&critical_r_m,
+								/* radiation field parameters */
+								E_MeV_u,
+								particle_no,
+								/* detector parameters */
+								material_no,
+								/* radial dose distribution model */
+								rdd_model,
+								n_rdd_parameter,
+								rdd_parameter,
+								/* electron range model */
+								er_model,
+								n_er_parameter,
+								er_parameter,
+								&critical_d_Gy);
+		}
+		printf("Critical radius = %e m, critical dose = %e Gy\n", critical_r_m, critical_d_Gy);
+
 		for (i = 0; i < *n; i++){
 			params->D0 = D_RDD_Gy[i];
 			// if D is outside the definition, return -1
 			r_RDD_m[i]				=	-1.0f;
 			float	solver_accuracy	=	1e-13f;
 			if ((f1_parameters[3] <= D_RDD_Gy[i]) && (D_RDD_Gy[i] <= f1_parameters[4])){
-					r_RDD_m[i] = zriddr(	SGP_D_RDD_Gy_solver,
+					if(*rdd_model == RDD_Site && D_RDD_Gy[i] >= critical_d_Gy){
+						r_RDD_m[i] = rdd_parameter[0];
+					}else{
+						r_RDD_m[i] = zriddr(SGP_D_RDD_Gy_solver,
 											(void*)params,
 											f1_parameters[1],
 											f1_parameters[2],
 											solver_accuracy);
+					}
 			}
 		}
 		free(params->n);

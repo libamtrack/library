@@ -12,7 +12,7 @@ replaceSDLL <- function(){
 	# update wrapping functions
 	source("d:\\05 - HIT\\Workspaces\\Eclipse\\SGParticleLibrary\\Sscript\\SGP.ssc")
 	
-	cat("Done!")
+	cat("Done!\n")
 }
 
 

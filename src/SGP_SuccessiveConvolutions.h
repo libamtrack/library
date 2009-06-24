@@ -361,6 +361,7 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 			float*	d_high				=	(float*)calloc(n_bins_df, sizeof(float));
 			float*	dd					=	(float*)calloc(n_bins_df, sizeof(float));
 			float*	r					=	(float*)calloc(n_bins_df, sizeof(float));
+			float*	F1					=	(float*)calloc(n_bins_df, sizeof(float));
 			float*	F1_1				=	(float*)calloc(n_bins_df, sizeof(float));
 			float*	f1_k				=	(float*)calloc(n_bins_df - 1, sizeof(float));
 
@@ -403,7 +404,15 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 					r);
 
 			for (i = 0; i < n_bins_df; i++){
-				F1_1[i]						= (r[i] / f1_parameters[k*9 + 2]) * (r[i] / f1_parameters[k*9 + 2]);}				// F1 - 1 instead of F1 to avoid numeric cut-off problems
+				F1[i]						= 1.0f - (r[i] / f1_parameters[k*9 + 2]) * (r[i] / f1_parameters[k*9 + 2]);			// F1
+				F1_1[i]						= (r[i] / f1_parameters[k*9 + 2]) * (r[i] / f1_parameters[k*9 + 2]);				// F1 - 1 instead of F1 to avoid numeric cut-off problems
+			}
+	printf("F1/F1-1 computation\n");
+	long ii;
+	float D_check;
+	for( ii = 0 ; ii < n_bins_df ; ii++){
+		printf("index = %d, r = %e, d.mid = %e, F1 = %e, F1-1 = %e\n", ii , r[ii], d_mid[ii], F1[ii], F1_1[ii]);
+	}
 
 			F1_1[n_bins_df-1]		=	0.0f;
 
