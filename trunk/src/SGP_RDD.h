@@ -117,12 +117,12 @@ float SGP_RDD_Katz_dEdx_J_m(float* alpha, float* r_min_m, float* r_max_m, float*
 // integration ...
 	double dEdx_integral = 1.0;
 	double error;
-	gsl_integration_workspace *w1 = gsl_integration_workspace_alloc (1000);
+	gsl_integration_workspace *w1 = gsl_integration_workspace_alloc (10000);
 	gsl_function F;
 	F.function = &SGP_RDD_Katz_dEdx_integrand;
 	float params[] = {*alpha};
 	F.params = params;
-	int status = gsl_integration_qags (&F, (*r_min_m)/(*r_max_m), 1.0, 0, 1e-5, 1000, w1, &dEdx_integral, &error);
+	int status = gsl_integration_qags (&F, (*r_min_m)/(*r_max_m), 1.0, 1e-8, 1e-8, 10000, w1, &dEdx_integral, &error);
 	if (status == GSL_EROUND || status == GSL_ESING){
 #ifdef _DEBUG
 		indnt_inc();
@@ -241,16 +241,16 @@ inline float SGP_RDD_Katz_ext_Gy(float *r_m, float* a0_m, float* alpha, float* r
 
 	double ext_integral_Gy;
 	double error;
-	gsl_integration_workspace *w1 = gsl_integration_workspace_alloc (1000);
+	gsl_integration_workspace *w1 = gsl_integration_workspace_alloc (10000);
 	gsl_function F;
 	F.function = &SGP_RDD_Katz_ext_integrand_Gy;
 	float params[] = {*r_m,*a0_m,*alpha,*r_min_m,*r_max_m,*Katz_point_coeff_Gy};
 	F.params = params;
-	int status = gsl_integration_qags (&F, int_lim_m, (*r_m)+(*a0_m), 0, 1e-5, 1000, w1, &ext_integral_Gy, &error);
+	int status = gsl_integration_qags (&F, int_lim_m, (*r_m)+(*a0_m), 1e-12, 1e-5, 10000, w1, &ext_integral_Gy, &error);
 	if (status == GSL_EROUND || status == GSL_ESING){
 #ifdef _DEBUG
 		indnt_init();
-		fprintf(debf,"%s status == %d\n",isp,status);
+		fprintf(debf,"%s r=%g, integration from %g to %g , error no == %d\n",isp,*r_m,int_lim_m,(*r_m)+(*a0_m),status);
 #endif
 		ext_integral_Gy = -1.0f;
 	}
@@ -397,6 +397,8 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 		// d_min_Gy = 0 --> causes problem in SPIFF algorithm. Replaced therefore by minimal dose
 		if( *rdd_model != RDD_ExtTarget )
 			f1_parameters[3]		=	rdd_parameter[1];
+		else
+			f1_parameters[3]		=	rdd_parameter[2];
 
 		// d_max_Gy
 		if(*rdd_model == RDD_Site){
@@ -406,8 +408,8 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 		}else if(*rdd_model == RDD_KatzPoint){
 //			f1_parameters[4]		=	C_J_m * Z_eff*Z_eff / (2.0f * pi * f1_parameters[1]*f1_parameters[1] * beta*beta * alpha * density_kg_m3) * pow(1.0f - f1_parameters[1] / f1_parameters[2], 1.0f / alpha);
 			f1_parameters[4]		=	SGP_RDD_Katz_point_Gy(&(f1_parameters[1]),&alpha,&(f1_parameters[2]),&Katz_point_coeff_Gy);
-		} else {
-			f1_parameters[4]		=	0.;
+		} else { // RDD_ExtTarget
+			f1_parameters[4]		=	SGP_RDD_Katz_ext_Gy(&(f1_parameters[1]),&(rdd_parameter[1]),&alpha,&(f1_parameters[1]),&(f1_parameters[2]),&Katz_point_coeff_Gy);
 		}
 
 		// single impact fluence
@@ -696,6 +698,17 @@ void SGP_r_RDD_m	(	long*	n,
 
 		int er_model_int = (int)(*er_model);
 		*er_model = (long)er_model_int;
+
+		int material_no_int	= (int)(*material_no);
+		*material_no = (long)material_no_int;
+
+		long ii;
+		int particle_no_int;
+		for(ii = 0 ; ii < *n ; ii++){
+			particle_no_int = (int)(particle_no[ii]);
+			particle_no[ii] = (long)particle_no_int;
+	//		printf("output particle_no[%ld]=%ld\n", i , particle_no_long[i]);
+		}
 	#endif
 
 	#ifdef _DEBUG
@@ -756,7 +769,7 @@ void SGP_r_RDD_m	(	long*	n,
 		}
 	}// end RDD_Geiss
 
-	if( (*rdd_model == RDD_KatzPoint) || (*rdd_model == RDD_Site)){
+	if( (*rdd_model == RDD_KatzPoint) || (*rdd_model == RDD_Site) || (*rdd_model == RDD_ExtTarget)){
 		SGP_D_RDD_Gy_parameters* params = (SGP_D_RDD_Gy_parameters*)calloc(1,sizeof(SGP_D_RDD_Gy_parameters));
 		params->n 				= (long*)calloc(1,sizeof(long));
 		params->E_MeV_u 		= E_MeV_u;
@@ -772,8 +785,13 @@ void SGP_r_RDD_m	(	long*	n,
 		// Loop over all doses given
 
 		float critical_d_Gy		= 0.0f;
-		float critical_r_m		= rdd_parameter[0] * (1.0f + 1e-6f);
+		float critical_r_m = 0.0f;
 		if(*rdd_model == RDD_Site){
+			critical_r_m		= rdd_parameter[0] * (1.0f + 1e-6f);
+		} else {
+			critical_r_m		= rdd_parameter[1];
+		}
+		if(*rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget){
 			SGP_D_RDD_Gy	(	&n_tmp,										// Use D(r) to find dose at jump of D_Site
 								&critical_r_m,
 								/* radiation field parameters */
@@ -802,6 +820,8 @@ void SGP_r_RDD_m	(	long*	n,
 			if ((f1_parameters[3] <= D_RDD_Gy[i]) && (D_RDD_Gy[i] <= f1_parameters[4])){
 				if(*rdd_model == RDD_Site && D_RDD_Gy[i] >= critical_d_Gy){
 					r_RDD_m[i] = rdd_parameter[0];
+				} else if(*rdd_model == RDD_ExtTarget && D_RDD_Gy[i] >= critical_d_Gy){
+					r_RDD_m[i] = rdd_parameter[1];
 				}else{
 					r_RDD_m[i] = zriddr(SGP_D_RDD_Gy_solver,
 										(void*)params,

@@ -37,7 +37,7 @@ enum RDDModels{
 	RDD_KatzPoint			= 2,			/* parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
 	RDD_Geiss				= 3,			/* parameters: 0 - a0 [m] (core diameter) */
 	RDD_Site				= 4,			/* parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off)  */ // after Edmund et al., 2007, but modified with dose-cut off
-	RDD_ExtTarget			= 5				/* parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter) */ //as defined in Edmund et al. , 2007
+	RDD_ExtTarget			= 5				/* parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */ //as defined in Edmund et al. , 2007
 };
 
 enum material_no{
