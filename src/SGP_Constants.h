@@ -26,10 +26,10 @@ double	m_to_um						=	1e6;
 double	pi							=	3.14159265;
 
 enum GammaResponseModels{
-    GR_Test					= 1,
-    GR_GeneralTarget		= 2,
-    GR_Radioluminescence	= 3,
-    GR_ExpSaturation		= 4
+    GR_Test					= 1,			/* no parameters */
+    GR_GeneralTarget		= 2,			/* */
+    GR_Radioluminescence	= 3,			/* 0 - Smax, 1 - D0, 2 - dyn */
+    GR_ExpSaturation		= 4				/* 0 - Smax, 1 - D0 */
 };
 
 enum RDDModels{
