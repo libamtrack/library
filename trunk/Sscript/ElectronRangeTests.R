@@ -19,19 +19,22 @@ er.models.names <- c("KatzScholz","Waligorski et al. 1986","Geiss, 1998","Scholz
 
 # other parameters
 n <- length(E.MeV.u) 
-particle.index <- rep(1, n)
-material.name <- "Water, Liquid"
+particle.number <- rep(1, n)
+material.number <- rep(1, 1) # Water
 
 # data frame setup
 df <- expand.grid( E.MeV.u = E.MeV.u , er.models = er.models )
+
 df$er.models.name	<- as.character(er.models.names[df$er.models])
 df$range.m	<- numeric(nrow(df))
 
 # calculations
 for( i in er.models ){
  ii					<-	df$er.models == i
-	df$range.m[ii] <- 	SGP.max.electron.range(	E.MeV.u = df$E.MeV.u[ii], particle.index, material.name, i)
+	df$range.m[ii] <- 	SGP.max.electron.range(	E.MeV.u = df$E.MeV.u[ii], particle.number, material.number, i)
 }
+
+df
 
 # plots...
 logplot <- xyplot( 1e2*range.m ~ E.MeV.u, groups = er.models.name, ref = TRUE, data=df, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV]", ylab = "Range [cm]", auto.key = list(title = "Protons in liquid water, range of delta electrons",points = FALSE, lines = TRUE), scales = list(log = 10))
