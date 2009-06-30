@@ -15,6 +15,7 @@
 # 2009-Jun-18: New wrapping function for delta electron range models, lgrz
 # 2009-Jun-23: Revised wrapping functions for new RDD and SC functions, removed
 #              material.name as character cas cause trouble, replaces by material.no (int)
+# 2009-Jun-26: Added Edmund transport (CSDA)
 ################################################################################################
 
 ################################################################################################
@@ -26,7 +27,7 @@
 # SGP.effective.charge.from.beta
 # SGP.effective.charge.from.particle.no
 # SGP.gamma.response
-# SGP.max.E.transfer.MeV
+# SGP.max.E.transfER.MeV
 # SGP.particle.properties							(particle.name)
 # SGP.read.spectrum
 # SGP.max.electron.range
@@ -40,6 +41,7 @@
 # :::TRANSPORT FUNCTIONS:::
 # SGP.Bortfeld.Transport.Protons
 # SGP.Bortfeld.Transport.Proton.Spectrum
+# SGP.Edmund.Transport
 #
 # ::: KATZ MODEL TEST FUNCTIONS:::
 # SGP.RDD.Katz.point.kernel
@@ -57,6 +59,9 @@
 # SGP.SC.get.f1
 # SGP.SC.get.gamma.response
 # SGP.SC.do.SC
+#
+# :::Compute efficiency FUNCTIONS:::
+# SGP.efficiency
 #
 ################################################################################################
 
@@ -129,33 +134,35 @@ SGP.electron.density.m3	<-	function(	material.name){
 ##################
 SGP.gamma.response	<-	function(	d.Gy,
 										gamma.model,
-										gamma.parameter){
+										gamma.parameters){
 											
 	n						<-	length(d.Gy)
 	S						<-	numeric(n)
-	n.gamma.parameter 	<-	length(gamma.parameter)
+	n.gamma.parameters 	<-	length(gamma.parameters)
 	if(gamma.model == 1){
-		n.gamma.parameter 	<-	length(gamma.parameter) / 4
+		n.gamma.parameters 	<-	length(gamma.parameters) / 4
 	}
 
 	res					<-	.C(	"SGP_gamma_response",		n					= as.integer(n),
 																d.Gy				= as.single(d.Gy),
-																n.gamma.parameter	= as.integer(n.gamma.parameter),
+																n.gamma.parameters	= as.integer(n.gamma.parameters),
 																gamma.model		= as.integer(gamma.model),
-																gamma.parameter	= as.single(gamma.parameter),
+																gamma.parameters	= as.single(gamma.parameters),
 																S					= as.single(S))
 	return(res$S)
 }
 
 ##############################
-SGP.get.material.data	<-	function(	material.name){
+SGP.get.material.data	<-	function(	material.no){
 	density.g.cm3		<-	numeric(1)
 	el.dens.m3			<-	numeric(1)
 	I.eV				<-	numeric(1)
 	alpha.g.cm2.MeV	<-	numeric(1)
 	p.MeV				<-	numeric(1)
 	m.g.cm2			<-	numeric(1)
-	res					<-	.C(	"SGP_getMaterialDataS",				material.name		=	as.character(material.name),
+	n					<-	1
+	res					<-	.C(	"SGP_getMaterialData",				n					=	as.integer(n),
+																		material.name		=	as.integer(material.no),
 																		density.g.cm3		=	as.single(density.g.cm3),
 																		el.dens.m3			=	as.single(el.dens.m3),
 																		I.eV				=	as.single(I.eV),
@@ -170,55 +177,84 @@ SGP.get.material.data	<-	function(	material.name){
 #################
 SGP.LET.MeV.cm2.g		<-	function(	E.MeV.u,
 										particle.no,
-										material.name){
+										material.no){
 	n					<-	length(E.MeV.u)
 	LET.MeV.cm2.g		<-	numeric(n)
-	res					<-	.C(	"SGP_LET_MeV_cm2_gS",	n						=	as.integer(n),
+	res					<-	.C(	"SGP_LET_MeV_cm2_g",		n						=	as.integer(n),
 															E.MeV.u				=	as.single(E.MeV.u),
-															particle.no		=	as.integer(particle.no),
-															material.name			=	as.character(material.name),
+															particle.no			=	as.integer(particle.no),
+															material.no			=	as.integer(material.no),
 															LET.MeV.cm2.g			=	as.single(LET.MeV.cm2.g))
 	return(res$LET.MeV.cm2.g)						
 }
 
+##############
+SGP.LET.keV.um	<-	function(	E.MeV.u,
+									particle.no,
+									material.no){
+	n					<-	length(E.MeV.u)
+	LET.keV.um			<-	numeric(n)
+	res					<-	.C(	"SGP_LET_keV_um",			n						=	as.integer(n),
+															E.MeV.u				=	as.single(E.MeV.u),
+															particle.no			=	as.integer(particle.no),
+															material.no			=	as.integer(material.no),
+															LET.keV.um				=	as.single(LET.keV.um))
+	return(res$LET.keV.um)						
+}
+
+###########
+SGP.E.MeV.u			<-	function(	LET.MeV.cm2.g,
+										particle.no,
+										material.no){
+	n					<-	length(LET.MeV.cm2.g)
+	E.MeV.u			<-	numeric(n)
+	res					<-	.C(	"SGP_E_MeV_from_LET",	n						=	as.integer(n),
+															LET.MeV.cm2.g			=	as.single(LET.MeV.cm2.g),
+															particle.no			=	as.integer(particle.no),
+															material.no			=	as.integer(material.no),
+															E.MeV.u				=	as.single(E.MeV.u))
+	return(res$E.MeV.u)						
+}
+
+
 ######################
-SGP.max.E.transfer.MeV		<-	function(	E.MeV.u,
+SGP.max.E.transfER.MeV		<-	function(	E.MeV.u,
 												particle.no){
 	n							<-	length(E.MeV.u)
-	max.E.transfer.MeV		<-	numeric(n)
+	max.E.transfER.MeV		<-	numeric(n)
 	res							<-	.C(	"SGP_max_E_transfer_MeV",	n						=	as.integer(n),
 																		E.MeV.u				=	as.single(E.MeV.u),
 																		particle.no		=	as.integer(particle.no),
-																		max.E.transfer.MeV	=	as.single(max.E.transfer.MeV))
-	return(res$max.E.transfer.MeV)						
+																		max.E.transfER.MeV	=	as.single(max.E.transfER.MeV))
+	return(res$max.E.transfER.MeV)						
 }
 
 #######################
-SGP.particle.properties	<-	function(particle.name){
-	particle.no		<-	integer(length(particle.name))
-	cur.particle.no	<-	integer(1)
-	USRTRACK.name			<-	character(length(particle.name))
+SGP.particle.properties	<-	function(particle.no){
+	particle.name			<-	character(length(particle.no))
+	cur.particle.name		<-	character(1)
+	USRTRACK.name			<-	character(length(particle.no))
 	cur.USRTRACK.name		<-	character(1)
-	element.name			<-	character(length(particle.name))
+	element.name			<-	character(length(particle.no))
 	cur.element.name		<-	character(1)
-	Z						<-	integer(length(particle.name))
+	Z						<-	integer(length(particle.no))
 	cur.Z					<-	integer(1)
-	A						<-	integer(length(particle.name))
+	A						<-	integer(length(particle.no))
 	cur.A					<-	integer(1)
-	mass					<-	integer(length(particle.name))
+	mass					<-	integer(length(particle.no))
 	cur.mass				<-	integer(1)
 
-	for (i in 1:length(particle.name)){
+	for (i in 1:length(particle.no)){
 		#i<-1
-		cur.particle.name			<-	particle.name[i]
-		res							<-	.C(	"SGP_Particle_PropertiesS",		particle.name					= as.character(cur.particle.name),
-																				particle.no				= as.integer(cur.particle.no),
+		cur.particle.no			<-	particle.no[i]
+		res							<-	.C(	"SGP_Particle_Properties",		particle.no					= as.integer(cur.particle.no),
+																				particle.name					= as.character(cur.particle.name),
 																				USRTRACK.name					= as.character(cur.USRTRACK.name),
 																				element.name					= as.character(cur.element.name),
 																				A								= as.integer(cur.Z),
 																				Z								= as.integer(cur.A),
 																				mass							= as.single(cur.mass))
-		particle.no[i]			<-	res$particle.no
+		particle.name[i]			<-	res$particle.name
 		USRTRACK.name[i]			<-	res$USRTRACK.name
 		element.name[i]			<-	res$element.name
 		A[i]						<-	res$A
@@ -227,8 +263,8 @@ SGP.particle.properties	<-	function(particle.name){
 		print(paste(i, "done..."))
 	}
 	
-	df						<-	data.frame(	particle.name		= particle.name,
-												particle.no	= particle.no,
+	df						<-	data.frame(	particle.no		= particle.no,
+												particle.name		= particle.name,
 												USRTRACK.name		= USRTRACK.name,
 												element.name		= element.name,
 												A					= A,
@@ -277,6 +313,717 @@ SGP.scaled.energy.from.particle.no	<-	function(	energy 				= E.MeV.u,
 																					scaled.energy		=	as.single(scaled.energy))
 	return(res$scaled.energy)						
 }
+################################################################################################
+# Max delta electron range
+################################################################################################
+
+
+############
+SGP.max.electron.range					<-	function(	E.MeV.u,
+												particle.no,
+												material.no,
+												ER.model){
+	n					<-	length(E.MeV.u)
+	range.m				<-	numeric(n)
+	res				<-	.C("SGP_max_electron_range_mS", 	n						= as.integer(n),
+															E.MeV.u					= as.single(E.MeV.u),
+															particle.no			= as.integer(particle.no),
+															material.no			= as.integer(material.no),
+															ER.model				= as.integer(ER.model),
+															range.m					= as.single(range.m))
+	return(res$range.m)
+}
+
+################################################################################################
+# Katz model test functions
+################################################################################################
+
+# Katz model test functions:	
+
+############
+SGP.RDD.Katz.point.kernel					<-	function(	x,
+												alpha){
+	n					<-	length(x)
+	f				<-	numeric(n)
+  
+ 	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("alpha=",alpha,"\n")
+				
+		res					<-	.C(	"SGP_RDD_Katz_point_kernelS",	n						=	as.integer(n),
+															x								=	as.single(x),
+															alpha				=	as.single(alpha),
+															f								=	as.single(f))		
+
+		if(debug == T) cat("res=",res$f,"\n")
+			
+	 return(res$f)						
+}
+
+############
+SGP.RDD.Katz.point.D.Gy					<-	function(	r.m,
+												alpha,
+												r.max.m,
+												poin.coef){
+	n					<-	length(r.m)
+	D.Gy		<-	numeric(n)
+  
+ 	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("alpha=",alpha,"\n")
+				
+		res					<-	.C(	"SGP_RDD_Katz_point_GyS",	n						=	as.integer(n),
+															r.m						=	as.single(r.m),
+															alpha				=	as.single(alpha),
+															r.max.m		= as.single(r.max.m),
+															point.coef = as.single(point.coef),
+															D.Gy					=	as.single(D.Gy))		
+
+		if(debug == T) cat("res=",res$D.Gy,"\n")
+			
+	 return(res$D.Gy)						
+}
+
+############
+SGP.RDD.Katz.dEdx.kernel					<-	function(	x,
+												alpha){
+	n					<-	length(x)
+	f				<-	numeric(n)
+  
+ 	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("alpha=",alpha,"\n")
+				
+		res					<-	.C(	"SGP_RDD_Katz_dEdx_kernelS",	n						=	as.integer(n),
+															x								=	as.single(x),
+															alpha				=	as.single(alpha),
+															f								=	as.single(f))		
+
+		if(debug == T) cat("res=",res$f,"\n")
+			
+	 return(res$f)						
+}
+
+
+############
+SGP.RDD.Katz.site.D.Gy					<-	function(	r.m,
+												alpha,
+												r.min.m,
+												r.max.m,
+												LET,
+												density,
+												dEdx,
+												poin.coef){
+	n					<-	length(r.m)
+	D.Gy		<-	numeric(n)
+  
+ 	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("alpha=",alpha,"\n")
+				
+		res					<-	.C(	"SGP_RDD_Katz_site_GyS",	n						=	as.integer(n),
+															r.m						=	as.single(r.m),
+															alpha				=	as.single(alpha),
+															r.min.m		= as.single(r.min.m),
+															r.max.m		= as.single(r.max.m),
+															LET						= as.single(LET),
+															density		= as.single(density),
+															dEdx					= as.single(dEdx),					
+															point.coef = as.single(point.coef),
+															D.Gy					=	as.single(D.Gy))		
+
+		if(debug == T) cat("res=",res$D.Gy,"\n")
+			
+	 return(res$D.Gy)						
+}
+
+############
+SGP.RDD.Katz.ext.kernel.D.Gy					<-	function(	t.m,
+												r.m,
+												a0.m,
+												alpha,
+												r.min.m,
+												r.max.m,
+												poin.coef){
+	n					<-	length(t.m)
+	D.Gy		<-	numeric(n)
+  
+ 	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("t.m=",t.m,"\n")
+ 	if(debug == T) cat("r.m=",r.m,"\n")
+ 	if(debug == T) cat("a0.m=",a0.m,"\n")
+ 	if(debug == T) cat("alpha=",alpha,"\n")
+ 	if(debug == T) cat("r.min.m=",r.min.m,"\n")
+ 	if(debug == T) cat("r.max.m=",r.max.m,"\n")
+ 	if(debug == T) cat("poin.coef=",poin.coef,"\n")
+								
+# SGP_RDD_Katz_ext_kernel_GyS(int *n, float* t_m, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy, float * D_Gy)
+								
+		res					<-	.C(	"SGP_RDD_Katz_ext_kernel_GyS",	n						=	as.integer(n),
+															t.m						=	as.single(t.m),
+															r.m						=	as.single(r.m),
+															a0.m						=	as.single(a0.m),
+															alpha				=	as.single(alpha),
+															r.min.m		= as.single(r.min.m),
+															r.max.m		= as.single(r.max.m),
+															point.coef = as.single(point.coef),
+															D.Gy					=	as.single(D.Gy))		
+
+		if(debug == T) cat("res=",res$D.Gy,"\n")
+			
+	 return(res$D.Gy)						
+}
+
+################################################################################################
+# RDD functions
+################################################################################################
+
+############
+SGP.RDD.D.Gy					<-	function(	r.m,
+												E.MeV.u,
+												particle.no,
+												material.no,
+												ER.model,
+												ER.parameters,
+												RDD.model,
+												RDD.parameters){
+	n					<-	length(r.m)
+	D.Gy				<-	numeric(n)
+  
+
+ 	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("r.m=",r.m,"\n")
+
+	 if( RDD.model == 1 ){ 
+	 	if(debug == T) cat("RDD_test model\n")}
+
+	 if( RDD.model == 2 ){ 
+	 	if(debug == T) cat("RDD_KatzPoint model\n")
+	 	if(debug == T) cat("parameters r.min.m=",RDD.parameters[1],"\n")
+	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[2],"\n")}
+
+	 if( RDD.model == 3 ){ 
+	  if(debug == T) cat("RDD_Geiss model\n")
+	  if(debug == T) cat("parameters a0=",RDD.parameters[1],"\n")}
+
+	 if( RDD.model == 4 ){ 
+	  if(debug == T) cat("RDD_Site model\n")
+		if(debug == T) cat("parameters a0=",RDD.parameters[1],"\n")
+	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[2],"\n")}
+		
+		 if( RDD.model == 5 ){ 
+	  if(debug == T) cat("RDD_ExtTarget model\n")
+	 	if(debug == T) cat("parameters r.min.m=",RDD.parameters[1],"\n")
+		if(debug == T) cat("parameters a0=",RDD.parameters[2],"\n")
+	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[3],"\n")}
+			
+		res					<-	.C(	"SGP_D_RDD_Gy",	n						=	as.integer(n),
+														r.m						=	as.single(r.m),
+														E.MeV.u				=	as.single(E.MeV.u),
+														particle.no			=	as.integer(particle.no),
+														material.no			=	as.integer(material.no),
+														RDD.model				=	as.integer(RDD.model),
+														RDD.parameters		=	as.single(RDD.parameters),
+														ER.model				=	as.integer(ER.model),
+														ER.parameters			=	as.single(ER.parameters),
+														D.Gy					=	as.single(D.Gy))		
+
+			if(debug == T) cat("dose=",res$D.Gy,"\n")
+			
+	 return(res$D.Gy)						
+}
+
+###########
+SGP.RDD.r.m					<-	function(	D.Gy,
+												E.MeV.u,
+												particle.no,
+												material.no,
+												ER.model,
+												ER.parameters,
+												RDD.model,
+												RDD.parameters){
+	n					<-	length(D.Gy)
+	r.m					<-	numeric(n)
+  
+  	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("r.m=",r.m,"\n")
+
+	 if( RDD.model == 1 ){ 
+	 	if(debug == T) cat("RDD_test model\n")}
+
+	 if( RDD.model == 2 ){ 
+	 	if(debug == T) cat("RDD_KatzPoint model\n")
+	 	if(debug == T) cat("parameters r.min.m=",RDD.parameters[1],"\n")
+	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[2],"\n")}
+
+	 if( RDD.model == 3 ){ 
+	  if(debug == T) cat("RDD_Geiss model\n")
+	  if(debug == T) cat("parameters a0=",RDD.parameters[1],"\n")}
+
+	 if( RDD.model == 4 ){ 
+	  if(debug == T) cat("RDD_Site model\n")
+		if(debug == T) cat("parameters a0=",RDD.parameters[1],"\n")
+	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[2],"\n")}
+
+	 if( RDD.model == 5 ){ 
+	  if(debug == T) cat("RDD_ExtTarget model\n")
+	 	if(debug == T) cat("parameters r.min.m=",RDD.parameters[1],"\n")
+		if(debug == T) cat("parameters a0=",RDD.parameters[2],"\n")
+	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[3],"\n")}
+				
+		res					<-	.C(	"SGP_r_RDD_m",	n						=	as.integer(n),
+														D.Gy					=	as.single(D.Gy),
+														E.MeV.u				=	as.single(E.MeV.u),
+														particle.no			=	as.integer(particle.no),
+														material.no			=	as.integer(material.no),
+														RDD.model				=	as.integer(RDD.model),
+														RDD.parameters		=	as.single(RDD.parameters),
+														ER.model				=	as.integer(ER.model),
+														ER.parameters			=	as.single(ER.parameters),
+														r.m						=	as.single(r.m))		
+
+			if(debug == T) cat("r[m] = ",res$r.m,"\n")
+			
+	 return(res$r.m)						
+}
+
+#####################
+SGP.RDD.f1.parameters	<-	function(	E.MeV.u,
+											particle.no,
+											material.no,
+											RDD.model,
+											RDD.parameters,
+											ER.model,
+											ER.parameters){
+
+	n								<-	length(E.MeV.u)
+	f1.parameters					<-	data.frame(	LET.MeV.cm2.g						= numeric(n),
+														r.min.m							= numeric(n),
+														r.max.m							= numeric(n),
+														d.min.Gy							= numeric(n),
+														d.max.Gy							= numeric(n),
+														k.Gy								= numeric(n),
+														single.impact.fluence.cm2		= numeric(n),
+														single.impact.dose.Gy			= numeric(n),
+														dEdx.MeV.cm2.g					= numeric(n))
+	f1.tmp							<-	numeric(9)
+														
+	for (i in 1:n){
+		#i<-1
+		res				<-	.C("SGP_RDD_f1_parameters", 	E.MeV.u						= as.single(E.MeV.u[i]),
+																particle.no					= as.integer(particle.no[i]),
+																material.no					= as.integer(material.no),
+																RDD.model						= as.integer(RDD.model),
+																RDD.parameters				= as.single(RDD.parameters),
+																ER.model						= as.integer(ER.model),
+																ER.parameters					= as.single(ER.parameters),
+																f1.tmp							= as.single(f1.tmp))
+		f1.parameters[i,]		<-	res$f1.tmp
+	}
+	
+	return(f1.parameters)
+}
+										
+################################################################################################
+# Successive convolutions functions
+################################################################################################
+
+############
+SGP.SC.do.SC	<-	function(	f.list,
+								fluence.factor = 1.0,
+								write.output = F,
+								shrink.tails = T,
+								shrink.tails.under = 1e-30,
+								adjust.N2 = T){
+
+	if(debug == T) cat("Hello world\n")
+
+	n.bins.f				<-	integer(1)
+	u.start				<-	numeric(1)
+	n.convolutions		<-	integer(1)
+
+	if(debug == T) cat("1 n.convolutions = ",n.convolutions,"\n")
+	if(debug == T) cat("1 n.bins.f1 = ",nrow(f.list$f1),"\n")
+	if(debug == T) cat("1 f1.dd.Gy = ",f.list$f1$f1.dd.Gy,"\n")
+	if(debug == T) cat("1 f1 = ",f.list$f1$f1,"\n")
+		
+	res						<-	.C("SGP_SC_get_f_array_size", 	u						= as.single(f.list$f.parameters[1]),
+																	fluence.factor		= as.single(fluence.factor),
+																	N2						= as.integer(unique(f.list$f1$N2)),
+																	n.bins.f1				= as.integer(nrow(f.list$f1)),
+																	f1.d.Gy				= as.single(f.list$f1$f1.d.Gy),
+																	f1.dd.Gy				= as.single(f.list$f1$f1.dd.Gy),
+																	f1						= as.single(f.list$f1$f1),
+																	n.bins.f				= as.integer(n.bins.f),
+																	u.start				= as.single(u.start),
+																	n.convolutions		= as.integer(n.convolutions))
+	n.bins.f				<-	res$n.bins.f
+	u.start				<-	res$u.start
+	n.convolutions		<-	res$n.convolutions
+	
+	if(debug == T) cat("2 n.convolutions = ",n.convolutions,"\n")
+	
+	f.list$f				<-	data.frame(	f.d.Gy			= numeric(n.bins.f),
+												f.dd.Gy		= numeric(n.bins.f),
+												f				= numeric(n.bins.f),
+												n.bins.f		= rep(n.bins.f, n.bins.f),
+												N2				= rep(unique(f.list$f1$N2), n.bins.f),
+												u.start		= rep(u.start, n.bins.f))
+
+	if(debug == T) cat("3\n")
+	if(debug == T) cat("3 n.bins.f1 = ",nrow(f.list$f1),"\n")
+	if(debug == T) cat("3 unique(f.list$f1$u) = ",unique(unique(f.list$f.parameters[1])),"\n")
+	if(debug == T) cat("3 unique(f.list$f1$N2) = ",unique(f.list$f1$N2),"\n")
+												
+	res						<-	.C("SGP_SC_get_f_start", 		u						= as.single(unique(f.list$f.parameters[1])),
+																	n.bins.f1				= as.integer(nrow(f.list$f1)),
+																	N2						= as.integer(unique(f.list$f1$N2)),
+																	f1.d.Gy				= as.single(f.list$f1$f1.d.Gy),
+																	f1.dd.Gy				= as.single(f.list$f1$f1.dd.Gy),
+																	f1						= as.single(f.list$f1$f1),
+																	n.bins.f				= as.integer(n.bins.f),
+																	f.d.Gy					= as.single(f.list$f$f.d.Gy),
+																	f.dd.Gy				= as.single(f.list$f$f.dd.Gy),
+																	f						= as.single(f.list$f$f))
+	
+	f.list$f$f.d.Gy				<- res$f.d.Gy
+	f.list$f$f.dd.Gy				<- res$f.dd.Gy
+	f.list$f$f						<- res$f
+	
+	f.list$f.start				<-	f.list$f
+	
+	f.list$f$fdd					<-	numeric(nrow(f.list$f))
+	f.list$f$dfdd					<-	numeric(nrow(f.list$f))
+	
+	f0						<- numeric(1)
+	d						<- numeric(1)
+	
+	if(debug == T) cat("5\n")
+
+	res						<-	.C("SGP_SuccessiveConvolutions", 	u						= as.single(unique(f.list$f.parameters[1])),
+																		n.bins.f				= as.integer(n.bins.f),
+																		N2						= as.integer(unique(f.list$f1$N2)),
+																		n.bins.f.used			= as.integer(nrow(f.list$f1)),
+																		f.d.Gy					= as.single(f.list$f$f.d.Gy),
+																		f.dd.Gy				= as.single(f.list$f$f.dd.Gy),
+																		f						= as.single(f.list$f$f),
+																		f0						= as.single(f0),
+																		fdd						= as.single(f.list$f$fdd),
+																		dfdd					= as.single(f.list$f$dfdd),
+																		d						= as.single(d),
+																		write.output			= as.integer(write.output),
+																		shrink.tails			= as.integer(shrink.tails),
+																		shrink.tails.under	= as.single(shrink.tails.under),
+																		adjust.N2				= as.integer(adjust.N2))
+																		
+	if(debug == T) cat("6\n")
+																		
+	f.list$f$f.d.Gy				<-	res$f.d.Gy
+	f.list$f$f.dd.Gy				<-	res$f.dd.Gy
+	f.list$f$f						<-	res$f
+
+	if(debug == T) cat("6a\n")
+
+	f.list$f$fdd					<-	res$fdd
+	f.list$f$dfdd					<-	res$dfdd
+	f.list$f$f0					<-	rep(res$f0, n.bins.f)
+	f.list$f$d						<-	rep(res$d, n.bins.f)
+		if(debug == T) cat("6b\n")
+
+	f.list$f$u.start				<-	rep(u.start, n.bins.f)
+	f.list$f$u						<-	rep(res$u, n.bins.f)
+	f.list$f$n.convolutions		<-	rep(n.convolutions, n.bins.f)
+	f.list$f$n.bins.f.used		<-	rep(res$n.bins.f.used, n.bins.f)
+	f.list$f$write.output		<-	rep(write.output, n.bins.f)
+	f.list$f$shrink.tails		<-	rep(shrink.tails, n.bins.f)
+	
+		if(debug == T) cat("6c\n")
+	
+	f.list$f$shrink.tails.under	<-	rep(shrink.tails.under, n.bins.f)
+	f.list$f$adjust.N2			<-	rep(adjust.N2, n.bins.f)
+	f.list$f$N2.adjusted			<-	rep(res$N2, n.bins.f)
+	tmp <- res$n.bins.f.used
+		if(debug == T) cat("6d",tmp,"\n")
+	
+	f.list$f						<-	f.list$f[1:res$n.bins.f.used,]
+
+	if(debug == T) cat("7\n")
+
+	return(f.list)
+}
+
+
+#############
+SGP.SC.get.f1		<-	function(		E.MeV.u,
+										particle.no,
+										fluence.cm2,
+										material.no,
+										RDD.model,
+										RDD.parameters,
+										ER.model,
+										ER.parameters,
+										N2){
+											
+	#####################################################
+	# FIRST: get array size for single impact function f1
+	#####################################################
+
+	n				<-	length(E.MeV.u)
+	n.bins.f1		<-	integer(1)
+	f1.parameters	<-	numeric(9 * n)
+	
+	res				<-	.C("SGP_SC_get_f1_array_size", 	n						= as.integer(n),
+																E.MeV.u				= as.single(E.MeV.u),
+																particle.no			= as.integer(particle.no),
+																material.no			= as.integer(material.no),
+																RDD.model				= as.integer(RDD.model),
+																n.RDD.parameters		= as.integer(length(RDD.parameters)),
+																RDD.parameters			= as.single(RDD.parameters),
+																ER.model				= as.integer(ER.model),
+																n.ER.parameters		= as.integer(length(ER.parameters)),
+																ER.parameters			= as.single(ER.parameters),
+																N2						= as.integer(N2),
+																debug					= as.integer(F),
+																n.bins.f1				= as.integer(n.bins.f1),
+																f1.parameters			= as.single(f1.parameters))
+	n.bins.f1		<- 	res$n.bins.f1
+	f1.parameters	<-	res$f1.parameters
+	
+	#####################################################
+	# THEN: get f1 and f1 parameters
+	#####################################################
+
+	f.parameters					<-	numeric(7)
+	
+	norm.fluence					<-	numeric(n)
+	dose.contribution.Gy			<-	numeric(n)
+	
+	f1.d.Gy						<-	numeric(n.bins.f1)
+	f1.dd.Gy						<-	numeric(n.bins.f1)
+	f1								<-	numeric(n.bins.f1)	
+
+	res				<-	.C("SGP_SC_get_f1", 					n						= as.integer(n),
+																E.MeV.u				= as.single(E.MeV.u),
+																particle.no			= as.integer(particle.no),
+																fluence.cm2			= as.single(fluence.cm2),
+																material.no			= as.integer(material.no),
+																RDD.model				= as.integer(RDD.model),
+																n.RDD.parameters		= as.integer(length(RDD.parameters)),
+																RDD.parameters			= as.single(RDD.parameters),
+																ER.model				= as.integer(ER.model),
+																n.ER.parameters		= as.integer(length(ER.parameters)),
+																ER.parameters			= as.single(ER.parameters),
+																N2						= as.integer(N2),
+																n.bins.f1				= as.integer(n.bins.f1),
+																f1.parameters			= as.single(f1.parameters),
+																norm.fluence			= as.single(norm.fluence),
+																dose.contribution.Gy	= as.single(dose.contribution.Gy),
+																f.parameters			= as.single(f.parameters),
+																f1.d.Gy				= as.single(f1.d.Gy),
+																f1.dd.Gy				= as.single(f1.dd.Gy),
+																f1						= as.single(f1))
+													
+	if(F){
+	# create one-row data-frame from rdd-parameters
+	df.rdd					<-	t(as.data.frame(RDD.parameters))
+	rownames(df.rdd)		<-	""
+	colnames(df.rdd)		<-	paste("RDD.parameters.", 1:ncol(df.rdd), sep = "")
+
+	df.RDD.1				<-	df.rdd[rep(1, n),]
+	df.RDD.2				<-	df.rdd[rep(1, n.bins.f1),]
+	}
+	
+	results	<-	list(	general				=	data.frame(	E.MeV.u						=	res$E.MeV.u,
+																		particle.no					= 	res$particle.no,
+																		fluence.cm2					= 	res$fluence.cm2,
+																		fluence.cm2.set				= 	fluence.cm2,
+																		norm.fluence					= 	res$norm.fluence,
+																		dose.contribution.Gy			= 	res$dose.contribution.Gy,
+																		material.no					=	rep(material.no, n)),
+							f1.parameters			=	f1.parameters,											
+							f.parameters			=	res$f.parameters,
+							f1						=	data.frame(	f1.d.Gy						=	res$f1.d.Gy,
+																		f1.dd.Gy						=	res$f1.dd.Gy,
+																		f1								=	res$f1,
+																		material.no					=	rep(material.no, n.bins.f1),
+#																		df.RDD.2,
+																		n.bins.f1						=	rep(res$n.bins.f1, n.bins.f1),
+#																		u								=	rep(res$u, n.bins.f1),
+																		N2								=	rep(N2, n.bins.f1)))
+	return(results)
+}
+
+
+#########################
+SGP.SC.get.gamma.response		<-	function(		f.list,
+														gamma.model,
+														gamma.parameters){
+	n						<-	nrow(f.list$f)
+	S						<-	numeric(n)
+	S.HCP					<-	numeric(1)
+	S.gamma				<-	numeric(1)
+	efficiency				<-	numeric(1)
+
+	n.gamma.parameters 	<-	length(gamma.parameters)
+	if(gamma.model == 1){
+		n.gamma.parameters 	<-	length(gamma.parameters) / 4
+	}
+
+	res					<-	.C(	"SGP_get_gamma_response",		n						= as.integer(n),
+																	f.d.Gy					= as.single(f.list$f$f.d.Gy),
+																	f.dd.Gy				= as.single(f.list$f$f.dd.Gy),
+																	f						= as.single(f.list$f$f),
+																	f0						= as.single(unique(f.list$f$f0)),
+																	n.gamma.parameters		= as.integer(n.gamma.parameters),
+																	gamma.model			= as.integer(gamma.model),
+																	gamma.parameters		= as.single(gamma.parameters),
+																	S						= as.single(S),
+																	S.HCP					= as.single(S.HCP),
+																	S.gamma				= as.single(S.gamma),
+																	efficiency				= as.single(efficiency))
+
+	f.list$f$n.gamma.parameters			<-	rep(n.gamma.parameters, n)
+	f.list$f$gamma.model					<-	rep(gamma.model, n)
+	
+	# create one-row data-frame from gamma parameters
+	df.gamma				<-	t(as.data.frame(gamma.parameters))
+	rownames(df.gamma)	<-	""
+	colnames(df.gamma)	<-	paste("gamma.parameters.", 1:ncol(df.gamma), sep = "")
+	df.gamma				<-	df.gamma[rep(1, n),]
+	f.list$f								<-	cbind.data.frame(f.list$f, df.gamma)
+
+	f.list$f$S				<-	res$S
+	f.list$f$S.HCP		<-	rep(res$S.HCP, n)
+	f.list$f$S.gamma		<-	rep(res$S.gamma, n)
+	f.list$f$efficiency	<-	rep(res$efficiency, n)
+	
+	return(f.list)
+}
+
+
+##############
+SGP.efficiency		<-	function(		E.MeV.u,
+											particle.no,
+											fluence.cm2,
+											material.no,
+											RDD.model,
+											RDD.parameters,
+											ER.model,
+											ER.parameters,
+											gamma.model,
+											gamma.parameters,
+											method					= "SC",
+											N2						= 20,
+											fluence.factor 		= 1.0,
+											write.output 			= F,
+											shrink.tails 			= T,
+											shrink.tails.under	= 1e-30,
+											adjust.N2 				= T){
+	
+	debug 				<-	F
+	f.list				<-	SGP.SC.get.f1(					E.MeV.u,
+																particle.no,
+																fluence.cm2,
+																material.no,
+																RDD.model,
+																RDD.parameters,
+																ER.model,
+																ER.parameters,
+																N2)
+	
+	f.list				<-	SGP.SC.do.SC(						f.list)
+
+	f.list				<-	SGP.SC.get.gamma.response(		f.list,
+																gamma.model,
+																gamma.parameters)
+														
+	f.list$results	<-	data.frame(	efficiency  	=	unique(f.list$f$efficiency),
+											d.check.Gy		=	unique(f.list$f$d))
+
+	return(f.list)
+}
+
+SGP.efficiency.short	<-	function(	E.MeV.u,
+										particle.no,
+										fluence.cm2,
+										material.no,
+										RDD.model,
+										RDD.parameters,
+										ER.model,
+										ER.parameters,
+										gamma.model,
+										gamma.parameters,
+										method					= "SC",
+										N2						= 20,
+										fluence.factor 		= 1.0,
+										write.output 			= F,
+										shrink.tails 			= T,
+										shrink.tails.under	= 1e-30,
+										adjust.N2 				= T,
+										transport				= F,
+										E.min.MeV.u			= 1,
+										p.tol					= 0.1,
+										z.total.cm				= 0.1,
+					 					N.max					= 1e3){
+	
+		results			<-	numeric(10)
+		if (Transport = T){
+		transport		<-	SGP.Edmund.Transport(	E.start.MeV.u		= E.MeV.u,
+														E.min.MeV.u		= E.min.MeV.u,
+														particle.no		= particle.no,
+														material.no		= material.no,
+														p.tol				= p.tol,
+														z.total.cm			= z.total.cm,
+					 						  			N.max				= N.max)
+		print(transport)
+		n.loop			<-	nrow(transport)
+		for (i in 1:n.loop){
+			slab.results		<-	numeric(10)
+			res					<-	.C(	"SGP_efficiency",		n						= 	1,
+																E.MeV.u				=	as.single(transport$E.MeV[i]),
+																particle.no			=	as.integer(particle.no),
+																fluence.cm2			=	as.single(fluence.cm2),
+																material.no			=	as.integer(material.no),
+																RDD.model				=	as.integer(RDD.model),
+																RDD.parameters		=	as.single(RDD.parameters),
+																ER.model				=	as.integer(ER.model),
+																ER.parameters			=	as.single(ER.parameters),
+																gamma.model			=	as.integer(gamma.model),
+																gamma.parameters		=	as.single(gamma.parameters),
+																N2						=	as.integer(N2),
+																fluence.factor		=	as.single(transport$D.rel[i]),					# Bragg curve passed by fluence factor
+																write.output			=	as.integer(write.output),
+																shrink.tails			=	as.integer(shrink.tails),
+																shrink.tails.under	=	as.single(shrink.tails.under),
+																adjust.N2				=	as.integer(adjust.N2),
+																results				=	as.single(slab.results))
+			print(cat("Done slab no. ", i, "\n"))
+			print(cat("results:  ", res$results, "\n"))
+			results[1]			<-	results[1] + res$results[1] * transport$w.Edmund[i]			# efficiency
+			results[2]			<-	results[2] + res$results[2] * transport$w.Edmund[i]			# d.check
+			results[6]			<-	results[3] + res$results[6] * transport$w.Edmund[i]			# S.HCP
+			results[7]			<-	results[4] + res$results[7] * transport$w.Edmund[i]			# S.gamma
+		}
+	}else{
+		res					<-	.C(	"SGP_efficiency",		n						= 	as.integer(length(E.MeV.u)),
+															E.MeV.u				=	as.single(E.MeV.u),
+															particle.no			=	as.integer(particle.no),
+															fluence.cm2			=	as.single(fluence.cm2),
+															material.no			=	as.integer(material.no),
+															RDD.model				=	as.integer(RDD.model),
+															RDD.parameters		=	as.single(RDD.parameters),
+															ER.model				=	as.integer(ER.model),
+															ER.parameters			=	as.single(ER.parameters),
+															gamma.model			=	as.integer(gamma.model),
+															gamma.parameters		=	as.single(gamma.parameters),
+															N2						=	as.integer(N2),
+															fluence.factor		=	as.single(fluence.factor),
+															write.output			=	as.integer(write.output),
+															shrink.tails			=	as.integer(shrink.tails),
+															shrink.tails.under	=	as.single(shrink.tails.under),
+															adjust.N2				=	as.integer(adjust.N2),
+															results				=	as.single(results))
+		results			<-	res$results
+	}
+	return(results)
+}
+														
 ################################################################################################
 # Transport functions
 ################################################################################################
@@ -456,598 +1203,213 @@ SGP.Bortfeld.Transport.Proton.Spectrum			<-	function(	E.initial.spectrum.MeV,
 	df			<-	df[order(df$detector.z.cm, df$E.bins.mid.MeV),]
 	return(df)
 }
-################################################################################################
-# Max delta electron range
-################################################################################################
-
-
-############
-SGP.max.electron.range					<-	function(	E.MeV.u,
-												particle.no,
-												material.no,
-												er.model){
-	n					<-	length(E.MeV.u)
-	range.m				<-	numeric(n)
-	res				<-	.C("SGP_max_electron_range_mS", 	n						= as.integer(n),
-															E.MeV.u					= as.single(E.MeV.u),
-															particle.no			= as.integer(particle.no),
-															material.no			= as.integer(material.no),
-															er.model				= as.integer(er.model),
-															range.m					= as.single(range.m))
-	return(res$range.m)
-}
-
-################################################################################################
-# Katz model test functions
-################################################################################################
-
-# Katz model test functions:	
-
-############
-SGP.RDD.Katz.point.kernel					<-	function(	x,
-												alpha){
-	n					<-	length(x)
-	f				<-	numeric(n)
-  
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("alpha=",alpha,"\n")
-				
-		res					<-	.C(	"SGP_RDD_Katz_point_kernelS",	n						=	as.integer(n),
-															x								=	as.single(x),
-															alpha				=	as.single(alpha),
-															f								=	as.single(f))		
-
-		if(debug == T) cat("res=",res$f,"\n")
-			
-	 return(res$f)						
-}
-
-############
-SGP.RDD.Katz.point.D.Gy					<-	function(	r.m,
-												alpha,
-												r.max.m,
-												poin.coef){
-	n					<-	length(r.m)
-	D.Gy		<-	numeric(n)
-  
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("alpha=",alpha,"\n")
-				
-		res					<-	.C(	"SGP_RDD_Katz_point_GyS",	n						=	as.integer(n),
-															r.m						=	as.single(r.m),
-															alpha				=	as.single(alpha),
-															r.max.m		= as.single(r.max.m),
-															point.coef = as.single(point.coef),
-															D.Gy					=	as.single(D.Gy))		
-
-		if(debug == T) cat("res=",res$D.Gy,"\n")
-			
-	 return(res$D.Gy)						
-}
-
-############
-SGP.RDD.Katz.dEdx.kernel					<-	function(	x,
-												alpha){
-	n					<-	length(x)
-	f				<-	numeric(n)
-  
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("alpha=",alpha,"\n")
-				
-		res					<-	.C(	"SGP_RDD_Katz_dEdx_kernelS",	n						=	as.integer(n),
-															x								=	as.single(x),
-															alpha				=	as.single(alpha),
-															f								=	as.single(f))		
-
-		if(debug == T) cat("res=",res$f,"\n")
-			
-	 return(res$f)						
-}
-
-
-############
-SGP.RDD.Katz.site.D.Gy					<-	function(	r.m,
-												alpha,
-												r.min.m,
-												r.max.m,
-												LET,
-												density,
-												dEdx,
-												poin.coef){
-	n					<-	length(r.m)
-	D.Gy		<-	numeric(n)
-  
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("alpha=",alpha,"\n")
-				
-		res					<-	.C(	"SGP_RDD_Katz_site_GyS",	n						=	as.integer(n),
-															r.m						=	as.single(r.m),
-															alpha				=	as.single(alpha),
-															r.min.m		= as.single(r.min.m),
-															r.max.m		= as.single(r.max.m),
-															LET						= as.single(LET),
-															density		= as.single(density),
-															dEdx					= as.single(dEdx),					
-															point.coef = as.single(point.coef),
-															D.Gy					=	as.single(D.Gy))		
-
-		if(debug == T) cat("res=",res$D.Gy,"\n")
-			
-	 return(res$D.Gy)						
-}
-
-############
-SGP.RDD.Katz.ext.kernel.D.Gy					<-	function(	t.m,
-												r.m,
-												a0.m,
-												alpha,
-												r.min.m,
-												r.max.m,
-												poin.coef){
-	n					<-	length(t.m)
-	D.Gy		<-	numeric(n)
-  
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("t.m=",t.m,"\n")
- 	if(debug == T) cat("r.m=",r.m,"\n")
- 	if(debug == T) cat("a0.m=",a0.m,"\n")
- 	if(debug == T) cat("alpha=",alpha,"\n")
- 	if(debug == T) cat("r.min.m=",r.min.m,"\n")
- 	if(debug == T) cat("r.max.m=",r.max.m,"\n")
- 	if(debug == T) cat("poin.coef=",poin.coef,"\n")
-								
-# SGP_RDD_Katz_ext_kernel_GyS(int *n, float* t_m, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy, float * D_Gy)
-								
-		res					<-	.C(	"SGP_RDD_Katz_ext_kernel_GyS",	n						=	as.integer(n),
-															t.m						=	as.single(t.m),
-															r.m						=	as.single(r.m),
-															a0.m						=	as.single(a0.m),
-															alpha				=	as.single(alpha),
-															r.min.m		= as.single(r.min.m),
-															r.max.m		= as.single(r.max.m),
-															point.coef = as.single(point.coef),
-															D.Gy					=	as.single(D.Gy))		
-
-		if(debug == T) cat("res=",res$D.Gy,"\n")
-			
-	 return(res$D.Gy)						
-}
-
-################################################################################################
-# RDD functions
-################################################################################################
-
-# RDD functions:	
-
-############
-
-############
-SGP.RDD.D.Gy					<-	function(	r.m,
-												E.MeV.u,
-												particle.no,
-												material.no,
-												ER.model,
-												ER.parameters,
-												RDD.model,
-												RDD.parameters){
-	n					<-	length(r.m)
-	RDD.n				<-	length(RDD.parameters)
-	D.Gy				<-	numeric(n)
-  
- 	ER.n				<-	length(ER.parameters)
-
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("r.m=",r.m,"\n")
-
-	 if( RDD.model == 0 ){ 
-	 	if(debug == T) cat("RDD_test model\n")}
-
-	 if( RDD.model == 1 ){ 
-	 	if(debug == T) cat("RDD_KatzPoint model\n")
-	 	if(debug == T) cat("parameter a0=",RDD.parameters[0],"\n")}
-
-	 if( RDD.model == 2 ){ 
-	  if(debug == T) cat("RDD_Geiss model\n")
-	  if(debug == T) cat("parameter a0=",RDD.parameters[0],"\n")}
-
-	 if( RDD.model == 3 ){ 
-		if(debug == T) cat("parameter a0=",RDD.parameters[0],"\n")
-		}
-				
-		res					<-	.C(	"SGP_D_RDD_Gy",	n						=	as.integer(n),
-														r.m						=	as.single(r.m),
-														E.MeV.u				=	as.single(E.MeV.u),
-														particle.no			=	as.integer(particle.no),
-														material.no			=	as.integer(material.no),
-														RDD.model				=	as.integer(RDD.model),
-														RDD.n					=	as.integer(RDD.n),
-														RDD.parameters		=	as.single(RDD.parameters),
-														ER.model				=	as.integer(ER.model),
-														ER.n					=	as.integer(ER.n),
-														ER.parameters			=	as.single(ER.parameters),
-														D.Gy					=	as.single(D.Gy))		
-
-			if(debug == T) cat("dose=",res$D.Gy,"\n")
-			
-	 return(res$D.Gy)						
-}
-
-###########
-SGP.RDD.r.m					<-	function(	D.Gy,
-												E.MeV.u,
-												particle.no,
-												material.no,
-												ER.model,
-												ER.parameters,
-												RDD.model,
-												RDD.parameters){
-	n					<-	length(D.Gy)
-	RDD.n				<-	length(RDD.parameters)
-	r.m					<-	numeric(n)
-  
- 	ER.n				<-	length(ER.parameters)
-
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("D.Gy=",D.Gy,"\n")
-
-	 if( RDD.model == 1 ){ 
-	 	if(debug == T) cat("RDD_test model\n")}
-
-	 if( RDD.model == 2 ){ 
-	 	if(debug == T) cat("RDD_KatzPoint model\n")
-	 	if(debug == T) cat("parameter r.min.m=",RDD.parameters[0],"\n")}
-
-	 if( RDD.model == 3 ){ 
-	  if(debug == T) cat("RDD_Geiss model\n")
-	  if(debug == T) cat("parameter a0.m=",RDD.parameters[0],"\n")}
-
-	 if( RDD.model == 4 ){ 
-	  if(debug == T) cat("RDD_Site model\n")
-	  if(debug == T) cat("parameter a0.m=",RDD.parameters[0],"\n")}
-				
-		res					<-	.C(	"SGP_r_RDD_m",	n						=	as.integer(n),
-														D.Gy					=	as.single(D.Gy),
-														E.MeV.u				=	as.single(E.MeV.u),
-														particle.no			=	as.integer(particle.no),
-														material.no			=	as.integer(material.no),
-														RDD.model				=	as.integer(RDD.model),
-														RDD.n					=	as.integer(RDD.n),
-														RDD.parameters		=	as.single(RDD.parameters),
-														ER.model				=	as.integer(ER.model),
-														ER.n					=	as.integer(ER.n),
-														ER.parameters			=	as.single(ER.parameters),
-														r.m						=	as.single(r.m))		
-
-			if(debug == T) cat("r[m] = ",res$r.m,"\n")
-			
-	 return(res$r.m)						
-}
-
-												
-#####################
-SGP.RDD.f1.parameters	<-	function(	E.MeV.u,
-											particle.no,
-											material.name,
-											parameter){
-
-	n								<-	length(E.MeV.u)
-	LET.MeV.cm2.g					<-	numeric(n)
-	r.min.m						<-	numeric(n)
-	r.max.m						<-	numeric(n)
-	d.min.Gy						<-	numeric(n)
-	d.max.Gy						<-	numeric(n)
-	k.Gy							<-	numeric(n)
-	single.impact.fluence.cm2	<-	numeric(n)
-	single.impact.dose.Gy		<-	numeric(n)
-
-	res				<-	.C("SGP_RDD_f1_parametersS", 	n								= as.integer(n),
-															E.MeV.u						= as.single(E.MeV.u),
-															particle.no				= as.integer(particle.no),
-															material.name					= as.character(material.name),
-															rdd.parameter					= as.single(rdd.parameter),
-															LET.MeV.cm2.g					= as.single(LET.MeV.cm2.g),
-															r.min.m						= as.single(r.min.m),
-															r.max.m						= as.single(r.max.m),
-															d.min.Gy						= as.single(d.min.Gy),
-															d.max.Gy						= as.single(d.max.Gy),
-															k.Gy							= as.single(k.Gy),
-															single.impact.fluence.cm2	= as.single(single.impact.fluence.cm2),
-															single.impact.dose.Gy		= as.single(single.impact.dose.Gy))
-
-	return(res)
-}
-										
-################################################################################################
-# Successive convolutions functions
-################################################################################################
-
-############
-SGP.SC.do.SC	<-	function(	f.list,
-								fluence.factor = 1.0,
-								write.output = F,
-								shrink.tails = T,
-								shrink.tails.under = 1e-30,
-								adjust.N2 = T){
-
-	if(debug == T) cat("Hello world\n")
-
-	n.bins.f				<-	integer(1)
-	u.start				<-	numeric(1)
-	n.convolutions		<-	integer(1)
-
-	if(debug == T) cat("1 n.convolutions = ",n.convolutions,"\n")
-	if(debug == T) cat("1 n.bins.f1 = ",nrow(f.list$f1),"\n")
-	if(debug == T) cat("1 f1.dd.Gy = ",f.list$f1$f1.dd.Gy,"\n")
-	if(debug == T) cat("1 f1 = ",f.list$f1$f1,"\n")
-		
-	res						<-	.C("SGP_SC_get_f_array_size", 	u						= as.single(f.list$f.parameters[1]),
-																	fluence.factor		= as.single(fluence.factor),
-																	N2						= as.integer(unique(f.list$f1$N2)),
-																	n.bins.f1				= as.integer(nrow(f.list$f1)),
-																	f1.d.Gy				= as.single(f.list$f1$f1.d.Gy),
-																	f1.dd.Gy				= as.single(f.list$f1$f1.dd.Gy),
-																	f1						= as.single(f.list$f1$f1),
-																	n.bins.f				= as.integer(n.bins.f),
-																	u.start				= as.single(u.start),
-																	n.convolutions		= as.integer(n.convolutions))
-	n.bins.f				<-	res$n.bins.f
-	u.start				<-	res$u.start
-	n.convolutions		<-	res$n.convolutions
+SGP.Edmund.Transport	<- 	function(			E.start.MeV.u,
+												E.min.MeV.u		=	1e-2,
+												particle.no		=	1,				# proton
+												material.no		=	1,				# water
+												p.tol				=	0.05,
+												z.total.cm			=	0.1,
+					 						  	N.max				=	1e3){
 	
-	if(debug == T) cat("2 n.convolutions = ",n.convolutions,"\n")
+	# This function keeps track of the energy account
+	# as the proton penetrats the crystal of thickness.
+	# E.start		= entrance proton energy 		[MeV]
+	# p.tol		= energy tolerance 				[%]
+	# LET.tab		= table to look up LET values	[MeV*cm^2/g]
+	# names should be "MeV","LET,""R.max"
+	# z.total.cm		= thickness of crystal			[cm]	
+	# N.max		= maximum number of iterations [dimless]
+	# dens			= material density				[g/cm^3]
+	# E.min		= minimum proton energy			[MeV]
 	
-	f.list$f				<-	data.frame(	f.d.Gy			= numeric(n.bins.f),
-												f.dd.Gy		= numeric(n.bins.f),
-												f				= numeric(n.bins.f),
-												n.bins.f		= rep(n.bins.f, n.bins.f),
-												N2				= rep(unique(f.list$f1$N2), n.bins.f),
-												u.start		= rep(u.start, n.bins.f))
-
-	if(debug == T) cat("3\n")
-	if(debug == T) cat("3 n.bins.f1 = ",nrow(f.list$f1),"\n")
-	if(debug == T) cat("3 unique(f.list$f1$N2) = ",unique(f.list$f1$N2),"\n")
-												
-	res						<-	.C("SGP_SC_get_f_start", 		u						= as.single(unique(f.list$f1$u)),
-																	n.bins.f1				= as.integer(nrow(f.list$f1)),
-																	N2						= as.integer(unique(f.list$f1$N2)),
-																	f1.d.Gy				= as.single(f.list$f1$f1.d.Gy),
-																	f1.dd.Gy				= as.single(f.list$f1$f1.dd.Gy),
-																	f1						= as.single(f.list$f1$f1),
-																	n.bins.f				= as.integer(n.bins.f),
-																	f.d.Gy					= as.single(f.list$f$f.d.Gy),
-																	f.dd.Gy				= as.single(f.list$f$f.dd.Gy),
-																	f						= as.single(f.list$f$f))
+	# Created 08.27.06 by JE as ### Ez.account.1 ###
+	# Rewritten for use with SGP library, 10.06.09, Steffen
 	
-	f.list$f$f.d.Gy				<- res$f.d.Gy
-	f.list$f$f.dd.Gy				<- res$f.dd.Gy
-	f.list$f$f						<- res$f
 	
-	f.list$f.start				<-	f.list$f
-	
-	f.list$f$fdd					<-	numeric(nrow(f.list$f))
-	f.list$f$dfdd					<-	numeric(nrow(f.list$f))
-	
-	f0						<- numeric(1)
-	d						<- numeric(1)
-	
-	if(debug == T) cat("5\n")
-
-	res						<-	.C("SGP_SuccessiveConvolutions", 	u						= as.single(unique(f.list$f.parameter[1])),
-																		n.bins.f				= as.integer(n.bins.f),
-																		N2						= as.integer(unique(f.list$f1$N2)),
-																		n.bins.f.used			= as.integer(nrow(f.list$f1)),
-																		f.d.Gy					= as.single(f.list$f$f.d.Gy),
-																		f.dd.Gy				= as.single(f.list$f$f.dd.Gy),
-																		f						= as.single(f.list$f$f),
-																		f0						= as.single(f0),
-																		fdd						= as.single(f.list$f$fdd),
-																		dfdd					= as.single(f.list$f$dfdd),
-																		d						= as.single(d),
-																		write.output			= as.integer(write.output),
-																		shrink.tails			= as.integer(shrink.tails),
-																		shrink.tails.under	= as.single(shrink.tails.under),
-																		adjust.N2				= as.integer(adjust.N2))
-																		
-	if(debug == T) cat("6\n")
-																		
-	f.list$f$f.d.Gy				<-	res$f.d.Gy
-	f.list$f$f.dd.Gy				<-	res$f.dd.Gy
-	f.list$f$f						<-	res$f
-
-	if(debug == T) cat("6a\n")
-
-	f.list$f$fdd					<-	res$fdd
-	f.list$f$dfdd					<-	res$dfdd
-	f.list$f$f0					<-	rep(res$f0, n.bins.f)
-	f.list$f$d						<-	rep(res$d, n.bins.f)
-		if(debug == T) cat("6b\n")
-
-	f.list$f$u.start				<-	rep(u.start, n.bins.f)
-	f.list$f$u						<-	rep(res$u, n.bins.f)
-	f.list$f$n.convolutions		<-	rep(n.convolutions, n.bins.f)
-	f.list$f$n.bins.f.used		<-	rep(res$n.bins.f.used, n.bins.f)
-	f.list$f$write.output		<-	rep(write.output, n.bins.f)
-	f.list$f$shrink.tails		<-	rep(shrink.tails, n.bins.f)
-	
-		if(debug == T) cat("6c\n")
-	
-	f.list$f$shrink.tails.under	<-	rep(shrink.tails.under, n.bins.f)
-	f.list$f$adjust.N2			<-	rep(adjust.N2, n.bins.f)
-	f.list$f$N2.adjusted			<-	rep(res$N2, n.bins.f)
-	tmp <- res$n.bins.f.used
-		if(debug == T) cat("6d",tmp,"\n")
-	
-	f.list$f						<-	f.list$f[1:res$n.bins.f.used,]
-
-	if(debug == T) cat("7\n")
-
-	return(f.list)
-}
-
-
-#############
-SGP.SC.get.f1		<-	function(		E.MeV.u,
-										particle.no,
-										fluence.cm2,
-										material.no,
-										rdd.model,
-										rdd.parameter,
-										er.model,
-										er.parameter,
-										N2){
-											
-	#####################################################
-	# FIRST: get array size for single impact function f1
-	#####################################################
-
-	n				<-	length(E.MeV.u)
-	n.bins.f1		<-	integer(1)
-	f1.parameters	<-	numeric(9 * n)
-	
-	res				<-	.C("SGP_SC_get_f1_array_size", 	n						= as.integer(n),
-																E.MeV.u				= as.single(E.MeV.u),
-																particle.no			= as.integer(particle.no),
-																material.no			= as.integer(material.no),
-																rdd.model				= as.integer(rdd.model),
-																n.rdd.parameter		= as.integer(length(rdd.parameter)),
-																rdd.parameter			= as.single(rdd.parameter),
-																er.model				= as.integer(er.model),
-																n.er.parameter		= as.integer(length(er.parameter)),
-																er.parameter			= as.single(er.parameter),
-																N2						= as.integer(N2),
-																debug					= as.integer(F),
-																n.bins.f1				= as.integer(n.bins.f1),
-																f1.parameters			= as.single(f1.parameters))
-	n.bins.f1		<- 	res$n.bins.f1
-	f1.parameters	<-	res$f1.parameters
-	
-	#####################################################
-	# THEN: get f1 and f1 parameters
-	#####################################################
-
-#	norm.fluence					<-	numeric(n)
-#	LET.MeV.cm2.g					<-	numeric(n)
-#	r.min.m						<-	numeric(n)
-#	r.max.m						<-	numeric(n)
-#	d.min.Gy						<-	numeric(n)
-#	d.max.Gy						<-	numeric(n)
-#	k.Gy							<-	numeric(n)
-#	single.impact.fluence.cm2	<-	numeric(n)
-#	single.impact.dose.Gy		<-	numeric(n)
-#	dose.contribution.Gy			<-	numeric(n)
-#	total.fluence.cm2				<-	numeric(1)
-#	total.dose.Gy					<-	numeric(1)
-#	ave.E.MeV						<-	numeric(1)
-#	dw.E.MeV						<-	numeric(1)
-#	ave.LET.MeV.cm2.g				<-	numeric(1)
-#	dw.LET.MeV.cm2.g				<-	numeric(1)
-#	u								<-	numeric(1)
-
-	f.parameters					<-	numeric(7)
-	
-	norm.fluence					<-	numeric(n)
-	dose.contribution.Gy			<-	numeric(n)
-	
-	f1.d.Gy						<-	numeric(n.bins.f1)
-	f1.dd.Gy						<-	numeric(n.bins.f1)
-	f1								<-	numeric(n.bins.f1)	
-
-	res				<-	.C("SGP_SC_get_f1", 					n						= as.integer(n),
-																E.MeV.u				= as.single(E.MeV.u),
-																particle.no			= as.integer(particle.no),
-																fluence.cm2			= as.single(fluence.cm2),
-																material.no			= as.integer(material.no),
-																rdd.model				= as.integer(rdd.model),
-																n.rdd.parameter		= as.integer(length(rdd.parameter)),
-																rdd.parameter			= as.single(rdd.parameter),
-																er.model				= as.integer(er.model),
-																n.er.parameter		= as.integer(length(er.parameter)),
-																er.parameter			= as.single(er.parameter),
-																N2						= as.integer(N2),
-																n.bins.f1				= as.integer(n.bins.f1),
-																f1.parameters			= as.single(f1.parameters),
-																norm.fluence			= as.single(norm.fluence),
-																dose.contribution.Gy	= as.single(dose.contribution.Gy),
-																f.parameters			= as.single(f.parameters),
-																f1.d.Gy				= as.single(f1.d.Gy),
-																f1.dd.Gy				= as.single(f1.dd.Gy),
-																f1						= as.single(f1))
+	# Start slap, initial values
+	HCP.properties	<-	SGP.particle.properties(	particle.no)
+	E.start.MeV		<-	E.start.MeV.u * HCP.properties$A
+	E.min.MeV			<-	E.min.MeV.u * HCP.properties$A
+	mat.properties	<-	SGP.get.material.data(	material.no)
+	LET.MeV.cm			<- 	SGP.LET.MeV.cm2.g(	E.MeV.u			= E.start.MeV.u,
+													particle.no		= particle.no,
+													material.no		= material.no) * mat.properties$density.g.cm3
 													
-	if(F){
-	# create one-row data-frame from rdd-parameters
-	df.rdd					<-	t(as.data.frame(rdd.parameter))
-	rownames(df.rdd)		<-	""
-	colnames(df.rdd)		<-	paste("rdd.parameter.", 1:ncol(df.rdd), sep = "")
+	dE.MeV				<- E.start.MeV * p.tol
+		
+	dz.cm 				<- dE.MeV / LET.MeV.cm					# Approximation: LET constant in dE
 
-	df.rdd.1				<-	df.rdd[rep(1, n),]
-	df.rdd.2				<-	df.rdd[rep(1, n.bins.f1),]
-	}
+
+
+	E.MeV				<- E.start.MeV
+	z.cm				<- 0
+	E.dep.MeV			<- dE.MeV
+	i 					<- 1
+
+	df					<-	data.frame(	i				=	i,
+											E.MeV			=	E.MeV,
+											LET.MeV.cm		=	LET.MeV.cm,
+											z.cm			=	z.cm,
+											dz.cm			=	dz.cm,
+											dE.MeV			=	dE.MeV,
+											E.dep.MeV		=	E.dep.MeV,
+											D.rel			=	1,
+											w.Edmund		=	dz.cm / z.total.cm)												# weight for signal from this slab by relative mass: 
+											
 	
-	results	<-	list(	general				=	data.frame(	E.MeV.u						=	res$E.MeV.u,
-																		particle.no					= 	res$particle.no,
-																		fluence.cm2					= 	res$fluence.cm2,
-																		fluence.cm2.set				= 	fluence.cm2,
-																		norm.fluence					= 	res$norm.fluence,
-																		dose.contribution.Gy			= 	res$dose.contribution.Gy,
-																		material.no					=	rep(material.no, n)),
-							f1.parameters			=	f1.parameters,											
-							f.parameters			=	res$f.parameters,
-							f1						=	data.frame(	f1.d.Gy						=	res$f1.d.Gy,
-																		f1.dd.Gy						=	res$f1.dd.Gy,
-																		f1								=	res$f1,
-																		material.no					=	rep(material.no, n.bins.f1),
-#																		df.rdd.2,
-																		n.bins.f1						=	rep(res$n.bins.f1, n.bins.f1),
-#																		u								=	rep(res$u, n.bins.f1),
-																		N2								=	rep(N2, n.bins.f1)))
-	return(results)
+	# Iteration
+	
+	repeat{
+		
+		# dz.cm >> z.total.cm (large energies or small crystals)
+		if (dz.cm >= z.total.cm){
+			dz.cm 		<- z.total.cm - z.cm
+			dE.MeV		<- dz.cm * LET.MeV.cm
+			E.dep.MeV	<- dE.MeV
+
+			df			<-	data.frame(	i			=	i,
+											E.MeV		=	E.MeV,
+											LET.MeV.cm	=	LET.MeV.cm,
+											z.cm		=	z.cm,
+											dz.cm		=	dz.cm,
+											dE.MeV		=	dE.MeV,
+											E.dep.MeV	=	E.dep.MeV,
+											D.rel		=	dE.MeV / dz.cm / (df$dE.MeV[1] / df$dz.cm[1]),
+											w.Edmund	=	dz.cm / z.total.cm)
+			
+			print("Only one energy deposition (large energy/small crystal)")
+			break			
+		}
+		
+		# dE.MeV << E.min.MeV (large crystals or small energies)
+		if (E.MeV - dE.MeV <= E.min.MeV){
+			dE.MeV			<- E.MeV - E.min.MeV
+			dz.cm 			<- dE.MeV / LET.MeV.cm
+			E.dep.MeV		<- dE.MeV
+
+			df.add		<-	data.frame(	i			=	i,
+											E.MeV		=	E.MeV,
+											LET.MeV.cm	=	LET.MeV.cm,
+											z.cm		=	z.cm,
+											dz.cm		=	dz.cm,
+											dE.MeV		=	dE.MeV,
+											E.dep.MeV	=	E.dep.MeV,
+											D.rel		=	dE.MeV / dz.cm / (df$dE.MeV[1] / df$dz.cm[1]),
+											w.Edmund	=	dz.cm / z.total.cm)
+			df			<-	rbind.data.frame(df, df.add)
+
+			print("Only one energy deposition (small energy/large crystal)")
+			break			
+		}
+
+		# Maximum number of iterations
+		if (i > N.max){
+			print ("Max number of iterations reached")
+			break
+		}
+		
+		# Normal iteration
+		E.MeV			<- E.MeV - dE.MeV 									# E for next slap
+		E.MeV.u		<- E.MeV / HCP.properties$A
+		z.cm 			<- z.cm + dz.cm	 									# start depth of next slap
+
+		LET.MeV.cm		<- 	SGP.LET.MeV.cm2.g(	E.MeV.u			= E.MeV.u,
+													particle.no	 	= particle.no,
+													material.no		= material.no) * mat.properties$density.g.cm3
+
+		dE.MeV			<- E.MeV * p.tol				 						# dE next slap
+		dz.cm			<- dE.MeV / LET.MeV.cm								# size next slap
+		E.dep.MeV		<- E.dep.MeV + dE.MeV								# accumulated energy
+		i 				<- i+1													# number of iterations
+		print(paste("Slab", i))
+
+		# Last slap
+		if (z.cm + dz.cm >= z.total.cm){
+			dz.cm 			<- z.total.cm - z.cm
+			dE.MeV			<- dz.cm * LET.MeV.cm
+			E.dep.MeV 		<- E.dep.MeV + dE.MeV
+
+			df.add			<-	data.frame(	i			=	i,
+												E.MeV		=	E.MeV,
+												LET.MeV.cm	=	LET.MeV.cm,
+												z.cm		=	z.cm,
+												dz.cm		=	dz.cm,
+												dE.MeV		=	dE.MeV,
+												E.dep.MeV	=	E.dep.MeV,
+												D.rel		=	dE.MeV / dz.cm / (df$dE.MeV[1] / df$dz.cm[1]),
+												w.Edmund	=	dz.cm / z.total.cm)
+			df				<-	rbind.data.frame(df, df.add)
+
+			print("Crystal thickness reached")
+			break 
+		}
+		
+		# Protons thermalized
+		if (E.MeV - dE.MeV <= E.min.MeV){
+			dE.MeV 			<- E.MeV - E.min.MeV
+			dz.cm				<- dE.MeV / LET.MeV.cm
+			z.cm				<- z.cm + dz.cm
+			E.dep.MeV			<- E.dep.MeV + dE.MeV
+
+			# Update vectors
+
+			df.add			<-	data.frame(	i			=	i,
+												E.MeV		=	E.MeV,
+												LET.MeV.cm	=	LET.MeV.cm,
+												z.cm		=	z.cm,
+												dz.cm		=	dz.cm,
+												dE.MeV		=	dE.MeV,
+												E.dep.MeV	=	E.dep.MeV,
+												D.rel		=	dE.MeV / dz.cm / (df$dE.MeV[1] / df$dz.cm[1]),
+												w.Edmund	=	dz.cm / z.total.cm)
+			df				<-	rbind.data.frame(df, df.add)
+
+			print("Minimum energy reached")
+			break 
+
+		}
+		
+		df.add			<-	data.frame(	i			=	i,
+											E.MeV		=	E.MeV,
+											LET.MeV.cm	=	LET.MeV.cm,
+											z.cm		=	z.cm,
+											dz.cm		=	dz.cm,
+											dE.MeV		=	dE.MeV,
+											E.dep.MeV	=	E.dep.MeV,
+											D.rel		=	dE.MeV / dz.cm / (df$dE.MeV[1] / df$dz.cm[1]),
+											w.Edmund	=	dz.cm / z.total.cm)
+		df				<-	rbind.data.frame(df, df.add)
+
+	}
+
+	return(df)
+	
 }
 
 
-#########################
-SGP.SC.get.gamma.response		<-	function(		f.list,
-														gamma.model,
-														gamma.parameter){
-	n						<-	nrow(f.list$f)
-	S						<-	numeric(n)
-	S.HCP					<-	numeric(1)
-	S.gamma				<-	numeric(1)
-	efficiency				<-	numeric(1)
+####### Energy deposition by delta-rays
 
-	n.gamma.parameter 	<-	length(gamma.parameter)
-	if(gamma.model == 1){
-		n.gamma.parameter 	<-	length(gamma.parameter) / 4
-	}
-
-	res					<-	.C(	"SGP_get_gamma_response",		n						= as.integer(n),
-																	f.d.Gy					= as.single(f.list$f$f.d.Gy),
-																	f.dd.Gy				= as.single(f.list$f$f.dd.Gy),
-																	f						= as.single(f.list$f$f),
-																	f0						= as.single(unique(f.list$f$f0)),
-																	n.gamma.parameter		= as.integer(n.gamma.parameter),
-																	gamma.model			= as.integer(gamma.model),
-																	gamma.parameter		= as.single(gamma.parameter),
-																	S						= as.single(S),
-																	S.HCP					= as.single(S.HCP),
-																	S.gamma				= as.single(S.gamma),
-																	efficiency				= as.single(efficiency))
-
-	f.list$f$n.gamma.parameter			<-	rep(n.gamma.parameter, n)
-	f.list$f$gamma.model					<-	rep(gamma.model, n)
+E.delta <- function(E,R.e=delta.max,a0=1e-8,point.integrand=point.dose.int,
+						dens=3.97,err=1e-16,N.el=1.2e24){
+	# This function calculates the integral energy deposition
+	# from delta-rays by the the Katz formula from a0 to R.max in
+	# an infinitisimal thin slap of the detector. 
+	# The output is given in J/cm.
+	# The function is meant as input for the Hansen model.
 	
-	# create one-row data-frame from gamma parameters
-	df.gamma				<-	t(as.data.frame(gamma.parameter))
-	rownames(df.gamma)	<-	""
-	colnames(df.gamma)	<-	paste("gamma.parameter.", 1:ncol(df.gamma), sep = "")
-	df.gamma				<-	df.gamma[rep(1, n),]
-	f.list$f								<-	cbind.data.frame(f.list$f, df.gamma)
-
-	f.list$f$S				<-	res$S
-	f.list$f$S.HCP		<-	rep(res$S.HCP, n)
-	f.list$f$S.gamma		<-	rep(res$S.gamma, n)
-	f.list$f$efficiency	<-	rep(res$efficiency, n)
+	# E			= proton energy				 	[MeV]
+	# R.max	= maximum electorn range	 	[cm]
+	# a0		= core radius (start point) 	[cm]
+	# dens		= density of material			[g/cm^3]
 	
-	return(f.list)
+	# Created 10.09.2006 by JE
+	
+	R.max <- R.e(E)
+	
+	# Total energy deposited in track
+	
+	E.track <- 1e-3*dens*2*pi*integrate(point.integrand,lower=a0,upper=R.max,rel.tol=err,
+				 N.el=N.el,E.p=E,dens=dens)$integral # J/cm	
+
 }
-
 
