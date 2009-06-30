@@ -131,11 +131,11 @@ void testRDD(){
 
     float	E_MeV_u				= 100;
     long	particle_no			= 1;
-    long 	material_no		 	= 1;
+    long 	material_no		 	= 2;
 
     long	rdd_model			= 1;
-	long	n_rdd_parameter		= 1;
-    float 	rdd_parameter		= 1e-11f;
+	long	n_rdd_parameter		= 0;
+    float 	rdd_parameter[]		= {1e-11f, 1e-11f, 0.0f};
 
 	long	er_model			= 2;
 	long	n_er_parameter		= 0;
@@ -150,7 +150,7 @@ void testRDD(){
 	SGP_D_RDD_Gy( 	&n,
 					r_m,
 					&E_MeV_u,	&particle_no, 		&material_no,
-					&rdd_model, &n_rdd_parameter, 	&rdd_parameter,
+					&rdd_model, &n_rdd_parameter, 	rdd_parameter,
 					&er_model, 	&n_er_parameter, 	&er_parameter,
 					D_RDD_Gy);
 
@@ -158,12 +158,12 @@ void testRDD(){
 		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);}
 
 	rdd_model			= 2;
-	rdd_parameter		= 5e-8;
+	n_rdd_parameter		= 2;
 	printf("begin model %d\n", rdd_model);
 	SGP_D_RDD_Gy( 	&n,
 					r_m,
 					&E_MeV_u,	&particle_no, 		&material_no,
-					&rdd_model, &n_rdd_parameter, 	&rdd_parameter,
+					&rdd_model, &n_rdd_parameter, 	rdd_parameter,
 					&er_model, 	&n_er_parameter, 	&er_parameter,
 					D_RDD_Gy);
 	for( i = 0 ; i < n ; i++){
@@ -171,12 +171,43 @@ void testRDD(){
 
 	rdd_model			= 3;
 	n_rdd_parameter		= 1;
-	rdd_parameter		= 5e-8;
+	rdd_parameter[0]	= 5e-8;
 	printf("begin model %d\n", rdd_model);
 	SGP_D_RDD_Gy( 	&n,
 					r_m,
 					&E_MeV_u,	&particle_no, 		&material_no,
-					&rdd_model, &n_rdd_parameter, 	&rdd_parameter,
+					&rdd_model, &n_rdd_parameter, 	rdd_parameter,
+					&er_model, 	&n_er_parameter, 	&er_parameter,
+					D_RDD_Gy);
+	for( i = 0 ; i < n ; i++){
+		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);
+	}
+
+	rdd_model			= 4;
+	n_rdd_parameter		= 2;
+	rdd_parameter[0]	= 5e-8;
+	rdd_parameter[1]	= 1e-11;
+	printf("begin model %d\n", rdd_model);
+	SGP_D_RDD_Gy( 	&n,
+					r_m,
+					&E_MeV_u,	&particle_no, 		&material_no,
+					&rdd_model, &n_rdd_parameter, 	rdd_parameter,
+					&er_model, 	&n_er_parameter, 	&er_parameter,
+					D_RDD_Gy);
+	for( i = 0 ; i < n ; i++){
+		printf("end, D_RRD_Gy[%g] = %g, r_RRD_m_back = %g\n", r_m[i], D_RDD_Gy[i], r_RDD_m_back[i]);
+	}
+
+	rdd_model			= 5;
+	n_rdd_parameter		= 3;
+	rdd_parameter[0]	= 1e-11;
+	rdd_parameter[1]	= 5e-8;
+	rdd_parameter[2]	= 1e-11;
+	printf("begin model %d\n", rdd_model);
+	SGP_D_RDD_Gy( 	&n,
+					r_m,
+					&E_MeV_u,	&particle_no, 		&material_no,
+					&rdd_model, &n_rdd_parameter, 	rdd_parameter,
 					&er_model, 	&n_er_parameter, 	&er_parameter,
 					D_RDD_Gy);
 	for( i = 0 ; i < n ; i++){
@@ -312,6 +343,17 @@ void testRDD(){
 
 
 	free(f1_parameters);
+	free(norm_fluence);
+	free(dose_contribution_Gy);
+	free(f_parameters);
+	free(f1_d_Gy);
+	free(f1_dd_Gy);
+	free(f1);
+	free(f_d_Gy);
+	free(f_dd_Gy);
+	free(f_start);
+	free(fdd);
+	free(dfdd);
 }
 
 //

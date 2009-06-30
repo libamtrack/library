@@ -20,14 +20,11 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 							long*	material_no,
 							/* radial dose distribution model */
 							long*	rdd_model,
-							long*	n_rdd_parameter,
 							float*	rdd_parameter,
 							/* electron range model */
 							long*	er_model,
-							long*	n_er_parameter,
 							float*	er_parameter,
 							/* calculated parameters */
-							long* 	n_f1_parameters,
 							float* 	f1_parameters);
 
 void SGP_D_RDD_Gy	(	long*	n,
@@ -39,11 +36,9 @@ void SGP_D_RDD_Gy	(	long*	n,
 		long*	material_no,
 		/* radial dose distribution model */
 		long*	rdd_model,       /* */
-		long*	n_rdd_parameter, /* number of rdd parameters */
 		float*	rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
 		/* electron range model */
 		long*	er_model,
-		long*	n_er_parameter,
 		float*	er_parameter,
 		float*	D_RDD_Gy);
 
@@ -56,11 +51,9 @@ void SGP_r_RDD_m	(	long*	n,
 		long*	material_no,
 		/* radial dose distribution model */
 		long*	rdd_model,       /* */
-		long*	n_rdd_parameter, /* number of rdd parameters */
 		float*	rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
 		/* electron range model */
 		long*	er_model,
-		long*	n_er_parameter,
 		float*	er_parameter,
 		float*	r_m);
 
@@ -77,7 +70,7 @@ void SGP_RDD_Katz_point_kernelS(int *n, float* x, float* alpha, float* f){
 }
 
 inline float SGP_RDD_Katz_point_coeff_Gy(float* C_J_m,float* Z_eff, float* beta, float* alpha, float* density_kg_m3, float* r_max_m){
-	return (*C_J_m) * (*Z_eff)*(*Z_eff) / (2.0f * M_PI * (*beta)*(*beta) * (*alpha) * (*density_kg_m3) * (*r_max_m));
+	return (*C_J_m) * (*Z_eff)*(*Z_eff) / (2.0f * M_PI * (*beta)*(*beta) * (*alpha) * (*density_kg_m3) * (*r_max_m)* (*r_max_m));
 }
 
 inline float SGP_RDD_Katz_point_Gy(float* r_m, float* alpha, float* r_max_m, float* Katz_point_coeff_Gy){
@@ -122,7 +115,7 @@ float SGP_RDD_Katz_dEdx_J_m(float* alpha, float* r_min_m, float* r_max_m, float*
 	F.function = &SGP_RDD_Katz_dEdx_integrand;
 	float params[] = {*alpha};
 	F.params = params;
-	int status = gsl_integration_qags (&F, (*r_min_m)/(*r_max_m), 1.0, 1e-8, 1e-8, 10000, w1, &dEdx_integral, &error);
+	int status = gsl_integration_qags (&F, (*r_min_m)/(*r_max_m), 1.0, 1e-8, 1e-5, 10000, w1, &dEdx_integral, &error);
 	if (status == GSL_EROUND || status == GSL_ESING){
 #ifdef _DEBUG
 		indnt_inc();
@@ -217,22 +210,25 @@ void SGP_RDD_Katz_ext_kernel_GyS(int *n, float* t_m, float *r_m, float* a0_m, fl
 //		indnt_init();
 //		fprintf(debf,"%st_m[%d] = %g\n",isp,i,t_m[i]);
 //#endif
-		D_Gy[i] = SGP_RDD_Katz_ext_kernel_Gy(&(t_m[i]),r_m,a0_m,alpha,r_min_m,r_max_m,Katz_point_coeff_Gy);
+		D_Gy[i] = SGP_RDD_Katz_ext_kernel_Gy(	&(t_m[i]), r_m,a0_m, alpha,
+												r_min_m, r_max_m, Katz_point_coeff_Gy);
 	};
 }
 
-double SGP_RDD_Katz_ext_integrand_Gy(double t_m, void * params){
-	float r_m = ((float*)params)[0];
-	float a0_m = ((float*)params)[1];
-	float alpha = ((float*)params)[2];
-	float r_min_m = ((float*)params)[3];
-    float r_max_m = ((float*)params)[4];
-    float Katz_point_coeff_Gy = ((float*)params)[5];
-	float f_t_m = (float)(t_m);
-	return (double)SGP_RDD_Katz_ext_kernel_Gy(&f_t_m, &r_m, &a0_m, &alpha, &r_min_m, &r_max_m, &Katz_point_coeff_Gy);
+double SGP_RDD_Katz_ext_integrand_Gy(	double t_m, void * params){
+	float r_m 					= ((float*)params)[0];
+	float a0_m 					= ((float*)params)[1];
+	float alpha 				= ((float*)params)[2];
+	float r_min_m 				= ((float*)params)[3];
+    float r_max_m 				= ((float*)params)[4];
+    float Katz_point_coeff_Gy 	= ((float*)params)[5];
+	float f_t_m 				= (float)(t_m);
+	return (double)SGP_RDD_Katz_ext_kernel_Gy(	&f_t_m, &r_m, &a0_m, &alpha,
+												&r_min_m, &r_max_m, &Katz_point_coeff_Gy);
 }
 
-inline float SGP_RDD_Katz_ext_Gy(float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy){
+inline float SGP_RDD_Katz_ext_Gy(	float *r_m, float* a0_m, float* alpha,
+									float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy){
 	double int_lim_m = 0.0f;
 	if( (*r_m) > (*a0_m) ){
 		int_lim_m = GSL_MAX((*r_m) - (*a0_m),*r_min_m);
@@ -246,7 +242,7 @@ inline float SGP_RDD_Katz_ext_Gy(float *r_m, float* a0_m, float* alpha, float* r
 	F.function = &SGP_RDD_Katz_ext_integrand_Gy;
 	float params[] = {*r_m,*a0_m,*alpha,*r_min_m,*r_max_m,*Katz_point_coeff_Gy};
 	F.params = params;
-	int status = gsl_integration_qags (&F, int_lim_m, (*r_m)+(*a0_m), 1e-12, 1e-5, 10000, w1, &ext_integral_Gy, &error);
+	int status = gsl_integration_qags (&F, int_lim_m, (*r_m)+(*a0_m), 1e-9, 1e-4, 10000, w1, &ext_integral_Gy, &error);
 	if (status == GSL_EROUND || status == GSL_ESING){
 #ifdef _DEBUG
 		indnt_init();
@@ -284,14 +280,11 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 							long*	material_no,
 							/* radial dose distribution model */
 							long*	rdd_model,
-							long*	n_rdd_parameter,
 							float*	rdd_parameter,
 							/* electron range model */
 							long*	er_model,
-							long*	n_er_parameter,
 							float*	er_parameter,
 							/* calculated parameters */
-							long * 	n_f1_parameters,
 							float * f1_parameters)
 {
 #ifdef _DEBUG
@@ -368,7 +361,10 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 			alpha					= 1.079f;
 		}
 		//////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
+
 		f1_parameters[1]		=	rdd_parameter[0];								// r_min_m
+		if (f1_parameters[2] <= f1_parameters[1]){
+			f1_parameters[1] = f1_parameters[2];}									// If r.max < a0 or r.min, r.min = r.max, not a0
 
 		float	N_el_cm3		=	electron_density_m3 / (100*100*100);
 		float	C_J_cm			=	2.0f * pi * N_el_cm3 * (e_esu*e_esu*e_esu*e_esu) / (electron_mass_g * c_cm_s *c_cm_s) * 1e-7;   // energy constant [J/cm] not [erg/cm] hence 10^-7
@@ -394,7 +390,6 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 
 		f1_parameters[8]		= 	dEdx_MeV_g_cm2;
 
-		// d_min_Gy = 0 --> causes problem in SPIFF algorithm. Replaced therefore by minimal dose
 		if( *rdd_model != RDD_ExtTarget )
 			f1_parameters[3]		=	rdd_parameter[1];
 		else
@@ -424,6 +419,8 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 
 	if( *rdd_model == RDD_Geiss){
 		f1_parameters[1]	=	rdd_parameter[0];															// "r_min_m" = a0
+		if (f1_parameters[2] <= f1_parameters[1]){
+			f1_parameters[1] = f1_parameters[2];}			// If r.max < a0, r.min = r.max, not a0
 		// Normalization to match with LET
 		float	tmp			= (float)(0.5f + log(f1_parameters[2] / f1_parameters[1]));
 		tmp					*= 2.0f * pi * (f1_parameters[1] * m_to_cm) * (f1_parameters[1] * m_to_cm);
@@ -451,11 +448,9 @@ void SGP_D_RDD_Gy	(	long*	n,
 		long*	material_no,
 		/* radial dose distribution model */
 		long*	rdd_model,
-		long*	n_rdd_parameter,
 		float*	rdd_parameter,
 		/* electron range model */
 		long*	er_model,
-		long*	n_er_parameter,
 		float*	er_parameter,
 		float*	D_RDD_Gy)
 {
@@ -496,7 +491,7 @@ void SGP_D_RDD_Gy	(	long*	n,
 
 #ifdef _DEBUG
 	fprintf(debf,"%sn = %ld\n", isp, *n);
-	fprintf(debf,"%sModel = %ld (no of parameters : %ld) \n", isp, *rdd_model, *n_rdd_parameter);
+	fprintf(debf,"%sModel = %ld \n", isp, *rdd_model);
 	fprintf(debf,"%sMaterial = %ld\n", isp, *material_no);
 #endif
 
@@ -512,14 +507,11 @@ void SGP_D_RDD_Gy	(	long*	n,
 			material_no,
 			/* radial dose distribution model */
 			rdd_model,
-			n_rdd_parameter,
 			rdd_parameter,
 			/* electron range model */
 			er_model,
-			n_er_parameter,
 			er_parameter,
 			/* calculated parameters */
-			&n_f1_parameters,
 			f1_parameters);
 
 	// Get material data
@@ -626,11 +618,9 @@ typedef struct {
 	long*	material_no;
 	/* radial dose distribution model */
 	long*	rdd_model;
-	long*	n_rdd_parameter;
 	float*	rdd_parameter;
 	/* electron range model */
 	long*	er_model;
-	long*	n_er_parameter;
 	float*	er_parameter;
 	/* calculated parameters */
 	float*	D_RDD_Gy;
@@ -648,10 +638,8 @@ float SGP_D_RDD_Gy_solver( float r , void * params ){
 					params_struct->particle_no,
 					params_struct->material_no,
 					params_struct->rdd_model,
-					params_struct->n_rdd_parameter,
 					params_struct->rdd_parameter,
 					params_struct->er_model,
-					params_struct->n_er_parameter,
 					params_struct->er_parameter,
 					params_struct->D_RDD_Gy);
 	free(params_struct->r_m);
@@ -668,11 +656,9 @@ void SGP_r_RDD_m	(	long*	n,
 		long*	material_no,
 		/* radial dose distribution model */
 		long*	rdd_model,       /* */
-		long*	n_rdd_parameter, /* number of rdd parameters */
 		float*	rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
 		/* electron range model */
 		long*	er_model,
-		long*	n_er_parameter,
 		float*	er_parameter,
 		float*	r_RDD_m)
 {
@@ -713,7 +699,7 @@ void SGP_r_RDD_m	(	long*	n,
 
 	#ifdef _DEBUG
 		fprintf(debf,"%sn = %ld\n", isp, *n);
-		fprintf(debf,"%sModel = %ld (no of parameters : %ld) \n", isp, *rdd_model, *n_rdd_parameter);
+		fprintf(debf,"%sModel = %ld \n", isp, *rdd_model);
 	#endif
 
 	long 		i;
@@ -728,14 +714,11 @@ void SGP_r_RDD_m	(	long*	n,
 		material_no,
 		/* radial dose distribution model */
 		rdd_model,
-		n_rdd_parameter,
 		rdd_parameter,
 		/* electron range model */
 		er_model,
-		n_er_parameter,
 		er_parameter,
 		/* calculated parameters */
-		&n_f1_parameters,
 		f1_parameters);
 	// Get material data
 	float 		density_g_cm3, electron_density_m3, I_eV, alpha_g_cm2_MeV, p_MeV, m_g_cm2;
@@ -776,10 +759,8 @@ void SGP_r_RDD_m	(	long*	n,
 		params->particle_no		= particle_no;
 		params->material_no		= material_no;
 		params->rdd_model 		= rdd_model;
-		params->n_rdd_parameter = n_rdd_parameter;
 		params->rdd_parameter 	= rdd_parameter;
 		params->er_model 		= er_model;
-		params->n_er_parameter 	= n_er_parameter;
 		params->er_parameter 	= er_parameter;
 		params->D_RDD_Gy 		= (float*)calloc(1,sizeof(float));
 		// Loop over all doses given
@@ -801,15 +782,12 @@ void SGP_r_RDD_m	(	long*	n,
 								material_no,
 								/* radial dose distribution model */
 								rdd_model,
-								n_rdd_parameter,
 								rdd_parameter,
 								/* electron range model */
 								er_model,
-								n_er_parameter,
 								er_parameter,
 								&critical_d_Gy);
 		}
-		printf("Critical radius = %e m, critical dose = %e Gy\n", critical_r_m, critical_d_Gy);
 
 
 		for (i = 0; i < *n; i++){
