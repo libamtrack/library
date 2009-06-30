@@ -7,7 +7,6 @@
 
 void SGP_gamma_response(	long*	n,
 							float*	d_Gy,
-							long*	n_gamma_parameter,
 							long*	gamma_model,
 							float*	gamma_parameter,
 							// return
@@ -35,12 +34,18 @@ void SGP_gamma_response(	long*	n,
 	 *	 					D1		- characteristic dose (one hit per target in average) of component i
 	 * 						c		- hittedness of component i
 	 * 						m		- number of targets for component i
-	 */
+	 *	if 4*ith parameter (k_i == 0) -> end of parameter list
+	 **/
+	long	n_gamma_parameter = 0;
+	while	(gamma_parameter[n_gamma_parameter] != 0){
+		n_gamma_parameter	+= 4;
+	}
+
 	if(*gamma_model == 1){
 		for (i = 0; i < *n; i++){
 			S[i]	= 0.0f;
 		}
-		for (j = 0; j < *n_gamma_parameter; j++){						// loop over all components
+		for (j = 0; j < n_gamma_parameter / 4; j++){						// loop over all components
 			float k			=	gamma_parameter[j * 4];
 			float D1		=	gamma_parameter[j * 4 + 1];
 			float c			=	gamma_parameter[j * 4 + 2];
@@ -121,7 +126,6 @@ void SGP_get_gamma_response(	long*	n,
 								float*	dd_Gy,
 								float*	f,
 								float*	f0,
-								long*	n_gamma_parameter,
 								long*	gamma_model,
 								float*	gamma_parameter,
 								// return
@@ -134,7 +138,6 @@ void SGP_get_gamma_response(	long*	n,
 
 	SGP_gamma_response(	n,
 						d_Gy,
-						n_gamma_parameter,
 						gamma_model,
 						gamma_parameter,
 						// return
@@ -151,7 +154,6 @@ void SGP_get_gamma_response(	long*	n,
 	i	= 1;
 	SGP_gamma_response(	&i,
 						&D_gamma,
-						n_gamma_parameter,
 						gamma_model,
 						gamma_parameter,
 						// return

@@ -30,10 +30,9 @@ void SGP_E_MeV(	long*	n,
 				long*	material_no,
 				float*	E_MeV);
 
-void SGP_Particle_Properties(	long*	n,
-								char**	particle_name,
+void SGP_Particle_Properties(	long*	particle_no,
 								/* return values*/
-								long*	particle_no,
+								char**	particle_name,
 								char**	USRTRACK_name,
 								char**	element_name,
 								long*	Z,
@@ -105,32 +104,23 @@ void SGP_Z_from_particle_no(	long*	n,								// should rather be SGP_ParticlePro
 ///////////////////////////////////////////////////////////////////////
 // Routines to access PARTICLE data
 ///////////////////////////////////////////////////////////////////////
-void SGP_Particle_Properties(	long*	n,
-								char**	particle_name,
+void SGP_Particle_Properties(	long*	particle_no,
 								/* return values*/
-								long*	particle_no,
+								char**	particle_name,
 								char**	USRTRACK_name,
 								char**	element_name,
 								long*	Z,
 								long*	A,
 								float*	mass)
 {
-	long*	match	=	(long*)calloc(*n, sizeof(long));
-	pmatchc(	particle_name,
-				n,
-				SGP_Particle_Data.particle_name,
-				&SGP_Particle_Data.n,
-				match);
+	long i = (*particle_no) - 1;
 
-	long i;
-	for(i = 0; i < *n; i++){
-		particle_no[i]			= SGP_Particle_Data.particle_no[match[i]];
-		strcpy(USRTRACK_name[i], SGP_Particle_Data.USRTRACK_name[match[i]]);
-		strcpy(element_name[i], SGP_Particle_Data.element_name[match[i]]);
-		Z[i]						= SGP_Particle_Data.Z[match[i]];
-		A[i]						= SGP_Particle_Data.A[match[i]];
-		mass[i]						= SGP_Particle_Data.mass[match[i]];
-	}
+	strcpy(*particle_name, 		SGP_Particle_Data.particle_name[i]);
+	strcpy(*USRTRACK_name, 		SGP_Particle_Data.USRTRACK_name[i]);
+	strcpy(*element_name,		SGP_Particle_Data.element_name[i]);
+	*Z							= SGP_Particle_Data.Z[i];
+	*A							= SGP_Particle_Data.A[i];
+	*mass						= SGP_Particle_Data.mass[i];
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -297,6 +287,13 @@ void SGP_LET_keV_um(	long*	n,
 						long*	material_no,
 						float*	LET_keV_um)
 {
+	long	match, n_tmp = 1;
+	pmatchi(	material_no,
+				&n_tmp,
+				SGP_Material_Data.material_no,
+				&SGP_Material_Data.n,
+				&match);
+
 	// Get mass-norm. LET
 	SGP_LET_MeV_cm2_g(	n,
 						E_MeV_u,
@@ -304,18 +301,9 @@ void SGP_LET_keV_um(	long*	n,
 						material_no,
 						LET_keV_um);
 
-	// Get density matching to material_name (only 1 name therefore n_mat = 1)
-	long	n_mat	= 1;
-	long	match;
-	pmatchi(	material_no,
-				&n_mat,
-				SGP_Material_Data.material_no,
-				&SGP_Material_Data.n,
-				&match);
-
 	long	i;
 	for (i = 0; i < *n; i++){
-		LET_keV_um[i]	*=	SGP_Material_Data.density_g_cm3[match];
+		LET_keV_um[i]	*=	SGP_Material_Data.density_g_cm3[match] * 0.1f;
 	}
 
 }
@@ -326,16 +314,26 @@ void SGP_CSDA_range_g_cm2(	long*	n,
 							long*	material_no,
 							float*	CSDA_range_g_cm2)
 {
-	getPSTARvalue(n, E_MeV_u, material_no, SGP_PSTAR_Data.kin_E_MeV, SGP_PSTAR_Data.range_cdsa_g_cm2, CSDA_range_g_cm2);
+	getPSTARvalue(n, E_MeV_u, material_no, SGP_PSTAR_Data.range_cdsa_g_cm2, SGP_PSTAR_Data.kin_E_MeV, CSDA_range_g_cm2);
 }
 
-void SGP_E_MeV(	long*	n,
-				float*	CSDA_range_g_cm2,
-				long*	particle_no,
-				long*	material_no,
-				float*	E_MeV)
+void SGP_E_MeV_from_CDSA_range(	long*	n,
+								float*	CSDA_range_g_cm2,
+								long*	particle_no,
+								long*	material_no,
+								float*	E_MeV)
 {
-	getPSTARvalue(n, CSDA_range_g_cm2, material_no, SGP_PSTAR_Data.range_cdsa_g_cm2, SGP_PSTAR_Data.kin_E_MeV, CSDA_range_g_cm2);
+	getPSTARvalue(n, CSDA_range_g_cm2, material_no, SGP_PSTAR_Data.range_cdsa_g_cm2, SGP_PSTAR_Data.kin_E_MeV, E_MeV);
+	// TO DO: scale energy back!
+}
+
+void SGP_E_MeV_from_LET(	long*	n,
+							float*	LET_MeV_cm2_g,
+							long*	particle_no,
+							long*	material_no,
+							float*	E_MeV)
+{
+	getPSTARvalue(n, LET_MeV_cm2_g, material_no, SGP_PSTAR_Data.stp_pow_el_MeV_cm2_g, SGP_PSTAR_Data.kin_E_MeV, E_MeV);
 	// TO DO: scale energy back!
 }
 
@@ -485,10 +483,10 @@ void SGP_effective_charge_from_beta(	long*	n,
 	long	i;
 	for (i = 0; i < *n; i++){
 		// Return effective charge according to Barkas-Bethe-approximation (but not for protons!)
-		if (Z[i]!=1){
-			effective_charge[i]	= (float)(Z[i]) * (1 - (float)exp(-125.0f * beta[i] / (pow(Z[i], 2.0f/3.0f))));}
-		else{
-			effective_charge[i]	= (float)(Z[i]);}
+//		if (Z[i]!=1){
+			effective_charge[i]	= (float)(Z[i]) * (1 - (float)exp(-125.0f * beta[i] / (pow(Z[i], 2.0f/3.0f))));//}
+//		else{
+//			effective_charge[i]	= (float)(Z[i]);}
 	}
 }
 
@@ -698,7 +696,7 @@ void SGP_max_electron_range_m(	long*	n,
 		// covert cm to m
 		max_electron_range_m[i]		/= 1e2;  // cm to m
 
-}
+	}
 #ifdef _DEBUG
 	for( ii = 0 ; ii < *n ; ii++){
 		fprintf(debf,"%srange[%ld]=%e\n", isp, ii , max_electron_range_m[ii]);
@@ -706,6 +704,9 @@ void SGP_max_electron_range_m(	long*	n,
 	fprintf(debf,"%send SGP_max_electron_range_m\n",isp);
 	indnt_dec();
 #endif
+	free(matches);
+	free(mass);
+
 
 }
 

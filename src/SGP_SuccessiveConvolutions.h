@@ -19,15 +19,12 @@ void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
 									/* detector parameters */
 									long*	material_no,
 									long*	rdd_model,
-									long*	n_rdd_parameter,
 									float*	rdd_parameter,
 									/* electron range model */
 									long*	er_model,
-									long*	n_er_parameter,
 									float*	er_parameter,
 									/* algorith parameters*/
 									long*	N2,
-									bool*	debug,
 									// from here: return values
 									long*	n_bins_f1,
 									float*	f1_parameters);
@@ -40,11 +37,9 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 						/* detector parameters */
 						long*	material_no,
 						long*	rdd_model,
-						long*	n_rdd_parameter,
 						float*	rdd_parameter,
 						/* electron range model */
 						long*	er_model,
-						long*	n_er_parameter,
 						float*	er_parameter,
 						/* algorith parameters*/
 						long*	N2,
@@ -148,15 +143,12 @@ void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
 									/* detector parameters */
 									long*	material_no,
 									long*	rdd_model,
-									long*	n_rdd_parameter,
 									float*	rdd_parameter,
 									/* electron range model */
 									long*	er_model,
-									long*	n_er_parameter,
 									float*	er_parameter,
 									/* algorith parameters*/
 									long*	N2,
-									bool*	debug,
 									// from here: return values
 									long*	n_bins_f1,
 									float*	f1_parameters)
@@ -179,14 +171,11 @@ void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
 								&particle_no[i],
 								material_no,
 								rdd_model,
-								n_rdd_parameter,
 								rdd_parameter,
 								/* electron range model */
 								er_model,
-								n_er_parameter,
 								er_parameter,
 								/* calculated parameters */
-								&n_f1_parameters,
 								&f1_parameters[i*n_f1_parameters]);
 		if(i == 0){
 			d_min_Gy			=	f1_parameters[i*n_f1_parameters + 3];
@@ -201,11 +190,6 @@ void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
 	// get number of bins needed to span that dose range
 	float tmp = (log10(d_max_Gy/d_min_Gy) / log10(2.0f) * ((float)*N2));
 	*n_bins_f1				=	(long)floor(tmp) + 1;
-
-	// DEBUG //
-	if(*debug){
-		*n_bins_f1	=	*N2 * DEBUG_INTERVALS;
-	}
 
 #ifdef _DEBUG
 	fprintf(debf,"%send SGP_SC_get_f1_array_size\n",isp);
@@ -223,11 +207,9 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 						/* detector parameters */
 						long*	material_no,
 						long*	rdd_model,
-						long*	n_rdd_parameter,
 						float*	rdd_parameter,
 						/* electron range model */
 						long*	er_model,
-						long*	n_er_parameter,
 						float*	er_parameter,
 						/* algorith parameters*/
 						long*	N2,
@@ -305,7 +287,8 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 	f_parameters[0]				= f_parameters[2] / f_parameters[0];
 
 	////////////////////////////////////////////////////////////////////////////////////////////
-	//  2. create all-over f1-data-frame
+	//  2. create all-over f1-data-frame, if f_d_Gy array passed (i.e. n_bins_f1 == 0)
+	if(*n_bins_f1 > 0){
 	float	d_min			=	f1_parameters[0*9 + 3];
 	float	d_max			=	f1_parameters[0*9 + 4];
 
@@ -394,11 +377,9 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 					material_no,
 					/* radial dose distribution model */
 					rdd_model,
-					n_rdd_parameter,
 					rdd_parameter,
 					/* electron range model */
 					er_model,
-					n_er_parameter,
 					er_parameter,
 					r);
 
@@ -446,21 +427,6 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 	free(d_df_mid);
 	free(d_df_high);
 	free(dd_df);
-
-	free(fluence_cm2_local);
-
-	// DEBUG //
-/*	if(*debug){
-		float d_min_debug	=	DEBUG_MEAN / (float)pow(2, DEBUG_INTERVALS / 2);
-		for (i = 0; i <*n_bins_f1; i++){
-			f1_d_Gy[i]		=	d_min_debug * (float)exp(((float)i + 0.5f) * U);
-			f1_dd_Gy[i]		=	d_min_debug * (float)(exp(((float)i + 1.0f) * U) - exp(((float)i) * U));
-			f1[i]			=	1. / DEBUG_SIGMA * (float)exp(-0.5f * pow((f1_d_Gy[i] - DEBUG_MEAN)/DEBUG_SIGMA, 2));
-		}
-	}
-	// DEBUG //
-*/
-
 	// normalize f1 (should be ok anyway but there could be small round-off errors)
 	float	f1_norm		=	0.0f;
 	for (i = 0; i < *n_bins_f1; i++){
@@ -469,6 +435,11 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 	for (i = 0; i < *n_bins_f1; i++){
 		f1[i]		/=		f1_norm;
 	}
+
+	} // if(f1_d_Gy != NULL)
+
+	free(fluence_cm2_local);
+
 #ifdef _DEBUG
 	fprintf(debf,"%send SGP_SC_get_f1\n", isp);
 	indnt_dec();

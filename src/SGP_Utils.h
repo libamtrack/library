@@ -205,6 +205,7 @@ void getPSTARvalue(long* n, float* x, long* material_no, float* x_table, float* 
 	long		i;
 	for (i = 0; i < SGP_PSTAR_Data.n; i++){
 		if (matches[i]){n_matches++;}
+//		printf(debf,"idx: %i, match: %d\n",i, matches[i]);
 	}
 
 	// allocate vectors for extracted LET entries
@@ -232,6 +233,10 @@ void getPSTARvalue(long* n, float* x, long* material_no, float* x_table, float* 
 					&y[i],
 					&err_y_tmp);
 	}
+
+	free(x_c);
+	free(y_c);
+	free(matches);
 }
 
 
