@@ -963,7 +963,7 @@ SGP.efficiency.short	<-	function(	E.MeV.u,
 					 					N.max					= 1e3){
 	
 		results			<-	numeric(10)
-		if (Transport = T){
+		if (transport = T){
 		transport		<-	SGP.Edmund.Transport(	E.start.MeV.u		= E.MeV.u,
 														E.min.MeV.u		= E.min.MeV.u,
 														particle.no		= particle.no,
@@ -1024,7 +1024,46 @@ SGP.efficiency.short	<-	function(	E.MeV.u,
 	return(results)
 }
 														
-################################################################################################
+SGP.efficiency.grid	<-	function(	E.MeV.u,
+										particle.no,
+										fluence.cm2,
+										material.no,
+										RDD.model,
+										RDD.parameters,
+										ER.model,
+										ER.parameters,
+										gamma.model,
+										gamma.parameters,
+										method					= "grid",
+										N.runs					=	100,
+										fluence.factor		=	1.0,
+										write.output			=	T,
+										n.X						=	100,
+										grid.size.m			=	1e-9){
+	
+		results			<-	numeric(10)
+		res					<-	.C(	"SGP_efficiency_grid",		n				= 	as.integer(length(E.MeV.u)),
+															E.MeV.u				=	as.single(E.MeV.u),
+															particle.no			=	as.integer(particle.no),
+															fluence.cm2			=	as.single(fluence.cm2),
+															material.no			=	as.integer(material.no),
+															RDD.model				=	as.integer(RDD.model),
+															RDD.parameters		=	as.single(RDD.parameters),
+															ER.model				=	as.integer(ER.model),
+															ER.parameters			=	as.single(ER.parameters),
+															gamma.model			=	as.integer(gamma.model),
+															gamma.parameters		=	as.single(gamma.parameters),
+															N.runs					=	as.integer(N.runs),
+															fluence.factor		=	as.single(fluence.factor),
+															write.output			=	as.integer(write.output),
+															n.X						=	as.integer(n.X),
+															grid.size.m			=	as.single(grid.size.m),
+															results				=	as.single(results))
+	results			<-	res$results
+	return(results)
+}
+														
+###############################################################################################
 # Transport functions
 ################################################################################################
 
