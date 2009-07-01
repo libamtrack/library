@@ -11,6 +11,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_roots.h>
+#include <gsl/gsl_sf_hyperg.h>
 
 
 void SGP_RDD_f1_parameters(	/* radiation field parameters */
@@ -106,6 +107,20 @@ inline float SGP_RDD_Katz_dEdx_coeff_J_m(float* r_max_m, float* density_kg_m3, f
 	return 2 * M_PI * (*density_kg_m3) * (*r_max_m)*(*r_max_m) * (*Katz_point_coeff_Gy);
 }
 
+float SGP_RDD_Katz_dEdx_J_m(	float* alpha,
+								float* r_min_m,
+								float* r_max_m,
+								float* Katz_dEdx_coeff_J_m){
+	double dEdx_integral = 0.0;
+	if( (*r_min_m) < (*r_max_m)){
+		dEdx_integral = (*alpha/(1.+(*alpha))) * pow( 1.-(*r_min_m)/(*r_max_m) , 1. +
+				1./(*alpha) ) *
+				gsl_sf_hyperg_2F1(1.,1.+1./(*alpha),2.+1./(*alpha),1.-(*r_min_m)/(*r_max_m));
+	}
+	return (*Katz_dEdx_coeff_J_m)*(float)dEdx_integral;
+}
+
+/*
 float SGP_RDD_Katz_dEdx_J_m(float* alpha, float* r_min_m, float* r_max_m, float* Katz_dEdx_coeff_J_m){
 // integration ...
 	double dEdx_integral = 1.0;
@@ -128,7 +143,7 @@ float SGP_RDD_Katz_dEdx_J_m(float* alpha, float* r_min_m, float* r_max_m, float*
 
 	return (*Katz_dEdx_coeff_J_m)*(float)dEdx_integral;
 }
-
+*/
 inline float SGP_RDD_Katz_site_Gy(float* r_m, float* alpha, float* r_min_m, float* r_max_m, float* LET_J_m, float* density_kg_m3, float* Katz_dEdx_J_m, float* Katz_point_coeff_Gy){
 	if( (*r_m) < (*r_min_m) ){
 		return (1.0f / ((*density_kg_m3) * M_PI * (*r_min_m)*(*r_min_m)))*((*LET_J_m) - (*Katz_dEdx_J_m));
