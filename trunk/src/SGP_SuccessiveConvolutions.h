@@ -29,6 +29,7 @@ void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
 									long*	n_bins_f1,
 									float*	f1_parameters);
 
+
 void	SGP_SC_get_f1(	/* radiation field parameters */
 						long*	n,
 						float*	E_MeV_u,
@@ -136,6 +137,7 @@ void SGP_SuccessiveConvolutions(	float*	u,
 //////////////////////////////////////////
 
 
+
 void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
 									long*	n,
 									float*	E_MeV_u,
@@ -147,7 +149,7 @@ void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
 									/* electron range model */
 									long*	er_model,
 									float*	er_parameter,
-									/* algorith parameters*/
+									/* Algorithm parameters*/
 									long*	N2,
 									// from here: return values
 									long*	n_bins_f1,
@@ -159,6 +161,27 @@ void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
 	fprintf(debf,"%sbegin SGP_SC_get_f1_array_size\n",isp);
 #endif
 
+
+#ifdef _R
+	int n_int = (int)(*n);
+	*n = (long)n_int;
+
+	int particle_no_int = (int)(*particle_no);
+	*particle_no = (long)particle_no_int;
+
+	int material_no_int	= (int)(*material_no);
+	*material_no = (long)material_no_int;
+
+	int rdd_model_int = (int)(*rdd_model);
+	*rdd_model = (long)rdd_model_int;
+
+	int er_model_int = (int)(*er_model);
+	*er_model = (long)er_model_int;
+
+	int N2_int = (int)(*N2);
+	*N2 = (long)N2_int;
+#endif
+
 	// get lowest and highest dose
 	float	d_max_Gy		=	0.0f;
 	float	d_min_Gy		=	0.0f;
@@ -166,7 +189,7 @@ void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
 	long	n_f1_parameters	=	9;
 	long	i;
 	for (i = 0; i < *n; i++){
-		// get RDD parameters for all particles and energies
+//		// get RDD parameters for all particles and energies
 		SGP_RDD_f1_parameters(	&E_MeV_u[i],
 								&particle_no[i],
 								material_no,
@@ -188,10 +211,12 @@ void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
 	}
 
 	// get number of bins needed to span that dose range
-	float tmp = (log10(d_max_Gy/d_min_Gy) / log10(2.0f) * ((float)*N2));
-	*n_bins_f1				=	(long)floor(tmp) + 1;
+	float tmp = (log10f(d_max_Gy/d_min_Gy) / log10f(2.0f) * ((float)*N2));
+	*n_bins_f1				=	(long)(floorf(tmp) + 1.0f);
 
 #ifdef _DEBUG
+	fprintf(debf,"%stmp = %g\n",isp, tmp);
+	fprintf(debf,"%sn_bins_f1 = %ld\n",isp, *n_bins_f1);
 	fprintf(debf,"%send SGP_SC_get_f1_array_size\n",isp);
 	indnt_dec();
 #endif
@@ -200,42 +225,65 @@ void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
 
 
 void	SGP_SC_get_f1(	/* radiation field parameters */
-						long*	n,
-						float*	E_MeV_u,
-						long*	particle_no,
-						float*	fluence_cm2,
-						/* detector parameters */
-						long*	material_no,
-						long*	rdd_model,
-						float*	rdd_parameter,
-						/* electron range model */
-						long*	er_model,
-						float*	er_parameter,
-						/* algorith parameters*/
-						long*	N2,
-						long*	n_bins_f1,
-						/* f1 parameters*/
-						float*	f1_parameters,
-						// from here: return values
-						float*	norm_fluence,
-						float*	dose_contribution_Gy,
-						float*	f_parameters,
-						/*  1 - total fluence_cm2
-						 *  2 - total_dose_Gy
-						 *  3 - ave_E_MeV
-						 *  4 - dw_E_MeV
-						 *  5 - ave_LET_MeV_cm2_g
-						 *  6 - dw_LET_MeV_cm2_g
-						 *  0 - u
-						 */
-						float*	f1_d_Gy,
-						float*	f1_dd_Gy,
-						float*	f1)
+		long*	n,
+		float*	E_MeV_u,
+		long*	particle_no,
+		float*	fluence_cm2,
+		/* detector parameters */
+		long*	material_no,
+		long*	rdd_model,
+		float*	rdd_parameter,
+		/* electron range model */
+		long*	er_model,
+		float*	er_parameter,
+		/* algorith parameters*/
+		long*	N2,
+		long*	n_bins_f1,
+		/* f1 parameters*/
+		float*	f1_parameters,
+		// from here: return values
+		float*	norm_fluence,
+		float*	dose_contribution_Gy,
+		float*	f_parameters,
+		/*  1 - total fluence_cm2
+		 *  2 - total_dose_Gy
+		 *  3 - ave_E_MeV
+		 *  4 - dw_E_MeV
+		 *  5 - ave_LET_MeV_cm2_g
+		 *  6 - dw_LET_MeV_cm2_g
+		 *  0 - u
+		 */
+		float*	f1_d_Gy,
+		float*	f1_dd_Gy,
+		float*	f1)
 {
 
 #ifdef _DEBUG
 	indnt_inc();
 	fprintf(debf,"%sbegin SGP_SC_get_f1\n",isp);
+#endif
+
+#ifdef _R
+	int n_int = (int)(*n);
+	*n = (long)n_int;
+
+	int rdd_model_int = (int)(*rdd_model);
+	*rdd_model = (long)rdd_model_int;
+
+	int er_model_int = (int)(*er_model);
+	*er_model = (long)er_model_int;
+
+	int material_no_int	= (int)(*material_no);
+	*material_no = (long)material_no_int;
+
+	int particle_no_int = (int)(*particle_no);
+	*particle_no = (long)particle_no_int;
+
+	int N2_int = (int)(*N2);
+	*N2 = (long)N2_int;
+
+	int n_bins_f1_int = (int)(*n_bins_f1);
+	*n_bins_f1 = (long)n_bins_f1_int;
 #endif
 
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,8 +303,11 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 	else{
 		for (i = 0; i < *n; i++){
 			fluence_cm2_local[i]		= -1.0f * fluence_cm2[i] / (f1_parameters[i*9] * MeV_g_to_J_kg);			// fluence / LET
-			fluence_cm2[i]				= fluence_cm2_local[i];}
+			fluence_cm2[i]				= fluence_cm2_local[i];
+			printf("fluence_cm2[%ld] = %g\n", i, fluence_cm2[i]);
+		}
 	}
+
 
 	for (i = 0; i < *n; i++){
 		f_parameters[1]	+=	fluence_cm2_local[i];
@@ -270,10 +321,27 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 	f_parameters[5]				=	0.0f;
 	f_parameters[6]				=	0.0f;
 
+	/*	f1_parameters:
+	 * 		0 - LET_MeV_cm2_g
+	 * 		1 - r_min_m
+	 * 		2 - r_max_m
+	 * 		3 - d_min_Gy
+	 * 		4 - d_max_Gy
+	 * 		5 - k 						(norm. constant)
+	 * 		6 - single_impact_fluence_cm2
+	 * 		7 - single_impact_dose_Gy
+	 * 		8 - dEdx_MeV_cm2_g
+	 */
+
+	printf("f1_parameters[0] = %g\n", f1_parameters[0]);
+	printf("f1_parameters[8] = %g\n", f1_parameters[8]);
+
 	for (i = 0; i < *n; i++){
 		norm_fluence[i]				=	fluence_cm2_local[i] / f_parameters[1];
+		printf("norm_fluence[%ld] = %g\n", i, norm_fluence[i]);
 		u_single					=	fluence_cm2_local[i] / f1_parameters[i*9 + 6];
 		dose_contribution_Gy[i]		=	u_single * f1_parameters[i*9 + 7];
+		printf("dose_contribution_Gy[%ld] = %g\n", i, dose_contribution_Gy[i]);
 		f_parameters[2]				+=	dose_contribution_Gy[i];
 		f_parameters[3]				+=	norm_fluence[i] * E_MeV_u[i];
 		f_parameters[4]				+=	dose_contribution_Gy[i] * E_MeV_u[i];
@@ -289,152 +357,152 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  2. create all-over f1-data-frame, if f_d_Gy array passed (i.e. n_bins_f1 == 0)
 	if(*n_bins_f1 > 0){
-	float	d_min			=	f1_parameters[0*9 + 3];
-	float	d_max			=	f1_parameters[0*9 + 4];
+		float	d_min			=	f1_parameters[0*9 + 3];
+		float	d_max			=	f1_parameters[0*9 + 4];
 
-	for (i = 1; i < *n; i++){
-		d_min					=	FMIN(f1_parameters[i*9 + 3], d_min);
-		d_max					=	FMAX(f1_parameters[i*9 + 4], d_max);
-	}
+		for (i = 1; i < *n; i++){
+			d_min					=	FMIN(f1_parameters[i*9 + 3], d_min);
+			d_max					=	FMAX(f1_parameters[i*9 + 4], d_max);
+		}
 
-	float	U				=	(float)(log(2.0f) / (float)(*N2));
+		float	U				=	(float)(log(2.0f) / (float)(*N2));
 
 
-	float*	d_df_low			=	(float*)calloc(*n_bins_f1, sizeof(float));
-	float*	d_df_mid			=	(float*)calloc(*n_bins_f1, sizeof(float));
-	float*	d_df_high			=	(float*)calloc(*n_bins_f1, sizeof(float));
-	float*	dd_df				=	(float*)calloc(*n_bins_f1, sizeof(float));
+		float*	d_df_low			=	(float*)calloc(*n_bins_f1, sizeof(float));
+		float*	d_df_mid			=	(float*)calloc(*n_bins_f1, sizeof(float));
+		float*	d_df_high			=	(float*)calloc(*n_bins_f1, sizeof(float));
+		float*	dd_df				=	(float*)calloc(*n_bins_f1, sizeof(float));
 
-	for (i = 0; i < *n_bins_f1; i++){
-		// TO DO: check if n.bins sufficient
+		for (i = 0; i < *n_bins_f1; i++){
+			// TO DO: check if n.bins sufficient
 
-		d_df_low[i]					= 	d_min * (float)exp((float)i * U);
-		d_df_high[i]				= 	d_min * (float)exp(((float)i + 1) * U);
-		d_df_mid[i]					=	d_min * (float)exp(((float)i + 0.5f) * U);
-		dd_df[i]					=	d_df_high[i] - d_df_low[i];							// OBS: using Kellerer's bin-width = mid.point * U is not entirely correct
+			d_df_low[i]					= 	d_min * (float)exp((float)i * U);
+			d_df_high[i]				= 	d_min * (float)exp(((float)i + 1) * U);
+			d_df_mid[i]					=	d_min * (float)exp(((float)i + 0.5f) * U);
+			dd_df[i]					=	d_df_high[i] - d_df_low[i];							// OBS: using Kellerer's bin-width = mid.point * U is not entirely correct
 
-		f1[i]						=	0.0f;
-	}
+			f1[i]						=	0.0f;
+		}
 
-	long	n_bins_used				=	1;
+		long	n_bins_used				=	1;
 
-	// loop over all particles and energies, compute contribution to f1
-	long 	k;
-	for (k = 0; k < *n; k++){
+		// loop over all particles and energies, compute contribution to f1
+		long 	k;
+		for (k = 0; k < *n; k++){
 
-		float	d_min_k				=	f1_parameters[k*9 + 3];
-		float	d_max_k				=	f1_parameters[k*9 + 4];
+			float	d_min_k				=	f1_parameters[k*9 + 3];
+			float	d_max_k				=	f1_parameters[k*9 + 4];
 
-		// find first and last bin to fit this particle's contribution into the all-over f1-frame
-		long	i_low, i_high;
-		locate(d_df_low, n_bins_f1, &d_min_k, &i_low);
-		locate(d_df_low, n_bins_f1, &d_max_k, &i_high);
-		i_low						-=	1;
-		i_high						-=	1;
+			// find first and last bin to fit this particle's contribution into the all-over f1-frame
+			long	i_low, i_high;
+			locate(d_df_low, n_bins_f1, &d_min_k, &i_low);
+			locate(d_df_low, n_bins_f1, &d_max_k, &i_high);
+			i_low						-=	1;
+			i_high						-=	1;
 
-		long	n_bins_df			=	i_high - i_low + 1;  // changed from + 2
+			long	n_bins_df			=	i_high - i_low + 1;  // changed from + 2
 
 #ifdef _DEBUG
-		fprintf(debf,"%sk = %ld , n_bins_df = %ld\n", isp, k, n_bins_df);
+			fprintf(debf,"%sk = %ld , n_bins_df = %ld\n", isp, k, n_bins_df);
 #endif
 
-		if (n_bins_df > 1){
-			float*	d_low				=	(float*)calloc(n_bins_df, sizeof(float));
-			float*	d_mid				=	(float*)calloc(n_bins_df, sizeof(float));
-			float*	d_high				=	(float*)calloc(n_bins_df, sizeof(float));
-			float*	dd					=	(float*)calloc(n_bins_df, sizeof(float));
-			float*	r					=	(float*)calloc(n_bins_df, sizeof(float));
-			float*	F1_1				=	(float*)calloc(n_bins_df, sizeof(float));
-			float*	f1_k				=	(float*)calloc(n_bins_df - 1, sizeof(float));
+			if (n_bins_df > 1){
+				float*	d_low				=	(float*)calloc(n_bins_df, sizeof(float));
+				float*	d_mid				=	(float*)calloc(n_bins_df, sizeof(float));
+				float*	d_high				=	(float*)calloc(n_bins_df, sizeof(float));
+				float*	dd					=	(float*)calloc(n_bins_df, sizeof(float));
+				float*	r					=	(float*)calloc(n_bins_df, sizeof(float));
+				float*	F1_1				=	(float*)calloc(n_bins_df, sizeof(float));
+				float*	f1_k				=	(float*)calloc(n_bins_df - 1, sizeof(float));
 
-			// extract the corresponding part from the all-over frame
-			for (i = 0; i < n_bins_df; i++){
-				d_low[i]					= 	d_df_low[i_low + i];
-				d_high[i]					= 	d_df_high[i_low + i];
-				d_mid[i]					=	d_df_mid[i_low + i];
-				dd[i]						=	d_high[i] - d_low[i];
-			};
+				// extract the corresponding part from the all-over frame
+				for (i = 0; i < n_bins_df; i++){
+					d_low[i]					= 	d_df_low[i_low + i];
+					d_high[i]					= 	d_df_high[i_low + i];
+					d_mid[i]					=	d_df_mid[i_low + i];
+					dd[i]						=	d_high[i] - d_low[i];
+				};
 
-			// and adjust the edges
-			d_low[1-1]					=	d_min_k;
-			d_low[n_bins_df-1]			=	d_max_k;
+				// and adjust the edges
+				d_low[1-1]					=	d_min_k;
+				d_low[n_bins_df-1]			=	d_max_k;
 
-			d_mid[1-1]					=	(float)sqrt(d_low[1 - 1] * d_high[1 - 1]);
-			d_mid[n_bins_df-1-1]		=	(float)sqrt(d_low[n_bins_df - 1] * d_high[n_bins_df - 1]);
-			d_mid[n_bins_df-1]			=	0;
+				d_mid[1-1]					=	(float)sqrt(d_low[1 - 1] * d_high[1 - 1]);
+				d_mid[n_bins_df-1-1]		=	(float)sqrt(d_low[n_bins_df - 1] * d_high[n_bins_df - 1]);
+				d_mid[n_bins_df-1]			=	0;
 
-			d_high[n_bins_df-1-1]		=	d_max_k;
-			d_high[n_bins_df-1]			=	0.0f;	//??
+				d_high[n_bins_df-1-1]		=	d_max_k;
+				d_high[n_bins_df-1]			=	0.0f;	//??
 
-			dd[n_bins_df-1]				=	0.0f;
+				dd[n_bins_df-1]				=	0.0f;
 
-			// now compute r, F1, and f1, this could be any RDD if implemented
-			SGP_r_RDD_m	(	&n_bins_df,
-					d_low,
-					&E_MeV_u[k],
-					&particle_no[k],
-					/* detector parameters */
-					material_no,
-					/* radial dose distribution model */
-					rdd_model,
-					rdd_parameter,
-					/* electron range model */
-					er_model,
-					er_parameter,
-					r);
+				// now compute r, F1, and f1, this could be any RDD if implemented
+				SGP_r_RDD_m	(	&n_bins_df,
+						d_low,
+						&E_MeV_u[k],
+						&particle_no[k],
+						/* detector parameters */
+						material_no,
+						/* radial dose distribution model */
+						rdd_model,
+						rdd_parameter,
+						/* electron range model */
+						er_model,
+						er_parameter,
+						r);
 
-			for (i = 0; i < n_bins_df; i++){
-				F1_1[i]						= (r[i] / f1_parameters[k*9 + 2]) * (r[i] / f1_parameters[k*9 + 2]);}				// F1 - 1 instead of F1 to avoid numeric cut-off problems
+				for (i = 0; i < n_bins_df; i++){
+					F1_1[i]						= (r[i] / f1_parameters[k*9 + 2]) * (r[i] / f1_parameters[k*9 + 2]);}				// F1 - 1 instead of F1 to avoid numeric cut-off problems
 
-			F1_1[n_bins_df-1]		=	0.0f;
+				F1_1[n_bins_df-1]		=	0.0f;
 
-			// now compute f1 as the derivative of F1
-			for (i = 0; i < (n_bins_df - 1); i++){
-				f1_k[i]					=	-1.0f * (F1_1[i + 1] - F1_1[i]) / dd[i];}
+				// now compute f1 as the derivative of F1
+				for (i = 0; i < (n_bins_df - 1); i++){
+					f1_k[i]					=	-1.0f * (F1_1[i + 1] - F1_1[i]) / dd[i];}
 
-			// adjust the density in first and last bin, because upper limit is not d.max.Gy and lower not d.min.Gy
-			f1_k[1-1]				=	f1_k[1-1] * dd[1-1] / dd_df[i_low];
-			f1_k[n_bins_df-1-1]		=	f1_k[n_bins_df-1-1] * dd[n_bins_df-1-1] / dd_df[i_high - 1];
+				// adjust the density in first and last bin, because upper limit is not d.max.Gy and lower not d.min.Gy
+				f1_k[1-1]				=	f1_k[1-1] * dd[1-1] / dd_df[i_low];
+				f1_k[n_bins_df-1-1]		=	f1_k[n_bins_df-1-1] * dd[n_bins_df-1-1] / dd_df[i_high - 1];
 
-			// and paste f1 for this energy /particle into the over all data frame according to rel. fluence
-			for (i = 0; i < (n_bins_df - 1); i++){
-				f1[i_low + i]			+=	norm_fluence[k] * f1_k[i];}
+				// and paste f1 for this energy /particle into the over all data frame according to rel. fluence
+				for (i = 0; i < (n_bins_df - 1); i++){
+					f1[i_low + i]			+=	norm_fluence[k] * f1_k[i];}
 
 
-			free(d_low);
-			free(d_mid);
-			free(d_high);
-			free(dd);
-			free(r);
-			free(F1_1);
-			free(f1_k);
+				free(d_low);
+				free(d_mid);
+				free(d_high);
+				free(dd);
+				free(r);
+				free(F1_1);
+				free(f1_k);
+			}
+			else{ // n_bins_df == 1
+				f1[i_low ]				+=	norm_fluence[k] * 1.0f / dd_df[i_low];
+			}
+
+			// remember highest bin used
+			n_bins_used				=	LMAX(n_bins_used, i_high);
 		}
-		else{ // n_bins_df == 1
-			f1[i_low ]				+=	norm_fluence[k] * 1.0f / dd_df[i_low];
+
+		// copy back for the dose axis
+		for (i = 0; i < *n_bins_f1; i++){
+			f1_d_Gy[i]		=	d_df_mid[i];
+			f1_dd_Gy[i]		=	dd_df[i];
 		}
 
-		// remember highest bin used
-		n_bins_used				=	LMAX(n_bins_used, i_high);
-	}
-
-	// copy back for the dose axis
-	for (i = 0; i < *n_bins_f1; i++){
-		f1_d_Gy[i]		=	d_df_mid[i];
-		f1_dd_Gy[i]		=	dd_df[i];
-	}
-
-	free(d_df_low);
-	free(d_df_mid);
-	free(d_df_high);
-	free(dd_df);
-	// normalize f1 (should be ok anyway but there could be small round-off errors)
-	float	f1_norm		=	0.0f;
-	for (i = 0; i < *n_bins_f1; i++){
-		f1_norm		+=		f1[i] * f1_dd_Gy[i];
-	}
-	for (i = 0; i < *n_bins_f1; i++){
-		f1[i]		/=		f1_norm;
-	}
+		free(d_df_low);
+		free(d_df_mid);
+		free(d_df_high);
+		free(dd_df);
+		// normalize f1 (should be ok anyway but there could be small round-off errors)
+		float	f1_norm		=	0.0f;
+		for (i = 0; i < *n_bins_f1; i++){
+			f1_norm		+=		f1[i] * f1_dd_Gy[i];
+		}
+		for (i = 0; i < *n_bins_f1; i++){
+			f1[i]		/=		f1_norm;
+		}
 
 	} // if(f1_d_Gy != NULL)
 
@@ -1108,6 +1176,18 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 		bool*	adjust_N2)
 {
 
+	// conversion through int
+#ifdef _R
+	int n_bins_f_int = (int)(*n_bins_f);
+	*n_bins_f = (long)n_bins_f_int;
+
+	int N2_int = (int)(*N2);
+	*N2 = (long)N2_int;
+
+	int n_bins_f_used_int = (int)(*n_bins_f_used);
+	*n_bins_f_used = (long)n_bins_f_used_int;
+#endif
+
 #ifdef _DEBUG
 	indnt_init();
 	indnt_inc();
@@ -1132,18 +1212,6 @@ void	 SGP_SuccessiveConvolutions(				float*	u,
 #endif
 	// index variables
 	long		i;
-
-	// conversion through int
-#ifdef _R
-	int n_bins_f_int = (int)(*n_bins_f);
-	*n_bins_f = (long)n_bins_f_int;
-
-	int N2_int = (int)(*N2);
-	*N2 = (long)N2_int;
-
-	int n_bins_f_used_int = (int)(*n_bins_f_used);
-	*n_bins_f_used = (long)n_bins_f_used_int;
-#endif
 
 #ifdef _DEBUG
 	fprintf(debf,"%sn_bins_f_used = %ld\n", isp, *n_bins_f_used);
