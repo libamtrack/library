@@ -5,19 +5,27 @@
 #include <stdlib.h>
 #include <math.h>
 
+
 void SGP_gamma_response(	long*	n,
 							float*	d_Gy,
 							long*	gamma_model,
 							float*	gamma_parameter,
 							// return
 							float*	S){
+#ifdef _R
+	int n_int = (int)(*n);
+	*n = (long)n_int;
+
+	int gamma_model_int = (int)(*gamma_model);
+	*gamma_model = (long)gamma_model_int;
+#endif
 	long	i,j;
 	/*
 	 * (0) Testmodel, response m*x + c
 	 * parameters:	m - gamma_parameter[0]
 	 * 				c - gamma_parameter[1]
 	 */
-	if(*gamma_model == 0){
+	if(*gamma_model == GR_Test){
 		float	m	= gamma_parameter[0];
 		float	c	= gamma_parameter[1];
 		for (i = 0; i < *n; i++){
@@ -41,7 +49,7 @@ void SGP_gamma_response(	long*	n,
 		n_gamma_parameter	+= 4;
 	}
 
-	if(*gamma_model == 1){
+	if(*gamma_model == GR_GeneralTarget){
 		for (i = 0; i < *n; i++){
 			S[i]	= 0.0f;
 		}
@@ -85,7 +93,7 @@ void SGP_gamma_response(	long*	n,
 	 * 				D1		- see above
 	 */
 
-	if(*gamma_model == 2){
+	if(*gamma_model == GR_Radioluminescence){
 		float Smax		=	gamma_parameter[0];
 		float D1		=	gamma_parameter[1];
 		float chi		=	gamma_parameter[2];
@@ -108,7 +116,7 @@ void SGP_gamma_response(	long*	n,
 	 *	parameters:	Smax 	- max. response signal
 	 * 				D1		- characteristic dose at which rate signal reaches saturation
 	 */
-	if(*gamma_model == 3){
+	if(*gamma_model == GR_ExpSaturation){
 		// exp-saturation model
 		float	Smax	=	gamma_parameter[0];
 		float	D0		=	gamma_parameter[1];
@@ -118,8 +126,40 @@ void SGP_gamma_response(	long*	n,
 		}
 		return;
 	}
+
+	/*
+	 *  (4) LINEAR-QUADRATIC MODEL
+	 *
+	 *	parameters:	alpha 	- 1st parameter in equation SF = exp( - alpha *D^2 - beta *D)
+	 * 				beta	- 2nd parameter in equation SF = exp( - alpha *D^2 - beta *D)
+	 * 				D0		- 3rd parameter - transition-dose
+	 */
+	if(*gamma_model == GR_LinQuad){
+		// exp-saturation model
+
+
+		float	alpha	=	gamma_parameter[0];
+		float	beta	=	gamma_parameter[1];
+		float	D0		=	gamma_parameter[2];
+
+		if( alpha < 0 )
+			alpha = 0;
+		if( beta < 0 )
+			beta = 0;
+
+		for (i = 0; i < *n; i++){
+			if( d_Gy[i] < D0 ){
+				S[i]		=	expf( -alpha * d_Gy[i] - beta * d_Gy[i] * d_Gy[i]);
+			} else {
+				S[i]		=	expf(  -alpha * D0 - beta * D0 * D0 - ( alpha + 2 * beta * D0) * (d_Gy[i] - D0) );
+			}
+		}
+		return;
+	}
+
 	return;
 }
+
 
 void SGP_get_gamma_response(	long*	n,
 								float*	d_Gy,
@@ -134,6 +174,14 @@ void SGP_get_gamma_response(	long*	n,
 								float*	S_gamma,
 								float*	efficiency)
 {
+#ifdef _R
+	int n_int = (int)(*n);
+	*n = (long)n_int;
+
+	int gamma_model_int = (int)(*gamma_model);
+	*gamma_model = (long)gamma_model_int;
+#endif
+
 	long i;
 
 	SGP_gamma_response(	n,
@@ -149,7 +197,7 @@ void SGP_get_gamma_response(	long*	n,
 	for(i = 0; i < *n; i++){
 			D_gamma		+=	d_Gy[i] * dd_Gy[i] * f[i];
 			*S_HCP		+=	S[i] * dd_Gy[i] * f[i];
-		}
+	}
 
 	i	= 1;
 	SGP_gamma_response(	&i,
