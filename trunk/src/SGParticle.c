@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define _WINDOWS // [_LINUX or _WINDOWS] : in Linux we have isnan function while in Windows we have _isnan
-#define _S // [_S or _R] in S we can pass long type to the function via as.single, but in R we pass int type
+#define _LINUX // [_LINUX or _WINDOWS] : in Linux we have isnan function while in Windows we have _isnan
+#define _R // [_S or _R] in S we can pass long type to the function via as.single, but in R we pass int type
 //#define _DEBUG // debugging printouts
 #define _SOLVER	// use SOLVER instead of analytical inversion in r_RDD_m
 
@@ -33,10 +33,10 @@ void SGP_efficiency(	long*	n,
 //						method					= "SC",
 						long*	N2,
 						float*	fluence_factor,
-						bool*	write_output,
-						bool*	shrink_tails,
+						int*	write_output,
+						int*	shrink_tails,
 						float*	shrink_tails_under,
-						bool*	adjust_N2,
+						int*	adjust_N2,
 						float*	results);
 
 void SGP_efficiency_grid(	long*	n,
@@ -72,12 +72,71 @@ void SGP_efficiency(	long*	n,
 //						method					= "SC",
 						long*	N2,
 						float*	fluence_factor,
-						bool*	write_output,
-						bool*	shrink_tails,
+						int*	write_output,
+						int*	shrink_tails,
 						float*	shrink_tails_under,
-						bool*	adjust_N2,
+						int*	adjust_N2,
 						float*	results)
 {
+
+#ifdef _DEBUG
+	indnt_init();
+	fprintf(debf,"%sSGP_efficiency\n",isp);
+	fprintf(debf,"%swrite_output = %d\n",isp,*write_output);
+	fprintf(debf,"%sshrink_tails = %d\n",isp,*shrink_tails);
+	fprintf(debf,"%sadjust_N2 = %d\n",isp,*adjust_N2);
+		//		fprintf(debf,"%sf1 = %g\n",isp,(1.0f/ (M_PI * (*a0_m)*(*a0_m))));
+		//		fprintf(debf,"%sf2 = %g\n",isp,SGP_RDD_Katz_point_Gy(t_m,alpha,r_max_m,Katz_point_coeff_Gy));
+		//		fprintf(debf,"%sf3 = %g\n",isp,geometryFunctionPhi(r_m,a0_m,t_m));
+#endif
+
+
+#ifdef _R
+	bool write_output_b = false;
+	if( *write_output == 1)
+		write_output_b = true;
+
+	bool shrink_tails_b = false;
+	if( *shrink_tails == 1)
+		shrink_tails_b = true;
+
+	bool adjust_N2_b = false;
+	if( *adjust_N2 == 1)
+		adjust_N2_b = true;
+
+	int n_int = (int)(*n);
+	*n = (long)n_int;
+
+	int N2_int = (int)(*N2);
+	*N2 = (long)N2_int;
+
+	int RDD_model_int = (int)(*RDD_model);
+	*RDD_model = (long)RDD_model_int;
+
+	int ER_model_int = (int)(*ER_model);
+	*ER_model = (long)ER_model_int;
+
+	int gamma_model_int = (int)(*gamma_model);
+	*gamma_model = (long)gamma_model_int;
+
+	int material_no_int	= (int)(*material_no);
+	*material_no = (long)material_no_int;
+
+	int particle_no_int = (int)(*particle_no);
+	*particle_no = (long)particle_no_int;
+#endif
+
+#ifdef _DEBUG
+	fprintf(debf,"%sSGP_efficiency 2\n",isp);
+	fprintf(debf,"%swrite_output = %d\n",isp,*write_output);
+	fprintf(debf,"%sshrink_tails = %d\n",isp,*shrink_tails);
+	fprintf(debf,"%sadjust_N2 = %d\n",isp,*adjust_N2);
+		//		fprintf(debf,"%sf1 = %g\n",isp,(1.0f/ (M_PI * (*a0_m)*(*a0_m))));
+		//		fprintf(debf,"%sf2 = %g\n",isp,SGP_RDD_Katz_point_Gy(t_m,alpha,r_max_m,Katz_point_coeff_Gy));
+		//		fprintf(debf,"%sf3 = %g\n",isp,geometryFunctionPhi(r_m,a0_m,t_m));
+#endif
+
+
 	long	n_bins_f1;
 	float*	f1_parameters			=	(float*)calloc(9 * (*n), sizeof(float));
 
@@ -176,10 +235,10 @@ void SGP_efficiency(	long*	n,
 			fdd,
 			dfdd,
 			&d_check,
-			write_output,
-			shrink_tails,
+			&write_output_b,
+			&shrink_tails_b,
 			shrink_tails_under,
-			adjust_N2);
+			&adjust_N2_b);
 
 	long			n_bins_f_used	= n_bins_f1;
 
