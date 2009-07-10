@@ -920,7 +920,6 @@ SGP.efficiency		<-	function(		E.MeV.u,
 }
 
 
-
 SGP.efficiency.short	<-	function(	E.MeV.u,
 										particle.no,
 										fluence.cm2,
@@ -945,7 +944,7 @@ SGP.efficiency.short	<-	function(	E.MeV.u,
 					 					N.max					= 1e3){
 	
 		results			<-	numeric(10)
-		if (transport = T){
+		if (transport == T){
 		transport		<-	SGP.Edmund.Transport(	E.start.MeV.u		= E.MeV.u,
 														E.min.MeV.u		= E.min.MeV.u,
 														particle.no		= particle.no,
@@ -979,8 +978,8 @@ SGP.efficiency.short	<-	function(	E.MeV.u,
 			print(cat("results:  ", res$results, "\n"))
 			results[1]			<-	results[1] + res$results[1] * transport$w.Edmund[i]			# efficiency
 			results[2]			<-	results[2] + res$results[2] * transport$w.Edmund[i]			# d.check
-			results[6]			<-	results[3] + res$results[6] * transport$w.Edmund[i]			# S.HCP
-			results[7]			<-	results[4] + res$results[7] * transport$w.Edmund[i]			# S.gamma
+			results[3]			<-	results[3] + res$results[3] * transport$w.Edmund[i]			# S.HCP
+			results[4]			<-	results[4] + res$results[4] * transport$w.Edmund[i]			# S.gamma
 		}
 	}else{
 		res					<-	.C(	"SGP_efficiency",		n						= 	as.integer(length(E.MeV.u)),
