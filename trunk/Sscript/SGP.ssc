@@ -1,4 +1,4 @@
-################################################################################################
+###########################################################g#####################################
 # SGParticle library
 #
 # Wrapping function interfacing SGParticle.dll
@@ -65,7 +65,7 @@
 #
 ################################################################################################
 
-debug <- T
+debug <- F
 
 ##################
 SGP.beta.from.mass	<-	function(	E.MeV.u,
@@ -138,17 +138,12 @@ SGP.gamma.response	<-	function(	d.Gy,
 											
 	n						<-	length(d.Gy)
 	S						<-	numeric(n)
-	n.gamma.parameters 	<-	length(gamma.parameters)
-	if(gamma.model == 1){
-		n.gamma.parameters 	<-	length(gamma.parameters) / 4
-	}
-
 	res					<-	.C(	"SGP_gamma_response",		n					= as.integer(n),
 																d.Gy				= as.single(d.Gy),
-																n.gamma.parameters	= as.integer(n.gamma.parameters),
 																gamma.model		= as.integer(gamma.model),
 																gamma.parameters	= as.single(gamma.parameters),
 																S					= as.single(S))
+ cat( "res$S =", res$S,"\n")
 	return(res$S)
 }
 
@@ -765,23 +760,21 @@ SGP.SC.get.f1		<-	function(		E.MeV.u,
 	#####################################################
 
 	n				<-	length(E.MeV.u)
-	n.bins.f1		<-	integer(1)
 	f1.parameters	<-	numeric(9 * n)
+	n.bins.f1 <- 0
 	
 	res				<-	.C("SGP_SC_get_f1_array_size", 	n						= as.integer(n),
 																E.MeV.u				= as.single(E.MeV.u),
 																particle.no			= as.integer(particle.no),
 																material.no			= as.integer(material.no),
 																RDD.model				= as.integer(RDD.model),
-																n.RDD.parameters		= as.integer(length(RDD.parameters)),
 																RDD.parameters			= as.single(RDD.parameters),
 																ER.model				= as.integer(ER.model),
-																n.ER.parameters		= as.integer(length(ER.parameters)),
 																ER.parameters			= as.single(ER.parameters),
 																N2						= as.integer(N2),
-																debug					= as.integer(F),
 																n.bins.f1				= as.integer(n.bins.f1),
 																f1.parameters			= as.single(f1.parameters))
+		
 	n.bins.f1		<- 	res$n.bins.f1
 	f1.parameters	<-	res$f1.parameters
 	
@@ -804,10 +797,8 @@ SGP.SC.get.f1		<-	function(		E.MeV.u,
 																fluence.cm2			= as.single(fluence.cm2),
 																material.no			= as.integer(material.no),
 																RDD.model				= as.integer(RDD.model),
-																n.RDD.parameters		= as.integer(length(RDD.parameters)),
 																RDD.parameters			= as.single(RDD.parameters),
 																ER.model				= as.integer(ER.model),
-																n.ER.parameters		= as.integer(length(ER.parameters)),
 																ER.parameters			= as.single(ER.parameters),
 																N2						= as.integer(N2),
 																n.bins.f1				= as.integer(n.bins.f1),
@@ -818,16 +809,6 @@ SGP.SC.get.f1		<-	function(		E.MeV.u,
 																f1.d.Gy				= as.single(f1.d.Gy),
 																f1.dd.Gy				= as.single(f1.dd.Gy),
 																f1						= as.single(f1))
-													
-	if(F){
-	# create one-row data-frame from rdd-parameters
-	df.rdd					<-	t(as.data.frame(RDD.parameters))
-	rownames(df.rdd)		<-	""
-	colnames(df.rdd)		<-	paste("RDD.parameters.", 1:ncol(df.rdd), sep = "")
-
-	df.RDD.1				<-	df.rdd[rep(1, n),]
-	df.RDD.2				<-	df.rdd[rep(1, n.bins.f1),]
-	}
 	
 	results	<-	list(	general				=	data.frame(	E.MeV.u						=	res$E.MeV.u,
 																		particle.no					= 	res$particle.no,
@@ -836,15 +817,13 @@ SGP.SC.get.f1		<-	function(		E.MeV.u,
 																		norm.fluence					= 	res$norm.fluence,
 																		dose.contribution.Gy			= 	res$dose.contribution.Gy,
 																		material.no					=	rep(material.no, n)),
-							f1.parameters			=	f1.parameters,											
-							f.parameters			=	res$f.parameters,
-							f1						=	data.frame(	f1.d.Gy						=	res$f1.d.Gy,
+																		f1.parameters			=	f1.parameters,											
+							           f.parameters			=	res$f.parameters,
+           							f1						=	data.frame(	f1.d.Gy						=	res$f1.d.Gy,
 																		f1.dd.Gy						=	res$f1.dd.Gy,
 																		f1								=	res$f1,
 																		material.no					=	rep(material.no, n.bins.f1),
-#																		df.RDD.2,
 																		n.bins.f1						=	rep(res$n.bins.f1, n.bins.f1),
-#																		u								=	rep(res$u, n.bins.f1),
 																		N2								=	rep(N2, n.bins.f1)))
 	return(results)
 }
@@ -870,7 +849,6 @@ SGP.SC.get.gamma.response		<-	function(		f.list,
 																	f.dd.Gy				= as.single(f.list$f$f.dd.Gy),
 																	f						= as.single(f.list$f$f),
 																	f0						= as.single(unique(f.list$f$f0)),
-																	n.gamma.parameters		= as.integer(n.gamma.parameters),
 																	gamma.model			= as.integer(gamma.model),
 																	gamma.parameters		= as.single(gamma.parameters),
 																	S						= as.single(S),
@@ -882,11 +860,13 @@ SGP.SC.get.gamma.response		<-	function(		f.list,
 	f.list$f$gamma.model					<-	rep(gamma.model, n)
 	
 	# create one-row data-frame from gamma parameters
-	df.gamma				<-	t(as.data.frame(gamma.parameters))
-	rownames(df.gamma)	<-	""
-	colnames(df.gamma)	<-	paste("gamma.parameters.", 1:ncol(df.gamma), sep = "")
-	df.gamma				<-	df.gamma[rep(1, n),]
-	f.list$f								<-	cbind.data.frame(f.list$f, df.gamma)
+	
+	# This is not working correctly in R
+#	df.gamma				<-	t(as.data.frame(gamma.parameters))
+#	rownames(df.gamma)	<-	""
+#	colnames(df.gamma)	<-	paste("gamma.parameters.", 1:ncol(df.gamma), sep = "")
+#	df.gamma				<-	df.gamma[rep(1, n),]
+#	f.list$f								<-	cbind.data.frame(f.list$f, df.gamma)
 
 	f.list$f$S				<-	res$S
 	f.list$f$S.HCP		<-	rep(res$S.HCP, n)
@@ -927,7 +907,7 @@ SGP.efficiency		<-	function(		E.MeV.u,
 																ER.parameters,
 																N2)
 	
-	f.list				<-	SGP.SC.do.SC(						f.list)
+	f.list				<-	SGP.SC.do.SC( f.list)
 
 	f.list				<-	SGP.SC.get.gamma.response(		f.list,
 																gamma.model,
@@ -938,6 +918,8 @@ SGP.efficiency		<-	function(		E.MeV.u,
 
 	return(f.list)
 }
+
+
 
 SGP.efficiency.short	<-	function(	E.MeV.u,
 										particle.no,
