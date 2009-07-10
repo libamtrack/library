@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
-#define _LINUX // [_LINUX or _WINDOWS] : in Linux we have isnan function while in Windows we have _isnan
-#define _R // [_S or _R] in S we can pass long type to the function via as.single, but in R we pass int type
+#define _WINDOWS // [_LINUX or _WINDOWS] : in Linux we have isnan function while in Windows we have _isnan
+#define _S // [_S or _R] in S we can pass long type to the function via as.single, but in R we pass int type
 //#define _DEBUG // debugging printouts
 #define _SOLVER	// use SOLVER instead of analytical inversion in r_RDD_m
 
@@ -235,10 +236,10 @@ void SGP_efficiency(	long*	n,
 			fdd,
 			dfdd,
 			&d_check,
-			&write_output_b,
-			&shrink_tails_b,
+			write_output,
+			shrink_tails,
 			shrink_tails_under,
-			&adjust_N2_b);
+			adjust_N2);
 
 	long			n_bins_f_used	= n_bins_f1;
 
@@ -301,6 +302,10 @@ void SGP_efficiency_grid(	long*	n,
 							float*	results)
 {
 	FILE*		output_file;
+	struct tm	*start_tm, *end_tm;
+	time_t 		start_t, end_t;
+	start_t		= time(NULL);
+
 	long 		i, j, k, m;
 	long		n_grid					= (*nX) * (*nX);
 	float		calc_grid_size_m		= (*grid_size_m) * (*nX);
@@ -314,8 +319,8 @@ void SGP_efficiency_grid(	long*	n,
 	fprintf(output_file, "This is SGP efficiency grid, version(2009/06/30).\n");
 	fprintf(output_file, "##############################################################\n");
 	fprintf(output_file, "\n\n\n");
-	fprintf(output_file, "\nSystem time:");
-	fprintf(output_file, "\n");
+	start_tm 		= localtime(&start_t);
+	fprintf(output_file, "Start time and date: %s\n", asctime(start_tm));
 	fprintf(output_file, "calc grid:			%d*%d = %d pixels\n", *nX, *nX, n_grid);
 	fprintf(output_file, "calc grid size/m:	 	%e\n", calc_grid_size_m);
 	fprintf(output_file, "calc grid area/cm2:	%e\n", calc_grid_area_cm2);
@@ -416,14 +421,20 @@ void SGP_efficiency_grid(	long*	n,
 		float*	run_results			= (float*)calloc(10, sizeof(float));
 
 		// sample particles numbers
-		fprintf(output_file, "Actual number of particles (mean)\n");
 		n_particles	= 0;
 		for (i = 0; i < *n; i++){
 			act_number_particles[i]	= 	(long)gsl_ran_poisson(rng1, mean_number_particles[i]);
 			n_particles				+=	act_number_particles[i];
-			fprintf(output_file, "particle %d: %d (%e)\n", i, act_number_particles[i], mean_number_particles[i]);
 		}
-		fprintf(output_file, "\nIn total: %d\n", n_particles);
+
+		if(*N_runs <= 20){
+			fprintf(output_file, "\n\nRun %d:\n", m + 1);
+			fprintf(output_file, "Actual number of particles (mean)\n");
+			for (i = 0; i < *n; i++){
+				fprintf(output_file, "particle %d: %d (%e)\n", i, act_number_particles[i], mean_number_particles[i]);
+			}
+			fprintf(output_file, "\nIn total: %d\n", n_particles);
+		}
 
 		// alloc particle array
 		float*	x_pos				= (float*)calloc(n_particles, sizeof(float));
@@ -442,9 +453,15 @@ void SGP_efficiency_grid(	long*	n,
 				k 		= 0;
 				j++;
 			}
+			k++;
 			particle_index[i]	=	j;
 			r_max_m[i]			=	f1_parameters[j*9 + 2];
 		}
+
+//		fprintf(output_file, "particle.no; particle.index; r.max.m\n");
+//		for (i=0; i < n_particles; i++){
+//			fprintf(output_file, "%d; %d; %e\n", i, particle_index[i], r_max_m[i]);
+//		}
 
 		// sample particle positions
 		for (i = 0; i < n_particles; i++){
@@ -492,14 +509,15 @@ void SGP_efficiency_grid(	long*	n,
 			S_HCP			+=	grid_S[i];
 		}
 
-		d_total_Gy		/= n_grid;
+		S_HCP				/=	n_grid;
+		d_total_Gy			/= n_grid;
+
 		float S_gamma	= 0.0f;
 		SGP_gamma_response(	&n_tmp,
-							grid_d_Gy,
+							&d_total_Gy,
 							gamma_model,
 							gamma_parameters,
 							&S_gamma);
-		S_gamma				*= n_grid;
 
 		float efficiency	= 0.0f;
 		if(S_gamma > 0){
@@ -508,7 +526,7 @@ void SGP_efficiency_grid(	long*	n,
 
 		// write graph (first run)
 		bool write_graph = true;
-			if(write_graph & m == 1){
+			if(write_graph & m == 0){
 				FILE*		graph_file;
 				graph_file		=	fopen("GridGraph.csv","w");
 				if (graph_file == NULL) return;		// File error
@@ -544,12 +562,14 @@ void SGP_efficiency_grid(	long*	n,
 		results[8]			+= run_results[3]*run_results[3];
 		results[9]			+= n_particles * n_particles;
 
-		fprintf(output_file, "\n\nRun %d results\n", m + 1);
-		fprintf(output_file, "efficiency 		= %e\n", run_results[0]);
-		fprintf(output_file, "d.check.Gy 		= %e\n", run_results[1]);
-		fprintf(output_file, "S (HCP) 			= %e\n", run_results[2]);
-		fprintf(output_file, "S (gamma) 		= %e\n", run_results[3]);
-		fprintf(output_file, "no. particles		= %e\n", run_results[4]);
+		if (*N_runs <= 20){
+			fprintf(output_file, "\n\nRun %d results\n", m + 1);
+			fprintf(output_file, "efficiency 		= %e\n", run_results[0]);
+			fprintf(output_file, "d.check.Gy 		= %e\n", run_results[1]);
+			fprintf(output_file, "S (HCP) 			= %e\n", run_results[2]);
+			fprintf(output_file, "S (gamma) 		= %e\n", run_results[3]);
+			fprintf(output_file, "no. particles		= %e\n", run_results[4]);
+		}
 
 		free(x_pos);
 		free(y_pos);
@@ -593,6 +613,14 @@ void SGP_efficiency_grid(	long*	n,
 	fprintf(output_file, "S (HCP) 			= %e +/- %e\n", results[2], results[7]);
 	fprintf(output_file, "S (gamma) 		= %e +/- %e\n", results[3], results[8]);
 	fprintf(output_file, "no. particles		= %e +/- %e\n", results[4], results[9]);
+	fprintf(output_file, "###############################################\n");
+	end_t				= time(NULL);
+	end_tm				= localtime(&end_t);
+	float timespan_s	= difftime(end_t, start_t);
+	fprintf(output_file, "\nEnd time and date: %s\n", asctime(end_tm));
+	fprintf(output_file, "\nTime per run [s]:      %4.2e\n", timespan_s / *N_runs);
+	fprintf(output_file, "\nTime per pixel [s]:    %4.2e\n", timespan_s / (*N_runs * n_grid));
+	fprintf(output_file, "###############################################\n");
 	fprintf(output_file, "###############################################\n");
 
 	gsl_rng_free(rng1);
