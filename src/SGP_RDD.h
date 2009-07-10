@@ -302,12 +302,17 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 							/* calculated parameters */
 							float * f1_parameters)
 {
+
+
 #ifdef _DEBUG
+	indnt_init();
 	indnt_inc();
 	fprintf(debf,"%sbegin SGP_RDD_f1_parameters\n",isp);
 	fprintf(debf,"%sbegin RDD model = %ld\n",isp,*rdd_model);
 	fprintf(debf,"%sMaterial = %ld\n", isp, *material_no);
 #endif
+
+
 
 	// Get beta, Z and Zeff
 	long	n_tmp		= 1;
@@ -448,6 +453,15 @@ void SGP_RDD_f1_parameters(	/* radiation field parameters */
 	}
 
 #ifdef _DEBUG
+	fprintf(debf,"%sf1_parameters[1] (r_min_m) = %g\n",isp,f1_parameters[1]);
+	fprintf(debf,"%sf1_parameters[2] (r_max_m) = %g\n",isp,f1_parameters[2]);
+	fprintf(debf,"%sf1_parameters[3] (d_min_Gy) = %g\n",isp,f1_parameters[3]);
+	fprintf(debf,"%sf1_parameters[4] (d_max_Gy) = %g\n",isp,f1_parameters[4]);
+	fprintf(debf,"%sf1_parameters[6] (single_impact_fluence) = %g\n",isp,f1_parameters[6]);
+	fprintf(debf,"%sf1_parameters[7] (single_impact_dose) = %g\n",isp,f1_parameters[7]);
+#endif
+
+#ifdef _DEBUG
 	fprintf(debf,"%send SGP_RDD_f1_parameters\n",isp);
 	indnt_dec();
 #endif
@@ -480,12 +494,6 @@ void SGP_D_RDD_Gy	(	long*	n,
 	int n_int = (int)(*n);
 	*n = (long)n_int;
 
-	int n_rdd_parameter_int = (int)(*n_rdd_parameter);
-	*n_rdd_parameter = (long)n_rdd_parameter_int;
-
-	int n_er_parameter_int = (int)(*n_er_parameter);
-	*n_er_parameter = (long)n_er_parameter_int;
-
 	int rdd_model_int = (int)(*rdd_model);
 	*rdd_model = (long)rdd_model_int;
 
@@ -495,13 +503,8 @@ void SGP_D_RDD_Gy	(	long*	n,
 	int material_no_int	= (int)(*material_no);
 	*material_no = (long)material_no_int;
 
-	long ii;
-	int particle_no_int;
-	for(ii = 0 ; ii < *n ; ii++){
-		particle_no_int = (int)(particle_no[ii]);
-		particle_no[ii] = (long)particle_no_int;
-//		printf("output particle_no[%ld]=%ld\n", i , particle_no_long[i]);
-	}
+	int particle_no_int = (int)(*particle_no);
+	*particle_no = (long)particle_no_int;
 #endif
 
 #ifdef _DEBUG
@@ -688,12 +691,6 @@ void SGP_r_RDD_m	(	long*	n,
 		int n_int = (int)(*n);
 		*n = (long)n_int;
 
-		int n_rdd_parameter_int = (int)(*n_rdd_parameter);
-		*n_rdd_parameter = (long)n_rdd_parameter_int;
-
-		int n_er_parameter_int = (int)(*n_er_parameter);
-		*n_er_parameter = (long)n_er_parameter_int;
-
 		int rdd_model_int = (int)(*rdd_model);
 		*rdd_model = (long)rdd_model_int;
 
@@ -703,13 +700,8 @@ void SGP_r_RDD_m	(	long*	n,
 		int material_no_int	= (int)(*material_no);
 		*material_no = (long)material_no_int;
 
-		long ii;
-		int particle_no_int;
-		for(ii = 0 ; ii < *n ; ii++){
-			particle_no_int = (int)(particle_no[ii]);
-			particle_no[ii] = (long)particle_no_int;
-	//		printf("output particle_no[%ld]=%ld\n", i , particle_no_long[i]);
-		}
+		int particle_no_int = (int)(*particle_no);
+		*particle_no = (long)particle_no_int;
 	#endif
 
 	#ifdef _DEBUG
