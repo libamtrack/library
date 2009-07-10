@@ -737,7 +737,7 @@ void SGP_r_RDD_m	(	long*	n,
 				&alpha_g_cm2_MeV,
 				&p_MeV,
 				&m_g_cm2);
-//		float		density_kg_m3	=	density_g_cm3 * 1000.0f;
+		float		density_kg_m3	=	density_g_cm3 * 1000.0f;
 
 	if( *rdd_model == RDD_Test){
 		// Loop over all doses given
@@ -771,13 +771,18 @@ void SGP_r_RDD_m	(	long*	n,
 		params->er_parameter 	= er_parameter;
 		params->D_RDD_Gy 		= (float*)calloc(1,sizeof(float));
 		// Loop over all doses given
-
+		float dev = 0.01f;
 		float critical_d_Gy		= 0.0f;
-		float critical_r_m = 0.0f;
+		float critical_r_m 		= 0.0f;
+		float inv2_d_Gy			= 0.0f;
+		float inv2_r_m 		= 0.0f;
 		if(*rdd_model == RDD_Site){
 			critical_r_m		= rdd_parameter[0] * (1.0f + 1e-6f);
-		} else {
+			inv2_r_m			= FMAX(rdd_parameter[0], f1_parameters[2] * dev);
+		}
+		if(*rdd_model == RDD_ExtTarget){
 			critical_r_m		= rdd_parameter[1];
+			inv2_r_m			= FMAX(rdd_parameter[0], f1_parameters[2] * dev);
 		}
 		if(*rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget){
 			SGP_D_RDD_Gy	(	&n_tmp,										// Use D(r) to find dose at jump of D_Site
@@ -794,25 +799,80 @@ void SGP_r_RDD_m	(	long*	n,
 								er_model,
 								er_parameter,
 								&critical_d_Gy);
+			SGP_D_RDD_Gy	(	&n_tmp,										// Use D(r) to find dose at jump of D_Site
+								&inv2_r_m,
+								/* radiation field parameters */
+								E_MeV_u,
+								particle_no,
+								/* detector parameters */
+								material_no,
+								/* radial dose distribution model */
+								rdd_model,
+								rdd_parameter,
+								/* electron range model */
+								er_model,
+								er_parameter,
+								&inv2_d_Gy);
 		}
 
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+		// Get beta, Z and Zeff
+		float	beta		= 0.0f;
+		long	Z			= 0;
+		float	Z_eff		= 0.0f;
+		SGP_beta_from_particle_no(	&n_tmp,
+									E_MeV_u,
+									particle_no,
+									&beta);
+		SGP_Z_from_particle_no(	&n_tmp,
+								particle_no,
+								&Z);
+		SGP_effective_charge_from_beta(	&n_tmp,
+										&beta,
+										&Z,
+										&Z_eff);
 
+		//////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
+		float alpha				= 	1.667f;
+		float w_el_keV			=	2.0f * electron_mass_MeV_c2 * 1000.0f * beta*beta / (1 - beta*beta);
+		if(w_el_keV <= 1.0f){
+			alpha					= 1.079f;
+		}
+		//////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
+
+		float Katz_point_coeff_Gy = SGP_RDD_Katz_point_coeff_Gy(&(f1_parameters[5]),&Z_eff,&beta,&alpha,&density_kg_m3,&(f1_parameters[2]));
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 		for (i = 0; i < *n; i++){
 			params->D0 = D_RDD_Gy[i];
 			// if D is outside the definition, return -1
 			r_RDD_m[i]				=	-1.0f;
 			float	solver_accuracy	=	1e-13f;
 			if ((f1_parameters[3] <= D_RDD_Gy[i]) && (D_RDD_Gy[i] <= f1_parameters[4])){
-				if(*rdd_model == RDD_Site && D_RDD_Gy[i] >= critical_d_Gy){
-					r_RDD_m[i] = rdd_parameter[0];
-				} else if(*rdd_model == RDD_ExtTarget && D_RDD_Gy[i] >= critical_d_Gy){
-					r_RDD_m[i] = rdd_parameter[1];
-				}else{
-					r_RDD_m[i] = zriddr(SGP_D_RDD_Gy_solver,
+				if(D_RDD_Gy[i] >= critical_d_Gy){
+					if(*rdd_model == RDD_Site){
+						r_RDD_m[i] = rdd_parameter[0];}
+					if(*rdd_model == RDD_ExtTarget){
+						r_RDD_m[i] = rdd_parameter[1];}
+				}
+				if(*rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget){
+					if(D_RDD_Gy[i] < critical_d_Gy && D_RDD_Gy[i] >= inv2_d_Gy){
+						r_RDD_m[i] = sqrt(Katz_point_coeff_Gy / D_RDD_Gy[i]) * f1_parameters[2];}
+					if(D_RDD_Gy[i] < inv2_d_Gy){
+						r_RDD_m[i] = zriddr(SGP_D_RDD_Gy_solver,
 										(void*)params,
 										f1_parameters[1],
 										f1_parameters[2],
 										solver_accuracy);
+					}
+				}else{
+					r_RDD_m[i] = zriddr(SGP_D_RDD_Gy_solver,
+									(void*)params,
+									f1_parameters[1],
+									f1_parameters[2],
+									solver_accuracy);
+
 				}
 			}
 		}
@@ -820,6 +880,7 @@ void SGP_r_RDD_m	(	long*	n,
 		free(params->D_RDD_Gy);
 		free(params);
 	}// end RDD_KatzPoint & RDD_Site
+
 
 	free(f1_parameters);
 
