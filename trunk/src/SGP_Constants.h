@@ -29,7 +29,8 @@ enum GammaResponseModels{
     GR_Test					= 1,			/* no parameters */
     GR_GeneralTarget		= 2,			/* */
     GR_Radioluminescence	= 3,			/* 0 - Smax, 1 - D0, 2 - dyn */
-    GR_ExpSaturation		= 4				/* 0 - Smax, 1 - D0 */
+    GR_ExpSaturation		= 4,			/* 0 - Smax, 1 - D0 */
+    GR_LinQuad				= 5				/* 0 - alpha, 1 - beta */
 };
 
 enum RDDModels{
