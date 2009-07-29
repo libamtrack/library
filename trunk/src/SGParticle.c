@@ -19,6 +19,7 @@
 #include "SGP_Transport.h"
 
 #include <gsl/gsl_rng.h>
+#include <gsl/gsl_integration.h>
 
 void SGP_efficiency(	long*	n,
 						float*	E_MeV_u,
@@ -31,46 +32,6 @@ void SGP_efficiency(	long*	n,
 						float*	ER_parameters,
 						long*	gamma_model,
 						float*	gamma_parameters,
-//						method					= "SC",
-						long*	N2,
-						float*	fluence_factor,
-						int*	write_output,
-						int*	shrink_tails,
-						float*	shrink_tails_under,
-						int*	adjust_N2,
-						float*	results);
-
-void SGP_efficiency_grid(	long*	n,
-							float*	E_MeV_u,
-							long*	particle_no,
-							float*	fluence_cm2,
-							long*	material_no,
-							long*	RDD_model,
-							float*	RDD_parameters,
-							long*	ER_model,
-							float*	ER_parameters,
-							long*	gamma_model,
-							float*	gamma_parameters,
-	//						method					= "grid",
-							long*	N_runs,
-							float*	fluence_factor,
-							bool*	write_output,
-							long*	nX,
-							float*	grid_size_m,
-							float*	results);
-
-void SGP_efficiency(	long*	n,
-						float*	E_MeV_u,
-						long*	particle_no,
-						float*	fluence_cm2,
-						long*	material_no,
-						long*	RDD_model,
-						float*	RDD_parameters,
-						long*	ER_model,
-						float*	ER_parameters,
-						long*	gamma_model,
-						float*	gamma_parameters,
-//						method					= "SC",
 						long*	N2,
 						float*	fluence_factor,
 						int*	write_output,
@@ -639,6 +600,9 @@ void SGP_efficiency_grid(	long*	n,
 
 	close(output_file);
 }
+
+
+
 /*
 BOOL APIENTRY DllMain( HANDLE hModule,
                        DWORD  ul_reason_for_call,
@@ -648,4 +612,81 @@ BOOL APIENTRY DllMain( HANDLE hModule,
     return TRUE;
 }
 */
+
+void SGP_efficiency_Katz(	long*	n,
+							float*	E_MeV_u,
+							long*	particle_no,
+							float*	fluence_cm2,
+							long*	material_no,
+							long*	RDD_model,
+							float*	RDD_parameters,
+							long*	ER_model,
+							float*	ER_parameters,
+							long*	gamma_model,
+							float*	gamma_parameters,
+							float*	results)
+{
+	FILE*		output_file;
+	struct tm	*start_tm, *end_tm;
+	time_t 		start_t, end_t;
+	start_t		= time(NULL);
+
+	output_file		=	fopen("KatseMitGlatse.log","w");
+	if (output_file == NULL) return;											// File error
+
+	fprintf(output_file, "##############################################################\n");
+	fprintf(output_file, "##############################################################\n");
+	fprintf(output_file, "This is SGP efficiency Katz, version(2009/07/13).\n");
+	fprintf(output_file, "##############################################################\n");
+	fprintf(output_file, "\n\n\n");
+	start_tm 		= localtime(&start_t);
+	fprintf(output_file, "Start time and date: %s\n", asctime(start_tm));
+
+	if (*gamma_model != 1){
+		fprintf(output_file, "##############################################################\n");
+		fprintf(output_file, "Sorry, no Katz with other than the general hit-target model\n");
+		fprintf(output_file, "Please choose gamma_model = 1. Exiting now...\n");
+		fprintf(output_file, "##############################################################\n");
+		return;
+	}
+
+	long 	i;
+	// Browse gamma parameters and pick one-hit components
+	long 	n_components 		= 0;
+	long	n_gamma_parameters 	= 0;
+	while	(gamma_parameters[n_gamma_parameters] != 0){
+		n_gamma_parameters	+= 4;
+	}
+	n_components				= n_gamma_parameters / 4;
+	bool*	bOneHit				= (bool*)calloc(n_components, sizeof(bool));
+
+	for(i = 0; i < n_components; i++){
+		if(bOneHit[i]){
+
+			////////////////////////////////////////////////////////////////////////////////////////////
+/*
+		    gsl_set_error_handler_off();
+
+			double ext_integral_Gy;
+			double error;
+			gsl_integration_workspace *w1 = gsl_integration_workspace_alloc (10000);
+			gsl_function F;
+			F.function = &SGP_RDD_Katz_ext_integrand_Gy;
+//			float params[] = {*r_m,*a0_m,*alpha,*r_min_m,*r_max_m,*Katz_point_coeff_Gy};
+			F.params = params;
+//			int status = gsl_integration_qags (&F, int_lim_m, (*r_m)+(*a0_m), 1e-9, 1e-4, 10000, w1, &ext_integral_Gy, &error);
+			if (status == GSL_EROUND || status == GSL_ESING){
+		#ifdef _DEBUG
+				indnt_init();
+				fprintf(debf,"%s r=%g, integration from %g to %g , error no == %d\n",isp,*r_m,int_lim_m,(*r_m)+(*a0_m),status);
+		#endif
+				ext_integral_Gy = -1.0f;
+			}
+			gsl_integration_workspace_free (w1);
+*/
+
+			////////////////////////////////////////////////////////////////////////////////////////////
+		}
+	}
+}
 
