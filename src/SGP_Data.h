@@ -17,7 +17,7 @@ typedef struct {
 	char*		USRTRACK_name[PARTICLE_DATA_N];
 } particle_data;
 
-particle_data SGP_Particle_Data = {
+static particle_data SGP_Particle_Data = {
 		PARTICLE_DATA_N ,
 	{	1,		2,		3,
 		4,		5,
@@ -96,7 +96,7 @@ typedef struct {
 	char*		material_name[MATERIAL_DATA_N];
 } material_data;
 
-material_data SGP_Material_Data = {
+static material_data SGP_Material_Data = {
 		MATERIAL_DATA_N,
 	{	1,					2,					3,				4},
 	{	1.00f,				3.97f,				2.6989f,		1.19f},
@@ -126,7 +126,7 @@ typedef struct {
 	long		material_no[PSTAR_DATA_N];
 } pstar_data;
 
-pstar_data SGP_PSTAR_Data = {
+static pstar_data SGP_PSTAR_Data = {
 	PSTAR_DATA_N,
 
 ///////////////////////////////////////////////////////////////////////
