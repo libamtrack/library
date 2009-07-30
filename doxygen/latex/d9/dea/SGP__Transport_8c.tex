@@ -1,0 +1,70 @@
+\hypertarget{SGP__Transport_8c}{
+\section{SGP\_\-Transport.c File Reference}
+\label{d9/dea/SGP__Transport_8c}\index{SGP\_\-Transport.c@{SGP\_\-Transport.c}}
+}
+{\tt \#include \char`\"{}SGP\_\-Transport.h\char`\"{}}\par
+{\tt \#include \char`\"{}SGP\_\-Constants.h\char`\"{}}\par
+{\tt \#include \char`\"{}SGP\_\-Functions.h\char`\"{}}\par
+{\tt \#include \char`\"{}SGP\_\-ParabolicCylinderFunction.h\char`\"{}}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \hyperlink{SGP__Transport_8c_e1251b406df2644cbc312e5b6a9cd8f1}{SGP\_\-BortfeldTransportProtonL} (float $\ast$E\_\-initial\_\-MeV, float $\ast$sE\_\-initial\_\-MeV, float $\ast$fluence\_\-initial\_\-cm2, char $\ast$plateau\_\-dose\_\-material\_\-name, long $\ast$n\_\-shielding\_\-slabs, float $\ast$shielding\_\-thickness\_\-m, char $\ast$shielding\_\-material\_\-nameL, long $\ast$n\_\-detector\_\-slabs, float $\ast$detector\_\-thickness\_\-m, char $\ast$detector\_\-material\_\-name, float $\ast$plateau\_\-dose\_\-Gy, float $\ast$plateau\_\-dose\_\-noNuc\_\-Gy, float $\ast$detector\_\-z\_\-cm, float $\ast$detector\_\-E\_\-MeV, float $\ast$detector\_\-sE\_\-MeV, float $\ast$detector\_\-fluence\_\-cm2, float $\ast$detector\_\-dfluencedz\_\-cm, float $\ast$detector\_\-LET\_\-MeV\_\-g\_\-cm2, float $\ast$detector\_\-dose\_\-Gy, float $\ast$detector\_\-dose\_\-noNuc\_\-Gy, float $\ast$geom\_\-factor)
+\item 
+void \hyperlink{SGP__Transport_8c_cdb7f27ff07d450cdac7ba899a15ed0d}{SGP\_\-BortfeldTransportProtonS} (float $\ast$E\_\-initial\_\-MeV, float $\ast$sE\_\-initial\_\-MeV, float $\ast$fluence\_\-initial\_\-cm2, char $\ast$$\ast$plateau\_\-dose\_\-material\_\-name, long $\ast$n\_\-shielding\_\-slabs, float $\ast$shielding\_\-thickness\_\-m, char $\ast$$\ast$shielding\_\-material\_\-name, long $\ast$n\_\-detector\_\-slabs, float $\ast$detector\_\-thickness\_\-m, char $\ast$$\ast$detector\_\-material\_\-name, float $\ast$plateau\_\-dose\_\-Gy, float $\ast$plateau\_\-dose\_\-noNuc\_\-Gy, float $\ast$detector\_\-z\_\-cm, float $\ast$detector\_\-E\_\-MeV, float $\ast$detector\_\-sE\_\-MeV, float $\ast$detector\_\-fluence\_\-cm2, float $\ast$detector\_\-dfluencedz\_\-cm, float $\ast$detector\_\-LET\_\-MeV\_\-g\_\-cm2, float $\ast$detector\_\-dose\_\-Gy, float $\ast$detector\_\-dose\_\-noNuc\_\-Gy, float $\ast$geom\_\-factor)
+\item 
+void \hyperlink{SGP__Transport_8c_5edb099f2bd7928ae6443824c9c25469}{SGP\_\-Dose\_\-Gy} (float $\ast$density\_\-g\_\-cm3, float $\ast$fluence\_\-cm2, float $\ast$LET\_\-MeV\_\-g\_\-cm2, float $\ast$dfluencedz\_\-cm, float $\ast$E\_\-MeV, float $\ast$dose\_\-Gy, float $\ast$dose\_\-noNuc\_\-Gy)
+\item 
+void \hyperlink{SGP__Transport_8c_22004f9c0c7521e5bfa33199a6c14a40}{SGP\_\-BortfeldTransportProton} (float $\ast$E\_\-initial\_\-MeV, float $\ast$sE\_\-initial\_\-MeV, float $\ast$fluence\_\-initial\_\-cm2, char $\ast$plateau\_\-dose\_\-material\_\-name, long $\ast$n\_\-shielding\_\-slabs, float $\ast$shielding\_\-thickness\_\-m, char $\ast$$\ast$shielding\_\-material\_\-name, long $\ast$n\_\-detector\_\-slabs, float $\ast$detector\_\-thickness\_\-m, char $\ast$detector\_\-material\_\-name, float $\ast$plateau\_\-dose\_\-Gy, float $\ast$plateau\_\-dose\_\-noNuc\_\-Gy, float $\ast$detector\_\-z\_\-cm, float $\ast$detector\_\-E\_\-MeV, float $\ast$detector\_\-sE\_\-MeV, float $\ast$detector\_\-fluence\_\-cm2, float $\ast$detector\_\-dfluencedz\_\-cm, float $\ast$detector\_\-LET\_\-MeV\_\-g\_\-cm2, float $\ast$detector\_\-dose\_\-Gy, float $\ast$detector\_\-dose\_\-noNuc\_\-Gy, float $\ast$geom\_\-factor)
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{SGP__Transport_8c_22004f9c0c7521e5bfa33199a6c14a40}{
+\index{SGP\_\-Transport.c@{SGP\_\-Transport.c}!SGP\_\-BortfeldTransportProton@{SGP\_\-BortfeldTransportProton}}
+\index{SGP\_\-BortfeldTransportProton@{SGP\_\-BortfeldTransportProton}!SGP_Transport.c@{SGP\_\-Transport.c}}
+\subsubsection[SGP\_\-BortfeldTransportProton]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-BortfeldTransportProton (float $\ast$ {\em E\_\-initial\_\-MeV}, \/  float $\ast$ {\em sE\_\-initial\_\-MeV}, \/  float $\ast$ {\em fluence\_\-initial\_\-cm2}, \/  char $\ast$ {\em plateau\_\-dose\_\-material\_\-name}, \/  long $\ast$ {\em n\_\-shielding\_\-slabs}, \/  float $\ast$ {\em shielding\_\-thickness\_\-m}, \/  char $\ast$$\ast$ {\em shielding\_\-material\_\-name}, \/  long $\ast$ {\em n\_\-detector\_\-slabs}, \/  float $\ast$ {\em detector\_\-thickness\_\-m}, \/  char $\ast$ {\em detector\_\-material\_\-name}, \/  float $\ast$ {\em plateau\_\-dose\_\-Gy}, \/  float $\ast$ {\em plateau\_\-dose\_\-noNuc\_\-Gy}, \/  float $\ast$ {\em detector\_\-z\_\-cm}, \/  float $\ast$ {\em detector\_\-E\_\-MeV}, \/  float $\ast$ {\em detector\_\-sE\_\-MeV}, \/  float $\ast$ {\em detector\_\-fluence\_\-cm2}, \/  float $\ast$ {\em detector\_\-dfluencedz\_\-cm}, \/  float $\ast$ {\em detector\_\-LET\_\-MeV\_\-g\_\-cm2}, \/  float $\ast$ {\em detector\_\-dose\_\-Gy}, \/  float $\ast$ {\em detector\_\-dose\_\-noNuc\_\-Gy}, \/  float $\ast$ {\em geom\_\-factor})}}
+\label{d9/dea/SGP__Transport_8c_22004f9c0c7521e5bfa33199a6c14a40}
+
+
+
+
+Definition at line 159 of file SGP\_\-Transport.c.
+
+References g\_\-cm3\_\-to\_\-kg\_\-m3, m\_\-to\_\-cm, MeV\_\-to\_\-J, SGP\_\-Bohr\_\-Energy\_\-Straggling\_\-g\_\-cm2(), SGP\_\-Dose\_\-Gy(), SGP\_\-Funs(), and SGP\_\-getMaterialData().\hypertarget{SGP__Transport_8c_e1251b406df2644cbc312e5b6a9cd8f1}{
+\index{SGP\_\-Transport.c@{SGP\_\-Transport.c}!SGP\_\-BortfeldTransportProtonL@{SGP\_\-BortfeldTransportProtonL}}
+\index{SGP\_\-BortfeldTransportProtonL@{SGP\_\-BortfeldTransportProtonL}!SGP_Transport.c@{SGP\_\-Transport.c}}
+\subsubsection[SGP\_\-BortfeldTransportProtonL]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-BortfeldTransportProtonL (float $\ast$ {\em E\_\-initial\_\-MeV}, \/  float $\ast$ {\em sE\_\-initial\_\-MeV}, \/  float $\ast$ {\em fluence\_\-initial\_\-cm2}, \/  char $\ast$ {\em plateau\_\-dose\_\-material\_\-name}, \/  long $\ast$ {\em n\_\-shielding\_\-slabs}, \/  float $\ast$ {\em shielding\_\-thickness\_\-m}, \/  char $\ast$ {\em shielding\_\-material\_\-nameL}, \/  long $\ast$ {\em n\_\-detector\_\-slabs}, \/  float $\ast$ {\em detector\_\-thickness\_\-m}, \/  char $\ast$ {\em detector\_\-material\_\-name}, \/  float $\ast$ {\em plateau\_\-dose\_\-Gy}, \/  float $\ast$ {\em plateau\_\-dose\_\-noNuc\_\-Gy}, \/  float $\ast$ {\em detector\_\-z\_\-cm}, \/  float $\ast$ {\em detector\_\-E\_\-MeV}, \/  float $\ast$ {\em detector\_\-sE\_\-MeV}, \/  float $\ast$ {\em detector\_\-fluence\_\-cm2}, \/  float $\ast$ {\em detector\_\-dfluencedz\_\-cm}, \/  float $\ast$ {\em detector\_\-LET\_\-MeV\_\-g\_\-cm2}, \/  float $\ast$ {\em detector\_\-dose\_\-Gy}, \/  float $\ast$ {\em detector\_\-dose\_\-noNuc\_\-Gy}, \/  float $\ast$ {\em geom\_\-factor})}}
+\label{d9/dea/SGP__Transport_8c_e1251b406df2644cbc312e5b6a9cd8f1}
+
+
+
+
+Definition at line 18 of file SGP\_\-Transport.c.
+
+References SGP\_\-BortfeldTransportProton().\hypertarget{SGP__Transport_8c_cdb7f27ff07d450cdac7ba899a15ed0d}{
+\index{SGP\_\-Transport.c@{SGP\_\-Transport.c}!SGP\_\-BortfeldTransportProtonS@{SGP\_\-BortfeldTransportProtonS}}
+\index{SGP\_\-BortfeldTransportProtonS@{SGP\_\-BortfeldTransportProtonS}!SGP_Transport.c@{SGP\_\-Transport.c}}
+\subsubsection[SGP\_\-BortfeldTransportProtonS]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-BortfeldTransportProtonS (float $\ast$ {\em E\_\-initial\_\-MeV}, \/  float $\ast$ {\em sE\_\-initial\_\-MeV}, \/  float $\ast$ {\em fluence\_\-initial\_\-cm2}, \/  char $\ast$$\ast$ {\em plateau\_\-dose\_\-material\_\-name}, \/  long $\ast$ {\em n\_\-shielding\_\-slabs}, \/  float $\ast$ {\em shielding\_\-thickness\_\-m}, \/  char $\ast$$\ast$ {\em shielding\_\-material\_\-name}, \/  long $\ast$ {\em n\_\-detector\_\-slabs}, \/  float $\ast$ {\em detector\_\-thickness\_\-m}, \/  char $\ast$$\ast$ {\em detector\_\-material\_\-name}, \/  float $\ast$ {\em plateau\_\-dose\_\-Gy}, \/  float $\ast$ {\em plateau\_\-dose\_\-noNuc\_\-Gy}, \/  float $\ast$ {\em detector\_\-z\_\-cm}, \/  float $\ast$ {\em detector\_\-E\_\-MeV}, \/  float $\ast$ {\em detector\_\-sE\_\-MeV}, \/  float $\ast$ {\em detector\_\-fluence\_\-cm2}, \/  float $\ast$ {\em detector\_\-dfluencedz\_\-cm}, \/  float $\ast$ {\em detector\_\-LET\_\-MeV\_\-g\_\-cm2}, \/  float $\ast$ {\em detector\_\-dose\_\-Gy}, \/  float $\ast$ {\em detector\_\-dose\_\-noNuc\_\-Gy}, \/  float $\ast$ {\em geom\_\-factor})}}
+\label{d9/dea/SGP__Transport_8c_cdb7f27ff07d450cdac7ba899a15ed0d}
+
+
+
+
+Definition at line 94 of file SGP\_\-Transport.c.
+
+References SGP\_\-BortfeldTransportProton().\hypertarget{SGP__Transport_8c_5edb099f2bd7928ae6443824c9c25469}{
+\index{SGP\_\-Transport.c@{SGP\_\-Transport.c}!SGP\_\-Dose\_\-Gy@{SGP\_\-Dose\_\-Gy}}
+\index{SGP\_\-Dose\_\-Gy@{SGP\_\-Dose\_\-Gy}!SGP_Transport.c@{SGP\_\-Transport.c}}
+\subsubsection[SGP\_\-Dose\_\-Gy]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-Dose\_\-Gy (float $\ast$ {\em density\_\-g\_\-cm3}, \/  float $\ast$ {\em fluence\_\-cm2}, \/  float $\ast$ {\em LET\_\-MeV\_\-g\_\-cm2}, \/  float $\ast$ {\em dfluencedz\_\-cm}, \/  float $\ast$ {\em E\_\-MeV}, \/  float $\ast$ {\em dose\_\-Gy}, \/  float $\ast$ {\em dose\_\-noNuc\_\-Gy})}}
+\label{d9/dea/SGP__Transport_8c_5edb099f2bd7928ae6443824c9c25469}
+
+
+
+
+Definition at line 143 of file SGP\_\-Transport.c.
+
+References g\_\-cm3\_\-to\_\-kg\_\-m3, and MeV\_\-to\_\-J.

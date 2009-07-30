@@ -1,0 +1,48 @@
+\hypertarget{SGParticle_8h}{
+\section{SGParticle.h File Reference}
+\label{d1/dd5/SGParticle_8h}\index{SGParticle.h@{SGParticle.h}}
+}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \hyperlink{SGParticle_8h_5fc2b081664ab68200ae7dab2c24a500}{SGP\_\-efficiency} (long $\ast$n, float $\ast$E\_\-MeV\_\-u, long $\ast$particle\_\-no, float $\ast$fluence\_\-cm2, long $\ast$\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{material\_\-no}, long $\ast$RDD\_\-model, float $\ast$RDD\_\-parameters, long $\ast$ER\_\-model, float $\ast$ER\_\-parameters, long $\ast$gamma\_\-model, float $\ast$gamma\_\-parameters, long $\ast$N2=10, float $\ast$fluence\_\-factor=1.0f, int $\ast$write\_\-output=true, int $\ast$shrink\_\-tails=true, float $\ast$shrink\_\-tails\_\-under=1e-30f, int $\ast$adjust\_\-N2=true, float $\ast$results)
+\item 
+void \hyperlink{SGParticle_8h_c5a105efc06356e8753bd5dffa15d013}{SGP\_\-efficiency\_\-grid} (long $\ast$n, float $\ast$E\_\-MeV\_\-u, long $\ast$particle\_\-no, float $\ast$fluence\_\-cm2, long $\ast$\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{material\_\-no}, long $\ast$RDD\_\-model, float $\ast$RDD\_\-parameters, long $\ast$ER\_\-model, float $\ast$ER\_\-parameters, long $\ast$gamma\_\-model, float $\ast$gamma\_\-parameters, long $\ast$N\_\-runs, float $\ast$fluence\_\-factor, bool $\ast$write\_\-output, long $\ast$nX, float $\ast$grid\_\-size\_\-m, float $\ast$results)
+\item 
+void \hyperlink{SGParticle_8h_75c3e83188b57266eb149e6002ee09aa}{SGP\_\-efficiency\_\-Katz} (long $\ast$n, float $\ast$E\_\-MeV\_\-u, long $\ast$particle\_\-no, float $\ast$fluence\_\-cm2, long $\ast$\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{material\_\-no}, long $\ast$RDD\_\-model, float $\ast$RDD\_\-parameters, long $\ast$ER\_\-model, float $\ast$ER\_\-parameters, long $\ast$gamma\_\-model, float $\ast$gamma\_\-parameters, float $\ast$results)
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{SGParticle_8h_5fc2b081664ab68200ae7dab2c24a500}{
+\index{SGParticle.h@{SGParticle.h}!SGP\_\-efficiency@{SGP\_\-efficiency}}
+\index{SGP\_\-efficiency@{SGP\_\-efficiency}!SGParticle.h@{SGParticle.h}}
+\subsubsection[SGP\_\-efficiency]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-efficiency (long $\ast$ {\em n}, \/  float $\ast$ {\em E\_\-MeV\_\-u}, \/  long $\ast$ {\em particle\_\-no}, \/  float $\ast$ {\em fluence\_\-cm2}, \/  long $\ast$ {\em material\_\-no}, \/  long $\ast$ {\em RDD\_\-model}, \/  float $\ast$ {\em RDD\_\-parameters}, \/  long $\ast$ {\em ER\_\-model}, \/  float $\ast$ {\em ER\_\-parameters}, \/  long $\ast$ {\em gamma\_\-model}, \/  float $\ast$ {\em gamma\_\-parameters}, \/  long $\ast$ {\em N2} = {\tt 10}, \/  float $\ast$ {\em fluence\_\-factor} = {\tt 1.0f}, \/  int $\ast$ {\em write\_\-output} = {\tt true}, \/  int $\ast$ {\em shrink\_\-tails} = {\tt true}, \/  float $\ast$ {\em shrink\_\-tails\_\-under} = {\tt 1e-30f}, \/  int $\ast$ {\em adjust\_\-N2} = {\tt true}, \/  float $\ast$ {\em results})}}
+\label{d1/dd5/SGParticle_8h_5fc2b081664ab68200ae7dab2c24a500}
+
+
+
+
+Definition at line 24 of file SGParticle.c.
+
+References SGP\_\-get\_\-gamma\_\-response(), SGP\_\-SC\_\-get\_\-f1(), SGP\_\-SC\_\-get\_\-f1\_\-array\_\-size(), SGP\_\-SC\_\-get\_\-f\_\-array\_\-size(), SGP\_\-SC\_\-get\_\-f\_\-start(), and SGP\_\-SuccessiveConvolutions().\hypertarget{SGParticle_8h_c5a105efc06356e8753bd5dffa15d013}{
+\index{SGParticle.h@{SGParticle.h}!SGP\_\-efficiency\_\-grid@{SGP\_\-efficiency\_\-grid}}
+\index{SGP\_\-efficiency\_\-grid@{SGP\_\-efficiency\_\-grid}!SGParticle.h@{SGParticle.h}}
+\subsubsection[SGP\_\-efficiency\_\-grid]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-efficiency\_\-grid (long $\ast$ {\em n}, \/  float $\ast$ {\em E\_\-MeV\_\-u}, \/  long $\ast$ {\em particle\_\-no}, \/  float $\ast$ {\em fluence\_\-cm2}, \/  long $\ast$ {\em material\_\-no}, \/  long $\ast$ {\em RDD\_\-model}, \/  float $\ast$ {\em RDD\_\-parameters}, \/  long $\ast$ {\em ER\_\-model}, \/  float $\ast$ {\em ER\_\-parameters}, \/  long $\ast$ {\em gamma\_\-model}, \/  float $\ast$ {\em gamma\_\-parameters}, \/  long $\ast$ {\em N\_\-runs}, \/  float $\ast$ {\em fluence\_\-factor}, \/  bool $\ast$ {\em write\_\-output}, \/  long $\ast$ {\em nX}, \/  float $\ast$ {\em grid\_\-size\_\-m}, \/  float $\ast$ {\em results})}}
+\label{d1/dd5/SGParticle_8h_c5a105efc06356e8753bd5dffa15d013}
+
+
+
+
+Definition at line 246 of file SGParticle.c.
+
+References FMAX, SGP\_\-D\_\-RDD\_\-Gy(), SGP\_\-gamma\_\-response(), SGP\_\-RDD\_\-f1\_\-parameters(), and SGP\_\-SC\_\-get\_\-f1().\hypertarget{SGParticle_8h_75c3e83188b57266eb149e6002ee09aa}{
+\index{SGParticle.h@{SGParticle.h}!SGP\_\-efficiency\_\-Katz@{SGP\_\-efficiency\_\-Katz}}
+\index{SGP\_\-efficiency\_\-Katz@{SGP\_\-efficiency\_\-Katz}!SGParticle.h@{SGParticle.h}}
+\subsubsection[SGP\_\-efficiency\_\-Katz]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-efficiency\_\-Katz (long $\ast$ {\em n}, \/  float $\ast$ {\em E\_\-MeV\_\-u}, \/  long $\ast$ {\em particle\_\-no}, \/  float $\ast$ {\em fluence\_\-cm2}, \/  long $\ast$ {\em material\_\-no}, \/  long $\ast$ {\em RDD\_\-model}, \/  float $\ast$ {\em RDD\_\-parameters}, \/  long $\ast$ {\em ER\_\-model}, \/  float $\ast$ {\em ER\_\-parameters}, \/  long $\ast$ {\em gamma\_\-model}, \/  float $\ast$ {\em gamma\_\-parameters}, \/  float $\ast$ {\em results})}}
+\label{d1/dd5/SGParticle_8h_75c3e83188b57266eb149e6002ee09aa}
+
+
+
+
+Definition at line 616 of file SGParticle.c.

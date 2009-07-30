@@ -1,0 +1,304 @@
+\hypertarget{SGP__RDD_8c}{
+\section{SGP\_\-RDD.c File Reference}
+\label{d9/d16/SGP__RDD_8c}\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}}
+}
+{\tt \#include \char`\"{}SGP\_\-RDD.h\char`\"{}}\par
+{\tt \#include \char`\"{}SGP\_\-Constants.h\char`\"{}}\par
+{\tt \#include \char`\"{}SGP\_\-Data.h\char`\"{}}\par
+{\tt \#include \char`\"{}SGP\_\-Utils.h\char`\"{}}\par
+{\tt \#include \char`\"{}SGP\_\-Functions.h\char`\"{}}\par
+{\tt \#include $<$gsl/gsl\_\-integration.h$>$}\par
+{\tt \#include $<$gsl/gsl\_\-complex.h$>$}\par
+{\tt \#include $<$gsl/gsl\_\-sf\_\-exp.h$>$}\par
+{\tt \#include $<$gsl/gsl\_\-sf\_\-log.h$>$}\par
+{\tt \#include $<$gsl/gsl\_\-complex\_\-math.h$>$}\par
+{\tt \#include $<$gsl/gsl\_\-const\_\-mksa.h$>$}\par
+{\tt \#include $<$gsl/gsl\_\-const\_\-num.h$>$}\par
+{\tt \#include $<$gsl/gsl\_\-math.h$>$}\par
+{\tt \#include $<$gsl/gsl\_\-errno.h$>$}\par
+{\tt \#include $<$gsl/gsl\_\-roots.h$>$}\par
+{\tt \#include $<$gsl/gsl\_\-sf\_\-hyperg.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \hyperlink{structSGP__D__RDD__Gy__parameters}{SGP\_\-D\_\-RDD\_\-Gy\_\-parameters}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+float \hyperlink{SGP__RDD_8c_53014b7be95df97fdf8026b2b474dbbc}{SGP\_\-RDD\_\-Katz\_\-point\_\-kernel} (float $\ast$x, float $\ast$alpha)
+\item 
+void \hyperlink{SGP__RDD_8c_514851eaf3144b92ee6b04cab5ef967f}{SGP\_\-RDD\_\-Katz\_\-point\_\-kernelS} (int $\ast$n, float $\ast$x, float $\ast$alpha, float $\ast$f)
+\item 
+float \hyperlink{SGP__RDD_8c_f0f94cded0fbe1454213dd7a96bd468d}{SGP\_\-RDD\_\-Katz\_\-point\_\-coeff\_\-Gy} (float $\ast$C\_\-J\_\-m, float $\ast$Z\_\-eff, float $\ast$beta, float $\ast$alpha, float $\ast$density\_\-kg\_\-m3, float $\ast$r\_\-max\_\-m)
+\item 
+float \hyperlink{SGP__RDD_8c_0339c4c1c63b85a1bf737757831be13f}{SGP\_\-RDD\_\-Katz\_\-point\_\-Gy} (float $\ast$r\_\-m, float $\ast$alpha, float $\ast$r\_\-max\_\-m, float $\ast$Katz\_\-point\_\-coeff\_\-Gy)
+\item 
+void \hyperlink{SGP__RDD_8c_dd217805817f7dbe6ac5ab90f39d93ef}{SGP\_\-RDD\_\-Katz\_\-point\_\-GyS} (int $\ast$n, float $\ast$r\_\-m, float $\ast$alpha, float $\ast$r\_\-max\_\-m, float $\ast$Katz\_\-point\_\-coeff\_\-Gy, float $\ast$D)
+\item 
+float \hyperlink{SGP__RDD_8c_4f225e3f2a73cd3caf6a7393452ee860}{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernel} (float $\ast$x, float $\ast$alpha)
+\item 
+void \hyperlink{SGP__RDD_8c_c78fb6e761d78dd64c18268d10d22217}{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernelS} (int $\ast$n, float $\ast$x, float $\ast$alpha, float $\ast$f)
+\item 
+double \hyperlink{SGP__RDD_8c_4a009129a70b7b0c5427ad5c4dee486b}{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-integrand} (double x, void $\ast$params)
+\item 
+float \hyperlink{SGP__RDD_8c_b90d176f85a8a761e5f2b301b2dab6d4}{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-coeff\_\-J\_\-m} (float $\ast$r\_\-max\_\-m, float $\ast$density\_\-kg\_\-m3, float $\ast$Katz\_\-point\_\-coeff\_\-Gy)
+\item 
+float \hyperlink{SGP__RDD_8c_ba888af38b3d2c6e5c9be89268c208a0}{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-J\_\-m} (float $\ast$alpha, float $\ast$r\_\-min\_\-m, float $\ast$r\_\-max\_\-m, float $\ast$Katz\_\-dEdx\_\-coeff\_\-J\_\-m)
+\item 
+float \hyperlink{SGP__RDD_8c_c6efa6dcb9bc20d0f5b5225919ef0b93}{SGP\_\-RDD\_\-Katz\_\-site\_\-Gy} (float $\ast$r\_\-m, float $\ast$alpha, float $\ast$r\_\-min\_\-m, float $\ast$r\_\-max\_\-m, float $\ast$LET\_\-J\_\-m, float $\ast$density\_\-kg\_\-m3, float $\ast$Katz\_\-dEdx\_\-J\_\-m, float $\ast$Katz\_\-point\_\-coeff\_\-Gy)
+\item 
+void \hyperlink{SGP__RDD_8c_9e3529e97aeb2dc2927dc8fd92f268fd}{SGP\_\-RDD\_\-Katz\_\-site\_\-GyS} (int $\ast$n, float $\ast$r\_\-m, float $\ast$alpha, float $\ast$r\_\-min\_\-m, float $\ast$r\_\-max\_\-m, float $\ast$LET\_\-J\_\-m, float $\ast$density\_\-kg\_\-m3, float $\ast$Katz\_\-dEdx\_\-J\_\-m, float $\ast$Katz\_\-point\_\-coeff\_\-Gy, float $\ast$D\_\-Gy)
+\item 
+float \hyperlink{SGP__RDD_8c_7c67a9797db01b2c4e6d86ef343fa10c}{geometryFunctionPhi} (float $\ast$r0\_\-m, float $\ast$a0\_\-m, float $\ast$r\_\-m)
+\item 
+float \hyperlink{SGP__RDD_8c_4fde309f266a20c7e40a9e8b18d9340d}{SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-Gy} (float $\ast$t\_\-m, float $\ast$r\_\-m, float $\ast$a0\_\-m, float $\ast$alpha, float $\ast$r\_\-min\_\-m, float $\ast$r\_\-max\_\-m, float $\ast$Katz\_\-point\_\-coeff\_\-Gy)
+\item 
+void \hyperlink{SGP__RDD_8c_15100c3cbb4c5693292ce46206fedaeb}{SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-GyS} (int $\ast$n, float $\ast$t\_\-m, float $\ast$r\_\-m, float $\ast$a0\_\-m, float $\ast$alpha, float $\ast$r\_\-min\_\-m, float $\ast$r\_\-max\_\-m, float $\ast$Katz\_\-point\_\-coeff\_\-Gy, float $\ast$D\_\-Gy)
+\item 
+double \hyperlink{SGP__RDD_8c_e0b98d1f7e0097b0ae02f9c23f42fd66}{SGP\_\-RDD\_\-Katz\_\-ext\_\-integrand\_\-Gy} (double t\_\-m, void $\ast$params)
+\item 
+float \hyperlink{SGP__RDD_8c_f516f38fd63fa7f9a12eda52c4d1610e}{SGP\_\-RDD\_\-Katz\_\-ext\_\-Gy} (float $\ast$r\_\-m, float $\ast$a0\_\-m, float $\ast$alpha, float $\ast$r\_\-min\_\-m, float $\ast$r\_\-max\_\-m, float $\ast$Katz\_\-point\_\-coeff\_\-Gy)
+\item 
+void \hyperlink{SGP__RDD_8c_40798efe64194649884fbbbc99cfb5bb}{SGP\_\-RDD\_\-Katz\_\-ext\_\-GyS} (int $\ast$n, float $\ast$r\_\-m, float $\ast$a0\_\-m, float $\ast$alpha, float $\ast$r\_\-min\_\-m, float $\ast$r\_\-max\_\-m, float $\ast$Katz\_\-point\_\-coeff\_\-Gy, float $\ast$D\_\-Gy)
+\item 
+void \hyperlink{SGP__RDD_8c_787e26beb8146d2ad8c58a7c4b2656aa}{SGP\_\-RDD\_\-f1\_\-parameters} (float $\ast$E\_\-MeV\_\-u, long $\ast$particle\_\-no, long $\ast$\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{material\_\-no}, long $\ast$rdd\_\-model, float $\ast$rdd\_\-parameter, long $\ast$er\_\-model, float $\ast$er\_\-parameter, float $\ast$f1\_\-parameters)
+\item 
+void \hyperlink{SGP__RDD_8c_3f17b5dd45a2a8161953aad2fecb4f02}{SGP\_\-D\_\-RDD\_\-Gy} (long $\ast$n, float $\ast$r\_\-m, float $\ast$E\_\-MeV\_\-u, long $\ast$particle\_\-no, long $\ast$\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{material\_\-no}, long $\ast$rdd\_\-model, float $\ast$rdd\_\-parameter, long $\ast$er\_\-model, float $\ast$er\_\-parameter, float $\ast$D\_\-RDD\_\-Gy)
+\item 
+float \hyperlink{SGP__RDD_8c_253941335673ffdfe4d45dc50563dc34}{SGP\_\-D\_\-RDD\_\-Gy\_\-solver} (float r, void $\ast$params)
+\item 
+void \hyperlink{SGP__RDD_8c_e05a5903696932dbcc3e2f1e735a957f}{SGP\_\-r\_\-RDD\_\-m} (long $\ast$n, float $\ast$D\_\-RDD\_\-Gy, float $\ast$E\_\-MeV\_\-u, long $\ast$particle\_\-no, long $\ast$\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{material\_\-no}, long $\ast$rdd\_\-model, float $\ast$rdd\_\-parameter, long $\ast$er\_\-model, float $\ast$er\_\-parameter, float $\ast$r\_\-RDD\_\-m)
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{SGP__RDD_8c_7c67a9797db01b2c4e6d86ef343fa10c}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!geometryFunctionPhi@{geometryFunctionPhi}}
+\index{geometryFunctionPhi@{geometryFunctionPhi}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[geometryFunctionPhi]{\setlength{\rightskip}{0pt plus 5cm}float geometryFunctionPhi (float $\ast$ {\em r0\_\-m}, \/  float $\ast$ {\em a0\_\-m}, \/  float $\ast$ {\em r\_\-m})}}
+\label{d9/d16/SGP__RDD_8c_7c67a9797db01b2c4e6d86ef343fa10c}
+
+
+
+
+Definition at line 105 of file SGP\_\-RDD.c.\hypertarget{SGP__RDD_8c_3f17b5dd45a2a8161953aad2fecb4f02}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-D\_\-RDD\_\-Gy@{SGP\_\-D\_\-RDD\_\-Gy}}
+\index{SGP\_\-D\_\-RDD\_\-Gy@{SGP\_\-D\_\-RDD\_\-Gy}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-D\_\-RDD\_\-Gy]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-D\_\-RDD\_\-Gy (long $\ast$ {\em n}, \/  float $\ast$ {\em r\_\-m}, \/  float $\ast$ {\em E\_\-MeV\_\-u}, \/  long $\ast$ {\em particle\_\-no}, \/  long $\ast$ {\em material\_\-no}, \/  long $\ast$ {\em rdd\_\-model}, \/  float $\ast$ {\em rdd\_\-parameter}, \/  long $\ast$ {\em er\_\-model}, \/  float $\ast$ {\em er\_\-parameter}, \/  float $\ast$ {\em D\_\-RDD\_\-Gy})}}
+\label{d9/d16/SGP__RDD_8c_3f17b5dd45a2a8161953aad2fecb4f02}
+
+
+
+
+Definition at line 412 of file SGP\_\-RDD.c.
+
+References electron\_\-mass\_\-MeV\_\-c2, FMAX, RDD\_\-ExtTarget, RDD\_\-Geiss, RDD\_\-KatzPoint, RDD\_\-Site, RDD\_\-Test, SGP\_\-beta\_\-from\_\-particle\_\-no(), SGP\_\-effective\_\-charge\_\-from\_\-beta(), SGP\_\-getMaterialData(), SGP\_\-RDD\_\-f1\_\-parameters(), SGP\_\-RDD\_\-Katz\_\-ext\_\-Gy(), SGP\_\-RDD\_\-Katz\_\-point\_\-coeff\_\-Gy(), SGP\_\-RDD\_\-Katz\_\-point\_\-Gy(), and SGP\_\-Z\_\-from\_\-particle\_\-no().\hypertarget{SGP__RDD_8c_253941335673ffdfe4d45dc50563dc34}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-D\_\-RDD\_\-Gy\_\-solver@{SGP\_\-D\_\-RDD\_\-Gy\_\-solver}}
+\index{SGP\_\-D\_\-RDD\_\-Gy\_\-solver@{SGP\_\-D\_\-RDD\_\-Gy\_\-solver}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-D\_\-RDD\_\-Gy\_\-solver]{\setlength{\rightskip}{0pt plus 5cm}float SGP\_\-D\_\-RDD\_\-Gy\_\-solver (float {\em r}, \/  void $\ast$ {\em params})}}
+\label{d9/d16/SGP__RDD_8c_253941335673ffdfe4d45dc50563dc34}
+
+
+
+
+Definition at line 590 of file SGP\_\-RDD.c.\hypertarget{SGP__RDD_8c_e05a5903696932dbcc3e2f1e735a957f}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-r\_\-RDD\_\-m@{SGP\_\-r\_\-RDD\_\-m}}
+\index{SGP\_\-r\_\-RDD\_\-m@{SGP\_\-r\_\-RDD\_\-m}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-r\_\-RDD\_\-m]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-r\_\-RDD\_\-m (long $\ast$ {\em n}, \/  float $\ast$ {\em D\_\-RDD\_\-Gy}, \/  float $\ast$ {\em E\_\-MeV\_\-u}, \/  long $\ast$ {\em particle\_\-no}, \/  long $\ast$ {\em material\_\-no}, \/  long $\ast$ {\em rdd\_\-model}, \/  float $\ast$ {\em rdd\_\-parameter}, \/  long $\ast$ {\em er\_\-model}, \/  float $\ast$ {\em er\_\-parameter}, \/  float $\ast$ {\em r\_\-RDD\_\-m})}}
+\label{d9/d16/SGP__RDD_8c_e05a5903696932dbcc3e2f1e735a957f}
+
+
+
+
+Definition at line 610 of file SGP\_\-RDD.c.
+
+References SGP\_\-D\_\-RDD\_\-Gy\_\-parameters::D0, SGP\_\-D\_\-RDD\_\-Gy\_\-parameters::D\_\-RDD\_\-Gy, SGP\_\-D\_\-RDD\_\-Gy\_\-parameters::E\_\-MeV\_\-u, electron\_\-mass\_\-MeV\_\-c2, SGP\_\-D\_\-RDD\_\-Gy\_\-parameters::er\_\-model, SGP\_\-D\_\-RDD\_\-Gy\_\-parameters::er\_\-parameter, FMAX, SGP\_\-D\_\-RDD\_\-Gy\_\-parameters::material\_\-no, SGP\_\-D\_\-RDD\_\-Gy\_\-parameters::n, SGP\_\-D\_\-RDD\_\-Gy\_\-parameters::particle\_\-no, RDD\_\-ExtTarget, RDD\_\-Geiss, RDD\_\-KatzPoint, SGP\_\-D\_\-RDD\_\-Gy\_\-parameters::rdd\_\-model, SGP\_\-D\_\-RDD\_\-Gy\_\-parameters::rdd\_\-parameter, RDD\_\-Site, RDD\_\-Test, SGP\_\-beta\_\-from\_\-particle\_\-no(), SGP\_\-D\_\-RDD\_\-Gy(), SGP\_\-D\_\-RDD\_\-Gy\_\-solver(), SGP\_\-effective\_\-charge\_\-from\_\-beta(), SGP\_\-getMaterialData(), SGP\_\-RDD\_\-f1\_\-parameters(), SGP\_\-RDD\_\-Katz\_\-point\_\-coeff\_\-Gy(), SGP\_\-Z\_\-from\_\-particle\_\-no(), and zriddr().\hypertarget{SGP__RDD_8c_787e26beb8146d2ad8c58a7c4b2656aa}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-f1\_\-parameters@{SGP\_\-RDD\_\-f1\_\-parameters}}
+\index{SGP\_\-RDD\_\-f1\_\-parameters@{SGP\_\-RDD\_\-f1\_\-parameters}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-f1\_\-parameters]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-RDD\_\-f1\_\-parameters (float $\ast$ {\em E\_\-MeV\_\-u}, \/  long $\ast$ {\em particle\_\-no}, \/  long $\ast$ {\em material\_\-no}, \/  long $\ast$ {\em rdd\_\-model}, \/  float $\ast$ {\em rdd\_\-parameter}, \/  long $\ast$ {\em er\_\-model}, \/  float $\ast$ {\em er\_\-parameter}, \/  float $\ast$ {\em f1\_\-parameters})}}
+\label{d9/d16/SGP__RDD_8c_787e26beb8146d2ad8c58a7c4b2656aa}
+
+
+
+
+Definition at line 232 of file SGP\_\-RDD.c.
+
+References c\_\-cm\_\-s, e\_\-esu, electron\_\-mass\_\-g, electron\_\-mass\_\-MeV\_\-c2, m\_\-to\_\-cm, MeV\_\-g\_\-to\_\-J\_\-kg, MeV\_\-to\_\-J, pi, RDD\_\-ExtTarget, RDD\_\-Geiss, RDD\_\-KatzPoint, RDD\_\-Site, RDD\_\-Test, SGP\_\-beta\_\-from\_\-particle\_\-no(), SGP\_\-effective\_\-charge\_\-from\_\-beta(), SGP\_\-getMaterialData(), SGP\_\-LET\_\-MeV\_\-cm2\_\-g(), SGP\_\-max\_\-electron\_\-range\_\-m(), SGP\_\-RDD\_\-Katz\_\-dEdx\_\-coeff\_\-J\_\-m(), SGP\_\-RDD\_\-Katz\_\-dEdx\_\-J\_\-m(), SGP\_\-RDD\_\-Katz\_\-ext\_\-Gy(), SGP\_\-RDD\_\-Katz\_\-point\_\-coeff\_\-Gy(), SGP\_\-RDD\_\-Katz\_\-point\_\-Gy(), SGP\_\-RDD\_\-Katz\_\-site\_\-Gy(), and SGP\_\-Z\_\-from\_\-particle\_\-no().\hypertarget{SGP__RDD_8c_b90d176f85a8a761e5f2b301b2dab6d4}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-dEdx\_\-coeff\_\-J\_\-m@{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-coeff\_\-J\_\-m}}
+\index{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-coeff\_\-J\_\-m@{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-coeff\_\-J\_\-m}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-dEdx\_\-coeff\_\-J\_\-m]{\setlength{\rightskip}{0pt plus 5cm}float SGP\_\-RDD\_\-Katz\_\-dEdx\_\-coeff\_\-J\_\-m (float $\ast$ {\em r\_\-max\_\-m}, \/  float $\ast$ {\em density\_\-kg\_\-m3}, \/  float $\ast$ {\em Katz\_\-point\_\-coeff\_\-Gy})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{d9/d16/SGP__RDD_8c_b90d176f85a8a761e5f2b301b2dab6d4}
+
+
+
+
+Definition at line 71 of file SGP\_\-RDD.c.\hypertarget{SGP__RDD_8c_4a009129a70b7b0c5427ad5c4dee486b}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-dEdx\_\-integrand@{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-integrand}}
+\index{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-integrand@{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-integrand}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-dEdx\_\-integrand]{\setlength{\rightskip}{0pt plus 5cm}double SGP\_\-RDD\_\-Katz\_\-dEdx\_\-integrand (double {\em x}, \/  void $\ast$ {\em params})}}
+\label{d9/d16/SGP__RDD_8c_4a009129a70b7b0c5427ad5c4dee486b}
+
+
+
+
+Definition at line 65 of file SGP\_\-RDD.c.
+
+References SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernel().\hypertarget{SGP__RDD_8c_ba888af38b3d2c6e5c9be89268c208a0}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-dEdx\_\-J\_\-m@{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-J\_\-m}}
+\index{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-J\_\-m@{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-J\_\-m}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-dEdx\_\-J\_\-m]{\setlength{\rightskip}{0pt plus 5cm}float SGP\_\-RDD\_\-Katz\_\-dEdx\_\-J\_\-m (float $\ast$ {\em alpha}, \/  float $\ast$ {\em r\_\-min\_\-m}, \/  float $\ast$ {\em r\_\-max\_\-m}, \/  float $\ast$ {\em Katz\_\-dEdx\_\-coeff\_\-J\_\-m})}}
+\label{d9/d16/SGP__RDD_8c_ba888af38b3d2c6e5c9be89268c208a0}
+
+
+
+
+Definition at line 75 of file SGP\_\-RDD.c.\hypertarget{SGP__RDD_8c_4f225e3f2a73cd3caf6a7393452ee860}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernel@{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernel}}
+\index{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernel@{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernel}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernel]{\setlength{\rightskip}{0pt plus 5cm}float SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernel (float $\ast$ {\em x}, \/  float $\ast$ {\em alpha})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{d9/d16/SGP__RDD_8c_4f225e3f2a73cd3caf6a7393452ee860}
+
+
+
+
+Definition at line 54 of file SGP\_\-RDD.c.\hypertarget{SGP__RDD_8c_c78fb6e761d78dd64c18268d10d22217}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernelS@{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernelS}}
+\index{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernelS@{SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernelS}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernelS]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernelS (int $\ast$ {\em n}, \/  float $\ast$ {\em x}, \/  float $\ast$ {\em alpha}, \/  float $\ast$ {\em f})}}
+\label{d9/d16/SGP__RDD_8c_c78fb6e761d78dd64c18268d10d22217}
+
+
+
+
+Definition at line 58 of file SGP\_\-RDD.c.
+
+References SGP\_\-RDD\_\-Katz\_\-dEdx\_\-kernel().\hypertarget{SGP__RDD_8c_f516f38fd63fa7f9a12eda52c4d1610e}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-ext\_\-Gy@{SGP\_\-RDD\_\-Katz\_\-ext\_\-Gy}}
+\index{SGP\_\-RDD\_\-Katz\_\-ext\_\-Gy@{SGP\_\-RDD\_\-Katz\_\-ext\_\-Gy}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-ext\_\-Gy]{\setlength{\rightskip}{0pt plus 5cm}float SGP\_\-RDD\_\-Katz\_\-ext\_\-Gy (float $\ast$ {\em r\_\-m}, \/  float $\ast$ {\em a0\_\-m}, \/  float $\ast$ {\em alpha}, \/  float $\ast$ {\em r\_\-min\_\-m}, \/  float $\ast$ {\em r\_\-max\_\-m}, \/  float $\ast$ {\em Katz\_\-point\_\-coeff\_\-Gy})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{d9/d16/SGP__RDD_8c_f516f38fd63fa7f9a12eda52c4d1610e}
+
+
+
+
+Definition at line 186 of file SGP\_\-RDD.c.
+
+References SGP\_\-RDD\_\-Katz\_\-ext\_\-integrand\_\-Gy().\hypertarget{SGP__RDD_8c_40798efe64194649884fbbbc99cfb5bb}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-ext\_\-GyS@{SGP\_\-RDD\_\-Katz\_\-ext\_\-GyS}}
+\index{SGP\_\-RDD\_\-Katz\_\-ext\_\-GyS@{SGP\_\-RDD\_\-Katz\_\-ext\_\-GyS}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-ext\_\-GyS]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-RDD\_\-Katz\_\-ext\_\-GyS (int $\ast$ {\em n}, \/  float $\ast$ {\em r\_\-m}, \/  float $\ast$ {\em a0\_\-m}, \/  float $\ast$ {\em alpha}, \/  float $\ast$ {\em r\_\-min\_\-m}, \/  float $\ast$ {\em r\_\-max\_\-m}, \/  float $\ast$ {\em Katz\_\-point\_\-coeff\_\-Gy}, \/  float $\ast$ {\em D\_\-Gy})}}
+\label{d9/d16/SGP__RDD_8c_40798efe64194649884fbbbc99cfb5bb}
+
+
+
+
+Definition at line 214 of file SGP\_\-RDD.c.
+
+References SGP\_\-RDD\_\-Katz\_\-ext\_\-Gy().\hypertarget{SGP__RDD_8c_e0b98d1f7e0097b0ae02f9c23f42fd66}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-ext\_\-integrand\_\-Gy@{SGP\_\-RDD\_\-Katz\_\-ext\_\-integrand\_\-Gy}}
+\index{SGP\_\-RDD\_\-Katz\_\-ext\_\-integrand\_\-Gy@{SGP\_\-RDD\_\-Katz\_\-ext\_\-integrand\_\-Gy}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-ext\_\-integrand\_\-Gy]{\setlength{\rightskip}{0pt plus 5cm}double SGP\_\-RDD\_\-Katz\_\-ext\_\-integrand\_\-Gy (double {\em t\_\-m}, \/  void $\ast$ {\em params})}}
+\label{d9/d16/SGP__RDD_8c_e0b98d1f7e0097b0ae02f9c23f42fd66}
+
+
+
+
+Definition at line 174 of file SGP\_\-RDD.c.
+
+References SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-Gy().\hypertarget{SGP__RDD_8c_4fde309f266a20c7e40a9e8b18d9340d}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-Gy@{SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-Gy}}
+\index{SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-Gy@{SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-Gy}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-Gy]{\setlength{\rightskip}{0pt plus 5cm}float SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-Gy (float $\ast$ {\em t\_\-m}, \/  float $\ast$ {\em r\_\-m}, \/  float $\ast$ {\em a0\_\-m}, \/  float $\ast$ {\em alpha}, \/  float $\ast$ {\em r\_\-min\_\-m}, \/  float $\ast$ {\em r\_\-max\_\-m}, \/  float $\ast$ {\em Katz\_\-point\_\-coeff\_\-Gy})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{d9/d16/SGP__RDD_8c_4fde309f266a20c7e40a9e8b18d9340d}
+
+
+
+
+Definition at line 144 of file SGP\_\-RDD.c.
+
+References geometryFunctionPhi(), and SGP\_\-RDD\_\-Katz\_\-point\_\-Gy().\hypertarget{SGP__RDD_8c_15100c3cbb4c5693292ce46206fedaeb}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-GyS@{SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-GyS}}
+\index{SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-GyS@{SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-GyS}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-GyS]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-GyS (int $\ast$ {\em n}, \/  float $\ast$ {\em t\_\-m}, \/  float $\ast$ {\em r\_\-m}, \/  float $\ast$ {\em a0\_\-m}, \/  float $\ast$ {\em alpha}, \/  float $\ast$ {\em r\_\-min\_\-m}, \/  float $\ast$ {\em r\_\-max\_\-m}, \/  float $\ast$ {\em Katz\_\-point\_\-coeff\_\-Gy}, \/  float $\ast$ {\em D\_\-Gy})}}
+\label{d9/d16/SGP__RDD_8c_15100c3cbb4c5693292ce46206fedaeb}
+
+
+
+
+Definition at line 162 of file SGP\_\-RDD.c.
+
+References SGP\_\-RDD\_\-Katz\_\-ext\_\-kernel\_\-Gy().\hypertarget{SGP__RDD_8c_f0f94cded0fbe1454213dd7a96bd468d}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-point\_\-coeff\_\-Gy@{SGP\_\-RDD\_\-Katz\_\-point\_\-coeff\_\-Gy}}
+\index{SGP\_\-RDD\_\-Katz\_\-point\_\-coeff\_\-Gy@{SGP\_\-RDD\_\-Katz\_\-point\_\-coeff\_\-Gy}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-point\_\-coeff\_\-Gy]{\setlength{\rightskip}{0pt plus 5cm}float SGP\_\-RDD\_\-Katz\_\-point\_\-coeff\_\-Gy (float $\ast$ {\em C\_\-J\_\-m}, \/  float $\ast$ {\em Z\_\-eff}, \/  float $\ast$ {\em beta}, \/  float $\ast$ {\em alpha}, \/  float $\ast$ {\em density\_\-kg\_\-m3}, \/  float $\ast$ {\em r\_\-max\_\-m})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{d9/d16/SGP__RDD_8c_f0f94cded0fbe1454213dd7a96bd468d}
+
+
+
+
+Definition at line 38 of file SGP\_\-RDD.c.\hypertarget{SGP__RDD_8c_0339c4c1c63b85a1bf737757831be13f}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-point\_\-Gy@{SGP\_\-RDD\_\-Katz\_\-point\_\-Gy}}
+\index{SGP\_\-RDD\_\-Katz\_\-point\_\-Gy@{SGP\_\-RDD\_\-Katz\_\-point\_\-Gy}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-point\_\-Gy]{\setlength{\rightskip}{0pt plus 5cm}float SGP\_\-RDD\_\-Katz\_\-point\_\-Gy (float $\ast$ {\em r\_\-m}, \/  float $\ast$ {\em alpha}, \/  float $\ast$ {\em r\_\-max\_\-m}, \/  float $\ast$ {\em Katz\_\-point\_\-coeff\_\-Gy})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{d9/d16/SGP__RDD_8c_0339c4c1c63b85a1bf737757831be13f}
+
+
+
+
+Definition at line 42 of file SGP\_\-RDD.c.
+
+References SGP\_\-RDD\_\-Katz\_\-point\_\-kernel().\hypertarget{SGP__RDD_8c_dd217805817f7dbe6ac5ab90f39d93ef}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-point\_\-GyS@{SGP\_\-RDD\_\-Katz\_\-point\_\-GyS}}
+\index{SGP\_\-RDD\_\-Katz\_\-point\_\-GyS@{SGP\_\-RDD\_\-Katz\_\-point\_\-GyS}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-point\_\-GyS]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-RDD\_\-Katz\_\-point\_\-GyS (int $\ast$ {\em n}, \/  float $\ast$ {\em r\_\-m}, \/  float $\ast$ {\em alpha}, \/  float $\ast$ {\em r\_\-max\_\-m}, \/  float $\ast$ {\em Katz\_\-point\_\-coeff\_\-Gy}, \/  float $\ast$ {\em D})}}
+\label{d9/d16/SGP__RDD_8c_dd217805817f7dbe6ac5ab90f39d93ef}
+
+
+
+
+Definition at line 47 of file SGP\_\-RDD.c.
+
+References SGP\_\-RDD\_\-Katz\_\-point\_\-Gy().\hypertarget{SGP__RDD_8c_53014b7be95df97fdf8026b2b474dbbc}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-point\_\-kernel@{SGP\_\-RDD\_\-Katz\_\-point\_\-kernel}}
+\index{SGP\_\-RDD\_\-Katz\_\-point\_\-kernel@{SGP\_\-RDD\_\-Katz\_\-point\_\-kernel}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-point\_\-kernel]{\setlength{\rightskip}{0pt plus 5cm}float SGP\_\-RDD\_\-Katz\_\-point\_\-kernel (float $\ast$ {\em x}, \/  float $\ast$ {\em alpha})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{d9/d16/SGP__RDD_8c_53014b7be95df97fdf8026b2b474dbbc}
+
+
+
+
+Definition at line 27 of file SGP\_\-RDD.c.\hypertarget{SGP__RDD_8c_514851eaf3144b92ee6b04cab5ef967f}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-point\_\-kernelS@{SGP\_\-RDD\_\-Katz\_\-point\_\-kernelS}}
+\index{SGP\_\-RDD\_\-Katz\_\-point\_\-kernelS@{SGP\_\-RDD\_\-Katz\_\-point\_\-kernelS}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-point\_\-kernelS]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-RDD\_\-Katz\_\-point\_\-kernelS (int $\ast$ {\em n}, \/  float $\ast$ {\em x}, \/  float $\ast$ {\em alpha}, \/  float $\ast$ {\em f})}}
+\label{d9/d16/SGP__RDD_8c_514851eaf3144b92ee6b04cab5ef967f}
+
+
+
+
+Definition at line 31 of file SGP\_\-RDD.c.
+
+References SGP\_\-RDD\_\-Katz\_\-point\_\-kernel().\hypertarget{SGP__RDD_8c_c6efa6dcb9bc20d0f5b5225919ef0b93}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-site\_\-Gy@{SGP\_\-RDD\_\-Katz\_\-site\_\-Gy}}
+\index{SGP\_\-RDD\_\-Katz\_\-site\_\-Gy@{SGP\_\-RDD\_\-Katz\_\-site\_\-Gy}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-site\_\-Gy]{\setlength{\rightskip}{0pt plus 5cm}float SGP\_\-RDD\_\-Katz\_\-site\_\-Gy (float $\ast$ {\em r\_\-m}, \/  float $\ast$ {\em alpha}, \/  float $\ast$ {\em r\_\-min\_\-m}, \/  float $\ast$ {\em r\_\-max\_\-m}, \/  float $\ast$ {\em LET\_\-J\_\-m}, \/  float $\ast$ {\em density\_\-kg\_\-m3}, \/  float $\ast$ {\em Katz\_\-dEdx\_\-J\_\-m}, \/  float $\ast$ {\em Katz\_\-point\_\-coeff\_\-Gy})\hspace{0.3cm}{\tt  \mbox{[}inline\mbox{]}}}}
+\label{d9/d16/SGP__RDD_8c_c6efa6dcb9bc20d0f5b5225919ef0b93}
+
+
+
+
+Definition at line 88 of file SGP\_\-RDD.c.
+
+References SGP\_\-RDD\_\-Katz\_\-point\_\-Gy().\hypertarget{SGP__RDD_8c_9e3529e97aeb2dc2927dc8fd92f268fd}{
+\index{SGP\_\-RDD.c@{SGP\_\-RDD.c}!SGP\_\-RDD\_\-Katz\_\-site\_\-GyS@{SGP\_\-RDD\_\-Katz\_\-site\_\-GyS}}
+\index{SGP\_\-RDD\_\-Katz\_\-site\_\-GyS@{SGP\_\-RDD\_\-Katz\_\-site\_\-GyS}!SGP_RDD.c@{SGP\_\-RDD.c}}
+\subsubsection[SGP\_\-RDD\_\-Katz\_\-site\_\-GyS]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-RDD\_\-Katz\_\-site\_\-GyS (int $\ast$ {\em n}, \/  float $\ast$ {\em r\_\-m}, \/  float $\ast$ {\em alpha}, \/  float $\ast$ {\em r\_\-min\_\-m}, \/  float $\ast$ {\em r\_\-max\_\-m}, \/  float $\ast$ {\em LET\_\-J\_\-m}, \/  float $\ast$ {\em density\_\-kg\_\-m3}, \/  float $\ast$ {\em Katz\_\-dEdx\_\-J\_\-m}, \/  float $\ast$ {\em Katz\_\-point\_\-coeff\_\-Gy}, \/  float $\ast$ {\em D\_\-Gy})}}
+\label{d9/d16/SGP__RDD_8c_9e3529e97aeb2dc2927dc8fd92f268fd}
+
+
+
+
+Definition at line 97 of file SGP\_\-RDD.c.
+
+References SGP\_\-RDD\_\-Katz\_\-site\_\-Gy().

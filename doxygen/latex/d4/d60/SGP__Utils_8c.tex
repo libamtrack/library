@@ -1,0 +1,273 @@
+\hypertarget{SGP__Utils_8c}{
+\section{SGP\_\-Utils.c File Reference}
+\label{d4/d60/SGP__Utils_8c}\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}}
+}
+{\tt \#include \char`\"{}SGP\_\-Utils.h\char`\"{}}\par
+{\tt \#include \char`\"{}SGP\_\-Data.h\char`\"{}}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$float.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$malloc.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$stdbool.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \hyperlink{SGP__Utils_8c_3641b6d4c21b7a852dbb32c2b693302e}{ITMAX}~100
+\item 
+\#define \hyperlink{SGP__Utils_8c_6ebf6899d6c1c8b7b9d09be872c05aae}{EPS}~3.0e-7
+\item 
+\#define \hyperlink{SGP__Utils_8c_54a4e9f9387854c492c138ece3fc2279}{FPMIN}~1.0e-30
+\item 
+\#define \hyperlink{SGP__Utils_8c_c89d5f8a358eb8a1abdcd0fcef134f1a}{SIGN}(a, b)~((b) $>$= 0.0 ? fabs(a) : -fabs(a))
+\item 
+\#define \hyperlink{SGP__Utils_8c_e560427a74987e946bbf68724c45d5a1}{MAXIT}~60
+\item 
+\#define \hyperlink{SGP__Utils_8c_ddf5ec070e9499d36b7f2009ce736076}{UNUSED}~(-1.11e30)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \hyperlink{SGP__Utils_8c_123433e33bf797266e3a20880891524a}{pmatchi} (long $\ast$elements, long $\ast$n\_\-elements, long $\ast$set, long $\ast$n\_\-set, long $\ast$matches)
+\item 
+void \hyperlink{SGP__Utils_8c_5e4a9110a6c7288c4d99eaa6098b004b}{pmatchc} (char $\ast$$\ast$elements, long $\ast$n\_\-elements, char $\ast$$\ast$set, long $\ast$n\_\-set, long $\ast$matches)
+\item 
+void \hyperlink{SGP__Utils_8c_398b0ec6b64d9aea3c56c6e139b27ef1}{matchc} (char $\ast$element, char $\ast$$\ast$set, long $\ast$n\_\-set, bool $\ast$matches)
+\item 
+void \hyperlink{SGP__Utils_8c_be03e2bb3811350c297bccee18d9ae7b}{matchi} (long $\ast$element, long $\ast$set, long $\ast$n\_\-set, bool $\ast$matches)
+\item 
+void \hyperlink{SGP__Utils_8c_d57b8d8abf31bd0e4c5614a88dc6d121}{locate} (float $\ast$xx, long $\ast$n, float $\ast$x, long $\ast$j)
+\item 
+void \hyperlink{SGP__Utils_8c_5c17a8e5c569dd393bc9fb7a9b4f9712}{polint} (float $\ast$xa, float $\ast$ya, long $\ast$n, float $\ast$x, float $\ast$y, float $\ast$dy)
+\item 
+void \hyperlink{SGP__Utils_8c_1fc1d7732fb0f2e234bc538f9a85e58f}{interp} (float $\ast$xa, float $\ast$ya, long $\ast$n, long $\ast$n\_\-pol, float $\ast$x, float $\ast$y, float $\ast$dy)
+\item 
+void \hyperlink{SGP__Utils_8c_2c33a9690a5fb2b0f6e09156c8920312}{getPSTARvalue} (long $\ast$n, float $\ast$x, long $\ast$\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{material\_\-no}, float $\ast$x\_\-table, float $\ast$y\_\-table, float $\ast$y)
+\item 
+float \hyperlink{SGP__Utils_8c_88d126407fa731a66103a56c1ab75ac6}{gammln} (float xx)
+\item 
+void \hyperlink{SGP__Utils_8c_07304213c55bd07a1d665a3550622723}{gcf} (float $\ast$gammcf, float a, float x, float $\ast$gln)
+\item 
+void \hyperlink{SGP__Utils_8c_41d8d8e5f732445dfbb1ca7a56ed92fa}{gser} (float $\ast$gamser, float a, float x, float $\ast$gln)
+\item 
+float \hyperlink{SGP__Utils_8c_b83e8578a3b16f085ec735b27010f09b}{gammp} (float a, float x)
+\item 
+float \hyperlink{SGP__Utils_8c_abebdd2dd548c14805831297ac129862}{erff} (float x)
+\item 
+void \hyperlink{SGP__Utils_8c_1127e9c8ab1a10a65ebd494759e8aec3}{nrerror} (char error\_\-text\mbox{[}$\,$\mbox{]})
+\item 
+float \hyperlink{SGP__Utils_8c_388211f8a9e4fc66e864b26e854abfb0}{zriddr} (float($\ast$func)(float, void $\ast$), void $\ast$params, float x1, float x2, float xacc)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\hypertarget{SGP__Utils_8c_6ebf6899d6c1c8b7b9d09be872c05aae}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!EPS@{EPS}}
+\index{EPS@{EPS}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[EPS]{\setlength{\rightskip}{0pt plus 5cm}\#define EPS~3.0e-7}}
+\label{d4/d60/SGP__Utils_8c_6ebf6899d6c1c8b7b9d09be872c05aae}
+
+
+
+
+Definition at line 248 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_54a4e9f9387854c492c138ece3fc2279}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!FPMIN@{FPMIN}}
+\index{FPMIN@{FPMIN}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[FPMIN]{\setlength{\rightskip}{0pt plus 5cm}\#define FPMIN~1.0e-30}}
+\label{d4/d60/SGP__Utils_8c_54a4e9f9387854c492c138ece3fc2279}
+
+
+
+
+Definition at line 249 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_3641b6d4c21b7a852dbb32c2b693302e}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!ITMAX@{ITMAX}}
+\index{ITMAX@{ITMAX}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[ITMAX]{\setlength{\rightskip}{0pt plus 5cm}\#define ITMAX~100}}
+\label{d4/d60/SGP__Utils_8c_3641b6d4c21b7a852dbb32c2b693302e}
+
+
+
+
+Definition at line 247 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_e560427a74987e946bbf68724c45d5a1}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!MAXIT@{MAXIT}}
+\index{MAXIT@{MAXIT}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[MAXIT]{\setlength{\rightskip}{0pt plus 5cm}\#define MAXIT~60}}
+\label{d4/d60/SGP__Utils_8c_e560427a74987e946bbf68724c45d5a1}
+
+
+
+
+Definition at line 333 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_c89d5f8a358eb8a1abdcd0fcef134f1a}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!SIGN@{SIGN}}
+\index{SIGN@{SIGN}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[SIGN]{\setlength{\rightskip}{0pt plus 5cm}\#define SIGN(a, \/  b)~((b) $>$= 0.0 ? fabs(a) : -fabs(a))}}
+\label{d4/d60/SGP__Utils_8c_c89d5f8a358eb8a1abdcd0fcef134f1a}
+
+
+
+
+Definition at line 332 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_ddf5ec070e9499d36b7f2009ce736076}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!UNUSED@{UNUSED}}
+\index{UNUSED@{UNUSED}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[UNUSED]{\setlength{\rightskip}{0pt plus 5cm}\#define UNUSED~(-1.11e30)}}
+\label{d4/d60/SGP__Utils_8c_ddf5ec070e9499d36b7f2009ce736076}
+
+
+
+
+Definition at line 334 of file SGP\_\-Utils.c.
+
+\subsection{Function Documentation}
+\hypertarget{SGP__Utils_8c_abebdd2dd548c14805831297ac129862}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!erff@{erff}}
+\index{erff@{erff}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[erff]{\setlength{\rightskip}{0pt plus 5cm}float erff (float {\em x})}}
+\label{d4/d60/SGP__Utils_8c_abebdd2dd548c14805831297ac129862}
+
+
+
+
+Definition at line 317 of file SGP\_\-Utils.c.
+
+References gammp().\hypertarget{SGP__Utils_8c_88d126407fa731a66103a56c1ab75ac6}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!gammln@{gammln}}
+\index{gammln@{gammln}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[gammln]{\setlength{\rightskip}{0pt plus 5cm}float gammln (float {\em xx})}}
+\label{d4/d60/SGP__Utils_8c_88d126407fa731a66103a56c1ab75ac6}
+
+
+
+
+Definition at line 231 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_b83e8578a3b16f085ec735b27010f09b}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!gammp@{gammp}}
+\index{gammp@{gammp}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[gammp]{\setlength{\rightskip}{0pt plus 5cm}float gammp (float {\em a}, \/  float {\em x})}}
+\label{d4/d60/SGP__Utils_8c_b83e8578a3b16f085ec735b27010f09b}
+
+
+
+
+Definition at line 302 of file SGP\_\-Utils.c.
+
+References gcf(), and gser().\hypertarget{SGP__Utils_8c_07304213c55bd07a1d665a3550622723}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!gcf@{gcf}}
+\index{gcf@{gcf}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[gcf]{\setlength{\rightskip}{0pt plus 5cm}void gcf (float $\ast$ {\em gammcf}, \/  float {\em a}, \/  float {\em x}, \/  float $\ast$ {\em gln})}}
+\label{d4/d60/SGP__Utils_8c_07304213c55bd07a1d665a3550622723}
+
+
+
+
+Definition at line 251 of file SGP\_\-Utils.c.
+
+References EPS, FPMIN, gammln(), and ITMAX.\hypertarget{SGP__Utils_8c_2c33a9690a5fb2b0f6e09156c8920312}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!getPSTARvalue@{getPSTARvalue}}
+\index{getPSTARvalue@{getPSTARvalue}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[getPSTARvalue]{\setlength{\rightskip}{0pt plus 5cm}void getPSTARvalue (long $\ast$ {\em n}, \/  float $\ast$ {\em x}, \/  long $\ast$ {\em material\_\-no}, \/  float $\ast$ {\em x\_\-table}, \/  float $\ast$ {\em y\_\-table}, \/  float $\ast$ {\em y})}}
+\label{d4/d60/SGP__Utils_8c_2c33a9690a5fb2b0f6e09156c8920312}
+
+
+
+
+Definition at line 181 of file SGP\_\-Utils.c.
+
+References interp(), matchi(), pstar\_\-data::material\_\-no, pstar\_\-data::n, and SGP\_\-PSTAR\_\-Data.\hypertarget{SGP__Utils_8c_41d8d8e5f732445dfbb1ca7a56ed92fa}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!gser@{gser}}
+\index{gser@{gser}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[gser]{\setlength{\rightskip}{0pt plus 5cm}void gser (float $\ast$ {\em gamser}, \/  float {\em a}, \/  float {\em x}, \/  float $\ast$ {\em gln})}}
+\label{d4/d60/SGP__Utils_8c_41d8d8e5f732445dfbb1ca7a56ed92fa}
+
+
+
+
+Definition at line 276 of file SGP\_\-Utils.c.
+
+References EPS, gammln(), and ITMAX.\hypertarget{SGP__Utils_8c_1fc1d7732fb0f2e234bc538f9a85e58f}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!interp@{interp}}
+\index{interp@{interp}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[interp]{\setlength{\rightskip}{0pt plus 5cm}void interp (float $\ast$ {\em xa}, \/  float $\ast$ {\em ya}, \/  long $\ast$ {\em n}, \/  long $\ast$ {\em n\_\-pol}, \/  float $\ast$ {\em x}, \/  float $\ast$ {\em y}, \/  float $\ast$ {\em dy})}}
+\label{d4/d60/SGP__Utils_8c_1fc1d7732fb0f2e234bc538f9a85e58f}
+
+
+
+
+Definition at line 163 of file SGP\_\-Utils.c.
+
+References LMAX, LMIN, locate(), and polint().\hypertarget{SGP__Utils_8c_d57b8d8abf31bd0e4c5614a88dc6d121}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!locate@{locate}}
+\index{locate@{locate}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[locate]{\setlength{\rightskip}{0pt plus 5cm}void locate (float $\ast$ {\em xx}, \/  long $\ast$ {\em n}, \/  float $\ast$ {\em x}, \/  long $\ast$ {\em j})}}
+\label{d4/d60/SGP__Utils_8c_d57b8d8abf31bd0e4c5614a88dc6d121}
+
+
+
+
+Definition at line 105 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_398b0ec6b64d9aea3c56c6e139b27ef1}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!matchc@{matchc}}
+\index{matchc@{matchc}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[matchc]{\setlength{\rightskip}{0pt plus 5cm}void matchc (char $\ast$ {\em element}, \/  char $\ast$$\ast$ {\em set}, \/  long $\ast$ {\em n\_\-set}, \/  bool $\ast$ {\em matches})}}
+\label{d4/d60/SGP__Utils_8c_398b0ec6b64d9aea3c56c6e139b27ef1}
+
+
+
+
+Definition at line 76 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_be03e2bb3811350c297bccee18d9ae7b}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!matchi@{matchi}}
+\index{matchi@{matchi}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[matchi]{\setlength{\rightskip}{0pt plus 5cm}void matchi (long $\ast$ {\em element}, \/  long $\ast$ {\em set}, \/  long $\ast$ {\em n\_\-set}, \/  bool $\ast$ {\em matches})}}
+\label{d4/d60/SGP__Utils_8c_be03e2bb3811350c297bccee18d9ae7b}
+
+
+
+
+Definition at line 89 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_1127e9c8ab1a10a65ebd494759e8aec3}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!nrerror@{nrerror}}
+\index{nrerror@{nrerror}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[nrerror]{\setlength{\rightskip}{0pt plus 5cm}void nrerror (char {\em error\_\-text}\mbox{[}$\,$\mbox{]})}}
+\label{d4/d60/SGP__Utils_8c_1127e9c8ab1a10a65ebd494759e8aec3}
+
+
+
+
+Definition at line 322 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_5e4a9110a6c7288c4d99eaa6098b004b}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!pmatchc@{pmatchc}}
+\index{pmatchc@{pmatchc}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[pmatchc]{\setlength{\rightskip}{0pt plus 5cm}void pmatchc (char $\ast$$\ast$ {\em elements}, \/  long $\ast$ {\em n\_\-elements}, \/  char $\ast$$\ast$ {\em set}, \/  long $\ast$ {\em n\_\-set}, \/  long $\ast$ {\em matches})}}
+\label{d4/d60/SGP__Utils_8c_5e4a9110a6c7288c4d99eaa6098b004b}
+
+
+finds character elements in a set (n elements) and returns indices - only one (the first) match is reported per element a vector \char`\"{}matches\char`\"{} of length n\_\-elements has to be provided 
+
+Definition at line 59 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_123433e33bf797266e3a20880891524a}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!pmatchi@{pmatchi}}
+\index{pmatchi@{pmatchi}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[pmatchi]{\setlength{\rightskip}{0pt plus 5cm}void pmatchi (long $\ast$ {\em elements}, \/  long $\ast$ {\em n\_\-elements}, \/  long $\ast$ {\em set}, \/  long $\ast$ {\em n\_\-set}, \/  long $\ast$ {\em matches})}}
+\label{d4/d60/SGP__Utils_8c_123433e33bf797266e3a20880891524a}
+
+
+\hyperlink{SGP__Utils_8c}{SGP\_\-Utils.c}
+
+Created on: 28.07.2009 Author: greilich finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match is reported per element a vector \char`\"{}matches\char`\"{} of length n\_\-elements has to be provided 
+
+Definition at line 42 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_5c17a8e5c569dd393bc9fb7a9b4f9712}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!polint@{polint}}
+\index{polint@{polint}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[polint]{\setlength{\rightskip}{0pt plus 5cm}void polint (float $\ast$ {\em xa}, \/  float $\ast$ {\em ya}, \/  long $\ast$ {\em n}, \/  float $\ast$ {\em x}, \/  float $\ast$ {\em y}, \/  float $\ast$ {\em dy})}}
+\label{d4/d60/SGP__Utils_8c_5c17a8e5c569dd393bc9fb7a9b4f9712}
+
+
+
+
+Definition at line 126 of file SGP\_\-Utils.c.\hypertarget{SGP__Utils_8c_388211f8a9e4fc66e864b26e854abfb0}{
+\index{SGP\_\-Utils.c@{SGP\_\-Utils.c}!zriddr@{zriddr}}
+\index{zriddr@{zriddr}!SGP_Utils.c@{SGP\_\-Utils.c}}
+\subsubsection[zriddr]{\setlength{\rightskip}{0pt plus 5cm}float zriddr (float($\ast$)(float, void $\ast$) {\em func}, \/  void $\ast$ {\em params}, \/  float {\em x1}, \/  float {\em x2}, \/  float {\em xacc})}}
+\label{d4/d60/SGP__Utils_8c_388211f8a9e4fc66e864b26e854abfb0}
+
+
+
+
+Definition at line 335 of file SGP\_\-Utils.c.
+
+References MAXIT, nrerror(), SIGN, and UNUSED.
