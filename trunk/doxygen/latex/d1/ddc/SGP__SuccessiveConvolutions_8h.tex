@@ -1,0 +1,75 @@
+\hypertarget{SGP__SuccessiveConvolutions_8h}{
+\section{SGP\_\-SuccessiveConvolutions.h File Reference}
+\label{d1/ddc/SGP__SuccessiveConvolutions_8h}\index{SGP\_\-SuccessiveConvolutions.h@{SGP\_\-SuccessiveConvolutions.h}}
+}
+{\tt \#include $<$stdbool.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \hyperlink{SGP__SuccessiveConvolutions_8h_65362e6ff610c63a0704f1f9166c7156}{SGP\_\-SC\_\-get\_\-f1\_\-array\_\-size} (long $\ast$n, float $\ast$E\_\-MeV\_\-u, long $\ast$particle\_\-no, long $\ast$\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{material\_\-no}, long $\ast$rdd\_\-model, float $\ast$rdd\_\-parameter, long $\ast$er\_\-model, float $\ast$er\_\-parameter, long $\ast$N2, long $\ast$n\_\-bins\_\-f1, float $\ast$f1\_\-parameters)
+\item 
+void \hyperlink{SGP__SuccessiveConvolutions_8h_ae760e3c9a227f2b771777f84fff86d3}{SGP\_\-SC\_\-get\_\-f1} (long $\ast$n, float $\ast$E\_\-MeV\_\-u, long $\ast$particle\_\-no, float $\ast$fluence\_\-cm2, long $\ast$\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{material\_\-no}, long $\ast$rdd\_\-model, float $\ast$rdd\_\-parameter, long $\ast$er\_\-model, float $\ast$er\_\-parameter, long $\ast$N2, long $\ast$n\_\-bins\_\-f1, float $\ast$f1\_\-parameters, float $\ast$norm\_\-fluence, float $\ast$dose\_\-contribution\_\-Gy, float $\ast$f\_\-parameters, float $\ast$f1\_\-d\_\-Gy, float $\ast$f1\_\-dd\_\-Gy, float $\ast$f1)
+\item 
+void \hyperlink{SGP__SuccessiveConvolutions_8h_e8e48ab52038822ee6cf825db1ef3641}{SGP\_\-SC\_\-get\_\-f\_\-array\_\-size} (float $\ast$u, float $\ast$fluence\_\-factor, long $\ast$N2, long $\ast$n\_\-bins\_\-f1, float $\ast$f1\_\-d\_\-Gy, float $\ast$f1\_\-dd\_\-Gy, float $\ast$f1, long $\ast$n\_\-bins\_\-f, float $\ast$u\_\-start, long $\ast$n\_\-convolutions)
+\item 
+void \hyperlink{SGP__SuccessiveConvolutions_8h_e7a1cf54b04bd06a64ab4627c2995cfe}{SGP\_\-SC\_\-get\_\-f\_\-start} (float $\ast$u\_\-start, long $\ast$n\_\-bins\_\-f1, long $\ast$N2, float $\ast$f1\_\-d\_\-Gy, float $\ast$f1\_\-dd\_\-Gy, float $\ast$f1, long $\ast$n\_\-bins\_\-f, float $\ast$f\_\-d\_\-Gy, float $\ast$f\_\-dd\_\-Gy, float $\ast$f\_\-start)
+\item 
+void \hyperlink{SGP__SuccessiveConvolutions_8h_e89669b31a52fbe0e043001d4f655c6d}{SGP\_\-SuccessiveConvolutions} (float $\ast$u, long $\ast$n\_\-bins\_\-f, long $\ast$N2, long $\ast$n\_\-bins\_\-f\_\-used, float $\ast$f\_\-d\_\-Gy, float $\ast$f\_\-dd\_\-Gy, float $\ast$f, float $\ast$f0, float $\ast$fdd, float $\ast$dfdd, float $\ast$d, bool $\ast$write\_\-output, bool $\ast$shrink\_\-tails, float $\ast$shrink\_\-tails\_\-under, bool $\ast$adjust\_\-N2)
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{SGP__SuccessiveConvolutions_8h_ae760e3c9a227f2b771777f84fff86d3}{
+\index{SGP\_\-SuccessiveConvolutions.h@{SGP\_\-SuccessiveConvolutions.h}!SGP\_\-SC\_\-get\_\-f1@{SGP\_\-SC\_\-get\_\-f1}}
+\index{SGP\_\-SC\_\-get\_\-f1@{SGP\_\-SC\_\-get\_\-f1}!SGP_SuccessiveConvolutions.h@{SGP\_\-SuccessiveConvolutions.h}}
+\subsubsection[SGP\_\-SC\_\-get\_\-f1]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-SC\_\-get\_\-f1 (long $\ast$ {\em n}, \/  float $\ast$ {\em E\_\-MeV\_\-u}, \/  long $\ast$ {\em particle\_\-no}, \/  float $\ast$ {\em fluence\_\-cm2}, \/  long $\ast$ {\em material\_\-no}, \/  long $\ast$ {\em rdd\_\-model}, \/  float $\ast$ {\em rdd\_\-parameter}, \/  long $\ast$ {\em er\_\-model}, \/  float $\ast$ {\em er\_\-parameter}, \/  long $\ast$ {\em N2}, \/  long $\ast$ {\em n\_\-bins\_\-f1}, \/  float $\ast$ {\em f1\_\-parameters}, \/  float $\ast$ {\em norm\_\-fluence}, \/  float $\ast$ {\em dose\_\-contribution\_\-Gy}, \/  float $\ast$ {\em f\_\-parameters}, \/  float $\ast$ {\em f1\_\-d\_\-Gy}, \/  float $\ast$ {\em f1\_\-dd\_\-Gy}, \/  float $\ast$ {\em f1})}}
+\label{d1/ddc/SGP__SuccessiveConvolutions_8h_ae760e3c9a227f2b771777f84fff86d3}
+
+
+
+
+Definition at line 112 of file SGP\_\-SuccessiveConvolutions.c.
+
+References FMAX, FMIN, LMAX, locate(), MeV\_\-g\_\-to\_\-J\_\-kg, and SGP\_\-r\_\-RDD\_\-m().\hypertarget{SGP__SuccessiveConvolutions_8h_65362e6ff610c63a0704f1f9166c7156}{
+\index{SGP\_\-SuccessiveConvolutions.h@{SGP\_\-SuccessiveConvolutions.h}!SGP\_\-SC\_\-get\_\-f1\_\-array\_\-size@{SGP\_\-SC\_\-get\_\-f1\_\-array\_\-size}}
+\index{SGP\_\-SC\_\-get\_\-f1\_\-array\_\-size@{SGP\_\-SC\_\-get\_\-f1\_\-array\_\-size}!SGP_SuccessiveConvolutions.h@{SGP\_\-SuccessiveConvolutions.h}}
+\subsubsection[SGP\_\-SC\_\-get\_\-f1\_\-array\_\-size]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-SC\_\-get\_\-f1\_\-array\_\-size (long $\ast$ {\em n}, \/  float $\ast$ {\em E\_\-MeV\_\-u}, \/  long $\ast$ {\em particle\_\-no}, \/  long $\ast$ {\em material\_\-no}, \/  long $\ast$ {\em rdd\_\-model}, \/  float $\ast$ {\em rdd\_\-parameter}, \/  long $\ast$ {\em er\_\-model}, \/  float $\ast$ {\em er\_\-parameter}, \/  long $\ast$ {\em N2}, \/  long $\ast$ {\em n\_\-bins\_\-f1}, \/  float $\ast$ {\em f1\_\-parameters})}}
+\label{d1/ddc/SGP__SuccessiveConvolutions_8h_65362e6ff610c63a0704f1f9166c7156}
+
+
+
+
+Definition at line 26 of file SGP\_\-SuccessiveConvolutions.c.
+
+References FMAX, FMIN, and SGP\_\-RDD\_\-f1\_\-parameters().\hypertarget{SGP__SuccessiveConvolutions_8h_e8e48ab52038822ee6cf825db1ef3641}{
+\index{SGP\_\-SuccessiveConvolutions.h@{SGP\_\-SuccessiveConvolutions.h}!SGP\_\-SC\_\-get\_\-f\_\-array\_\-size@{SGP\_\-SC\_\-get\_\-f\_\-array\_\-size}}
+\index{SGP\_\-SC\_\-get\_\-f\_\-array\_\-size@{SGP\_\-SC\_\-get\_\-f\_\-array\_\-size}!SGP_SuccessiveConvolutions.h@{SGP\_\-SuccessiveConvolutions.h}}
+\subsubsection[SGP\_\-SC\_\-get\_\-f\_\-array\_\-size]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-SC\_\-get\_\-f\_\-array\_\-size (float $\ast$ {\em u}, \/  float $\ast$ {\em fluence\_\-factor}, \/  long $\ast$ {\em N2}, \/  long $\ast$ {\em n\_\-bins\_\-f1}, \/  float $\ast$ {\em f1\_\-d\_\-Gy}, \/  float $\ast$ {\em f1\_\-dd\_\-Gy}, \/  float $\ast$ {\em f1}, \/  long $\ast$ {\em n\_\-bins\_\-f}, \/  float $\ast$ {\em u\_\-start}, \/  long $\ast$ {\em n\_\-convolutions})}}
+\label{d1/ddc/SGP__SuccessiveConvolutions_8h_e8e48ab52038822ee6cf825db1ef3641}
+
+
+
+
+Definition at line 404 of file SGP\_\-SuccessiveConvolutions.c.
+
+References MEAN\_\-HIT\_\-NUMBER\_\-LINEAR\_\-APPROX\_\-LIMIT.\hypertarget{SGP__SuccessiveConvolutions_8h_e7a1cf54b04bd06a64ab4627c2995cfe}{
+\index{SGP\_\-SuccessiveConvolutions.h@{SGP\_\-SuccessiveConvolutions.h}!SGP\_\-SC\_\-get\_\-f\_\-start@{SGP\_\-SC\_\-get\_\-f\_\-start}}
+\index{SGP\_\-SC\_\-get\_\-f\_\-start@{SGP\_\-SC\_\-get\_\-f\_\-start}!SGP_SuccessiveConvolutions.h@{SGP\_\-SuccessiveConvolutions.h}}
+\subsubsection[SGP\_\-SC\_\-get\_\-f\_\-start]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-SC\_\-get\_\-f\_\-start (float $\ast$ {\em u\_\-start}, \/  long $\ast$ {\em n\_\-bins\_\-f1}, \/  long $\ast$ {\em N2}, \/  float $\ast$ {\em f1\_\-d\_\-Gy}, \/  float $\ast$ {\em f1\_\-dd\_\-Gy}, \/  float $\ast$ {\em f1}, \/  long $\ast$ {\em n\_\-bins\_\-f}, \/  float $\ast$ {\em f\_\-d\_\-Gy}, \/  float $\ast$ {\em f\_\-dd\_\-Gy}, \/  float $\ast$ {\em f\_\-start})}}
+\label{d1/ddc/SGP__SuccessiveConvolutions_8h_e7a1cf54b04bd06a64ab4627c2995cfe}
+
+
+
+
+Definition at line 476 of file SGP\_\-SuccessiveConvolutions.c.\hypertarget{SGP__SuccessiveConvolutions_8h_e89669b31a52fbe0e043001d4f655c6d}{
+\index{SGP\_\-SuccessiveConvolutions.h@{SGP\_\-SuccessiveConvolutions.h}!SGP\_\-SuccessiveConvolutions@{SGP\_\-SuccessiveConvolutions}}
+\index{SGP\_\-SuccessiveConvolutions@{SGP\_\-SuccessiveConvolutions}!SGP_SuccessiveConvolutions.h@{SGP\_\-SuccessiveConvolutions.h}}
+\subsubsection[SGP\_\-SuccessiveConvolutions]{\setlength{\rightskip}{0pt plus 5cm}void SGP\_\-SuccessiveConvolutions (float $\ast$ {\em u}, \/  long $\ast$ {\em n\_\-bins\_\-f}, \/  long $\ast$ {\em N2}, \/  long $\ast$ {\em n\_\-bins\_\-f\_\-used}, \/  float $\ast$ {\em f\_\-d\_\-Gy}, \/  float $\ast$ {\em f\_\-dd\_\-Gy}, \/  float $\ast$ {\em f}, \/  float $\ast$ {\em f0}, \/  float $\ast$ {\em fdd}, \/  float $\ast$ {\em dfdd}, \/  float $\ast$ {\em d}, \/  bool $\ast$ {\em write\_\-output}, \/  bool $\ast$ {\em shrink\_\-tails}, \/  float $\ast$ {\em shrink\_\-tails\_\-under}, \/  bool $\ast$ {\em adjust\_\-N2})}}
+\label{d1/ddc/SGP__SuccessiveConvolutions_8h_e89669b31a52fbe0e043001d4f655c6d}
+
+
+
+
+Definition at line 1047 of file SGP\_\-SuccessiveConvolutions.c.
+
+References aKList::A, aKList::adjust\_\-N2, aKList::array\_\-size, aKList::BI, aKList::CM1, aKList::CM2, aKList::CM3, aKList::CM4, aKList::CN, aKList::D1, aKList::D2, aKList::D3, aKList::D4, aKList::DE, aKList::DI, aKList::E, aKList::E0, aKList::F, aKList::F0, aKList::FINAL, aKList::H, aKList::H0, aKList::LEF, aKList::LEH, MEAN\_\-HIT\_\-NUMBER\_\-LINEAR\_\-APPROX\_\-LIMIT, aKList::MIE, aKList::MIF, aKList::MIH, aKList::N1, aKList::N2, aKList::output\_\-file, SGP\_\-SC\_\-FOLD(), SGP\_\-SC\_\-NORMAL(), SGP\_\-SC\_\-OUTPUT(), SGP\_\-SC\_\-SHRINK(), aKList::shrink\_\-tails, aKList::shrink\_\-tails\_\-under, aKList::U, aKList::write\_\-output, and aKList::X.

@@ -1,0 +1,427 @@
+\hypertarget{SGP__Constants_8h}{
+\section{SGP\_\-Constants.h File Reference}
+\label{d3/de7/SGP__Constants_8h}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}}
+}
+\subsection*{Enumerations}
+\begin{CompactItemize}
+\item 
+enum \hyperlink{SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f}{GammaResponseModels} \{ \par
+\hyperlink{SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f04d23d63d8a6d058ffe2e91376f23652}{GR\_\-Test} =  1, 
+\hyperlink{SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f5c41d2830083ad1e312ae0511d5c27dc}{GR\_\-GeneralTarget} =  2, 
+\hyperlink{SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995fa372b4899c296ce157c4c812df711456}{GR\_\-Radioluminescence} =  3, 
+\hyperlink{SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f405d10d78a6e88f86111507cbaa2e1a1}{GR\_\-ExpSaturation} =  4, 
+\par
+\hyperlink{SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f8c0a141ec6d365ca3a3146d86ea9e4f3}{GR\_\-LinQuad} =  5
+ \}
+\item 
+enum \hyperlink{SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d4}{RDDModels} \{ \par
+\hyperlink{SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d4e8c55eb1ec2adbade01014f2251d0e87}{RDD\_\-Test} =  1, 
+\hyperlink{SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d45611b57093071b4f6fe28d45f66f1551}{RDD\_\-KatzPoint} =  2, 
+\hyperlink{SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d49acfd46948f431b0d97690aac5f17880}{RDD\_\-Geiss} =  3, 
+\hyperlink{SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d47ecfa172e6ce7a26dab5c0cb91a939ed}{RDD\_\-Site} =  4, 
+\par
+\hyperlink{SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d4068b3997f38ccbcd85f0ac8be44d04a3}{RDD\_\-ExtTarget} =  5
+ \}
+\item 
+enum \hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{material\_\-no} \{ \hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df115239e8f341860519eeb63973b3deb290}{Water\_\-Liquid} =  1, 
+\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11642826a931dd6042e8e0084467b78a4b}{Aluminum\_\-Oxide} =  2, 
+\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11a119866fbecc7f2ba68250968c721409}{Aluminum} =  3, 
+\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df113a16f572b1eb84b6a302920b5cb5910e}{PMMA} =  4
+ \}
+\item 
+enum \hyperlink{SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329a}{ERModels} \{ \par
+\hyperlink{SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329aef31963a878573be63e6ae96a093a8cd}{ER\_\-Test} =  0, 
+\hyperlink{SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329a87556d559c048644bdf2f741556f9da4}{ER\_\-ButtsKatz} =  1, 
+\hyperlink{SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329ad2e7ed0175f0858ef37c6631519de57a}{ER\_\-Waligorski} =  2, 
+\hyperlink{SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329ab000357322fef2c95eb0ca9bebe41add}{ER\_\-Geiss} =  3, 
+\par
+\hyperlink{SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329a19a46c849433f4440829fd715e01fc3d}{ER\_\-Scholz} =  4
+ \}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \hyperlink{SGP__Constants_8h_5e91d75a7f4cb273c9b5d0d477a4871e}{getMaterialName} (long $\ast$\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{material\_\-no}, char $\ast$material\_\-name)
+\item 
+void \hyperlink{SGP__Constants_8h_595c1a7496c016a3e66a73304a9ffb49}{getMaterialNo} (char $\ast$material\_\-name, long $\ast$\hyperlink{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{material\_\-no})
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static double \hyperlink{SGP__Constants_8h_3935d51fabd7e4cdf00aa0d570030c62}{c\_\-m\_\-s} = 299792458.0
+\item 
+static double \hyperlink{SGP__Constants_8h_a8d7c0de314696106fdc916b5852e3dd}{c\_\-cm\_\-s} = 29979245800.0
+\item 
+static double \hyperlink{SGP__Constants_8h_5022b3e373ce8f7d0204b9e529cb12b6}{proton\_\-mass\_\-MeV\_\-c2} = 938.272029
+\item 
+static double \hyperlink{SGP__Constants_8h_e305abb5dcf542f3ff28f31b2b0b2c5d}{proton\_\-mass\_\-kg} = 1.67262171e-27
+\item 
+static double \hyperlink{SGP__Constants_8h_28da34ef2f50d7a71227de9e6fd771a0}{electron\_\-mass\_\-MeV\_\-c2} = 0.510998918
+\item 
+static double \hyperlink{SGP__Constants_8h_43f25c6493ad0d8e2f65f0712c92aa1b}{electron\_\-mass\_\-kg} = 9.10938215e-31
+\item 
+static double \hyperlink{SGP__Constants_8h_a12f5c4f715775dd74b6f568c5f4b8c7}{electron\_\-mass\_\-g} = 9.10938215e-28
+\item 
+static double \hyperlink{SGP__Constants_8h_207fcec7efecca490ad35e7606b56b3a}{e\_\-C} = 1.60217653e-19
+\item 
+static double \hyperlink{SGP__Constants_8h_b97cc8565c90cde7a23956c99c0ceb89}{e\_\-esu} = 1.60217653e-19 / 3.33564e-10
+\item 
+static double \hyperlink{SGP__Constants_8h_485e93f2056d815609705fa27697c649}{e0\_\-F\_\-m} = 8.8541878176e-12
+\item 
+static double \hyperlink{SGP__Constants_8h_c4bd65ab82e05ce41109e865de54feda}{g\_\-cm3\_\-to\_\-kg\_\-m3} = 1000.0
+\item 
+static double \hyperlink{SGP__Constants_8h_94ea9dcdbaffbff658491fc2fac9b612}{MeV\_\-to\_\-J} = 1.60217646e-13
+\item 
+static double \hyperlink{SGP__Constants_8h_0e03bad67235c77640a9546ad7912e09}{MeV\_\-to\_\-keV} = 1000.0
+\item 
+static double \hyperlink{SGP__Constants_8h_cda6bb80babe3af59864fa0131e052ed}{MeV\_\-g\_\-to\_\-J\_\-kg} = 1.60217646e-10
+\item 
+static double \hyperlink{SGP__Constants_8h_ee5db29ef044d9e553e289f775e76710}{GeV\_\-g\_\-to\_\-J\_\-kg} = 1.60217646e-7
+\item 
+static double \hyperlink{SGP__Constants_8h_32ff518ba9f47a4b91d993fb06e0a3f8}{keV\_\-um\_\-to\_\-MeV\_\-m} = 1000.0
+\item 
+static double \hyperlink{SGP__Constants_8h_1b71a520739d949845b5cf5067056d9e}{m\_\-to\_\-cm} = 100.0
+\item 
+static double \hyperlink{SGP__Constants_8h_57b4c77585d16893b6bdb93b3e7c5b82}{m\_\-to\_\-um} = 1e6
+\item 
+static double \hyperlink{SGP__Constants_8h_31c17cc321db72d5ab448b71ea92792f}{pi} = 3.14159265
+\end{CompactItemize}
+
+
+\subsection{Enumeration Type Documentation}
+\hypertarget{SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329a}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!ERModels@{ERModels}}
+\index{ERModels@{ERModels}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[ERModels]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf ERModels}}}
+\label{d3/de7/SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329a}
+
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{ER\_\-Test@{ER\_\-Test}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!ER\_\-Test@{ER\_\-Test}}\item[{\em 
+\hypertarget{SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329aef31963a878573be63e6ae96a093a8cd}{
+ER\_\-Test}
+\label{d3/de7/SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329aef31963a878573be63e6ae96a093a8cd}
+}]\index{ER\_\-ButtsKatz@{ER\_\-ButtsKatz}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!ER\_\-ButtsKatz@{ER\_\-ButtsKatz}}\item[{\em 
+\hypertarget{SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329a87556d559c048644bdf2f741556f9da4}{
+ER\_\-ButtsKatz}
+\label{d3/de7/SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329a87556d559c048644bdf2f741556f9da4}
+}]\index{ER\_\-Waligorski@{ER\_\-Waligorski}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!ER\_\-Waligorski@{ER\_\-Waligorski}}\item[{\em 
+\hypertarget{SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329ad2e7ed0175f0858ef37c6631519de57a}{
+ER\_\-Waligorski}
+\label{d3/de7/SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329ad2e7ed0175f0858ef37c6631519de57a}
+}]\index{ER\_\-Geiss@{ER\_\-Geiss}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!ER\_\-Geiss@{ER\_\-Geiss}}\item[{\em 
+\hypertarget{SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329ab000357322fef2c95eb0ca9bebe41add}{
+ER\_\-Geiss}
+\label{d3/de7/SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329ab000357322fef2c95eb0ca9bebe41add}
+}]\index{ER\_\-Scholz@{ER\_\-Scholz}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!ER\_\-Scholz@{ER\_\-Scholz}}\item[{\em 
+\hypertarget{SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329a19a46c849433f4440829fd715e01fc3d}{
+ER\_\-Scholz}
+\label{d3/de7/SGP__Constants_8h_a000b4a51ee148fbabf1031bc979329a19a46c849433f4440829fd715e01fc3d}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 49 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!GammaResponseModels@{GammaResponseModels}}
+\index{GammaResponseModels@{GammaResponseModels}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[GammaResponseModels]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf GammaResponseModels}}}
+\label{d3/de7/SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f}
+
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{GR\_\-Test@{GR\_\-Test}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!GR\_\-Test@{GR\_\-Test}}\item[{\em 
+\hypertarget{SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f04d23d63d8a6d058ffe2e91376f23652}{
+GR\_\-Test}
+\label{d3/de7/SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f04d23d63d8a6d058ffe2e91376f23652}
+}]\index{GR\_\-GeneralTarget@{GR\_\-GeneralTarget}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!GR\_\-GeneralTarget@{GR\_\-GeneralTarget}}\item[{\em 
+\hypertarget{SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f5c41d2830083ad1e312ae0511d5c27dc}{
+GR\_\-GeneralTarget}
+\label{d3/de7/SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f5c41d2830083ad1e312ae0511d5c27dc}
+}]\index{GR\_\-Radioluminescence@{GR\_\-Radioluminescence}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!GR\_\-Radioluminescence@{GR\_\-Radioluminescence}}\item[{\em 
+\hypertarget{SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995fa372b4899c296ce157c4c812df711456}{
+GR\_\-Radioluminescence}
+\label{d3/de7/SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995fa372b4899c296ce157c4c812df711456}
+}]\index{GR\_\-ExpSaturation@{GR\_\-ExpSaturation}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!GR\_\-ExpSaturation@{GR\_\-ExpSaturation}}\item[{\em 
+\hypertarget{SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f405d10d78a6e88f86111507cbaa2e1a1}{
+GR\_\-ExpSaturation}
+\label{d3/de7/SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f405d10d78a6e88f86111507cbaa2e1a1}
+}]\index{GR\_\-LinQuad@{GR\_\-LinQuad}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!GR\_\-LinQuad@{GR\_\-LinQuad}}\item[{\em 
+\hypertarget{SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f8c0a141ec6d365ca3a3146d86ea9e4f3}{
+GR\_\-LinQuad}
+\label{d3/de7/SGP__Constants_8h_790f750ed4793b76c4f08fe16e4a995f8c0a141ec6d365ca3a3146d86ea9e4f3}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 26 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!material\_\-no@{material\_\-no}}
+\index{material\_\-no@{material\_\-no}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[material\_\-no]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf material\_\-no}}}
+\label{d3/de7/SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11}
+
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{Water\_\-Liquid@{Water\_\-Liquid}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!Water\_\-Liquid@{Water\_\-Liquid}}\item[{\em 
+\hypertarget{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df115239e8f341860519eeb63973b3deb290}{
+Water\_\-Liquid}
+\label{d3/de7/SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df115239e8f341860519eeb63973b3deb290}
+}]\index{Aluminum\_\-Oxide@{Aluminum\_\-Oxide}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!Aluminum\_\-Oxide@{Aluminum\_\-Oxide}}\item[{\em 
+\hypertarget{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11642826a931dd6042e8e0084467b78a4b}{
+Aluminum\_\-Oxide}
+\label{d3/de7/SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11642826a931dd6042e8e0084467b78a4b}
+}]\index{Aluminum@{Aluminum}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!Aluminum@{Aluminum}}\item[{\em 
+\hypertarget{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11a119866fbecc7f2ba68250968c721409}{
+Aluminum}
+\label{d3/de7/SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df11a119866fbecc7f2ba68250968c721409}
+}]\index{PMMA@{PMMA}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!PMMA@{PMMA}}\item[{\em 
+\hypertarget{SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df113a16f572b1eb84b6a302920b5cb5910e}{
+PMMA}
+\label{d3/de7/SGP__Constants_8h_25222ab39d868c8c3763ddac1b75df113a16f572b1eb84b6a302920b5cb5910e}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 42 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d4}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!RDDModels@{RDDModels}}
+\index{RDDModels@{RDDModels}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[RDDModels]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf RDDModels}}}
+\label{d3/de7/SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d4}
+
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{RDD\_\-Test@{RDD\_\-Test}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!RDD\_\-Test@{RDD\_\-Test}}\item[{\em 
+\hypertarget{SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d4e8c55eb1ec2adbade01014f2251d0e87}{
+RDD\_\-Test}
+\label{d3/de7/SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d4e8c55eb1ec2adbade01014f2251d0e87}
+}]\index{RDD\_\-KatzPoint@{RDD\_\-KatzPoint}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!RDD\_\-KatzPoint@{RDD\_\-KatzPoint}}\item[{\em 
+\hypertarget{SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d45611b57093071b4f6fe28d45f66f1551}{
+RDD\_\-KatzPoint}
+\label{d3/de7/SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d45611b57093071b4f6fe28d45f66f1551}
+}]\index{RDD\_\-Geiss@{RDD\_\-Geiss}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!RDD\_\-Geiss@{RDD\_\-Geiss}}\item[{\em 
+\hypertarget{SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d49acfd46948f431b0d97690aac5f17880}{
+RDD\_\-Geiss}
+\label{d3/de7/SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d49acfd46948f431b0d97690aac5f17880}
+}]\index{RDD\_\-Site@{RDD\_\-Site}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!RDD\_\-Site@{RDD\_\-Site}}\item[{\em 
+\hypertarget{SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d47ecfa172e6ce7a26dab5c0cb91a939ed}{
+RDD\_\-Site}
+\label{d3/de7/SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d47ecfa172e6ce7a26dab5c0cb91a939ed}
+}]\index{RDD\_\-ExtTarget@{RDD\_\-ExtTarget}!SGP\_\-Constants.h@{SGP\_\-Constants.h}}\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!RDD\_\-ExtTarget@{RDD\_\-ExtTarget}}\item[{\em 
+\hypertarget{SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d4068b3997f38ccbcd85f0ac8be44d04a3}{
+RDD\_\-ExtTarget}
+\label{d3/de7/SGP__Constants_8h_d4983bca00f05d9bab03d47581fbe9d4068b3997f38ccbcd85f0ac8be44d04a3}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 34 of file SGP\_\-Constants.h.
+
+\subsection{Function Documentation}
+\hypertarget{SGP__Constants_8h_5e91d75a7f4cb273c9b5d0d477a4871e}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!getMaterialName@{getMaterialName}}
+\index{getMaterialName@{getMaterialName}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[getMaterialName]{\setlength{\rightskip}{0pt plus 5cm}void getMaterialName (long $\ast$ {\em material\_\-no}, \/  char $\ast$ {\em material\_\-name})}}
+\label{d3/de7/SGP__Constants_8h_5e91d75a7f4cb273c9b5d0d477a4871e}
+
+
+
+
+Definition at line 11 of file SGP\_\-Constants.c.
+
+References Aluminum, Aluminum\_\-Oxide, PMMA, and Water\_\-Liquid.\hypertarget{SGP__Constants_8h_595c1a7496c016a3e66a73304a9ffb49}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!getMaterialNo@{getMaterialNo}}
+\index{getMaterialNo@{getMaterialNo}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[getMaterialNo]{\setlength{\rightskip}{0pt plus 5cm}void getMaterialNo (char $\ast$ {\em material\_\-name}, \/  long $\ast$ {\em material\_\-no})}}
+\label{d3/de7/SGP__Constants_8h_595c1a7496c016a3e66a73304a9ffb49}
+
+
+
+
+Definition at line 31 of file SGP\_\-Constants.c.
+
+References Aluminum, Aluminum\_\-Oxide, PMMA, and Water\_\-Liquid.
+
+\subsection{Variable Documentation}
+\hypertarget{SGP__Constants_8h_a8d7c0de314696106fdc916b5852e3dd}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!c\_\-cm\_\-s@{c\_\-cm\_\-s}}
+\index{c\_\-cm\_\-s@{c\_\-cm\_\-s}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[c\_\-cm\_\-s]{\setlength{\rightskip}{0pt plus 5cm}double {\bf c\_\-cm\_\-s} = 29979245800.0\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_a8d7c0de314696106fdc916b5852e3dd}
+
+
+
+
+Definition at line 5 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_3935d51fabd7e4cdf00aa0d570030c62}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!c\_\-m\_\-s@{c\_\-m\_\-s}}
+\index{c\_\-m\_\-s@{c\_\-m\_\-s}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[c\_\-m\_\-s]{\setlength{\rightskip}{0pt plus 5cm}double {\bf c\_\-m\_\-s} = 299792458.0\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_3935d51fabd7e4cdf00aa0d570030c62}
+
+
+
+
+Definition at line 4 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_485e93f2056d815609705fa27697c649}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!e0\_\-F\_\-m@{e0\_\-F\_\-m}}
+\index{e0\_\-F\_\-m@{e0\_\-F\_\-m}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[e0\_\-F\_\-m]{\setlength{\rightskip}{0pt plus 5cm}double {\bf e0\_\-F\_\-m} = 8.8541878176e-12\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_485e93f2056d815609705fa27697c649}
+
+
+
+
+Definition at line 13 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_207fcec7efecca490ad35e7606b56b3a}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!e\_\-C@{e\_\-C}}
+\index{e\_\-C@{e\_\-C}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[e\_\-C]{\setlength{\rightskip}{0pt plus 5cm}double {\bf e\_\-C} = 1.60217653e-19\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_207fcec7efecca490ad35e7606b56b3a}
+
+
+
+
+Definition at line 11 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_b97cc8565c90cde7a23956c99c0ceb89}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!e\_\-esu@{e\_\-esu}}
+\index{e\_\-esu@{e\_\-esu}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[e\_\-esu]{\setlength{\rightskip}{0pt plus 5cm}double {\bf e\_\-esu} = 1.60217653e-19 / 3.33564e-10\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_b97cc8565c90cde7a23956c99c0ceb89}
+
+
+
+
+Definition at line 12 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_a12f5c4f715775dd74b6f568c5f4b8c7}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!electron\_\-mass\_\-g@{electron\_\-mass\_\-g}}
+\index{electron\_\-mass\_\-g@{electron\_\-mass\_\-g}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[electron\_\-mass\_\-g]{\setlength{\rightskip}{0pt plus 5cm}double {\bf electron\_\-mass\_\-g} = 9.10938215e-28\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_a12f5c4f715775dd74b6f568c5f4b8c7}
+
+
+
+
+Definition at line 10 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_43f25c6493ad0d8e2f65f0712c92aa1b}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!electron\_\-mass\_\-kg@{electron\_\-mass\_\-kg}}
+\index{electron\_\-mass\_\-kg@{electron\_\-mass\_\-kg}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[electron\_\-mass\_\-kg]{\setlength{\rightskip}{0pt plus 5cm}double {\bf electron\_\-mass\_\-kg} = 9.10938215e-31\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_43f25c6493ad0d8e2f65f0712c92aa1b}
+
+
+
+
+Definition at line 9 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_28da34ef2f50d7a71227de9e6fd771a0}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!electron\_\-mass\_\-MeV\_\-c2@{electron\_\-mass\_\-MeV\_\-c2}}
+\index{electron\_\-mass\_\-MeV\_\-c2@{electron\_\-mass\_\-MeV\_\-c2}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[electron\_\-mass\_\-MeV\_\-c2]{\setlength{\rightskip}{0pt plus 5cm}double {\bf electron\_\-mass\_\-MeV\_\-c2} = 0.510998918\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_28da34ef2f50d7a71227de9e6fd771a0}
+
+
+
+
+Definition at line 8 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_c4bd65ab82e05ce41109e865de54feda}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!g\_\-cm3\_\-to\_\-kg\_\-m3@{g\_\-cm3\_\-to\_\-kg\_\-m3}}
+\index{g\_\-cm3\_\-to\_\-kg\_\-m3@{g\_\-cm3\_\-to\_\-kg\_\-m3}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[g\_\-cm3\_\-to\_\-kg\_\-m3]{\setlength{\rightskip}{0pt plus 5cm}double {\bf g\_\-cm3\_\-to\_\-kg\_\-m3} = 1000.0\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_c4bd65ab82e05ce41109e865de54feda}
+
+
+
+
+Definition at line 15 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_ee5db29ef044d9e553e289f775e76710}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!GeV\_\-g\_\-to\_\-J\_\-kg@{GeV\_\-g\_\-to\_\-J\_\-kg}}
+\index{GeV\_\-g\_\-to\_\-J\_\-kg@{GeV\_\-g\_\-to\_\-J\_\-kg}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[GeV\_\-g\_\-to\_\-J\_\-kg]{\setlength{\rightskip}{0pt plus 5cm}double {\bf GeV\_\-g\_\-to\_\-J\_\-kg} = 1.60217646e-7\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_ee5db29ef044d9e553e289f775e76710}
+
+
+
+
+Definition at line 19 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_32ff518ba9f47a4b91d993fb06e0a3f8}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!keV\_\-um\_\-to\_\-MeV\_\-m@{keV\_\-um\_\-to\_\-MeV\_\-m}}
+\index{keV\_\-um\_\-to\_\-MeV\_\-m@{keV\_\-um\_\-to\_\-MeV\_\-m}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[keV\_\-um\_\-to\_\-MeV\_\-m]{\setlength{\rightskip}{0pt plus 5cm}double {\bf keV\_\-um\_\-to\_\-MeV\_\-m} = 1000.0\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_32ff518ba9f47a4b91d993fb06e0a3f8}
+
+
+
+
+Definition at line 20 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_1b71a520739d949845b5cf5067056d9e}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!m\_\-to\_\-cm@{m\_\-to\_\-cm}}
+\index{m\_\-to\_\-cm@{m\_\-to\_\-cm}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[m\_\-to\_\-cm]{\setlength{\rightskip}{0pt plus 5cm}double {\bf m\_\-to\_\-cm} = 100.0\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_1b71a520739d949845b5cf5067056d9e}
+
+
+
+
+Definition at line 21 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_57b4c77585d16893b6bdb93b3e7c5b82}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!m\_\-to\_\-um@{m\_\-to\_\-um}}
+\index{m\_\-to\_\-um@{m\_\-to\_\-um}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[m\_\-to\_\-um]{\setlength{\rightskip}{0pt plus 5cm}double {\bf m\_\-to\_\-um} = 1e6\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_57b4c77585d16893b6bdb93b3e7c5b82}
+
+
+
+
+Definition at line 22 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_cda6bb80babe3af59864fa0131e052ed}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!MeV\_\-g\_\-to\_\-J\_\-kg@{MeV\_\-g\_\-to\_\-J\_\-kg}}
+\index{MeV\_\-g\_\-to\_\-J\_\-kg@{MeV\_\-g\_\-to\_\-J\_\-kg}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[MeV\_\-g\_\-to\_\-J\_\-kg]{\setlength{\rightskip}{0pt plus 5cm}double {\bf MeV\_\-g\_\-to\_\-J\_\-kg} = 1.60217646e-10\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_cda6bb80babe3af59864fa0131e052ed}
+
+
+
+
+Definition at line 18 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_94ea9dcdbaffbff658491fc2fac9b612}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!MeV\_\-to\_\-J@{MeV\_\-to\_\-J}}
+\index{MeV\_\-to\_\-J@{MeV\_\-to\_\-J}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[MeV\_\-to\_\-J]{\setlength{\rightskip}{0pt plus 5cm}double {\bf MeV\_\-to\_\-J} = 1.60217646e-13\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_94ea9dcdbaffbff658491fc2fac9b612}
+
+
+
+
+Definition at line 16 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_0e03bad67235c77640a9546ad7912e09}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!MeV\_\-to\_\-keV@{MeV\_\-to\_\-keV}}
+\index{MeV\_\-to\_\-keV@{MeV\_\-to\_\-keV}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[MeV\_\-to\_\-keV]{\setlength{\rightskip}{0pt plus 5cm}double {\bf MeV\_\-to\_\-keV} = 1000.0\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_0e03bad67235c77640a9546ad7912e09}
+
+
+
+
+Definition at line 17 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_31c17cc321db72d5ab448b71ea92792f}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!pi@{pi}}
+\index{pi@{pi}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[pi]{\setlength{\rightskip}{0pt plus 5cm}double {\bf pi} = 3.14159265\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_31c17cc321db72d5ab448b71ea92792f}
+
+
+
+
+Definition at line 24 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_e305abb5dcf542f3ff28f31b2b0b2c5d}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!proton\_\-mass\_\-kg@{proton\_\-mass\_\-kg}}
+\index{proton\_\-mass\_\-kg@{proton\_\-mass\_\-kg}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[proton\_\-mass\_\-kg]{\setlength{\rightskip}{0pt plus 5cm}double {\bf proton\_\-mass\_\-kg} = 1.67262171e-27\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_e305abb5dcf542f3ff28f31b2b0b2c5d}
+
+
+
+
+Definition at line 7 of file SGP\_\-Constants.h.\hypertarget{SGP__Constants_8h_5022b3e373ce8f7d0204b9e529cb12b6}{
+\index{SGP\_\-Constants.h@{SGP\_\-Constants.h}!proton\_\-mass\_\-MeV\_\-c2@{proton\_\-mass\_\-MeV\_\-c2}}
+\index{proton\_\-mass\_\-MeV\_\-c2@{proton\_\-mass\_\-MeV\_\-c2}!SGP_Constants.h@{SGP\_\-Constants.h}}
+\subsubsection[proton\_\-mass\_\-MeV\_\-c2]{\setlength{\rightskip}{0pt plus 5cm}double {\bf proton\_\-mass\_\-MeV\_\-c2} = 938.272029\hspace{0.3cm}{\tt  \mbox{[}static\mbox{]}}}}
+\label{d3/de7/SGP__Constants_8h_5022b3e373ce8f7d0204b9e529cb12b6}
+
+
+
+
+Definition at line 6 of file SGP\_\-Constants.h.
