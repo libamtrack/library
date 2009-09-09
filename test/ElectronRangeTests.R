@@ -1,6 +1,13 @@
+# clear workspace
 rm( list = ls() )
+
+# load libAmTrack library
 dyn.load("../Release/libAmTrack.dll")
+
+# load wrapping scripts
 source("../WrappingScripts/SGP.ssc")
+
+# necessary library for plotting
 library("lattice")
 
 # energy range definitions:
