@@ -1,6 +1,17 @@
 #ifndef SGP_CONSTANTS_H_
 #define SGP_CONSTANTS_H_
 
+#include <string.h>
+#include <stdio.h>
+
+#define _LINUX // [_LINUX or _WINDOWS] : in Linux we have isnan function while in Windows we have _isnan
+#define _R // [_S or _R] in S we can pass long type to the function via as.single, but in R we pass int type
+//#define _DEBUG // debugging printouts
+
+extern int indent_counter;
+extern char isp[];
+extern FILE * debf;
+
 static	double	c_m_s						=	299792458.0; 						// speed of light [m/s]
 static	double	c_cm_s						=	29979245800.0; 						// speed of light [cm/s]
 static	double	proton_mass_MeV_c2			=	938.272029;							// proton mass

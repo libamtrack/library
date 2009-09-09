@@ -7,19 +7,13 @@
 
 #include "SGP_Utils.h"
 
-#include "SGP_Data.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <float.h>
-#include <math.h>
-#include <malloc.h>
-#include <string.h>
-#include <stdbool.h>
 
 #ifdef _DEBUG
 void indnt_init(){
 	debf = stderr;
+	indent_counter = 0;
+	char tmp[30] = "\0                            ";
+	strcpy( isp , tmp);
 };
 
 void indnt_inc(){

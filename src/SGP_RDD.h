@@ -1,6 +1,27 @@
 #ifndef SGP_RDD_H_
 #define SGP_RDD_H_
 
+#include "SGP_Constants.h"
+#include "SGP_Data.h"
+#include "SGP_Utils.h"
+#include "SGP_Functions.h"
+
+#include <gsl/gsl_integration.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_sf_exp.h>
+#include <gsl/gsl_sf_log.h>
+#include <gsl/gsl_complex_math.h>
+#include <gsl/gsl_const_mksa.h>
+#include <gsl/gsl_const_num.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_roots.h>
+#include <gsl/gsl_sf_hyperg.h>
+
+extern int indent_counter;
+extern char isp[];
+extern FILE * debf;
+
 void 			SGP_D_RDD_Gy(			long*	n,
 										float*	r_m,
 										/* radiation field parameters */

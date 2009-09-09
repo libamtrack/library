@@ -2,6 +2,11 @@
 #define SGP_SUCCESSIVECONVOLUTIONS_H_
 
 #include <stdbool.h>
+#include <stdio.h>
+
+extern int indent_counter;
+extern char isp[];
+extern FILE * debf;
 
 void	SGP_SC_get_f1_array_size(	/* radiation field parameters */
 									long*	n,

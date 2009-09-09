@@ -1,9 +1,9 @@
-###########################################################g#####################################
-# SGParticle library
+################################################################################################
+# libAmTrack library
 #
-# Wrapping function interfacing SGParticle.dll
-# This script replaces (together with the SGP.dll) the old S-Plus or mixed S-Plus/C-versions
-# v1.0 - v2.x of the SGP particle library (or LGC, TIM, ...)
+# Wrapping function interfacing libAmTrack.dll
+# This script replaces (together with the libAmTrack.dll) the old S-Plus or mixed S-Plus/C-versions
+# v1.0 - v2.x of the AmTrack particle library (or LGC, TIM, ...)
 #
 # Some function are not yet implemented in the
 # library as C-code but here in S

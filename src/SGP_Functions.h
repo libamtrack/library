@@ -1,6 +1,20 @@
 #ifndef SGP_FUNCTIONS_H_
 #define SGP_FUNCTIONS_H_
 
+#include <stdio.h>
+#include <math.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "SGP_Constants.h"
+#include "SGP_Data.h"
+#include "SGP_Utils.h"
+
+extern int indent_counter;
+extern char isp[];
+extern FILE * debf;
+
 ///////////////////////////////////////////////////////////////////////
 // DATA ACCESS ROUTINE EXPORT (MAINLY FOR DEBUGGING)
 void SGP_LET_MeV_cm2_g(	long*	n,

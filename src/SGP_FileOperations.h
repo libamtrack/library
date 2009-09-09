@@ -3,6 +3,13 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
+#include "SGP_Utils.h"
+
+extern int indent_counter;
+extern char isp[];
+extern FILE * debf;
 
 void SGP_browseInput(	char*	fileName,
 						// return:
