@@ -1,7 +1,15 @@
 #ifndef SGP_UTILS_H_
 #define SGP_UTILS_H_
 
+#include "SGP_Data.h"
+
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <float.h>
+#include <math.h>
+#include <malloc.h>
+#include <string.h>
 
 static float maxarg1;
 static float maxarg2;
@@ -20,14 +28,13 @@ static long lminarg2;
 #define LMIN(a,b) (lminarg1=(a),lminarg2=(b),(lminarg1) < (lminarg2) ? (lminarg1) : (lminarg2))
 
 #ifdef _DEBUG
-int indent_counter = 0;
-char isp[30] = "\0                            ";
+int indent_counter;
+char isp[30];
 FILE * debf;
 
 void indnt_inc();
 void indnt_dec();
 void indnt_init();
-
 #endif
 
 

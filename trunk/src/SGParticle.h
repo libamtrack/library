@@ -1,3 +1,6 @@
+#ifndef SGPARTICLE_H_
+#define SGPARTICLE_H_
+
 /*
  * SGParticle.h
  *
@@ -5,10 +8,30 @@
  *      Author: greilich
  */
 
-#ifndef SGPARTICLE_H_
-#define SGPARTICLE_H_
 
-/*
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#include "SGP_Constants.h"
+#include "SGP_Data.h"
+#include "SGP_Utils.h"
+#include "SGP_Functions.h"
+#include "SGP_RDD.h"
+#include "SGP_SuccessiveConvolutions.h"
+#include "SGP_GammaResponse.h"
+#include "SGP_FileOperations.h"
+#include "SGP_ParabolicCylinderFunction.h"
+#include "SGP_Transport.h"
+
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_integration.h>
+
+extern int indent_counter;
+extern char isp[];
+extern FILE * debf;
+
+/**
  * Computes the efficiency using the SPIFF algorithm
  *
  * @param	n						number of particle types in the mixed particle field (pointer to single variable)
@@ -57,12 +80,12 @@ void SGP_efficiency(	long*	n,
 						float*	ER_parameters,
 						long*	gamma_model,
 						float*	gamma_parameters,
-						long*	N2					= 10,
-						float*	fluence_factor		= 1.0f,
-						int*	write_output		= true,
-						int*	shrink_tails		= true,
-						float*	shrink_tails_under	= 1e-30f,
-						int*	adjust_N2			= true,
+						long*	N2,
+						float*	fluence_factor,
+						int*	write_output,
+						int*	shrink_tails,
+						float*	shrink_tails_under,
+						int*	adjust_N2,
 						float*	results);
 
 void SGP_efficiency_grid(	long*	n,

@@ -1,6 +1,12 @@
 #ifndef SGP_DATA_H_
 #define SGP_DATA_H_
 
+#include <stdio.h>
+
+extern int indent_counter;
+extern char isp[];
+extern FILE * debf;
+
 
 ///////////////////////////////////////////////////////////////////////
 // PARTICLE DATA

@@ -1,6 +1,11 @@
 #ifndef SGP_TRANSPORT_H_
 #define SGP_TRANSPORT_H_
 
+#include <stdio.h>
+
+extern int indent_counter;
+extern char isp[];
+extern FILE * debf;
 
 void SGP_BortfeldTransportProton(	float*	E_initial_MeV,
 									float*	sE_initial_MeV,

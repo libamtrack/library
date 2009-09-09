@@ -19,7 +19,7 @@
 </extensions>
 </storageModule>
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
-<configuration artifactExtension="so" artifactName="AmTrack" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.sharedLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.sharedLib" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.mingw.so.debug.1981853240" name="Debug" parent="cdt.managedbuild.config.gnu.mingw.so.debug" postannouncebuildStep="" postbuildStep="">
+<configuration artifactExtension="dll" artifactName="AmTrack" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.sharedLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.sharedLib" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.mingw.so.debug.1981853240" name="Debug" parent="cdt.managedbuild.config.gnu.mingw.so.debug" postannouncebuildStep="" postbuildStep="">
 <folderInfo id="cdt.managedbuild.config.gnu.mingw.so.debug.1981853240." name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.mingw.base.897287239" name="MinGW GCC" superClass="cdt.managedbuild.toolchain.gnu.mingw.base">
 <targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.PE" id="cdt.managedbuild.target.gnu.platform.mingw.base.439065561" name="Debug Platform" osList="win32" superClass="cdt.managedbuild.target.gnu.platform.mingw.base"/>
@@ -496,7 +496,7 @@
 </extensions>
 </storageModule>
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
-<configuration artifactExtension="so" artifactName="AmTrack" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.sharedLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.sharedLib" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.mingw.so.release.2032312134" name="Release" parent="cdt.managedbuild.config.gnu.mingw.so.release">
+<configuration artifactExtension="dll" artifactName="AmTrack" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.sharedLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.sharedLib" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.mingw.so.release.2032312134" name="Release" parent="cdt.managedbuild.config.gnu.mingw.so.release">
 <folderInfo id="cdt.managedbuild.config.gnu.mingw.so.release.2032312134." name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.mingw.so.release.2032920104" name="MinGW GCC" superClass="cdt.managedbuild.toolchain.gnu.mingw.so.release">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.mingw.so.release.1694240991" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.mingw.so.release"/>
@@ -512,12 +512,12 @@
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.mingw.so.release.81629388" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.so.release">
 <option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.mingw.so.release.option.optimization.level.802971109" name="Optimization Level" superClass="gnu.c.compiler.mingw.so.release.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.mingw.so.release.option.debugging.level.406822324" name="Debug Level" superClass="gnu.c.compiler.mingw.so.release.option.debugging.level" value="gnu.c.debugging.level.none" valueType="enumerated"/>
-<option id="gnu.c.compiler.option.misc.other.436742730" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -fPIC" valueType="string"/>
+<option id="gnu.c.compiler.option.misc.other.436742730" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -fPIC" valueType="string"/>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.12474342" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.mingw.so.release.21347758" name="MinGW C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.mingw.so.release">
 <option defaultValue="true" id="gnu.c.link.mingw.so.release.option.shared.2025890958" name="Shared (-shared)" superClass="gnu.c.link.mingw.so.release.option.shared" valueType="boolean"/>
-<option id="gnu.c.link.option.libs.1889489028" superClass="gnu.c.link.option.libs" valueType="libs">
+<option id="gnu.c.link.option.libs.1889489028" name="Libraries (-l)" superClass="gnu.c.link.option.libs" valueType="libs">
 <listOptionValue builtIn="false" value="gsl"/>
 <listOptionValue builtIn="false" value="gslcblas"/>
 <listOptionValue builtIn="false" value="m"/>
@@ -526,7 +526,7 @@
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 <additionalInput kind="additionalinput" paths="$(LIBS)"/>
 </inputType>
-<outputType id="cdt.managedbuild.tool.gnu.c.linker.mingw.so.release.output.1550246240" outputPrefix="" superClass="cdt.managedbuild.tool.gnu.c.linker.mingw.so.release.output"/>
+<outputType id="cdt.managedbuild.tool.gnu.c.linker.mingw.so.release.output.1550246240" outputPrefix="lib" superClass="cdt.managedbuild.tool.gnu.c.linker.mingw.so.release.output"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.mingw.so.release.1820852161" name="MinGW C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.mingw.so.release">
 <option defaultValue="true" id="gnu.cpp.link.mingw.so.release.option.shared.817692637" name="Shared (-shared)" superClass="gnu.cpp.link.mingw.so.release.option.shared" valueType="boolean"/>

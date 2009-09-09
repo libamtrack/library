@@ -7,10 +7,6 @@
 
 #include "SGP_FileOperations.h"
 
-#include "SGP_Utils.h"
-
-#include <stdlib.h>
-
 void SGP_browseInput(	char*	fileName,
 						long*	nLines,
 						long*	n_gamma_parameter)

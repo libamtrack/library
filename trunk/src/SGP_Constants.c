@@ -1,12 +1,10 @@
-/*
+ /*
  * SGP_Constants.c
  *
  *  Created on: 28.07.2009
  *      Author: greilich
  */
 #include "SGP_Constants.h"
-
-#include <string.h>
 
 void getMaterialName(long* material_no, char* material_name){
 	switch( (int)(*material_no) ){

@@ -7,16 +7,6 @@
 
 #include "SGP_Functions.h"
 
-#include "SGP_Constants.h"
-#include "SGP_Data.h"
-#include "SGP_Utils.h"
-
-#include <math.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 ///////////////////////////////////////////////////////////////////////
 // Routines to access PARTICLE data
 ///////////////////////////////////////////////////////////////////////
@@ -522,10 +512,9 @@ void SGP_max_electron_range_mS(	int*	n,
 	free(particle_no_long);
 
 }
-
 #endif
-#ifdef _S
 
+#ifdef _S
 void SGP_max_electron_range_mS(	long*	n,
 								float*	E_MeV_u,
 								long*	particle_no,

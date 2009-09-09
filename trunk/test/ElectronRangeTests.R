@@ -1,9 +1,7 @@
 rm( list = ls() )
-dyn.load("/home/grzanka/workspace/DKFZ/Steffen/SGParticleLibrary/Release/libSGPL.so")
-source("SGP.ssc")
+dyn.load("../Release/libAmTrack.dll")
+source("../WrappingScripts/SGP.ssc")
 library("lattice")
-
-pdf("/home/grzanka/workspace/DKFZ/Steffen/SGParticleLibrary/SGPL-R/ER.pdf")
 
 # energy range definitions:
 #E.MeV.u <- c( 1, 10, 60, 100, 250, 1000)
@@ -39,6 +37,8 @@ df
 # plots...
 logplot <- xyplot( 1e2*range.m ~ E.MeV.u, groups = er.models.name, ref = TRUE, data=df, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV]", ylab = "Range [cm]", auto.key = list(title = "Protons in liquid water, range of delta electrons",points = FALSE, lines = TRUE), scales = list(log = 10))
 linplot <- xyplot( 1e2*range.m ~ E.MeV.u, groups = er.models.name, ref = TRUE, data=df, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV]", ylab = "Range [cm]", auto.key = list(title = "Protons in liquid water, range of delta electrons",points = FALSE, lines = TRUE))
+
+pdf("ER.pdf")
 
 logplot
 linplot

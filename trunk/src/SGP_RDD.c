@@ -7,23 +7,6 @@
 
 #include "SGP_RDD.h"
 
-#include "SGP_Constants.h"
-#include "SGP_Data.h"
-#include "SGP_Utils.h"
-#include "SGP_Functions.h"
-
-#include <gsl/gsl_integration.h>
-#include <gsl/gsl_complex.h>
-#include <gsl/gsl_sf_exp.h>
-#include <gsl/gsl_sf_log.h>
-#include <gsl/gsl_complex_math.h>
-#include <gsl/gsl_const_mksa.h>
-#include <gsl/gsl_const_num.h>
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_roots.h>
-#include <gsl/gsl_sf_hyperg.h>
-
 inline float SGP_RDD_Katz_point_kernel(float* x, float* alpha){
 	return (1.0f/((*x)*(*x)) )*pow(1.0f - (*x), 1.0f / (*alpha));
 }
