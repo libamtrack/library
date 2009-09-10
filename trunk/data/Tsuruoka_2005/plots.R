@@ -98,7 +98,7 @@ for( let in iron.500.let ){
 plot1 <- SGP.plot.surv.data( df.Survival )
 pch.table <- c(22,15,1,16,2,17,6,18,23)
 
-pdf("Tsuruoka_plots.pdf")
+pdf("PlotsFromTheArticle.pdf")
 
 #plot1
 
@@ -113,7 +113,7 @@ for( let in carbon.290.let ){
 	i <- (i+1)
 }
 df <- gamma.data
-plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.), title = "dupa")
+plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.))
 legend( "topright", legend = c("200 kV X rays", paste( "LET = " , carbon.290.let, "keV/um" )), pch = pch.table)
 lines( x = df$D.Gy , y = df$Survival/100. )
 axis( 1, at = c(0,1,2,3,4,5,6))
@@ -131,7 +131,7 @@ for( let in carbon.135.let ){
 	i <- (i+1)
 }
 df <- gamma.data
-plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.), title = "dupa")
+plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.) )
 legend( "topright", legend = c("200 kV X rays", paste( "LET = " , carbon.135.let, "keV/um" )), pch = pch.table)
 lines( x = df$D.Gy , y = df$Survival/100. )
 axis( 1, at = c(0,1,2,3,4,5,6))
@@ -149,7 +149,7 @@ for( let in neon.400.let ){
 	i <- (i+1)
 }
 df <- gamma.data
-plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.), title = "dupa")
+plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.) )
 legend( "topright", legend = c("200 kV X rays", paste( "LET = " , neon.400.let, "keV/um" )), pch = pch.table)
 lines( x = df$D.Gy , y = df$Survival/100. )
 axis( 1, at = c(0,1,2,3,4,5,6))
@@ -167,7 +167,7 @@ for( let in neon.230.let ){
 	i <- (i+1)
 }
 df <- gamma.data
-plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.), title = "dupa")
+plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.) )
 legend( "topright", legend = c("200 kV X rays", paste( "LET = " , neon.230.let, "keV/um" )), pch = pch.table)
 lines( x = df$D.Gy , y = df$Survival/100. )
 axis( 1, at = c(0,1,2,3,4,5,6))
@@ -185,7 +185,7 @@ for( let in silicon.490.let ){
 	i <- (i+1)
 }
 df <- gamma.data
-plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.), title = "dupa")
+plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.) )
 legend( "topright", legend = c("200 kV X rays", paste( "LET = " , silicon.490.let, "keV/um" )), pch = pch.table)
 lines( x = df$D.Gy , y = df$Survival/100. )
 axis( 1, at = c(0,1,2,3,4,5,6))
@@ -203,7 +203,7 @@ for( let in iron.500.let ){
 	i <- (i+1)
 }
 df <- gamma.data
-plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.), title = "dupa")
+plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.) )
 legend( "topright", legend = c("200 kV X rays", paste( "LET = " , iron.500.let, "keV/um" )), pch = pch.table)
 lines( x = df$D.Gy , y = df$Survival/100. )
 axis( 1, at = c(0,1,2,3,4,5,6))
