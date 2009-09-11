@@ -68,31 +68,47 @@ df.Summary <- unique(df.Summary)
 
 RBE.vector <- numeric(0)
 
+# linear-quadratic fit, plots and calculations of RBE
+
 pdf("LQfit.pdf")
 
+# loop over all survival curves
 for( item in unique(df.Survival$cond) ){
  if( item != "0-0-0" ){
   cond <- ( df.Survival$cond == item )
+
+  # fitting of LQ equation to ion data
   ion.params <- c(0.,0.)
   try(ion.params <- SGP.fit.linquad( df.Survival$D.Gy[ cond ], df.Survival$Survival[ cond ], df.Survival$Sur.min[ cond ] , df.Survival$Sur.max[ cond ], 0., 0. ))
+	 
+	 # plot of gamma data
 	 df <- gamma.data
 	 plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.))
+	 
+	 # plot of LQ fit to gamma data
   x <- seq( 0, 6, by=0.01)
   y <- exp( -gamma.params[1]*x - gamma.params[2]*x*x)
   lines( x = x , y = y )
+	 
+	 
+	 # plot of ion data 
 	 df <- data.frame( D.Gy = df.Survival$D.Gy[ cond ], Survival = df.Survival$Survival[ cond ], Sur.min = df.Survival$Sur.min[ cond ] , Sur.max = df.Survival$Sur.max[ cond ])
 	 par(new=TRUE)
 	 plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.))
   legend( "topright", legend = c("200 kV X rays", paste( "LET = " , unique(df.Survival$LET[ cond ]) , "keV/um" ) ))
+  
+  # plot of LQ fit to ion data
   x <- seq( 0, 6, by=0.01)
   y <- exp( -ion.params[1]*x - ion.params[2]*x*x)
   lines( x = x , y = y )
   abline( h = c(0.1) )
   axis( 1, at = c(0,1,2,3,4,5,6))
   axis( 2, at = c(0.001,0.01,0.1,1))
+  
+  # calculation of RBE
   RBE <- SGP.RBE( ion.params[1],  ion.params[2], gamma.params[1], gamma.params[2] )
   RBE.vector <- c( RBE.vector , RBE)
-  title( main = paste("Z = ", unique(df.Survival$Z[ cond ]), " init energy = ", unique(df.Survival$Init.Energy[ cond ]) , "MeV/amu\n ion.alpha = ", round(ion.params[1],3), "ion.beta = ", round(ion.params[2],3), "\n RBE = ", round(RBE,3)) )
+  title( main = substitute( paste( Zval, " ions, ", E[init], "=", Eval, "MeV/amu, ", alpha, "=", alphaval, " " ,beta, "=", betaval, " RBE = ", RBEval), list(Zval=SGP.survival.data.names(unique(df.Survival$Z[ cond ])) , Eval = unique(df.Survival$Init.Energy[ cond ]), alphaval = round(ion.params[1],3), betaval = round(ion.params[2],3), RBEval = round(RBE,2) ) ) )
 }	
 } 
 dev.off()
@@ -101,7 +117,6 @@ df.Summary$RBE <- RBE.vector
 
 pdf("RBE.pdf")
 
-#plot( df.Summary$RBE ~ df.Summary$LET, groups = df.Summary$Z, xlab = "LET [keV/um]", ylab = "RBE" )
 p1 <- xyplot( RBE ~ LET | paste("Z =",Z,lapply( df.Summary$Z, SGP.survival.data.names)), data = df.Summary , groups = cond, auto.key = list(), type = "p" , scales = c( list( x = list(log = 10)) ))
 p1
 
