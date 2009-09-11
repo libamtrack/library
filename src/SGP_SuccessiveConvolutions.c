@@ -7,16 +7,6 @@
 
 #include "SGP_SuccessiveConvolutions.h"
 
-#include "SGP_Constants.h"
-#include "SGP_Utils.h"
-#include "SGP_RDD.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <math.h>
-#include <malloc.h>
-
 #define MEAN_HIT_NUMBER_LINEAR_APPROX_LIMIT		0.002
 #define	DEBUG_INTERVALS							8
 #define DEBUG_MEAN								10.0f

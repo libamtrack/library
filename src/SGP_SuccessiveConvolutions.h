@@ -1,8 +1,15 @@
 #ifndef SGP_SUCCESSIVECONVOLUTIONS_H_
 #define SGP_SUCCESSIVECONVOLUTIONS_H_
 
-#include <stdbool.h>
+#include "SGP_Constants.h"
+#include "SGP_Utils.h"
+#include "SGP_RDD.h"
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
+#include <malloc.h>
 
 extern int indent_counter;
 extern char isp[];
