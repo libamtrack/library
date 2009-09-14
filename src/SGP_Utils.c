@@ -8,7 +8,6 @@
 #include "SGP_Utils.h"
 
 
-#ifdef _DEBUG
 void indnt_init(){
 	debf = stderr;
 	indent_counter = 0;
@@ -27,7 +26,6 @@ void indnt_dec(){
    isp[indent_counter+1] = ' ';
    isp[indent_counter] = '\0';
 }
-#endif
 
 
 // finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match

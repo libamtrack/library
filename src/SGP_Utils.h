@@ -1,6 +1,7 @@
 #ifndef SGP_UTILS_H_
 #define SGP_UTILS_H_
 
+#include "SGP_Constants.h"
 #include "SGP_Data.h"
 
 #include <stdbool.h>
@@ -27,7 +28,6 @@ static long lminarg1;
 static long lminarg2;
 #define LMIN(a,b) (lminarg1=(a),lminarg2=(b),(lminarg1) < (lminarg2) ? (lminarg1) : (lminarg2))
 
-#ifdef _DEBUG
 int indent_counter;
 char isp[30];
 FILE * debf;
@@ -35,7 +35,6 @@ FILE * debf;
 void indnt_inc();
 void indnt_dec();
 void indnt_init();
-#endif
 
 
 // finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
