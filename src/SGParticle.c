@@ -239,8 +239,45 @@ void SGP_efficiency_grid(	long*	n,
 							bool*	write_output,
 							long*	nX,
 							float*	grid_size_m,
+							bool*	lethal_events_mode,
 							float*	results)
 {
+
+#ifdef _R
+	bool write_output_b = false;
+	if( *write_output == 1)
+		write_output_b = true;
+
+	bool lethal_events_mode_b = false;
+	if( *lethal_events_mode == 1)
+		lethal_events_mode_b = true;
+
+	int n_int = (int)(*n);
+	*n = (long)n_int;
+
+	int N_runs_int = (int)(*N_runs);
+	*N_runs = (long)N_runs_int;
+
+	int nX_int = (int)(*nX);
+	*nX = (long)nX_int;
+
+	int RDD_model_int = (int)(*RDD_model);
+	*RDD_model = (long)RDD_model_int;
+
+	int ER_model_int = (int)(*ER_model);
+	*ER_model = (long)ER_model_int;
+
+	int gamma_model_int = (int)(*gamma_model);
+	*gamma_model = (long)gamma_model_int;
+
+	int material_no_int	= (int)(*material_no);
+	*material_no = (long)material_no_int;
+
+	int particle_no_int = (int)(*particle_no);
+	*particle_no = (long)particle_no_int;
+#endif
+
+
 	FILE*		output_file;
 	struct tm	*start_tm, *end_tm;
 	time_t 		start_t, end_t;
@@ -261,7 +298,7 @@ void SGP_efficiency_grid(	long*	n,
 	fprintf(output_file, "\n\n\n");
 	start_tm 		= localtime(&start_t);
 	fprintf(output_file, "Start time and date: %s\n", asctime(start_tm));
-	fprintf(output_file, "calc grid:			%d*%d = %d pixels\n", *nX, *nX, n_grid);
+	fprintf(output_file, "calc grid:			%ld*%ld = %ld pixels\n", *nX, *nX, n_grid);
 	fprintf(output_file, "calc grid size/m:	 	%e\n", calc_grid_size_m);
 	fprintf(output_file, "calc grid area/cm2:	%e\n", calc_grid_area_cm2);
 
@@ -281,7 +318,7 @@ void SGP_efficiency_grid(	long*	n,
 	float*		dose_contribution_Gy= (float*)calloc(*n, sizeof(float));
 	float		max_r_max_m			= 0.0f;
 
-	fprintf(output_file, "f1 parameters for %d particles\n", *n);
+	fprintf(output_file, "f1 parameters for %ld particles\n", *n);
 	for (i = 0; i < *n; i++){
 		SGP_RDD_f1_parameters(	&E_MeV_u[i],
 								&particle_no[i],
@@ -348,7 +385,7 @@ void SGP_efficiency_grid(	long*	n,
 		mean_number_particles[i]	= sample_grid_area_cm2 * f_parameters[1] * norm_fluence[i];				// Area * Total_fluence (particle i)
 	}
 
-	// create and initialise RNGs
+	// create and initialize RNGs
 	gsl_rng * rng1 	= gsl_rng_alloc (gsl_rng_taus);
 	gsl_rng * rng2 	= gsl_rng_alloc (gsl_rng_taus);
 	gsl_rng_set(rng1, 12345678);
@@ -368,12 +405,12 @@ void SGP_efficiency_grid(	long*	n,
 		}
 
 		if(*N_runs <= 20){
-			fprintf(output_file, "\n\nRun %d:\n", m + 1);
+			fprintf(output_file, "\n\nRun %ld:\n", m + 1);
 			fprintf(output_file, "Actual number of particles (mean)\n");
 			for (i = 0; i < *n; i++){
-				fprintf(output_file, "particle %d: %d (%e)\n", i, act_number_particles[i], mean_number_particles[i]);
+				fprintf(output_file, "particle %ld: %ld (%e)\n", i, act_number_particles[i], mean_number_particles[i]);
 			}
-			fprintf(output_file, "\nIn total: %d\n", n_particles);
+			fprintf(output_file, "\nIn total: %ld\n", n_particles);
 		}
 
 		// alloc particle array
@@ -441,16 +478,29 @@ void SGP_efficiency_grid(	long*	n,
 							gamma_model,
 							gamma_parameters,
 							grid_S);
-		// averaging
+
 		float d_total_Gy 	= 0.0f;
 		float S_HCP			= 0.0f;
-		for (i = 0; i < n_grid; i++){
-			d_total_Gy		+=	grid_d_Gy[i];
-			S_HCP			+=	grid_S[i];
-		}
 
+		if( *lethal_events_mode ){
+			// averaging over number of lethal events
+			for (i = 0; i < n_grid; i++){
+				d_total_Gy		+=	grid_d_Gy[i];
+				S_HCP			+=	(-1.0f)*logf(grid_S[i]);
+			}
+		} else {
+			// averaging over the dose
+			for (i = 0; i < n_grid; i++){
+				d_total_Gy		+=	grid_d_Gy[i];
+				S_HCP			+=	grid_S[i];
+			}
+		}
 		S_HCP				/=	n_grid;
 		d_total_Gy			/= n_grid;
+
+		if( *lethal_events_mode ){
+			S_HCP	= expf( - S_HCP );
+		}
 
 		float S_gamma	= 0.0f;
 		SGP_gamma_response(	&n_tmp,
@@ -466,22 +516,22 @@ void SGP_efficiency_grid(	long*	n,
 
 		// write graph (first run)
 		bool write_graph = true;
-			if(write_graph & m == 0){
-				FILE*		graph_file;
-				graph_file		=	fopen("GridGraph.csv","w");
-				if (graph_file == NULL) return;		// File error
+		if(write_graph & (m == 0)){
+			FILE*		graph_file;
+			graph_file		=	fopen("GridGraph.csv","w");
+			if (graph_file == NULL) return;		// File error
 
-				fprintf(graph_file, "x.m; y.m; d.Gy; S\n");
+			fprintf(graph_file, "x.m; y.m; d.Gy; S\n");
 
-				for (j = 0; j < *nX; j++){
-					for (i = 0; i < *nX; i++){
-						fprintf(graph_file, "%e; %e; %e; %e\n",	max_r_max_m + ((float)i + 0.5f)*(*grid_size_m),
-																max_r_max_m + ((float)j + 0.5f)*(*grid_size_m),
-																grid_d_Gy[j * (*nX) + i],
-																grid_S[j * (*nX) + i]);
-					}
+			for (j = 0; j < *nX; j++){
+				for (i = 0; i < *nX; i++){
+					fprintf(graph_file, "%e; %e; %e; %e\n",	max_r_max_m + ((float)i + 0.5f)*(*grid_size_m),
+							max_r_max_m + ((float)j + 0.5f)*(*grid_size_m),
+							grid_d_Gy[j * (*nX) + i],
+							grid_S[j * (*nX) + i]);
 				}
 			}
+		}
 
 		run_results[0]		= efficiency;
 		run_results[1]		= d_total_Gy;
@@ -503,7 +553,7 @@ void SGP_efficiency_grid(	long*	n,
 		results[9]			+= n_particles * n_particles;
 
 		if (*N_runs <= 20){
-			fprintf(output_file, "\n\nRun %d results\n", m + 1);
+			fprintf(output_file, "\n\nRun %ld results\n", m + 1);
 			fprintf(output_file, "efficiency 		= %e\n", run_results[0]);
 			fprintf(output_file, "d.check.Gy 		= %e\n", run_results[1]);
 			fprintf(output_file, "S (HCP) 			= %e\n", run_results[2]);

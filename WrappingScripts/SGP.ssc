@@ -1021,8 +1021,10 @@ SGP.efficiency.grid	<-	function(	E.MeV.u,
 										fluence.factor		=	1.0,
 										write.output			=	T,
 										n.X						=	100,
+										lethal.events.mode  = F,
 										grid.size.m			=	1e-9){
 	
+	 cat( "fluence.cm2 = ", fluence.cm2 ,  "\n")
 		results			<-	numeric(10)
 		res					<-	.C(	"SGP_efficiency_grid",		n				= 	as.integer(length(E.MeV.u)),
 															E.MeV.u				=	as.single(E.MeV.u),
@@ -1040,6 +1042,7 @@ SGP.efficiency.grid	<-	function(	E.MeV.u,
 															write.output			=	as.integer(write.output),
 															n.X						=	as.integer(n.X),
 															grid.size.m			=	as.single(grid.size.m),
+															lethal.events.mode = as.integer(lethal.events.mode),
 															results				=	as.single(results))
 	results			<-	res$results
 	return(results)
