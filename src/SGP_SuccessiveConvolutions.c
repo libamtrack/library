@@ -179,7 +179,7 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 		for (i = 0; i < *n; i++){
 			fluence_cm2_local[i]		= -1.0f * fluence_cm2[i] / (f1_parameters[i*9] * MeV_g_to_J_kg);			// fluence / LET
 			fluence_cm2[i]				= fluence_cm2_local[i];
-			printf("fluence_cm2[%ld] = %g\n", i, fluence_cm2[i]);
+			//printf("fluence_cm2[%ld] = %g\n", i, fluence_cm2[i]);
 		}
 	}
 
@@ -208,15 +208,15 @@ void	SGP_SC_get_f1(	/* radiation field parameters */
 	 * 		8 - dEdx_MeV_cm2_g
 	 */
 
-	printf("f1_parameters[0] = %g\n", f1_parameters[0]);
-	printf("f1_parameters[8] = %g\n", f1_parameters[8]);
+	//printf("f1_parameters[0] = %g\n", f1_parameters[0]);
+	//printf("f1_parameters[8] = %g\n", f1_parameters[8]);
 
 	for (i = 0; i < *n; i++){
 		norm_fluence[i]				=	fluence_cm2_local[i] / f_parameters[1];
-		printf("norm_fluence[%ld] = %g\n", i, norm_fluence[i]);
+		//printf("norm_fluence[%ld] = %g\n", i, norm_fluence[i]);
 		u_single					=	fluence_cm2_local[i] / f1_parameters[i*9 + 6];
 		dose_contribution_Gy[i]		=	u_single * f1_parameters[i*9 + 7];
-		printf("dose_contribution_Gy[%ld] = %g\n", i, dose_contribution_Gy[i]);
+		//printf("dose_contribution_Gy[%ld] = %g\n", i, dose_contribution_Gy[i]);
 		f_parameters[2]				+=	dose_contribution_Gy[i];
 		f_parameters[3]				+=	norm_fluence[i] * E_MeV_u[i];
 		f_parameters[4]				+=	dose_contribution_Gy[i] * E_MeV_u[i];
