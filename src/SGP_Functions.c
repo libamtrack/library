@@ -229,8 +229,15 @@ void SGP_E_MeV_from_CDSA_range(	long*	n,
 								long*	material_no,
 								float*	E_MeV)
 {
-	getPSTARvalue(n, CSDA_range_g_cm2, material_no, SGP_PSTAR_Data.range_cdsa_g_cm2, SGP_PSTAR_Data.kin_E_MeV, E_MeV);
-	// TO DO: scale energy back!
+	// scaled energies
+	float*	sE	=	(float*)calloc(*n, sizeof(float));
+
+	getPSTARvalue(n, CSDA_range_g_cm2, material_no, SGP_PSTAR_Data.range_cdsa_g_cm2, SGP_PSTAR_Data.kin_E_MeV, sE);
+
+	// scale energy back
+	SGP_E_MeV_u_from_scaled_energy(n , sE, particle_no, E_MeV);
+
+	free( sE );
 }
 
 void SGP_E_MeV_from_LET(	long*	n,
@@ -239,8 +246,15 @@ void SGP_E_MeV_from_LET(	long*	n,
 							long*	material_no,
 							float*	E_MeV)
 {
-	getPSTARvalue(n, LET_MeV_cm2_g, material_no, SGP_PSTAR_Data.stp_pow_el_MeV_cm2_g, SGP_PSTAR_Data.kin_E_MeV, E_MeV);
-	// TO DO: scale energy back!
+	// scaled energies
+	float*	sE	=	(float*)calloc(*n, sizeof(float));
+
+	getPSTARvalue(n, LET_MeV_cm2_g, material_no, SGP_PSTAR_Data.stp_pow_el_MeV_cm2_g, SGP_PSTAR_Data.kin_E_MeV, sE);
+
+	// scale energy back
+	SGP_E_MeV_u_from_scaled_energy(n , sE, particle_no, E_MeV);
+
+	free( sE );
 }
 
 
@@ -443,6 +457,41 @@ void SGP_scaled_energy(	long*	n,
 	//printf("end SGP_scaled_energy\n");
 
 }
+
+void SGP_E_MeV_u_from_scaled_energy(	long*	n,
+						float*	scaled_energy,
+						long*	particle_no,
+						float*	E_MeV_u)
+{
+	// find look-up indices for A's for particle numbers in particle data
+	long*	matches	=	(long*)calloc(*n, sizeof(long));
+	pmatchi(	particle_no,
+				n,
+				SGP_Particle_Data.particle_no,
+				&SGP_Particle_Data.n,
+				matches);
+
+	// loop over n to find beta for all given particles and energies
+	long	i;
+	for(i = 0; i < *n; i++){
+
+//		printf("matches[0] = %d\n", matches[i]);
+
+		float scaled_energy_u = scaled_energy[i] / SGP_Particle_Data.mass[matches[i]];
+
+		// Get rest energy
+		float	E0_MeV		=	(float)proton_mass_MeV_c2 * SGP_Particle_Data.mass[matches[i]];
+
+		//printf("E0_MeV = %d\n", E0_MeV);
+
+		// Return mass-scaled energy
+		scaled_energy[i]	=	scaled_energy_u / E0_MeV * proton_mass_MeV_c2;
+	}
+
+	free(matches);
+
+}
+
 
 void SGP_max_E_transfer_MeV(	long*	n,
 								float*	E_MeV_u,

@@ -59,6 +59,12 @@ void SGP_getMaterialData(		long*	n,
 								float*	p_MeV,
 								float*	m_g_cm2);
 
+void SGP_E_MeV_from_LET(	long*	n,
+							float*	LET_MeV_cm2_g,
+							long*	particle_no,
+							long*	material_no,
+							float*	E_MeV);
+
 ///////////////////////////////////////////////////////////////////////
 // MISC CONV. ROUTINES
 void SGP_beta_from_particle_no(	long*	n,
@@ -89,6 +95,10 @@ void SGP_scaled_energy(	long*	n,
 						long*	particle_no,
 						float*	effective_charge);
 
+void SGP_E_MeV_u_from_scaled_energy(	long*	n,
+						float*	E_MeV_u,
+						long*	particle_no,
+						float*	scaled_energy);
 
 void SGP_max_E_transfer_MeV(	long*	n,
 								float*	E_MeV_u,
