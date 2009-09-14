@@ -105,6 +105,7 @@ void SGP_efficiency_grid(	long*	n,
 							bool*	write_output,
 							long*	nX,
 							float*	grid_size_m,
+							bool*	lethal_events_mode,
 							float*	results);
 
 void SGP_efficiency_Katz(	long*	n,
