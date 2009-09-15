@@ -486,7 +486,9 @@ void SGP_efficiency_grid(	long*	n,
 			// averaging over number of lethal events
 			for (i = 0; i < n_grid; i++){
 				d_total_Gy		+=	grid_d_Gy[i];
-				S_HCP			+=	(-1.0f)*logf(grid_S[i]);
+				if( grid_S[i] > 0){
+					S_HCP			+=	(-1.0f)*logf(grid_S[i]);
+				}
 			}
 		} else {
 			// averaging over the dose
