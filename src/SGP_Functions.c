@@ -246,10 +246,50 @@ void SGP_E_MeV_from_LET(	long*	n,
 							long*	material_no,
 							float*	E_MeV)
 {
+
+#ifdef _R
+	int n_int = (int)(*n);
+	*n = (long)n_int;
+
+	int material_no_int	= (int)(*material_no);
+	*material_no = (long)material_no_int;
+
+	int particle_no_int = (int)(*particle_no);
+	*particle_no = (long)particle_no_int;
+#endif
+
+	//printf("n = %ld\n", *n);
+	//printf("particle_no = %ld\n", *particle_no);
+	//printf("material_no = %ld\n", *material_no);
+	//printf("SGP_E_MeV_from_LET LET = %g\n", *LET_MeV_cm2_g);
+
 	// scaled energies
 	float*	sE	=	(float*)calloc(*n, sizeof(float));
 
+	//TODO add effective charge correction !!
+
+	// Conversion LETion => LETproton
+	long*	matches	=	(long*)calloc(*n, sizeof(long));
+	float*	charge	=	(float*)calloc(*n, sizeof(float));
+	pmatchi(	particle_no,
+				n,
+				SGP_Particle_Data.particle_no,
+				&SGP_Particle_Data.n,
+				matches);
+
+	//printf("SGP_E_MeV_from_LET LET ion = %g\n", LET_MeV_cm2_g[0]);
+
+	// loop over n to find charge for all given particles and energies
+	long	i;
+	for(i = 0; i < *n; i++){
+		charge[i]	= SGP_Particle_Data.Z[matches[i]];
+		LET_MeV_cm2_g[i] /= (charge[i]*charge[i]);
+	}
+
+	//printf("SGP_E_MeV_from_LET LET proton = %g\n", LET_MeV_cm2_g[0]);
+
 	getPSTARvalue(n, LET_MeV_cm2_g, material_no, SGP_PSTAR_Data.stp_pow_el_MeV_cm2_g, SGP_PSTAR_Data.kin_E_MeV, sE);
+
 
 	// scale energy back
 	SGP_E_MeV_u_from_scaled_energy(n , sE, particle_no, E_MeV);
@@ -437,19 +477,17 @@ void SGP_scaled_energy(	long*	n,
 	long	i;
 	for(i = 0; i < *n; i++){
 
-//		printf("matches[0] = %d\n", matches[i]);
+		//printf("matches[0] = %ld\n", matches[i]);
 
-		float	E_MeV		=	E_MeV_u[i] * SGP_Particle_Data.mass[matches[i]];
+		// total kinetic energy
+		float	E_MeV		=	E_MeV_u[i] * SGP_Particle_Data.A[matches[i]];
 
-		//printf("E_MeV = %d\n", E_MeV);
+		float mass_fraction = SGP_Particle_Data.mass[matches[i]] / SGP_Particle_Data.mass[0];
 
-		// Get rest energy
-		float	E0_MeV		=	(float)proton_mass_MeV_c2 * SGP_Particle_Data.mass[matches[i]];
-
-		//printf("E0_MeV = %d\n", E0_MeV);
+		//printf("mass_fraction = %g\n", mass_fraction );
 
 		// Return mass-scaled energy
-		scaled_energy[i]	=	E_MeV / E0_MeV * proton_mass_MeV_c2;
+		scaled_energy[i]	=	E_MeV / mass_fraction ;
 	}
 
 	free(matches);
@@ -475,17 +513,17 @@ void SGP_E_MeV_u_from_scaled_energy(	long*	n,
 	long	i;
 	for(i = 0; i < *n; i++){
 
-//		printf("matches[0] = %d\n", matches[i]);
+		//printf("matches[0] = %ld\n", matches[i]);
 
-		float scaled_energy_u = scaled_energy[i] / SGP_Particle_Data.mass[matches[i]];
+		float mass_fraction = SGP_Particle_Data.mass[matches[i]] / SGP_Particle_Data.mass[0];
 
-		// Get rest energy
-		float	E0_MeV		=	(float)proton_mass_MeV_c2 * SGP_Particle_Data.mass[matches[i]];
+		float	E_MeV  = scaled_energy[i] * mass_fraction;
 
-		//printf("E0_MeV = %d\n", E0_MeV);
+		// Return energy per nucleon
+		E_MeV_u[i]	=	E_MeV / SGP_Particle_Data.A[matches[i]];
 
-		// Return mass-scaled energy
-		scaled_energy[i]	=	scaled_energy_u / E0_MeV * proton_mass_MeV_c2;
+		printf(" SGP_E_MeV_u_from_scaled_energy E_MeV_u = %f\n", E_MeV_u[i]);
+
 	}
 
 	free(matches);
