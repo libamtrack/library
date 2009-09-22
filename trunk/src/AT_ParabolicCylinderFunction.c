@@ -1,14 +1,32 @@
-
-/*
- * SGP_ParabolicCylinderFunction.c
+/**
+ *    AT_ParabolicCylinderFunction.c
+ *    ==============================
  *
- *  Created on: 28.07.2009
- *      Author: greilich
+ *    Created on: 28.07.2009
+ *    Author: greilich
+ *
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+ *
+ *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+ *
+ *    AmTrack is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    AmTrack is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with AmTrack (file: copying.txt).
+ *    If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "SGP_ParabolicCylinderFunction.h"
+#include "AT_ParabolicCylinderFunction.h"
 
-#include "SGP_Constants.h"
+#include "AT_Constants.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -43,7 +61,7 @@
 /*       http://jin.ece.uiuc.edu/routines/mpbdv.for */
 /*       Downloaded and converted to C using f2c by */
 /*       S. Greilich, Risoe National Laboratory, Denmark */
-/*       Reworked as subroutine for SGParticle.dll, abandoning */
+/*       Reworked as subroutine for AmTrack.dll, abandoning */
 /*       f2c.h and libf2c.lib */
 /*       ========================================================= */
 
@@ -57,42 +75,42 @@
 static double c_b31 = 1.;
 static double c_b40 = 2.;
 
-void SGP_Dyx(	double*	y,	double*	x,	double*	Dyx)
+void AT_Dyx(  double*  y,  double*  x,  double*  Dyx)
 {
     /* Local variables */
 //    static int na;
     static double dp[101], dv[101];
     static double pdd, pdf;
     extern /* Subroutine */ int pbdv_(double *, double *, double *
-	    , double *, double *, double *);
+      , double *, double *, double *);
 
     pbdv_(y, x, dv, dp, &pdf, &pdd);
 
-	*Dyx	=	pdf;
+  *Dyx  =  pdf;
 }
 
-void SGP_fDyx(	float*	fy,	float*	fx,	float*	fDyx)
+void AT_fDyx(  float*  fy,  float*  fx,  float*  fDyx)
 {
-	double	y, x, Dyx;
-	y	= (double)*fy;
-	x	= (double)*fx;
+  double  y, x, Dyx;
+  y  = (double)*fy;
+  x  = (double)*fx;
 
-	SGP_Dyx(	&y, &x, &Dyx);
+  AT_Dyx(  &y, &x, &Dyx);
 
-	*fDyx	= Dyx;
+  *fDyx  = Dyx;
 }
 
 
 double d_sign(double *a, double *b)
 {
-	double x;
-	x = (*a >= 0 ? *a : - *a);
-	return( *b >= 0 ? x : -x);
+  double x;
+  x = (*a >= 0 ? *a : - *a);
+  return( *b >= 0 ? x : -x);
 }
 
 
 int pbdv_(double *v, double *x, double *dv,
-	double *dp, double *pdf, double *pdd)
+  double *dp, double *pdf, double *pdd)
 {
     /* System generated locals */
     int i__1;
@@ -108,7 +126,7 @@ int pbdv_(double *v, double *x, double *dv,
     static int nv;
     static double pd0, pd1;
     extern /* Subroutine */ int dvla_(double *, double *, double *
-	    ), dvsa_(double *, double *, double *);
+      ), dvsa_(double *, double *, double *);
 
 
 /*       ==================================================== */
@@ -135,113 +153,113 @@ int pbdv_(double *v, double *x, double *dv,
     na = abs(nv);
     ep = exp(*x * -.25 * *x);
     if (na >= 1) {
-	ja = 1;
+  ja = 1;
     }
     if (*v >= 0.f) {
-	if (v0 == 0.f) {
-	    pd0 = ep;
-	    pd1 = *x * ep;
-	} else {
-	    i__1 = ja;
-	    for (l = 0; l <= i__1; ++l) {
-		v1 = v0 + l;
-		if (xa <= 5.8f) {
-		    dvsa_(&v1, x, &pd1);
-		}
-		if (xa > 5.8f) {
-		    dvla_(&v1, x, &pd1);
-		}
-		if (l == 0) {
-		    pd0 = pd1;
-		}
+  if (v0 == 0.f) {
+      pd0 = ep;
+      pd1 = *x * ep;
+  } else {
+      i__1 = ja;
+      for (l = 0; l <= i__1; ++l) {
+    v1 = v0 + l;
+    if (xa <= 5.8f) {
+        dvsa_(&v1, x, &pd1);
+    }
+    if (xa > 5.8f) {
+        dvla_(&v1, x, &pd1);
+    }
+    if (l == 0) {
+        pd0 = pd1;
+    }
 /* L10: */
-	    }
-	}
-	dv[0] = pd0;
-	dv[1] = pd1;
-	i__1 = na;
-	for (k = 2; k <= i__1; ++k) {
-	    *pdf = *x * pd1 - (k + v0 - 1.) * pd0;
-	    dv[k] = *pdf;
-	    pd0 = pd1;
+      }
+  }
+  dv[0] = pd0;
+  dv[1] = pd1;
+  i__1 = na;
+  for (k = 2; k <= i__1; ++k) {
+      *pdf = *x * pd1 - (k + v0 - 1.) * pd0;
+      dv[k] = *pdf;
+      pd0 = pd1;
 /* L15: */
-	    pd1 = *pdf;
-	}
+      pd1 = *pdf;
+  }
     } else {
-	if (*x <= 0.f) {
-	    if (xa <= 5.8) {
-		dvsa_(&v0, x, &pd0);
-		v1 = v0 - 1.;
-		dvsa_(&v1, x, &pd1);
-	    } else {
-		dvla_(&v0, x, &pd0);
-		v1 = v0 - 1.;
-		dvla_(&v1, x, &pd1);
-	    }
-	    dv[0] = pd0;
-	    dv[1] = pd1;
-	    i__1 = na;
-	    for (k = 2; k <= i__1; ++k) {
-		pd = (-(*x) * pd1 + pd0) / (k - 1. - v0);
-		dv[k] = pd;
-		pd0 = pd1;
+  if (*x <= 0.f) {
+      if (xa <= 5.8) {
+    dvsa_(&v0, x, &pd0);
+    v1 = v0 - 1.;
+    dvsa_(&v1, x, &pd1);
+      } else {
+    dvla_(&v0, x, &pd0);
+    v1 = v0 - 1.;
+    dvla_(&v1, x, &pd1);
+      }
+      dv[0] = pd0;
+      dv[1] = pd1;
+      i__1 = na;
+      for (k = 2; k <= i__1; ++k) {
+    pd = (-(*x) * pd1 + pd0) / (k - 1. - v0);
+    dv[k] = pd;
+    pd0 = pd1;
 /* L20: */
-		pd1 = pd;
-	    }
-	} else if (*x <= 2.f) {
-	    v2 = nv + v0;
-	    if (nv == 0) {
-		v2 += -1.;
-	    }
-	    nk = (int) (-v2);
-	    dvsa_(&v2, x, &f1);
-	    v1 = v2 + 1.;
-	    dvsa_(&v1, x, &f0);
-	    dv[nk] = f1;
-	    dv[nk - 1] = f0;
-	    for (k = nk - 2; k >= 0; --k) {
-		f = *x * f0 + (k - v0 + 1.) * f1;
-		dv[k] = f;
-		f1 = f0;
+    pd1 = pd;
+      }
+  } else if (*x <= 2.f) {
+      v2 = nv + v0;
+      if (nv == 0) {
+    v2 += -1.;
+      }
+      nk = (int) (-v2);
+      dvsa_(&v2, x, &f1);
+      v1 = v2 + 1.;
+      dvsa_(&v1, x, &f0);
+      dv[nk] = f1;
+      dv[nk - 1] = f0;
+      for (k = nk - 2; k >= 0; --k) {
+    f = *x * f0 + (k - v0 + 1.) * f1;
+    dv[k] = f;
+    f1 = f0;
 /* L25: */
-		f0 = f;
-	    }
-	} else {
-	    if (xa <= 5.8f) {
-		dvsa_(&v0, x, &pd0);
-	    }
-	    if (xa > 5.8f) {
-		dvla_(&v0, x, &pd0);
-	    }
-	    dv[0] = pd0;
-	    m = na + 100;
-	    f1 = 0.;
-	    f0 = 1e-30;
-	    for (k = m; k >= 0; --k) {
-		f = *x * f0 + (k - v0 + 1.) * f1;
-		if (k <= na) {
-		    dv[k] = f;
-		}
-		f1 = f0;
+    f0 = f;
+      }
+  } else {
+      if (xa <= 5.8f) {
+    dvsa_(&v0, x, &pd0);
+      }
+      if (xa > 5.8f) {
+    dvla_(&v0, x, &pd0);
+      }
+      dv[0] = pd0;
+      m = na + 100;
+      f1 = 0.;
+      f0 = 1e-30;
+      for (k = m; k >= 0; --k) {
+    f = *x * f0 + (k - v0 + 1.) * f1;
+    if (k <= na) {
+        dv[k] = f;
+    }
+    f1 = f0;
 /* L30: */
-		f0 = f;
-	    }
-	    s0 = pd0 / f;
-	    i__1 = na;
-	    for (k = 0; k <= i__1; ++k) {
+    f0 = f;
+      }
+      s0 = pd0 / f;
+      i__1 = na;
+      for (k = 0; k <= i__1; ++k) {
 /* L35: */
-		dv[k] = s0 * dv[k];
-	    }
-	}
+    dv[k] = s0 * dv[k];
+      }
+  }
     }
     i__1 = na - 1;
     for (k = 0; k <= i__1; ++k) {
-	v1 = fabs(v0) + k;
-	if (*v >= 0.) {
-	    dp[k] = *x * .5 * dv[k] - dv[k + 1];
-	} else {
-	    dp[k] = *x * -.5 * dv[k] - v1 * dv[k + 1];
-	}
+  v1 = fabs(v0) + k;
+  if (*v >= 0.) {
+      dp[k] = *x * .5 * dv[k] - dv[k + 1];
+  } else {
+      dp[k] = *x * -.5 * dv[k] - v1 * dv[k + 1];
+  }
 /* L40: */
     }
     *pdf = dv[na - 1];
@@ -258,7 +276,7 @@ int dvsa_(double *va, double *x, double *pd)
     /* Local variables */
     static int m;
     static double r__, a0, g0, g1, r1, ep, gm, pi, vm, vt, ga0, va0, sq2,
-	    eps;
+      eps;
     extern /* Subroutine */ int gamma_(double *, double *);
 
 
@@ -277,39 +295,39 @@ int dvsa_(double *va, double *x, double *pd)
     ep = exp(*x * -.25 * *x);
     va0 = (1. - *va) * .5;
     if (*va == 0.f) {
-	*pd = ep;
+  *pd = ep;
     } else {
-	if (*x == 0.f) {
-	    if (va0 <= 0.f && va0 == (double) ((int) va0)) {
-		*pd = 0.;
-	    } else {
-		gamma_(&va0, &ga0);
-		d__1 = *va * -.5;
-		*pd = sqrt(pi) / (pow(c_b40, d__1) * ga0);
-	    }
-	} else {
-	    d__1 = -(*va);
-	    gamma_(&d__1, &g1);
-	    d__1 = *va * -.5 - 1.;
-	    a0 = pow(c_b40, d__1) * ep / g1;
-	    vt = *va * -.5;
-	    gamma_(&vt, &g0);
-	    *pd = g0;
-	    r__ = 1.;
-	    for (m = 1; m <= 250; ++m) {
-		vm = (m - *va) * .5;
-		gamma_(&vm, &gm);
-		r__ = -r__ * sq2 * *x / m;
-		r1 = gm * r__;
-		*pd += r1;
-		if (fabs(r1) < fabs(*pd) * eps) {
-		    goto L15;
-		}
+  if (*x == 0.f) {
+      if (va0 <= 0.f && va0 == (double) ((int) va0)) {
+    *pd = 0.;
+      } else {
+    gamma_(&va0, &ga0);
+    d__1 = *va * -.5;
+    *pd = sqrt(pi) / (pow(c_b40, d__1) * ga0);
+      }
+  } else {
+      d__1 = -(*va);
+      gamma_(&d__1, &g1);
+      d__1 = *va * -.5 - 1.;
+      a0 = pow(c_b40, d__1) * ep / g1;
+      vt = *va * -.5;
+      gamma_(&vt, &g0);
+      *pd = g0;
+      r__ = 1.;
+      for (m = 1; m <= 250; ++m) {
+    vm = (m - *va) * .5;
+    gamma_(&vm, &gm);
+    r__ = -r__ * sq2 * *x / m;
+    r1 = gm * r__;
+    *pd += r1;
+    if (fabs(r1) < fabs(*pd) * eps) {
+        goto L15;
+    }
 /* L10: */
-	    }
+      }
 L15:
-	    *pd = a0 * *pd;
-	}
+      *pd = a0 * *pd;
+  }
     }
     return 0;
 } /* dvsa_ */
@@ -323,7 +341,7 @@ int dvla_(double *va, double *x, double *pd)
     static int k;
     static double r__, a0, x1, gl, ep, pi, vl, eps;
     extern /* Subroutine */ int vvla_(double *, double *, double *
-	    ), gamma_(double *, double *);
+      ), gamma_(double *, double *);
 
 
 /*       ==================================================== */
@@ -345,22 +363,22 @@ int dvla_(double *va, double *x, double *pd)
     r__ = 1.;
     *pd = 1.;
     for (k = 1; k <= 16; ++k) {
-	r__ = r__ * -.5 * (k * 2.f - *va - 1.f) * (k * 2.f - *va - 2.f) / (k *
-		 *x * *x);
-	*pd += r__;
-	if ((d__1 = r__ / *pd, fabs(d__1)) < eps) {
-	    goto L15;
-	}
+  r__ = r__ * -.5 * (k * 2.f - *va - 1.f) * (k * 2.f - *va - 2.f) / (k *
+     *x * *x);
+  *pd += r__;
+  if ((d__1 = r__ / *pd, fabs(d__1)) < eps) {
+      goto L15;
+  }
 /* L10: */
     }
 L15:
     *pd = a0 * *pd;
     if (*x < 0.) {
-	x1 = -(*x);
-	vvla_(va, &x1, &vl);
-	d__1 = -(*va);
-	gamma_(&d__1, &gl);
-	*pd = pi * vl / gl + cos(pi * *va) * *pd;
+  x1 = -(*x);
+  vvla_(va, &x1, &vl);
+  d__1 = -(*va);
+  gamma_(&d__1, &gl);
+  *pd = pi * vl / gl + cos(pi * *va) * *pd;
     }
     return 0;
 } /* dvla_ */
@@ -374,7 +392,7 @@ int vvla_(double *va, double *x, double *pv)
     static int k;
     static double r__, a0, x1, gl, qe, pi, pdl, dsl, eps;
     extern /* Subroutine */ int dvla_(double *, double *, double *
-	    ), gamma_(double *, double *);
+      ), gamma_(double *, double *);
 
 
 /*       =================================================== */
@@ -397,23 +415,23 @@ int vvla_(double *va, double *x, double *pv)
     r__ = 1.;
     *pv = 1.;
     for (k = 1; k <= 18; ++k) {
-	r__ = r__ * .5 * (k * 2.f + *va - 1.f) * (k * 2.f + *va) / (k * *x * *
-		x);
-	*pv += r__;
-	if ((d__1 = r__ / *pv, fabs(d__1)) < eps) {
-	    goto L15;
-	}
+  r__ = r__ * .5 * (k * 2.f + *va - 1.f) * (k * 2.f + *va) / (k * *x * *
+    x);
+  *pv += r__;
+  if ((d__1 = r__ / *pv, fabs(d__1)) < eps) {
+      goto L15;
+  }
 /* L10: */
     }
 L15:
     *pv = a0 * *pv;
     if (*x < 0.) {
-	x1 = -(*x);
-	dvla_(va, &x1, &pdl);
-	d__1 = -(*va);
-	gamma_(&d__1, &gl);
-	dsl = sin(pi * *va) * sin(pi * *va);
-	*pv = dsl * gl / pi * pdl - cos(pi * *va) * *pv;
+  x1 = -(*x);
+  dvla_(va, &x1, &pdl);
+  d__1 = -(*va);
+  gamma_(&d__1, &gl);
+  dsl = sin(pi * *va) * sin(pi * *va);
+  *pv = dsl * gl / pi * pdl - cos(pi * *va) * *pv;
     }
     return 0;
 } /* vvla_ */
@@ -422,12 +440,12 @@ int gamma_(double *x, double *ga)
 {
     /* Initialized data */
     static double g[26] = { 1.,.5772156649015329,-.6558780715202538,
-	    -.0420026350340952,.1665386113822915,-.0421977345555443,
-	    -.009621971527877,.007218943246663,-.0011651675918591,
-	    -2.152416741149e-4,1.280502823882e-4,-2.01348547807e-5,
-	    -1.2504934821e-6,1.133027232e-6,-2.056338417e-7,6.116095e-9,
-	    5.0020075e-9,-1.1812746e-9,1.043427e-10,7.7823e-12,-3.6968e-12,
-	    5.1e-13,-2.06e-14,-5.4e-15,1.4e-15,1e-16 };
+      -.0420026350340952,.1665386113822915,-.0421977345555443,
+      -.009621971527877,.007218943246663,-.0011651675918591,
+      -2.152416741149e-4,1.280502823882e-4,-2.01348547807e-5,
+      -1.2504934821e-6,1.133027232e-6,-2.056338417e-7,6.116095e-9,
+      5.0020075e-9,-1.1812746e-9,1.043427e-10,7.7823e-12,-3.6968e-12,
+      5.1e-13,-2.06e-14,-5.4e-15,1.4e-15,1e-16 };
 
     /* System generated locals */
     int i__1;
@@ -448,75 +466,75 @@ int gamma_(double *x, double *ga)
 
     pi = 3.141592653589793;
     if (*x == (double) ((int) (*x))) {
-	if (*x > 0.) {
-	    *ga = 1.;
-	    m1 = (int) (*x - 1);
-	    i__1 = m1;
-	    for (k = 2; k <= i__1; ++k) {
+  if (*x > 0.) {
+      *ga = 1.;
+      m1 = (int) (*x - 1);
+      i__1 = m1;
+      for (k = 2; k <= i__1; ++k) {
 /* L10: */
-		*ga *= k;
-	    }
-	} else {
-	    *ga = 1e300;
-	}
+    *ga *= k;
+      }
+  } else {
+      *ga = 1e300;
+  }
     } else {
-	if (fabs(*x) > 1.) {
-	    z__ = fabs(*x);
-	    m = (int) z__;
-	    r__ = 1.;
-	    i__1 = m;
-	    for (k = 1; k <= i__1; ++k) {
+  if (fabs(*x) > 1.) {
+      z__ = fabs(*x);
+      m = (int) z__;
+      r__ = 1.;
+      i__1 = m;
+      for (k = 1; k <= i__1; ++k) {
 /* L15: */
-		r__ *= z__ - k;
-	    }
-	    z__ -= m;
-	} else {
-	    z__ = *x;
-	}
-	gr = g[25];
-	for (k = 25; k >= 1; --k) {
+    r__ *= z__ - k;
+      }
+      z__ -= m;
+  } else {
+      z__ = *x;
+  }
+  gr = g[25];
+  for (k = 25; k >= 1; --k) {
 /* L20: */
-	    gr = gr * z__ + g[k - 1];
-	}
-	*ga = 1. / (gr * z__);
-	if (fabs(*x) > 1.) {
-	    *ga *= r__;
-	    if (*x < 0.) {
-		*ga = -pi / (*x * *ga * sin(pi * *x));
-	    }
-	}
+      gr = gr * z__ + g[k - 1];
+  }
+  *ga = 1. / (gr * z__);
+  if (fabs(*x) > 1.) {
+      *ga *= r__;
+      if (*x < 0.) {
+    *ga = -pi / (*x * *ga * sin(pi * *x));
+      }
+  }
     }
     return 0;
 } /* gamma_ */
 
 
 
-void SGP_Funs(	float*	fz,	float*	fR0,	float*	fsigma, float* fni, float* funs)
+void AT_Funs(  float*  fz,  float*  fR0,  float*  fsigma, float* fni, float* funs)
 {
-	double	z		=	(double)*fz;
-	double	R0		=	(double)*fR0;
-	double	sigma	=	(double)*fsigma;
-	double	ni		=	(double)*fni + 1.0;
+  double  z    =  (double)*fz;
+  double  R0    =  (double)*fR0;
+  double  sigma  =  (double)*fsigma;
+  double  ni    =  (double)*fni + 1.0;
 
-	double	u		=	R0 - z;
-	double  zeta	=	u / sigma;
+  double  u    =  R0 - z;
+  double  zeta  =  u / sigma;
 
-	*funs = 0.0f;
+  *funs = 0.0f;
 
-	if(zeta > -5.0 && zeta < 10){
-		double	tmp1	=	1.0 / (sqrt(2.0 * pi) * sigma);
-		double	tmp2	=	exp(-1.0 * u * u / (4.0 * sigma * sigma)) * pow(sigma, ni);
-		double	tmp3;
-		gamma_(&ni, &tmp3);
-		double	tmp4;
-		double	y		=	-1.0 * ni;
-		double	x		=	-1.0 * zeta;
-		SGP_Dyx(&y, &x, &tmp4);
+  if(zeta > -5.0 && zeta < 10){
+    double  tmp1  =  1.0 / (sqrt(2.0 * pi) * sigma);
+    double  tmp2  =  exp(-1.0 * u * u / (4.0 * sigma * sigma)) * pow(sigma, ni);
+    double  tmp3;
+    gamma_(&ni, &tmp3);
+    double  tmp4;
+    double  y    =  -1.0 * ni;
+    double  x    =  -1.0 * zeta;
+    AT_Dyx(&y, &x, &tmp4);
 
-		double	result	=	tmp1 * tmp2 * tmp3 * tmp4;
-		*funs			=	(float)result;}
+    double  result  =  tmp1 * tmp2 * tmp3 * tmp4;
+    *funs      =  (float)result;}
 
-	if(zeta >= 10.0){
-		*funs			=	pow(u, ni - 1.0);}
+  if(zeta >= 10.0){
+    *funs      =  pow(u, ni - 1.0);}
 }
 
