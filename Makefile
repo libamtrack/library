@@ -23,7 +23,7 @@ GSLPATH   = C:\Programme\GnuWin32
 MINGWPATH = C:\Programme\MinGW
 ############################################################
 
-CFLAGS    = -Wall -c -O3
+CFLAGS    = -Wall -c -O3 -fPIC
 LFLAGS    = -lm -lgsl -lgslcblas
 
 ifeq ($(OS),Linux)
@@ -57,9 +57,8 @@ all:$(LIBOBJS)
 		$(GCCDIR)gcc -L$(GSLPATH)$(DSEP)lib -shared $(LIBOBJS) -o $(NAMELIB) $(LFLAGS) 
 		$(RMCMD) *.o
 
-
-UI:AT_UI.o
-		$(GCCDIR)gcc -L$(GSLPATH)$(DSEP)lib AT_UI.o -o $(NAMEEXE) $(LFLAGS) 
+UI:AT_UI.o $(LIBOBJS)
+		$(GCCDIR)gcc -L$(GSLPATH)$(DSEP)lib $(LIBOBJS) AT_UI.o -o $(NAMEEXE) $(LFLAGS) 
 		$(RMCMD) *.o
 
 clean:
