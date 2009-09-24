@@ -27,46 +27,101 @@
 #include "AT_Constants.h"
 
 void getMaterialName(long* material_no, char* material_name){
-  switch( (int)(*material_no) ){
-    case Water_Liquid:
-      strcpy(material_name,"Water, Liquid");
-      break;
-    case Aluminum_Oxide:
-      strcpy(material_name,"Aluminum Oxide");
-      break;
-    case Aluminum:
-      strcpy(material_name,"Aluminum");
-      break;
-    case PMMA:
-      strcpy(material_name,"PMMA");
-      break;
-    default:
-      strcpy(material_name,"");
-      break;
-    }
+	switch( (int)(*material_no) ){
+	case Water_Liquid:
+		strcpy(material_name,"Water, Liquid");
+		break;
+	case Aluminum_Oxide:
+		strcpy(material_name,"Aluminum Oxide");
+		break;
+	case Aluminum:
+		strcpy(material_name,"Aluminum");
+		break;
+	case PMMA:
+		strcpy(material_name,"PMMA");
+		break;
+	default:
+		strcpy(material_name,"*** invalid choice ***");
+		break;
+	}
 }
 
 void getMaterialNo(char* material_name, long* material_no){
-  *material_no  = -1;
-  if( strcmp(material_name,"Water, Liquid") == 0)
-    *material_no = Water_Liquid;
-  if( strcmp(material_name,"Aluminum Oxide") == 0)
-    *material_no = Aluminum_Oxide;
-  if( strcmp(material_name,"Aluminum") == 0)
-    *material_no = Aluminum;
-  if( strcmp(material_name,"PMMA") == 0)
-    *material_no = PMMA;
+	*material_no  = -1;
+	if( strcmp(material_name,"Water, Liquid") == 0)
+		*material_no = Water_Liquid;
+	if( strcmp(material_name,"Aluminum Oxide") == 0)
+		*material_no = Aluminum_Oxide;
+	if( strcmp(material_name,"Aluminum") == 0)
+		*material_no = Aluminum;
+	if( strcmp(material_name,"PMMA") == 0)
+		*material_no = PMMA;
 }
 
-/*void getMaterialNo(char* material_name, long* material_no){
-  *material_no  = -1;
-  if( strcmp(material_name,"Water, Liquid") == 0)
-    *material_no = Water_Liquid;
-  if( strcmp(material_name,"Aluminum Oxide") == 0)
-    *material_no = Aluminum_Oxide;
-  if( strcmp(material_name,"Aluminum") == 0)
-    *material_no = Aluminum;
-  if( strcmp(material_name,"PMMA") == 0)
-    *material_no = PMMA;
+void getRDDName(long* RDD_no, char* RDD_name){
+	switch( (int)(*RDD_no) ){
+	case RDD_KatzPoint:
+		strcpy(RDD_name,"Katz' point target RDD");
+		break;
+	case RDD_Geiss:
+		strcpy(RDD_name,"Geiss' RDD");
+		break;
+	case RDD_Site:
+		strcpy(RDD_name,"Site RDD");
+		break;
+	case RDD_ExtTarget:
+		strcpy(RDD_name,"Katz' extended target RDD");
+		break;
+	default:
+		strcpy(RDD_name,"*** invalid choice ***");
+		break;
+	}
 }
-*/
+
+void getERName(long* ER_no, char* ER_name){
+	switch( (int)(*ER_no) ){
+	case ER_Test:
+		strcpy(ER_name,"simple test ER model");
+		break;
+	case ER_ButtsKatz:
+		strcpy(ER_name,"Butts & Katz' [Katz et al., 1972] ER model");
+		break;
+	case ER_Waligorski:
+		strcpy(ER_name,"Waligorski's ER model");
+		break;
+	case ER_Geiss:
+		strcpy(ER_name,"Geiss' [Geiss, 1997] ER model");
+		break;
+	case ER_Scholz:
+		strcpy(ER_name,"ER_Scholz' [Scholz, 2001] ER model");
+		break;
+	default:
+		strcpy(ER_name,"*** invalid choice ***");
+		break;
+	}
+}
+
+void getGammaName(long* Gamma_no, char* Gamma_name){
+	switch( (int)(*Gamma_no) ){
+	case GR_Test:
+		strcpy(Gamma_name,"simple test gamma response");
+		break;
+	case GR_GeneralTarget:
+		strcpy(Gamma_name,"generalized multi-target/multi-hit gamma response");
+		break;
+	case GR_Radioluminescence:
+		strcpy(Gamma_name,"radioluminescence gamma response");
+		break;
+	case GR_ExpSaturation:
+		strcpy(Gamma_name,"exponential saturation gamma response (obsolete, use generalized target/hit instead)");
+		break;
+	case GR_LinQuad:
+		strcpy(Gamma_name,"linear-quadratic gamma response");
+		break;
+	default:
+		strcpy(Gamma_name,"*** invalid choice ***");
+		break;
+	}
+}
+
+
