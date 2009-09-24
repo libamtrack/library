@@ -30,6 +30,7 @@ extern int indent_counter;
 extern char isp[];
 extern FILE * debf;
 
+#include "AT_Constants.h"
 
 ///////////////////////////////////////////////////////////////////////
 // PARTICLE DATA
@@ -127,7 +128,7 @@ typedef struct {
 
 static material_data AT_Material_Data = {
     MATERIAL_DATA_N,
-    {  1,          2,          3,        4},
+    {  Water_Liquid,          Aluminum_Oxide,          Aluminum,        PMMA},
     {  1.00f,        3.97f,        2.6989f,    1.19f},
     {  3.3456e29f,      1.1719e30f,      7.8314e+29f,  3.8698e29f},
     {  75.0f,        145.2f,        166.0f,      74.0f},
