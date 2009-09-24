@@ -32,6 +32,8 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "AT_Constants.h"
+
 int main(){
 
   long*  particle_no = NULL;
@@ -43,7 +45,7 @@ int main(){
   long  n_particles = 0;
 
   printf("############################################################\n");
-  printf("This is AmTrack & AmTrack user interface, version 2009/09/20\n");
+  printf("This is AmTrack & AmTrack user interface, version 2009/09/24\n");
   printf("Copyright 2009, libamtrack project, licensed under GNU v3\n");
   printf("Please see documentation (libamtrack.sourceforge.net) for\nparticle and material indices etc.\n");
   printf("############################################################\n");
@@ -86,30 +88,42 @@ int main(){
 
   char  output_dummy[100];
 
-  printf("\n> material index: ");
-  scanf("%d", &material_no);
-  getMaterialName(material_no, output_dummy);
-  printf("%s selected.\n", output_dummy);
+  do{
+	printf("\n> material index: ");
+    scanf("%d", &material_no);
+	getMaterialName(&material_no, &output_dummy);
+	printf("%s selected.\n", output_dummy);
+  }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
 
-  printf("\n> radial-dose model: ");
-  scanf("%d", &RDD_model);
+  do{
+	printf("\n> radial-dose model: ");
+	scanf("%d", &RDD_model);
+	getRDDName(&RDD_model, &output_dummy);
+	printf("%s selected.\n", output_dummy);
+  }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
 
+  do{
+    printf("\n> electron-range model: ");
+    scanf("%d", &ER_model);
+	getERName(&ER_model, &output_dummy);
+	printf("%s selected.\n", output_dummy);
+  }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
 
-  printf("\n> electron-range model: ");
-  scanf("%d", &ER_model);
-
-  printf("\n> gamma-reponse model: ");
-  scanf("%d", &gamma_model);
-
+  do{
+    printf("\n> gamma-reponse model: ");
+	scanf("%d", &gamma_model);
+	getGammaName(&gamma_model, &output_dummy);
+	printf("%s selected.\n", output_dummy);
+  }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
 
 
   long i;
   for (i = 0; i < n_particles; i++){
-    printf("\nO %d particle index: %d, Energy / (MeV/u): %g",   i,
+    printf("\n>>> %2d. particle index: %d, Energy / (MeV/u): %g",   i+1,
                                   particle_no[i],
                                   E_MeV_u[i]);
   }
 
-
+  printf("\n\n####\nbye.\n####\n");
   return EXIT_SUCCESS;
 };
