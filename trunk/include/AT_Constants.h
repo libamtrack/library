@@ -63,21 +63,69 @@ enum Method{
 			ME_Katz       = 3
 };
 
+///////////////////////////////////////////////////////////////////////
+// GammaResponse DATA
+
 enum GammaResponseModels{
-  GR_Test                  = 1,      /* no parameters */
-      GR_GeneralTarget     = 2,      /* */
-      GR_Radioluminescence = 3,      /* 0 - Smax, 1 - D0, 2 - dyn */
-      GR_ExpSaturation     = 4,      /* 0 - Smax, 1 - D0 */
-      GR_LinQuad           = 5        /* 0 - alpha, 1 - beta */
+  GR_Test                  = 0,      /* no parameters */
+      GR_GeneralTarget     = 1,      /* */
+      GR_Radioluminescence = 2,      /* 0 - Smax, 1 - D0, 2 - dyn */
+      GR_ExpSaturation     = 3,      /* 0 - Smax, 1 - D0 */
+      GR_LinQuad           = 4        /* 0 - alpha, 1 - beta */
 };
 
-enum RDDModels{
-  RDD_Test                 = 1,      /* no parameters */
-      RDD_KatzPoint        = 2,      /* parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
-      RDD_Geiss            = 3,      /* parameters: 0 - a0 [m] (core diameter) */
-      RDD_Site             = 4,      /* parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off)  */ // after Edmund et al., 2007, but modified with dose-cut off
-      RDD_ExtTarget        = 5       /* parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */ //as defined in Edmund et al. , 2007
+#define GR_DATA_N    5
+
+typedef struct {
+  long    n;
+  long    GR_no[GR_DATA_N];
+  long	  n_parameters[GR_DATA_N];
+  char**  parameter_name[GR_DATA_N][4];
+  float   parameter_default[GR_DATA_N][4];
+  char*   GR_name[GR_DATA_N];
+} gr_data;
+
+static const gr_data AT_GR_Data = {
+		GR_DATA_N,
+    {  GR_Test,          GR_GeneralTarget,          GR_Radioluminescence,        GR_ExpSaturation, GR_LinQuad},
+    {  0, 4, 3, 2, 2},
+    {  {"","","",""},{"S_max", "D0_Gy", "c", "m"},{"S_max","D0_Gy","dyn",""},{"S_max","D0_Gy","",""},{"alpha","beta","",""}},
+    {  {0,0,0,0}, {1, 10, 1, 1}, {1,10,5,0}, {1,10,0,0}, {1, 1, 0, 0}},
+    {  "simple test gamma response",  "generalized multi-target/multi-hit gamma response",  "radioluminescence gamma response",    "exp.-sat. gamma response (obsolete, use gen. target/hit instead)", "linear-quadratic gamma response"}
 };
+
+
+///////////////////////////////////////////////////////////////////////
+// RDD DATA
+
+enum RDDModels{
+  RDD_Test                 = 0,      /* no parameters */
+      RDD_KatzPoint        = 1,      /* parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
+      RDD_Geiss            = 2,      /* parameters: 0 - a0 [m] (core diameter) */
+      RDD_Site             = 3,      /* parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off)  */ // after Edmund et al., 2007, but modified with dose-cut off
+      RDD_ExtTarget        = 4       /* parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */ //as defined in Edmund et al. , 2007
+};
+
+#define RDD_DATA_N    5
+
+typedef struct {
+  long    n;
+  long    RDD_no[RDD_DATA_N];
+  long	  n_parameters[RDD_DATA_N];
+  char**  parameter_name[RDD_DATA_N][3];
+  float   parameter_default[RDD_DATA_N][3];
+  char*   RDD_name[RDD_DATA_N];
+} rdd_data;
+
+static const rdd_data AT_RDD_Data = {
+		RDD_DATA_N,
+    {  RDD_Test,          RDD_KatzPoint,          RDD_Geiss,        RDD_Site, RDD_ExtTarget},
+    {  0, 2, 1, 2, 3},
+    {  {"","",""},{"r_min_m", "d_min_Gy",""},{"a0_m","",""},{"a0_m","d_min_Gy",""},{"r_min_m","a0_m","D_min_Gy"}},
+    {  {0,0,0}, {1e-10, 1e-10,0}, {5e-8,0,0}, {5e-8,1e-10,0}, {1e-10, 5e-8, 1e-10}},
+    {  "Simple step test function",  "Katz' point target RDD [Katz et al., 1972]",  "Geiss' RDD [Geiss et al., 1998]",    "Site RDD, as defined in [Edmund et al., 2007]", "Katz' extended target, as defined in [Edmund et al., 2007]"}
+};
+
 
 enum material_no{
   Water_Liquid             = 1,
@@ -85,6 +133,9 @@ enum material_no{
       Aluminum             = 3,
       PMMA                 = 4
 };
+
+///////////////////////////////////////////////////////////////////////
+// ER DATA
 
 enum ERModels{
   ER_Test                  = 0,
@@ -94,10 +145,27 @@ enum ERModels{
       ER_Scholz            = 4
 };
 
+#define ER_DATA_N    5
+
+typedef struct {
+  long    n;
+  long    ER_no[ER_DATA_N];
+  char*   ER_name[ER_DATA_N];
+} er_data;
+
+static const er_data AT_ER_Data = {
+		ER_DATA_N,
+    {  ER_Test,          ER_ButtsKatz,          ER_Waligorski,        ER_Geiss, ER_Scholz},
+    {  "simple test ER model",  "Butts & Katz' [Katz et al., 1972] ER model",  "Waligorski's ER model",    "Geiss' [Geiss, 1997] ER model", "ER_Scholz' [Scholz, 2001] ER model"}
+};
+
+
+
 void   getMaterialName(  long* material_no, char* material_name);
 void   getMaterialNo(    char* material_name, long* material_no);
 
 void   getRDDName(  long* RDD_no, char* RDD_name);
+void   getRDDNo(char* RDD_name, long* RDD_no);
 void   getERName(  long* ER_no, char* ER_name);
 void   getGammaName(  long* Gamma_no, char* Gamma_name);
 void   getMethodName(  long* Method_no, char* Method_name);

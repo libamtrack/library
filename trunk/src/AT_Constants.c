@@ -46,6 +46,26 @@ void getMaterialName(long* material_no, char* material_name){
 	}
 }
 
+//void getMaterialName(long* material_no, char* material_name){
+//	switch( (int)(*material_no) ){
+//	case Water_Liquid:
+//		strcpy(material_name,"Water, Liquid");
+//		break;
+//	case Aluminum_Oxide:
+//		strcpy(material_name,"Aluminum Oxide");
+//		break;
+//	case Aluminum:
+//		strcpy(material_name,"Aluminum");
+//		break;
+//	case PMMA:
+//		strcpy(material_name,"PMMA");
+//		break;
+//	default:
+//		strcpy(material_name,"*** invalid choice ***");
+//		break;
+//	}
+//}
+
 void getMaterialNo(char* material_name, long* material_no){
 	*material_no  = -1;
 	if( strcmp(material_name,"Water, Liquid") == 0)
@@ -59,22 +79,23 @@ void getMaterialNo(char* material_name, long* material_no){
 }
 
 void getRDDName(long* RDD_no, char* RDD_name){
-	switch( (int)(*RDD_no) ){
-	case RDD_KatzPoint:
-		strcpy(RDD_name,"Katz' point target RDD");
-		break;
-	case RDD_Geiss:
-		strcpy(RDD_name,"Geiss' RDD");
-		break;
-	case RDD_Site:
-		strcpy(RDD_name,"Site RDD");
-		break;
-	case RDD_ExtTarget:
-		strcpy(RDD_name,"Katz' extended target RDD");
-		break;
-	default:
-		strcpy(RDD_name,"*** invalid choice ***");
-		break;
+	strcpy(RDD_name,"*** invalid choice ***");
+	long i;
+	for (i = 0; i < RDD_DATA_N; i++){
+		if (AT_RDD_Data.RDD_no[i] == *RDD_no){
+			strcpy(RDD_name, AT_RDD_Data.RDD_name[i]);
+		}
+	}
+}
+
+void getRDDNo(char* RDD_name, long* RDD_no){
+	*RDD_no = 0;
+	long i;
+	for (i = 0; i < RDD_DATA_N; i++){
+		if (strcmp(RDD_name, AT_RDD_Data.RDD_name[i]) == 0){
+			*RDD_no = AT_RDD_Data.RDD_no[i];
+			break;
+		}
 	}
 }
 
@@ -113,7 +134,7 @@ void getGammaName(long* Gamma_no, char* Gamma_name){
 		strcpy(Gamma_name,"radioluminescence gamma response");
 		break;
 	case GR_ExpSaturation:
-		strcpy(Gamma_name,"exponential saturation gamma response (obsolete, use generalized target/hit instead)");
+		strcpy(Gamma_name,"exp.-sat. gamma response (obsolete, use gen. target/hit instead)");
 		break;
 	case GR_LinQuad:
 		strcpy(Gamma_name,"linear-quadratic gamma response");
