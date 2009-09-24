@@ -7,16 +7,24 @@
 ############################################################
 # USER SETTINGS
 ############################################################
-# Please set the correct path to your GSL installation here:
-GSLPATH   = C:\Programme\GnuWin32
-# Please specify your OS here ("Windows" or "Linux")
+## Please specify your OS here
+#  OS        = Linux (or)
+#  OS        = Windows
 OS        = Windows
-# Under Windows please specify the path to your MinGW installation
+## Please set the correct path to your GSL installation here:
+#  most likely:
+#  GSLPATH   = /usr (Linux)
+#  GSLPATH   = C:\Program Files\GnuWin32 (Windows)
+GSLPATH   = C:\Programme\GnuWin32
+## Under Windows please specify the path to your MinGW installation
+#  leave empty under Linux: MINGWPATH = 
+#  for Windows most likely:
+#  MINGWPATH = C:\Programme\MinGW (Windows)
 MINGWPATH = C:\Programme\MinGW
 ############################################################
 
 CFLAGS    = -Wall -c -O3
-LFLAGS   = -lm -lgsl -lgslcblas
+LFLAGS    = -lm -lgsl -lgslcblas
 
 ifeq ($(OS),Linux)
 NAMELIB   = libamtrack.so
