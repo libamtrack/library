@@ -57,6 +57,12 @@ static  double  m_to_um               =  1e6;
 
 static  double  pi                    =  3.14159265;
 
+enum Method{
+	ME_Grid           = 1,
+			ME_SPIFF      = 2,
+			ME_Katz       = 3
+};
+
 enum GammaResponseModels{
   GR_Test                  = 1,      /* no parameters */
       GR_GeneralTarget     = 2,      /* */
@@ -90,5 +96,11 @@ enum ERModels{
 
 void   getMaterialName(  long* material_no, char* material_name);
 void   getMaterialNo(    char* material_name, long* material_no);
+
+void   getRDDName(  long* RDD_no, char* RDD_name);
+void   getERName(  long* ER_no, char* ER_name);
+void   getGammaName(  long* Gamma_no, char* Gamma_name);
+void   getMethodName(  long* Method_no, char* Method_name);
+
 
 #endif // AT_CONSTANTS_H_
