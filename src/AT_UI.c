@@ -103,10 +103,10 @@ int main(){
 	printf("\n> ** Select material **");
 	long  i;
 	for(i = 0; i < MATERIAL_DATA_N;i++){
-		printf("\n index: %d --> %s", AT_Material_Data.material_no[i], AT_Material_Data.material_name[i]);
+		printf("\n index: %ld --> %s", AT_Material_Data.material_no[i], AT_Material_Data.material_name[i]);
 	}
 	printf("\n> material index: ");
-    scanf("%d", &material_no);
+        scanf("%ld", &material_no);
 	getMaterialName(&material_no, &output_dummy);
 	printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
@@ -115,10 +115,10 @@ int main(){
 	printf("\n> ** Select radial dose distribution **");
 	long  i;
 	for(i = 0; i < RDD_DATA_N;i++){
-	  printf("\n index: %d --> %s", AT_RDD_Data.RDD_no[i], AT_RDD_Data.RDD_name[i]);
+	  printf("\n index: %ld --> %s", AT_RDD_Data.RDD_no[i], AT_RDD_Data.RDD_name[i]);
 	}
 	printf("\n> radial-dose model index: ");
-	scanf("%d", &RDD_model);
+	scanf("%ld", &RDD_model);
 	getRDDName(&RDD_model, &output_dummy);
 	printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
@@ -142,7 +142,7 @@ int main(){
 	  printf("\n index: %d --> %s", AT_ER_Data.ER_no[i], AT_ER_Data.ER_name[i]);
 	}
 	printf("\n> electron-range model index: ");
-    scanf("%d", &ER_model);
+        scanf("%ld", &ER_model);
 	getERName(&ER_model, &output_dummy);
 	printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
@@ -150,10 +150,10 @@ int main(){
   do{
     printf("\n> *** select gamma-reponse model ***");
 	for(i = 0; i < GR_DATA_N;i++){
-	  printf("\n index: %d --> %s", AT_GR_Data.GR_no[i], AT_GR_Data.GR_name[i]);
+	  printf("\n index: %ld --> %s", AT_GR_Data.GR_no[i], AT_GR_Data.GR_name[i]);
 	}
 	printf("\n> gamma response model index: ");
-	scanf("%d", &gamma_model);
+	scanf("%ld", &gamma_model);
 	getGammaName(&gamma_model, &output_dummy);
 	printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
