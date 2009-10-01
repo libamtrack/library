@@ -1,49 +1,105 @@
 /**
- *    AmTrack.c
- *    =========
- *
- *    Created on: 28.07.2009
- *    Author: greilich
- *
- *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
- *
- *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
- *
- *    AmTrack is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    AmTrack is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with AmTrack (file: copying.txt).
- *    If not, see <http://www.gnu.org/licenses/>
- */
+*    AmTrack.c
+*    =========
+*
+*    Created on: 28.07.2009
+*    Author: greilich
+*
+*    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+*
+*    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+*
+*    AmTrack is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*    AmTrack is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with AmTrack (file: copying.txt).
+*    If not, see <http://www.gnu.org/licenses/>
+*/
 
 #include "AmTrack.h"
 
+void AT_interparticleDistance_m(       long*   n,
+    float*  LET_MeV_cm2_g,
+    float*  fluence_cm2,
+    float*  results_m
+){
+#ifdef _R
+  int n_int = (int)(*n);
+  *n = (long)n_int;
+#endif
+
+  long i;
+  float fluence;
+  for( i = 0 ; i < *n ; i++ ){
+    if( fluence_cm2[i] > 0 ){
+      results_m[i] = 2.0f / sqrt(M_PI*1e4*fluence_cm2[i]);
+    } else {
+      fluence = (-fluence_cm2[i]) / (LET_MeV_cm2_g[i] * MeV_g_to_J_kg);
+      results_m[i] = 2.0f / sqrt(M_PI*1e4*fluence);
+    }
+  }
+}
+
+void AT_inv_interparticleDistance_Gy(  long*   n,
+    float*  LET_MeV_cm2_g,
+    float*  distance_m,
+    float*  results_Gy
+){
+#ifdef _R
+  int n_int = (int)(*n);
+  *n = (long)n_int;
+#endif
+
+  long i;
+  float fluence;
+  for( i = 0 ; i < *n ; i++ ){
+    fluence = (2.0f/distance_m[i])*(2.0f/distance_m[i])*M_1_PI*1e-4;
+    results_Gy[i] = fluence * (LET_MeV_cm2_g[i] * MeV_g_to_J_kg);
+  }
+}
+
+void AT_inv_interparticleDistance_cm2( long*   n,
+    float*  distance_m,
+    float*  results_cm2
+){
+#ifdef _R
+  int n_int = (int)(*n);
+  *n = (long)n_int;
+#endif
+
+  long i;
+  for( i = 0 ; i < *n ; i++ ){
+    results_cm2[i] = (2.0f/distance_m[i])*(2.0f/distance_m[i])*M_1_PI*1e-4;
+  }
+}
+
+
 void AT_efficiency(  long*  n,
-            float*  E_MeV_u,
-            long*  particle_no,
-            float*  fluence_cm2,
-            long*  material_no,
-            long*  RDD_model,
-            float*  RDD_parameters,
-            long*  ER_model,
-            float*  ER_parameters,
-            long*  gamma_model,
-            float*  gamma_parameters,
-            long*  N2,
-            float*  fluence_factor,
-            int*  write_output,
-            int*  shrink_tails,
-            float*  shrink_tails_under,
-            int*  adjust_N2,
-            float*  results)
+    float*  E_MeV_u,
+    long*  particle_no,
+    float*  fluence_cm2,
+    long*  material_no,
+    long*  RDD_model,
+    float*  RDD_parameters,
+    long*  ER_model,
+    float*  ER_parameters,
+    long*  gamma_model,
+    float*  gamma_parameters,
+    long*  N2,
+    float*  fluence_factor,
+    int*  write_output,
+    int*  shrink_tails,
+    float*  shrink_tails_under,
+    int*  adjust_N2,
+    float*  results)
 {
 
 #ifdef _DEBUG
@@ -52,9 +108,9 @@ void AT_efficiency(  long*  n,
   fprintf(debf,"%swrite_output = %d\n",isp,*write_output);
   fprintf(debf,"%sshrink_tails = %d\n",isp,*shrink_tails);
   fprintf(debf,"%sadjust_N2 = %d\n",isp,*adjust_N2);
-    //    fprintf(debf,"%sf1 = %g\n",isp,(1.0f/ (M_PI * (*a0_m)*(*a0_m))));
-    //    fprintf(debf,"%sf2 = %g\n",isp,AT_RDD_Katz_point_Gy(t_m,alpha,r_max_m,Katz_point_coeff_Gy));
-    //    fprintf(debf,"%sf3 = %g\n",isp,geometryFunctionPhi(r_m,a0_m,t_m));
+  //    fprintf(debf,"%sf1 = %g\n",isp,(1.0f/ (M_PI * (*a0_m)*(*a0_m))));
+  //    fprintf(debf,"%sf2 = %g\n",isp,AT_RDD_Katz_point_Gy(t_m,alpha,r_max_m,Katz_point_coeff_Gy));
+  //    fprintf(debf,"%sf3 = %g\n",isp,geometryFunctionPhi(r_m,a0_m,t_m));
 #endif
 
 
@@ -94,13 +150,12 @@ void AT_efficiency(  long*  n,
 #endif
 
 #ifdef _DEBUG
-  fprintf(debf,"%sAT_efficiency 2\n",isp);
   fprintf(debf,"%swrite_output = %d\n",isp,*write_output);
   fprintf(debf,"%sshrink_tails = %d\n",isp,*shrink_tails);
   fprintf(debf,"%sadjust_N2 = %d\n",isp,*adjust_N2);
-    //    fprintf(debf,"%sf1 = %g\n",isp,(1.0f/ (M_PI * (*a0_m)*(*a0_m))));
-    //    fprintf(debf,"%sf2 = %g\n",isp,AT_RDD_Katz_point_Gy(t_m,alpha,r_max_m,Katz_point_coeff_Gy));
-    //    fprintf(debf,"%sf3 = %g\n",isp,geometryFunctionPhi(r_m,a0_m,t_m));
+  //    fprintf(debf,"%sf1 = %g\n",isp,(1.0f/ (M_PI * (*a0_m)*(*a0_m))));
+  //    fprintf(debf,"%sf2 = %g\n",isp,AT_RDD_Katz_point_Gy(t_m,alpha,r_max_m,Katz_point_coeff_Gy));
+  //    fprintf(debf,"%sf3 = %g\n",isp,geometryFunctionPhi(r_m,a0_m,t_m));
 #endif
 
 
@@ -108,16 +163,16 @@ void AT_efficiency(  long*  n,
   float*  f1_parameters      =  (float*)calloc(9 * (*n), sizeof(float));
 
   AT_SC_get_f1_array_size(  n,
-                E_MeV_u,
-                particle_no,
-                material_no,
-                RDD_model,
-                RDD_parameters,
-                ER_model,
-                ER_parameters,
-                N2,
-                &n_bins_f1,
-                f1_parameters);
+      E_MeV_u,
+      particle_no,
+      material_no,
+      RDD_model,
+      RDD_parameters,
+      ER_model,
+      ER_parameters,
+      N2,
+      &n_bins_f1,
+      f1_parameters);
 
   float*  f_parameters      =  (float*)calloc(7, sizeof(float));
 
@@ -129,28 +184,28 @@ void AT_efficiency(  long*  n,
   float*  f1            =  (float*)calloc(n_bins_f1, sizeof(float));
 
   AT_SC_get_f1(  n,
-          E_MeV_u,
-          particle_no,
-          fluence_cm2,
-          /* detector parameters */
-          material_no,
-          RDD_model,
-          RDD_parameters,
-          /* electron range model */
-          ER_model,
-          ER_parameters,
-          /* algorith parameters*/
-          N2,
-          &n_bins_f1,
-          /* f1 parameters*/
-          f1_parameters,
-          // from here: return values
-          norm_fluence,
-          dose_contribution_Gy,
-          f_parameters,
-          f1_d_Gy,
-          f1_dd_Gy,
-          f1);
+      E_MeV_u,
+      particle_no,
+      fluence_cm2,
+      /* detector parameters */
+      material_no,
+      RDD_model,
+      RDD_parameters,
+      /* electron range model */
+      ER_model,
+      ER_parameters,
+      /* algorithm parameters*/
+      N2,
+      &n_bins_f1,
+      /* f1 parameters*/
+      f1_parameters,
+      // from here: return values
+      norm_fluence,
+      dose_contribution_Gy,
+      f_parameters,
+      f1_d_Gy,
+      f1_dd_Gy,
+      f1);
 
   long      n_bins_f;
   float      u_start;
@@ -213,17 +268,17 @@ void AT_efficiency(  long*  n,
   float  S_HCP, S_gamma, efficiency;
 
   AT_get_gamma_response(  &n_bins_f_used,
-              f_d_Gy,
-              f_dd_Gy,
-              f,
-              &f0,
-              gamma_model,
-              gamma_parameters,
-              // return
-              S,
-              &S_HCP,
-              &S_gamma,
-              &efficiency);
+      f_d_Gy,
+      f_dd_Gy,
+      f,
+      &f0,
+      gamma_model,
+      gamma_parameters,
+      // return
+      S,
+      &S_HCP,
+      &S_gamma,
+      &efficiency);
 
   results[0]      =  efficiency;        // 0 - 4: algo independent results
   results[1]      =  d_check;
@@ -249,24 +304,24 @@ void AT_efficiency(  long*  n,
 }
 
 void AT_efficiency_grid(  long*  n,
-              float*  E_MeV_u,
-              long*  particle_no,
-              float*  fluence_cm2,
-              long*  material_no,
-              long*  RDD_model,
-              float*  RDD_parameters,
-              long*  ER_model,
-              float*  ER_parameters,
-              long*  gamma_model,
-              float*  gamma_parameters,
-  //            method          = "grid",
-              long*  N_runs,
-              float*  fluence_factor,
-              bool*  write_output,
-              long*  nX,
-              float*  grid_size_m,
-              bool*  lethal_events_mode,
-              float*  results)
+    float*  E_MeV_u,
+    long*  particle_no,
+    float*  fluence_cm2,
+    long*  material_no,
+    long*  RDD_model,
+    float*  RDD_parameters,
+    long*  ER_model,
+    float*  ER_parameters,
+    long*  gamma_model,
+    float*  gamma_parameters,
+    //            method          = "grid",
+    long*  N_runs,
+    float*  fluence_factor,
+    bool*  write_output,
+    long*  nX,
+    float*  grid_size_m,
+    bool*  lethal_events_mode,
+    float*  results)
 {
 
 #ifdef _R
@@ -319,7 +374,7 @@ void AT_efficiency_grid(  long*  n,
 
   fprintf(output_file, "##############################################################\n");
   fprintf(output_file, "##############################################################\n");
-  fprintf(output_file, "This is SGP efficiency grid, version(2009/06/30).\n");
+  fprintf(output_file, "This is grid summation algorithm, version(2009/06/30).\n");
   fprintf(output_file, "##############################################################\n");
   fprintf(output_file, "\n\n\n");
   start_tm     = localtime(&start_t);
@@ -329,74 +384,74 @@ void AT_efficiency_grid(  long*  n,
   fprintf(output_file, "calc grid area/cm2:  %e\n", calc_grid_area_cm2);
 
   // Alloc checkerboard arrays
-  float*    grid_d_Gy    = (float*)calloc(n_grid, sizeof(float));
-  float*    grid_S      = (float*)calloc(n_grid, sizeof(float));
+  float*  grid_d_Gy = (float*)calloc(n_grid, sizeof(float));
+  float*  grid_S    = (float*)calloc(n_grid, sizeof(float));
 
   // Clear results
   for (i = 0; i < 10; i++){
-    results[i]    = 0.0;
+    results[i] = 0.0;
   }
 
   // Get f1, f parameters
-  float*    f1_parameters    = (float*)calloc(*n * 9, sizeof(float));
-  float*    f_parameters    = (float*)calloc(7, sizeof(float));
-  float*    norm_fluence    = (float*)calloc(*n, sizeof(float));
-  float*    dose_contribution_Gy= (float*)calloc(*n, sizeof(float));
-  float    max_r_max_m      = 0.0f;
+  float* f1_parameters        = (float*)calloc((*n)*9, sizeof(float));
+  float* f_parameters         = (float*)calloc(7, sizeof(float));
+  float* norm_fluence         = (float*)calloc(*n, sizeof(float));
+  float* dose_contribution_Gy = (float*)calloc(*n, sizeof(float));
+  float  max_r_max_m          = 0.0f;
 
   fprintf(output_file, "f1 parameters for %ld particles\n", *n);
   for (i = 0; i < *n; i++){
     AT_RDD_f1_parameters(  &E_MeV_u[i],
-                &particle_no[i],
-                material_no,
-                RDD_model,
-                RDD_parameters,
-                ER_model,
-                ER_parameters,
-                &f1_parameters[i*9]);
+        &particle_no[i],
+        material_no,
+        RDD_model,
+        RDD_parameters,
+        ER_model,
+        ER_parameters,
+        &f1_parameters[i*9]);
     fprintf(output_file, "%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",   f1_parameters[i*9 + 0],
-                                    f1_parameters[i*9 + 1],
-                                    f1_parameters[i*9 + 2],
-                                    f1_parameters[i*9 + 3],
-                                    f1_parameters[i*9 + 4],
-                                    f1_parameters[i*9 + 5],
-                                    f1_parameters[i*9 + 6],
-                                    f1_parameters[i*9 + 7],
-                                    f1_parameters[i*9 + 8]);
+        f1_parameters[i*9 + 1],
+        f1_parameters[i*9 + 2],
+        f1_parameters[i*9 + 3],
+        f1_parameters[i*9 + 4],
+        f1_parameters[i*9 + 5],
+        f1_parameters[i*9 + 6],
+        f1_parameters[i*9 + 7],
+        f1_parameters[i*9 + 8]);
     max_r_max_m        =   FMAX(max_r_max_m, f1_parameters[i*9 + 2]);
   }
 
   fprintf(output_file, "\nOverall r.max/m = %e\n\n",   max_r_max_m);
 
-  long    n_bins_f1      = 0;
-  long    N2          = 0;
+  long  n_bins_f1 = 0;
+  long  N2        = 0;
   AT_SC_get_f1(  n,            // for f parameters only
-          E_MeV_u,
-          particle_no,
-          fluence_cm2,
-          material_no,
-          RDD_model,
-          RDD_parameters,
-          ER_model,
-          ER_parameters,
-          &N2,
-          &n_bins_f1,
-          f1_parameters,
-          norm_fluence,
-          dose_contribution_Gy,
-          f_parameters,
-          NULL,
-          NULL,
-          NULL);
+      E_MeV_u,
+      particle_no,
+      fluence_cm2,
+      material_no,
+      RDD_model,
+      RDD_parameters,
+      ER_model,
+      ER_parameters,
+      &N2,
+      &n_bins_f1,
+      f1_parameters,
+      norm_fluence,
+      dose_contribution_Gy,
+      f_parameters,
+      NULL,
+      NULL,
+      NULL);
 
   fprintf(output_file, "f parameters\n");
   fprintf(output_file, "%e\t%e\t%e\t%e\t%e\t%e\t%e\n",   f_parameters[0],
-                              f_parameters[1],
-                              f_parameters[2],
-                              f_parameters[3],
-                              f_parameters[4],
-                              f_parameters[5],
-                              f_parameters[6]);
+      f_parameters[1],
+      f_parameters[2],
+      f_parameters[3],
+      f_parameters[4],
+      f_parameters[5],
+      f_parameters[6]);
 
   // Largest r.max --> calculate size of sample area
   float sample_grid_size_m  = calc_grid_size_m + 2.01f * max_r_max_m;
@@ -405,29 +460,29 @@ void AT_efficiency_grid(  long*  n,
   fprintf(output_file, "sample grid area/cm2 = %e\n", sample_grid_area_cm2);
 
   // mean and actual number of particles on sample_area
-  float*  mean_number_particles  = (float*)calloc(*n, sizeof(float));
-  long*  act_number_particles  = (long*)calloc(*n, sizeof(float));
+  float* mean_number_particles = (float*)calloc(*n, sizeof(float));
+  long*  act_number_particles  =  (long*)calloc(*n, sizeof(float));
   for (i = 0; i < *n; i++){
-    mean_number_particles[i]  = sample_grid_area_cm2 * f_parameters[1] * norm_fluence[i];        // Area * Total_fluence (particle i)
+    mean_number_particles[i] = sample_grid_area_cm2 * f_parameters[1] * norm_fluence[i];        // Area * Total_fluence (particle i)
   }
 
   // create and initialize RNGs
-  gsl_rng * rng1   = gsl_rng_alloc (gsl_rng_taus);
-  gsl_rng * rng2   = gsl_rng_alloc (gsl_rng_taus);
+  gsl_rng * rng1 = gsl_rng_alloc(gsl_rng_taus);
+  gsl_rng * rng2 = gsl_rng_alloc(gsl_rng_taus);
   gsl_rng_set(rng1, 12345678);
   gsl_rng_set(rng2, 2345678);
 
 
   // run loop
-  long  n_particles;
+  long n_particles;
   for (m = 0; m < *N_runs; m++){
-    float*  run_results      = (float*)calloc(10, sizeof(float));
+    float* run_results = (float*)calloc(10, sizeof(float));
 
     // sample particles numbers
-    n_particles  = 0;
+    n_particles = 0;
     for (i = 0; i < *n; i++){
-      act_number_particles[i]  =   (long)gsl_ran_poisson(rng1, mean_number_particles[i]);
-      n_particles        +=  act_number_particles[i];
+      act_number_particles[i] =  (long)gsl_ran_poisson(rng1, mean_number_particles[i]);
+      n_particles             += act_number_particles[i];
     }
 
     if(*N_runs <= 20){
@@ -440,91 +495,192 @@ void AT_efficiency_grid(  long*  n,
     }
 
     // alloc particle array
-    float*  x_pos        = (float*)calloc(n_particles, sizeof(float));
-    float*  y_pos        = (float*)calloc(n_particles, sizeof(float));
-    long*  particle_index    = (long*)calloc(n_particles, sizeof(long));
-    float*  r_m          = (float*)calloc(n_particles, sizeof(float));
+    float*  x_pos          = (float*)calloc(n_particles, sizeof(float));
+    float*  y_pos          = (float*)calloc(n_particles, sizeof(float));
+    long*   particle_index =  (long*)calloc(n_particles, sizeof(long));
+    float*  r_m            = (float*)calloc(n_particles, sizeof(float));
     float*  r_max_m        = (float*)calloc(n_particles, sizeof(float));
-    long  n_tmp        = 1;
-    float  d_tmp_Gy      = 0.0;
+    long    n_tmp          = 1;
+    float   d_tmp_Gy       = 0.0;
 
     // fill in index / r_max_m
-    j    = 0;
-    k    = 0;
+    j = 0;
+    k = 0;
     for (i = 0; i < n_particles; i++){
       if(k >= act_number_particles[j]){
-        k     = 0;
+        k = 0;
         j++;
       }
       k++;
-      particle_index[i]  =  j;
-      r_max_m[i]      =  f1_parameters[j*9 + 2];
+      particle_index[i] = j;
+      r_max_m[i]        = f1_parameters[j*9 + 2];
     }
 
-//    fprintf(output_file, "particle.no; particle.index; r.max.m\n");
-//    for (i=0; i < n_particles; i++){
-//      fprintf(output_file, "%d; %d; %e\n", i, particle_index[i], r_max_m[i]);
-//    }
+    //    fprintf(output_file, "particle.no; particle.index; r.max.m\n");
+    //    for (i=0; i < n_particles; i++){
+    //      fprintf(output_file, "%d; %d; %e\n", i, particle_index[i], r_max_m[i]);
+    //    }
 
     // sample particle positions
     for (i = 0; i < n_particles; i++){
-      x_pos[i]          = (float)gsl_rng_uniform_pos(rng2) * sample_grid_size_m;
-      y_pos[i]          = (float)gsl_rng_uniform_pos(rng2) * sample_grid_size_m;
+      x_pos[i] = (float)gsl_rng_uniform_pos(rng2) * sample_grid_size_m;
+      y_pos[i] = (float)gsl_rng_uniform_pos(rng2) * sample_grid_size_m;
     }
 
-    // grid loop
-    for (j = 0; j < *nX; j++){          // y
-      float cur_y_pos      =  max_r_max_m + ((float)j + 0.5f)*(*grid_size_m);
-      for (i = 0; i < *nX; i++){        // x
-        float cur_x_pos      =  max_r_max_m + ((float)i + 0.5f)*(*grid_size_m);
-        grid_d_Gy[j * (*nX) + i]=  0.0f;
-        for (k = 0; k < n_particles; k++){  // particles
-          r_m[k]          =  sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) +
-                            (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
-          if(r_m[k] <= r_max_m[k]){    // does particle contribute?
-            AT_D_RDD_Gy(  &n_tmp,
-                    &r_m[k],
-                    &E_MeV_u[particle_index[k]],
-                    &particle_no[particle_index[k]],
-                    material_no,
-                    RDD_model,
-                    RDD_parameters,
-                    ER_model,
-                    ER_parameters,
-                    &d_tmp_Gy);
-            grid_d_Gy[j * (*nX) + i]  +=  d_tmp_Gy;
-          } // particle contribution
-        }// particle loop
-      } // x loop
-    } // y loop
+    // TODO include this speedup trick also for n > 1
+
+    if( n_particles == 1){
+
+      // calculate total number of contributing parts
+      long no_contr_part = 0;
+      float cur_x_pos = 0;
+      float cur_y_pos = 0;
+      for (j = 0; j < *nX; j++){                                      // y
+        cur_y_pos    = max_r_max_m + ((float)j + 0.5f)*(*grid_size_m);
+        for (i = 0; i < *nX; i++){                              // x
+          cur_x_pos  = max_r_max_m + ((float)i + 0.5f)*(*grid_size_m);
+          for (k = 0; k < n_particles; k++){      // particles
+            r_m[k]   = sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
+            if(r_m[k] <= r_max_m[k]){               // does particle contribute?
+              no_contr_part++;
+            }
+          }
+        }
+      }
+
+      //printf("\nContributing items: %ld\n", no_contr_part);
+      // allocate memory for vector of distances between track cores and all grid points
+      float*  distances = (float*)calloc(no_contr_part, sizeof(float));
+
+      // calculate distances between track cores and all grid points and save them into allocated table
+      long distances_index = 0;
+      for (j = 0; j < *nX; j++){                                      // y
+        float cur_y_pos       = max_r_max_m + ((float)j + 0.5f)*(*grid_size_m);
+        for (i = 0; i < *nX; i++){                              // x
+          float cur_x_pos     = max_r_max_m + ((float)i + 0.5f)*(*grid_size_m);
+          grid_d_Gy[j * (*nX) + i] = 0.0f;
+          for (k = 0; k < n_particles; k++){      // particles
+            r_m[k]            = sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
+            if(r_m[k] <= r_max_m[k]){               // does particle contribute?
+              distances[distances_index] = r_m[k];
+              distances_index++;
+            }
+          }// particle loop
+        } // x loop
+      } // y loop
+
+      // just a crosscheck, distances_index should go up to no_contr_part
+      long dinstances_index_max = distances_index;
+
+      // allocate memory for doses values at given distances stored in _distances_ table
+      float*  doses = (float*)calloc(dinstances_index_max, sizeof(float));
+
+      // calculate doses at given distances
+      AT_D_RDD_Gy( &dinstances_index_max,
+          distances,
+          &E_MeV_u[particle_index[0]],
+          &particle_no[particle_index[0]],
+          material_no,
+          RDD_model,
+          RDD_parameters,
+          ER_model,
+          ER_parameters,
+          doses);
+
+      free(distances);
+
+      // fill grid using doses values stored in doses table
+      distances_index = 0;
+      for (j = 0; j < *nX; j++){                                      // y
+        float cur_y_pos   = max_r_max_m + ((float)j + 0.5f)*(*grid_size_m);
+        for (i = 0; i < *nX; i++){                              // x
+          float cur_x_pos = max_r_max_m + ((float)i + 0.5f)*(*grid_size_m);
+          for (k = 0; k < n_particles; k++){      // particles
+            r_m[k]        = sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
+            if(r_m[k] <= r_max_m[k]){               // does particle contribute?
+              grid_d_Gy[j * (*nX) + i] += doses[distances_index];
+              distances_index++;
+            } // particle contribution
+          }// particle loop
+        } // x loop
+      } // y loop
+
+      free(doses);
+
+
+    } else {
+      // grid loop
+      for (j = 0; j < *nX; j++){          // y
+        float cur_y_pos   =  max_r_max_m + ((float)j + 0.5f)*(*grid_size_m);
+        for (i = 0; i < *nX; i++){        // x
+          float cur_x_pos =  max_r_max_m + ((float)i + 0.5f)*(*grid_size_m);
+          grid_d_Gy[j * (*nX) + i]=  0.0f;
+          for (k = 0; k < n_particles; k++){  // particles
+            r_m[k]        =  sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
+            if(r_m[k] <= r_max_m[k]){    // does particle contribute?
+              AT_D_RDD_Gy(  &n_tmp,
+                  &r_m[k],
+                  &E_MeV_u[particle_index[k]],
+                  &particle_no[particle_index[k]],
+                  material_no,
+                  RDD_model,
+                  RDD_parameters,
+                  ER_model,
+                  ER_parameters,
+                  &d_tmp_Gy);
+              grid_d_Gy[j * (*nX) + i]  +=  d_tmp_Gy;
+            } // particle contribution
+          }// particle loop
+        } // x loop
+      } // y loop
+
+    }
 
     // get gamma response for local dose
-    AT_gamma_response(  &n_grid,
-              grid_d_Gy,
-              gamma_model,
-              gamma_parameters,
-              grid_S);
 
-    float d_total_Gy   = 0.0f;
+    float d_total_Gy = 0.0f;
     float S_HCP      = 0.0f;
 
     if( *lethal_events_mode ){
+      if (*gamma_model != GR_LinQuad){
+        printf("##############################################################################\n");
+        printf("Sorry, no Grid Summation model with other than Linear Quadratic gamma response\n");
+        printf("Please choose gamma_model = %ld. Exiting now...\n", GR_LinQuad);
+        printf("##############################################################################\n");
+        return;
+      }
+
+      float alpha = gamma_parameters[0];
+      float beta = gamma_parameters[1];
+      float D0 = gamma_parameters[2];
+
       // averaging over number of lethal events
       for (i = 0; i < n_grid; i++){
-        d_total_Gy    +=  grid_d_Gy[i];
-        if( grid_S[i] > 0){
-          S_HCP      +=  (-1.0f)*logf(grid_S[i]);
+        d_total_Gy += grid_d_Gy[i];
+        if( grid_d_Gy[i] < D0 ){
+          grid_S[i] = alpha * grid_d_Gy[i] + beta * grid_d_Gy[i] * grid_d_Gy[i];
+        } else {
+          grid_S[i] = alpha * D0 - beta * D0 * D0 + ( alpha + 2 * beta * D0) * (grid_d_Gy[i] - D0);
         }
+        S_HCP += grid_S[i];
       }
     } else {
+      // get gamma response for local dose
+      AT_gamma_response( &n_grid,
+          grid_d_Gy,
+          gamma_model,
+          gamma_parameters,
+          grid_S);
+
       // averaging over the dose
       for (i = 0; i < n_grid; i++){
-        d_total_Gy    +=  grid_d_Gy[i];
-        S_HCP      +=  grid_S[i];
+        d_total_Gy += grid_d_Gy[i];
+        S_HCP      += grid_S[i];
       }
     }
-    S_HCP        /=  n_grid;
-    d_total_Gy      /= n_grid;
+
+    S_HCP       /=  n_grid;
+    d_total_Gy  /= n_grid;
 
     if( *lethal_events_mode ){
       S_HCP  = expf( - S_HCP );
@@ -532,10 +688,10 @@ void AT_efficiency_grid(  long*  n,
 
     float S_gamma  = 0.0f;
     AT_gamma_response(  &n_tmp,
-              &d_total_Gy,
-              gamma_model,
-              gamma_parameters,
-              &S_gamma);
+        &d_total_Gy,
+        gamma_model,
+        gamma_parameters,
+        &S_gamma);
 
     float efficiency  = 0.0f;
     if(S_gamma > 0){
@@ -619,7 +775,7 @@ void AT_efficiency_grid(  long*  n,
   results[8]  = FMAX(0, results[8]);
   results[9]  = FMAX(0, results[9]);
 
-    results[5]  = sqrt(results[5] / (*N_runs - 1));
+  results[5]  = sqrt(results[5] / (*N_runs - 1));
   results[6]  = sqrt(results[6] / (*N_runs - 1));
   results[7]  = sqrt(results[7] / (*N_runs - 1));
   results[8]  = sqrt(results[8] / (*N_runs - 1));
@@ -632,8 +788,8 @@ void AT_efficiency_grid(  long*  n,
   fprintf(output_file, "S (gamma)     = %e +/- %e\n", results[3], results[8]);
   fprintf(output_file, "no. particles    = %e +/- %e\n", results[4], results[9]);
   fprintf(output_file, "###############################################\n");
-  end_t        = time(NULL);
-  end_tm        = localtime(&end_t);
+  end_t  = time(NULL);
+  end_tm = localtime(&end_t);
   float timespan_s  = difftime(end_t, start_t);
   fprintf(output_file, "\nEnd time and date: %s\n", asctime(end_tm));
   fprintf(output_file, "\nTime per run [s]:      %4.2e\n", timespan_s / *N_runs);
@@ -668,20 +824,20 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 {
     return TRUE;
 }
-*/
+ */
 
 void AT_efficiency_Katz(  long*  n,
-              float*  E_MeV_u,
-              long*  particle_no,
-              float*  fluence_cm2,
-              long*  material_no,
-              long*  RDD_model,
-              float*  RDD_parameters,
-              long*  ER_model,
-              float*  ER_parameters,
-              long*  gamma_model,
-              float*  gamma_parameters,
-              float*  results)
+    float*  E_MeV_u,
+    long*  particle_no,
+    float*  fluence_cm2,
+    long*  material_no,
+    long*  RDD_model,
+    float*  RDD_parameters,
+    long*  ER_model,
+    float*  ER_parameters,
+    long*  gamma_model,
+    float*  gamma_parameters,
+    float*  results)
 {
   FILE*    output_file;
   struct tm  *start_tm, *end_tm;
@@ -693,35 +849,35 @@ void AT_efficiency_Katz(  long*  n,
 
   fprintf(output_file, "##############################################################\n");
   fprintf(output_file, "##############################################################\n");
-  fprintf(output_file, "This is SGP efficiency Katz, version(2009/07/13).\n");
+  fprintf(output_file, "This is Katz algorithm, version(2009/07/13).\n");
   fprintf(output_file, "##############################################################\n");
   fprintf(output_file, "\n\n\n");
   start_tm     = localtime(&start_t);
   fprintf(output_file, "Start time and date: %s\n", asctime(start_tm));
 
-  if (*gamma_model != 1){
+  if (*gamma_model != GR_GeneralTarget){
     fprintf(output_file, "##############################################################\n");
     fprintf(output_file, "Sorry, no Katz with other than the general hit-target model\n");
-    fprintf(output_file, "Please choose gamma_model = 1. Exiting now...\n");
+    fprintf(output_file, "Please choose gamma_model = %d. Exiting now...\n", GR_GeneralTarget);
     fprintf(output_file, "##############################################################\n");
     return;
   }
 
   long   i;
   // Browse gamma parameters and pick one-hit components
-  long   n_components     = 0;
-  long  n_gamma_parameters   = 0;
+  long n_components       = 0;
+  long n_gamma_parameters = 0;
   while  (gamma_parameters[n_gamma_parameters] != 0){
     n_gamma_parameters  += 4;
   }
-  n_components        = n_gamma_parameters / 4;
-  bool*  bOneHit        = (bool*)calloc(n_components, sizeof(bool));
+  n_components    = n_gamma_parameters / 4;
+  bool*  bOneHit  = (bool*)calloc(n_components, sizeof(bool));
 
   for(i = 0; i < n_components; i++){
     if(bOneHit[i]){
 
       ////////////////////////////////////////////////////////////////////////////////////////////
-/*
+      /*
         gsl_set_error_handler_off();
 
       double ext_integral_Gy;
@@ -740,7 +896,7 @@ void AT_efficiency_Katz(  long*  n,
         ext_integral_Gy = -1.0f;
       }
       gsl_integration_workspace_free (w1);
-*/
+       */
 
       ////////////////////////////////////////////////////////////////////////////////////////////
     }

@@ -87,7 +87,6 @@ extern FILE * debf;
  *     results[9]    not used        (algorithm specific)
  * @return  none
  */
-
 void AT_efficiency(  long*  n,
     float*  E_MeV_u,
     long*  particle_no,
@@ -106,6 +105,23 @@ void AT_efficiency(  long*  n,
     float*  shrink_tails_under,
     int*  adjust_N2,
     float*  results);
+
+void AT_interparticleDistance_m(       long*   n,
+                float*  LET_MeV_cm2_g,
+                float*  fluence_cm2,
+                float*  results_m
+);
+
+void AT_inv_interparticleDistance_Gy(  long*   n,
+                float*  LET_MeV_cm2_g,
+                float*  distance_m,
+                float*  results_Gy
+);
+
+void AT_inv_interparticleDistance_cm2( long*   n,
+                float*  distance_m,
+                float*  results_cm2
+);
 
 void AT_efficiency_grid(  long*  n,
     float*  E_MeV_u,
