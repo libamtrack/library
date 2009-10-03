@@ -87,6 +87,7 @@ extern FILE * debf;
  *     results[9]    not used        (algorithm specific)
  * @return  none
  */
+
 void AT_efficiency(  long*  n,
     float*  E_MeV_u,
     long*  particle_no,
@@ -154,5 +155,23 @@ void AT_efficiency_Katz(  long*  n,
     long*  gamma_model,
     float*  gamma_parameters,
     float*  results);
+
+void AT_efficiency_SPISS(	long*  	n,
+		float*  E_MeV_u,
+		long*  	particle_no,
+		float*  fluence_cm2,
+		long*  	material_no,
+		long*  	RDD_model,
+		float*  RDD_parameters,
+		long*  	ER_model,
+		float*  ER_parameters,
+		long*  	gamma_model,
+		float*  gamma_parameters,
+		long*  	N2,
+		long*	n_runs,
+		float*  fluence_factor,
+		int*  	write_output,
+		long*  	importance_sampling,
+		float*  results);
 
 #endif /* AmTrack_H_ */
