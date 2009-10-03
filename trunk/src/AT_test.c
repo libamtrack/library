@@ -586,11 +586,56 @@
 ////  free(S_gamma_total);
 ////}
 
+void test_AT_SPISS(){
+
+  // INPUT :
+  long 		n 					= 2;
+  float 	E_MeV_u[] 			= {10.,50};
+  long 		particle_no[] 		= {1, 1};
+  float 	fluence_cm2[] 		= {-0.025f, -0.005f};
+  long		material_no 		= 1;			// Water
+
+  long		RDD_model			= 3;			// Geiﬂ
+  float 	RDD_parameters[] 	= {5e-8};
+  long		ER_model			= 4;			// Geiﬂ
+  float		ER_parameters[]		= {0.0f};
+  long		GR_model			= 4;			// Exp-sat
+  float		GR_parameters[]		= {1, 10};
+
+  long		n_runs				= 1000000;
+  long 		N2 					= 40;
+  float		fluence_factor		= 1.0f;
+  int		write_output		= 1;
+  long		importance_sampling	= 0;
+
+  float		results[10];
+
+  AT_efficiency_SPISS(	&n,
+						E_MeV_u,
+						particle_no,
+						fluence_cm2,
+						&material_no,
+						&RDD_model,
+						RDD_parameters,
+						&ER_model,
+						ER_parameters,
+						&GR_model,
+						GR_parameters,
+						&n_runs,
+						&N2,
+						&fluence_factor,
+						&write_output,
+						&importance_sampling,
+						results);
+
+}
+
 int main(){
 
   //testRDD();
   //test_AT_SC_1();
   //test_AT_SC_2();
+  test_AT_SPISS();
 
-  return 1;
+  return 0;
 };
