@@ -630,12 +630,62 @@ void test_AT_SPISS(){
 
 }
 
+void test_AT_grid(){
+
+  // INPUT :
+  long 		n 					= 1;
+  float 	E_MeV_u[] 			= {10.,50};
+  long 		particle_no[] 		= {1, 1};
+  float 	fluence_cm2[] 		= {-0.25f, -0.005f};
+  long		material_no 		= 1;			// Water
+
+  long		RDD_model			= 3;			// Geiﬂ
+  float 	RDD_parameters[] 	= {5e-8};
+  long		ER_model			= 4;			// Geiﬂ
+  float		ER_parameters[]		= {0.0f};
+  long		GR_model			= 4;			// Exp-sat
+  float		GR_parameters[]		= {1, 10};
+
+  long		n_runs				= 10;
+  long 		N2 					= 20;
+  float		fluence_factor		= 1.0f;
+  bool		write_output		= true;
+
+  long		nX					= 100;
+  float		grid_size_m			= 1e-6;
+  bool		lethal_events_mode	= false;
+
+  float		results[10];
+
+  AT_efficiency_grid(	&n,
+						E_MeV_u,
+						particle_no,
+						fluence_cm2,
+						&material_no,
+						&RDD_model,
+						RDD_parameters,
+						&ER_model,
+						ER_parameters,
+						&GR_model,
+						GR_parameters,
+						&n_runs,
+						&N2,
+						&fluence_factor,
+						&write_output,
+						&nX,
+						&grid_size_m,
+						&lethal_events_mode,
+						results);
+  }
+
 int main(){
 
   //testRDD();
   //test_AT_SC_1();
   //test_AT_SC_2();
-  test_AT_SPISS();
+
+//  test_AT_SPISS();
+  test_AT_grid();
 
   return 0;
 };
