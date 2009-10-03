@@ -28,7 +28,7 @@
 #include <stdio.h>
 
 #define _LINUX // [_LINUX or _WINDOWS] : in Linux we have isnan function while in Windows we have _isnan
-#define _R // [_S or _R] in S we can pass long type to the function via as.single, but in R we pass int type
+#define _S // [_S or _R] in S we can pass long type to the function via as.single, but in R we pass int type
 //#define _DEBUG // debugging printouts
 
 extern int indent_counter;
@@ -67,11 +67,11 @@ enum Method{
 // GammaResponse DATA
 
 enum GammaResponseModels{
-  GR_Test                  = 0,      /* no parameters */
-      GR_GeneralTarget     = 1,      /* */
-      GR_Radioluminescence = 2,      /* 0 - Smax, 1 - D0, 2 - dyn */
-      GR_ExpSaturation     = 3,      /* 0 - Smax, 1 - D0 */
-      GR_LinQuad           = 4        /* 0 - alpha, 1 - beta */
+  GR_Test                  = 1,      /* no parameters */
+      GR_GeneralTarget     = 2,      /* */
+      GR_Radioluminescence = 3,      /* 0 - Smax, 1 - D0, 2 - dyn */
+      GR_ExpSaturation     = 4,      /* 0 - Smax, 1 - D0 */
+      GR_LinQuad           = 5        /* 0 - alpha, 1 - beta */
 };
 
 #define GR_DATA_N    5
@@ -99,11 +99,11 @@ static const gr_data AT_GR_Data = {
 // RDD DATA
 
 enum RDDModels{
-  RDD_Test                 = 0,      /* no parameters */
-      RDD_KatzPoint        = 1,      /* parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
-      RDD_Geiss            = 2,      /* parameters: 0 - a0 [m] (core diameter) */
-      RDD_Site             = 3,      /* parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off)  */ // after Edmund et al., 2007, but modified with dose-cut off
-      RDD_ExtTarget        = 4       /* parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */ //as defined in Edmund et al. , 2007
+  RDD_Test                 = 1,      /* no parameters */
+      RDD_KatzPoint        = 2,      /* parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
+      RDD_Geiss            = 3,      /* parameters: 0 - a0 [m] (core diameter) */
+      RDD_Site             = 4,      /* parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off)  */ // after Edmund et al., 2007, but modified with dose-cut off
+      RDD_ExtTarget        = 5       /* parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */ //as defined in Edmund et al. , 2007
 };
 
 #define RDD_DATA_N    5
@@ -138,11 +138,11 @@ enum material_no{
 // ER DATA
 
 enum ERModels{
-  ER_Test                  = 0,
-      ER_ButtsKatz         = 1,
-      ER_Waligorski        = 2,
-      ER_Geiss             = 3,
-      ER_Scholz            = 4
+  ER_Test                  = 1,
+      ER_ButtsKatz         = 2,
+      ER_Waligorski        = 3,
+      ER_Geiss             = 4,
+      ER_Scholz            = 5
 };
 
 #define ER_DATA_N    5
