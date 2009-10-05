@@ -82,7 +82,7 @@ void AT_inv_interparticleDistance_cm2( long*   n,
 }
 
 
-void AT_efficiency(  long*  n,
+void AT_SPIFF(  long*  n,
 		float*  E_MeV_u,
 		long*  particle_no,
 		float*  fluence_cm2,
@@ -313,7 +313,7 @@ void AT_efficiency(  long*  n,
 	free(S);
 }
 
-void AT_efficiency_grid(  long*  n,
+void AT_GSM(  long*  n,
 		float*  E_MeV_u,
 		long*  particle_no,
 		float*  fluence_cm2,
@@ -939,7 +939,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 }
  */
 
-void AT_efficiency_Katz(  long*  n,
+void AT_IGK(  long*  n,
 		float*  E_MeV_u,
 		long*  particle_no,
 		float*  fluence_cm2,
@@ -1026,7 +1026,7 @@ void AT_efficiency_Katz(  long*  n,
  * This was routine "LGC_full_simulation_C" in LGC 2.1
  */
 
-void AT_efficiency_SPISS(	long*  	n,
+void AT_SPISS(	long*  	n,
 		float*  E_MeV_u,
 		long*  	particle_no,
 		float*  fluence_cm2,

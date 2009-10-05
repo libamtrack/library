@@ -88,7 +88,7 @@ extern FILE * debf;
  * @return  none
  */
 
-void AT_efficiency(  long*  n,
+void AT_SPIFF(  long*  n,
     float*  E_MeV_u,
     long*  particle_no,
     float*  fluence_cm2,
@@ -124,7 +124,7 @@ void AT_inv_interparticleDistance_cm2( long*   n,
                 float*  results_cm2
 );
 
-void AT_efficiency_grid(  long*  n,
+void AT_GSM(  long*  n,
     float*  E_MeV_u,
     long*  particle_no,
     float*  fluence_cm2,
@@ -144,7 +144,7 @@ void AT_efficiency_grid(  long*  n,
     bool*  lethal_events_mode,
     float*  results);
 
-void AT_efficiency_Katz(  long*  n,
+void AT_IGK(  long*  n,
     float*  E_MeV_u,
     long*  particle_no,
     float*  fluence_cm2,
@@ -157,7 +157,7 @@ void AT_efficiency_Katz(  long*  n,
     float*  gamma_parameters,
     float*  results);
 
-void AT_efficiency_SPISS(	long*  	n,
+void AT_SPISS(	long*  	n,
 		float*  E_MeV_u,
 		long*  	particle_no,
 		float*  fluence_cm2,
