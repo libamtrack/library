@@ -80,7 +80,8 @@
 # AT.SC.do.SC
 #
 # :::Compute efficiency FUNCTIONS:::
-# AT.efficiency
+# AT.GSM
+# AT.SPIFF
 # AT.RBE
 #
 ################################################################################################
@@ -1026,7 +1027,7 @@ AT.efficiency.short	<-	function(	E.MeV.u,
 	return(results)
 }
 														
-AT.efficiency.grid	<-	function(	E.MeV.u,
+AT.GSM	<-	function(	E.MeV.u,
 										particle.no,
 										fluence.cm2,
 										material.no,
@@ -1038,6 +1039,7 @@ AT.efficiency.grid	<-	function(	E.MeV.u,
 										gamma.parameters,
 										method					= "grid",
 										N.runs					=	100,
+										N2					=	10,
 										fluence.factor		=	1.0,
 										write.output			=	T,
 										n.X						=	100,
@@ -1046,38 +1048,27 @@ AT.efficiency.grid	<-	function(	E.MeV.u,
 	
 	 cat( "fluence.cm2 = ", fluence.cm2 ,  "\n")
 		results			<-	numeric(10)
-		res					<-	.C(	"AT_efficiency_grid",		n				= 	as.integer(length(E.MeV.u)),
-															E.MeV.u				=	as.single(E.MeV.u),
-															particle.no			=	as.integer(particle.no),
-															fluence.cm2			=	as.single(fluence.cm2),
-															material.no			=	as.integer(material.no),
-															RDD.model				=	as.integer(RDD.model),
-															RDD.parameters		=	as.single(RDD.parameters),
-															ER.model				=	as.integer(ER.model),
-															ER.parameters			=	as.single(ER.parameters),
-															gamma.model			=	as.integer(gamma.model),
-															gamma.parameters		=	as.single(gamma.parameters),
-															N.runs					=	as.integer(N.runs),
-															fluence.factor		=	as.single(fluence.factor),
-															write.output			=	as.integer(write.output),
-															n.X						=	as.integer(n.X),
-															grid.size.m			=	as.single(grid.size.m),
+		res					<-	.C(	"AT_GSM",		n				 = 	as.integer(length(E.MeV.u)),
+															E.MeV.u			    	    =	as.single(E.MeV.u),
+															particle.no			     =	as.integer(particle.no),
+															fluence.cm2			     =	as.single(fluence.cm2),
+															material.no			     =	as.integer(material.no),
+															RDD.model				      =	as.integer(RDD.model),
+															RDD.parameters    	=	as.single(RDD.parameters),
+															ER.model    				   =	as.integer(ER.model),
+															ER.parameters		    =	as.single(ER.parameters),
+															gamma.model			     =	as.integer(gamma.model),
+															gamma.parameters	  =	as.single(gamma.parameters),
+															N.runs			        		=	as.integer(N.runs),
+															N2      		      			=	as.integer(N2),
+															fluence.factor		   =	as.single(fluence.factor),
+															write.output		    	=	as.integer(write.output),
+															n.X			          			=	as.integer(n.X),
+															grid.size.m			     =	as.single(grid.size.m),
 															lethal.events.mode = as.integer(lethal.events.mode),
-															results				=	as.single(results))
+															results		        		=	as.single(results))
 	results			<-	res$results
 	return(results)
-}
-
-AT.fit.linquad.old <- function( D.Gy, 
-															Survival,
-															Survival.min,
-															Survival.max,
-															alpha.zero,
-															beta.zero){
- params <- numeric(2)
- fit <- nls( log(Survival/100.0) ~ (-D.Gy*alpha-D.Gy*D.Gy*beta), control = list(maxiter = 100, tol = 1e-5), start = list(alpha=alpha.zero,beta = beta.zero))
- params <- c ( fit$m$getPars()[[1]] , fit$m$getPars()[[2]]  )
-	return (params)										 
 }
 
 AT.fit.linquad.chi2 <- function( params, D.Gy, 
@@ -1100,7 +1091,6 @@ AT.fit.linquad.chi2.grad <- function( params, D.Gy,
  res[2] <- sum(2.*tmp*D.Gy*D.Gy)
 	return (res)										 
 }
-
 
 AT.fit.linquad <- function( D.Gy, 
 															Survival,
