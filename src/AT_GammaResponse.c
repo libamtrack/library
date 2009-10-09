@@ -1,28 +1,28 @@
 /**
- *    AT_GammaResponse.c
- *    ==================
- *
- *    Created on: 28.07.2009
- *    Author: greilich
- *
- *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
- *
- *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
- *
- *    AmTrack is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    AmTrack is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with AmTrack (file: copying.txt).
- *    If not, see <http://www.gnu.org/licenses/>
- */
+*    AT_GammaResponse.c
+*    ==================
+*
+*    Created on: 28.07.2009
+*    Author: greilich
+*
+*    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+*
+*    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+*
+*    AmTrack is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*    AmTrack is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with AmTrack (file: copying.txt).
+*    If not, see <http://www.gnu.org/licenses/>
+*/
 
 #include "AT_GammaResponse.h"
 
@@ -30,11 +30,11 @@
 #include <math.h>
 
 void AT_gamma_response(  long*  n,
-              float*  d_Gy,
-              long*  gamma_model,
-              float*  gamma_parameter,
-              // return
-              float*  S){
+    float*  d_Gy,
+    long*  gamma_model,
+    float*  gamma_parameter,
+    // return
+    float*  S){
 #ifdef _R
   int n_int = (int)(*n);
   *n = (long)n_int;
@@ -117,11 +117,11 @@ void AT_gamma_response(  long*  n,
    */
 
   if(*gamma_model == GR_Radioluminescence){
-    float Smax    =  gamma_parameter[0];
-    float D1    =  gamma_parameter[1];
+    float Smax   =  gamma_parameter[0];
+    float D1     =  gamma_parameter[1];
     float chi    =  gamma_parameter[2];
     // transform parameters
-    float c0    =  Smax / chi;
+    float c0     =  Smax / chi;
     float B      =  (Smax - c0) / D1;
 
     for (i = 0; i < *n; i++){
@@ -158,10 +158,8 @@ void AT_gamma_response(  long*  n,
    *         D0    - 3rd parameter - transition-dose
    */
   if(*gamma_model == GR_LinQuad){
-    // exp-saturation model
 
-
-    float  alpha  =  gamma_parameter[0];
+    float  alpha =  gamma_parameter[0];
     float  beta  =  gamma_parameter[1];
     float  D0    =  gamma_parameter[2];
 
@@ -180,22 +178,53 @@ void AT_gamma_response(  long*  n,
     return;
   }
 
+  /*
+   *  (4) LINEAR-QUADRATIC MODEL
+   *
+   *      parameters:     alpha   - 1st parameter in equation SF = exp( - alpha *D^2 - beta *D)
+   *                              beta    - 2nd parameter in equation SF = exp( - alpha *D^2 - beta *D)
+   *                              D0              - 3rd parameter - transition-dose
+   */
+
+  if(*gamma_model == GR_LinQuad_Log){
+    // exp-saturation model
+
+    float   alpha   =       gamma_parameter[0];
+    float   beta    =       gamma_parameter[1];
+    float   D0      =       gamma_parameter[2];
+
+    if( alpha < 0 )
+      alpha = 0;
+    if( beta < 0 )
+      beta = 0;
+
+    for (i = 0; i < *n; i++){
+      if( d_Gy[i] < D0 ){
+        S[i]    =       alpha * d_Gy[i] + beta * d_Gy[i] * d_Gy[i];
+      } else {
+        S[i]    =       alpha * D0 + beta * D0 * D0 + ( alpha + 2 * beta * D0) * (d_Gy[i] - D0);
+      }
+    }
+    return;
+  }
+
   return;
 }
 
 
 void AT_get_gamma_response(  long*  n,
-                float*  d_Gy,
-                float*  dd_Gy,
-                float*  f,
-                float*  f0,
-                long*  gamma_model,
-                float*  gamma_parameter,
-                // return
-                float*  S,
-                float*  S_HCP,
-                float*  S_gamma,
-                float*  efficiency)
+    float*  d_Gy,
+    float*  dd_Gy,
+    float*  f,
+    float*  f0,
+    long*  gamma_model,
+    float*  gamma_parameter,
+    bool* lethal_events_mode,
+    // return
+    float*  S,
+    float*  S_HCP,
+    float*  S_gamma,
+    float*  efficiency)
 {
 #ifdef _R
   int n_int = (int)(*n);
@@ -208,27 +237,31 @@ void AT_get_gamma_response(  long*  n,
   long i;
 
   AT_gamma_response(  n,
-            d_Gy,
-            gamma_model,
-            gamma_parameter,
-            // return
-            S);
+      d_Gy,
+      gamma_model,
+      gamma_parameter,
+      // return
+      S);
 
-  *S_HCP      =  0.0f;
-  float D_gamma  =  0.0f;
+  *S_HCP        =  0.0f;
+  float D_gamma =  0.0f;
 
   for(i = 0; i < *n; i++){
-      D_gamma    +=  d_Gy[i] * dd_Gy[i] * f[i];
-      *S_HCP    +=  S[i] * dd_Gy[i] * f[i];
+    D_gamma   +=  d_Gy[i] * dd_Gy[i] * f[i];
+    *S_HCP    +=  S[i] * dd_Gy[i] * f[i];
+  }
+
+  if( lethal_events_mode ){
+    *S_HCP = expf( -(*S_HCP) );
   }
 
   i  = 1;
   AT_gamma_response(  &i,
-            &D_gamma,
-            gamma_model,
-            gamma_parameter,
-            // return
-            S_gamma);
+      &D_gamma,
+      gamma_model,
+      gamma_parameter,
+      // return
+      S_gamma);
 
   *efficiency    =  *S_HCP / *S_gamma;
   return;

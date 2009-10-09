@@ -2,27 +2,27 @@
 #define AT_CONSTANTS_H_
 
 /**
- *    AT_Constants.h
- *    ==============
- *
- *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
- *
- *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
- *
- *    AmTrack is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    AmTrack is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with AmTrack (file: copying.txt).
- *    If not, see <http://www.gnu.org/licenses/>
- */
+*    AT_Constants.h
+*    ==============
+*
+*    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+*
+*    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+*
+*    AmTrack is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*    AmTrack is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with AmTrack (file: copying.txt).
+*    If not, see <http://www.gnu.org/licenses/>
+*/
 
 #include <string.h>
 #include <stdio.h>
@@ -58,9 +58,9 @@ static  double  m_to_um               =  1e6;
 static  double  pi                    =  3.14159265;
 
 enum Method{
-	ME_Grid           = 1,
-			ME_SPIFF      = 2,
-			ME_Katz       = 3
+  ME_Grid      = 1,
+      ME_SPIFF = 2,
+      ME_Katz  = 3
 };
 
 ///////////////////////////////////////////////////////////////////////
@@ -71,27 +71,28 @@ enum GammaResponseModels{
       GR_GeneralTarget     = 2,      /* */
       GR_Radioluminescence = 3,      /* 0 - Smax, 1 - D0, 2 - dyn */
       GR_ExpSaturation     = 4,      /* 0 - Smax, 1 - D0 */
-      GR_LinQuad           = 5        /* 0 - alpha, 1 - beta */
+      GR_LinQuad           = 5,      /* 0 - alpha, 1 - beta, 2 - D0 */
+      GR_LinQuad_Log       = 6       /* 0 - alpha, 1 - beta, 2 - D0 */
 };
 
-#define GR_DATA_N    5
+#define GR_DATA_N    6
 
 typedef struct {
   long    n;
   long    GR_no[GR_DATA_N];
   long	  n_parameters[GR_DATA_N];
-  char**  parameter_name[GR_DATA_N][4];
+  char*   parameter_name[GR_DATA_N][4];
   float   parameter_default[GR_DATA_N][4];
   char*   GR_name[GR_DATA_N];
 } gr_data;
 
 static const gr_data AT_GR_Data = {
-		GR_DATA_N,
-    {  GR_Test,          GR_GeneralTarget,          GR_Radioluminescence,        GR_ExpSaturation, GR_LinQuad},
-    {  0, 4, 3, 2, 2},
-    {  {"","","",""},{"S_max", "D0_Gy", "c", "m"},{"S_max","D0_Gy","dyn",""},{"S_max","D0_Gy","",""},{"alpha","beta","",""}},
-    {  {0,0,0,0}, {1, 10, 1, 1}, {1,10,5,0}, {1,10,0,0}, {1, 1, 0, 0}},
-    {  "simple test gamma response",  "generalized multi-target/multi-hit gamma response",  "radioluminescence gamma response",    "exp.-sat. gamma response (obsolete, use gen. target/hit instead)", "linear-quadratic gamma response"}
+    GR_DATA_N,
+    {  GR_Test,          GR_GeneralTarget,          GR_Radioluminescence,        GR_ExpSaturation, GR_LinQuad, GR_LinQuad_Log},
+    {  0, 4, 3, 2, 3, 3},
+    {  {"","","",""},{"S_max", "D0_Gy", "c", "m"},{"S_max","D0_Gy","dyn",""},{"S_max","D0_Gy","",""},{"alpha","beta","D0_Gy",""},{"alpha","beta","D0_Gy",""}},
+    {  {0,0,0,0}, {1, 10, 1, 1}, {1,10,5,0}, {1,10,0,0}, {1, 1, 10, 0}, {1, 1, 10, 0}},
+    {  "simple test gamma response",  "generalized multi-target/multi-hit gamma response",  "radioluminescence gamma response",    "exp.-sat. gamma response (obsolete, use gen. target/hit instead)", "linear-quadratic gamma response","lethan events number response"}
 };
 
 
@@ -112,13 +113,13 @@ typedef struct {
   long    n;
   long    RDD_no[RDD_DATA_N];
   long	  n_parameters[RDD_DATA_N];
-  char**  parameter_name[RDD_DATA_N][3];
+  char*   parameter_name[RDD_DATA_N][3];
   float   parameter_default[RDD_DATA_N][3];
   char*   RDD_name[RDD_DATA_N];
 } rdd_data;
 
 static const rdd_data AT_RDD_Data = {
-		RDD_DATA_N,
+    RDD_DATA_N,
     {  RDD_Test,          RDD_KatzPoint,          RDD_Geiss,        RDD_Site, RDD_ExtTarget},
     {  0, 2, 1, 2, 3},
     {  {"","",""},{"r_min_m", "d_min_Gy",""},{"a0_m","",""},{"a0_m","d_min_Gy",""},{"r_min_m","a0_m","D_min_Gy"}},
@@ -154,12 +155,10 @@ typedef struct {
 } er_data;
 
 static const er_data AT_ER_Data = {
-		ER_DATA_N,
+    ER_DATA_N,
     {  ER_Test,          ER_ButtsKatz,          ER_Waligorski,        ER_Geiss, ER_Scholz},
     {  "simple test ER model",  "Butts & Katz' [Katz et al., 1972] ER model",  "Waligorski's ER model",    "Geiss' [Geiss, 1997] ER model", "ER_Scholz' [Scholz, 2001] ER model"}
 };
-
-
 
 void   getMaterialName(  long* material_no, char* material_name);
 void   getMaterialNo(    char* material_name, long* material_no);

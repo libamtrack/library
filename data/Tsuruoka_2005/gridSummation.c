@@ -59,6 +59,7 @@ int main(){
 	long	gamma_model = 5;
 	float	gamma_parameters[] = {0.536384,0.03793949,20.0};
 	long	N_runs = 10;
+        long    N2 = 10;
 	float	fluence_factor = 1.0;
 	bool	write_output = true;
 	long	nX = 10;
@@ -73,7 +74,7 @@ int main(){
 		fluence_cm2 = -dose;
 
 		lethal_events_mode = false;
-		AT_efficiency_grid(	&n,
+		AT_GSM(	&n,
 				&E_MeV_u,
 				&particle_no,
 				&fluence_cm2,
@@ -85,6 +86,7 @@ int main(){
 				&gamma_model,
 				gamma_parameters,
 				&N_runs,
+				&N2,
 				&fluence_factor,
 				&write_output,
 				&nX,
@@ -93,7 +95,7 @@ int main(){
 				results_f);
 
 		lethal_events_mode = true;
-		AT_efficiency_grid(	&n,
+		AT_GSM(	&n,
 				&E_MeV_u,
 				&particle_no,
 				&fluence_cm2,
@@ -105,6 +107,7 @@ int main(){
 				&gamma_model,
 				gamma_parameters,
 				&N_runs,
+				&N2,
 				&fluence_factor,
 				&write_output,
 				&nX,
