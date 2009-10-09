@@ -105,6 +105,7 @@ void AT_SPIFF(  long*  n,
     int*  shrink_tails,
     float*  shrink_tails_under,
     int*  adjust_N2,
+    bool*   lethal_events_mode,
     float*  results);
 
 void AT_interparticleDistance_m(       long*   n,

@@ -25,6 +25,11 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <stdbool.h>
+
+#include "AT_Utils.h"
 
 extern int indent_counter;
 extern char isp[];
@@ -45,6 +50,7 @@ void AT_get_gamma_response(  long*  n,
                 float*  f0,
                 long*  gamma_model,
                 float*  gamma_parameter,
+                bool* lethal_events_mode,
                 // return
                 float*  S,
                 float*  S_HCP,
