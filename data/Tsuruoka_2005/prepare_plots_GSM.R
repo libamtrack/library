@@ -1,3 +1,26 @@
+################################################################################################
+# <file description>
+################################################################################################
+# Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+# 
+# This file is part of the AmTrack program (libamtrack.sourceforge.net).
+#
+# AmTrack is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# AmTrack is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# long with AmTrack (file: copying.txt).
+# If not, see <http://www.gnu.org/licenses/>
+#
+################################################################################################
+
 # clear workspace
 rm( list = ls() )
 
@@ -7,163 +30,151 @@ dyn.load("../../Release/libAmTrack.dll")
 # load wrapping scripts
 source("../../WrappingScripts/AmTrack_S.ssc")
 
+# load data access script
+source("data_operations.R")
+
 # necessary libraries for plotting
 library("lattice")
 library("gplots")
 
-############ read data from files #########################
+############ useful functions ####################
 
-AT.survival.data.read <- function( ){
-
- # read gamma data
- SurvTable <- read.table("Tsuruoka_gamma.dat")
- SurvTable$radiation = "gamma"
- SurvTable$Z = 0
- SurvTable$beta = 0
- SurvTable$zzbb = 0
- SurvTable$LET = 0
- SurvTable$Init.Energy = 0
- 
- # read ion data
- tmp.SurvTable <- read.table("Tsuruoka_ion.dat")
- tmp.SurvTable$radiation = "ion"
- SurvTable <- rbind( SurvTable , tmp.SurvTable )
-
- return (SurvTable)
+AT.particle.no.from.Z <- function( Z ){
+   if( Z == 6 )
+   		return (18)
+   if( Z == 10 )
+   		return (33)
+   if( Z == 14 )
+   		return (34)
+   if( Z == 26 )
+   		return (35)
+   return (-1)
 }
+
+AT.particle.name.from.Z <- function( Z ){
+   if( Z == 6 )
+   		return ("Carbon")
+   if( Z == 10 )
+   		return ("Neon")
+   if( Z == 14 )
+   		return ("Silicon")
+   if( Z == 26 )
+   		return ("Iron")
+   return ("")
+}
+
 
 ############ main script #########################
 
 # read data into data frames
-df.Survival = AT.survival.data.read()
+experimental.data = AT.survival.data.read()
 
-cond  <- (df.Survival$radiation == "gamma")
-gamma.data <- data.frame( D.Gy = df.Survival$D.Gy[ cond ], Survival = df.Survival$Survival[ cond ], Sur.min = df.Survival$Sur.min[ cond ] , Sur.max = df.Survival$Sur.max[ cond ] , type = "gamma")   
+cond  <- (experimental.data$radiation == "gamma")
+gamma.data <- data.frame( D.Gy = experimental.data$D.Gy[ cond ], Survival = experimental.data$Survival[ cond ], Sur.min = experimental.data$Sur.min[ cond ] , Sur.max = experimental.data$Sur.max[ cond ] , type = "gamma")   
 gamma.LQ.params <- AT.fit.linquad( gamma.data$D.Gy, gamma.data$Survival, gamma.data$Sur.min, gamma.data$Sur.max, 0., 0. )
 
+# model setup - physics
+material.no      <- 1                       # liquid water
+RDD.model        <- 3                       # [ 3 - Geiss RDD ]
+RDD.parameters   <- 1e-8                    # for Geiss RDD this means a0
+ER.model         <- 2                       # [2 - Waligorski ER]
+ER.parameters    <- 1
+gamma.model      <- 5                       # LQ model
+gamma.parameters <- c(gamma.LQ.params,20.0) # Gamma parameters + Dt = 20 Gy
+
+
 # plotting
-pdf("Grid.pdf", width=15, height=15, pointsize=24)
+pdf("GSM_SurvivalCurves.pdf", width=15, height=15, pointsize=24)
 
-# panel A data, carbon ions, 290MeV
-# carbon.290.let = c( 13, 19, 38, 54, 64, 73, 76 )
-carbon.290.let = c( 13 )
-ion.data.carbon.290 <- list()
-ion.model.data.carbon.290 <- list()
-ion.model.params.carbon.290 <- list()
-ion.gamma.data.carbon.290 <- list()
+simulation.results <- read.table("GSM_results.dat")
 
-Katz.chi2 <- numeric()
-LEM.chi2 <- numeric()
+LQ.D.Gy = seq( 0, 6, by = 0.01)
 
-v.RBE.exp <- numeric()
-v.RBE.Katz <- numeric()
-v.RBE.LEM <- numeric()
+Z_init.energy <- unique(paste( simulation.results$Z , simulation.results$Init.Energy, sep = "-"))
+# loop over all datasets
+for( z_en in Z_init.energy){
+  cond.z_en <- (paste( simulation.results$Z , simulation.results$Init.Energy, sep = "-") == z_en)
+  Z <- unique(simulation.results$Z[cond.z_en])
+  Init.Energy <- unique(simulation.results$Init.Energy[cond.z_en])
+  LET.vector <- unique(simulation.results$LET[cond.z_en])
+  particle.no <- AT.particle.no.from.Z(Z) # ion number
+#  if ((particle.no > 0) & (Z == 6) & (Init.Energy == 290)) {
+  if (particle.no > 0) {
+   cat("**************************************************\n")
+   cat("Z = ",Z,"\n")
+   cat("Init.Energy = ",Init.Energy,"\n")
+   # loop over all possible LET values
+   for( LET in LET.vector ){
+   
+      ###################### data preparation ###############################
+     cat("******* LET = ",LET,"**********\n")
+     E.MeV.u <- AT.E.MeV.u( LET , particle.no, material.no )[1] # energy from LET
+     cond.LET.GSM  <- ((simulation.results$Z == Z) & (simulation.results$Init.Energy == Init.Energy) & (simulation.results$LET == LET))
+     cond.LET.exp  <- ((experimental.data$Z == Z) & (experimental.data$Init.Energy == Init.Energy) & (experimental.data$LET == LET))     
 
-for( let in carbon.290.let ){
-  cat("****************** LET = ",let," [keV/um] ***************\n")
+     # read data from experimental dataset
+     D.Gy.exp <- experimental.data$D.Gy[cond.LET.exp]
+     Survival.exp.ion <- experimental.data$Survival[cond.LET.exp]
+     Survival.min.exp.ion <- experimental.data$Sur.min[cond.LET.exp]
+     Survival.max.exp.ion <- experimental.data$Sur.max[cond.LET.exp]
 
-  exp.dose <- df.Survival$D.Gy[ cond ]
-  exp.surv <- df.Survival$Survival[ cond ]/100.
-  exp.err <- df.Survival$Sur.Err[ cond ]/100.
+     # read dose values from model simulation
+     D.Gy <- simulation.results$D.Gy[cond.LET.GSM]
+     
+     # read dose values from model simulation (gamma radiation)
+     Survival.GSM.gamma <- simulation.results$Survival.gamma[cond.LET.GSM]
+					
+     # fit LQ model to simulated gamma response
+     GSM.gamma.params <- AT.fit.linquad( D.Gy, Survival.GSM.gamma, rep(1,length(D.Gy)), 0., 0. )
+     cat( "GSM gamma: alpha = ", GSM.gamma.params[1], " beta = ",  GSM.gamma.params[2],"\n")
+     
+     # prepare survival curve with LQ parameters for simulated gamma response
+     Survival.GSM.gamma.LQ <- 100.*exp( - GSM.gamma.params[1] * LQ.D.Gy - GSM.gamma.params[2] * LQ.D.Gy * LQ.D.Gy)
+     
+     # read dose values from model simulation (ion radiation)
+     Survival.GSM.ion <- simulation.results$Survival.ion[cond.LET.GSM]
+     
+     # fit LQ model to simulated ion response
+     GSM.ion.params <- AT.fit.linquad( D.Gy, Survival.GSM.ion, rep(1,length(D.Gy)), 0., 0. )
+     cat( "GSM ion: alpha = ", GSM.ion.params[1], " beta = ",  GSM.ion.params[2],"\n")
 
-  ion.model.df.carbon.290 <- read.table(paste("grid_carbon290_let",let,".txt", sep=""))
-  dose <- ion.model.df.carbon.290$D.Gy
-  surv <- ion.model.df.carbon.290$Survival
-  dose.factor <- ion.model.df.carbon.290$dose.factor
+     # prepare survival curve with LQ parameters for simulated ion response
+     Survival.GSM.ion.LQ <- 100.*exp( - GSM.ion.params[1] * LQ.D.Gy - GSM.ion.params[2] * LQ.D.Gy * LQ.D.Gy)
+     
+     # dose reproducibility factor
+     Dose.Factor.GSM <- simulation.results$Dose.Factor[cond.LET.GSM]
+     
+     ###################### plotting ###############################
+     
+     # plot gamma experimental data
+     plotCI( x = gamma.data$D.Gy , y = gamma.data$Survival/100., ui = gamma.data$Sur.max/100., li = gamma.data$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axis = FALSE, pch = 1, xlim = c(0,6), ylim = c(0.001, 1.), col = "green")
 
-# plot of gamma data
-  df <- gamma.data
-  plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axis = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.), main=paste("Carbon ions (LET=",let," keV/um) and photons, cell survival") , lw = 4, cex.lab = 1.2)
-  
- # plot of LQ fit to gamma data
-  x <- seq( 0, 6, by=0.01)
-  y <- exp( -gamma.LQ.params[1]*x - gamma.LQ.params[2]*x*x)
-#  lines( x = x , y = y )
-    
-  # plot of LQ fit to simulated ion data by grid summation
-  ion.params <- c(0.,0.)
-  ion.params <- AT.fit.linquad( dose, surv, surv , surv, 0., 0. )
-  x <- seq( 0, 6, by=0.01)
-  y <- exp( -ion.params[1]*x - ion.params[2]*x*x)
-  lines( x = x , y = y , col = "red", lw = 4)
-  mod.L.surv <- exp( -ion.params[1]*exp.dose - ion.params[2]*exp.dose*exp.dose)
-  RBE.LEM <- AT.RBE( ion.params[1],  ion.params[2], gamma.LQ.params[1], gamma.LQ.params[2] )
-  cat("   LEM.ion.params",ion.params,"\n")
-  cat("RBE LEM",RBE.LEM,"\n")
-  v.RBE.LEM <- c( v.RBE.LEM, RBE.LEM )
-
-  # plot of experimental ion data 
-  cond  <- (df.Survival$Z == 6 & df.Survival$Init.Energy == 290 & df.Survival$LET == 10*let)
-  ion.data.carbon.290 <- data.frame( D.Gy = df.Survival$D.Gy[ cond ], Survival = df.Survival$Survival[ cond ], Sur.min = df.Survival$Sur.min[ cond ] , Sur.max = df.Survival$Sur.max[ cond ] , type = "ion")
-  par(new=TRUE)
-  plotCI( x = ion.data.carbon.290$D.Gy , y = ion.data.carbon.290$Survival/100., ui = ion.data.carbon.290$Sur.max/100., li = ion.data.carbon.290$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axis = FALSE, pch = 2, xlim = c(0,6), ylim = c(0.001, 1.), lw = 4, cex.lab = 1.2)
-  
-  # plot of LQ fit to experimental ion data
-  ion.params <- c(0.,0.)
-  try(ion.params <- AT.fit.linquad( df.Survival$D.Gy[ cond ], df.Survival$Survival[ cond ], df.Survival$Sur.min[ cond ] , df.Survival$Sur.max[ cond ], 0., 0. ))
-  x <- seq( 0, 6, by=0.01)
-  y <- exp( -ion.params[1]*x - ion.params[2]*x*x)
-#  lines( x = x , y = y )
-  abline( h = c(0.1) ,lw = 2)
-  axis( 1, at = c(0,1,2,3,4,5,6), lw = 4)
-  axis( 2, at = c(0.001,0.01,0.1,1), lw = 4)
-
-  RBE.exp <- AT.RBE( ion.params[1],  ion.params[2], gamma.LQ.params[1], gamma.LQ.params[2] )
-  cat("   ion.params",ion.params,"\n")
-  cat("RBE exp",RBE.exp,"\n")
-  v.RBE.exp <- c( v.RBE.exp, RBE.exp )
-
-  cat("Reading file... ", paste("model_let",let,".dat", sep=""))
-  katz.model.df <- read.table(paste("model_let",let,".dat", sep=""))
-#  points( x = katz.model.df$V1 , y = katz.model.df$V2/100. , pch="*")
-  ion.params <- c(0.,0.)
-  try(ion.params <- AT.fit.linquad( katz.model.df$V1, katz.model.df$V2, katz.model.df$V2 , katz.model.df$V2, 0., 0. ))
-  x <- seq( 0, 6, by=0.01)
-  y <- exp( -ion.params[1]*x - ion.params[2]*x*x)
-  lines( x = x , y = y , col = "green", lw = 4)
-  mod.K.surv <- exp( -ion.params[1]*exp.dose - ion.params[2]*exp.dose*exp.dose)
-  RBE.Katz <- AT.RBE( ion.params[1],  ion.params[2], gamma.LQ.params[1], gamma.LQ.params[2] )
-  cat("   Katz.ion.params",ion.params,"\n")
-  cat("RBE Katz",RBE.Katz,"\n")
-  v.RBE.Katz <- c( v.RBE.Katz, RBE.Katz )
-
- # cat("LET = ",let,"\n")
- # cat("A",exp.err,"\n")
- # cat("B",exp.surv,"\n")
- # cat("C",mod.surv,"\n")
- # cat("length",length(exp.dose),"\n")
-  cat("Katz LET = ",let,"chi2", sum((exp.surv-mod.K.surv)*(exp.surv-mod.K.surv)/(exp.err*exp.err))/length(exp.dose),"\n")
-  cat("LEM LET = ",let,"chi2", sum((exp.surv-mod.L.surv)*(exp.surv-mod.L.surv)/(exp.err*exp.err))/length(exp.dose),"\n")
-
-  kc <- sum((exp.surv-mod.K.surv)*(exp.surv-mod.K.surv)/(exp.err*exp.err))/length(exp.dose)
-  Katz.chi2 <- c(Katz.chi2, kc )
-  lc <- sum((exp.surv-mod.L.surv)*(exp.surv-mod.L.surv)/(exp.err*exp.err))/length(exp.dose)
-  LEM.chi2 <- c(LEM.chi2, lc )
-
-  legend( "topright", legend = c("exp. data: photons", "exp. data: carbon ions", paste( "Grid summation model" ),paste( "Katz model" ) ), pch = c(22,2,NA,NA), lty = c(NA,NA,1,1), lw = 4, col=c(1,1,"red","green"))
-  #par(new=TRUE)
-  #plot(x = NA, main=paste("Carbon beam (LET=",let," keV/um) and X rays, cell survival"), log = "y" , axes = FALSE, pch = 3, xlim = c(0,6), ylim = c(0.001, 1.))
-}
-
-plot(Katz.chi2 ~ carbon.290.let, xlim = c(0,100), ylim = c(0,500), pch = 1, xlab = "LET", ylab = "chi2/n")
-points(LEM.chi2 ~ carbon.290.let, pch = 2)
-#legend( "topright", legend = c("Katz","LEM"), pch = c(1,2))
-
-dev.off()
-
-pdf("RBE-comparison.pdf")
-
-letu <- c(0,0,1,3,5,7,8)
-letl <- c(0,0,1,3,6,11,13)
-#p1 <- plotCI( x = carbon.290.let, y = v.RBE.exp, uiw = letu, liw = letl, err = "x", xlim = c(0,80), ylim = c(0,4), xlab = "LET [keV/um]", ylab = "RBE" , main = "RBE: models vs experiment", lw = 4)
-p1 <- plotCI( x = carbon.290.let, y = v.RBE.exp, uiw = letu, liw = letl, err = "x", xlim = c(0,80), ylim = c(0,4), xlab = substitute(paste("LET [keV/",mu,"m]")), ylab = "RBE" , lw = 4, cex.lab = 1.5)
-par(new=TRUE)
-rbeu <- c(0.01,0.05,0.01,0.08,0.02,0.16,0.3)
-rbel <- c(0.01,0.05,0.01,0.08,0.02,0.16,0.3)
-plotCI( x = carbon.290.let, y = v.RBE.exp, uiw = rbeu, liw = rbel, err = "y", xlim = c(0,80), ylim = c(0,4), xlab = NA, ylab = NA, axis = FALSE, lw = 4, add = TRUE)
-lines( v.RBE.LEM ~ carbon.290.let, col="red", lw = 4)
-lines( v.RBE.Katz ~ carbon.290.let, col="green", lw = 4)
-legend( "topright", legend = c("experimental data","Katz model","Grid summ. model"), pch=1, col=c("black","green","red"), lw = 4)
-p1
+     # plot ion experimental data     
+     par(new=TRUE)
+     plotCI( x = D.Gy.exp , y = Survival.exp.ion/100., ui = Survival.max.exp.ion/100., li = Survival.min.exp.ion/100., gap = 0 , xlab = "" , ylab = "" , log = "y" , axis = FALSE, pch = 2, xlim = c(0,6), ylim = c(0.001, 1.), col = "red")
+     
+     # plot gamma GSM simulated data and LQ fit
+     points( x = D.Gy, y = Survival.GSM.gamma/100., pch = 3, col = "green")
+     lines( x = LQ.D.Gy , y = Survival.GSM.gamma.LQ/100. , col = "green")
+     
+     # plot ion GSM simulated data and LQ fit
+     points( x = D.Gy, y = Survival.GSM.ion/100., pch = 4, col = "red")     
+     lines( x = LQ.D.Gy , y = Survival.GSM.ion.LQ/100. , col = "red")
+     
+     # plot of dose reproducibility factor
+     points( x = D.Gy , y = Dose.Factor.GSM )
+     abline()
+     
+     # refinement
+     abline( h = c(1,0.1) ,lw = 2)
+     axis( 1, at = c(0,1,2,3,4,5,6), lw = 4)
+     axis( 2, at = c(0.001,0.01,0.1,1), lw = 4)
+     legend( "topright", legend = c("exp. data gamma","model gamma","exp. data ions","model ions"), pch=c(1,3,2,4), col=c("green","green","red","red"), lw = 4)
+     #title(paste("Z = ",Z," ",AT.particle.name.from.Z(Z)," ,", Init.Energy, "MeV/u ,", LET = ", LET))
+     title(paste("Z = ",Z," ,",AT.particle.name.from.Z(Z), " ions , ",Init.Energy, " MeV/u, LET = ", LET/10, "keV/um" ))
+     
+   } # end LET loop
+  } # end if
+} # end dataset loop
 
 dev.off()

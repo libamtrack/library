@@ -1,38 +1,45 @@
+################################################################################################
+# R script for recreating plots from Tsuruoka article
+################################################################################################
+# Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+# 
+# This file is part of the AmTrack program (libamtrack.sourceforge.net).
+#
+# AmTrack is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# AmTrack is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# long with AmTrack (file: copying.txt).
+# If not, see <http://www.gnu.org/licenses/>
+#
+################################################################################################
+
 # clear workspace
 rm( list = ls() )
 
 # load libAmTrack library
 dyn.load("../../Release/libAmTrack.dll")
 
-# load wrapping scripts
-source("../../WrappingScripts/SGP.ssc")
+# load wrapping script
+source("../../WrappingScripts/AmTrack_S.ssc")
 
-# necessary libraries for plotting
+# load data access script
+source("data_operations.R")
+
+# necessary libraries for plotting (R-specific)
 library("lattice")
 library("gplots")
 
-############ read data from files #########################
+############ useful functions ####################
 
-SGP.survival.data.read	<-	function(	){
-
-# read gamma data
-	SurvTable <- read.table("Tsuruoka_gamma.dat")
- SurvTable$radiation = "gamma"
-	SurvTable$Z = 0
-	SurvTable$beta = 0
-	SurvTable$zzbb = 0
-	SurvTable$LET = 0
-	SurvTable$Init.Energy = 0
-	
-# read ion data
-	tmp.SurvTable <- read.table("Tsuruoka_ion.dat")
-	tmp.SurvTable$radiation = "ion"
-	SurvTable <- rbind( SurvTable , tmp.SurvTable )
-
- return (SurvTable)
-}
-
-SGP.plot.surv.data <- function( SurvTable ){
+AT.plot.surv.data <- function( SurvTable ){
    p1 <- xyplot( log10(Survival/100.0) ~ D.Gy | Z, groups = radiation, distribute.type = TRUE, data = SurvTable , type = c("p","l"))
    return (p1)
 }
@@ -40,10 +47,12 @@ SGP.plot.surv.data <- function( SurvTable ){
 ############ main script #########################
 
 # read data into data frames
-df.Survival = SGP.survival.data.read()
+df.Survival = AT.survival.data.read()
 
 cond  <- (df.Survival$radiation == "gamma")
 gamma.data <- data.frame( D.Gy = df.Survival$D.Gy[ cond ], Survival = df.Survival$Survival[ cond ], Sur.min = df.Survival$Sur.min[ cond ] , Sur.max = df.Survival$Sur.max[ cond ] , type = "gamma")   
+
+############# reorganize data ######################
 
 # panel A data, carbon ions, 290MeV
 carbon.290.let = c( 13, 19, 38, 54, 64, 73, 76 )
@@ -95,10 +104,11 @@ for( let in iron.500.let ){
 
 # plot data
 
-plot1 <- SGP.plot.surv.data( df.Survival )
+############# produce plots and save to file ######################
+
 pch.table <- c(22,15,1,16,2,17,6,18,23)
 
-pdf("PlotsFromTheArticle.pdf")
+pdf("ExperimentalData_SurvivalCurves.pdf")
 
 #plot1
 
@@ -209,6 +219,5 @@ lines( x = df$D.Gy , y = df$Survival/100. )
 axis( 1, at = c(0,1,2,3,4,5,6))
 axis( 2, at = c(0.001,0.01,0.1,1))
 title( main = "Panel F, iron ions, 500MeV/amu" )
-
 
 dev.off()
