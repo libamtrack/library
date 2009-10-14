@@ -164,7 +164,6 @@ AT.gamma.response	<-	function(	d.Gy,
 																gamma.model		= as.integer(gamma.model),
 																gamma.parameters	= as.single(gamma.parameters),
 																S					= as.single(S))
- cat( "res$S =", res$S,"\n")
 	return(res$S)
 }
 
@@ -648,9 +647,6 @@ AT.SC.do.SC	<-	function(	f.list,
 								shrink.tails = T,
 								shrink.tails.under = 1e-30,
 								adjust.N2 = T){
-
-	if(debug == T) cat("Hello world\n")
-
 	n.bins.f				<-	integer(1)
 	u.start				<-	numeric(1)
 	n.convolutions		<-	integer(1)
@@ -1046,7 +1042,6 @@ AT.GSM	<-	function(	E.MeV.u,
 										lethal.events.mode  = F,
 										grid.size.m			=	1e-9){
 	
-	 cat( "fluence.cm2 = ", fluence.cm2 ,  "\n")
 		results			<-	numeric(10)
 		res					<-	.C(	"AT_GSM",		n				 = 	as.integer(length(E.MeV.u)),
 															E.MeV.u			    	    =	as.single(E.MeV.u),
