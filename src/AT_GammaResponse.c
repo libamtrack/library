@@ -263,6 +263,10 @@ void AT_get_gamma_response(  long*  n,
       // return
       S_gamma);
 
+  if( lethal_events_mode ){
+    *S_gamma = expf( -(*S_gamma) );
+  }
+
   *efficiency    =  *S_HCP / *S_gamma;
   return;
 }
