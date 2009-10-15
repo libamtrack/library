@@ -938,7 +938,7 @@ AT.efficiency		<-	function(		E.MeV.u,
 }
 
 
-AT.efficiency.short	<-	function(	E.MeV.u,
+AT.SPIFF.short	<-	function(	E.MeV.u,
 										particle.no,
 										fluence.cm2,
 										material.no,
@@ -955,11 +955,12 @@ AT.efficiency.short	<-	function(	E.MeV.u,
 										shrink.tails 			= T,
 										shrink.tails.under	= 1e-30,
 										adjust.N2 				= T,
+          lethal.events.mode = F,									
 										transport				= F,
 										E.min.MeV.u			= 1,
 										p.tol					= 0.1,
 										z.total.cm				= 0.1,
-					 					N.max					= 1e3){
+					 				N.max					= 1e3){
 	
 		results			<-	numeric(10)
 		if (transport == T){
@@ -974,7 +975,7 @@ AT.efficiency.short	<-	function(	E.MeV.u,
 		n.loop			<-	nrow(transport)
 		for (i in 1:n.loop){
 			slab.results		<-	numeric(10)
-			res					<-	.C(	"AT_efficiency",		n						= 	1,
+			res					<-	.C(	"AT_SPIFF",		n						= 	1,
 																E.MeV.u				=	as.single(transport$E.MeV[i]),
 																particle.no			=	as.integer(particle.no),
 																fluence.cm2			=	as.single(fluence.cm2),
@@ -991,6 +992,7 @@ AT.efficiency.short	<-	function(	E.MeV.u,
 																shrink.tails			=	as.integer(shrink.tails),
 																shrink.tails.under	=	as.single(shrink.tails.under),
 																adjust.N2				=	as.integer(adjust.N2),
+                lethal.events.mode = as.integer(lethal.events.mode),
 																results				=	as.single(slab.results))
 			print(cat("Done slab no. ", i, "\n"))
 			print(cat("results:  ", res$results, "\n"))
@@ -1000,7 +1002,7 @@ AT.efficiency.short	<-	function(	E.MeV.u,
 			results[4]			<-	results[4] + res$results[4] * transport$w.Edmund[i]			# S.gamma
 		}
 	}else{
-		res					<-	.C(	"AT_efficiency",		n						= 	as.integer(length(E.MeV.u)),
+		res					<-	.C(	"AT_SPIFF",		n						= 	as.integer(length(E.MeV.u)),
 															E.MeV.u				=	as.single(E.MeV.u),
 															particle.no			=	as.integer(particle.no),
 															fluence.cm2			=	as.single(fluence.cm2),
@@ -1017,6 +1019,7 @@ AT.efficiency.short	<-	function(	E.MeV.u,
 															shrink.tails			=	as.integer(shrink.tails),
 															shrink.tails.under	=	as.single(shrink.tails.under),
 															adjust.N2				=	as.integer(adjust.N2),
+															lethal.events.mode = as.integer(lethal.events.mode),
 															results				=	as.single(results))
 		results			<-	res$results
 	}
