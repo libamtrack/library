@@ -1,3 +1,26 @@
+################################################################################################
+# <file description>
+################################################################################################
+# Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+# 
+# This file is part of the AmTrack program (libamtrack.sourceforge.net).
+#
+# AmTrack is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# AmTrack is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# long with AmTrack (file: copying.txt).
+# If not, see <http://www.gnu.org/licenses/>
+#
+################################################################################################
+
 # clear workspace
 rm( list = ls() )
 
@@ -5,119 +28,410 @@ rm( list = ls() )
 dyn.load("../../Release/libAmTrack.dll")
 
 # load wrapping scripts
-source("../../WrappingScripts/SGP.ssc")
+source("../../WrappingScripts/AmTrack_S.ssc")
 
-library("gplots")
+# load data access script
+source("data_operations.R")
+
+# necessary libraries for plotting
 library("lattice")
+library("gplots")
 
-############ read data from files #########################
+############ useful functions ####################
 
-SGP.survival.data.read	<-	function(	){
-
-# read gamma data
-	SurvTable <- read.table("Tsuruoka_gamma.dat")
- SurvTable$radiation = "gamma"
-	SurvTable$Z = 0
-	SurvTable$beta = 0
-	SurvTable$zzbb = 0
-	SurvTable$LET = 0
-	SurvTable$Init.Energy = 0
-	
-# read ion data
-	tmp.SurvTable <- read.table("Tsuruoka_ion.dat")
-	tmp.SurvTable$radiation = "ion"
-	SurvTable <- rbind( SurvTable , tmp.SurvTable )
-
- return (SurvTable)
+AT.particle.no.from.Z <- function( Z ){
+   if( Z == 6 )
+   		return (18)
+   if( Z == 10 )
+   		return (33)
+   if( Z == 14 )
+   		return (34)
+   if( Z == 26 )
+   		return (35)
+   return (-1)
 }
 
-############ constants #########################
-
-SGP.survival.data.names <- function ( Z ){
- if( Z == 1 ){
- 	return ("proton")
- } else if( Z == 6 ){
- 	return ("carbon")
- } else if( Z == 10 ){
- 	return ("neon")
- } else if( Z == 14 ){
- 	return ("silicon")
- } else if( Z == 26 ){
- 	return ("iron")
- } else {
- 	return (Z)
- }
-
+AT.particle.name.from.Z <- function( Z ){
+   if( Z == 6 )
+   		return ("Carbon")
+   if( Z == 10 )
+   		return ("Neon")
+   if( Z == 14 )
+   		return ("Silicon")
+   if( Z == 26 )
+   		return ("Iron")
+   return ("")
 }
+
+
+############ main script #########################
 
 # read data into data frames
-df.Survival = SGP.survival.data.read()
+experimental.data = AT.survival.data.read()
 
-cond  <- (df.Survival$radiation == "gamma")
-gamma.data <- data.frame( D.Gy = df.Survival$D.Gy[ cond ], Survival = df.Survival$Survival[ cond ], Sur.min = df.Survival$Sur.min[ cond ] , Sur.max = df.Survival$Sur.max[ cond ] , type = "gamma")   
-gamma.params <- SGP.fit.linquad( gamma.data$D.Gy, gamma.data$Survival, gamma.data$Sur.min, gamma.data$Sur.max, 0., 0. )
+cond  <- (experimental.data$radiation == "gamma")
+gamma.data <- data.frame( D.Gy = experimental.data$D.Gy[ cond ], Survival = experimental.data$Survival[ cond ], Sur.min = experimental.data$Sur.min[ cond ] , Sur.max = experimental.data$Sur.max[ cond ] , type = "gamma")   
+gamma.LQ.params <- AT.fit.linquad( gamma.data$D.Gy, gamma.data$Survival, gamma.data$Sur.min, gamma.data$Sur.max, 0., 0. )
 
-cond <- paste( df.Survival$Z , df.Survival$Init.Energy, df.Survival$LET, sep="-")
-df.Survival$cond <- cond
+# model setup - physics
+material.no      <- 1                       # liquid water
+RDD.model        <- 3                       # [ 3 - Geiss RDD ]
+RDD.parameters   <- 1e-8                    # for Geiss RDD this means a0
+ER.model         <- 2                       # [2 - Waligorski ER]
+ER.parameters    <- 1
+gamma.model      <- 5                       # LQ model
+gamma.parameters <- c(gamma.LQ.params,20.0) # Gamma parameters + Dt = 20 Gy
 
-RBE.cond <- paste( df.Survival$Z[df.Survival$Z > 0] , df.Survival$Init.Energy[df.Survival$Z > 0], sep="-")
-df.Summary <- data.frame( Z = df.Survival$Z[df.Survival$Z > 0], LET = df.Survival$LET[df.Survival$Z > 0], Init.Energy = df.Survival$Init.Energy[df.Survival$Z > 0], RBE = 0) 
-df.Summary$cond <- RBE.cond
+####################################### PLOT 1 ######################################################
 
-df.Summary <- unique(df.Summary)
+# plotting
+pdf("models_RBE.pdf", width=15, height=15, pointsize=24)
 
-RBE.vector <- numeric(0)
+SPIFF.results <- read.table("SPIFF_results.dat")
+Katz.results <- read.table("Katz_results.dat")
+GSM.results <- read.table("GSM_results.dat")
 
-# linear-quadratic fit, plots and calculations of RBE
+RBE.article <- read.table("RBE_article.dat")
 
-pdf("LQfit.pdf")
+plotCI( x = 1, y = 1, xlim = c(0,500), ylim = c(0, 5), axis = FALSE, xlab = "", ylab = "")
 
-# loop over all survival curves
-for( item in unique(df.Survival$cond) ){
- if( item != "0-0-0" ){
-  cond <- ( df.Survival$cond == item )
+Z_init.energy <- unique(paste( SPIFF.results$Z , SPIFF.results$Init.Energy, sep = "-"))
+# loop over all datasets
+for( z_en in Z_init.energy){
+  cond.z_en.SPIFF <- (paste( SPIFF.results$Z , SPIFF.results$Init.Energy, sep = "-") == z_en)
+  Z <- unique(SPIFF.results$Z[cond.z_en.SPIFF])
+  Init.Energy <- unique(SPIFF.results$Init.Energy[cond.z_en.SPIFF])
+  LET.vector.SPIFF <- unique(SPIFF.results$LET[cond.z_en.SPIFF])
+  particle.no <- AT.particle.no.from.Z(Z) # ion number
+  if (particle.no > 0) {
+   cat("**************************************************\n")
+   cat("Z = ",Z,"\n")
+   cat("Init.Energy = ",Init.Energy,"\n")
+   # loop over all possible LET values
+   
+   cond.RBE.article <- ((RBE.article$Z == Z) & (RBE.article$Init.Energy == Init.Energy))
+   
+   LET <- RBE.article$LET[cond.RBE.article]
+   LET.min <- RBE.article$LET.min[cond.RBE.article]
+   LET.max <- RBE.article$LET.max[cond.RBE.article]
+   RBE <- RBE.article$RBE[cond.RBE.article]
+   RBE.err  <- RBE.article$RBE.err[cond.RBE.article]
+   RBE.min  <- RBE - RBE.err
+   RBE.max  <- RBE + RBE.err
+   
+   par(new=TRUE)
+   plotCI( x = LET, y = RBE, ui = RBE.max, li = RBE.min, err = "y", gap = 0., xlim = c(0,500), ylim = c(0, 5), axis = FALSE, xlab = "LET [keV/um]", ylab = "RBE")
+   par(new=TRUE)
+   plotCI( x = LET, y = RBE, ui = LET.max, li = LET.min, err = "x", gap = 0., xlim = c(0,500), ylim = c(0, 5), axis = FALSE, xlab = NA, ylab = NA, add = TRUE)
+   #title(paste("Z = ",Z," ,",AT.particle.name.from.Z(Z), " ions , ",Init.Energy, " MeV/u" ))
+   legend( "topright", legend = c("exp. data - article","exp. data - LQ","model - SPIFF","model - Katz"), pch=c(1,1,2,3), col=c("black","green","red","blue"), lw = 4)
 
-  # fitting of LQ equation to ion data
-  ion.params <- c(0.,0.)
-  try(ion.params <- SGP.fit.linquad( df.Survival$D.Gy[ cond ], df.Survival$Survival[ cond ], df.Survival$Sur.min[ cond ] , df.Survival$Sur.max[ cond ], 0., 0. ))
-	 
-	 # plot of gamma data
-	 df <- gamma.data
-	 plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.))
-	 
-	 # plot of LQ fit to gamma data
-  x <- seq( 0, 6, by=0.01)
-  y <- exp( -gamma.params[1]*x - gamma.params[2]*x*x)
-  lines( x = x , y = y )
-	 
-	 
-	 # plot of ion data 
-	 df <- data.frame( D.Gy = df.Survival$D.Gy[ cond ], Survival = df.Survival$Survival[ cond ], Sur.min = df.Survival$Sur.min[ cond ] , Sur.max = df.Survival$Sur.max[ cond ])
-	 par(new=TRUE)
-	 plotCI( x = df$D.Gy , y = df$Survival/100., ui = df$Sur.max/100., li = df$Sur.min/100., gap = 0 , xlab = "Dose (Gy)" , ylab = "Surviving fraction" , log = "y" , axes = FALSE, pch = 22, xlim = c(0,6), ylim = c(0.001, 1.))
-  legend( "topright", legend = c("200 kV X rays", paste( "LET = " , unique(df.Survival$LET[ cond ]) , "keV/um" ) ))
-  
-  # plot of LQ fit to ion data
-  x <- seq( 0, 6, by=0.01)
-  y <- exp( -ion.params[1]*x - ion.params[2]*x*x)
-  lines( x = x , y = y )
-  abline( h = c(0.1) )
-  axis( 1, at = c(0,1,2,3,4,5,6))
-  axis( 2, at = c(0.001,0.01,0.1,1))
-  
-  # calculation of RBE
-  RBE <- SGP.RBE( ion.params[1],  ion.params[2], gamma.params[1], gamma.params[2] )
-  RBE.vector <- c( RBE.vector , RBE)
-  title( main = substitute( paste( Zval, " ions, ", E[init], "=", Eval, "MeV/amu, ", alpha, "=", alphaval, " " ,beta, "=", betaval, " RBE = ", RBEval), list(Zval=SGP.survival.data.names(unique(df.Survival$Z[ cond ])) , Eval = unique(df.Survival$Init.Energy[ cond ]), alphaval = round(ion.params[1],3), betaval = round(ion.params[2],3), RBEval = round(RBE,2) ) ) )
-}	
-} 
+   RBE.vector.SPIFF <- numeric()
+   LET.vector.SPIFF <- sort( LET.vector.SPIFF ) 
+
+   for( LET in LET.vector.SPIFF ){
+      ###################### data preparation ###############################
+     cat("******* LET = ",LET,"**********\n")
+     E.MeV.u <- AT.E.MeV.u( LET , particle.no, material.no )[1] # energy from LET
+     cond.LET.SPIFF  <- ((SPIFF.results$Z == Z) & (SPIFF.results$Init.Energy == Init.Energy) & (SPIFF.results$LET == LET))
+
+     # read dose values from model simulation
+     D.Gy <- SPIFF.results$D.Gy[cond.LET.SPIFF]
+     
+     # read dose values from model simulation (gamma radiation)
+     Survival.SPIFF.gamma <- SPIFF.results$Survival.gamma[cond.LET.SPIFF]
+					
+     # fit LQ model to simulated gamma response
+     SPIFF.gamma.params <- AT.fit.linquad( D.Gy, Survival.SPIFF.gamma, rep(1,length(D.Gy)), 0., 0. )
+     cat( "SPIFF gamma: alpha = ", SPIFF.gamma.params[1], " beta = ",  SPIFF.gamma.params[2],"\n")
+     
+     # read dose values from model simulation (ion radiation)
+     Survival.SPIFF.ion <- SPIFF.results$Survival.ion[cond.LET.SPIFF]
+     
+     # fit LQ model to simulated ion response
+     SPIFF.ion.params <- AT.fit.linquad( D.Gy, Survival.SPIFF.ion, rep(1,length(D.Gy)), 0., 0. )
+     cat( "SPIFF ion: alpha = ", SPIFF.ion.params[1], " beta = ",  SPIFF.ion.params[2],"\n")
+     
+     # calculate simulated (SPIFF) RBE value 
+     RBE.SPIFF <- AT.RBE( SPIFF.ion.params[1], SPIFF.ion.params[2], SPIFF.gamma.params[1], SPIFF.gamma.params[2], survival = 10)
+     
+     RBE.vector.SPIFF <- c( RBE.vector.SPIFF , RBE.SPIFF)
+          
+   } # end LET loop
+
+   ###################### plotting ###############################
+   lines( x = LET.vector.SPIFF/10., y = RBE.vector.SPIFF, col = "red")
+
+
+   cond.Z.en.Katz  <- ((experimental.data$Z == Z) & (experimental.data$Init.Energy == Init.Energy))
+   LET.vector.Katz <- unique(experimental.data$LET[cond.Z.en.Katz])
+
+   for( LET in LET.vector.Katz ){
+      ###################### data preparation ###############################
+     cat("******* LET = ",LET,"**********\n")
+     E.MeV.u <- AT.E.MeV.u( LET , particle.no, material.no )[1] # energy from LET
+     cond.LET.Katz  <- ((Katz.results$Z == Z) & (Katz.results$Init.Energy == Init.Energy) & (Katz.results$LET == LET))
+
+     # read dose values from model simulation
+     D.Gy <- Katz.results$D.Gy[cond.LET.Katz]
+     
+     # read dose values from model simulation (gamma radiation)
+     Survival.Katz.gamma <- Katz.results$Survival.gamma[cond.LET.Katz]
+					
+     # fit LQ model to simulated gamma response
+     Katz.gamma.params <- AT.fit.linquad( D.Gy, Survival.Katz.gamma, rep(1,length(D.Gy)), 0., 0. )
+     cat( "Katz gamma: alpha = ", Katz.gamma.params[1], " beta = ",  Katz.gamma.params[2],"\n")
+     
+     # read dose values from model simulation (ion radiation)
+     Survival.Katz.ion <- Katz.results$Survival.ion[cond.LET.Katz]
+     
+     # fit LQ model to simulated ion response
+     Katz.ion.params <- AT.fit.linquad( D.Gy, Survival.Katz.ion, rep(1,length(D.Gy)), 0., 0. )
+     cat( "Katz ion: alpha = ", Katz.ion.params[1], " beta = ",  Katz.ion.params[2],"\n")
+     
+     # calculate simulated (Katz) RBE value 
+     RBE.Katz <- AT.RBE( Katz.ion.params[1], Katz.ion.params[2], Katz.gamma.params[1], Katz.gamma.params[2], survival = 10)
+
+     ###################### plotting ###############################     
+     # plot RBE
+     if( RBE.Katz > 1 ){
+		     points( x = LET/10., y = RBE.Katz, pch = 3, col = "blue")
+		   }     
+   } # end LET loop
+
+   cond.Z.en.GSM  <- ((GSM.results$Z == Z) & (GSM.results$Init.Energy == Init.Energy))
+   LET.vector.GSM <- unique(GSM.results$LET[cond.Z.en.GSM])
+
+   for( LET in LET.vector.GSM ){
+      ###################### data preparation ###############################
+     cat("******* LET = ",LET,"**********\n")
+     E.MeV.u <- AT.E.MeV.u( LET , particle.no, material.no )[1] # energy from LET
+     cond.LET.GSM  <- ((GSM.results$Z == Z) & (GSM.results$Init.Energy == Init.Energy) & (GSM.results$LET == LET))
+
+     # read dose values from model simulation
+     D.Gy <- GSM.results$D.Gy[cond.LET.GSM]
+        
+     # read dose values from model simulation (ion radiation)
+     Survival.GSM.ion <- GSM.results$Survival.ion[cond.LET.GSM]
+     
+     # fit LQ model to simulated ion response
+     GSM.ion.params <- AT.fit.linquad( D.Gy, Survival.GSM.ion, rep(1,length(D.Gy)), 0., 0. )
+     cat( "GSM ion: alpha = ", GSM.ion.params[1], " beta = ",  GSM.ion.params[2],"\n")
+     
+     # calculate simulated (Katz) RBE value 
+     RBE.GSM <- AT.RBE( GSM.ion.params[1], GSM.ion.params[2], gamma.LQ.params[1], gamma.LQ.params[2], survival = 10)
+
+     ###################### plotting ###############################     
+     # plot RBE
+     points( x = LET/10., y = RBE.GSM, pch = 4, col = "pink")     
+   } # end LET loop
+
+   cond.Z.en.exp  <- ((experimental.data$Z == Z) & (experimental.data$Init.Energy == Init.Energy))
+   LET.vector.exp <- unique(experimental.data$LET[cond.Z.en.exp])
+
+   for( LET in LET.vector.exp ){
+      ###################### data preparation ###############################
+     cat("******* LET = ",LET,"**********\n")
+     E.MeV.u <- AT.E.MeV.u( LET , particle.no, material.no )[1] # energy from LET
+     cond.LET.exp  <- ((experimental.data$Z == Z) & (experimental.data$Init.Energy == Init.Energy) & (experimental.data$LET == LET))     
+
+     # read data from experimental dataset
+     D.Gy.exp <- experimental.data$D.Gy[cond.LET.exp]
+     Survival.exp.ion <- experimental.data$Survival[cond.LET.exp]
+     Survival.min.exp.ion <- experimental.data$Sur.min[cond.LET.exp]
+     Survival.max.exp.ion <- experimental.data$Sur.max[cond.LET.exp]
+     Survival.err.exp.ion <- experimental.data$Sur.err[cond.LET.exp]
+
+     # fit LQ model to experimental ion response
+     exp.ion.params <- AT.fit.linquad( D.Gy.exp, Survival.exp.ion, Survival.err.exp.ion , 0., 0. )
+     cat( "Experiment ion: alpha = ", exp.ion.params[1], " beta = ",  exp.ion.params[2],"\n")
+     
+     # calculate experimental RBE value 
+     RBE.exp <- AT.RBE( exp.ion.params[1], exp.ion.params[2], gamma.LQ.params[1], gamma.LQ.params[2], survival = 10)
+
+     ###################### plotting ###############################     
+     # plot RBE
+     points( x = LET/10., y = RBE.exp, pch = 1, col = "green")     
+   } # end LET loop
+  } # end if
+} # end dataset loop
+
 dev.off()
 
-df.Summary$RBE <- RBE.vector 
 
-pdf("RBE.pdf")
+####################################### PLOT 2 ######################################################
 
-p1 <- xyplot( RBE ~ LET | paste("Z =",Z,lapply( df.Summary$Z, SGP.survival.data.names)), data = df.Summary , groups = cond, auto.key = list(), type = "p" , scales = c( list( x = list(log = 10)) ))
-p1
+# plotting
+pdf("models_RBE_details.pdf", width=15, height=15, pointsize=24)
+
+SPIFF.results <- read.table("SPIFF_results.dat")
+Katz.results <- read.table("Katz_results.dat")
+
+RBE.article <- read.table("RBE_article.dat")
+
+Z_init.energy <- unique(paste( SPIFF.results$Z , SPIFF.results$Init.Energy, sep = "-"))
+# loop over all datasets
+for( z_en in Z_init.energy){
+  cond.z_en.SPIFF <- (paste( SPIFF.results$Z , SPIFF.results$Init.Energy, sep = "-") == z_en)
+  Z <- unique(SPIFF.results$Z[cond.z_en.SPIFF])
+  Init.Energy <- unique(SPIFF.results$Init.Energy[cond.z_en.SPIFF])
+  LET.vector.SPIFF <- unique(SPIFF.results$LET[cond.z_en.SPIFF])
+  particle.no <- AT.particle.no.from.Z(Z) # ion number
+  if (particle.no > 0) {
+   cat("**************************************************\n")
+   cat("Z = ",Z,"\n")
+   cat("Init.Energy = ",Init.Energy,"\n")
+   # loop over all possible LET values
+   
+   cond.RBE.article <- ((RBE.article$Z == Z) & (RBE.article$Init.Energy == Init.Energy))
+   
+   LET <- RBE.article$LET[cond.RBE.article]
+   LET.min <- RBE.article$LET.min[cond.RBE.article]
+   LET.max <- RBE.article$LET.max[cond.RBE.article]
+   RBE <- RBE.article$RBE[cond.RBE.article]
+   RBE.err  <- RBE.article$RBE.err[cond.RBE.article]
+   RBE.min  <- RBE - RBE.err
+   RBE.max  <- RBE + RBE.err
+   
+   plotCI( x = LET, y = RBE, ui = RBE.max, li = RBE.min, err = "y", gap = 0., xlim = c(0,max(LET.max)), ylim = c(0, max(RBE.max)+1), axis = FALSE, xlab = "LET [keV/um]", ylab = "RBE")
+   plotCI( x = LET, y = RBE, ui = LET.max, li = LET.min, err = "x", gap = 0., xlim = c(0,max(LET.max)), ylim = c(0, max(RBE.max)+1), axis = FALSE, xlab = NA, ylab = NA, add = TRUE)
+   title(paste("Z = ",Z," ,",AT.particle.name.from.Z(Z), " ions , ",Init.Energy, " MeV/u" ))
+   legend( "bottomright", legend = c("exp. data - article","exp. data - LQ","model - SPIFF","model - Katz","model - GSM"), pch=c(1,1,2,3,4), col=c("black","green","red","blue","pink"), lw = 4)
+
+   RBE.vector.SPIFF <- numeric()
+   LET.vector.SPIFF <- sort( LET.vector.SPIFF ) 
+
+   for( LET in LET.vector.SPIFF ){
+      ###################### data preparation ###############################
+     cat("******* LET = ",LET,"**********\n")
+     E.MeV.u <- AT.E.MeV.u( LET , particle.no, material.no )[1] # energy from LET
+     cond.LET.SPIFF  <- ((SPIFF.results$Z == Z) & (SPIFF.results$Init.Energy == Init.Energy) & (SPIFF.results$LET == LET))
+
+     # read dose values from model simulation
+     D.Gy <- SPIFF.results$D.Gy[cond.LET.SPIFF]
+     
+     # read dose values from model simulation (gamma radiation)
+     Survival.SPIFF.gamma <- SPIFF.results$Survival.gamma[cond.LET.SPIFF]
+					
+     # fit LQ model to simulated gamma response
+     SPIFF.gamma.params <- AT.fit.linquad( D.Gy, Survival.SPIFF.gamma, rep(1,length(D.Gy)), 0., 0. )
+     cat( "SPIFF gamma: alpha = ", SPIFF.gamma.params[1], " beta = ",  SPIFF.gamma.params[2],"\n")
+     
+     # read dose values from model simulation (ion radiation)
+     Survival.SPIFF.ion <- SPIFF.results$Survival.ion[cond.LET.SPIFF]
+     
+     # fit LQ model to simulated ion response
+     SPIFF.ion.params <- AT.fit.linquad( D.Gy, Survival.SPIFF.ion, rep(1,length(D.Gy)), 0., 0. )
+     cat( "SPIFF ion: alpha = ", SPIFF.ion.params[1], " beta = ",  SPIFF.ion.params[2],"\n")
+     
+     # calculate simulated (SPIFF) RBE value 
+     RBE.SPIFF <- AT.RBE( SPIFF.ion.params[1], SPIFF.ion.params[2], SPIFF.gamma.params[1], SPIFF.gamma.params[2], survival = 10)
+     
+     RBE.vector.SPIFF <- c( RBE.vector.SPIFF , RBE.SPIFF)
+          
+   } # end LET loop
+
+   ###################### plotting ###############################
+   lines( x = LET.vector.SPIFF/10., y = RBE.vector.SPIFF, col = "red", lw = 2)
+
+
+   cond.Z.en.Katz  <- ((experimental.data$Z == Z) & (experimental.data$Init.Energy == Init.Energy))
+   LET.vector.Katz <- unique(experimental.data$LET[cond.Z.en.Katz])
+   RBE.vector.Katz <- numeric()
+
+   for( LET in LET.vector.Katz ){
+      ###################### data preparation ###############################
+     cat("******* LET = ",LET,"**********\n")
+     E.MeV.u <- AT.E.MeV.u( LET , particle.no, material.no )[1] # energy from LET
+     cond.LET.Katz  <- ((Katz.results$Z == Z) & (Katz.results$Init.Energy == Init.Energy) & (Katz.results$LET == LET))
+
+     # read dose values from model simulation
+     D.Gy <- Katz.results$D.Gy[cond.LET.Katz]
+     
+     # read dose values from model simulation (gamma radiation)
+     Survival.Katz.gamma <- Katz.results$Survival.gamma[cond.LET.Katz]
+					
+     # fit LQ model to simulated gamma response
+     Katz.gamma.params <- AT.fit.linquad( D.Gy, Survival.Katz.gamma, rep(1,length(D.Gy)), 0., 0. )
+     cat( "Katz gamma: alpha = ", Katz.gamma.params[1], " beta = ",  Katz.gamma.params[2],"\n")
+     
+     # read dose values from model simulation (ion radiation)
+     Survival.Katz.ion <- Katz.results$Survival.ion[cond.LET.Katz]
+     
+     # fit LQ model to simulated ion response
+     Katz.ion.params <- AT.fit.linquad( D.Gy, Survival.Katz.ion, rep(1,length(D.Gy)), 0., 0. )
+     cat( "Katz ion: alpha = ", Katz.ion.params[1], " beta = ",  Katz.ion.params[2],"\n")
+     
+     # calculate simulated (Katz) RBE value 
+     RBE.Katz <- AT.RBE( Katz.ion.params[1], Katz.ion.params[2], Katz.gamma.params[1], Katz.gamma.params[2], survival = 10)
+     RBE.vector.Katz <- c( RBE.vector.Katz , RBE.Katz )
+
+   } # end LET loop
+
+   ###################### plotting ###############################     
+   # plot RBE
+   lines( x = LET.vector.Katz[RBE.vector.Katz > 1]/10., y = RBE.vector.Katz[RBE.vector.Katz > 1], pch = 3, col = "blue", lw = 2)     
+
+
+   cond.Z.en.GSM  <- ((GSM.results$Z == Z) & (GSM.results$Init.Energy == Init.Energy))
+   LET.vector.GSM <- unique(GSM.results$LET[cond.Z.en.GSM])
+   RBE.vector.GSM <- numeric()
+   
+   for( LET in LET.vector.GSM ){
+      ###################### data preparation ###############################
+     cat("******* LET = ",LET,"**********\n")
+     E.MeV.u <- AT.E.MeV.u( LET , particle.no, material.no )[1] # energy from LET
+     cond.LET.GSM  <- ((GSM.results$Z == Z) & (GSM.results$Init.Energy == Init.Energy) & (GSM.results$LET == LET))
+
+     # read dose values from model simulation
+     D.Gy <- GSM.results$D.Gy[cond.LET.GSM]
+        
+     # read dose values from model simulation (ion radiation)
+     Survival.GSM.ion <- GSM.results$Survival.ion[cond.LET.GSM]
+     
+     # fit LQ model to simulated ion response
+     GSM.ion.params <- AT.fit.linquad( D.Gy, Survival.GSM.ion, rep(1,length(D.Gy)), 0., 0. )
+     cat( "GSM ion: alpha = ", GSM.ion.params[1], " beta = ",  GSM.ion.params[2],"\n")
+     
+     # calculate simulated (Katz) RBE value 
+     RBE.GSM <- AT.RBE( GSM.ion.params[1], GSM.ion.params[2], gamma.LQ.params[1], gamma.LQ.params[2], survival = 10)
+     RBE.vector.GSM <- c( RBE.vector.GSM , RBE.GSM )
+
+   } # end LET loop
+
+  ###################### plotting ###############################     
+   # plot RBE
+   lines( x = LET.vector.GSM/10., y = RBE.vector.GSM, pch = 4, col = "pink", lw = 2)     
+
+
+   cond.Z.en.exp  <- ((experimental.data$Z == Z) & (experimental.data$Init.Energy == Init.Energy))
+   LET.vector.exp <- unique(experimental.data$LET[cond.Z.en.exp])
+
+   for( LET in LET.vector.exp ){
+      ###################### data preparation ###############################
+     cat("******* LET = ",LET,"**********\n")
+     E.MeV.u <- AT.E.MeV.u( LET , particle.no, material.no )[1] # energy from LET
+     cond.LET.exp  <- ((experimental.data$Z == Z) & (experimental.data$Init.Energy == Init.Energy) & (experimental.data$LET == LET))     
+
+     # read data from experimental dataset
+     D.Gy.exp <- experimental.data$D.Gy[cond.LET.exp]
+     Survival.exp.ion <- experimental.data$Survival[cond.LET.exp]
+     Survival.min.exp.ion <- experimental.data$Sur.min[cond.LET.exp]
+     Survival.max.exp.ion <- experimental.data$Sur.max[cond.LET.exp]
+     Survival.err.exp.ion <- experimental.data$Sur.err[cond.LET.exp]
+
+     # fit LQ model to experimental ion response
+     exp.ion.params <- AT.fit.linquad( D.Gy.exp, Survival.exp.ion, Survival.err.exp.ion , 0., 0. )
+     cat( "Experiment ion: alpha = ", exp.ion.params[1], " beta = ",  exp.ion.params[2],"\n")
+     
+     # calculate experimental RBE value 
+     RBE.exp <- AT.RBE( exp.ion.params[1], exp.ion.params[2], gamma.LQ.params[1], gamma.LQ.params[2], survival = 10)
+
+     ###################### plotting ###############################     
+     # plot RBE
+     points( x = LET/10., y = RBE.exp, pch = 1, col = "green")     
+   } # end LET loop
+  } # end if
+} # end dataset loop
 
 dev.off()

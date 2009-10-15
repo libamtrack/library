@@ -170,7 +170,6 @@ for( z_en in Z_init.energy){
      axis( 1, at = c(0,1,2,3,4,5,6), lw = 4)
      axis( 2, at = c(0.001,0.01,0.1,1), lw = 4)
      legend( "topright", legend = c("exp. data gamma","model gamma","exp. data ions","model ions"), pch=c(1,3,2,4), col=c("green","green","red","red"), lw = 4)
-     #title(paste("Z = ",Z," ",AT.particle.name.from.Z(Z)," ,", Init.Energy, "MeV/u ,", LET = ", LET))
      title(paste("Z = ",Z," ,",AT.particle.name.from.Z(Z), " ions , ",Init.Energy, " MeV/u, LET = ", LET/10, "keV/um" ))
      
    } # end LET loop

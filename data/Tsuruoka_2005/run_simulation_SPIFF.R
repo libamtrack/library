@@ -64,22 +64,19 @@ gamma.LQ.params  <- AT.fit.linquad( gamma.data$D.Gy, gamma.data$Survival, gamma.
 # model setup - physics
 material.no      <- 1                       # liquid water
 RDD.model        <- 3                       # [ 3 - Geiss RDD ]
-RDD.parameters   <- 1e-8                    # for Geiss RDD this means a0
-ER.model         <- 2                       # [2 - Waligorski ER]
+RDD.parameters   <- 5e-8                    # for Geiss RDD this means a0
+ER.model         <- 4                       # [2 - Waligorski ER]
 ER.parameters    <- 1
-gamma.model      <- 5                       # LQ model
+gamma.model      <- 6                       # LQ model
 gamma.parameters <- c(gamma.LQ.params,20.0) # Gamma parameters + Dt = 20 Gy
 
 # model setup - algorithms
-N.runs           <-  10                     # number of runs
-n.X              <- 1e2                     # number of pixels on the grid side (grid size = n.X * n.X)
-grid.size.m      <- 1e-6                    # linear pixel size (length of side)
 
 
-dose <- seq(1,6, by=0.1)
+dose <- seq(1e-5,6, by=0.2)
 n <- length(dose)
 
-simulation.results <- data.frame( D.Gy = 0, Survival.ion = 0, Survival.gamma = 0, Dose.Factor = 0, Z = 0, Init.Energy = 0, LET = 0, model = "GSM")
+simulation.results <- data.frame( D.Gy = 0, Survival.ion = 0, Survival.gamma = 0, Dose.Factor = 0, Z = 0, Init.Energy = 0, LET = 0, model = "SPIFF")
 
 Z_init.energy <- unique(paste( df.Survival$Z , df.Survival$Init.Energy, sep = "-"))
 # loop over all datasets
@@ -93,18 +90,21 @@ for( z_en in Z_init.energy){
   cat("Init.Energy = ",Init.Energy,"\n")
   particle.no <- AT.particle.no.from.Z(Z) # ion number
 #  if ((particle.no > 0) && (Z == 6) && (Init.Energy == 290)) {
-  if ((particle.no > 0) & (Z != 10)) {
+  if ((particle.no > 0)) {
    # loop over all possible LET values
-   for( LET in LET.vector ){
+   LET.vector.dense <- seq( min(LET.vector), max(LET.vector), length = 30)
+   LET.vector.dense <- c( LET.vector.dense , LET.vector ) 
+   for( LET in LET.vector.dense ){
      cat("******* LET = ",LET,"**********\n")
   			#cond.LET  <- (df.Survival$Z == Z & df.Survival$Init.Energy == Init.Energy & df.Survival$LET == LET)
   			#ion.data <- data.frame( D.Gy = df.Survival$D.Gy[ cond.LET ], Survival = df.Survival$Survival[ cond.LET ], Sur.min = df.Survival$Sur.min[ cond.LET ] , Sur.max = df.Survival$Sur.max[ cond.LET ] , type = "ion")
   			E.MeV.u <- AT.E.MeV.u( LET , particle.no, material.no )[1] # energy from LET
-  			
+     
      # loop over all possible doses
      for( d in dose ){
        fluence.cm2 = -d
-       res <- AT.GSM( E.MeV.u,
+       
+       res <- AT.SPIFF.short( E.MeV.u,
          particle.no,
          fluence.cm2,
          material.no,
@@ -114,16 +114,21 @@ for( z_en in Z_init.energy){
          ER.parameters,
          gamma.model,
          gamma.parameters,
-         method = "grid",
-         N.runs,
-         N2 = 10,          
-         fluence.factor = 1.0,
-         write.output = F,
-         n.X,
-         lethal.events.mode = T,
-         grid.size.m)
+         method = "SC",
+         N2						= 20,
+									fluence.factor 		= 1.0,
+									write.output 			= F,
+									shrink.tails 			= T,
+									shrink.tails.under	= 1e-30,
+									adjust.N2 				= T,
+         lethal.events.mode = T,									
+									transport				= F,
+									E.min.MeV.u			= 1,
+									p.tol					= 0.1,
+									z.total.cm				= 0.1,
+					 			N.max					= 1e3)
 
-       current.results <- data.frame( D.Gy = d, Survival.ion = 100*res[3], Survival.gamma = 100*res[4], Dose.Factor = res[2]/d, Z = Z, Init.Energy = Init.Energy, LET = LET, model = "GSM")
+       current.results <- data.frame( D.Gy = d, Survival.ion = 100*res[3], Survival.gamma = 100*res[4], Dose.Factor = res[2]/d, Z = Z, Init.Energy = Init.Energy, LET = LET, model = "SPIFF")
        simulation.results <- rbind( simulation.results, current.results)
          
   			} # end dose loop		
@@ -131,4 +136,4 @@ for( z_en in Z_init.energy){
   } # end if
 } # end dataset (Z-init.energy) loop
 
-write.table(simulation.results,"GSM_results.dat")
+write.table(simulation.results,"SPIFF_results.dat")
