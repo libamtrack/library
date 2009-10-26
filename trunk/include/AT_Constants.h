@@ -143,7 +143,8 @@ enum ERModels{
       ER_ButtsKatz         = 2,
       ER_Waligorski        = 3,
       ER_Geiss             = 4,
-      ER_Scholz            = 5
+      ER_Scholz            = 5,
+      ER_Edmund			   = 6
 };
 
 #define ER_DATA_N    5
