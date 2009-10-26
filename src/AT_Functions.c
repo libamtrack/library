@@ -636,24 +636,6 @@ void AT_max_electron_range_mS(  int*  n,
 }
 #endif
 
-#ifdef _S
-void AT_max_electron_range_mS(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
-    long*  material_no,
-    long*   er_model,
-    float*  max_electron_range_m)
-{
-
-  AT_max_electron_range_m( n,
-      E_MeV_u,
-      particle_no,
-      material_no,
-      er_model,
-      max_electron_range_m);
-
-}
-#endif
 
 void AT_max_electron_range_m(  long*  n,
     float*  E_MeV_u,
@@ -675,13 +657,13 @@ void AT_max_electron_range_m(  long*  n,
 #endif
 
   // Get density matching to material_name (only 1 name therefore n_mat = 1)
-  //long  n_mat  = 1;
-  //long  match;
-  //pmatchi(  material_no,
-  //      &n_mat,
-  //      AT_Material_Data.material_no,
-  //      &AT_Material_Data.n,
-  //      &match);
+  long  n_mat  = 1;
+  long  match;
+  pmatchi(  material_no,
+        &n_mat,
+        AT_Material_Data.material_no,
+        &AT_Material_Data.n,
+        &match);
 
   long*  matches  =  (long*)calloc(*n, sizeof(long));
   float*  mass  =  (float*)calloc(*n, sizeof(float));
@@ -710,6 +692,12 @@ void AT_max_electron_range_m(  long*  n,
       if( w_keV < 1. ) alpha = 1.079;
       max_electron_range_m[i] =  6* 1e-6 * (float)pow( w_keV, alpha );
     }
+    if( *er_model == ER_Edmund ){
+      double alpha = 1.67;
+      w_keV = 2 * electron_mass_MeV_c2 * ( E_div_E0*E_div_E0 + 2*E_div_E0) * 1e3;
+      if( w_keV < 1. ) alpha = 1.079;
+      max_electron_range_m[i] =  6.13*1e-6 * (float)pow( w_keV, alpha );
+    }
     if( *er_model == ER_Geiss ){
       max_electron_range_m[i] = 4e-5 * (float)pow(tmpE, 1.5);
     }
@@ -718,7 +706,7 @@ void AT_max_electron_range_m(  long*  n,
     }
 
     // Scale maximum el. range with material density relative to water (1/rho)
-    max_electron_range_m[i]    /= AT_Material_Data.density_g_cm3[*material_no];
+    max_electron_range_m[i]    /= AT_Material_Data.density_g_cm3[match];
 
     // covert cm to m
     max_electron_range_m[i]    /= 1e2;  // cm to m
