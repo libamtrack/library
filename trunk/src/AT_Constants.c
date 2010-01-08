@@ -79,28 +79,6 @@ void getRDDNo(char* RDD_name, long* RDD_no){
   }
 }
 
-void getERName(long* ER_no, char* ER_name){
-  switch( (int)(*ER_no) ){
-  case ER_Test:
-    strcpy(ER_name,"simple test ER model");
-    break;
-  case ER_ButtsKatz:
-    strcpy(ER_name,"Butts & Katz' [Katz et al., 1972] ER model");
-    break;
-  case ER_Waligorski:
-    strcpy(ER_name,"Waligorski's ER model");
-    break;
-  case ER_Geiss:
-    strcpy(ER_name,"Geiss' [Geiss, 1997] ER model");
-    break;
-  case ER_Scholz:
-    strcpy(ER_name,"ER_Scholz' [Scholz, 2001] ER model");
-    break;
-  default:
-    strcpy(ER_name,"*** invalid choice ***");
-    break;
-  }
-}
 
 void getGammaName(long* Gamma_no, char* Gamma_name){
   switch( (int)(*Gamma_no) ){
