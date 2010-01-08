@@ -148,7 +148,7 @@ int main(){
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
 
   do{
-    printf("\n> *** select gamma-reponse model ***");
+    printf("\n> *** select gamma-response model ***");
 	for(i = 0; i < GR_DATA_N;i++){
 	  printf("\n index: %ld --> %s", AT_GR_Data.GR_no[i], AT_GR_Data.GR_name[i]);
 	}
@@ -179,8 +179,9 @@ int main(){
   bool  shrink_tails       = true;
   bool  adjust_N2          = true;
   float shrink_tails_under = 1e-30f;
+  bool  lethal_events_mode = false;
 
-  AT_efficiency(  &n_particles,
+  AT_SPIFF(  &n_particles,
 		  E_MeV_u,
 		  particle_no,
 		  fluence_cm2,
@@ -197,6 +198,7 @@ int main(){
 		  &shrink_tails,
 		  &shrink_tails_under,
 		  &adjust_N2,
+		  &lethal_events_mode,
 		  &results);
 
   printf("\n\n >>> Done.");
@@ -204,7 +206,7 @@ int main(){
   printf("\nEfficiency:          %g", results[0]);
   printf("\nDose check / Gy:     %g", results[1]);
   printf("\nParticle response:   %g", results[2]);
-  printf("\nGamma reponse:       %g", results[3]);
+  printf("\nGamma response:       %g", results[3]);
   printf("\n");
   printf("\nMean impact number:  %g", results[5]);
   printf("\nStart impact number: %g", results[6]);
