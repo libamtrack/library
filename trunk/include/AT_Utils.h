@@ -89,17 +89,5 @@ void interp(float* xa, float* ya, long* n, long* n_pol, float* x, float *y, floa
 // get LET-data for given material
 void getPSTARvalue(long* n, float* x, long* material_no, float* x_table, float* y_table, float* y);
 
-float gammln(float xx);
-void gcf(float *gammcf, float a, float x, float *gln);
-void gser(float *gamser, float a, float x, float *gln);
-float gammp(float a, float x);
-float erff(float x);
-void nrerror(char error_text[]);
-
-/*   From Numerical Recipes in C, 2nd ed., 1992:
-  Using Ridders' method, return the root of a function func known to lie between x1 and x2.
-  The root, returned as zriddr, will be refined to an approximate accuracy xacc.
- */
-float zriddr(float (*func)(float,void*), void * params, float x1, float x2, float xacc);
 
 #endif // AT_UTILS_H_

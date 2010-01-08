@@ -52,6 +52,18 @@ int   dvla_(  double *va, double *x, double *pd);
 int   vvla_(  double *va, double *x, double *pv);
 int   gamma_(  double *x, double *ga);
 
+float gammln(float xx);
+void gcf(float *gammcf, float a, float x, float *gln);
+void gser(float *gamser, float a, float x, float *gln);
+float gammp(float a, float x);
+float erff(float x);
+void nrerror(char error_text[]);
+
+/*   From Numerical Recipes in C, 2nd ed., 1992:
+  Using Ridders' method, return the root of a function func known to lie between x1 and x2.
+  The root, returned as zriddr, will be refined to an approximate accuracy xacc.
+ */
+float zriddr(float (*func)(float,void*), void * params, float x1, float x2, float xacc);
 
 
 #endif /* AT_NUMERICALROUTINES_H_ */
