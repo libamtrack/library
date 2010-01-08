@@ -28,7 +28,7 @@
 #include <stdio.h>
 
 #define _LINUX // [_LINUX or _WINDOWS] : in Linux we have isnan function while in Windows we have _isnan
-#define _S // [_S or _R] in S we can pass long type to the function via as.single, but in R we pass int type
+#define _R // [_S or _R] in S we can pass long type to the function via as.single, but in R we pass int type
 //#define _DEBUG // debugging printouts
 
 extern int indent_counter;
@@ -135,38 +135,11 @@ enum material_no{
       PMMA                 = 4
 };
 
-///////////////////////////////////////////////////////////////////////
-// ER DATA
-
-enum ERModels{
-  ER_Test                  = 1,
-      ER_ButtsKatz         = 2,
-      ER_Waligorski        = 3,
-      ER_Geiss             = 4,
-      ER_Scholz            = 5,
-      ER_Edmund			   = 6
-};
-
-#define ER_DATA_N    5
-
-typedef struct {
-  long    n;
-  long    ER_no[ER_DATA_N];
-  char*   ER_name[ER_DATA_N];
-} er_data;
-
-static const er_data AT_ER_Data = {
-    ER_DATA_N,
-    {  ER_Test,          ER_ButtsKatz,          ER_Waligorski,        ER_Geiss, ER_Scholz},
-    {  "simple test ER model",  "Butts & Katz' [Katz et al., 1972] ER model",  "Waligorski's ER model",    "Geiss' [Geiss, 1997] ER model", "ER_Scholz' [Scholz, 2001] ER model"}
-};
-
 void   getMaterialName(  long* material_no, char* material_name);
 void   getMaterialNo(    char* material_name, long* material_no);
 
 void   getRDDName(  long* RDD_no, char* RDD_name);
 void   getRDDNo(char* RDD_name, long* RDD_no);
-void   getERName(  long* ER_no, char* ER_name);
 void   getGammaName(  long* Gamma_no, char* Gamma_name);
 void   getMethodName(  long* Method_no, char* Method_name);
 

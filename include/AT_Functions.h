@@ -33,6 +33,7 @@
 #include "AT_Constants.h"
 #include "AT_Data.h"
 #include "AT_Utils.h"
+#include "AT_ElectronRange.h"
 
 extern int indent_counter;
 extern char isp[];
@@ -128,29 +129,6 @@ void AT_max_E_transfer_MeV(  long*  n,
                 long*  particle_no,
                 float*  max_E_transfer_MeV);
 
-void AT_max_electron_range_m(  long*  n,
-                float*  E_MeV_u,
-                long*  particle_no,
-                long*  material_no,
-                long*  er_model,
-                float*  max_electron_range_m);
-
-#ifdef _R
-void AT_max_electron_range_mS(  int*  n,
-                float*  E_MeV_u,
-                int*  particle_no,
-                int*  material_no,
-                int*   er_model,
-                float*  max_electron_range_m);
-#endif
-#ifdef _S
-void AT_max_electron_range_mS(  long*  n,
-                float*  E_MeV_u,
-                long*  particle_no,
-                long*  material_no,
-                long*  er_model,
-                float*  max_electron_range_m);
-#endif
 
 void AT_Z_from_particle_no(  long*  n,                // should rather be AT_ParticleProperties(particle.index)
                 long*  particle_no,
