@@ -36,6 +36,7 @@
 #include "AT_Data.h"
 #include "AT_ElectronRange.h"
 #include "AT_RDD.h"
+#include "AT_GammaResponse.h"
 
 int main(){
 

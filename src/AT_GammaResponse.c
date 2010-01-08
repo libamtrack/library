@@ -26,8 +26,32 @@
 
 #include "AT_GammaResponse.h"
 
-#include "AT_Constants.h"
-#include <math.h>
+void getGammaName(long* Gamma_no, char* Gamma_name){
+  switch( (int)(*Gamma_no) ){
+  case GR_Test:
+    strcpy(Gamma_name,"simple test gamma response");
+    break;
+  case GR_GeneralTarget:
+    strcpy(Gamma_name,"generalized multi-target/multi-hit gamma response");
+    break;
+  case GR_Radioluminescence:
+    strcpy(Gamma_name,"radioluminescence gamma response");
+    break;
+  case GR_ExpSaturation:
+    strcpy(Gamma_name,"exp.-sat. gamma response (obsolete, use gen. target/hit instead)");
+    break;
+  case GR_LinQuad:
+    strcpy(Gamma_name,"linear-quadratic gamma response");
+    break;
+  case GR_LinQuad_Log:
+    strcpy(Gamma_name,"lethal events number response");
+    break;
+  default:
+    strcpy(Gamma_name,"*** invalid choice ***");
+    break;
+  }
+}
+
 
 void AT_gamma_response(  long*  n,
     float*  d_Gy,
