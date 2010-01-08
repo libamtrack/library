@@ -27,14 +27,52 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include <stdbool.h>
 
 #include "AT_Utils.h"
+#include "AT_Constants.h"
 
 extern int indent_counter;
 extern char isp[];
 extern FILE * debf;
 
+
+///////////////////////////////////////////////////////////////////////
+// GammaResponse DATA
+
+enum GammaResponseModels{
+  GR_Test                  = 1,      /* no parameters */
+      GR_GeneralTarget     = 2,      /* */
+      GR_Radioluminescence = 3,      /* 0 - Smax, 1 - D0, 2 - dyn */
+      GR_ExpSaturation     = 4,      /* 0 - Smax, 1 - D0 */
+      GR_LinQuad           = 5,      /* 0 - alpha, 1 - beta, 2 - D0 */
+      GR_LinQuad_Log       = 6       /* 0 - alpha, 1 - beta, 2 - D0 */
+};
+
+#define GR_DATA_N    6
+
+typedef struct {
+  long    n;
+  long    GR_no[GR_DATA_N];
+  long    n_parameters[GR_DATA_N];
+  char*   parameter_name[GR_DATA_N][4];
+  float   parameter_default[GR_DATA_N][4];
+  char*   GR_name[GR_DATA_N];
+} gr_data;
+
+static const gr_data AT_GR_Data = {
+    GR_DATA_N,
+    {  GR_Test,          GR_GeneralTarget,          GR_Radioluminescence,        GR_ExpSaturation, GR_LinQuad, GR_LinQuad_Log},
+    {  0, 4, 3, 2, 3, 3},
+    {  {"","","",""},{"S_max", "D0_Gy", "c", "m"},{"S_max","D0_Gy","dyn",""},{"S_max","D0_Gy","",""},{"alpha","beta","D0_Gy",""},{"alpha","beta","D0_Gy",""}},
+    {  {0,0,0,0}, {1, 10, 1, 1}, {1,10,5,0}, {1,10,0,0}, {1, 1, 10, 0}, {1, 1, 10, 0}},
+    {  "simple test gamma response",  "generalized multi-target/multi-hit gamma response",  "radioluminescence gamma response",    "exp.-sat. gamma response (obsolete, use gen. target/hit instead)", "linear-quadratic gamma response","lethan events number response"}
+};
+
+
+void getGammaName(  long* Gamma_no, char* Gamma_name);
+void getMethodName(  long* Method_no, char* Method_name);
 
 void AT_gamma_response(  long*  n,
               float*  d_Gy,
