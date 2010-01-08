@@ -58,28 +58,6 @@ void getMaterialNo(char* material_name, long* material_no){
     *material_no = PMMA;
 }
 
-void getRDDName(long* RDD_no, char* RDD_name){
-  strcpy(RDD_name,"*** invalid choice ***");
-  long i;
-  for (i = 0; i < RDD_DATA_N; i++){
-    if (AT_RDD_Data.RDD_no[i] == *RDD_no){
-      strcpy(RDD_name, AT_RDD_Data.RDD_name[i]);
-    }
-  }
-}
-
-void getRDDNo(char* RDD_name, long* RDD_no){
-  *RDD_no = 0;
-  long i;
-  for (i = 0; i < RDD_DATA_N; i++){
-    if (strcmp(RDD_name, AT_RDD_Data.RDD_name[i]) == 0){
-      *RDD_no = AT_RDD_Data.RDD_no[i];
-      break;
-    }
-  }
-}
-
-
 void getGammaName(long* Gamma_no, char* Gamma_name){
   switch( (int)(*Gamma_no) ){
   case GR_Test:

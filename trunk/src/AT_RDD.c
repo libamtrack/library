@@ -26,6 +26,29 @@
 
 #include "AT_RDD.h"
 
+
+void getRDDName(long* RDD_no, char* RDD_name){
+  strcpy(RDD_name,"*** invalid choice ***");
+  long i;
+  for (i = 0; i < RDD_DATA_N; i++){
+    if (AT_RDD_Data.RDD_no[i] == *RDD_no){
+      strcpy(RDD_name, AT_RDD_Data.RDD_name[i]);
+    }
+  }
+}
+
+void getRDDNo(char* RDD_name, long* RDD_no){
+  *RDD_no = 0;
+  long i;
+  for (i = 0; i < RDD_DATA_N; i++){
+    if (strcmp(RDD_name, AT_RDD_Data.RDD_name[i]) == 0){
+      *RDD_no = AT_RDD_Data.RDD_no[i];
+      break;
+    }
+  }
+}
+
+
 inline float AT_RDD_Katz_point_kernel(float* x, float* alpha){
   return (1.0f/((*x)*(*x)) )*pow(1.0f - (*x), 1.0f / (*alpha));
 }
