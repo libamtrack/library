@@ -34,6 +34,7 @@
 #include "AT_Data.h"
 #include "AT_Utils.h"
 #include "AT_ElectronRange.h"
+#include "AT_PhysicsRoutines.h"
 
 extern int indent_counter;
 extern char isp[];
@@ -59,11 +60,6 @@ void AT_CSDA_range_g_cm2(  long*  n,
               long*  material_no,
               float*  CSDA_range_g_cm2);
 
-void AT_E_MeV(  long*  n,
-        float*  CSDA_range_g_cm2,
-        long*  particle_no,
-        long*  material_no,
-        float*  E_MeV);
 
 void AT_Particle_Properties(  long*  particle_no,
                 /* return values*/
@@ -91,47 +87,5 @@ void AT_E_MeV_from_LET(  long*  n,
 
 ///////////////////////////////////////////////////////////////////////
 // MISC CONV. ROUTINES
-void AT_beta_from_particle_no(  long*  n,
-                  float*  E_MeV_u,
-                  long*  particle_no,
-                  float*  beta);
-
-void AT_beta_from_mass(  long*  n,
-              float*  E_MeV_u,
-              float*  mass,
-              float*  beta);
-
-void AT_Bohr_Energy_Straggling_g_cm2(  long*  n,
-                    char**  material_name,
-                    float*  dsE2dz);
-
-void AT_effective_charge_from_particle_no(  long*  n,
-                        float*  E_MeV_u,
-                        long*  particle_no,
-                        float*  effective_charge);
-void AT_effective_charge_from_beta(  long*  n,
-                    float*  beta,
-                    long*  Z,
-                    float*  effective_charge);
-
-void AT_scaled_energy(  long*  n,
-            float*  E_MeV_u,
-            long*  particle_no,
-            float*  effective_charge);
-
-void AT_E_MeV_u_from_scaled_energy(  long*  n,
-            float*  E_MeV_u,
-            long*  particle_no,
-            float*  scaled_energy);
-
-void AT_max_E_transfer_MeV(  long*  n,
-                float*  E_MeV_u,
-                long*  particle_no,
-                float*  max_E_transfer_MeV);
-
-
-void AT_Z_from_particle_no(  long*  n,                // should rather be AT_ParticleProperties(particle.index)
-                long*  particle_no,
-                long*  Z);
 
 #endif // AT_FUNCTIONS_H_
