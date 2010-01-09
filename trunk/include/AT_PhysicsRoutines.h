@@ -51,10 +51,11 @@ void AT_effective_charge_from_beta(  long*  n,
                     long*  Z,
                     float*  effective_charge);
 
-void AT_beta_from_particle_no(  long*  n,
-                  float*  E_MeV_u,
-                  long*  particle_no,
-                  float*  beta);
+void AT_beta_from_particle_no(  const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    // results
+    float*  beta);
 
 
 void AT_Bohr_Energy_Straggling_g_cm2(  long*  n,
@@ -76,10 +77,11 @@ void AT_E_MeV_u_from_scaled_energy(  long*  n,
             long*  particle_no,
             float*  scaled_energy);
 
-void AT_max_E_transfer_MeV(  long*  n,
-                float*  E_MeV_u,
-                long*  particle_no,
-                float*  max_E_transfer_MeV);
+void AT_max_E_transfer_MeV(  const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    // results
+    float*  max_E_transfer_MeV);
 
 
 #endif /* AT_PHYSICSROUTINES_H_ */

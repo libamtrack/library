@@ -79,9 +79,10 @@ void AT_effective_charge_from_beta(  long*  n,
   }
 }
 
-void AT_beta_from_particle_no(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
+void AT_beta_from_particle_no(  const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    // results
     float*  beta)
 {
   // find look-up indices for A's for particle numbers in particle data
@@ -255,14 +256,19 @@ void AT_E_MeV_u_from_scaled_energy(  long*  n,
 }
 
 
-void AT_max_E_transfer_MeV(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
+void AT_max_E_transfer_MeV(  const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    // results
     float*  max_E_transfer_MeV)
 {
   /* if E_MeV_u < 0:    use non-relativistic formula
    * if E_MeV_u > 0:    use relativistic formula
    */
+
+  float* E_MeV_u_copy   =  (float*)calloc(*n, sizeof(float));
+  memccpy(E_MeV_u_copy,E_MeV_u,*n,sizeof(float));
+
   int*  relativistic    =  (int*)calloc(*n, sizeof(int));
   long  i;
   for (i = 0; i < *n; i++){
@@ -270,14 +276,14 @@ void AT_max_E_transfer_MeV(  long*  n,
       relativistic[i]      = 1;
     }else{
       relativistic[i]      = 0;
-      E_MeV_u[i]        *= -1.0f;
+      E_MeV_u_copy[i]     *= -1.0f;
     }
   }
 
   // get relativistic speeds for all given particles and energies
   float*  beta  =  (float*)calloc(*n, sizeof(float));
   AT_beta_from_particle_no(  n,
-      E_MeV_u,
+      E_MeV_u_copy,
       particle_no,
       beta);
 
@@ -289,28 +295,29 @@ void AT_max_E_transfer_MeV(  long*  n,
     }
   }
 
+  free(E_MeV_u_copy);
   free(relativistic);
   free(beta);
 }
 
 
+// Get Bohr's energy spread (Wilson, 1947, Phys Rev 71, 385)
 void AT_Bohr_Energy_Straggling_g_cm2(  long*  n,
     char**  material_name,
     float*  dsE2dz)
 {
-  // Get Bohr's energy spread (Wilson, 1947, Phys Rev 71, 385)
   long  i;
+  double tmp;
+  float  electron_density_m3;
+  long  n_dummy = 1;
   for (i = 0; i < *n; i++){
-    float  electron_density_m3;
-    long  n_dummy = 1;
     AT_electron_density_m3(  &n_dummy,
         material_name[i],
         &electron_density_m3);
-
-    double  tmp          =  e_C * e_C * e_C * e_C * electron_density_m3;
-    tmp              /=  4.0 * pi * e0_F_m * e0_F_m;
-    tmp              /=  MeV_to_J * MeV_to_J * m_to_cm;
-    dsE2dz[i]          =  (float)tmp;
+    tmp                  =  e_C * e_C * e_C * e_C * electron_density_m3;
+    tmp                 /=  4.0 * pi * e0_F_m * e0_F_m;
+    tmp                 /=  MeV_to_J * MeV_to_J * m_to_cm;
+    dsE2dz[i]            =  (float)tmp;
   }
 }
 
