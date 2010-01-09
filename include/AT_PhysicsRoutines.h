@@ -81,9 +81,4 @@ void AT_max_E_transfer_MeV(  long*  n,
                 float*  max_E_transfer_MeV);
 
 
-void AT_Z_from_particle_no(  long*  n,                // should rather be AT_ParticleProperties(particle.index)
-                long*  particle_no,
-                long*  Z);
-
-
 #endif /* AT_PHYSICSROUTINES_H_ */

@@ -314,24 +314,3 @@ void AT_Bohr_Energy_Straggling_g_cm2(  long*  n,
   }
 }
 
-void AT_Z_from_particle_no(  long*  n,
-    long*  particle_no,
-    long*  Z)
-{
-  // find look-up indices for A's for particle numbers in particle data
-  long*  matches  =  (long*)calloc(*n, sizeof(long));
-
-  pmatchi(  particle_no,
-      n,
-      AT_Particle_Data.particle_no,
-      &AT_Particle_Data.n,
-      matches);
-
-  // loop over n to find Z for all given particles and energies
-  long  i;
-  for(i = 0; i < *n; i++){
-    Z[i]  = AT_Particle_Data.Z[matches[i]];}
-
-  free(matches);
-}
-
