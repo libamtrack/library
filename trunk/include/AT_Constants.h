@@ -24,7 +24,6 @@
 *    If not, see <http://www.gnu.org/licenses/>
 */
 
-#include <string.h>
 #include <stdio.h>
 
 #define _LINUX // [_LINUX or _WINDOWS] : in Linux we have isnan function while in Windows we have _isnan
@@ -57,22 +56,13 @@ static  double  m_to_um               =  1e6;
 
 static  double  pi                    =  3.14159265;
 
+
+
 enum Method{
   ME_Grid      = 1,
       ME_SPIFF = 2,
       ME_Katz  = 3
 };
-
-
-enum material_no{
-  Water_Liquid             = 1,
-      Aluminum_Oxide       = 2,
-      Aluminum             = 3,
-      PMMA                 = 4
-};
-
-void   getMaterialName(  long* material_no, char* material_name);
-void   getMaterialNo(    char* material_name, long* material_no);
 
 
 #endif // AT_CONSTANTS_H_

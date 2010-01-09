@@ -115,7 +115,6 @@ void AT_SPIFF(  long*  n,
 #endif
 
 
-#ifdef _R
   bool write_output_b = false;
   if( *write_output == 1)
     write_output_b = true;
@@ -128,6 +127,7 @@ void AT_SPIFF(  long*  n,
   if( *adjust_N2 == 1)
     adjust_N2_b = true;
 
+#ifdef _R
   int n_int = (int)(*n);
   *n = (long)n_int;
 
@@ -263,10 +263,10 @@ void AT_SPIFF(  long*  n,
       fdd,
       dfdd,
       &d_check,
-      write_output,
-      shrink_tails,
+      &write_output_b,
+      &shrink_tails_b,
       shrink_tails_under,
-      adjust_N2);
+      &adjust_N2_b);
 
   long      n_bins_f_used  = n_bins_f1;
 
@@ -485,8 +485,8 @@ void AT_GSM(  long*  n,
   float*  f_d_Gy         	=  (float*)calloc(n_bins_f, sizeof(float));
   float*  f_dd_Gy        	=  (float*)calloc(n_bins_f, sizeof(float));
   float*  f            	=  (float*)calloc(n_bins_f, sizeof(float));
-  float*  fdd            	=  (float*)calloc(n_bins_f, sizeof(float));
-  float*  dfdd          	=  (float*)calloc(n_bins_f, sizeof(float));
+//  float*  fdd            	=  (float*)calloc(n_bins_f, sizeof(float)); // UNUSED
+//  float*  dfdd          	=  (float*)calloc(n_bins_f, sizeof(float)); // UNUSED
   float   f0            	=  0.0f;
 
   AT_SC_get_f_start(  &u_start,
@@ -717,7 +717,7 @@ void AT_GSM(  long*  n,
       if (*gamma_model != GR_LinQuad){
         printf("##############################################################################\n");
         printf("Sorry, no Grid Summation model with other than Linear Quadratic gamma response\n");
-        printf("Please choose gamma_model = %ld. Exiting now...\n", GR_LinQuad);
+        printf("Please choose gamma_model = %d. Exiting now...\n", GR_LinQuad);
         printf("##############################################################################\n");
         return;
       }
@@ -901,14 +901,14 @@ void AT_GSM(  long*  n,
   fprintf(output_file, "Grid summation dose distribution\n");
   fprintf(output_file, "check D / Gy:   %4.3e\n", d_check);
   fprintf(output_file, "norm:           %4.3e\n", norm);
-  fprintf(output_file, "f_n (%d bins)\n", n_bins_f);
+  fprintf(output_file, "f_n (%ld bins)\n", n_bins_f);
   fprintf(output_file, "f0: %4.2e\n", f0);
   for (i = 0; i < n_bins_f; i++){
-    fprintf(output_file, "%d; %4.2e; %4.2e; %4.2e\n", i+1, f_d_Gy[i], f_dd_Gy[i], f[i]);
+    fprintf(output_file, "%ld; %4.2e; %4.2e; %4.2e\n", i+1, f_d_Gy[i], f_dd_Gy[i], f[i]);
   }
-  fprintf(output_file, "f_1 (%d bins)\n", n_bins_f1);
+  fprintf(output_file, "f_1 (%ld bins)\n", n_bins_f1);
   for (i = 0; i < n_bins_f1; i++){
-    fprintf(output_file, "%d; %4.2e; %4.2e; %4.2e\n", i+1, f1_d_Gy[i], f1_dd_Gy[i], f1[i]);
+    fprintf(output_file, "%ld; %4.2e; %4.2e; %4.2e\n", i+1, f1_d_Gy[i], f1_dd_Gy[i], f1[i]);
   }
 
 
@@ -926,7 +926,7 @@ void AT_GSM(  long*  n,
   free(grid_d_Gy);
   free(grid_S);
 
-  close(output_file);
+  fclose(output_file);
 }
 
 
@@ -955,8 +955,10 @@ void AT_IGK(  long*  n,
     float*  results)
 {
   FILE*    output_file;
-  struct tm  *start_tm, *end_tm;
-  time_t     start_t, end_t;
+  struct tm  *start_tm;
+//  struct tm *end_tm; // NOT USED
+  time_t start_t;
+// time_t end_t; // NOT USED
   start_t    = time(NULL);
 
   output_file    =  fopen("KatseMitGlatse.log","w");
@@ -1132,8 +1134,8 @@ void AT_SPISS(	long*  	n,
   float*  f_d_Gy         	=  (float*)calloc(n_bins_f, sizeof(float));
   float*  f_dd_Gy        	=  (float*)calloc(n_bins_f, sizeof(float));
   float*  f            	=  (float*)calloc(n_bins_f, sizeof(float));
-  float*  fdd            	=  (float*)calloc(n_bins_f, sizeof(float));
-  float*  dfdd          	=  (float*)calloc(n_bins_f, sizeof(float));
+//  float*  fdd            	=  (float*)calloc(n_bins_f, sizeof(float)); // NOT USED
+//  float*  dfdd          	=  (float*)calloc(n_bins_f, sizeof(float)); // NOT USED
   float   f0            	=  0.0f;
 
   AT_SC_get_f_start(  &u_start,
@@ -1155,7 +1157,7 @@ void AT_SPISS(	long*  	n,
 
   if(*importance_sampling){
     printf("\n");
-    printf("Importance sampling chosen. Biasing function G(r)=r^%4.3g\n", *importance_sampling);}
+    printf("Importance sampling chosen. Biasing function G(r)=r^%ld\n", *importance_sampling);}
   else{
     printf("\n");
     printf("No importance sampling chosen.\n");}
@@ -1232,7 +1234,7 @@ void AT_SPISS(	long*  	n,
       f[bin_no - 1]		+= weight / f_dd_Gy[bin_no - 1];
     }
     if(i%100 == 0){
-      printf("Run %d done.\n", i);
+      printf("Run %ld done.\n", i);
     }
   }
 
@@ -1249,17 +1251,17 @@ void AT_SPISS(	long*  	n,
   }
 
   fprintf(output_file, "SPISS\n");
-  fprintf(output_file, "number of runs: %d\n",    *n_runs);
+  fprintf(output_file, "number of runs: %ld\n",    *n_runs);
   fprintf(output_file, "check D / Gy:   %4.3e\n", d_check);
   fprintf(output_file, "norm:           %4.3e\n", norm);
-  fprintf(output_file, "f_n (%d bins)\n", n_bins_f);
+  fprintf(output_file, "f_n (%ld bins)\n", n_bins_f);
   fprintf(output_file, "f0: %4.2e\n", f0);
   for (i = 0; i < n_bins_f; i++){
-    fprintf(output_file, "%d; %4.2e; %4.2e; %4.2e\n", i+1, f_d_Gy[i], f_dd_Gy[i], f[i]);
+    fprintf(output_file, "%ld; %4.2e; %4.2e; %4.2e\n", i+1, f_d_Gy[i], f_dd_Gy[i], f[i]);
   }
-  fprintf(output_file, "f_1 (%d bins)\n", n_bins_f1);
+  fprintf(output_file, "f_1 (%ld bins)\n", n_bins_f1);
   for (i = 0; i < n_bins_f1; i++){
-    fprintf(output_file, "%d; %4.2e; %4.2e; %4.2e\n", i+1, f1_d_Gy[i], f1_dd_Gy[i], f1[i]);
+    fprintf(output_file, "%ld; %4.2e; %4.2e; %4.2e\n", i+1, f1_d_Gy[i], f1_dd_Gy[i], f1[i]);
   }
   /*
 	free(f1_parameters);
@@ -1276,7 +1278,7 @@ void AT_SPISS(	long*  	n,
 	free(fdd);
 	free(dfdd);
    */
-  close(output_file);
+  fclose(output_file);
 
   printf("\n");
   printf("AmTrack SPISS run finished.\n");

@@ -61,31 +61,11 @@ void AT_CSDA_range_g_cm2(  long*  n,
               float*  CSDA_range_g_cm2);
 
 
-void AT_Particle_Properties(  long*  particle_no,
-                /* return values*/
-                char**  particle_name,
-                char**  USRTRACK_name,
-                char**  element_name,
-                long*  Z,
-                long*  A,
-                float*  mass);
-
-void AT_getMaterialData(    long*  n,
-                long*  material_no,
-                float*  density_g_cm3,
-                float*  electron_density_m3,
-                float*  I_eV,
-                float*  alpha_g_cm2_MeV,
-                float*  p_MeV,
-                float*  m_g_cm2);
 
 void AT_E_MeV_from_LET(  long*  n,
               float*  LET_MeV_cm2_g,
               long*  particle_no,
               long*  material_no,
               float*  E_MeV);
-
-///////////////////////////////////////////////////////////////////////
-// MISC CONV. ROUTINES
 
 #endif // AT_FUNCTIONS_H_

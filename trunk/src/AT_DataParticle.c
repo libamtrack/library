@@ -43,7 +43,29 @@ void AT_Z_from_particle_no(  long*  n,
   // loop over n to find Z for all given particles and energies
   long  i;
   for(i = 0; i < *n; i++){
-    Z[i]  = AT_Particle_Data.Z[matches[i]];}
+    Z[i]  = AT_Particle_Data.Z[matches[i]];
+  }
 
   free(matches);
 }
+
+void AT_Particle_Properties(  long*  particle_no,
+    /* return values*/
+    char**  particle_name,
+    char**  USRTRACK_name,
+    char**  element_name,
+    long*  Z,
+    long*  A,
+    float*  mass)
+{
+  long i = (*particle_no) - 1;
+
+  strcpy(*particle_name, AT_Particle_Data.particle_name[i]);
+  strcpy(*USRTRACK_name, AT_Particle_Data.USRTRACK_name[i]);
+  strcpy(*element_name,  AT_Particle_Data.element_name[i]);
+  *Z    = AT_Particle_Data.Z[i];
+  *A    = AT_Particle_Data.A[i];
+  *mass = AT_Particle_Data.mass[i];
+}
+
+
