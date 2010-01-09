@@ -33,7 +33,6 @@
 #include <string.h>
 
 #include "AmTrack.h"
-//#include "AT_Constants.h"
 #include "AT_Data.h"
 #include "AT_ElectronRange.h"
 #include "AT_RDD.h"
@@ -125,7 +124,9 @@ int main(){
     printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
 
-  long index = RDD_model-1; // not fully correct, works only if RDD_index = RDD_no!
+  //TODO not fully correct, works only if RDD_index = RDD_no !!
+
+  long index = RDD_model-1;
   if(AT_RDD_Data.n_parameters[index]>0){
     printf("\n> ** Select radial dose distribution parameters **");
     for(i = 0; i < AT_RDD_Data.n_parameters[index];i++){
@@ -162,7 +163,7 @@ int main(){
 
   if(AT_GR_Data.n_parameters[index]>0){
     printf("\n> ** Select gamma response parameters **");
-    index = gamma_model-1;
+    index = gamma_model-1; //TODO
     for(i = 0; i < AT_GR_Data.n_parameters[index];i++){
       printf("\n %s [0 for default: %g]: ", AT_GR_Data.parameter_name[index][i], AT_GR_Data.parameter_default[index][i]);
       scanf("%g", &float_dummy);

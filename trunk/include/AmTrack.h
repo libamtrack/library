@@ -34,7 +34,6 @@
 #include "AT_Constants.h"
 #include "AT_Data.h"
 #include "AT_Utils.h"
-#include "AT_Functions.h"
 #include "AT_RDD.h"
 #include "AT_SuccessiveConvolutions.h"
 #include "AT_GammaResponse.h"
