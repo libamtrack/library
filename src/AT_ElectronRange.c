@@ -26,7 +26,9 @@
 
 #include "AT_ElectronRange.h"
 
-void getERName(long* ER_no, char* ER_name){
+void getERName(
+    const long* ER_no,
+    char* ER_name){
   switch( (int)(*ER_no) ){
   case ER_Test:
     strcpy(ER_name,"simple test ER model");
@@ -82,25 +84,13 @@ void AT_max_electron_range_mS(  int*  n,
 #endif
 
 
-void AT_max_electron_range_m(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
-    long*  material_no,
-    long*   er_model,
+void AT_max_electron_range_m( const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    const long*  material_no,
+    const long*   er_model,
     float*  max_electron_range_m)
 {
-#ifdef _DEBUG
-  indnt_init();
-  indnt_inc();
-  fprintf(debf,"%sbegin AT_max_electron_range_m\n",isp);
-  fprintf(debf,"%sn = %ld, material_no = %ld, er_model = %ld\n", isp, *n, *material_no, *er_model);
-  long ii;
-  for( ii = 0 ; ii < *n ; ii++){
-    fprintf(debf,"%sE_MeV_u[%ld]=%e\n", isp, ii , E_MeV_u[ii]);
-    fprintf(debf,"%sparticle_no[%ld]=%ld\n", isp, ii , particle_no[ii]);
-  }
-#endif
-
   // Get density matching to material_name (only 1 name therefore n_mat = 1)
   long  n_mat  = 1;
   long  match;
@@ -110,8 +100,8 @@ void AT_max_electron_range_m(  long*  n,
         &AT_Material_Data.n,
         &match);
 
-  long*  matches  =  (long*)calloc(*n, sizeof(long));
-  float*  mass  =  (float*)calloc(*n, sizeof(float));
+  long*  matches =   (long*)calloc(*n, sizeof(long));
+  float* mass    =  (float*)calloc(*n, sizeof(float));
 
   pmatchi(  particle_no,
       n,
@@ -157,15 +147,6 @@ void AT_max_electron_range_m(  long*  n,
     max_electron_range_m[i]    /= 1e2;  // cm to m
 
   }
-#ifdef _DEBUG
-  for( ii = 0 ; ii < *n ; ii++){
-    fprintf(debf,"%srange[%ld]=%e\n", isp, ii , max_electron_range_m[ii]);
-  }
-  fprintf(debf,"%send AT_max_electron_range_m\n",isp);
-  indnt_dec();
-#endif
   free(matches);
   free(mass);
-
-
 }

@@ -57,31 +57,32 @@ static const er_data AT_ER_Data = {
     {  "simple test ER model",  "Butts & Katz' [Katz et al., 1972] ER model",  "Waligorski's ER model",    "Geiss' [Geiss, 1997] ER model", "ER_Scholz' [Scholz, 2001] ER model"}
 };
 
-void   getERName(  long* ER_no, char* ER_name);
+void  getERName(  const long* ER_no,
+    char* ER_name);
 
 
-void AT_max_electron_range_m(  long*  n,
-                float*  E_MeV_u,
-                long*  particle_no,
-                long*  material_no,
-                long*  er_model,
-                float*  max_electron_range_m);
+void AT_max_electron_range_m( const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    const long*  material_no,
+    const long*  er_model,
+    float*  max_electron_range_m);
 
 #ifdef _R
 void AT_max_electron_range_mS(  int*  n,
-                float*  E_MeV_u,
-                int*  particle_no,
-                int*  material_no,
-                int*   er_model,
-                float*  max_electron_range_m);
+    float*  E_MeV_u,
+    int*  particle_no,
+    int*  material_no,
+    int*   er_model,
+    float*  max_electron_range_m);
 #endif
 #ifdef _S
 void AT_max_electron_range_mS(  long*  n,
-                float*  E_MeV_u,
-                long*  particle_no,
-                long*  material_no,
-                long*  er_model,
-                float*  max_electron_range_m);
+    float*  E_MeV_u,
+    long*  particle_no,
+    long*  material_no,
+    long*  er_model,
+    float*  max_electron_range_m);
 #endif
 
 #endif
