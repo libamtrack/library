@@ -26,16 +26,11 @@
 
 #include "AmTrack.h"
 
-void AT_interparticleDistance_m(       long*   n,
-    float*  LET_MeV_cm2_g,
-    float*  fluence_cm2,
+void AT_interparticleDistance_m( const long*   n,
+    const float*  LET_MeV_cm2_g,
+    const float*  fluence_cm2,
     float*  results_m
 ){
-#ifdef _R
-  int n_int = (int)(*n);
-  *n = (long)n_int;
-#endif
-
   long i;
   float fluence;
   for( i = 0 ; i < *n ; i++ ){
@@ -48,16 +43,11 @@ void AT_interparticleDistance_m(       long*   n,
   }
 }
 
-void AT_inv_interparticleDistance_Gy(  long*   n,
-    float*  LET_MeV_cm2_g,
-    float*  distance_m,
+void AT_inv_interparticleDistance_Gy( const long*   n,
+    const float*  LET_MeV_cm2_g,
+    const float*  distance_m,
     float*  results_Gy
 ){
-#ifdef _R
-  int n_int = (int)(*n);
-  *n = (long)n_int;
-#endif
-
   long i;
   float fluence;
   for( i = 0 ; i < *n ; i++ ){
@@ -66,15 +56,10 @@ void AT_inv_interparticleDistance_Gy(  long*   n,
   }
 }
 
-void AT_inv_interparticleDistance_cm2( long*   n,
-    float*  distance_m,
+void AT_inv_interparticleDistance_cm2( const long*   n,
+    const float*  distance_m,
     float*  results_cm2
 ){
-#ifdef _R
-  int n_int = (int)(*n);
-  *n = (long)n_int;
-#endif
-
   long i;
   for( i = 0 ; i < *n ; i++ ){
     results_cm2[i] = (2.0f/distance_m[i])*(2.0f/distance_m[i])*M_1_PI*1e-4;
@@ -82,84 +67,26 @@ void AT_inv_interparticleDistance_cm2( long*   n,
 }
 
 
-void AT_SPIFF(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
-    float*  fluence_cm2,
-    long*  material_no,
-    long*  RDD_model,
-    float*  RDD_parameters,
-    long*  ER_model,
-    float*  ER_parameters,
-    long*  gamma_model,
-    float*  gamma_parameters,
-    long*  N2,
-    float*  fluence_factor,
-    int*  write_output,
-    int*  shrink_tails,
-    float*  shrink_tails_under,
-    int*  adjust_N2,
-    bool*   lethal_events_mode,
+void AT_SPIFF(  const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    const float*  fluence_cm2,
+    const long*  material_no,
+    const long*  RDD_model,
+    const float*  RDD_parameters,
+    const long*  ER_model,
+    const float*  ER_parameters,
+    const long*  gamma_model,
+    const float*  gamma_parameters,
+    const long*  N2,
+    const float*  fluence_factor,
+    const bool*  write_output,
+    const bool*  shrink_tails,
+    const float*  shrink_tails_under,
+    const bool*  adjust_N2,
+    const bool*   lethal_events_mode,
     float*  results)
 {
-
-#ifdef _DEBUG
-  indnt_init();
-  fprintf(debf,"%sAT_efficiency\n",isp);
-  fprintf(debf,"%swrite_output = %d\n",isp,*write_output);
-  fprintf(debf,"%sshrink_tails = %d\n",isp,*shrink_tails);
-  fprintf(debf,"%sadjust_N2 = %d\n",isp,*adjust_N2);
-  //    fprintf(debf,"%sf1 = %g\n",isp,(1.0f/ (M_PI * (*a0_m)*(*a0_m))));
-  //    fprintf(debf,"%sf2 = %g\n",isp,AT_RDD_Katz_point_Gy(t_m,alpha,r_max_m,Katz_point_coeff_Gy));
-  //    fprintf(debf,"%sf3 = %g\n",isp,geometryFunctionPhi(r_m,a0_m,t_m));
-#endif
-
-
-  bool write_output_b = false;
-  if( *write_output == 1)
-    write_output_b = true;
-
-  bool shrink_tails_b = false;
-  if( *shrink_tails == 1)
-    shrink_tails_b = true;
-
-  bool adjust_N2_b = false;
-  if( *adjust_N2 == 1)
-    adjust_N2_b = true;
-
-#ifdef _R
-  int n_int = (int)(*n);
-  *n = (long)n_int;
-
-  int N2_int = (int)(*N2);
-  *N2 = (long)N2_int;
-
-  int RDD_model_int = (int)(*RDD_model);
-  *RDD_model = (long)RDD_model_int;
-
-  int ER_model_int = (int)(*ER_model);
-  *ER_model = (long)ER_model_int;
-
-  int gamma_model_int = (int)(*gamma_model);
-  *gamma_model = (long)gamma_model_int;
-
-  int material_no_int  = (int)(*material_no);
-  *material_no = (long)material_no_int;
-
-  int particle_no_int = (int)(*particle_no);
-  *particle_no = (long)particle_no_int;
-#endif
-
-#ifdef _DEBUG
-
-  fprintf(debf,"%swrite_output = %d\n",isp,*write_output);
-  fprintf(debf,"%sshrink_tails = %d\n",isp,*shrink_tails);
-  fprintf(debf,"%sadjust_N2 = %d\n",isp,*adjust_N2);
-  //    fprintf(debf,"%sf1 = %g\n",isp,(1.0f/ (M_PI * (*a0_m)*(*a0_m))));
-  //    fprintf(debf,"%sf2 = %g\n",isp,AT_RDD_Katz_point_Gy(t_m,alpha,r_max_m,Katz_point_coeff_Gy));
-  //    fprintf(debf,"%sf3 = %g\n",isp,geometryFunctionPhi(r_m,a0_m,t_m));
-#endif
-
 
   long  n_bins_f1;
   float*  f1_parameters      =  (float*)calloc(9 * (*n), sizeof(float));
@@ -199,7 +126,6 @@ void AT_SPIFF(  long*  n,
       ER_model,
       ER_parameters,
       /* algorithm parameters*/
-
       N2,
       &n_bins_f1,
       /* f1 parameters*/
@@ -263,10 +189,10 @@ void AT_SPIFF(  long*  n,
       fdd,
       dfdd,
       &d_check,
-      &write_output_b,
-      &shrink_tails_b,
+      &write_output,
+      &shrink_tails,
       shrink_tails_under,
-      &adjust_N2_b);
+      &adjust_N2);
 
   long      n_bins_f_used  = n_bins_f1;
 
@@ -315,62 +241,26 @@ void AT_SPIFF(  long*  n,
   free(S);
 }
 
-void AT_GSM(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
-    float*  fluence_cm2,
-    long*  material_no,
-    long*  RDD_model,
-    float*  RDD_parameters,
-    long*  ER_model,
-    float*  ER_parameters,
-    long*  gamma_model,
-    float*  gamma_parameters,
-    long*  N_runs,
-    long*   N2,
-    float*  fluence_factor,
-    bool*   write_output,
-    long*   nX,
-    float*  grid_size_m,
-    bool*   lethal_events_mode,
+void AT_GSM(  const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    const float*  fluence_cm2,
+    const long*  material_no,
+    const long*  RDD_model,
+    const float*  RDD_parameters,
+    const long*  ER_model,
+    const float*  ER_parameters,
+    const long*  gamma_model,
+    const float*  gamma_parameters,
+    const long*  N_runs,
+    const long*   N2,
+    const float*  fluence_factor,
+    const bool*   write_output,
+    const long*   nX,
+    const float*  grid_size_m,
+    const bool*   lethal_events_mode,
     float*  results)
 {
-
-#ifdef _R
-  bool write_output_b = false;
-  if( *write_output == 1)
-    write_output_b = true;
-
-  bool lethal_events_mode_b = false;
-  if( *lethal_events_mode == 1)
-    lethal_events_mode_b = true;
-
-  int n_int = (int)(*n);
-  *n = (long)n_int;
-
-  int N_runs_int = (int)(*N_runs);
-  *N_runs = (long)N_runs_int;
-
-  int nX_int = (int)(*nX);
-  *nX = (long)nX_int;
-
-  int RDD_model_int = (int)(*RDD_model);
-  *RDD_model = (long)RDD_model_int;
-
-  int ER_model_int = (int)(*ER_model);
-  *ER_model = (long)ER_model_int;
-
-  int gamma_model_int = (int)(*gamma_model);
-  *gamma_model = (long)gamma_model_int;
-
-  int material_no_int  = (int)(*material_no);
-  *material_no = (long)material_no_int;
-
-  int particle_no_int = (int)(*particle_no);
-  *particle_no = (long)particle_no_int;
-#endif
-
-
   FILE*    output_file;
   struct tm  *start_tm, *end_tm;
   time_t     start_t, end_t;
@@ -930,28 +820,17 @@ void AT_GSM(  long*  n,
 }
 
 
-
-/*
-BOOL APIENTRY DllMain( HANDLE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
-           )
-{
-    return TRUE;
-}
- */
-
-void AT_IGK(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
-    float*  fluence_cm2,
-    long*  material_no,
-    long*  RDD_model,
-    float*  RDD_parameters,
-    long*  ER_model,
-    float*  ER_parameters,
-    long*  gamma_model,
-    float*  gamma_parameters,
+void AT_IGK(  const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    const float*  fluence_cm2,
+    const long*  material_no,
+    const long*  RDD_model,
+    const float*  RDD_parameters,
+    const long*  ER_model,
+    const float*  ER_parameters,
+    const long*  gamma_model,
+    const float*  gamma_parameters,
     float*  results)
 {
   FILE*    output_file;
@@ -1026,26 +905,25 @@ void AT_IGK(  long*  n,
 * Compound Poisson approach for local dose distribution
 * similar to SPIFF but using statistical sampling
 * in order to evaluate Fn(t)
-* See SPIFF pamphlete 27.2./29.2.2008
+* See SPIFF pamphlet 27.2./29.2.2008
 * This was routine "LGC_full_simulation_C" in LGC 2.1
 */
-
-void AT_SPISS(	long*  	n,
-    float*  E_MeV_u,
-    long*  	particle_no,
-    float*  fluence_cm2,
-    long*  	material_no,
-    long*  	RDD_model,
-    float*  RDD_parameters,
-    long*  	ER_model,
-    float*  ER_parameters,
-    long*  	gamma_model,
-    float*  gamma_parameters,
-    long*	n_runs,
-    long*  	N2,
-    float*  fluence_factor,
-    int*  	write_output,
-    long*  	importance_sampling,
+void AT_SPISS(	const long* n,
+    const float* E_MeV_u,
+    const long*  particle_no,
+    const float* fluence_cm2,
+    const long*  material_no,
+    const long*  RDD_model,
+    const float* RDD_parameters,
+    const long*  ER_model,
+    const float* ER_parameters,
+    const long*  gamma_model,
+    const float* gamma_parameters,
+    const long*	 n_runs,
+    const long*  N2,
+    const float* fluence_factor,
+    const int*   write_output,
+    const long*  importance_sampling,
     float*  results)
 {
   // Welcome screen
