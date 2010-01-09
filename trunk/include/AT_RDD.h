@@ -27,7 +27,6 @@
 #include "AT_Constants.h"
 #include "AT_Data.h"
 #include "AT_Utils.h"
-#include "AT_Functions.h"
 
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_complex.h>
