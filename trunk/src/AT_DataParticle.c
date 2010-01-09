@@ -27,8 +27,8 @@
 #include "AT_DataParticle.h"
 
 
-void AT_Z_from_particle_no(  long*  n,
-    long*  particle_no,
+void AT_Z_from_particle_no( const long*  n,
+    const long*  particle_no,
     long*  Z)
 {
   // find look-up indices for A's for particle numbers in particle data
@@ -49,7 +49,7 @@ void AT_Z_from_particle_no(  long*  n,
   free(matches);
 }
 
-void AT_Particle_Properties(  long*  particle_no,
+void AT_Particle_Properties(  const long*  particle_no,
     /* return values*/
     char**  particle_name,
     char**  USRTRACK_name,

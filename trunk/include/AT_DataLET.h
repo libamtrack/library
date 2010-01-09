@@ -497,36 +497,42 @@ static pstar_data AT_PSTAR_Data = {
 };
 
 // get LET-data for given material
-void getPSTARvalue(long* n, float* x, long* material_no, float* x_table, float* y_table, float* y);
+void getPSTARvalue(
+    const long* n,
+    const float* x,
+    const long* material_no,
+    const float* x_table,
+    const float* y_table,
+    float* y);
 
-void AT_LET_MeV_cm2_g(  long*  n,
-    float*  E_MeV_u,
-    long*   particle_no,
-    long*   material_no,
+void AT_LET_MeV_cm2_g(  const long*  n,
+    const float*  E_MeV_u,
+    const long*   particle_no,
+    const long*   material_no,
     float*  LET_MeV_cm2_g);
 
-void AT_LET_keV_um(  long*  n,
-    float*  E_MeV_u,
-    long*   particle_no,
-    long*   material_no,
+void AT_LET_keV_um(  const long*  n,
+    const float*  E_MeV_u,
+    const long*   particle_no,
+    const long*   material_no,
     float*  LET_keV_um);
 
-void AT_CSDA_range_g_cm2(  long*  n,
-    float*  E_MeV_u,
-    long*   particle_no,
-    long*   material_no,
+void AT_CSDA_range_g_cm2(  const long*  n,
+    const float*  E_MeV_u,
+    const long*   particle_no,
+    const long*   material_no,
     float*  CSDA_range_g_cm2);
 
-void AT_E_MeV_from_CDSA_range(  long*  n,
-    float*  CSDA_range_g_cm2,
-    long*   particle_no,
-    long*   material_no,
+void AT_E_MeV_from_CDSA_range(  const long*  n,
+    const float*  CSDA_range_g_cm2,
+    const long*   particle_no,
+    const long*   material_no,
     float*  E_MeV);
 
-void AT_E_MeV_from_LET(  long*  n,
-    float*  LET_MeV_cm2_g,
-    long*   particle_no,
-    long*   material_no,
+void AT_E_MeV_from_LET(  const long*  n,
+    const float*  LET_MeV_cm2_g,
+    const long*   particle_no,
+    const long*   material_no,
     float*  E_MeV);
 
 #endif /* AT_DATALET_H_ */

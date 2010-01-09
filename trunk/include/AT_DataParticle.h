@@ -123,18 +123,18 @@ static particle_data AT_Particle_Data = {
 };
 
 
-void AT_Z_from_particle_no(  long*  n,                // should rather be AT_ParticleProperties(particle.index)
-                long*  particle_no,
-                long*  Z);
+void AT_Z_from_particle_no(  const long*  n,                // should rather be AT_ParticleProperties(particle.index)
+    const long*  particle_no,
+    long*  Z);
 
 
-void AT_Particle_Properties(  long*  particle_no,
-                /* return values*/
-                char**  particle_name,
-                char**  USRTRACK_name,
-                char**  element_name,
-                long*  Z,
-                long*  A,
-                float*  mass);
+void AT_Particle_Properties(  const long*  particle_no,
+    /* return values*/
+    char**  particle_name,
+    char**  USRTRACK_name,
+    char**  element_name,
+    long*  Z,
+    long*  A,
+    float*  mass);
 
 #endif /* AT_DATAPARTICLE_H_ */

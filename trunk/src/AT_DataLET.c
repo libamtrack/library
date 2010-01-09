@@ -27,14 +27,20 @@
 #include "AT_DataLET.h"
 
 // get LET-data for given material
-void getPSTARvalue(long* n, float* x, long* material_no, float* x_table, float* y_table, float* y)
+void getPSTARvalue(
+    const long* n,
+    const float* x,
+    const long* material_no,
+    const float* x_table,
+    const float* y_table,
+    float* y)
 {
   // first: find those PSTAR entries that match the material name
   bool*    matches    =  (bool*)calloc(AT_PSTAR_Data.n, sizeof(bool));
   matchi(    material_no,
-        AT_PSTAR_Data.material_no,
-        &AT_PSTAR_Data.n,
-        matches);
+      AT_PSTAR_Data.material_no,
+      &AT_PSTAR_Data.n,
+      matches);
 
   long    n_matches  = 0;
   long    i;
@@ -63,12 +69,12 @@ void getPSTARvalue(long* n, float* x, long* material_no, float* x_table, float* 
     // Get proton-LET for scaled energy from table E, L using 4th degree polynomial (n_pol - 1 = 2) interpolation
     float  err_y_tmp  = 0.0f;    // dummy
     interp(    x_c,
-          y_c,
-          &n_matches,
-          &n_pol,
-          &x[i],
-          &y[i],
-          &err_y_tmp);
+        y_c,
+        &n_matches,
+        &n_pol,
+        &x[i],
+        &y[i],
+        &err_y_tmp);
   }
 
   free(x_c);
@@ -77,25 +83,12 @@ void getPSTARvalue(long* n, float* x, long* material_no, float* x_table, float* 
 }
 
 
-void AT_LET_MeV_cm2_g(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
-    long*  material_no,
+void AT_LET_MeV_cm2_g(  const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    const long*  material_no,
     float*  LET_MeV_cm2_g)
 {
-
-#ifdef _DEBUG
-  indnt_init();
-  indnt_inc();
-  fprintf(debf,"%sbegin AT_LET_MeV_cm2_g\n",isp);
-
-  fprintf(debf,"%sn = %ld, material_no = %ld\n", isp, *n, *material_no);
-  long ii;
-  for( ii = 0 ; ii < *n ; ii++){
-    fprintf(debf,"%sE_MeV_u[%ld]=%e\n", isp, ii , E_MeV_u[ii]);
-    fprintf(debf,"%sparticle_no[%ld]=%ld\n", isp, ii , particle_no[ii]);
-  }
-#endif
 
   // get scaled energies for all given particles and energies
   float*  sE  =  (float*)calloc(*n, sizeof(float));
@@ -103,10 +96,6 @@ void AT_LET_MeV_cm2_g(  long*  n,
       E_MeV_u,
       particle_no,
       sE);
-
-#ifdef _DEBUG
-  fprintf(debf,"%sE[0]=%e\n", isp, sE[0]);
-#endif
 
   // get effective charge for all given particles and energies
   float*  eC  =  (float*)calloc(*n, sizeof(float));
@@ -123,19 +112,13 @@ void AT_LET_MeV_cm2_g(  long*  n,
 
   free(eC);
   free(sE);
-
-#ifdef _DEBUG
-  fprintf(debf,"%send AT_LET_MeV_cm2_g\n", isp);
-  indnt_dec();
-#endif
-
 }
 
 
-void AT_LET_keV_um(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
-    long*  material_no,
+void AT_LET_keV_um(  const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    const long*  material_no,
     float*  LET_keV_um)
 {
   long  match, n_tmp = 1;
@@ -159,19 +142,19 @@ void AT_LET_keV_um(  long*  n,
 
 }
 
-void AT_CSDA_range_g_cm2(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
-    long*  material_no,
+void AT_CSDA_range_g_cm2(  const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    const long*  material_no,
     float*  CSDA_range_g_cm2)
 {
   getPSTARvalue(n, E_MeV_u, material_no, AT_PSTAR_Data.range_cdsa_g_cm2, AT_PSTAR_Data.kin_E_MeV, CSDA_range_g_cm2);
 }
 
-void AT_E_MeV_from_CDSA_range(  long*  n,
-    float*  CSDA_range_g_cm2,
-    long*  particle_no,
-    long*  material_no,
+void AT_E_MeV_from_CDSA_range(  const long*  n,
+    const float*  CSDA_range_g_cm2,
+    const long*  particle_no,
+    const long*  material_no,
     float*  E_MeV)
 {
   // scaled energies
@@ -185,23 +168,12 @@ void AT_E_MeV_from_CDSA_range(  long*  n,
   free( sE );
 }
 
-void AT_E_MeV_from_LET(  long*  n,
-    float*  LET_MeV_cm2_g,
-    long*  particle_no,
-    long*  material_no,
+void AT_E_MeV_from_LET(  const long*  n,
+    const float*  LET_MeV_cm2_g,
+    const long*  particle_no,
+    const long*  material_no,
     float*  E_MeV)
 {
-
-#ifdef _R
-  int n_int = (int)(*n);
-  *n = (long)n_int;
-
-  int material_no_int  = (int)(*material_no);
-  *material_no = (long)material_no_int;
-
-  int particle_no_int = (int)(*particle_no);
-  *particle_no = (long)particle_no_int;
-#endif
 
   //printf("n = %ld\n", *n);
   //printf("particle_no = %ld\n", *particle_no);
@@ -225,19 +197,23 @@ void AT_E_MeV_from_LET(  long*  n,
   //printf("AT_E_MeV_from_LET LET ion = %g\n", LET_MeV_cm2_g[0]);
 
   // loop over n to find charge for all given particles and energies
+
+  float*  LET_MeV_cm2_g_copy = (float*)calloc(*n,sizeof(float));
+  memcpy(LET_MeV_cm2_g_copy,LET_MeV_cm2_g,*n);
   long  i;
   for(i = 0; i < *n; i++){
     charge[i]  = AT_Particle_Data.Z[matches[i]];
-    LET_MeV_cm2_g[i] /= (charge[i]*charge[i]);
+    LET_MeV_cm2_g_copy[i] /= (charge[i]*charge[i]);
   }
 
   //printf("AT_E_MeV_from_LET LET proton = %g\n", LET_MeV_cm2_g[0]);
 
-  getPSTARvalue(n, LET_MeV_cm2_g, material_no, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, AT_PSTAR_Data.kin_E_MeV, sE);
+  getPSTARvalue(n, LET_MeV_cm2_g_copy, material_no, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, AT_PSTAR_Data.kin_E_MeV, sE);
 
   // scale energy back
   AT_E_MeV_u_from_scaled_energy(n , sE, particle_no, E_MeV);
 
+  free( LET_MeV_cm2_g_copy );
   free( sE );
 }
 

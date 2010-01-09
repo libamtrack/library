@@ -26,38 +26,32 @@
 
 #include "AT_FileOperations.h"
 
-void AT_browseInput(  char*  fileName,
-            long*  nLines,
-            long*  n_gamma_parameter)
+void AT_browseInput( const char* fileName,
+    long*  nLines,
+    long*  n_gamma_parameter)
 {
   FILE*  inputFile;
   inputFile  =  fopen(  fileName, "r");
   char* retval;
   if (inputFile == 0) return;
 
-    char line[256];
+  char line[256];
 
-    *nLines    =  -1;
-    while(fgets(line, 256, inputFile))
-    {
-    if(strstr(line, ":start spectrum:") != NULL)
-    {
-      while(strstr(line, ":stop spectrum:") == NULL)
-      {
+  *nLines    =  -1;
+  while(fgets(line, 256, inputFile)){
+    if(strstr(line, ":start spectrum:") != NULL){
+      while(strstr(line, ":stop spectrum:") == NULL){
         retval = fgets(line, 256, inputFile);
         (*nLines)++;
       }
     }
 
-    if(strstr(line, "model") != NULL)
-    {
-      char  seps[]  = "=";                  // delimiters can be ",", ";", or tab
-      char*  token;
-
-      token  =  strtok( line, seps );
-
-      token    =  strtok( NULL, seps );
-      long model  =  atol(token);
+    if(strstr(line, "model") != NULL){
+      char  seps[] = "=";                  // delimiters can be ",", ";", or tab
+      char* token;
+      token = strtok( line, seps );
+      token = strtok( NULL, seps );
+      long model =  atol(token);
 
       if(model == 1){
         *n_gamma_parameter = 2;
@@ -76,22 +70,23 @@ void AT_browseInputS(  char**  fileName,
             nLines,
             n_gamma_parameter);};
 
-void AT_readInput(  char*  fileName,
-          long*  nLines,
-          long*  n_gamma_parameter,
-          float*  E_MeV_u,
-          long*  particle_no,
-          float*  fluence_cm2,
-          long*  slab_no,
-          float*  parameter,
-          long*  N2,
-          char*  material_name,
-          long*  n_slabs,
-          long*  gamma_model,
-          float*  gamma_parameter)
+void AT_readInput(  const char*  fileName,
+    const long*  nLines,
+    const long*  n_gamma_parameter,
+    float*  E_MeV_u,
+    long*  particle_no,
+    float*  fluence_cm2,
+    long*  slab_no,
+    float*  parameter,
+    long*  N2,
+    char*  material_name,
+    long*  n_slabs,
+    long*  gamma_model,
+    float*  gamma_parameter)
 {
-  long   i;
+  long i;
 
+  long n_gamma_parameter_copy = *n_gamma_parameter;
   FILE*  inputFile;
   inputFile  =  fopen(  fileName, "r");
   char * retval;
@@ -159,14 +154,14 @@ void AT_readInput(  char*  fileName,
           token    =  strtok( NULL, seps );
           *gamma_model=  atol(token);
 
-          if(*gamma_model == 1){  *n_gamma_parameter = 2;}
-          if(*gamma_model == 2){  *n_gamma_parameter = 3;}
+          if(*gamma_model == 1){  n_gamma_parameter_copy = 2;}
+          if(*gamma_model == 2){  n_gamma_parameter_copy = 3;}
         }
 
         if(strstr(token, "parameter") != NULL){
-          for (i = 0; i < *n_gamma_parameter; i++){
-            token        =  strtok( NULL, seps );
-            gamma_parameter[i]  =  (float)atof(token);}
+          for (i = 0; i < n_gamma_parameter_copy; i++){
+            token              = strtok( NULL, seps );
+            gamma_parameter[i] = (float)atof(token);}
         }
 
       }
@@ -241,9 +236,9 @@ void AT_readInputS(char**  fileName,
           gamma_model,
           gamma_parameter);};
 
-void AT_browseSpectrum(  char*  fileName,
-              // return:
-              long*  nLines){
+void AT_browseSpectrum( const char* fileName,
+    // return:
+    long*  nLines){
   *nLines = 0;
 
   FILE*  inputFile;
@@ -270,13 +265,13 @@ void AT_browseSpectrumS(  char**  fileName,
             nLines);
 };
 
-void AT_readSpectrum(  char*  fileName,
-            long*  nLines,
-            // return:
-            float*  E_MeV_u,
-            long*  particle_no,
-            float*  fluence_cm2,
-            long*  slab_no){
+void AT_readSpectrum( const char*  fileName,
+    const long*  nLines,
+    // return:
+    float*  E_MeV_u,
+    long*  particle_no,
+    float*  fluence_cm2,
+    long*  slab_no){
   long   i = 0;
 
   FILE*  inputFile;
@@ -284,7 +279,7 @@ void AT_readSpectrum(  char*  fileName,
 
   if (inputFile == 0) return;
 
-    char line[256];
+  char line[256];
 
   for (i = 0; i < *nLines; i++){
     if(fgets(line, 256, inputFile) != NULL){
@@ -308,17 +303,17 @@ void AT_readSpectrum(  char*  fileName,
 }
 
 void AT_readSpectrumS(  char**  fileName,
-            long*  nLines,
-            // return:
-            float*  E_MeV_u,
-            long*  particle_no,
-            float*  fluence_cm2,
-            long*  slab_no){
+    long*  nLines,
+    // return:
+    float*  E_MeV_u,
+    long*  particle_no,
+    float*  fluence_cm2,
+    long*  slab_no){
   AT_readSpectrum(  *fileName,
-            nLines,
-            // return:
-            E_MeV_u,
-            particle_no,
-            fluence_cm2,
-            slab_no);
+      nLines,
+      // return:
+      E_MeV_u,
+      particle_no,
+      fluence_cm2,
+      slab_no);
 };
