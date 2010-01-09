@@ -268,8 +268,6 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
               /* calculated parameters */
               float * f1_parameters)
 {
-
-
 #ifdef _DEBUG
   indnt_init();
   indnt_inc();
@@ -277,7 +275,6 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
   fprintf(debf,"%sbegin RDD model = %ld\n",isp,*rdd_model);
   fprintf(debf,"%sMaterial = %ld\n", isp, *material_no);
 #endif
-
 
 
   // Get beta, Z and Zeff
@@ -560,7 +557,7 @@ void AT_D_RDD_Gy  (  long*  n,
       if (r_m[i] >= f1_parameters[1] && r_m[i] <= f1_parameters[2] && *rdd_model != RDD_ExtTarget){          // in between r_min and r_max --> D = KatzPoint
         //D_RDD_Gy[i]        = f1_parameters[5] * Z_eff*Z_eff / (2.0f * pi * r_m[i]*r_m[i] * beta*beta * alpha * density_kg_m3) * pow(1.0f - r_m[i] / f1_parameters[2], 1.0f / alpha);
         D_RDD_Gy[i]        = AT_RDD_Katz_point_Gy(&(r_m[i]),&alpha,&(f1_parameters[2]),&Katz_point_coeff_Gy);
-        D_RDD_Gy[i]        = FMAX(D_RDD_Gy[i], f1_parameters[3]);        // Cut-off low doses
+        D_RDD_Gy[i]        = fmaxf(D_RDD_Gy[i], f1_parameters[3]);        // Cut-off low doses
       }
       if (r_m[i] <= f1_parameters[1] && *rdd_model == RDD_Site){            // r < r_min_m (for RDD_Site) --> D = d_max_Gy
         D_RDD_Gy[i]        = f1_parameters[4];
@@ -744,11 +741,11 @@ void AT_r_RDD_m  (  long*  n,
     float inv2_r_m     = 0.0f;
     if(*rdd_model == RDD_Site){
       critical_r_m    = rdd_parameter[0] * (1.0f + 1e-6f);
-      inv2_r_m      = FMAX(rdd_parameter[0], f1_parameters[2] * dev);
+      inv2_r_m      = fmaxf(rdd_parameter[0], f1_parameters[2] * dev);
     }
     if(*rdd_model == RDD_ExtTarget){
       critical_r_m    = rdd_parameter[1];
-      inv2_r_m      = FMAX(rdd_parameter[0], f1_parameters[2] * dev);
+      inv2_r_m      = fmaxf(rdd_parameter[0], f1_parameters[2] * dev);
     }
     if(*rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget){
       AT_D_RDD_Gy  (  &n_tmp,                    // Use D(r) to find dose at jump of D_Site

@@ -25,7 +25,6 @@
  */
 
 #include "AT_Constants.h"
-#include "AT_Utils.h"
 #include "AT_RDD.h"
 
 #include <stdio.h>
@@ -49,7 +48,7 @@ void  AT_SC_get_f1_array_size(  /* radiation field parameters */
                   /* electron range model */
                   long*  er_model,
                   float*  er_parameter,
-                  /* algorith parameters*/
+                  /* algorithm parameters*/
                   long*  N2,
                   // from here: return values
                   long*  n_bins_f1,

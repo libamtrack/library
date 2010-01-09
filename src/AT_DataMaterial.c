@@ -91,14 +91,6 @@ void AT_getMaterialData(    long*  n,
   free(match);
 }
 
-
-#define matchIt      long  n_mat  = 1;                  \
-                pmatchc(  &material_name,                \
-                                &n_mat,                    \
-                                AT_Material_Data.material_name,      \
-                                &AT_Material_Data.n,            \
-                                &match);
-
 void AT_density_g_cm3( long*  n,
     char*  material_name,
     float*  density_g_cm3)

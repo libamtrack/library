@@ -31,9 +31,10 @@
 #include <string.h>
 
 #include "AT_Constants.h"
-#include "AT_Data.h"
-#include "AT_Utils.h"
+#include "AT_DataMaterial.h"
+#include "AT_DataParticle.h"
 #include "AT_ElectronRange.h"
+#include "AT_NumericalRoutines.h"
 
 void AT_beta_from_mass(  long*  n,
               float*  E_MeV_u,

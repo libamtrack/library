@@ -27,7 +27,9 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "AT_Data.h"
+#include "AT_NumericalRoutines.h"
+#include "AT_DataMaterial.h"
+#include "AT_DataParticle.h"
 
 ///////////////////////////////////////////////////////////////////////
 // ER DATA

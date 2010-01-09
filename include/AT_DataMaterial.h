@@ -26,7 +26,8 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "AT_Utils.h"
+
+#include "AT_NumericalRoutines.h"
 
 enum material_no{
   Water_Liquid             = 1,
@@ -62,17 +63,50 @@ static material_data AT_Material_Data = {
 };
 
 
-void   getMaterialName(  long* material_no, char* material_name);
-void   getMaterialNo(    char* material_name, long* material_no);
+void getMaterialName(long* material_no, char* material_name);
+
+void getMaterialNo(char* material_name, long* material_no);
 
 void AT_getMaterialData(    long*  n,
-                long*  material_no,
-                float*  density_g_cm3,
-                float*  electron_density_m3,
-                float*  I_eV,
-                float*  alpha_g_cm2_MeV,
-                float*  p_MeV,
-                float*  m_g_cm2);
+    long*  material_no,
+    float*  density_g_cm3,
+    float*  electron_density_m3,
+    float*  I_eV,
+    float*  alpha_g_cm2_MeV,
+    float*  p_MeV,
+    float*  m_g_cm2);
 
+#define matchIt      long  n_mat  = 1;                  \
+                pmatchc(  &material_name,                \
+                                &n_mat,                    \
+                                AT_Material_Data.material_name,      \
+                                &AT_Material_Data.n,            \
+                                &match);
+
+void AT_density_g_cm3( long*  n,
+    char*  material_name,
+    float*  density_g_cm3);
+
+void AT_density_g_cm3S(    char**  material_name,
+    float*  density_g_cm3);
+
+void AT_electron_density_m3(  long*  n,
+    char*  material_name,
+    float*  electron_density_m3);
+
+void AT_electron_density_m3S(  char**  material_name,
+    float*  electron_density_m3);
+
+void AT_alpha_g_cm2_MeV(    long*  n,
+    char*  material_name,
+    float*  alpha_g_cm2_MeV);
+
+void AT_p_MeV(          long*  n,
+    char*  material_name,
+    float*  p_MeV);
+
+void AT_m_g_cm2(        long*  n,
+    char*  material_name,
+    float*  m_g_cm2);
 
 #endif /* AT_DATAMATERIAL_H_ */
