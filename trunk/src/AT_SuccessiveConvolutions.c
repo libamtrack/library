@@ -99,8 +99,8 @@ void  AT_SC_get_f1_array_size(  /* radiation field parameters */
       d_max_Gy      =  f1_parameters[i*n_f1_parameters + 4];
     }
     else{
-      d_min_Gy      =  FMIN(d_min_Gy, f1_parameters[i*n_f1_parameters + 3]);
-      d_max_Gy      =  FMAX(d_max_Gy, f1_parameters[i*n_f1_parameters + 4]);
+      d_min_Gy      =  fminf(d_min_Gy, f1_parameters[i*n_f1_parameters + 3]);
+      d_max_Gy      =  fmaxf(d_max_Gy, f1_parameters[i*n_f1_parameters + 4]);
     }
   }
 
@@ -255,8 +255,8 @@ void  AT_SC_get_f1(  /* radiation field parameters */
     float  d_max      =  f1_parameters[0*9 + 4];
 
     for (i = 1; i < *n; i++){
-      d_min          =  FMIN(f1_parameters[i*9 + 3], d_min);
-      d_max          =  FMAX(f1_parameters[i*9 + 4], d_max);
+      d_min          =  fminf(f1_parameters[i*9 + 3], d_min);
+      d_max          =  fmaxf(f1_parameters[i*9 + 4], d_max);
     }
 
     float  U        =  (float)(log(2.0f) / (float)(*N2));
@@ -376,7 +376,7 @@ void  AT_SC_get_f1(  /* radiation field parameters */
       }
 
       // remember highest bin used
-      n_bins_used        =  LMAX(n_bins_used, i_high);
+      n_bins_used        =  lmaxl(n_bins_used, i_high);
     }
 
     // copy back for the dose axis

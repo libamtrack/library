@@ -26,6 +26,57 @@
 
 #include "AT_DataLET.h"
 
+// get LET-data for given material
+void getPSTARvalue(long* n, float* x, long* material_no, float* x_table, float* y_table, float* y)
+{
+  // first: find those PSTAR entries that match the material name
+  bool*    matches    =  (bool*)calloc(AT_PSTAR_Data.n, sizeof(bool));
+  matchi(    material_no,
+        AT_PSTAR_Data.material_no,
+        &AT_PSTAR_Data.n,
+        matches);
+
+  long    n_matches  = 0;
+  long    i;
+  for (i = 0; i < AT_PSTAR_Data.n; i++){
+    if (matches[i]){
+      n_matches++;
+    }
+    //    printf(debf,"idx: %i, match: %d\n",i, matches[i]);
+  }
+
+  // allocate vectors for extracted LET entries
+  float*  x_c  =  (float*)calloc(n_matches, sizeof(float));
+  float*  y_c  =  (float*)calloc(n_matches, sizeof(float));
+
+  // and get the values
+  long     j  = 0;
+  for (i = 0; i < AT_PSTAR_Data.n; i++){
+    if (matches[i]){
+      x_c[j]  = x_table[i];
+      y_c[j]  = y_table[i];
+      j++;
+    }
+  }
+  long  n_pol      = 4 + 1;
+  for (i = 0; i < *n; i++){
+    // Get proton-LET for scaled energy from table E, L using 4th degree polynomial (n_pol - 1 = 2) interpolation
+    float  err_y_tmp  = 0.0f;    // dummy
+    interp(    x_c,
+          y_c,
+          &n_matches,
+          &n_pol,
+          &x[i],
+          &y[i],
+          &err_y_tmp);
+  }
+
+  free(x_c);
+  free(y_c);
+  free(matches);
+}
+
+
 void AT_LET_MeV_cm2_g(  long*  n,
     float*  E_MeV_u,
     long*  particle_no,

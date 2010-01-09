@@ -32,7 +32,7 @@ void AT_browseInput(  char*  fileName,
 {
   FILE*  inputFile;
   inputFile  =  fopen(  fileName, "r");
-
+  char* retval;
   if (inputFile == 0) return;
 
     char line[256];
@@ -44,7 +44,7 @@ void AT_browseInput(  char*  fileName,
     {
       while(strstr(line, ":stop spectrum:") == NULL)
       {
-        fgets(line, 256, inputFile);
+        retval = fgets(line, 256, inputFile);
         (*nLines)++;
       }
     }
@@ -94,7 +94,7 @@ void AT_readInput(  char*  fileName,
 
   FILE*  inputFile;
   inputFile  =  fopen(  fileName, "r");
-
+  char * retval;
   if (inputFile == 0) return;
 
     char line[256];
@@ -107,7 +107,7 @@ void AT_readInput(  char*  fileName,
     if(strstr(line, ":start parameter:") != NULL){
       while(strstr(line, ":stop parameter:") == NULL)
       {
-        fgets(line, 256, inputFile);
+        retval = fgets(line, 256, inputFile);
         // isolate value from name
         char  seps[]  = "=";                  // delimiters can be ",", ";", or tab
         char*  token;
@@ -148,7 +148,7 @@ void AT_readInput(  char*  fileName,
     if(strstr(line, ":start gamma:") != NULL){
       while(strstr(line, ":stop gamma:") == NULL)
       {
-        fgets(line, 256, inputFile);
+        retval = fgets(line, 256, inputFile);
         // isolate value from name
         char  seps[]  = "=,";                  // delimiters can be ",", ";", or tab
         char*  token;
@@ -178,7 +178,7 @@ void AT_readInput(  char*  fileName,
     ////////////////////
     if(strstr(line, ":start spectrum:") != NULL){
       for (i = 0; i < *nLines; i++){
-        fgets(line, 256, inputFile);
+        retval = fgets(line, 256, inputFile);
         // isolate energy, particle no., fluence, slab no.
         char  seps[]  = ",;\t";                  // delimiters can be ",", ";", or tab
         char*  token;
@@ -206,7 +206,7 @@ void AT_readInput(  char*  fileName,
   *n_slabs  =  1;
 
   for (i = 0; i < *nLines; i++){
-    *n_slabs  =  LMAX(*n_slabs, slab_no[i]);
+    *n_slabs  =  lmaxl(*n_slabs, slab_no[i]);
   }
 
   return;

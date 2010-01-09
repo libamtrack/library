@@ -26,6 +26,17 @@
 
 #include "AT_NumericalRoutines.h"
 
+long int lminl(long int x, long int y)
+{
+  return (x < y) ? x : y;
+}
+
+long int lmaxl(long int x, long int y)
+{
+  return (x > y) ? x : y;
+}
+
+
 /*       ========================================================= */
 /*       Purpose: This program computes the parabolic cylinder */
 /*                functions Dv(x) and their derivatives using */
@@ -685,4 +696,149 @@ float zriddr(float (*func)(float,void*), void * params, float x1, float x2, floa
     nrerror("root must be bracketed in zriddr.");
   }
   return 0.0;                         // Never get here.
+}
+
+// finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
+// is reported per element
+// a vector "matches" of length n_elements has to be provided
+void pmatchi(long* elements, long* n_elements, long* set, long* n_set, long* matches){
+  long  i;
+  for (i = 0; i < *n_elements; i++){
+    matches[i] = 0;
+
+    while ((set[matches[i]] != elements[i]) && (matches[i] < *n_set)){
+      matches[i]++;
+    }
+
+    if (matches[i] == *n_set) {
+      matches[i] = -1;
+    }
+  }
+}
+
+// finds character elements in a set (n elements) and returns indices - only one (the first) match
+// is reported per element
+// a vector "matches" of length n_elements has to be provided
+void pmatchc(char** elements, long* n_elements, char** set, long* n_set, long* matches){
+
+  long  i;
+  for (i = 0; i < *n_elements; i++){
+    matches[i] = 0;
+
+    while ((strcmp( set[matches[i]], elements[i]) != 0) && (matches[i] < *n_set)){
+      matches[i]++;
+    }
+
+    if (matches[i] == *n_set) {
+      matches[i] = -1;
+    }
+  }
+}
+
+// finds a character element in a set and returns boolean match vector
+// a vector "matches" of length n_set has to be provided
+void matchc(char* element, char** set, long* n_set, bool* matches){
+
+  long  i;
+  for (i = 0; i < *n_set; i++){
+    if(strcmp(element, set[i])==0){
+      matches[i]  = true;
+    }else{
+      matches[i]  = false;
+    }
+  }
+}
+
+// finds a integer element in a set and returns boolean match vector
+// a vector "matches" of length n_set has to be provided
+void matchi(long* element, long* set, long* n_set, bool* matches){
+
+  long  i;
+  for (i = 0; i < *n_set; i++){
+    if(*element == set[i]){
+      matches[i]  = true;
+    } else{
+      matches[i]  = false;
+    }
+  }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// interpolation on a table: code (w/ adapted indices) from Numerical Recipes, 2rd ed., chapter 3.1
+// added wrapping function interp which allows to chose degree of interpolation polynomial
+// (1 = linear, 2 = quadratic, etc.)
+void locate(float* xx, long* n, float* x, long* j)
+{
+  long  ju, jm, jl;
+  int    ascnd;
+
+  jl    =  0;
+  ju    =  *n + 1;
+  ascnd  =  (xx[*n-1] >= xx[1-1]);
+  while (ju - jl > 1){
+    jm    =  (ju + jl) >> 1;
+    if (*x >= xx[jm-1] == ascnd)
+      jl  =  jm;
+    else
+      ju  =  jm;
+  }
+  if ( *x == xx[1 - 1]) *j = 1;
+  else if (*x == xx[*n - 1]) *j = *n - 1;
+  else *j  =  jl;
+  return;
+}
+
+void polint(float* xa, float* ya, long* n, float* x, float *y, float *dy)
+{
+  long  i, m, ns=1;
+  float  den, dif, dift, ho, hp, w;
+  float  *c,*d;
+
+  dif    =  (float)fabs(*x-xa[1-1]);
+  c    =  (float*)calloc(*n, sizeof(float));
+  d    =  (float*)calloc(*n, sizeof(float));
+  for (i = 1; i <= *n; i++) {
+    if ( (dift = (float)fabs(*x - xa[i-1])) < dif) {
+      ns    =  i;
+      dif    =  dift;
+    }
+    c[i-1]  =  ya[i-1];
+    d[i-1]  =  ya[i-1];
+  }
+
+  *y  =  ya[(ns--)-1];
+  for (m = 1; m < *n; m++) {
+    for (i = 1; i <= *n - m; i++) {
+      ho  =  xa[i-1] - *x;
+      hp  =  xa[i+m-1] - *x;
+      w  =  c[i+1-1] - d[i-1];
+      den  =  ho - hp;
+      if ( den == 0.0) return;
+      den  =  w / den;
+      d[i-1]=  hp * den;
+      c[i-1]=  ho * den;
+
+    }
+    *y += (*dy=(2*ns < (*n-m) ? c[ns+1-1] : d[(ns--)-1]));
+  }
+  free(d);
+  free(c);
+}
+
+void interp(float* xa, float* ya, long* n, long* n_pol, float* x, float *y, float *dy)
+{
+  long  j;
+  locate(  xa,          // find index nearest to x
+      n,
+      x,
+      &j);
+  long  k  =  lminl(lmaxl(j - (*n_pol-1) / 2, 1), *n + 1 - *n_pol);
+  polint(  &xa[k-1 -1],
+      &ya[k-1 -1],
+      n_pol,
+      x,
+      y,
+      dy);
+  return;
 }

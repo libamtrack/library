@@ -33,7 +33,6 @@
 #include <string.h>
 
 #include "AmTrack.h"
-#include "AT_Data.h"
 #include "AT_ElectronRange.h"
 #include "AT_RDD.h"
 #include "AT_GammaResponse.h"
@@ -42,12 +41,13 @@ int main(){
 
   long    i;
   long*   particle_no     = NULL;
-  long    cur_particle_no;
+  long    cur_particle_no = 1;
   float*  E_MeV_u         = NULL;
   float   cur_E_MeV_u;
   float*  fluence_cm2     = NULL;
   float   cur_fluence_cm2;
   long    n_particles     = 0;
+  int     retval;
 
   printf("############################################################\n");
   printf("This is AmTrack & AmTrack user interface, version 2009/09/24\n");
@@ -57,16 +57,28 @@ int main(){
 
   do{
     printf("\n> %ld. particle index (0 for end, 999 for list): ", n_particles + 1);
-    scanf("%ld", &cur_particle_no);
+    retval = scanf("%ld", &cur_particle_no);
+    if( retval != 1 ){
+      printf("Error ! Provide correct number\n");
+      exit(EXIT_FAILURE);
+    }
 
     if(cur_particle_no > 0){
       if(cur_particle_no != 999){
         printf("> %ld. particle energy (MeV/u): ", n_particles + 1);
 
-        scanf("%f", &cur_E_MeV_u);
+        retval = scanf("%f", &cur_E_MeV_u);
+        if( retval != 1 ){
+          printf("Error ! Provide correct number\n");
+          exit(EXIT_FAILURE);
+        }
 
         printf("> %ld. particle fluence (1/cm2) or dose (Gy; enter negative number): ", n_particles + 1);
-        scanf("%f", &cur_fluence_cm2);
+        retval = scanf("%f", &cur_fluence_cm2);
+        if( retval != 1 ){
+          printf("Error ! Provide correct number\n");
+          exit(EXIT_FAILURE);
+        }
         n_particles += 1;
 
         particle_no          =   (long*)realloc(particle_no,  n_particles * sizeof(long));
@@ -107,7 +119,11 @@ int main(){
       printf("\n index: %ld --> %s", AT_Material_Data.material_no[i], AT_Material_Data.material_name[i]);
     }
     printf("\n> material index: ");
-    scanf("%ld", &material_no);
+    retval = scanf("%ld", &material_no);
+    if( retval != 1 ){
+      printf("Error ! Provide correct number\n");
+      exit(EXIT_FAILURE);
+    }
     getMaterialName(&material_no, output_dummy);
     printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
@@ -119,7 +135,11 @@ int main(){
       printf("\n index: %ld --> %s", AT_RDD_Data.RDD_no[i], AT_RDD_Data.RDD_name[i]);
     }
     printf("\n> radial-dose model index: ");
-    scanf("%ld", &RDD_model);
+    retval = scanf("%ld", &RDD_model);
+    if( retval != 1 ){
+      printf("Error ! Provide correct number\n");
+      exit(EXIT_FAILURE);
+    }
     getRDDName(&RDD_model, output_dummy);
     printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
@@ -132,7 +152,11 @@ int main(){
     for(i = 0; i < AT_RDD_Data.n_parameters[index];i++){
       printf("\n %s [0 for default: %g]: ", AT_RDD_Data.parameter_name[index][i],
           AT_RDD_Data.parameter_default[index][i]);
-      scanf("%g", &float_dummy);
+      retval = scanf("%g", &float_dummy);
+      if( retval != 1 ){
+        printf("Error ! Provide correct number\n");
+        exit(EXIT_FAILURE);
+      }
       if (float_dummy == 0.0f){float_dummy = AT_RDD_Data.parameter_default[index][i];}
       printf("%g understood.\n", float_dummy);
       RDD_parameters[i] = float_dummy;
@@ -145,7 +169,11 @@ int main(){
       printf("\n index: %ld --> %s", AT_ER_Data.ER_no[i], AT_ER_Data.ER_name[i]);
     }
     printf("\n> electron-range model index: ");
-    scanf("%ld", &ER_model);
+    retval = scanf("%ld", &ER_model);
+    if( retval != 1 ){
+      printf("Error ! Provide correct number\n");
+      exit(EXIT_FAILURE);
+    }
     getERName(&ER_model, output_dummy);
     printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
@@ -156,7 +184,11 @@ int main(){
       printf("\n index: %ld --> %s", AT_GR_Data.GR_no[i], AT_GR_Data.GR_name[i]);
     }
     printf("\n> gamma response model index: ");
-    scanf("%ld", &gamma_model);
+    retval = scanf("%ld", &gamma_model);
+    if( retval != 1 ){
+      printf("Error ! Provide correct number\n");
+      exit(EXIT_FAILURE);
+    }
     getGammaName(&gamma_model, output_dummy);
     printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
@@ -166,7 +198,11 @@ int main(){
     index = gamma_model-1; //TODO
     for(i = 0; i < AT_GR_Data.n_parameters[index];i++){
       printf("\n %s [0 for default: %g]: ", AT_GR_Data.parameter_name[index][i], AT_GR_Data.parameter_default[index][i]);
-      scanf("%g", &float_dummy);
+      retval = scanf("%g", &float_dummy);
+      if( retval != 1 ){
+        printf("Error ! Provide correct number\n");
+        exit(EXIT_FAILURE);
+      }
       if (float_dummy == 0.0f){float_dummy = AT_GR_Data.parameter_default[index][i];}
       printf("%g understood.\n", float_dummy);
       gamma_parameters[i] = float_dummy;

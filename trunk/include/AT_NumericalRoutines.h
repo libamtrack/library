@@ -30,10 +30,18 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <float.h>
+#include <malloc.h>
+#include <string.h>
 
 extern int indent_counter;
 extern char isp[];
 extern FILE * debf;
+
+long int lminl(long int x, long int y);
+
+long int lmaxl(long int x, long int y);
 
 void AT_Funs(  float*  fz,
         float*  fR0,
@@ -64,6 +72,32 @@ void nrerror(char error_text[]);
   The root, returned as zriddr, will be refined to an approximate accuracy xacc.
  */
 float zriddr(float (*func)(float,void*), void * params, float x1, float x2, float xacc);
+
+// finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
+// is reported per element
+// a vector "matches" of length n_elements has to be provided
+void pmatchi(long* elements, long* n_elements, long* set, long* n_set, long* matches);
+
+// finds character elements in a set (n elements) and returns indices - only one (the first) match
+// is reported per element
+// a vector "matches" of length n_elements has to be provided
+void pmatchc(char** elements, long* n_elements, char** set, long* n_set, long* matches);
+
+// finds a character element in a set and returns boolean match vector
+// a vector "matches" of length n_set has to be provided
+void matchc(char* element, char** set, long* n_set, bool* matches);
+
+// finds a integer element in a set and returns boolean match vector
+// a vector "matches" of length n_set has to be provided
+void matchi(long* element, long* set, long* n_set, bool* matches);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// interpolation on a table: code (w/ adapted indices) from Numerical Recipes, 2rd ed., chapter 3.1
+// added wrapping function interp which allows to chose degree of interpolation polynomial
+// (1 = linear, 2 = quadratic, etc.)
+void locate(float* xx, long* n, float* x, long* j);
+void polint(float* xa, float* ya, long* n, float* x, float *y, float *dy);
+void interp(float* xa, float* ya, long* n, long* n_pol, float* x, float *y, float *dy);
 
 
 #endif /* AT_NUMERICALROUTINES_H_ */

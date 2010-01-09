@@ -433,7 +433,7 @@ void AT_GSM(  long*  n,
         f1_parameters[i*9 + 6],
         f1_parameters[i*9 + 7],
         f1_parameters[i*9 + 8]);
-    max_r_max_m        =   FMAX(max_r_max_m, f1_parameters[i*9 + 2]);
+    max_r_max_m        =   fmaxf(max_r_max_m, f1_parameters[i*9 + 2]);
   }
 
   fprintf(output_file, "\nOverall r.max/m = %e\n\n",   max_r_max_m);
@@ -857,11 +857,11 @@ void AT_GSM(  long*  n,
   results[8]  -= results[3]*results[3];
   results[9]  -= results[4]*results[4];
 
-  results[5]  = FMAX(0, results[5]);
-  results[6]  = FMAX(0, results[6]);
-  results[7]  = FMAX(0, results[7]);
-  results[8]  = FMAX(0, results[8]);
-  results[9]  = FMAX(0, results[9]);
+  results[5]  = fmaxf(0, results[5]);
+  results[6]  = fmaxf(0, results[6]);
+  results[7]  = fmaxf(0, results[7]);
+  results[8]  = fmaxf(0, results[8]);
+  results[9]  = fmaxf(0, results[9]);
 
   results[5]  = sqrt(results[5] / (*N_runs - 1));
   results[6]  = sqrt(results[6] / (*N_runs - 1));

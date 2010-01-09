@@ -24,9 +24,7 @@
 *    If not, see <http://www.gnu.org/licenses/>
 */
 
-#include "AT_Constants.h"
-#include "AT_Data.h"
-#include "AT_Utils.h"
+#include <string.h>
 
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_complex.h>
@@ -39,6 +37,11 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_roots.h>
 #include <gsl/gsl_sf_hyperg.h>
+
+#include "AT_Constants.h"
+#include "AT_DataLET.h"
+#include "AT_PhysicsRoutines.h"
+
 
 extern int indent_counter;
 extern char isp[];

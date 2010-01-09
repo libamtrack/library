@@ -25,7 +25,10 @@
  */
 
 #include <stdlib.h>
+
+#include "AT_DataParticle.h"
 #include "AT_PhysicsRoutines.h"
+
 
 #define PSTAR_DATA_N    528
 
@@ -492,6 +495,9 @@ static pstar_data AT_PSTAR_Data = {
     // END OF RESULTS FROM S-SCRIPT "FORMAT_PSTAR.DATA.BASE_FOR_C.SSC
     ///////////////////////////////////////////////////////////////////////
 };
+
+// get LET-data for given material
+void getPSTARvalue(long* n, float* x, long* material_no, float* x_table, float* y_table, float* y);
 
 void AT_LET_MeV_cm2_g(  long*  n,
     float*  E_MeV_u,
