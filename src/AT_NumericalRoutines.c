@@ -36,6 +36,11 @@ long int lmaxl(long int x, long int y)
   return (x > y) ? x : y;
 }
 
+void trim_long_to_int(long * n){
+  int n_int = (int)(*n);
+  *n = (long)n_int;
+}
+
 
 /*       ========================================================= */
 /*       Purpose: This program computes the parabolic cylinder */
@@ -46,7 +51,7 @@ long int lmaxl(long int x, long int y)
 /*       Output:  DV(na) --- Dn+v0(x) */
 /*                DP(na) --- Dn+v0'(x) */
 /*                ( na = |n|, n = int(v), v0 = v-n, |v0| < 1 */
-/*                  n = 0,�1,�2,���, |n| � 100 ) */
+/*                  n = 0,+_1,+-2,..., |n| ? 100 ) */
 /*                PDF --- Dv(x) */
 /*                PDD --- Dv'(x) */
 /*       Example: v = 5.5,  x =10.0,  v0 = 0.5,  n = 0,1,...,5 */
@@ -701,7 +706,7 @@ float zriddr(float (*func)(float,void*), void * params, float x1, float x2, floa
 // finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
 // is reported per element
 // a vector "matches" of length n_elements has to be provided
-void pmatchi(long* elements, long* n_elements, long* set, long* n_set, long* matches){
+void pmatchi(const long* elements, const long* n_elements, const long* set, const long* n_set, long* matches){
   long  i;
   for (i = 0; i < *n_elements; i++){
     matches[i] = 0;

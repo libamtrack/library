@@ -43,6 +43,8 @@ long int lminl(long int x, long int y);
 
 long int lmaxl(long int x, long int y);
 
+void trim_long_to_int(long * n);
+
 void AT_Funs(  float*  fz,
         float*  fR0,
         float*  fsigma,
@@ -76,7 +78,7 @@ float zriddr(float (*func)(float,void*), void * params, float x1, float x2, floa
 // finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
 // is reported per element
 // a vector "matches" of length n_elements has to be provided
-void pmatchi(long* elements, long* n_elements, long* set, long* n_set, long* matches);
+void pmatchi(const long* elements, const long* n_elements, const long* set, const long* n_set, long* matches);
 
 // finds character elements in a set (n elements) and returns indices - only one (the first) match
 // is reported per element
