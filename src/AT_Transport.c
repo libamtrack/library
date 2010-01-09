@@ -26,14 +26,6 @@
 
 #include "AT_Transport.h"
 
-#include "AT_Constants.h"
-#include "AT_Functions.h"
-#include "AT_NumericalRoutines.h"
-
-#include <math.h>
-#include <string.h>
-#include <stdlib.h>
-
 void AT_BortfeldTransportProtonL(  float*  E_initial_MeV,
                   float*  sE_initial_MeV,
                   float*  fluence_initial_cm2,

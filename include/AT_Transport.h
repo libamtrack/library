@@ -25,6 +25,13 @@
  */
 
 #include <stdio.h>
+#include <math.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include "AT_Constants.h"
+#include "AT_NumericalRoutines.h"
+#include "AT_DataMaterial.h"
 
 extern int indent_counter;
 extern char isp[];
@@ -108,4 +115,5 @@ void  AT_Dose_Gy(  float*  density_g_cm3,
             float*  E_MeV,
             float*  dose_Gy,
             float*  dose_noNuc_Gy);
+
 #endif // AT_TRANSPORT_H_
