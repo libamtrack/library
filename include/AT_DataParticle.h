@@ -24,6 +24,9 @@
 *    If not, see <http://www.gnu.org/licenses/>
 */
 
+#include <stdio.h>
+#include "AT_Utils.h"
+
 #define PARTICLE_DATA_N    35
 
 typedef struct {
@@ -122,5 +125,14 @@ void AT_Z_from_particle_no(  long*  n,                // should rather be AT_Par
                 long*  particle_no,
                 long*  Z);
 
+
+void AT_Particle_Properties(  long*  particle_no,
+                /* return values*/
+                char**  particle_name,
+                char**  USRTRACK_name,
+                char**  element_name,
+                long*  Z,
+                long*  A,
+                float*  mass);
 
 #endif /* AT_DATAPARTICLE_H_ */

@@ -26,7 +26,6 @@
 
 #include "AT_Utils.h"
 
-
 void indnt_init(){
   debf = stderr;
   indent_counter = 0;
@@ -55,12 +54,13 @@ void pmatchi(long* elements, long* n_elements, long* set, long* n_set, long* mat
   for (i = 0; i < *n_elements; i++){
     matches[i] = 0;
 
-    while ((set[matches[i]] != elements[i]) && (matches[i] < *n_set))
-    {
+    while ((set[matches[i]] != elements[i]) && (matches[i] < *n_set)){
       matches[i]++;
     }
 
-    if (matches[i] == *n_set) {matches[i] = -1;}
+    if (matches[i] == *n_set) {
+      matches[i] = -1;
+    }
   }
 }
 
@@ -73,12 +73,13 @@ void pmatchc(char** elements, long* n_elements, char** set, long* n_set, long* m
   for (i = 0; i < *n_elements; i++){
     matches[i] = 0;
 
-    while ((strcmp( set[matches[i]], elements[i]) != 0) && (matches[i] < *n_set))
-    {
+    while ((strcmp( set[matches[i]], elements[i]) != 0) && (matches[i] < *n_set)){
       matches[i]++;
     }
 
-    if (matches[i] == *n_set) {matches[i] = -1;}
+    if (matches[i] == *n_set) {
+      matches[i] = -1;
+    }
   }
 }
 
@@ -89,9 +90,10 @@ void matchc(char* element, char** set, long* n_set, bool* matches){
   long  i;
   for (i = 0; i < *n_set; i++){
     if(strcmp(element, set[i])==0){
-      matches[i]  = true;}
-    else{
-      matches[i]  = false;}
+      matches[i]  = true;
+    }else{
+      matches[i]  = false;
+    }
   }
 }
 
@@ -102,9 +104,10 @@ void matchi(long* element, long* set, long* n_set, bool* matches){
   long  i;
   for (i = 0; i < *n_set; i++){
     if(*element == set[i]){
-      matches[i]  = true;}
-    else{
-      matches[i]  = false;}
+      matches[i]  = true;
+    } else{
+      matches[i]  = false;
+    }
   }
 }
 
@@ -201,8 +204,10 @@ void getPSTARvalue(long* n, float* x, long* material_no, float* x_table, float* 
   long    n_matches  = 0;
   long    i;
   for (i = 0; i < AT_PSTAR_Data.n; i++){
-    if (matches[i]){n_matches++;}
-//    printf(debf,"idx: %i, match: %d\n",i, matches[i]);
+    if (matches[i]){
+      n_matches++;
+    }
+    //    printf(debf,"idx: %i, match: %d\n",i, matches[i]);
   }
 
   // allocate vectors for extracted LET entries
