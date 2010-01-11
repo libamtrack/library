@@ -27,9 +27,9 @@
 #include "AT_PhysicsRoutines.h"
 
 
-void AT_beta_from_mass(  long*  n,
-    float*  E_MeV_u,
-    float*  mass,
+void AT_beta_from_mass( const long*  n,
+    const float*  E_MeV_u,
+    const float*  mass,
     float*  beta)
 {
   // loop over n to find beta for all given particles and energies
@@ -45,9 +45,9 @@ void AT_beta_from_mass(  long*  n,
   }
 }
 
-void AT_E_from_beta_and_mass(  long*  n,
-    float*  beta,
-    float*  mass,
+void AT_E_from_beta_and_mass(  const long*  n,
+    const float*  beta,
+    const float*  mass,
     float*  E_MeV_u)
 {
   // loop over n to find beta for all given particles and energies
@@ -63,9 +63,9 @@ void AT_E_from_beta_and_mass(  long*  n,
 }
 
 
-void AT_effective_charge_from_beta(  long*  n,
-    float*  beta,
-    long*  Z,
+void AT_effective_charge_from_beta( const long*  n,
+    const float*  beta,
+    const long*  Z,
     float*  effective_charge)
 {
   // loop over n
@@ -85,6 +85,8 @@ void AT_beta_from_particle_no(  const long*  n,
     // results
     float*  beta)
 {
+
+  //TODO change to another routine (avoid pmatchi), like get_mass_of_particle
   // find look-up indices for A's for particle numbers in particle data
   long*  matches  =  (long*)calloc(*n, sizeof(long));
   float*  mass  =  (float*)calloc(*n, sizeof(float));
@@ -98,7 +100,8 @@ void AT_beta_from_particle_no(  const long*  n,
   // loop over n to find beta for all given particles and energies
   long  i;
   for(i = 0; i < *n; i++){
-    mass[i]  = AT_Particle_Data.mass[matches[i]];}
+    mass[i]  = AT_Particle_Data.mass[matches[i]];
+  }
 
   AT_beta_from_mass(  n,
       E_MeV_u,
@@ -109,11 +112,12 @@ void AT_beta_from_particle_no(  const long*  n,
 }
 
 
-void AT_E_from_beta_and_particle_no(  long*  n,
-    float*  beta,
-    long*  particle_no,
+void AT_E_from_beta_and_particle_no( const  long*  n,
+    const float*  beta,
+    const long*  particle_no,
     float*  E_MeV_u)
 {
+  //TODO change to another routine (avoid pmatchi), like get_mass_of_particle
   // find look-up indices for A's for particle numbers in particle data
   long*  matches  =  (long*)calloc(*n, sizeof(long));
   float*  mass  =  (float*)calloc(*n, sizeof(float));
@@ -138,9 +142,9 @@ void AT_E_from_beta_and_particle_no(  long*  n,
 }
 
 
-void AT_effective_charge_from_particle_no(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
+void AT_effective_charge_from_particle_no( const  long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
     float*  effective_charge)
 {
   // get relativistic speeds for all given particles and energies
@@ -152,6 +156,7 @@ void AT_effective_charge_from_particle_no(  long*  n,
       particle_no,
       beta);
 
+  //TODO change to another routine (avoid pmatchi), like get_Z_of_particle
   // find look-up indices for Z's for particle numbers in particle data
   long*  matches  =  (long*)calloc(*n, sizeof(long));
   pmatchi(  particle_no,
@@ -177,19 +182,12 @@ void AT_effective_charge_from_particle_no(  long*  n,
 
 
 
-void AT_scaled_energy(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
+void AT_scaled_energy(  const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
     float*  scaled_energy)
 {
-  //  printf("begin AT_scaled_energy\n");
-  //  printf("n = %ld\n", *n);
-  //  long ii;
-  //  for( ii = 0 ; ii < *n ; ii++){
-  //    printf("E_MeV_u[%ld]=%e\n", ii , E_MeV_u[ii]);
-  //    printf("particle_no[%ld]=%ld\n", ii , particle_no[ii]);
-  //  }
-
+  //TODO change to another routine (avoid pmatchi), like get_mass_of_particle and get_A_of_particle
   // find look-up indices for A's for particle numbers in particle data
   long*  matches  =  (long*)calloc(*n, sizeof(long));
   pmatchi(  particle_no,
@@ -201,31 +199,25 @@ void AT_scaled_energy(  long*  n,
   // loop over n to find beta for all given particles and energies
   long  i;
   for(i = 0; i < *n; i++){
-
-    //printf("matches[0] = %ld\n", matches[i]);
-
     // total kinetic energy
     float  E_MeV    =  E_MeV_u[i] * AT_Particle_Data.A[matches[i]];
 
     float mass_fraction = AT_Particle_Data.mass[matches[i]] / AT_Particle_Data.mass[0];
-
-    //printf("mass_fraction = %g\n", mass_fraction );
 
     // Return mass-scaled energy
     scaled_energy[i]  =  E_MeV / mass_fraction ;
   }
 
   free(matches);
-
-  //printf("end AT_scaled_energy\n");
-
 }
 
-void AT_E_MeV_u_from_scaled_energy(  long*  n,
-    float*  scaled_energy,
-    long*  particle_no,
+void AT_E_MeV_u_from_scaled_energy(  const long*  n,
+    const float*  scaled_energy,
+    const long*  particle_no,
     float*  E_MeV_u)
 {
+  //TODO change to another routine (avoid pmatchi), like get_mass_of_particle and get_A_of_particle
+
   // find look-up indices for A's for particle numbers in particle data
   long*  matches  =  (long*)calloc(*n, sizeof(long));
   pmatchi(  particle_no,
@@ -237,22 +229,15 @@ void AT_E_MeV_u_from_scaled_energy(  long*  n,
   // loop over n to find beta for all given particles and energies
   long  i;
   for(i = 0; i < *n; i++){
-
-    //printf("matches[0] = %ld\n", matches[i]);
-
     float mass_fraction = AT_Particle_Data.mass[matches[i]] / AT_Particle_Data.mass[0];
 
     float  E_MeV  = scaled_energy[i] * mass_fraction;
 
     // Return energy per nucleon
     E_MeV_u[i]  =  E_MeV / AT_Particle_Data.A[matches[i]];
-
-    //printf(" AT_E_MeV_u_from_scaled_energy E_MeV_u = %f\n", E_MeV_u[i]);
-
   }
 
   free(matches);
-
 }
 
 
@@ -302,8 +287,8 @@ void AT_max_E_transfer_MeV(  const long*  n,
 
 
 // Get Bohr's energy spread (Wilson, 1947, Phys Rev 71, 385)
-void AT_Bohr_Energy_Straggling_g_cm2(  long*  n,
-    char**  material_name,
+void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
+    const char**  material_name,
     float*  dsE2dz)
 {
   long  i;

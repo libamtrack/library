@@ -72,15 +72,16 @@ extern FILE * debf;
  * @param  shrink_tails    (algorithm specific) if true, tails of the local dose distribution, contributing less than "shrink_tails_under" are cut (pointer to single variable)
  * @param  shrink_tails_under  (algorithm specific) limit for tail cutting in local dose distribution (pointer to single variable)
  * @param  adjust_N2    (algorithm specific) if true, "N2" will be increase if necessary at high fluence to ensure sufficient binning resolution
+ * @param  lethal_events_mode (algorithm specific) if true, allows to do calculations for cell survival
  * @param  results      pointer to array of size 10 to be allocated by the user which will be used to return the results
- *    results[0]    efficiency        (algorithm independent) main result:   particle response at dose D / gamma response at dose D
- *    results[1]    d_check          (algorithm independent) sanity check:  total dose (in Gy) as returned by the alogrithm
- *    results[2]    S_HCP          (algorithm independent)         absolute particle response
- *    results[3]    S_gamma          (algorithm independent)          absolute gamma response
+ *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D
+ *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm
+ *    results[2]    S_HCP           (algorithm independent)  absolute particle response
+ *    results[3]    S_gamma         (algorithm independent)  absolute gamma response
  *    results[4]    not used        (algorithm independent)
- *    results[5]    u            (algorithm specific)          mean number of tracks contributing to representative point
- *    results[6]    u_start          (algorithm specific)          low starting value for mean number of tracks, where linearisation is applied
- *    results[7]    n_convolutions      (algorithm specific)          number of convolutions performed
+ *    results[5]    u               (algorithm specific)     mean number of tracks contributing to representative point
+ *    results[6]    u_start         (algorithm specific)     low starting value for mean number of tracks, where linearisation is applied
+ *    results[7]    n_convolutions  (algorithm specific)     number of convolutions performed
  *    results[8]    not used        (algorithm specific)
  *    results[9]    not used        (algorithm specific)
  * @return  none

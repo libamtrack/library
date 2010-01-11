@@ -65,4 +65,4 @@ enum Method{
 };
 
 
-#endif // AT_CONSTANTS_H_
+#endif /* AT_CONSTANTS_H_ */

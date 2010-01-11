@@ -91,6 +91,8 @@ void AT_max_electron_range_m( const long*  n,
     const long*   er_model,
     float*  max_electron_range_m)
 {
+  //TODO change to another routine (avoid pmatchi), like get_mass_of_particle and get_density_of_material
+
   // Get density matching to material_name (only 1 name therefore n_mat = 1)
   long  n_mat  = 1;
   long  match;

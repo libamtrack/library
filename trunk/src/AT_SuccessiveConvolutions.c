@@ -1,28 +1,28 @@
 /**
- *    AT_SuccessiveConvolutions.c
- *    ===========================
- *
- *    Created on: 28.07.2009
- *    Author: greilich
- *
- *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
- *
- *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
- *
- *    AmTrack is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    AmTrack is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with AmTrack (file: copying.txt).
- *    If not, see <http://www.gnu.org/licenses/>
- */
+*    AT_SuccessiveConvolutions.c
+*    ===========================
+*
+*    Created on: 28.07.2009
+*    Author: greilich
+*
+*    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+*
+*    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+*
+*    AmTrack is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*    AmTrack is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with AmTrack (file: copying.txt).
+*    If not, see <http://www.gnu.org/licenses/>
+*/
 
 #include "AT_SuccessiveConvolutions.h"
 
@@ -32,50 +32,24 @@
 #define DEBUG_SIGMA                1.0f
 
 
-void  AT_SC_get_f1_array_size(  /* radiation field parameters */
-                  long*  n,
-                  float*  E_MeV_u,
-                  long*  particle_no,
-                  /* detector parameters */
-                  long*  material_no,
-                  long*  rdd_model,
-                  float*  rdd_parameter,
-                  /* electron range model */
-                  long*  er_model,
-                  float*  er_parameter,
-                  /* Algorithm parameters*/
-                  long*  N2,
-                  // from here: return values
-                  long*  n_bins_f1,
-                  float*  f1_parameters)
+void  AT_SC_get_f1_array_size(
+    /* radiation field parameters */
+    const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    /* detector parameters */
+    const long*  material_no,
+    const long*  rdd_model,
+    const float*  rdd_parameter,
+    /* electron range model */
+    const long*  er_model,
+    const float*  er_parameter,
+    /* Algorithm parameters*/
+    const long*  N2,
+    // from here: return values
+    long*  n_bins_f1,
+    float*  f1_parameters)
 {
-#ifdef _DEBUG
-  indnt_init();
-  indnt_inc();
-  fprintf(debf,"%sbegin AT_SC_get_f1_array_size\n",isp);
-#endif
-
-
-#ifdef _R
-  int n_int = (int)(*n);
-  *n = (long)n_int;
-
-  int particle_no_int = (int)(*particle_no);
-  *particle_no = (long)particle_no_int;
-
-  int material_no_int  = (int)(*material_no);
-  *material_no = (long)material_no_int;
-
-  int rdd_model_int = (int)(*rdd_model);
-  *rdd_model = (long)rdd_model_int;
-
-  int er_model_int = (int)(*er_model);
-  *er_model = (long)er_model_int;
-
-  int N2_int = (int)(*N2);
-  *N2 = (long)N2_int;
-#endif
-
   // get lowest and highest dose
   float  d_max_Gy    =  0.0f;
   float  d_min_Gy    =  0.0f;
@@ -83,17 +57,17 @@ void  AT_SC_get_f1_array_size(  /* radiation field parameters */
   long  n_f1_parameters  =  9;
   long  i;
   for (i = 0; i < *n; i++){
-//    // get RDD parameters for all particles and energies
+    //    // get RDD parameters for all particles and energies
     AT_RDD_f1_parameters(  &E_MeV_u[i],
-                &particle_no[i],
-                material_no,
-                rdd_model,
-                rdd_parameter,
-                /* electron range model */
-                er_model,
-                er_parameter,
-                /* calculated parameters */
-                &f1_parameters[i*n_f1_parameters]);
+        &particle_no[i],
+        material_no,
+        rdd_model,
+        rdd_parameter,
+        /* electron range model */
+        er_model,
+        er_parameter,
+        /* calculated parameters */
+        &f1_parameters[i*n_f1_parameters]);
     if(i == 0){
       d_min_Gy      =  f1_parameters[i*n_f1_parameters + 3];
       d_max_Gy      =  f1_parameters[i*n_f1_parameters + 4];
@@ -108,33 +82,28 @@ void  AT_SC_get_f1_array_size(  /* radiation field parameters */
   float tmp = (log10f(d_max_Gy/d_min_Gy) / log10f(2.0f) * ((float)*N2));
   *n_bins_f1        =  (long)(floorf(tmp) + 1.0f);
 
-#ifdef _DEBUG
-  fprintf(debf,"%stmp = %g\n",isp, tmp);
-  fprintf(debf,"%sn_bins_f1 = %ld\n",isp, *n_bins_f1);
-  fprintf(debf,"%send AT_SC_get_f1_array_size\n",isp);
-  indnt_dec();
-#endif
   return;
 }
 
 
-void  AT_SC_get_f1(  /* radiation field parameters */
-    long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
-    float*  fluence_cm2,
+void  AT_SC_get_f1(
+    /* radiation field parameters */
+    const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    const float*  fluence_cm2,
     /* detector parameters */
-    long*  material_no,
-    long*  rdd_model,
-    float*  rdd_parameter,
+    const long*  material_no,
+    const long*  rdd_model,
+    const float*  rdd_parameter,
     /* electron range model */
-    long*  er_model,
-    float*  er_parameter,
-    /* algorith parameters*/
-    long*  N2,
-    long*  n_bins_f1,
+    const long*  er_model,
+    const float*  er_parameter,
+    /* algorithm parameters*/
+    const long*  N2,
+    const long*  n_bins_f1,
     /* f1 parameters*/
-    float*  f1_parameters,
+    const float*  f1_parameters,
     // from here: return values
     float*  norm_fluence,
     float*  dose_contribution_Gy,
@@ -151,35 +120,6 @@ void  AT_SC_get_f1(  /* radiation field parameters */
     float*  f1_dd_Gy,
     float*  f1)
 {
-
-#ifdef _DEBUG
-  indnt_inc();
-  fprintf(debf,"%sbegin AT_SC_get_f1\n",isp);
-#endif
-
-#ifdef _R
-  int n_int = (int)(*n);
-  *n = (long)n_int;
-
-  int rdd_model_int = (int)(*rdd_model);
-  *rdd_model = (long)rdd_model_int;
-
-  int er_model_int = (int)(*er_model);
-  *er_model = (long)er_model_int;
-
-  int material_no_int  = (int)(*material_no);
-  *material_no = (long)material_no_int;
-
-  int particle_no_int = (int)(*particle_no);
-  *particle_no = (long)particle_no_int;
-
-  int N2_int = (int)(*N2);
-  *N2 = (long)N2_int;
-
-  int n_bins_f1_int = (int)(*n_bins_f1);
-  *n_bins_f1 = (long)n_bins_f1_int;
-#endif
-
   ////////////////////////////////////////////////////////////////////////////////////////////
   // 1. normalize fluence, get total fluence and dose, eff. LET and mean impact parameter u,
   f_parameters[1]    = 0.0f;
@@ -197,11 +137,11 @@ void  AT_SC_get_f1(  /* radiation field parameters */
   else{
     for (i = 0; i < *n; i++){
       fluence_cm2_local[i]    = -1.0f * fluence_cm2[i] / (f1_parameters[i*9] * MeV_g_to_J_kg);      // fluence / LET
-      fluence_cm2[i]        = fluence_cm2_local[i];
+      //TODO move dose to fluence conversion to separate function
+      // fluence_cm2[i]        = fluence_cm2_local[i];
       //printf("fluence_cm2[%ld] = %g\n", i, fluence_cm2[i]);
     }
   }
-
 
   for (i = 0; i < *n; i++){
     f_parameters[1]  +=  fluence_cm2_local[i];
@@ -209,7 +149,7 @@ void  AT_SC_get_f1(  /* radiation field parameters */
 
   float u_single;
   f_parameters[0]        =  0.0f;
-  f_parameters[2]        =   0.0f;
+  f_parameters[2]        =  0.0f;
   f_parameters[3]        =  0.0f;
   f_parameters[4]        =  0.0f;
   f_parameters[5]        =  0.0f;
@@ -268,7 +208,7 @@ void  AT_SC_get_f1(  /* radiation field parameters */
     float*  dd_df        =  (float*)calloc(*n_bins_f1, sizeof(float));
 
     for (i = 0; i < *n_bins_f1; i++){
-      // TO DO: check if n.bins sufficient
+      // TODO: check if n.bins sufficient
 
       d_df_low[i]          =   d_min * (float)exp((float)i * U);
       d_df_high[i]        =   d_min * (float)exp(((float)i + 1) * U);
@@ -278,7 +218,7 @@ void  AT_SC_get_f1(  /* radiation field parameters */
       f1[i]            =  0.0f;
     }
 
-    long  n_bins_used        =  1;
+    long n_bins_used = 1;
 
     // loop over all particles and energies, compute contribution to f1
     long   k;
@@ -296,16 +236,12 @@ void  AT_SC_get_f1(  /* radiation field parameters */
 
       long  n_bins_df      =  i_high - i_low + 1;  // changed from + 2
 
-#ifdef _DEBUG
-      fprintf(debf,"%sk = %ld , n_bins_df = %ld\n", isp, k, n_bins_df);
-#endif
-
       if (n_bins_df > 1){
-        float*  d_low        =  (float*)calloc(n_bins_df, sizeof(float));
-        float*  d_mid        =  (float*)calloc(n_bins_df, sizeof(float));
-        float*  d_high        =  (float*)calloc(n_bins_df, sizeof(float));
+        float*  d_low       =  (float*)calloc(n_bins_df, sizeof(float));
+        float*  d_mid       =  (float*)calloc(n_bins_df, sizeof(float));
+        float*  d_high      =  (float*)calloc(n_bins_df, sizeof(float));
         float*  dd          =  (float*)calloc(n_bins_df, sizeof(float));
-        float*  r          =  (float*)calloc(n_bins_df, sizeof(float));
+        float*  r           =  (float*)calloc(n_bins_df, sizeof(float));
         float*  F1_1        =  (float*)calloc(n_bins_df, sizeof(float));
         float*  f1_k        =  (float*)calloc(n_bins_df - 1, sizeof(float));
 
@@ -326,7 +262,7 @@ void  AT_SC_get_f1(  /* radiation field parameters */
         d_mid[n_bins_df-1]      =  0;
 
         d_high[n_bins_df-1-1]    =  d_max_k;
-        d_high[n_bins_df-1]      =  0.0f;  //??
+        d_high[n_bins_df-1]      =  0.0f;  //TODO ??
 
         dd[n_bins_df-1]        =  0.0f;
 
@@ -401,22 +337,17 @@ void  AT_SC_get_f1(  /* radiation field parameters */
   } // if(f1_d_Gy != NULL)
 
   free(fluence_cm2_local);
-
-#ifdef _DEBUG
-  fprintf(debf,"%send AT_SC_get_f1\n", isp);
-  indnt_dec();
-#endif
   return;
 }
 
 
-void  AT_SC_get_f_array_size(  float*  u,
-    float*  fluence_factor,
-    long*  N2,
-    long*  n_bins_f1,
-    float*  f1_d_Gy,
-    float*  f1_dd_Gy,
-    float*  f1,
+void  AT_SC_get_f_array_size( const float*  u,
+    const float*  fluence_factor,
+    const long*   N2,
+    const long*   n_bins_f1,
+    const float*  f1_d_Gy,
+    const float*  f1_dd_Gy,
+    const float*  f1,
     // from here: return values
     long*  n_bins_f,
     float*  u_start,
@@ -424,28 +355,6 @@ void  AT_SC_get_f_array_size(  float*  u,
 {
   // Get expectation value of dose from f1
   float  d_f1_Gy    =  0.0f;
-
-#ifdef _DEBUG
-  indnt_init();
-  indnt_inc();
-  fprintf(debf,"%sbegin AT_SC_get_f_array_size\n", isp);
-  fprintf(debf,"%sinput - u = %g\n", isp, *u);
-//  fprintf(debf,"%sAT_SC_get_f_array_size 1, fluence_factor = %g\n", isp, *fluence_factor);
-//  fprintf(debf,"%sAT_SC_get_f_array_size 1, N2 = %ld\n", isp, *N2);
-//  fprintf(debf,"%sAT_SC_get_f_array_size 1, n_bins_f1 = %ld\n", isp, *n_bins_f1);
-//  fprintf(debf,"%sAT_SC_get_f_array_size 1, f1_d_Gy = %g\n", isp, f1_d_Gy[0]);
-//  fprintf(debf,"%sAT_SC_get_f_array_size 1, f1_dd_Gy = %g\n", isp, f1_dd_Gy[0]);
-//  fprintf(debf,"%sAT_SC_get_f_array_size 1, f1 = %g\n", isp, f1[0]);
-#endif
-
-  // conversion through int
-#ifdef _R
-  int N2_int = (int)(*N2);
-  *N2 = (long)N2_int;
-
-  int n_bins_f1_int = (int)(*n_bins_f1);
-  *n_bins_f1 = (long)n_bins_f1_int;
-#endif
 
   long   i;
   for (i = 0; i < *n_bins_f1; i++){
@@ -470,56 +379,22 @@ void  AT_SC_get_f_array_size(  float*  u,
   *n_bins_f      =  (*n_convolutions + 1) * (*N2);
   *n_bins_f      +=  *n_bins_f1;
 
-#ifdef _DEBUG
-  fprintf(debf,"%soutput - n_bins_f = %ld\n", isp, *n_bins_f);
-  fprintf(debf,"%soutput - u_start = %g\n", isp, *u_start);
-  fprintf(debf,"%soutput - n_convolutions = %ld\n", isp, *n_convolutions);
-  fprintf(debf,"%send AT_SC_get_f_array_size\n",isp);
-  indnt_dec();
-#endif
-
   return;
 }
 
 
-void  AT_SC_get_f_start(      float*  u_start,
-    long*  n_bins_f1,
-    long*  N2,
-    float*  f1_d_Gy,
-    float*  f1_dd_Gy,
-    float*  f1,
-    long*  n_bins_f,
+void  AT_SC_get_f_start( const float*  u_start,
+    const long*  n_bins_f1,
+    const long*  N2,
+    const float*  f1_d_Gy,
+    const float*  f1_dd_Gy,
+    const float*  f1,
+    const long*  n_bins_f,
     // from here: return values
     float*  f_d_Gy,
     float*  f_dd_Gy,
     float*  f_start)
 {
-#ifdef _DEBUG
-  indnt_init();
-  indnt_inc();
-  long q;
-  fprintf(debf,"%sbegin AT_SC_get_f_start\n", isp);
-  fprintf(debf,"%sinput - u_start = %g\n", isp, *u_start);
-  fprintf(debf,"%sinput - n_bins_f1 = %ld\n", isp, *n_bins_f1);
-  fprintf(debf,"%sinput - n_bins_f = %ld\n", isp, *n_bins_f);
-  fprintf(debf,"%sinput - N2 = %ld\n", isp, *N2);
-  //fprintf(debf,"%sinput - f1_d_Gy[] = ", isp);
-  //for( q = 0 ; q < *n_bins_f1 ; q++ ){ fprintf(debf,"%g,",f1_d_Gy[q]);};  fprintf(debf,"\n");
-#endif
-
-  // conversion through int
-#ifdef _R
-  int N2_int = (int)(*N2);
-  *N2 = (long)N2_int;
-
-  int n_bins_f1_int = (int)(*n_bins_f1);
-  *n_bins_f1 = (long)n_bins_f1_int;
-
-  int n_bins_f_int = (int)(*n_bins_f);
-  *n_bins_f = (long)n_bins_f_int;
-#endif
-
-
   // temporary arrays
   float*  d_low        =  (float*)calloc(*n_bins_f, sizeof(float));
   float*  d_high        =  (float*)calloc(*n_bins_f, sizeof(float));
@@ -542,75 +417,12 @@ void  AT_SC_get_f_start(      float*  u_start,
 
   free(d_low);
   free(d_high);
-
-#ifdef _DEBUG
-  fprintf(debf,"%soutput - f_d_Gy[] = ", isp);
-  for( q = 0 ; q < *n_bins_f ; q++ ){ fprintf(debf,"%g,",f_d_Gy[q]);};  fprintf(debf,"\n");
-  fprintf(debf,"%soutput - f_d_Gy[] = %g,%g,%g,...\n", isp, f_d_Gy[0], f_d_Gy[1], f_d_Gy[2]);
-  fprintf(debf,"%soutput - f_dd_Gy[] = %g,%g,%g,...\n", isp, f_dd_Gy[0], f_dd_Gy[1], f_dd_Gy[2]);
-  fprintf(debf,"%soutput - f_start[] = %g,%g,%g,...\n", isp, f_start[0], f_start[1], f_start[2]);
-  fprintf(debf,"%send AT_SC_get_f_start\n",isp);
-  indnt_dec();
-#endif
-
   return;
 }
 
 /*******************************************************************************
 / Successive convolutions (Kellerer Algorithm)
- *******************************************************************************/
-
-typedef struct{
-
-  long      array_size;                  // size of function arrays F..BI
-  long      N2;
-  float      U;
-
-  float      X;
-  float      FINAL;
-
-
-  float      CN;
-  long      N1;
-
-
-  float      CM1;
-  float      CM2;
-  float      CM3;
-  float      CM4;
-
-  float      D1;
-  float      D2;
-  float      D3;
-  float      D4;
-
-  float      F0;
-  float*      F;
-  long      MIF;
-  long      LEF;
-
-  float      H0;
-  float*      H;
-  long      MIH;
-  long      LEH;
-
-  float      E0;
-  float*      E;
-  float*      DE;
-  long      MIE;
-
-  float*      DI;
-  float*      A;
-  float*      BI;
-
-  bool      write_output;
-  FILE*      output_file;
-
-  bool      shrink_tails;
-  float      shrink_tails_under;
-  bool      adjust_N2;
-}     aKList;
-
+*******************************************************************************/
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // AT_SC_NORMAL
@@ -981,12 +793,12 @@ aKList  AT_SC_SHRINK(aKList theKList){
 // AT_SC_FOLD
 ///////////////////////////////////////////////////////////////////////////////////////
 
-aKList  AT_SC_FOLD(aKList theKList){
+aKList AT_SC_FOLD(aKList theKList){
 
-//#ifdef _DEBUG
-//  indnt_inc();
-//  fprintf(debf,"%sbegin AT_SC_FOLD, size = %ld\n", isp, theKList.array_size);
-//#endif
+  //#ifdef _DEBUG
+  //  indnt_inc();
+  //  fprintf(debf,"%sbegin AT_SC_FOLD, size = %ld\n", isp, theKList.array_size);
+  //#endif
 
   float*  FDE          =  (float*)calloc(theKList.array_size, sizeof(float));
 
@@ -1042,19 +854,13 @@ aKList  AT_SC_FOLD(aKList theKList){
   }else{
     theKList            =  AT_SC_ZERO(theKList);
   }
-
-//#ifdef _DEBUG
-//  fprintf(debf,"%send AT_SC_FOLD\n", isp);
-//  indnt_dec();
-//#endif
-
   return(theKList);
 }
 
 
 
-void   AT_SuccessiveConvolutions(        float*  u,
-    long*  n_bins_f,
+void   AT_SuccessiveConvolutions( const float*  u,
+    const long*  n_bins_f,
     long*  N2,
     long*  n_bins_f_used,
     float*  f_d_Gy,
@@ -1069,48 +875,6 @@ void   AT_SuccessiveConvolutions(        float*  u,
     float*  shrink_tails_under,
     bool*  adjust_N2)
 {
-
-  // conversion through int
-#ifdef _R
-  int n_bins_f_int = (int)(*n_bins_f);
-  *n_bins_f = (long)n_bins_f_int;
-
-  int N2_int = (int)(*N2);
-  *N2 = (long)N2_int;
-
-  int n_bins_f_used_int = (int)(*n_bins_f_used);
-  *n_bins_f_used = (long)n_bins_f_used_int;
-#endif
-
-#ifdef _DEBUG
-  indnt_init();
-  indnt_inc();
-  long q;
-  fprintf(debf,"%sbegin AT_SuccessiveConvolutions\n", isp);
-  fprintf(debf,"%sinput - u = %g\n", isp, *u);
-  fprintf(debf,"%sinput - n_bins_f = %ld\n", isp, *n_bins_f);
-  fprintf(debf,"%sinput - N2 = %ld\n", isp, *N2);
-  fprintf(debf,"%sinput - n_bins_f_used = %ld\n", isp, *n_bins_f_used);
-  fprintf(debf,"%sinput - f_d_Gy[] = ", isp);
-  for( q = 0 ; q < *n_bins_f ; q++ ){ fprintf(debf,"%g,",f_d_Gy[q]);};  fprintf(debf,"\n");
-  fprintf(debf,"%sinput - f_dd_Gy[] = %g,%g,%g,...\n", isp, f_dd_Gy[0], f_dd_Gy[1], f_dd_Gy[2]);
-  fprintf(debf,"%sinput - f[] = %g,%g,%g,...\n", isp, f[0], f[1], f[2]);
-  fprintf(debf,"%sinput - f0 = %g\n", isp, *f0);
-  fprintf(debf,"%sinput - fdd[] = %g,%g,%g,...\n", isp, fdd[0], fdd[1], fdd[2]);
-  fprintf(debf,"%sinput - dfdd[] = %g,%g,%g,...\n", isp, dfdd[0], dfdd[1], dfdd[2]);
-  fprintf(debf,"%sinput - d = %g\n", isp, *d);
-  fprintf(debf,"%sinput - shrink_tails_under = %g\n", isp, *shrink_tails_under);
-  fprintf(debf,"%sinput - write_output = %d\n", isp, *write_output);
-  fprintf(debf,"%sinput - shrink_tails = %d\n", isp, *shrink_tails);
-  fprintf(debf,"%sinput - adjust_N2 = %d\n", isp, *adjust_N2);
-#endif
-  // index variables
-  long    i;
-
-#ifdef _DEBUG
-  fprintf(debf,"%sn_bins_f_used = %ld\n", isp, *n_bins_f_used);
-#endif
-
   //////////////////////////////////////////
   // Init KList structure
   // (Constructor)
@@ -1141,10 +905,6 @@ void   AT_SuccessiveConvolutions(        float*  u,
 
   //////////////////////////////////
 
-#ifdef _DEBUG
-  fprintf(debf,"%sKList.array_size = %ld\n", isp, KList.array_size);
-#endif
-
   KList.F        = (float*)calloc(KList.array_size, sizeof(float));
   KList.H        = (float*)calloc(KList.array_size, sizeof(float));
   KList.E        = (float*)calloc(KList.array_size, sizeof(float));
@@ -1166,7 +926,6 @@ void   AT_SuccessiveConvolutions(        float*  u,
   // Added by Leszek
   KList.MIF      = 0;
   KList.LEF      = 0;
-
 
   if(KList.write_output){
     fprintf(KList.output_file,  "\n\nThis is main\n");
@@ -1192,8 +951,6 @@ void   AT_SuccessiveConvolutions(        float*  u,
     float tmp      = (float)(-1.0f * log(1.0f - 0.5f * exp(-S)) / KList.U);
     KList.DI[L -1]    = tmp - (float)KList.N2;}    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
 
-
-
   ///////////////////////////////////////
   // Normalize distribution
   ///////////////////////////////////////
@@ -1204,6 +961,7 @@ void   AT_SuccessiveConvolutions(        float*  u,
     fprintf(KList.output_file,      "============\n");
 
     fprintf(KList.output_file, "\nNormalized single hit distribution in KList:\n");
+    long i;
     for (i = 0; i < KList.array_size; i++){
       fprintf(  KList.output_file,
           "i: %ld\t\tKList.E: %4.3e Gy\t\tKList.DE: %4.3e\t\tKList.H: %4.3e\t\t\n",
@@ -1311,10 +1069,10 @@ void   AT_SuccessiveConvolutions(        float*  u,
     KList.N1        =  KList.N1 + 1;
     KList.CN        =  KList.CN * 2;
 
-//#ifdef _DEBUG
-//    fprintf(debf,"%sj = %ld out ouf %ld\n", isp, j , n_convolutions);
-//    fprintf(debf,"%sKList.LEH = %ld\n", isp, KList.LEH);
-//#endif
+    //#ifdef _DEBUG
+    //    fprintf(debf,"%sj = %ld out ouf %ld\n", isp, j , n_convolutions);
+    //    fprintf(debf,"%sKList.LEH = %ld\n", isp, KList.LEH);
+    //#endif
 
     if(KList.write_output){
       fprintf(  KList.output_file,
@@ -1397,17 +1155,5 @@ void   AT_SuccessiveConvolutions(        float*  u,
     fclose(KList.output_file);
   }
 
-#ifdef _DEBUG
-  fprintf(debf,"%soutput - n_bins_f_used = %ld\n", isp, *n_bins_f_used);
-  fprintf(debf,"%soutput - f_d_Gy[] = %g,%g,%g,...\n", isp, f_d_Gy[0], f_d_Gy[1], f_d_Gy[2]);
-  fprintf(debf,"%soutput - f_dd_Gy[] = %g,%g,%g,...\n", isp, f_dd_Gy[0], f_dd_Gy[1], f_dd_Gy[2]);
-  fprintf(debf,"%soutput - f[] = %g,%g,%g,...\n", isp, f[0], f[1], f[2]);
-  fprintf(debf,"%soutput - f0 = %g\n", isp, *f0);
-  fprintf(debf,"%soutput - fdd[] = %g,%g,%g,...\n", isp, fdd[0], fdd[1], fdd[2]);
-  fprintf(debf,"%soutput - dfdd[] = %g,%g,%g,...\n", isp, dfdd[0], dfdd[1], dfdd[2]);
-  fprintf(debf,"%soutput - d = %g\n", isp, *d);
-  fprintf(debf,"%send AT_SuccessiveConvolutions\n", isp);
-  indnt_dec();
-#endif
   return;
 }

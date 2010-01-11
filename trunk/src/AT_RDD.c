@@ -27,7 +27,7 @@
 #include "AT_RDD.h"
 
 
-void getRDDName(long* RDD_no, char* RDD_name){
+void getRDDName(const long* RDD_no, char* RDD_name){
   strcpy(RDD_name,"*** invalid choice ***");
   long i;
   for (i = 0; i < RDD_DATA_N; i++){
@@ -37,7 +37,7 @@ void getRDDName(long* RDD_no, char* RDD_name){
   }
 }
 
-void getRDDNo(char* RDD_name, long* RDD_no){
+void getRDDNo(const char* RDD_name, long* RDD_no){
   *RDD_no = 0;
   long i;
   for (i = 0; i < RDD_DATA_N; i++){
@@ -49,7 +49,7 @@ void getRDDNo(char* RDD_name, long* RDD_no){
 }
 
 
-inline float AT_RDD_Katz_point_kernel(float* x, float* alpha){
+inline float AT_RDD_Katz_point_kernel(const float* x, const float* alpha){
   return (1.0f/((*x)*(*x)) )*pow(1.0f - (*x), 1.0f / (*alpha));
 }
 
@@ -60,11 +60,11 @@ void AT_RDD_Katz_point_kernelS(int *n, float* x, float* alpha, float* f){
   };
 }
 
-inline float AT_RDD_Katz_point_coeff_Gy(float* C_J_m,float* Z_eff, float* beta, float* alpha, float* density_kg_m3, float* r_max_m){
+inline float AT_RDD_Katz_point_coeff_Gy(const float* C_J_m,const float* Z_eff, const float* beta, const float* alpha, const float* density_kg_m3, const float* r_max_m){
   return (*C_J_m) * (*Z_eff)*(*Z_eff) / (2.0f * M_PI * (*beta)*(*beta) * (*alpha) * (*density_kg_m3) * (*r_max_m)* (*r_max_m));
 }
 
-inline float AT_RDD_Katz_point_Gy(float* r_m, float* alpha, float* r_max_m, float* Katz_point_coeff_Gy){
+inline float AT_RDD_Katz_point_Gy(const float* r_m, const float* alpha, const float* r_max_m, const float* Katz_point_coeff_Gy){
   float x = (*r_m)/(*r_max_m);
   return (*Katz_point_coeff_Gy) * AT_RDD_Katz_point_kernel(&x,alpha);
 }
@@ -76,7 +76,7 @@ void AT_RDD_Katz_point_GyS(int *n, float* r_m, float* alpha, float* r_max_m,floa
   };
 }
 
-inline float AT_RDD_Katz_dEdx_kernel(float* x, float* alpha){
+inline float AT_RDD_Katz_dEdx_kernel(const float* x, const float* alpha){
   return (1.0f/(*x) )*pow(1.0f - (*x), 1.0f / (*alpha));
 }
 
@@ -93,14 +93,14 @@ double AT_RDD_Katz_dEdx_integrand(double x, void * params){
   return (double)AT_RDD_Katz_dEdx_kernel( &f_x, &alpha);
 }
 
-inline float AT_RDD_Katz_dEdx_coeff_J_m(float* r_max_m, float* density_kg_m3, float* Katz_point_coeff_Gy){
+inline float AT_RDD_Katz_dEdx_coeff_J_m(const float* r_max_m, const float* density_kg_m3, const float* Katz_point_coeff_Gy){
   return 2 * M_PI * (*density_kg_m3) * (*r_max_m)*(*r_max_m) * (*Katz_point_coeff_Gy);
 }
 
-float AT_RDD_Katz_dEdx_J_m(  float* alpha,
-                float* r_min_m,
-                float* r_max_m,
-                float* Katz_dEdx_coeff_J_m){
+float AT_RDD_Katz_dEdx_J_m(  const float* alpha,
+    const float* r_min_m,
+    const float* r_max_m,
+    const float* Katz_dEdx_coeff_J_m){
   double dEdx_integral = 0.0;
   if( (*r_min_m) < (*r_max_m)){
     dEdx_integral = (*alpha/(1.+(*alpha))) * pow( 1.-(*r_min_m)/(*r_max_m) , 1. +
@@ -110,7 +110,7 @@ float AT_RDD_Katz_dEdx_J_m(  float* alpha,
   return (*Katz_dEdx_coeff_J_m)*(float)dEdx_integral;
 }
 
-inline float AT_RDD_Katz_site_Gy(float* r_m, float* alpha, float* r_min_m, float* r_max_m, float* LET_J_m, float* density_kg_m3, float* Katz_dEdx_J_m, float* Katz_point_coeff_Gy){
+inline float AT_RDD_Katz_site_Gy(const float* r_m, const float* alpha, const float* r_min_m, const float* r_max_m, const float* LET_J_m, const float* density_kg_m3, const float* Katz_dEdx_J_m, const float* Katz_point_coeff_Gy){
   if( (*r_m) < (*r_min_m) ){
     return (1.0f / ((*density_kg_m3) * M_PI * (*r_min_m)*(*r_min_m)))*((*LET_J_m) - (*Katz_dEdx_J_m));
   } else {
@@ -127,12 +127,8 @@ void AT_RDD_Katz_site_GyS(int *n, float* r_m, float* alpha, float* r_min_m, floa
 }
 
 float
-geometryFunctionPhi (float* r0_m, float* a0_m, float* r_m)
+geometryFunctionPhi (const float* r0_m, const float* a0_m, const float* r_m)
 {
-//#ifdef _DEBUG
-//    indnt_init();
-//    fprintf(debf,"%sr0_m = %g , a0_m = %g , r_m = %g\n",isp,*r0_m,*a0_m, *r_m);
-//#endif
   float res = 0.;
   double factor = 0.;
   gsl_complex carg, cres;
@@ -142,38 +138,19 @@ geometryFunctionPhi (float* r0_m, float* a0_m, float* r_m)
       res = 0.0f;
     else
       res = (float)M_PI;
-//#ifdef _DEBUG
-//    indnt_init();
-//    fprintf(debf,"%sA res = %g\n",isp,res);
-//#endif
   }
   else
   {
     factor = gsl_pow_2 (*a0_m) - gsl_pow_2 ((*r0_m) - (*r_m));
     factor /= gsl_pow_2 ((*r_m) + (*r0_m)) - gsl_pow_2 (*a0_m);
-//#ifdef _DEBUG
-//    indnt_init();
-//    fprintf(debf,"%sB factor = %g\n",isp,factor);
-//#endif
     GSL_SET_COMPLEX (&carg, sqrt (factor), 0.);
     cres = gsl_complex_arctan (carg);
     res = 2.0f * (float)(GSL_REAL (cres));
-//#ifdef _DEBUG
-//    indnt_init();
-//    fprintf(debf,"%sB res = %g\n",isp,res);
-//#endif
   }
   return res;
 }
 
-inline float AT_RDD_Katz_ext_kernel_Gy(float* t_m, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy){
-//#ifdef _DEBUG
-//    indnt_init();
-//    fprintf(debf,"%st_m = %g , a0_m = %g , r_m = %g\n",isp,*t_m,*a0_m, *r_m);
-//    fprintf(debf,"%sf1 = %g\n",isp,(1.0f/ (M_PI * (*a0_m)*(*a0_m))));
-//    fprintf(debf,"%sf2 = %g\n",isp,AT_RDD_Katz_point_Gy(t_m,alpha,r_max_m,Katz_point_coeff_Gy));
-//    fprintf(debf,"%sf3 = %g\n",isp,geometryFunctionPhi(r_m,a0_m,t_m));
-//#endif
+inline float AT_RDD_Katz_ext_kernel_Gy(const float* t_m, const float *r_m, const float* a0_m, const float* alpha, const float* r_min_m, const float* r_max_m, const float* Katz_point_coeff_Gy){
   if( (*t_m) < (*r_min_m ) )
     return 0.0;
   if( (*t_m) >= (*a0_m) + (*r_m) )
@@ -187,12 +164,7 @@ inline float AT_RDD_Katz_ext_kernel_Gy(float* t_m, float *r_m, float* a0_m, floa
 void AT_RDD_Katz_ext_kernel_GyS(int *n, float* t_m, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy, float * D_Gy){
   int i;
   for( i = 0 ; i < *n ; i++){
-//#ifdef _DEBUG
-//    indnt_init();
-//    fprintf(debf,"%st_m[%d] = %g\n",isp,i,t_m[i]);
-//#endif
-    D_Gy[i] = AT_RDD_Katz_ext_kernel_Gy(  &(t_m[i]), r_m,a0_m, alpha,
-                        r_min_m, r_max_m, Katz_point_coeff_Gy);
+    D_Gy[i] = AT_RDD_Katz_ext_kernel_Gy(  &(t_m[i]), r_m,a0_m, alpha, r_min_m, r_max_m, Katz_point_coeff_Gy);
   };
 }
 
@@ -201,15 +173,15 @@ double AT_RDD_Katz_ext_integrand_Gy(  double t_m, void * params){
   float a0_m           = ((float*)params)[1];
   float alpha         = ((float*)params)[2];
   float r_min_m         = ((float*)params)[3];
-    float r_max_m         = ((float*)params)[4];
-    float Katz_point_coeff_Gy   = ((float*)params)[5];
+  float r_max_m         = ((float*)params)[4];
+  float Katz_point_coeff_Gy   = ((float*)params)[5];
   float f_t_m         = (float)(t_m);
   return (double)AT_RDD_Katz_ext_kernel_Gy(  &f_t_m, &r_m, &a0_m, &alpha,
-                        &r_min_m, &r_max_m, &Katz_point_coeff_Gy);
+      &r_min_m, &r_max_m, &Katz_point_coeff_Gy);
 }
 
-inline float AT_RDD_Katz_ext_Gy(  float *r_m, float* a0_m, float* alpha,
-                  float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy){
+inline float AT_RDD_Katz_ext_Gy(  const float *r_m, const float* a0_m, const float* alpha,
+    const float* r_min_m, const float* r_max_m, const float* Katz_point_coeff_Gy){
   double int_lim_m = 0.0f;
   if( (*r_m) > (*a0_m) ){
     int_lim_m = GSL_MAX((*r_m) - (*a0_m),*r_min_m);
@@ -225,10 +197,6 @@ inline float AT_RDD_Katz_ext_Gy(  float *r_m, float* a0_m, float* alpha,
   F.params = params;
   int status = gsl_integration_qags (&F, int_lim_m, (*r_m)+(*a0_m), 1e-9, 1e-4, 10000, w1, &ext_integral_Gy, &error);
   if (status == GSL_EROUND || status == GSL_ESING){
-#ifdef _DEBUG
-    indnt_init();
-    fprintf(debf,"%s r=%g, integration from %g to %g , error no == %d\n",isp,*r_m,int_lim_m,(*r_m)+(*a0_m),status);
-#endif
     ext_integral_Gy = -1.0f;
   }
   gsl_integration_workspace_free (w1);
@@ -255,28 +223,19 @@ void AT_RDD_Katz_ext_GyS(int *n, float *r_m, float* a0_m, float* alpha, float* r
  *     8 - dEdx_MeV_cm2_g
  */
 void AT_RDD_f1_parameters(  /* radiation field parameters */
-              float*  E_MeV_u,
-              long*  particle_no,
-              /* detector parameters */
-              long*  material_no,
-              /* radial dose distribution model */
-              long*  rdd_model,
-              float*  rdd_parameter,
-              /* electron range model */
-              long*  er_model,
-              float*  er_parameter,
-              /* calculated parameters */
-              float * f1_parameters)
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    /* detector parameters */
+    const long*  material_no,
+    /* radial dose distribution model */
+    const long*  rdd_model,
+    const float*  rdd_parameter,
+    /* electron range model */
+    const long*  er_model,
+    const float*  er_parameter,
+    /* calculated parameters */
+    float * f1_parameters)
 {
-#ifdef _DEBUG
-  indnt_init();
-  indnt_inc();
-  fprintf(debf,"%sbegin AT_RDD_f1_parameters\n",isp);
-  fprintf(debf,"%sbegin RDD model = %ld\n",isp,*rdd_model);
-  fprintf(debf,"%sMaterial = %ld\n", isp, *material_no);
-#endif
-
-
   // Get beta, Z and Zeff
   long  n_tmp    = 1;
   float  beta    = 0.0f;
@@ -365,12 +324,6 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
     float  dEdx_MeV_g_cm2    =  dEdx_J_m / 100.0f / density_g_cm3 / MeV_to_J;
 
-#ifdef _DEBUG
-  fprintf(debf,"%sLET_J_m = %g\n",isp,LET_J_m);
-  fprintf(debf,"%sKatz_point_coeff_Gy = %g\n",isp,Katz_point_coeff_Gy);
-  fprintf(debf,"%sKatz_dEdx_coeff_J_m = %g\n",isp,Katz_dEdx_coeff_J_m);
-#endif
-
     f1_parameters[8]    =   dEdx_MeV_g_cm2;
 
     if( *rdd_model != RDD_ExtTarget )
@@ -415,72 +368,28 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     f1_parameters[8]  = f1_parameters[0];                                // dEdx = LET
   }
 
-#ifdef _DEBUG
-  fprintf(debf,"%sf1_parameters[1] (r_min_m) = %g\n",isp,f1_parameters[1]);
-  fprintf(debf,"%sf1_parameters[2] (r_max_m) = %g\n",isp,f1_parameters[2]);
-  fprintf(debf,"%sf1_parameters[3] (d_min_Gy) = %g\n",isp,f1_parameters[3]);
-  fprintf(debf,"%sf1_parameters[4] (d_max_Gy) = %g\n",isp,f1_parameters[4]);
-  fprintf(debf,"%sf1_parameters[6] (single_impact_fluence) = %g\n",isp,f1_parameters[6]);
-  fprintf(debf,"%sf1_parameters[7] (single_impact_dose) = %g\n",isp,f1_parameters[7]);
-#endif
-
-#ifdef _DEBUG
-  fprintf(debf,"%send AT_RDD_f1_parameters\n",isp);
-  indnt_dec();
-#endif
-
 }
 
-void AT_D_RDD_Gy  (  long*  n,
-    float*  r_m,
+void AT_D_RDD_Gy  ( const  long*  n,
+    const float*  r_m,
     /* radiation field parameters */
-    float*  E_MeV_u,
-    long*  particle_no,
+    const float*  E_MeV_u,
+    const long*  particle_no,
     /* detector parameters */
-    long*  material_no,
+    const long*  material_no,
     /* radial dose distribution model */
-    long*  rdd_model,
-    float*  rdd_parameter,
+    const long*  rdd_model,
+    const float*  rdd_parameter,
     /* electron range model */
-    long*  er_model,
-    float*  er_parameter,
+    const long*  er_model,
+    const float*  er_parameter,
     float*  D_RDD_Gy)
 {
-#ifdef _DEBUG
-  indnt_init();
-  indnt_inc();
-  fprintf(debf,"%sbegin AT_D_RDD_Gy\n",isp);
-#endif
-
-  // conversion through int
-#ifdef _R
-  int n_int = (int)(*n);
-  *n = (long)n_int;
-
-  int rdd_model_int = (int)(*rdd_model);
-  *rdd_model = (long)rdd_model_int;
-
-  int er_model_int = (int)(*er_model);
-  *er_model = (long)er_model_int;
-
-  int material_no_int  = (int)(*material_no);
-  *material_no = (long)material_no_int;
-
-  int particle_no_int = (int)(*particle_no);
-  *particle_no = (long)particle_no_int;
-#endif
-
-#ifdef _DEBUG
-  fprintf(debf,"%sn = %ld\n", isp, *n);
-  fprintf(debf,"%sModel = %ld \n", isp, *rdd_model);
-  fprintf(debf,"%sMaterial = %ld\n", isp, *material_no);
-#endif
-
   long     i;
   long    n_tmp      = 1;
   // Get f1 parameters
   long     n_f1_parameters = 9;
-  float*    f1_parameters   = (float*)calloc(n_f1_parameters, sizeof(float));
+  float*   f1_parameters   = (float*)calloc(n_f1_parameters, sizeof(float));
   AT_RDD_f1_parameters(      /* radiation field parameters */
       E_MeV_u,
       particle_no,
@@ -549,9 +458,6 @@ void AT_D_RDD_Gy  (  long*  n,
     // Loop over all r_m given
     float Katz_point_coeff_Gy = AT_RDD_Katz_point_coeff_Gy(&(f1_parameters[5]),&Z_eff,&beta,&alpha,&density_kg_m3,&(f1_parameters[2]));
     float a0         = rdd_parameter[1];
-#ifdef _DEBUG
-  fprintf(debf,"%sKatzPoint_coeff = %g\n", isp, Katz_point_coeff_Gy);
-#endif
     for (i = 0; i < *n; i++){
       D_RDD_Gy[i]        =  0.0f;                        // r < r_min_m (for RDD_KatzPoint) or r > r_max_m --> D = 0
       if (r_m[i] >= f1_parameters[1] && r_m[i] <= f1_parameters[2] && *rdd_model != RDD_ExtTarget){          // in between r_min and r_max --> D = KatzPoint
@@ -582,11 +488,6 @@ void AT_D_RDD_Gy  (  long*  n,
   }// end RDD_Geiss
 
   free(f1_parameters);
-
-#ifdef _DEBUG
-  fprintf(debf,"%send AT_D_RDD_Gy\n", isp);
-  indnt_dec();
-#endif
 }
 
 typedef struct {
@@ -608,7 +509,7 @@ typedef struct {
   float   D0;
 } AT_D_RDD_Gy_parameters;
 
-float AT_D_RDD_Gy_solver( float r , void * params ){
+float AT_D_RDD_Gy_solver( const float r , void * params ){
   AT_D_RDD_Gy_parameters* params_struct = (AT_D_RDD_Gy_parameters*)(params);
   *((*params_struct).n) = 1;
   params_struct->r_m = (float*)calloc(1,sizeof(float));
@@ -628,50 +529,21 @@ float AT_D_RDD_Gy_solver( float r , void * params ){
 }
 
 
-void AT_r_RDD_m  (  long*  n,
-    float*  D_RDD_Gy,
+void AT_r_RDD_m  ( const  long*  n,
+    const float*  D_RDD_Gy,
     /* radiation field parameters */
-    float*  E_MeV_u,
-    long*  particle_no,
+    const float*  E_MeV_u,
+    const long*  particle_no,
     /* detector parameters */
-    long*  material_no,
+    const long*  material_no,
     /* radial dose distribution model */
-    long*  rdd_model,       /* */
-    float*  rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+    const long*  rdd_model,       /* */
+    const float*  rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
     /* electron range model */
-    long*  er_model,
-    float*  er_parameter,
+    const long*  er_model,
+    const float*  er_parameter,
     float*  r_RDD_m)
 {
-  #ifdef _DEBUG
-    indnt_init();
-    indnt_inc();
-    fprintf(debf,"%sbegin AT_r_RDD_m\n",isp);
-  #endif
-
-    // conversion through int
-  #ifdef _R
-    int n_int = (int)(*n);
-    *n = (long)n_int;
-
-    int rdd_model_int = (int)(*rdd_model);
-    *rdd_model = (long)rdd_model_int;
-
-    int er_model_int = (int)(*er_model);
-    *er_model = (long)er_model_int;
-
-    int material_no_int  = (int)(*material_no);
-    *material_no = (long)material_no_int;
-
-    int particle_no_int = (int)(*particle_no);
-    *particle_no = (long)particle_no_int;
-  #endif
-
-  #ifdef _DEBUG
-    fprintf(debf,"%sn = %ld\n", isp, *n);
-    fprintf(debf,"%sModel = %ld \n", isp, *rdd_model);
-  #endif
-
   long     i;
   long    n_tmp      = 1;
   // Get f1 parameters
@@ -846,10 +718,5 @@ void AT_r_RDD_m  (  long*  n,
 
 
   free(f1_parameters);
-
-#ifdef _DEBUG
-    fprintf(debf,"%send AT_r_RDD_m\n", isp);
-    indnt_dec();
-#endif
 
 }
