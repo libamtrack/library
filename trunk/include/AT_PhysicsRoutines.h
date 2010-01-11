@@ -57,6 +57,9 @@ void AT_beta_from_particle_no(  const long*  n,
     // results
     float*  beta);
 
+/**
+ * Get Bohr's energy spread (Wilson, 1947, Phys Rev 71, 385)
+ */
 void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
     const char**  material_name,
     float*  dsE2dz);

@@ -68,7 +68,6 @@ void AT_max_electron_range_mS(  int*  n,
   long * particle_no_long = (long*)calloc(*n,sizeof(long));
   for(i = 0 ; i < *n ; i++){
     particle_no_long[i] = (long)particle_no[i];
-    //    printf("output particle_no[%ld]=%ld\n", i , particle_no_long[i]);
   }
 
   AT_max_electron_range_m( &n_long,
@@ -91,7 +90,7 @@ void AT_max_electron_range_m( const long*  n,
     const long*   er_model,
     float*  max_electron_range_m)
 {
-  //TODO change to another routine (avoid pmatchi), like get_mass_of_particle and get_density_of_material
+  //TODO change to another routine (avoid pmatchi), like get_density_of_material
 
   // Get density matching to material_name (only 1 name therefore n_mat = 1)
   long  n_mat  = 1;
@@ -102,21 +101,15 @@ void AT_max_electron_range_m( const long*  n,
         &AT_Material_Data.n,
         &match);
 
-  long*  matches =   (long*)calloc(*n, sizeof(long));
   float* mass    =  (float*)calloc(*n, sizeof(float));
 
-  pmatchi(  particle_no,
-      n,
-      AT_Particle_Data.particle_no,
-      &AT_Particle_Data.n,
-      matches);
+  AT_mass_from_particle_no(n,particle_no,mass);
 
   long  i;
   for (i = 0; i < *n; i++){
     float tmpE  = E_MeV_u[i];
     if (tmpE < 0) {tmpE *= -1.0f;}  // E can be set neg. if non-PSTAR are given --> use pos. value
 
-    mass[i]  = AT_Particle_Data.mass[matches[i]];
     float E_div_E0 = E_MeV_u[i] / (mass[i]*proton_mass_MeV_c2);
     float w_keV;
     if( *er_model == ER_ButtsKatz ){
@@ -149,6 +142,5 @@ void AT_max_electron_range_m( const long*  n,
     max_electron_range_m[i]    /= 1e2;  // cm to m
 
   }
-  free(matches);
   free(mass);
 }

@@ -122,13 +122,21 @@ static particle_data AT_Particle_Data = {
         "NE20    ", "SI28    ", "FE56    "}
 };
 
+void AT_mass_from_particle_no(  const long*  n,
+    const long*  particle_no,
+    float*  mass);
 
-void AT_Z_from_particle_no(  const long*  n,                // should rather be AT_ParticleProperties(particle.index)
+void AT_A_from_particle_no(  const long*  n,
+    const long*  particle_no,
+    long*  A);
+
+void AT_Z_from_particle_no(  const long*  n,
     const long*  particle_no,
     long*  Z);
 
 
-void AT_Particle_Properties(  const long*  particle_no,
+void AT_Particle_Properties( const long*  n,
+    const long*  particle_no,
     /* return values*/
     char**  particle_name,
     char**  USRTRACK_name,
