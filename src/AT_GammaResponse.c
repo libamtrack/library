@@ -26,7 +26,8 @@
 
 #include "AT_GammaResponse.h"
 
-void getGammaName(long* Gamma_no, char* Gamma_name){
+void getGammaName( const long* Gamma_no,
+    char* Gamma_name){
   switch( (int)(*Gamma_no) ){
   case GR_Test:
     strcpy(Gamma_name,"simple test gamma response");
@@ -53,19 +54,12 @@ void getGammaName(long* Gamma_no, char* Gamma_name){
 }
 
 
-void AT_gamma_response(  long*  n,
-    float*  d_Gy,
-    long*  gamma_model,
-    float*  gamma_parameter,
+void AT_gamma_response( const long*  n,
+    const float*  d_Gy,
+    const long*  gamma_model,
+    const float*  gamma_parameter,
     // return
     float*  S){
-#ifdef _R
-  int n_int = (int)(*n);
-  *n = (long)n_int;
-
-  int gamma_model_int = (int)(*gamma_model);
-  *gamma_model = (long)gamma_model_int;
-#endif
   long  i,j;
   /*
    * (0) Testmodel, response m*x + c
@@ -231,33 +225,24 @@ void AT_gamma_response(  long*  n,
     }
     return;
   }
-
   return;
 }
 
 
-void AT_get_gamma_response(  long*  n,
-    float*  d_Gy,
-    float*  dd_Gy,
-    float*  f,
-    float*  f0,
-    long*  gamma_model,
-    float*  gamma_parameter,
-    bool* lethal_events_mode,
+void AT_get_gamma_response( const long*  n,
+    const float*  d_Gy,
+    const float*  dd_Gy,
+    const float*  f,
+    const float*  f0,
+    const long*  gamma_model,
+    const float*  gamma_parameter,
+    const bool* lethal_events_mode,
     // return
     float*  S,
     float*  S_HCP,
     float*  S_gamma,
     float*  efficiency)
 {
-#ifdef _R
-  int n_int = (int)(*n);
-  *n = (long)n_int;
-
-  int gamma_model_int = (int)(*gamma_model);
-  *gamma_model = (long)gamma_model_int;
-#endif
-
   long i;
 
   AT_gamma_response(  n,

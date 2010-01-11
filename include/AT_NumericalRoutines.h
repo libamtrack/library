@@ -39,41 +39,41 @@ extern int indent_counter;
 extern char isp[];
 extern FILE * debf;
 
-long int lminl(long int x, long int y);
+long int lminl(const long int x, const long int y);
 
-long int lmaxl(long int x, long int y);
+long int lmaxl(const long int x, const long int y);
 
 void trim_long_to_int(long * n);
 
-void AT_Funs(  float*  fz,
-        float*  fR0,
-        float*  fsigma,
-        float*  fni,
-        float*  funs);
+void AT_Funs(  const float*  fz,
+    const float*  fR0,
+    const float*  fsigma,
+    const float* fni,
+    float* funs);
 
-void AT_fDyx(  float*  fy,
-        float*  fx,
-        float*  fDyx);
+void AT_fDyx(  const float*  fy,
+    const float* fx,
+    float* fDyx);
 
-double   d_sign(  double *a, double *b);
-int   pbdv_(  double *v, double *x, double *dv, double *dp, double *pdf, double *pdd);
-int   dvsa_(  double *va, double *x, double *pd);
-int   dvla_(  double *va, double *x, double *pd);
-int   vvla_(  double *va, double *x, double *pv);
-int   gamma_(  double *x, double *ga);
+double  d_sign( const double *a, const double *b);
+int pbdv_(  double *v, double *x, double *dv, double *dp, double *pdf, double *pdd);
+int dvsa_(  double *va, double *x, double *pd);
+int dvla_(  double *va, double *x, double *pd);
+int vvla_(  double *va, double *x, double *pv);
+int gamma_( const double *x, double *ga);
 
-float gammln(float xx);
-void gcf(float *gammcf, float a, float x, float *gln);
-void gser(float *gamser, float a, float x, float *gln);
-float gammp(float a, float x);
-float erff(float x);
-void nrerror(char error_text[]);
+float gammln(const float xx);
+void gcf(float *gammcf, const float a, const float x, float *gln);
+void gser(float *gamser, const float a, float const x, float *gln);
+float gammp(const float a, const float x);
+float erff(const float x);
+void nrerror(const char error_text[]);
 
 /*   From Numerical Recipes in C, 2nd ed., 1992:
   Using Ridders' method, return the root of a function func known to lie between x1 and x2.
   The root, returned as zriddr, will be refined to an approximate accuracy xacc.
  */
-float zriddr(float (*func)(float,void*), void * params, float x1, float x2, float xacc);
+float zriddr(float (*func)(float,void*), void * params, const float x1, const float x2, const float xacc);
 
 // finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
 // is reported per element
@@ -83,23 +83,23 @@ void pmatchi(const long* elements, const long* n_elements, const long* set, cons
 // finds character elements in a set (n elements) and returns indices - only one (the first) match
 // is reported per element
 // a vector "matches" of length n_elements has to be provided
-void pmatchc(char** elements, long* n_elements, char** set, long* n_set, long* matches);
+void pmatchc(const char** elements, const long* n_elements, const char** set, const long* n_set, long* matches);
 
 // finds a character element in a set and returns boolean match vector
 // a vector "matches" of length n_set has to be provided
-void matchc(char* element, char** set, long* n_set, bool* matches);
+void matchc(const char* element, const char** set, const long* n_set, bool* matches);
 
 // finds a integer element in a set and returns boolean match vector
 // a vector "matches" of length n_set has to be provided
-void matchi(long* element, long* set, long* n_set, bool* matches);
+void matchi(const long* element, const long* set, const long* n_set, bool* matches);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // interpolation on a table: code (w/ adapted indices) from Numerical Recipes, 2rd ed., chapter 3.1
 // added wrapping function interp which allows to chose degree of interpolation polynomial
 // (1 = linear, 2 = quadratic, etc.)
-void locate(float* xx, long* n, float* x, long* j);
-void polint(float* xa, float* ya, long* n, float* x, float *y, float *dy);
-void interp(float* xa, float* ya, long* n, long* n_pol, float* x, float *y, float *dy);
+void locate(const float* xx, const long* n, const float* x, long* j);
+void polint(const float* xa, const float* ya, const long* n, const float* x, float *y, float *dy);
+void interp(const float* xa, const float* ya, const long* n, const long* n_pol, const float* x, float *y, float *dy);
 
 
 #endif /* AT_NUMERICALROUTINES_H_ */

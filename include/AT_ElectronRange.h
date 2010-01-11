@@ -75,7 +75,7 @@ void AT_max_electron_range_mS(  int*  n,
     int*  material_no,
     int*   er_model,
     float*  max_electron_range_m);
-#endif
+#endif //_R
 #ifdef _S
 void AT_max_electron_range_mS(  long*  n,
     float*  E_MeV_u,
@@ -83,6 +83,6 @@ void AT_max_electron_range_mS(  long*  n,
     long*  material_no,
     long*  er_model,
     float*  max_electron_range_m);
-#endif
+#endif // _S
 
-#endif
+#endif /* AT_ELECTRONRANGE_H_ */

@@ -79,76 +79,81 @@ static const rdd_data AT_RDD_Data = {
     {  "Simple step test function",  "Katz' point target RDD [Katz et al., 1972]",  "Geiss' RDD [Geiss et al., 1998]",    "Site RDD, as defined in [Edmund et al., 2007]", "Katz' extended target, as defined in [Edmund et al., 2007]"}
 };
 
-void   getRDDName(  long* RDD_no, char* RDD_name);
-void   getRDDNo(char* RDD_name, long* RDD_no);
+void getRDDName( const long* RDD_no,
+    char* RDD_name);
 
-void AT_D_RDD_Gy(      long*  n,
-    float*  r_m,
+void getRDDNo( const char* RDD_name,
+    long* RDD_no);
+
+void AT_D_RDD_Gy( const long*  n,
+    const float*  r_m,
     /* radiation field parameters */
-    float*  E_MeV_u,
-    long*  particle_no,
+    const float*  E_MeV_u,
+    const long*  particle_no,
     /* detector parameters */
-    long*  material_no,
+    const long*  material_no,
     /* radial dose distribution model */
-    long*  rdd_model,
-    float*  rdd_parameter,
+    const long*  rdd_model,
+    const float*  rdd_parameter,
     /* electron range model */
-    long*  er_model,
-    float*  er_parameter,
+    const long*  er_model,
+    const float*  er_parameter,
     float*  D_RDD_Gy);
 
-void AT_r_RDD_m  (      long*  n,
-    float*  D_RDD_Gy,
+void AT_r_RDD_m  ( const long*  n,
+    const float*  D_RDD_Gy,
     /* radiation field parameters */
-    float*  E_MeV_u,
-    long*  particle_no,
+    const float*  E_MeV_u,
+    const long*  particle_no,
     /* detector parameters */
-    long*  material_no,
+    const long*  material_no,
     /* radial dose distribution model */
-    long*  rdd_model,       /* */
-    float*  rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+    const long*  rdd_model,
+    const float*  rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
     /* electron range model */
-    long*  er_model,
-    float*  er_parameter,
+    const long*  er_model,
+    const float*  er_parameter,
     float*  r_RDD_m);
 
 void AT_RDD_f1_parameters(  /* radiation field parameters */
-    float*  E_MeV_u,
-    long*  particle_no,
+    const float*  E_MeV_u,
+    const long*  particle_no,
     /* detector parameters */
-    long*  material_no,
+    const long*  material_no,
     /* radial dose distribution model */
-    long*  rdd_model,
-    float*  rdd_parameter,
+    const long*  rdd_model,
+    const float*  rdd_parameter,
     /* electron range model */
-    long*  er_model,
-    float*  er_parameter,
+    const long*  er_model,
+    const float*  er_parameter,
     /* calculated parameters */
     float * f1_parameters);
 
-float          AT_D_RDD_Gy_solver(          float r , void * params );
+//TODO rewrite Katz functions with const parameters
 
-inline float   AT_RDD_Katz_point_kernel(    float* x, float* alpha);
+float          AT_D_RDD_Gy_solver(          const float r , void * params );
+
+inline float   AT_RDD_Katz_point_kernel(    const float* x, const float* alpha);
 void           AT_RDD_Katz_point_kernelS(   int *n, float* x, float* alpha, float* f);
-inline float   AT_RDD_Katz_point_coeff_Gy(  float* C_J_m,float* Z_eff, float* beta, float* alpha, float* density_kg_m3, float* r_max_m);
-inline float   AT_RDD_Katz_point_Gy(        float* r_m, float* alpha, float* r_max_m, float* Katz_point_coeff_Gy);
+inline float   AT_RDD_Katz_point_coeff_Gy(  const float* C_J_m,const float* Z_eff, const float* beta, const float* alpha, const float* density_kg_m3, const float* r_max_m);
+inline float   AT_RDD_Katz_point_Gy(        const float* r_m, const float* alpha, const float* r_max_m, const float* Katz_point_coeff_Gy);
 void           AT_RDD_Katz_point_GyS(       int *n, float* r_m, float* alpha, float* r_max_m,float* Katz_point_coeff_Gy, float * D);
 
-inline float   AT_RDD_Katz_dEdx_kernel(     float* x, float* alpha);
+inline float   AT_RDD_Katz_dEdx_kernel(     const float* x, const float* alpha);
 void           AT_RDD_Katz_dEdx_kernelS(    int *n, float* x, float* alpha, float* f);
 double         AT_RDD_Katz_dEdx_integrand(  double x, void * params);
-inline float   AT_RDD_Katz_dEdx_coeff_J_m(  float* r_max_m, float* density_kg_m3, float* Katz_point_coeff_Gy);
-float          AT_RDD_Katz_dEdx_J_m(        float* alpha, float* r_min_m, float* r_max_m, float* Katz_dEdx_coeff_J_m);
+inline float   AT_RDD_Katz_dEdx_coeff_J_m(  const float* r_max_m, const float* density_kg_m3, const float* Katz_point_coeff_Gy);
+float          AT_RDD_Katz_dEdx_J_m(        const float* alpha, const float* r_min_m, const float* r_max_m, const float* Katz_dEdx_coeff_J_m);
 
-inline float   AT_RDD_Katz_site_Gy(         float* r_m, float* alpha, float* r_min_m, float* r_max_m, float* LET_J_m, float* density_kg_m3, float* Katz_dEdx_J_m, float* Katz_point_coeff_Gy);
+inline float   AT_RDD_Katz_site_Gy(         const float* r_m, const float* alpha, const float* r_min_m, const float* r_max_m, const float* LET_J_m, const float* density_kg_m3, const float* Katz_dEdx_J_m, const float* Katz_point_coeff_Gy);
 void           AT_RDD_Katz_site_GyS(        int *n, float* r_m, float* alpha, float* r_min_m, float* r_max_m, float* LET_J_m, float* density_kg_m3, float* Katz_dEdx_J_m, float* Katz_point_coeff_Gy, float * D_Gy);
 
-float          geometryFunctionPhi(         float* r0_m, float* a0_m, float* r_m);
+float          geometryFunctionPhi(         const float* r0_m, const float* a0_m, const float* r_m);
 
-inline float   AT_RDD_Katz_ext_kernel_Gy(   float* t_m, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy);
+inline float   AT_RDD_Katz_ext_kernel_Gy(   const float* t_m, const float *r_m, const float* a0_m, const float* alpha, const float* r_min_m, const float* r_max_m, const float* Katz_point_coeff_Gy);
 void           AT_RDD_Katz_ext_kernel_GyS(  int *n, float* t_m, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy, float * D_Gy);
 double         AT_RDD_Katz_ext_integrand_Gy(double t_m, void * params);
-inline float   AT_RDD_Katz_ext_Gy(          float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy);
+inline float   AT_RDD_Katz_ext_Gy(          const float *r_m, const float* a0_m, const float* alpha, const float* r_min_m, const float* r_max_m, const float* Katz_point_coeff_Gy);
 void           AT_RDD_Katz_ext_GyS(         int *n, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy, float * D_Gy);
 
 
