@@ -83,11 +83,11 @@ void pmatchi(const long* elements, const long* n_elements, const long* set, cons
 // finds character elements in a set (n elements) and returns indices - only one (the first) match
 // is reported per element
 // a vector "matches" of length n_elements has to be provided
-void pmatchc(const char** elements, const long* n_elements, const char** set, const long* n_set, long* matches);
+void pmatchc(const char** elements, const long* n_elements, const char* const* set, const long* n_set, long* matches);
 
 // finds a character element in a set and returns boolean match vector
 // a vector "matches" of length n_set has to be provided
-void matchc(const char* element, const char** set, const long* n_set, bool* matches);
+void matchc(const char* element, const char* const * set, const long* n_set, bool* matches);
 
 // finds a integer element in a set and returns boolean match vector
 // a vector "matches" of length n_set has to be provided

@@ -33,18 +33,18 @@
 #define PSTAR_DATA_N    528
 
 typedef struct {
-  long    n;
-  float    kin_E_MeV[PSTAR_DATA_N];
-  float    stp_pow_el_MeV_cm2_g[PSTAR_DATA_N];
-  float    stp_pow_nuc_MeV_cm2_g[PSTAR_DATA_N];
-  float    stp_pow_tot_MeV_cm2_g[PSTAR_DATA_N];
-  float    range_cdsa_g_cm2[PSTAR_DATA_N];
-  float    range_proj_g_cm2[PSTAR_DATA_N];
-  float    detour_factor[PSTAR_DATA_N];
-  long    material_no[PSTAR_DATA_N];
+  const long    n;
+  const float   kin_E_MeV[PSTAR_DATA_N];
+  const float   stp_pow_el_MeV_cm2_g[PSTAR_DATA_N];
+  const float   stp_pow_nuc_MeV_cm2_g[PSTAR_DATA_N];
+  const float   stp_pow_tot_MeV_cm2_g[PSTAR_DATA_N];
+  const float   range_cdsa_g_cm2[PSTAR_DATA_N];
+  const float   range_proj_g_cm2[PSTAR_DATA_N];
+  const float   detour_factor[PSTAR_DATA_N];
+  const long    material_no[PSTAR_DATA_N];
 } pstar_data;
 
-static pstar_data AT_PSTAR_Data = {
+static const pstar_data AT_PSTAR_Data = {
     PSTAR_DATA_N,
 
     ///////////////////////////////////////////////////////////////////////

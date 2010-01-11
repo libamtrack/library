@@ -749,7 +749,7 @@ void pmatchi(const long* elements, const long* n_elements, const long* set, cons
  * @param n_set
  * @param matches
  */
-void pmatchc(const char** elements, const long* n_elements, const char** set, const long* n_set, long* matches){
+void pmatchc(const char** elements, const long* n_elements, const char* const * set, const long* n_set, long* matches){
 
   long  i;
   for (i = 0; i < *n_elements; i++){
@@ -767,7 +767,7 @@ void pmatchc(const char** elements, const long* n_elements, const char** set, co
 
 // finds a character element in a set and returns boolean match vector
 // a vector "matches" of length n_set has to be provided
-void matchc(const char* element, const char** set, const long* n_set, bool* matches){
+void matchc(const char* element, const char* const * set, const long* n_set, bool* matches){
 
   long  i;
   for (i = 0; i < *n_set; i++){
