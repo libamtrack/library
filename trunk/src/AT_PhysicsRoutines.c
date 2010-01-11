@@ -264,7 +264,7 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
   float  electron_density_m3;
   long  n_dummy = 1;
   for (i = 0; i < *n; i++){
-    AT_electron_density_m3(  &n_dummy,
+    AT_electron_density_m3_from_material_name(  &n_dummy,
         material_name[i],
         &electron_density_m3);
     tmp                  =  e_C * e_C * e_C * e_C * electron_density_m3;

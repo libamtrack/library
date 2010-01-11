@@ -30,27 +30,27 @@
 #include "AT_NumericalRoutines.h"
 
 enum material_no{
-  Water_Liquid             = 1,
-      Aluminum_Oxide       = 2,
-      Aluminum             = 3,
-      PMMA                 = 4
+  Water_Liquid         = 1,
+  Aluminum_Oxide       = 2,
+  Aluminum             = 3,
+  PMMA                 = 4
 };
 
 #define MATERIAL_DATA_N    4
 
 typedef struct {
-  long    n;
-  long    material_no[MATERIAL_DATA_N];
-  float    density_g_cm3[MATERIAL_DATA_N];
-  float    electron_density_m3[MATERIAL_DATA_N];
-  float    I_eV[MATERIAL_DATA_N];
-  float    alpha_g_cm2_MeV[MATERIAL_DATA_N];
-  float    p_MeV[MATERIAL_DATA_N];
-  float    m_g_cm2[MATERIAL_DATA_N];
-  char*    material_name[MATERIAL_DATA_N];
+  const long    n;
+  const long    material_no[MATERIAL_DATA_N];
+  const float   density_g_cm3[MATERIAL_DATA_N];
+  const float   electron_density_m3[MATERIAL_DATA_N];
+  const float   I_eV[MATERIAL_DATA_N];
+  const float   alpha_g_cm2_MeV[MATERIAL_DATA_N];
+  const float   p_MeV[MATERIAL_DATA_N];
+  const float   m_g_cm2[MATERIAL_DATA_N];
+  const char*   material_name[MATERIAL_DATA_N];
 } material_data;
 
-static material_data AT_Material_Data = {
+static const material_data AT_Material_Data = {
     MATERIAL_DATA_N,
     {  Water_Liquid,          Aluminum_Oxide,          Aluminum,        PMMA},
     {  1.00f,        3.97f,        2.6989f,    1.19f},
@@ -63,12 +63,10 @@ static material_data AT_Material_Data = {
 };
 
 
-void getMaterialName(
-    const long* material_no,
+void getMaterialName( const long* material_no,
     char* material_name);
 
-void getMaterialNo(
-    const char* material_name,
+void getMaterialNo( const char* material_name,
     long* material_no);
 
 void AT_getMaterialData( const long*  n,
@@ -80,36 +78,33 @@ void AT_getMaterialData( const long*  n,
     float*  p_MeV,
     float*  m_g_cm2);
 
-#define matchIt long  n_mat  = 1;    \
-  pmatchc(  &material_name,          \
-    &n_mat,                          \
-    AT_Material_Data.material_name,  \
-    &AT_Material_Data.n,             \
-   &match);
+void AT_density_g_cm3_from_material_no( const long*  n,
+    const long*  material_no,
+    float*       density_g_cm3);
 
-void AT_density_g_cm3( const long*  n,
+void AT_density_g_cm3_from_material_name( const long*  n,
     const char*  material_name,
     float*  density_g_cm3);
 
-void AT_density_g_cm3S(    char**  material_name,
+void AT_density_g_cm3_from_material_nameS(    char**  material_name,
     float*  density_g_cm3);
 
-void AT_electron_density_m3(  const long*  n,
+void AT_electron_density_m3_from_material_name(  const long*  n,
     const char*  material_name,
     float*  electron_density_m3);
 
-void AT_electron_density_m3S(  char**  material_name,
+void AT_electron_density_m3_from_material_nameS(  char**  material_name,
     float*  electron_density_m3);
 
-void AT_alpha_g_cm2_MeV( const long*  n,
+void AT_alpha_g_cm2_MeV_from_material_name( const long*  n,
     const char*  material_name,
     float*  alpha_g_cm2_MeV);
 
-void AT_p_MeV( const long*  n,
+void AT_p_MeV_from_material_name( const long*  n,
     const char*  material_name,
     float*  p_MeV);
 
-void AT_m_g_cm2( const long*  n,
+void AT_m_g_cm2_from_material_name( const long*  n,
     const char*  material_name,
     float*  m_g_cm2);
 

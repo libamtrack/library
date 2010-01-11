@@ -90,16 +90,10 @@ void AT_max_electron_range_m( const long*  n,
     const long*   er_model,
     float*  max_electron_range_m)
 {
-  //TODO change to another routine (avoid pmatchi), like get_density_of_material
-
   // Get density matching to material_name (only 1 name therefore n_mat = 1)
   long  n_mat  = 1;
-  long  match;
-  pmatchi(  material_no,
-        &n_mat,
-        AT_Material_Data.material_no,
-        &AT_Material_Data.n,
-        &match);
+  float material_density_g_cm3;
+  AT_density_g_cm3_from_material_no(&n_mat, material_no, &material_density_g_cm3);
 
   float* mass    =  (float*)calloc(*n, sizeof(float));
 
@@ -136,7 +130,7 @@ void AT_max_electron_range_m( const long*  n,
     }
 
     // Scale maximum el. range with material density relative to water (1/rho)
-    max_electron_range_m[i]    /= AT_Material_Data.density_g_cm3[match];
+    max_electron_range_m[i]    /= material_density_g_cm3;
 
     // covert cm to m
     max_electron_range_m[i]    /= 1e2;  // cm to m

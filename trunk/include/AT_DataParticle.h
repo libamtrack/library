@@ -32,17 +32,17 @@
 #define PARTICLE_DATA_N    35
 
 typedef struct {
-  long    n;
-  long    particle_no[PARTICLE_DATA_N];
-  char*    particle_name[PARTICLE_DATA_N];
-  char*    element_name[PARTICLE_DATA_N];
-  long    Z[PARTICLE_DATA_N];
-  long    A[PARTICLE_DATA_N];
-  float    mass[PARTICLE_DATA_N];
-  char*    USRTRACK_name[PARTICLE_DATA_N];
+  const long     n;
+  const long     particle_no[PARTICLE_DATA_N];
+  const char*    particle_name[PARTICLE_DATA_N];
+  const char*    element_name[PARTICLE_DATA_N];
+  const long     Z[PARTICLE_DATA_N];
+  const long     A[PARTICLE_DATA_N];
+  const float    mass[PARTICLE_DATA_N];
+  const char*    USRTRACK_name[PARTICLE_DATA_N];
 } particle_data;
 
-static particle_data AT_Particle_Data = {
+static const particle_data AT_Particle_Data = {
     PARTICLE_DATA_N ,
     {
         1,              2,              3,

@@ -48,7 +48,6 @@ void getPSTARvalue(
     if (matches[i]){
       n_matches++;
     }
-    //    printf(debf,"idx: %i, match: %d\n",i, matches[i]);
   }
 
   // allocate vectors for extracted LET entries
@@ -121,12 +120,10 @@ void AT_LET_keV_um(  const long*  n,
     const long*  material_no,
     float*  LET_keV_um)
 {
-  long  match, n_tmp = 1;
-  pmatchi(  material_no,
-      &n_tmp,
-      AT_Material_Data.material_no,
-      &AT_Material_Data.n,
-      &match);
+  // Get material density
+  float material_density_g_cm3;
+  long n_tmp = 1;
+  AT_density_g_cm3_from_material_no(&n_tmp, material_no, &material_density_g_cm3);
 
   // Get mass-norm. LET
   AT_LET_MeV_cm2_g(  n,
@@ -137,7 +134,7 @@ void AT_LET_keV_um(  const long*  n,
 
   long  i;
   for (i = 0; i < *n; i++){
-    LET_keV_um[i]  *=  AT_Material_Data.density_g_cm3[match] * 0.1f;
+    LET_keV_um[i]  *=  material_density_g_cm3 * 0.1f;
   }
 
 }
@@ -174,45 +171,30 @@ void AT_E_MeV_from_LET(  const long*  n,
     const long*  material_no,
     float*  E_MeV)
 {
-
-  //printf("n = %ld\n", *n);
-  //printf("particle_no = %ld\n", *particle_no);
-  //printf("material_no = %ld\n", *material_no);
-  //printf("AT_E_MeV_from_LET LET = %g\n", *LET_MeV_cm2_g);
-
   // scaled energies
   float*  sE  =  (float*)calloc(*n, sizeof(float));
 
   //TODO add effective charge correction !!
 
   // Conversion LETion => LETproton
-  long*  matches  =  (long*)calloc(*n, sizeof(long));
-  float*  charge  =  (float*)calloc(*n, sizeof(float));
-  pmatchi(  particle_no,
-      n,
-      AT_Particle_Data.particle_no,
-      &AT_Particle_Data.n,
-      matches);
+  long*  charge  =  (long*)calloc(*n, sizeof(long));
+  AT_Z_from_particle_no(n,particle_no,charge);
 
-  //printf("AT_E_MeV_from_LET LET ion = %g\n", LET_MeV_cm2_g[0]);
 
   // loop over n to find charge for all given particles and energies
-
   float*  LET_MeV_cm2_g_copy = (float*)calloc(*n,sizeof(float));
   memcpy(LET_MeV_cm2_g_copy,LET_MeV_cm2_g,*n);
   long  i;
   for(i = 0; i < *n; i++){
-    charge[i]  = AT_Particle_Data.Z[matches[i]];
-    LET_MeV_cm2_g_copy[i] /= (charge[i]*charge[i]);
+    LET_MeV_cm2_g_copy[i] /= (((float)charge[i])*((float)charge[i]));
   }
-
-  //printf("AT_E_MeV_from_LET LET proton = %g\n", LET_MeV_cm2_g[0]);
 
   getPSTARvalue(n, LET_MeV_cm2_g_copy, material_no, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, AT_PSTAR_Data.kin_E_MeV, sE);
 
   // scale energy back
   AT_E_MeV_u_from_scaled_energy(n , sE, particle_no, E_MeV);
 
+  free( charge );
   free( LET_MeV_cm2_g_copy );
   free( sE );
 }
