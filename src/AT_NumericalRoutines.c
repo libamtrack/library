@@ -715,9 +715,16 @@ float zriddr(float (*func)(float,void*), void * params, const float x1, const fl
   return 0.0;                         // Never get here.
 }
 
-// finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
-// is reported per element
-// a vector "matches" of length n_elements has to be provided
+/**
+ * finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
+ * is reported per element
+ * a vector "matches" of length n_elements has to be provided
+ * @param elements
+ * @param n_elements
+ * @param set
+ * @param n_set
+ * @param matches
+ */
 void pmatchi(const long* elements, const long* n_elements, const long* set, const long* n_set, long* matches){
   long  i;
   for (i = 0; i < *n_elements; i++){
@@ -733,9 +740,15 @@ void pmatchi(const long* elements, const long* n_elements, const long* set, cons
   }
 }
 
-// finds character elements in a set (n elements) and returns indices - only one (the first) match
-// is reported per element
-// a vector "matches" of length n_elements has to be provided
+/**
+ * finds character elements in a set (n elements) and returns indices - only one (the first) match
+ * is reported per element a vector "matches" of length n_elements has to be provided
+ * @param elements
+ * @param n_elements
+ * @param set
+ * @param n_set
+ * @param matches
+ */
 void pmatchc(const char** elements, const long* n_elements, const char** set, const long* n_set, long* matches){
 
   long  i;

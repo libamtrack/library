@@ -26,12 +26,38 @@
 
 #include "AT_DataParticle.h"
 
+void AT_mass_from_particle_no( const long*  n,
+    const long*  particle_no,
+    float*  mass)
+{
+  AT_Particle_Properties(n,particle_no,NULL,NULL,NULL,NULL,NULL,mass);
+}
+
+void AT_A_from_particle_no( const long*  n,
+    const long*  particle_no,
+    long*  A)
+{
+  AT_Particle_Properties(n,particle_no,NULL,NULL,NULL,NULL,A,NULL);
+}
 
 void AT_Z_from_particle_no( const long*  n,
     const long*  particle_no,
     long*  Z)
 {
-  // find look-up indices for A's for particle numbers in particle data
+  AT_Particle_Properties(n,particle_no,NULL,NULL,NULL,Z,NULL,NULL);
+}
+
+void AT_Particle_Properties(  const long*  n,
+    const long*  particle_no,
+    /* return values*/
+    char**  particle_name,
+    char**  USRTRACK_name,
+    char**  element_name,
+    long*  Z,
+    long*  A,
+    float*  mass)
+{
+  // find look-up indices for particle numbers in particle data
   long*  matches  =  (long*)calloc(*n, sizeof(long));
 
   pmatchi(  particle_no,
@@ -42,30 +68,37 @@ void AT_Z_from_particle_no( const long*  n,
 
   // loop over n to find Z for all given particles and energies
   long  i;
-  for(i = 0; i < *n; i++){
-    Z[i]  = AT_Particle_Data.Z[matches[i]];
+  if( particle_name != NULL ){
+    for(i = 0; i < *n; i++){
+      strcpy(particle_name[i], AT_Particle_Data.particle_name[i]);
+    }
   }
-
+  if( USRTRACK_name != NULL ){
+    for(i = 0; i < *n; i++){
+      strcpy(USRTRACK_name[i], AT_Particle_Data.USRTRACK_name[i]);
+    }
+  }
+  if( element_name != NULL ){
+    for(i = 0; i < *n; i++){
+      strcpy(element_name[i], AT_Particle_Data.element_name[i]);
+    }
+  }
+  if( mass != NULL ){
+    for(i = 0; i < *n; i++){
+      mass[i] = AT_Particle_Data.mass[i];
+    }
+  }
+  if( A != NULL ){
+    for(i = 0; i < *n; i++){
+      A[i] = AT_Particle_Data.A[i];
+    }
+  }
+  if( Z != NULL ){
+    for(i = 0; i < *n; i++){
+      Z[i] = AT_Particle_Data.Z[i];
+    }
+  }
   free(matches);
-}
-
-void AT_Particle_Properties(  const long*  particle_no,
-    /* return values*/
-    char**  particle_name,
-    char**  USRTRACK_name,
-    char**  element_name,
-    long*  Z,
-    long*  A,
-    float*  mass)
-{
-  long i = (*particle_no) - 1;
-
-  strcpy(*particle_name, AT_Particle_Data.particle_name[i]);
-  strcpy(*USRTRACK_name, AT_Particle_Data.USRTRACK_name[i]);
-  strcpy(*element_name,  AT_Particle_Data.element_name[i]);
-  *Z    = AT_Particle_Data.Z[i];
-  *A    = AT_Particle_Data.A[i];
-  *mass = AT_Particle_Data.mass[i];
 }
 
 
