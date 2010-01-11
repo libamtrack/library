@@ -78,7 +78,7 @@ void AT_SPIFF(  const long*  n,
     const float*  ER_parameters,
     const long*  gamma_model,
     const float*  gamma_parameters,
-    const long*  N2,
+    long*  N2,
     const float*  fluence_factor,
     const bool*  write_output,
     const bool*  shrink_tails,
@@ -189,10 +189,10 @@ void AT_SPIFF(  const long*  n,
       fdd,
       dfdd,
       &d_check,
-      &write_output,
-      &shrink_tails,
+      write_output,
+      shrink_tails,
       shrink_tails_under,
-      &adjust_N2);
+      adjust_N2);
 
   long      n_bins_f_used  = n_bins_f1;
 
@@ -484,7 +484,7 @@ void AT_GSM(  const long*  n,
       y_pos[i] = (float)gsl_rng_uniform_pos(rng2) * sample_grid_size_m;
     }
 
-    // TODO include this speedup trick also for n > 1
+    //TODO include this speedup trick also for n > 1
 
     if( n_particles == 1){
 
@@ -535,18 +535,14 @@ void AT_GSM(  const long*  n,
 
       // calculate doses at given distances
       AT_D_RDD_Gy( &dinstances_index_max,
-
           distances,
           &E_MeV_u[particle_index[0]],
           &particle_no[particle_index[0]],
           material_no,
-
           RDD_model,
           RDD_parameters,
-
           ER_model,
           ER_parameters,
-
           doses);
 
       free(distances);

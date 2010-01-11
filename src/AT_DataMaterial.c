@@ -63,8 +63,6 @@ void getMaterialNo(
 }
 
 //TODO function to get properties of only one material can be useful
-
-//TODO rewrite to get properties of many materials
 void AT_getMaterialData(    const long*  n,
     const long*   material_no,
     float*  density_g_cm3,
@@ -82,15 +80,36 @@ void AT_getMaterialData(    const long*  n,
       match);
 
   long i;
-  for(i = 0; i < *n; i++){
-    density_g_cm3[i]      = AT_Material_Data.density_g_cm3[match[i]];
-    electron_density_m3[i]= AT_Material_Data.electron_density_m3[match[i]];
-    I_eV[i]               = AT_Material_Data.I_eV[match[i]];
-    alpha_g_cm2_MeV[i]    = AT_Material_Data.alpha_g_cm2_MeV[match[i]];
-    p_MeV[i]              = AT_Material_Data.p_MeV[match[i]];
-    m_g_cm2[i]            = AT_Material_Data.m_g_cm2[match[i]];
+  if( density_g_cm3 != NULL ){
+    for(i = 0; i < *n; i++){
+      density_g_cm3[i]      = AT_Material_Data.density_g_cm3[match[i]];
+    }
   }
-
+  if( electron_density_m3 != NULL ){
+    for(i = 0; i < *n; i++){
+      electron_density_m3[i]      = AT_Material_Data.electron_density_m3[match[i]];
+    }
+  }
+  if( I_eV != NULL ){
+    for(i = 0; i < *n; i++){
+      I_eV[i]      = AT_Material_Data.I_eV[match[i]];
+    }
+  }
+  if( alpha_g_cm2_MeV != NULL ){
+    for(i = 0; i < *n; i++){
+      alpha_g_cm2_MeV[i]      = AT_Material_Data.alpha_g_cm2_MeV[match[i]];
+    }
+  }
+  if( p_MeV != NULL ){
+    for(i = 0; i < *n; i++){
+      p_MeV[i]      = AT_Material_Data.p_MeV[match[i]];
+    }
+  }
+  if( m_g_cm2 != NULL ){
+    for(i = 0; i < *n; i++){
+      m_g_cm2[i]      = AT_Material_Data.m_g_cm2[match[i]];
+    }
+  }
   free(match);
 }
 
@@ -98,19 +117,10 @@ void AT_density_g_cm3_from_material_no( const long*  n,
     const long*  material_no,
     float*       density_g_cm3)
 {
-  long  i;
-  long  match;
-  pmatchi(  material_no,
-      n,
-      AT_Material_Data.material_no,
-      &AT_Material_Data.n,
-      &match);
-  for(i = 0; i < *n; i++){
-    density_g_cm3[i]    = AT_Material_Data.density_g_cm3[match];
-  }
+  AT_getMaterialData(n,material_no,density_g_cm3,NULL,NULL,NULL,NULL,NULL);
 }
 
-
+//TODO should be removed and also all references
 void AT_density_g_cm3_from_material_name( const long*  n,
     const char*  material_name,
     float*       density_g_cm3)
@@ -137,6 +147,7 @@ void AT_density_g_cm3_from_material_nameS(  char**  material_name,
       density_g_cm3);
 }
 
+//TODO should be removed and also all references
 void AT_electron_density_m3_from_material_name(  const long*  n,
     const char*  material_name,
     float*  electron_density_m3)
@@ -162,56 +173,3 @@ void AT_electron_density_m3_from_material_nameS(  char**  material_name,
       *material_name,
       electron_density_m3);
 }
-
-void AT_alpha_g_cm2_MeV_from_material_name( const long*  n,
-    const char*  material_name,
-    float*  alpha_g_cm2_MeV)
-{
-  long  i;
-  long  match;
-  long  n_mat  = 1;
-  pmatchc(  &material_name,
-      &n_mat,
-      AT_Material_Data.material_name,
-      &AT_Material_Data.n,
-      &match);
-  for(i = 0; i < *n; i++){
-    alpha_g_cm2_MeV[i]    = AT_Material_Data.alpha_g_cm2_MeV[match];
-  }
-}
-
-void AT_p_MeV_from_material_name( const long*  n,
-    const char*  material_name,
-    float*  p_MeV)
-{
-  long  i;
-  long  match;
-  long  n_mat  = 1;
-  pmatchc(  &material_name,
-      &n_mat,
-      AT_Material_Data.material_name,
-      &AT_Material_Data.n,
-      &match);
-  for(i = 0; i < *n; i++){
-    p_MeV[i]        = AT_Material_Data.p_MeV[match];
-  }
-}
-
-void AT_m_g_cm2_from_material_name( const long*  n,
-    const char*  material_name,
-    float*  m_g_cm2)
-{
-  long  i;
-  long  match;
-  long  n_mat  = 1;
-  pmatchc(  &material_name,
-      &n_mat,
-      AT_Material_Data.material_name,
-      &AT_Material_Data.n,
-      &match);
-  for(i = 0; i < *n; i++){
-    m_g_cm2[i]        = AT_Material_Data.m_g_cm2[match];
-  }
-}
-
-

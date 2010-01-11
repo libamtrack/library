@@ -653,8 +653,11 @@ float erff(const float x)
   return x < 0.0f ? -gammp(0.5f, x*x) : gammp(0.5f, x*x);
 }
 
+/**
+ * Numerical Recipes standard error handler
+ * @param error_text
+ */
 void nrerror(const char error_text[])
-/* Numerical Recipes standard error handler */
 {
   fprintf(stderr,"Numerical Recipes run-time error...\n");
   fprintf(stderr,"%s\n",error_text);
@@ -667,11 +670,17 @@ void nrerror(const char error_text[])
 #define MAXIT 60
 #define UNUSED (-1.11e30)
 
-float zriddr(float (*func)(float,void*), void * params, const float x1, const float x2, const float xacc)
-/*   From Numerical Recipes in C, 2nd ed., 1992:
-  Using Ridders' method, return the root of a function func known to lie between x1 and x2.
-  The root, returned as zriddr, will be refined to an approximate accuracy xacc.
+/**   From Numerical Recipes in C, 2nd ed., 1992:
+ * Using Ridders' method, return the root of a function func known to lie between x1 and x2.
+ * The root, returned as zriddr, will be refined to an approximate accuracy xacc.
+ * @param func
+ * @param params
+ * @param x1
+ * @param x2
+ * @param xacc
+ * @return
  */
+float zriddr(float (*func)(float,void*), void * params, const float x1, const float x2, const float xacc)
 {
   int j;
   float ans,fh,fl,fm,fnew,s,xh,xl,xm,xnew;
@@ -717,8 +726,7 @@ float zriddr(float (*func)(float,void*), void * params, const float x1, const fl
 
 /**
  * finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
- * is reported per element
- * a vector "matches" of length n_elements has to be provided
+ * is reported per element a vector "matches" of length n_elements has to be provided
  * @param elements
  * @param n_elements
  * @param set
@@ -765,8 +773,14 @@ void pmatchc(const char** elements, const long* n_elements, const char* const * 
   }
 }
 
-// finds a character element in a set and returns boolean match vector
-// a vector "matches" of length n_set has to be provided
+/**
+ * finds a character element in a set and returns boolean match vector
+ * a vector "matches" of length n_set has to be provided
+ * @param element
+ * @param set
+ * @param n_set
+ * @param matches
+ */
 void matchc(const char* element, const char* const * set, const long* n_set, bool* matches){
 
   long  i;
@@ -779,8 +793,14 @@ void matchc(const char* element, const char* const * set, const long* n_set, boo
   }
 }
 
-// finds a integer element in a set and returns boolean match vector
-// a vector "matches" of length n_set has to be provided
+/**
+ * finds a integer element in a set and returns boolean match vector
+ * a vector "matches" of length n_set has to be provided
+ * @param element
+ * @param set
+ * @param n_set
+ * @param matches
+ */
 void matchi(const long* element, const long* set, const long* n_set, bool* matches){
 
   long  i;
@@ -794,10 +814,15 @@ void matchi(const long* element, const long* set, const long* n_set, bool* match
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// interpolation on a table: code (w/ adapted indices) from Numerical Recipes, 2rd ed., chapter 3.1
-// added wrapping function interp which allows to chose degree of interpolation polynomial
-// (1 = linear, 2 = quadratic, etc.)
+/**
+ * interpolation on a table: code (w/ adapted indices) from Numerical Recipes, 2rd ed., chapter 3.1
+ * added wrapping function interp which allows to chose degree of interpolation polynomial
+ * (1 = linear, 2 = quadratic, etc.)
+ * @param xx
+ * @param n
+ * @param x
+ * @param j
+ */
 void locate(const float* xx, const long* n, const float* x, long* j)
 {
   long  ju, jm, jl;

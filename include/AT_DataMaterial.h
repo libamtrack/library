@@ -96,16 +96,5 @@ void AT_electron_density_m3_from_material_name(  const long*  n,
 void AT_electron_density_m3_from_material_nameS(  char**  material_name,
     float*  electron_density_m3);
 
-void AT_alpha_g_cm2_MeV_from_material_name( const long*  n,
-    const char*  material_name,
-    float*  alpha_g_cm2_MeV);
-
-void AT_p_MeV_from_material_name( const long*  n,
-    const char*  material_name,
-    float*  p_MeV);
-
-void AT_m_g_cm2_from_material_name( const long*  n,
-    const char*  material_name,
-    float*  m_g_cm2);
 
 #endif /* AT_DATAMATERIAL_H_ */

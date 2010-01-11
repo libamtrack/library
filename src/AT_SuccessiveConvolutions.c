@@ -870,10 +870,10 @@ void   AT_SuccessiveConvolutions( const float*  u,
     float*  fdd,                  // frequence:      H * DE      (f * dd)
     float*  dfdd,                  // dose contribution:  H * E * DE    (f * d * dd)
     float*  d,                    // first moment:            (<d>)
-    bool*  write_output,
-    bool*  shrink_tails,
-    float*  shrink_tails_under,
-    bool*  adjust_N2)
+    const bool*  write_output,
+    const bool*  shrink_tails,
+    const float*  shrink_tails_under,
+    const bool*  adjust_N2)
 {
   //////////////////////////////////////////
   // Init KList structure
