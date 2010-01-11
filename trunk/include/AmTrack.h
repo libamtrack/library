@@ -97,7 +97,7 @@ void AT_SPIFF(  const long*  n,
     const float*  ER_parameters,
     const long*  gamma_model,
     const float*  gamma_parameters,
-    const long*  N2,
+    long*  N2, // TODO investigate if this can be changed inside
     const float*  fluence_factor,
     const bool*  write_output,
     const bool*  shrink_tails,

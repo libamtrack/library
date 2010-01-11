@@ -191,9 +191,9 @@ void AT_SuccessiveConvolutions( const float*  u,
     float*  fdd,
     float*  dfdd,
     float*  d,
-    bool*  write_output,
-    bool*  shrink_tails,
-    float*  shrink_tails_under,
-    bool*  adjust_N2);
+    const bool*  write_output,
+    const bool*  shrink_tails,
+    const float*  shrink_tails_under,
+    const bool*  adjust_N2);
 
 #endif // AT_SUCCESSIVECONVOLUTIONS_H_

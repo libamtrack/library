@@ -66,7 +66,7 @@ void AT_Particle_Properties(  const long*  n,
       &AT_Particle_Data.n,
       matches);
 
-  // loop over n to find Z for all given particles and energies
+  // loop over n to find data for all given particles
   long  i;
   if( particle_name != NULL ){
     for(i = 0; i < *n; i++){

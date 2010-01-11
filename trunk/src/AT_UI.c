@@ -213,9 +213,9 @@ int main(){
   float results[10];
   long  N2 = 10;
   float fluence_factor     = 1.0f;
-  int   write_output        = 1;
-  int   shrink_tails       = 1;
-  int   adjust_N2          = 1;
+  bool   write_output      = true;
+  bool   shrink_tails      = true;
+  bool   adjust_N2         = true;
   float shrink_tails_under = 1e-30f;
   bool  lethal_events_mode = false;
 
