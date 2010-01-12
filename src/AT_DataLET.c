@@ -1,4 +1,9 @@
 /**
+ * @file
+ * @brief LET tables
+ */
+
+/*
 *    AT_DataLET.c
 *    ==============
 *
@@ -26,7 +31,15 @@
 
 #include "AT_DataLET.h"
 
-// get LET-data for given material
+/**
+ * get LET-data for given material
+ * @param n
+ * @param x
+ * @param material_no
+ * @param x_table
+ * @param y_table
+ * @param y
+ */
 void getPSTARvalue(
     const long* n,
     const float* x,

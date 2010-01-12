@@ -2,7 +2,13 @@
 #define AT_NUMERICALROUTINES_H_
 
 /**
- *    AT_GammaResponse.h
+ * @file
+ * @brief ...
+ */
+
+
+/*
+ *    AT_NumericalRoutines.h
  *    ==================
  *
  *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team

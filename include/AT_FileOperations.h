@@ -2,6 +2,11 @@
 #define AT_FILEOPERATIONS_H_
 
 /**
+ * @file
+ * @brief ...
+ */
+
+/*
 *    AT_Functions.h
 *    ==============
 *

@@ -2,6 +2,12 @@
 #define AT_CONSTANTS_H_
 
 /**
+ * @file
+ * @brief ...
+ */
+
+
+/*
 *    AT_Constants.h
 *    ==============
 *

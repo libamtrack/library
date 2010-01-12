@@ -2,6 +2,11 @@
 #define AT_DATALET_H_
 
 /**
+ * @file
+ * @brief LET tables
+ */
+
+/*
  *    AT_DataLET.h
  *    ==================
  *

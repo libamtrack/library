@@ -2,6 +2,11 @@
 #define AT_GAMMARESPONSE_H_
 
 /**
+ * @file
+ * @brief Gamma response models
+ */
+
+/*
 *    AT_GammaResponse.h
 *    ==================
 *

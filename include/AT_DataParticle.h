@@ -2,6 +2,12 @@
 #define AT_DATAPARTICLE_H_
 
 /**
+ * @file
+ * @brief Particle properties
+ */
+
+
+/*
 *    AT_DataParticle.h
 *    ==============
 *
