@@ -2,6 +2,11 @@
 #define AT_DATAMATERIAL_H_
 
 /**
+ * @file
+ * @brief Material properties
+ */
+
+/*
  *    AT_DataMaterial.h
  *    ==================
  *

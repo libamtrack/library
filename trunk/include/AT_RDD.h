@@ -2,6 +2,11 @@
 #define AT_RDD_H_
 
 /**
+ * @file
+ * @brief Radial Dose Distribution models
+ */
+
+/*
 *    AT_RDD.h
 *    ========
 *

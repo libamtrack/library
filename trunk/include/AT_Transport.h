@@ -2,6 +2,11 @@
 #define AT_TRANSPORT_H_
 
 /**
+ * @file
+ * @brief ...
+ */
+
+/*
 *    AT_Transport.h
 *    ==============
 *

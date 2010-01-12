@@ -1,4 +1,9 @@
 /**
+ * @file
+ * @brief ...
+ */
+
+/*
 *    AT_SuccessiveConvolutions.c
 *    ===========================
 *

@@ -2,6 +2,11 @@
 #define AT_ELECTRONRANGE_H_
 
 /**
+ * @file
+ * @brief Electron range models
+ */
+
+/*
 *    AT_ElectronRange.h
 *    ==============
 *

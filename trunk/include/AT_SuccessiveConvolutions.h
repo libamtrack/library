@@ -2,6 +2,11 @@
 #define AT_SUCCESSIVECONVOLUTIONS_H_
 
 /**
+ * @file
+ * @brief Successive Convolution algorithm
+ */
+
+/*
 *    AT_SuccessiveConvolutions.h
 *    ===========================
 *
