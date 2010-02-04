@@ -289,7 +289,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
 
   /////////////////////////////////////////////////////////////////////////////
-  // MODEL SPEZIFIC PARAMETERS
+  // MODEL SPECIFIC PARAMETERS
   if( *rdd_model == RDD_Test){
     f1_parameters[1]   = 0.0f;                                                // r_min_m
     f1_parameters[6]  = 1.0f / (pi * f1_parameters[2]*f1_parameters[2] * m_to_cm * m_to_cm);                // pi * r_max_m^2 = Track area -> single_impact_fluence [1/cm2]
@@ -339,10 +339,21 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     // d_max_Gy
     if(*rdd_model == RDD_Site){
       float tmp = 0.0f;
-//      f1_parameters[4]    =  1.0f / (density_kg_m3 * pi * f1_parameters[1]*f1_parameters[1]) * (LET_J_m - dEdx_J_m);
+      //      f1_parameters[4]    =  1.0f / (density_kg_m3 * pi * f1_parameters[1]*f1_parameters[1]) * (LET_J_m - dEdx_J_m);
       f1_parameters[4]    =  AT_RDD_Katz_site_Gy(&tmp,&alpha,&(f1_parameters[1]),&(f1_parameters[2]),&LET_J_m,&density_kg_m3,&Katz_dEdx_coeff_J_m,&Katz_point_coeff_Gy);
+    }else if(  *rdd_model == RDD_Edmund){
+      float tmp =  f1_parameters[0] - f1_parameters[8];  // LET - dEdx (MeV_g_cm2)
+      if(tmp > 0){
+        tmp *=  density_g_cm3; // MeV / cm
+        tmp *=  MeV_to_J;      // J / cm
+        tmp *=  100.0f;        // J / m
+        float core_kg_m  = pi * rdd_parameter[0] * rdd_parameter[0] * density_kg_m3;  // kg / m
+        f1_parameters[4] = tmp / core_kg_m;                                           // J / kg = Gy
+      }else{
+        f1_parameters[4] = 1e-11;
+      }
     }else if(*rdd_model == RDD_KatzPoint){
-//      f1_parameters[4]    =  C_J_m * Z_eff*Z_eff / (2.0f * pi * f1_parameters[1]*f1_parameters[1] * beta*beta * alpha * density_kg_m3) * pow(1.0f - f1_parameters[1] / f1_parameters[2], 1.0f / alpha);
+      //      f1_parameters[4]    =  C_J_m * Z_eff*Z_eff / (2.0f * pi * f1_parameters[1]*f1_parameters[1] * beta*beta * alpha * density_kg_m3) * pow(1.0f - f1_parameters[1] / f1_parameters[2], 1.0f / alpha);
       f1_parameters[4]    =  AT_RDD_Katz_point_Gy(&(f1_parameters[1]),&alpha,&(f1_parameters[2]),&Katz_point_coeff_Gy);
     } else { // RDD_ExtTarget
       f1_parameters[4]    =  AT_RDD_Katz_ext_Gy(&(f1_parameters[1]),&(rdd_parameter[1]),&alpha,&(f1_parameters[1]),&(f1_parameters[2]),&Katz_point_coeff_Gy);
@@ -351,7 +362,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     // single impact fluence
     f1_parameters[6]  = 1.0f / (pi * (f1_parameters[2] * m_to_cm) * (f1_parameters[2] * m_to_cm));  // single_impact_fluence [1/cm2]
     // single_impact_dose
-    if(*rdd_model == RDD_Site){
+    if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund){
       f1_parameters[7]    =  f1_parameters[0] * MeV_g_to_J_kg * f1_parameters[6];        // LET * fluence
     }else{
       f1_parameters[7]    =  f1_parameters[8] * MeV_g_to_J_kg * f1_parameters[6];        // dEdx * fluence
@@ -435,7 +446,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
   }// end RDD_Test
 
 
-  if( *rdd_model == RDD_KatzPoint || *rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget){
+  if( *rdd_model == RDD_KatzPoint || *rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget || *rdd_model == RDD_Edmund){
     // Get beta, Z and Zeff
     float  beta    = 0.0f;
     long  Z      = 0;
@@ -462,7 +473,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
 
     // Loop over all r_m given
     float Katz_point_coeff_Gy = AT_RDD_Katz_point_coeff_Gy(&(f1_parameters[5]),&Z_eff,&beta,&alpha,&density_kg_m3,&(f1_parameters[2]));
-    float a0         = rdd_parameter[1];
+    float a0         = rdd_parameter[0];
     for (i = 0; i < *n; i++){
       D_RDD_Gy[i]        =  0.0f;                        // r < r_min_m (for RDD_KatzPoint) or r > r_max_m --> D = 0
       if (r_m[i] >= f1_parameters[1] && r_m[i] <= f1_parameters[2] && *rdd_model != RDD_ExtTarget){          // in between r_min and r_max --> D = KatzPoint
@@ -471,6 +482,9 @@ void AT_D_RDD_Gy  ( const  long*  n,
         D_RDD_Gy[i]        = fmaxf(D_RDD_Gy[i], f1_parameters[3]);        // Cut-off low doses
       }
       if (r_m[i] <= f1_parameters[1] && *rdd_model == RDD_Site){            // r < r_min_m (for RDD_Site) --> D = d_max_Gy
+        D_RDD_Gy[i]        = f1_parameters[4];
+      }
+      if (r_m[i] < f1_parameters[1] && *rdd_model == RDD_Edmund){            // r < r_min_m (for RDD_Site) --> D = d_max_Gy
         D_RDD_Gy[i]        = f1_parameters[4];
       }
       if (r_m[i] <= f1_parameters[2] && *rdd_model == RDD_ExtTarget){
@@ -494,25 +508,6 @@ void AT_D_RDD_Gy  ( const  long*  n,
 
   free(f1_parameters);
 }
-
-typedef struct {
-  long*  n;
-  float*  r_m;
-  /* radiation field parameters */
-  float*  E_MeV_u;
-  long*  particle_no;
-  /* detector parameters */
-  long*  material_no;
-  /* radial dose distribution model */
-  long*  rdd_model;
-  float*  rdd_parameter;
-  /* electron range model */
-  long*  er_model;
-  float*  er_parameter;
-  /* calculated parameters */
-  float*  D_RDD_Gy;
-  float   D0;
-} AT_D_RDD_Gy_parameters;
 
 float AT_D_RDD_Gy_solver( const float r , void * params ){
   AT_D_RDD_Gy_parameters* params_struct = (AT_D_RDD_Gy_parameters*)(params);
@@ -599,24 +594,24 @@ void AT_r_RDD_m  ( const  long*  n,
     }
   }// end RDD_Geiss
 
-  if( (*rdd_model == RDD_KatzPoint) || (*rdd_model == RDD_Site) || (*rdd_model == RDD_ExtTarget)){
+  if( (*rdd_model == RDD_KatzPoint) || (*rdd_model == RDD_Site) || (*rdd_model == RDD_ExtTarget) || (*rdd_model == RDD_Edmund)){
     AT_D_RDD_Gy_parameters* params = (AT_D_RDD_Gy_parameters*)calloc(1,sizeof(AT_D_RDD_Gy_parameters));
-    params->n         = (long*)calloc(1,sizeof(long));
-    params->E_MeV_u     = E_MeV_u;
-    params->particle_no    = particle_no;
-    params->material_no    = material_no;
+    params->n             = (long*)calloc(1,sizeof(long));
+    params->E_MeV_u       = E_MeV_u;
+    params->particle_no   = particle_no;
+    params->material_no   = material_no;
     params->rdd_model     = rdd_model;
-    params->rdd_parameter   = rdd_parameter;
-    params->er_model     = er_model;
-    params->er_parameter   = er_parameter;
-    params->D_RDD_Gy     = (float*)calloc(1,sizeof(float));
+    params->rdd_parameter = rdd_parameter;
+    params->er_model      = er_model;
+    params->er_parameter  = er_parameter;
+    params->D_RDD_Gy      = (float*)calloc(1,sizeof(float));
     // Loop over all doses given
     float dev = 0.01f;
     float critical_d_Gy    = 0.0f;
     float critical_r_m     = 0.0f;
-    float inv2_d_Gy      = 0.0f;
-    float inv2_r_m     = 0.0f;
-    if(*rdd_model == RDD_Site){
+    float inv2_d_Gy        = 0.0f;
+    float inv2_r_m         = 0.0f;
+    if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund){
       critical_r_m    = rdd_parameter[0] * (1.0f + 1e-6f);
       inv2_r_m      = fmaxf(rdd_parameter[0], f1_parameters[2] * dev);
     }
@@ -624,7 +619,7 @@ void AT_r_RDD_m  ( const  long*  n,
       critical_r_m    = rdd_parameter[1];
       inv2_r_m      = fmaxf(rdd_parameter[0], f1_parameters[2] * dev);
     }
-    if(*rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget){
+    if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund || *rdd_model == RDD_ExtTarget){
       AT_D_RDD_Gy  (  &n_tmp,                    // Use D(r) to find dose at jump of D_Site
                 &critical_r_m,
                 /* radiation field parameters */
@@ -691,12 +686,12 @@ void AT_r_RDD_m  ( const  long*  n,
       float  solver_accuracy  =  1e-13f;
       if ((f1_parameters[3] <= D_RDD_Gy[i]) && (D_RDD_Gy[i] <= f1_parameters[4])){
         if(D_RDD_Gy[i] >= critical_d_Gy){
-          if(*rdd_model == RDD_Site){
+          if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund){
             r_RDD_m[i] = rdd_parameter[0];}
           if(*rdd_model == RDD_ExtTarget){
             r_RDD_m[i] = rdd_parameter[1];}
         }
-        if(*rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget){
+        if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund || *rdd_model == RDD_ExtTarget){
           if(D_RDD_Gy[i] < critical_d_Gy && D_RDD_Gy[i] >= inv2_d_Gy){
             r_RDD_m[i] = sqrt(Katz_point_coeff_Gy / D_RDD_Gy[i]) * f1_parameters[2];}
           if(D_RDD_Gy[i] < inv2_d_Gy){
@@ -724,4 +719,64 @@ void AT_r_RDD_m  ( const  long*  n,
 
   free(f1_parameters);
 
+}
+
+
+double AT_D_RDD_Gy_int( double  r_m,
+    void*   params){
+  float D_Gy;
+  long  n_tmp              = 1;
+  AT_P_RDD_parameters* par = (AT_P_RDD_parameters*)params;
+  float fr_m               = (float)r_m;
+
+  // Call RDD to get dose
+  AT_D_RDD_Gy  (  &n_tmp,
+      &fr_m,
+      par->E_MeV_u,
+      par->particle_no,
+      par->material_no,
+      par->rdd_model,
+      par->rdd_parameters,
+      par->er_model,
+      par->er_parameters,
+      &D_Gy);
+
+  return (2.0 * pi * r_m * (double)D_Gy);
+}
+
+double AT_sI_int( double  r_m,
+    void*   params){
+  double  P = AT_P_RDD(r_m, params);
+  return (r_m * P);
+}
+
+double AT_P_RDD( double  r_m,
+    void*   params)
+{
+  float  D_Gy;
+  long   n_tmp              = 1;
+  AT_P_RDD_parameters* par  = (AT_P_RDD_parameters*)params;
+  float  fr_m               = (float)r_m;
+
+  // Call RDD to get dose
+  AT_D_RDD_Gy  (  &n_tmp,
+      &fr_m,
+      par->E_MeV_u,
+      par->particle_no,
+      par->material_no,
+      par->rdd_model,
+      par->rdd_parameters,
+      par->er_model,
+      par->er_parameters,
+      &D_Gy);
+
+  long gamma_model = GR_GeneralTarget;
+  float P;
+  AT_gamma_response(  &n_tmp,
+      &D_Gy,
+      &gamma_model,
+      par->gamma_parameters,
+      // return
+      &P);
+  return ((double)P);
 }

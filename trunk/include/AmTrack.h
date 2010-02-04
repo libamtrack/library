@@ -144,7 +144,7 @@ void AT_GSM(  const long*  n,
     const float*  fluence_factor,
     const bool*   write_output,
     const long*   nX,
-    const float*  grid_size_m,
+    const float*  voxel_size_m,
     const bool*   lethal_events_mode,
     float*  results);
 
@@ -159,6 +159,7 @@ void AT_IGK(  const long*  n,
     const float*  ER_parameters,
     const long*  gamma_model,
     const float*  gamma_parameters,
+    const float*  saturation_cross_section_factor,
     float*  results);
 
 void AT_SPISS(  const long* n,
@@ -172,8 +173,8 @@ void AT_SPISS(  const long* n,
     const float* ER_parameters,
     const long*  gamma_model,
     const float* gamma_parameters,
-    const long*  n_runs,
-    const long*  N2,
+    const long*  n_runs, // TODO check sequence
+    const long*  N2, // TODO check sequence
     const float* fluence_factor,
     const int*   write_output,
     const long*  importance_sampling,
