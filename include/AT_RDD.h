@@ -46,12 +46,11 @@
 #include "AT_Constants.h"
 #include "AT_DataLET.h"
 #include "AT_PhysicsRoutines.h"
-
+#include "AT_GammaResponse.h"
 
 extern int indent_counter;
 extern char isp[];
 extern FILE * debf;
-
 
 ///////////////////////////////////////////////////////////////////////
 // RDD DATA
@@ -61,10 +60,11 @@ enum RDDModels{
       RDD_KatzPoint        = 2,      /* parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
       RDD_Geiss            = 3,      /* parameters: 0 - a0 [m] (core diameter) */
       RDD_Site             = 4,      /* parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off)  */ // after Edmund et al., 2007, but modified with dose-cut off
-      RDD_ExtTarget        = 5       /* parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */ //as defined in Edmund et al. , 2007
+      RDD_ExtTarget        = 5,      /* parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */ //as defined in Edmund et al. , 2007
+      RDD_Edmund           = 6       /* parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off)  */ // after Edmund et al., 2007, but modified with dose-cut off
 };
 
-#define RDD_DATA_N    5
+#define RDD_DATA_N    6
 
 typedef struct {
   long    n;
@@ -137,6 +137,9 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 //TODO rewrite Katz functions with const parameters
 
 float          AT_D_RDD_Gy_solver(          const float r , void * params );
+double         AT_P_RDD(                    double  r_m, void* params);
+double         AT_sI_int(                   double  r_m, void* params);
+double         AT_D_RDD_Gy_int(             double  r_m, void* params);
 
 inline float   AT_RDD_Katz_point_kernel(    const float* x, const float* alpha);
 void           AT_RDD_Katz_point_kernelS(   int *n, float* x, float* alpha, float* f);
@@ -161,5 +164,39 @@ double         AT_RDD_Katz_ext_integrand_Gy(double t_m, void * params);
 inline float   AT_RDD_Katz_ext_Gy(          const float *r_m, const float* a0_m, const float* alpha, const float* r_min_m, const float* r_max_m, const float* Katz_point_coeff_Gy);
 void           AT_RDD_Katz_ext_GyS(         int *n, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy, float * D_Gy);
 
+typedef struct {
+  /* radiation field parameters */
+  float*  E_MeV_u;
+  long*  particle_no;
+  /* detector parameters */
+  long*  material_no;
+  /* radial dose distribution model */
+  long*  rdd_model;
+  float*  rdd_parameters;
+  /* electron range model */
+  long*  er_model;
+  float*  er_parameters;
+  /* gamma response parameter*/
+  float  gamma_parameters[5];
+} AT_P_RDD_parameters;
+
+typedef struct {
+  long*  n;
+  float*  r_m;
+  /* radiation field parameters */
+  float*  E_MeV_u;
+  long*  particle_no;
+  /* detector parameters */
+  long*  material_no;
+  /* radial dose distribution model */
+  long*  rdd_model;
+  float*  rdd_parameter;
+  /* electron range model */
+  long*  er_model;
+  float*  er_parameter;
+  /* calculated parameters */
+  float*  D_RDD_Gy;
+  float   D0;
+} AT_D_RDD_Gy_parameters;
 
 #endif // AT_RDD_H_

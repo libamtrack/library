@@ -232,6 +232,21 @@ AT.E.MeV.u			<-	function(	LET.MeV.cm2.g,
 }
 
 
+####################
+AT.CSDA.range.g.cm2	<-	function(		E.MeV.u,
+											particle.no,
+											material.no){
+	n					<-	length(E.MeV.u)
+	CSDA.range.g.cm2	<-	numeric(n)
+	res					<-	.C(	"AT_CSDA_range_g_cm2",		n						=	as.integer(n),
+																E.MeV.u				=	as.single(E.MeV.u),
+																particle.no			=	as.integer(particle.no),
+																material.no			=	as.integer(material.no),
+																CSDA.range.g.cm2		=	as.single(CSDA.range.g.cm2))
+	return(res$CSDA.range.g.cm2)						
+}
+
+
 ######################
 AT.max.E.transfER.MeV		<-	function(	E.MeV.u,
 												particle.no){
@@ -1068,6 +1083,37 @@ AT.GSM	<-	function(	E.MeV.u,
 	results			<-	res$results
 	return(results)
 }
+
+AT.IGK	<-	function(		E.MeV.u,
+										particle.no,
+										fluence.cm2,
+										material.no,
+										RDD.model,
+										RDD.parameters,
+										ER.model,
+										ER.parameters,
+										gamma.model,
+										gamma.parameters,
+										s0.factor){
+	
+	 	results			<-	numeric(10)
+		res					<-	.C(	"AT_IGK",		n						= 	as.integer(length(E.MeV.u)),
+													E.MeV.u				=	as.single(E.MeV.u),
+													particle.no			=	as.integer(particle.no),
+													fluence.cm2			=	as.single(fluence.cm2),
+													material.no			=	as.integer(material.no),
+													RDD.model				=	as.integer(RDD.model),
+													RDD.parameters		=	as.single(RDD.parameters),
+													ER.model				=	as.integer(ER.model),
+													ER.parameters			=	as.single(ER.parameters),
+													gamma.model			=	as.integer(gamma.model),
+													gamma.parameters		=	as.single(gamma.parameters),
+													s0.factor				=	as.single(s0.factor),
+													results				=	as.single(results))
+	results			<-	res$results
+	return(results)
+}
+
 
 AT.fit.linquad.chi2 <- function( params, D.Gy, 
 															Survival){
