@@ -62,32 +62,30 @@ static const er_data AT_ER_Data = {
     {  "simple test ER model",  "Butts & Katz' [Katz et al., 1972] ER model",  "Waligorski's ER model",  "Geiss' [Geiss, 1997] ER model", "ER_Scholz' [Scholz, 2001] ER model"}
 };
 
+/**
+* Returns name of the electron model from index
+*
+* @param  ER_no    electron-range-model index
+* @return Er_name  string containing the electron-range model name
+*/
 void  getERName(  const long* ER_no,
     char* ER_name);
 
-
+/**
+* Returns the maximum electron range (track diameter) in m
+*
+* @param  n  number of particles in the incident field
+* @param  E_MeV_u  kinetic energy for particles in the given field (vector of length n)
+* @param  particle_no  particle indices for given field (vector of length n)
+* @param  material_no  index for detector material
+* @param  er_model  index for electron-range model chosen
+* @return  max_electron_range_m  electron range (track diameter) in m
+*/
 void AT_max_electron_range_m( const long*  n,
     const float*  E_MeV_u,
     const long*  particle_no,
     const long*  material_no,
     const long*  er_model,
     float*  max_electron_range_m);
-
-#ifdef _R
-void AT_max_electron_range_mS(  int*  n,
-    float*  E_MeV_u,
-    int*  particle_no,
-    int*  material_no,
-    int*   er_model,
-    float*  max_electron_range_m);
-#endif //_R
-#ifdef _S
-void AT_max_electron_range_mS(  long*  n,
-    float*  E_MeV_u,
-    long*  particle_no,
-    long*  material_no,
-    long*  er_model,
-    float*  max_electron_range_m);
-#endif // _S
 
 #endif /* AT_ELECTRONRANGE_H_ */
