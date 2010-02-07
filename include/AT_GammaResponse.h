@@ -71,12 +71,40 @@ static const gr_data AT_GR_Data = {
     {  "simple test gamma response",  "generalized multi-target/multi-hit gamma response",  "radioluminescence gamma response",    "exp.-sat. gamma response (obsolete, use gen. target/hit instead)", "linear-quadratic gamma response","lethan events number response"}
 };
 
-
+/**
+* Returns name of the gamma response model from index
+*
+* PUBLIC
+*
+* @param  Gamma_no  gamma response model index
+* @return Gamma_name  string containing gamma response model name
+*/
 void getGammaName(  const long* Gamma_no,
     char* Gamma_name);
+
+/**
+* Returns name of the response model from index
+*
+* PUBLIC
+*
+* @param  Method_no  response model index
+* @return Method_name  string containing response model name
+*/
 void getMethodName( const long* Method_no,
     char* Method_name);
 
+/**
+* Returns the detector / cell gamma response for a vector of given doses
+* according to the chosen gamma response model
+*
+* PUBLIC
+*
+* @param  n  number of doses given in vector d_Gy
+* @param  d_Gy  doses in Gy (vector of length n)
+* @param  gamma_model  gamma response model index
+* @param  gamma_parameter  vector holding necessary parameters for the chose gamma response model
+* @return S  gamma responses (vector of length n)
+*/
 void AT_gamma_response( const long*  n,
     const float*  d_Gy,
     const long*  gamma_model,
@@ -84,6 +112,27 @@ void AT_gamma_response( const long*  n,
     // return
     float*  S);
 
+/**
+* Returns the detector / cell gamma response for a local dose distribution
+* according to the chosen gamma response model, used by reponse model
+* routines in AmTrack.c
+*
+* PRIVATE
+*
+* @param  n  number of bin in given local dose distribution
+* @param  d_Gy  local dose bin position in Gy (vector of length n)
+* @param  dd_Gy  local dose bin width in Gy (vector of length n)
+* @param  d_Gy  local dose frequency (vector of length n)
+* @param  d_Gy  frequency of zero local dose (pointer to float)
+* @param  gamma_model  gamma response model index
+* @param  gamma_parameter  vector holding necessary parameters for the chose gamma response model
+* @param  lethal_events_mode  if true, allows to do calculations for cell survival
+* @see  AmTrack.c/AT_IGK
+* @return S  gamma responses for given bins (vector of length n)
+* @return S_HCP  HCP response for given local dose distribution (expectation value of S distribution)
+* @return S_gamma  gamma response for given local dose distribution (gamma response of expectation value of d distribution)
+* @return efficiency  RE = S_HCP/S_gamma for given local dose distribution
+*/
 void AT_get_gamma_response(  const long*  n,
     const float*  d_Gy,
     const float*  dd_Gy,
