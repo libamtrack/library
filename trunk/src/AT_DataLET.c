@@ -158,7 +158,51 @@ void AT_CSDA_range_g_cm2(  const long*  n,
     const long*  material_no,
     float*  CSDA_range_g_cm2)
 {
-  getPSTARvalue(n, E_MeV_u, material_no, AT_PSTAR_Data.range_cdsa_g_cm2, AT_PSTAR_Data.kin_E_MeV, CSDA_range_g_cm2);
+  getPSTARvalue(n, E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.range_cdsa_g_cm2, CSDA_range_g_cm2);
+
+  // Conversion CSDA_proton => CSDA_ion
+  long*  Z  =  (long*)calloc(*n, sizeof(long));
+  long*  A  =  (long*)calloc(*n, sizeof(long));
+  AT_Z_from_particle_no(        n,
+                                particle_no,
+                                Z);
+  AT_A_from_particle_no(        n,
+                                particle_no,
+                                A);
+  long i = 0;
+  for (i = 0; i < *n; i++){
+    if (particle_no[i] != 1){
+      CSDA_range_g_cm2[i]  *=   (float)(A[i])/(float)((Z[i])*(Z[i]));
+    }
+  }
+
+  free(Z);
+  free(A);
+}
+
+void AT_CSDA_range_m(  const long*  n,
+    const float*  E_MeV_u,
+    const long*  particle_no,
+    const long*  material_no,
+    float*  CSDA_range_m)
+{
+  // Get material density
+  float material_density_g_cm3;
+  long n_tmp = 1;
+  AT_density_g_cm3_from_material_no(&n_tmp, material_no, &material_density_g_cm3);
+
+  // Get mass-norm. CSDA range
+  AT_CSDA_range_g_cm2(  n,
+      E_MeV_u,
+      particle_no,
+      material_no,
+      CSDA_range_m);
+
+  long  i;
+  for (i = 0; i < *n; i++){
+    CSDA_range_m[i]  /=  material_density_g_cm3 * 100.0f;
+  }
+
 }
 
 void AT_E_MeV_from_CDSA_range(  const long*  n,

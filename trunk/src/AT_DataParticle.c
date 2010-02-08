@@ -76,32 +76,32 @@ void AT_Particle_Properties(  const long*  n,
   long  i;
   if( particle_name != NULL ){
     for(i = 0; i < *n; i++){
-      strcpy(particle_name[i], AT_Particle_Data.particle_name[i]);
+      strcpy(particle_name[i], AT_Particle_Data.particle_name[matches[i]]);
     }
   }
   if( USRTRACK_name != NULL ){
     for(i = 0; i < *n; i++){
-      strcpy(USRTRACK_name[i], AT_Particle_Data.USRTRACK_name[i]);
+      strcpy(USRTRACK_name[i], AT_Particle_Data.USRTRACK_name[matches[i]]);
     }
   }
   if( element_name != NULL ){
     for(i = 0; i < *n; i++){
-      strcpy(element_name[i], AT_Particle_Data.element_name[i]);
+      strcpy(element_name[i], AT_Particle_Data.element_name[matches[i]]);
     }
   }
   if( mass != NULL ){
     for(i = 0; i < *n; i++){
-      mass[i] = AT_Particle_Data.mass[i];
+      mass[i] = AT_Particle_Data.mass[matches[i]];
     }
   }
   if( A != NULL ){
     for(i = 0; i < *n; i++){
-      A[i] = AT_Particle_Data.A[i];
+      A[i] = AT_Particle_Data.A[matches[i]];
     }
   }
   if( Z != NULL ){
     for(i = 0; i < *n; i++){
-      Z[i] = AT_Particle_Data.Z[i];
+      Z[i] = AT_Particle_Data.Z[matches[i]];
     }
   }
   free(matches);

@@ -3,7 +3,7 @@
 
 /**
  * @file
- * @brief LET tables
+ * @brief LET tables and access routines
  */
 
 /*
@@ -522,11 +522,41 @@ void AT_LET_keV_um(  const long*  n,
     const long*   material_no,
     float*  LET_keV_um);
 
+/**
+* Returns CSDA range (in g/cm2) from pstar tables for given energy.
+* In case of ions a simple scaling procedure (A/Z^2) will be used (even effective charge will be neglected)
+* @param  n      number of particle types in the mixed particle field (pointer to single variable)
+* @param  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+* @param  particle_no    type of the particles in the mixed particle field (pointer to array of size n)
+* @see          AT_DataParticle.h for definition
+* @param  material_no  material index
+* @see          AT_DataMaterial.h for definition
+* @param  CSDA_range_g_cm2  pointer to vector of size n to be allocated by the user which will be used to return the results
+* @return  none
+*/
 void AT_CSDA_range_g_cm2(  const long*  n,
     const float*  E_MeV_u,
     const long*   particle_no,
     const long*   material_no,
     float*  CSDA_range_g_cm2);
+
+/**
+* Returns CSDA range (in m) from pstar tables for given energy.
+* In case of ions a simple scaling procedure (A/Z^2) will be used (even effective charge will be neglected)
+* @param  n      number of particle types in the mixed particle field (pointer to single variable)
+* @param  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+* @param  particle_no    type of the particles in the mixed particle field (pointer to array of size n)
+* @see          AT_DataParticle.h for definition
+* @param  material_no  material index
+* @see          AT_DataMaterial.h for definition
+* @param  CSDA_range_g_cm2  pointer to vector of size n to be allocated by the user which will be used to return the results
+* @return  none
+*/
+void AT_CSDA_range_m(  const long*  n,
+    const float*  E_MeV_u,
+    const long*   particle_no,
+    const long*   material_no,
+    float*  CSDA_range_m);
 
 void AT_E_MeV_from_CDSA_range(  const long*  n,
     const float*  CSDA_range_g_cm2,
