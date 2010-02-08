@@ -35,6 +35,7 @@
 # 2009-Jun-23: Revised wrapping functions for new RDD and SC functions, removed
 #              material.name as character cas cause trouble, replaces by material.no (int)
 # 2009-Jun-26: Added Edmund transport (CSDA)
+# 2010-Feb-08: Minor changes
 ################################################################################################
 
 ################################################################################################
@@ -87,6 +88,8 @@
 ################################################################################################
 
 debug <- F
+
+print("libamtrack S/R wrapping script - 2010/02/08")
 
 ##################
 AT.beta.from.mass	<-	function(	E.MeV.u,
@@ -259,52 +262,28 @@ AT.max.E.transfER.MeV		<-	function(	E.MeV.u,
 	return(res$max.E.transfER.MeV)						
 }
 
-#######################
-AT.particle.properties	<-	function(particle.no){
-	particle.name			<-	character(length(particle.no))
-	cur.particle.name		<-	character(1)
-	USRTRACK.name			<-	character(length(particle.no))
-	cur.USRTRACK.name		<-	character(1)
-	element.name			<-	character(length(particle.no))
-	cur.element.name		<-	character(1)
-	Z						<-	integer(length(particle.no))
-	cur.Z					<-	integer(1)
-	A						<-	integer(length(particle.no))
-	cur.A					<-	integer(1)
-	mass					<-	integer(length(particle.no))
-	cur.mass				<-	integer(1)
 
-	for (i in 1:length(particle.no)){
-		#i<-1
-		cur.particle.no			<-	particle.no[i]
-		res							<-	.C(	"AT_Particle_Properties",		particle.no					= as.integer(cur.particle.no),
-																				particle.name					= as.character(cur.particle.name),
-																				USRTRACK.name					= as.character(cur.USRTRACK.name),
-																				element.name					= as.character(cur.element.name),
-																				A								= as.integer(cur.Z),
-																				Z								= as.integer(cur.A),
-																				mass							= as.single(cur.mass))
-		particle.name[i]			<-	res$particle.name
-		USRTRACK.name[i]			<-	res$USRTRACK.name
-		element.name[i]			<-	res$element.name
-		A[i]						<-	res$A
-		Z[i]						<-	res$Z
-		mass[i]					<-	res$mass
-		print(paste(i, "done..."))
-	}
-	
-	df						<-	data.frame(	particle.no		= particle.no,
-												particle.name		= particle.name,
-												USRTRACK.name		= USRTRACK.name,
-												element.name		= element.name,
-												A					= A,
-												Z					= Z,
-												mass				= mass)
-	class(particle.name)	<- "character"
-	class(USRTRACK.name)	<- "character"
-	class(element.name)	<- "character"
-												
-	return(df)
+######################
+AT.Z.from.particle.no	<-	function( particle.no){
+	n						<-	length(particle.no)
+	Z						<-	integer(n)
+
+	res						<-	.C(	"AT_Z_from_particle_no",	n				= as.integer(n),
+																particle.no		= as.integer(particle.no),
+																Z				= as.integer(Z))
+	return(res$Z)	
+}
+
+
+######################
+AT.A.from.particle.no	<-	function( particle.no){
+	n						<-	length(particle.no)
+	A						<-	integer(n)
+
+	res						<-	.C(	"AT_A_from_particle_no",	n				= as.integer(n),
+																particle.no		= as.integer(particle.no),
+																A				= as.integer(A))
+	return(res$A)	
 }
 
 #################
