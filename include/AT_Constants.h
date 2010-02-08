@@ -3,7 +3,8 @@
 
 /**
  * @file
- * @brief ...
+ * @brief This files contains physical constants and unit conversions factors
+ *        used by libamtrack
  */
 
 

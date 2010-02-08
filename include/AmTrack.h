@@ -3,7 +3,7 @@
 
 /**
  * @file
- * @brief ...
+ * @brief libamtrack main file holding the amorphous track routines for RE/RBE calculation
  */
 
 /*
