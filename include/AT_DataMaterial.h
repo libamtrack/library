@@ -38,10 +38,11 @@ enum material_no{
   Water_Liquid         = 1,
   Aluminum_Oxide       = 2,
   Aluminum             = 3,
-  PMMA                 = 4
+  PMMA                 = 4,
+  Alanine              = 5
 };
 
-#define MATERIAL_DATA_N    4
+#define MATERIAL_DATA_N    5
 
 typedef struct {
   const long    n;
@@ -57,14 +58,14 @@ typedef struct {
 
 static const material_data AT_Material_Data = {
     MATERIAL_DATA_N,
-    {  Water_Liquid,     Aluminum_Oxide,   Aluminum,      PMMA       },
-    {  1.00f,            3.97f,            2.6989f,       1.19f      },
-    {  3.3456e29f,       1.1719e30f,       7.8314e+29f,   3.8698e29f },
-    {  75.0f,            145.2f,           166.0f,        74.0f      },
-    {  0.00231f,         0.003058f,        0.003266f,     0.001988f  },
-    {  1.761f,           1.748f,           1.745f,        1.762f     },
-    {  0.01153f,         0.01305f,         0.01230f,      0.01338f   },
-    {  "Water, Liquid", "Aluminum Oxide",  "Aluminum",    "PMMA"     }
+    {  Water_Liquid,     Aluminum_Oxide,   Aluminum,      PMMA,       Alanine},
+    {  1.00f,            3.97f,            2.6989f,       1.19f,      1.42f},
+    {  3.3456e29f,       1.1719e30f,       7.8314e+29f,   3.8698e29f, 4.60571e29f},
+    {  75.0f,            145.2f,           166.0f,        74.0f,      71.9f},
+    {  0.00231f,         0.003058f,        0.003266f,     0.001988f,  0.00216381f},
+    {  1.761f,           1.748f,           1.745f,        1.762f,     1.79165987f},
+    {  0.01153f,         0.01305f,         0.01230f,      0.01338f,   -100.0f},
+    {  "Water, Liquid", "Aluminum Oxide",  "Aluminum",    "PMMA",     "Alanine"     }
 };
 
 
