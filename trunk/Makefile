@@ -73,3 +73,23 @@ $(LIBOBJS):$(LIBCOBJS) $(LIBHOBJS)
 AT_UI.o:$(SRCDIR)$(DSEP)AT_UI.c 
 		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) $(SRCDIR)$(DSEP)AT_UI.c
 
+# BELOW: sniplets from Leszeks makefile 2009/12/27
+# TODO: merge makefiles
+#
+#LIBOBJFILES  = AT_Constants.o AT_FileOperations.o AT_Functions.o AT_GammaResponse.o AT_ParabolicCylinderFunction.o AT_RDD.o AT_SuccessiveConvolutions.o AT_Transport.o AT_Utils.o AmTrack.o 
+#
+#OBJFILES := $(patsubst %.c,%.o,$(wildcard *.c))
+#
+#all: libAT.so
+#		echo "Linking"
+#
+#clean:
+#		rm -f *.o
+#
+#libAT.so: $(LIBOBJFILES)
+#		gcc $(LDFLAGS) -I../include/ -o libAT.so $(LIBOBJFILES)
+#
+#$(OBJFILES): *.c
+#		gcc $(CFLAGS) -I../include/ -c -o $@ $<
+
+
