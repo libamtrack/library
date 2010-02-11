@@ -10,17 +10,17 @@
 ## Please specify your OS here
 #  OS        = Linux (or)
 #  OS        = Windows
-OS        = Windows
+OS        = Linux
 ## Please set the correct path to your GSL installation here:
 #  most likely:
 #  GSLPATH   = /usr (Linux)
 #  GSLPATH   = C:\Program Files\GnuWin32 (Windows)
-GSLPATH   = C:\Programme\GnuWin32
+GSLPATH   = /usr
 ## Under Windows please specify the path to your MinGW installation
 #  leave empty under Linux: MINGWPATH = 
 #  for Windows most likely:
 #  MINGWPATH = C:\Programme\MinGW (Windows)
-MINGWPATH = C:\Programme\MinGW
+MINGWPATH = 
 ############################################################
 
 CFLAGS    = -Wall -c -O3 -fPIC
@@ -45,11 +45,11 @@ GCCDIR    = $(MINGWPATH)\bin$(DSEP)
 endif
 
 
-LIBCOBJS  = $(SRCDIR)$(DSEP)AmTrack.c $(SRCDIR)$(DSEP)AT_Constants.c $(SRCDIR)$(DSEP)AT_FileOperations.c $(SRCDIR)$(DSEP)AT_Functions.c $(SRCDIR)$(DSEP)AT_GammaResponse.c $(SRCDIR)$(DSEP)AT_ParabolicCylinderFunction.c $(SRCDIR)$(DSEP)AT_RDD.c $(SRCDIR)$(DSEP)AT_SuccessiveConvolutions.c $(SRCDIR)$(DSEP)AT_Transport.c $(SRCDIR)$(DSEP)AT_Utils.c
+LIBCOBJS  = $(SRCDIR)$(DSEP)AmTrack.c $(SRCDIR)$(DSEP)AT_Constants.c $(SRCDIR)$(DSEP)AT_GammaResponse.c $(SRCDIR)$(DSEP)AT_DataLET.c $(SRCDIR)$(DSEP)AT_DataMaterial.c $(SRCDIR)$(DSEP)AT_DataParticle.c $(SRCDIR)$(DSEP)AT_ElectronRange.c $(SRCDIR)$(DSEP)AT_GammaResponse.c $(SRCDIR)$(DSEP)AT_NumericalRoutines.c $(SRCDIR)$(DSEP)AT_PhysicsRoutines.c $(SRCDIR)$(DSEP)AT_RDD.c $(SRCDIR)$(DSEP)AT_SuccessiveConvolutions.c $(SRCDIR)$(DSEP)AT_UI.c
 
-LIBHOBJS  = $(INCLDIR)$(DSEP)AmTrack.h $(INCLDIR)$(DSEP)AT_Constants.h $(INCLDIR)$(DSEP)AT_FileOperations.h $(INCLDIR)$(DSEP)AT_Functions.h $(INCLDIR)$(DSEP)AT_GammaResponse.h $(INCLDIR)$(DSEP)AT_ParabolicCylinderFunction.h $(INCLDIR)$(DSEP)AT_RDD.h $(INCLDIR)$(DSEP)AT_SuccessiveConvolutions.h $(INCLDIR)$(DSEP)AT_Transport.h $(INCLDIR)$(DSEP)AT_Utils.h
+LIBHOBJS  = $(INCLDIR)$(DSEP)AmTrack.h $(INCLDIR)$(DSEP)AT_Constants.h $(INCLDIR)$(DSEP)AT_GammaResponse.h $(INCLDIR)$(DSEP)AT_DataLET.h $(INCLDIR)$(DSEP)AT_DataMaterial.h $(INCLDIR)$(DSEP)AT_DataParticle.h $(INCLDIR)$(DSEP)AT_ElectronRange.h $(INCLDIR)$(DSEP)AT_GammaResponse.h $(INCLDIR)$(DSEP)AT_NumericalRoutines.h $(INCLDIR)$(DSEP)AT_PhysicsRoutines.h $(INCLDIR)$(DSEP)AT_RDD.h $(INCLDIR)$(DSEP)AT_SuccessiveConvolutions.h 
 
-LIBOBJS  = AmTrack.o AT_Constants.o AT_FileOperations.o AT_Functions.o AT_GammaResponse.o AT_ParabolicCylinderFunction.o AT_RDD.o AT_SuccessiveConvolutions.o AT_Transport.o AT_Utils.o
+LIBOBJS  = AmTrack.o AT_Constants.o AT_DataLET.o AT_DataMaterial.o AT_DataParticle.o AT_ElectronRange.o AT_GammaResponse.o AT_NumericalRoutines.o AT_PhysicsRoutines.o AT_RDD.o AT_SuccessiveConvolutions.o
 
 
 all:$(LIBOBJS)
