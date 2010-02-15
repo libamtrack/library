@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief ...
+ * @brief Source file for Physics related routines
  */
 
 /*
@@ -30,7 +30,6 @@
 */
 
 #include "AT_PhysicsRoutines.h"
-
 
 void AT_beta_from_mass( const long*  n,
     const float*  E_MeV_u,
@@ -276,6 +275,27 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
     tmp                 /=  4.0 * pi * e0_F_m * e0_F_m;
     tmp                 /=  MeV_to_J * MeV_to_J * m_to_cm;
     dsE2dz[i]            =  (float)tmp;
+  }
+}
+
+// TODO: Use this routine in AT_SC_get_f1... rather than local particle field to dose conversions
+void AT_D_Gy(  const long*  n,
+    const float*        E_MeV_u,
+    const long* particle_no,
+    const float* fluence_cm2,
+    const long* material_no,
+    float* D_Gy)
+{
+  // Get LET (write already into D_Gy)
+  AT_LET_MeV_cm2_g(n,
+      E_MeV_u,
+      particle_no,
+      material_no,
+      D_Gy);
+  // Multiply by fluence, convert from MeV/g to Gy
+  long  i;
+  for (i = 0; i < *n; i++){
+    D_Gy[i]     =       D_Gy[i] * fluence_cm2[i] * MeV_g_to_J_kg;
   }
 }
 
