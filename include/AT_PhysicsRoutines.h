@@ -3,7 +3,7 @@
 
 /**
  * @file
- * @brief ...
+ * @brief Header file for Physics related routines
  */
 
 /*
@@ -38,8 +38,10 @@
 #include "AT_Constants.h"
 #include "AT_DataMaterial.h"
 #include "AT_DataParticle.h"
+#include "AT_DataLET.h"
 #include "AT_ElectronRange.h"
 #include "AT_NumericalRoutines.h"
+
 
 void AT_beta_from_mass( const long*  n,
     const float*  E_MeV_u,
@@ -90,5 +92,24 @@ void AT_max_E_transfer_MeV(  const long*  n,
     // results
     float*  max_E_transfer_MeV);
 
+/**
+* Returns dose in Gy for each given particle
+* @param  n      number of particle types in the mixed particle field (pointer to single variable)
+* @param  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+* @param  fluence_cm2     fluence for each particle type (pointer to array of size n)
+* @param  particle_no    type of the particles in the mixed particle field (pointer to array of size n)
+* @see          AT_DataParticle.h for definition
+* @param  material_no  material index
+* @see          AT_DataMaterial.h for definition
+* @param  D_Gy  pointer to vector of size n to be allocated by the user which will be used to return the results
+* @return  none
+*/
+void AT_D_Gy(  const long*  n,
+    const float*  E_MeV_u,
+    const long* particle_no,
+    const float* fluence_cm2,
+    const long* material_no,
+    // results
+     float* D_Gy);
 
 #endif /* AT_PHYSICSROUTINES_H_ */

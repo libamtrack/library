@@ -51,7 +51,8 @@
 # AT.particle.properties						
 # AT.read.spectrum
 # AT.max.electron.range
-# 
+# AT.D.Gy
+#
 # :::MATERIAL FUNCTIONS:::
 # AT.get.material.data
 # AT.density.g.cm3
@@ -190,7 +191,21 @@ AT.get.material.data	<-	function(	material.no){
 	return(res)						
 }
 
-
+#################
+AT.D.Gy		<-	function(	E.MeV.u,
+							particle.no,
+							fluence.cm2,
+							material.no){
+	n					<-	length(E.MeV.u)
+	D.Gy				<-	numeric(n)
+	res					<-	.C(	"AT_D_Gy",		n					=	as.integer(n),
+												E.MeV.u				=	as.single(E.MeV.u),
+												particle.no			=	as.integer(particle.no),
+												fluence.cm2			=	as.single(fluence.cm2),
+												material.no			=	as.integer(material.no),
+												D.Gy				=	as.single(D.Gy))
+	return(res$D.Gy)						
+}
 
 #################
 AT.LET.MeV.cm2.g		<-	function(	E.MeV.u,
