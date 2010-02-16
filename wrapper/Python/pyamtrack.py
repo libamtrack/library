@@ -29,11 +29,11 @@
    If not, see <http://www.gnu.org/licenses/>
 '''
 
-#TODO: Boolean are just available in Python 2.6, warning if using 2.5 or earlier
-#TODO: SPISSto be made consistent in main ibrary
+#TODO: SPISS to be made consistent in main library
 
 import ctypes
 import sys
+import platform
 
 __status__ = 'Prototype'
 
@@ -41,8 +41,19 @@ __status__ = 'Prototype'
 class AmTrack(object):
     def __init__ (self):
         print '\npyamtrack\n-----\nAt the moment just single particle fields supported\n'
-        
-        self.libamtrack = ctypes.cdll.LoadLibrary("libamtrack.so")
+        operating_system = platform.system()
+        if operating_system == 'Windows':
+            self.libamtrack = ctypes.cdll.libamtrack
+            # should be working under Windows, but never has been tested
+            # if you have tried it under Windows, I'D be happy to hear your
+            # experience
+        else:
+            self.libamtrack = ctypes.cdll.LoadLibrary("libamtrack.so")
+        # python version controll
+        py_version = platform.python_version()
+        if int(py_version[0]) < 3 and int(py_version[2]) <= 5:
+            print 'ERROR:\nYou are using Python%s\nPython2.6 or later needed!\n'%py_version
+            sys.exit(0)
         
 
     def AT_SPIFF (self, n, E_MeV_u, particle_no, fluence_cm2, material_no, RDD_model, RDD_parameters, 
@@ -255,7 +266,7 @@ class AmTrack(object):
         AT_SPISS_output = []
         for item in results:
             AT_SPISS_output.append(item)
-        print '\nSPISS func return is nonsence, has to be fixwed im AmTrack.c,\nresults in SPISS.log\n'
+        print '\nSPISS func return is nonsense, has to be fixwed im AmTrack.c,\nresults in SPISS.log\n'
         return AT_SPISS_output
         
         
@@ -377,7 +388,7 @@ class AmTrack(object):
 
 def test_suite():
     '''test script for pyamtrack, runs all functions in a row'''
-    print'\n----------\n- pyamtrack test run\n-------\n!!!!Python 2.6 has to bee installed to use pyamtrack!!!!!\n'
+    print'\n----------\n- pyamtrack test run\n----------\n\n'
     # test parameters
     n = 1
     E_MeV_u = [10.0]
@@ -404,7 +415,6 @@ def test_suite():
 
 
     test_obj = AmTrack()
-    print test_obj.libamtrack
     print 'SPISS\nResults:\n'
     print test_obj.AT_SPISS(n, E_MeV_u, particle_no, fluence_cm2, material_no, RDD_model,
                                           RDD_parameters, ER_model, ER_parameters, gamma_model, gamma_parameters, N_runs,  
