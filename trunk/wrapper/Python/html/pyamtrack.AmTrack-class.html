@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>pyamtrack.AmTrack</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="pyamtrack-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >PyAmTrack</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="pyamtrack-module.html">Module&nbsp;pyamtrack</a> ::
+        Class&nbsp;AmTrack
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="pyamtrack.AmTrack-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class AmTrack</h1><p class="nomargin-top"><span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+object --+
+         |
+        <strong class="uidshort">AmTrack</strong>
+</pre>
+
+<hr />
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="pyamtrack.AmTrack-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      x.__init__(...) initializes x; see x.__class__.__doc__ for signature</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="pyamtrack.AmTrack-class.html#AT_SPIFF" class="summary-sig-name">AT_SPIFF</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">E_MeV_u</span>,
+        <span class="summary-sig-arg">particle_no</span>,
+        <span class="summary-sig-arg">fluence_cm2</span>,
+        <span class="summary-sig-arg">material_no</span>,
+        <span class="summary-sig-arg">RDD_model</span>,
+        <span class="summary-sig-arg">RDD_parameters</span>,
+        <span class="summary-sig-arg">ER_model</span>,
+        <span class="summary-sig-arg">ER_parameters</span>,
+        <span class="summary-sig-arg">gamma_model</span>,
+        <span class="summary-sig-arg">gamma_parameters</span>,
+        <span class="summary-sig-arg">N2</span>,
+        <span class="summary-sig-arg">fluence_factor</span>,
+        <span class="summary-sig-arg">write_output</span>,
+        <span class="summary-sig-arg">shrink_tails</span>,
+        <span class="summary-sig-arg">shrink_tails_under</span>,
+        <span class="summary-sig-arg">adjust_N2</span>,
+        <span class="summary-sig-arg">lethal_events_mode</span>)</span><br />
+      Computes HCP response and RE/RBE using compound Poison process and 
+      successive convolutions (CPP_SC, the 'SPIFF' algorithm)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.AT_SPIFF">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="pyamtrack.AmTrack-class.html#AT_SPISS" class="summary-sig-name">AT_SPISS</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">E_MeV_u</span>,
+        <span class="summary-sig-arg">particle_no</span>,
+        <span class="summary-sig-arg">fluence_cm2</span>,
+        <span class="summary-sig-arg">material_no</span>,
+        <span class="summary-sig-arg">RDD_model</span>,
+        <span class="summary-sig-arg">RDD_parameters</span>,
+        <span class="summary-sig-arg">ER_model</span>,
+        <span class="summary-sig-arg">ER_parameters</span>,
+        <span class="summary-sig-arg">gamma_model</span>,
+        <span class="summary-sig-arg">gamma_parameters</span>,
+        <span class="summary-sig-arg">n_runs</span>,
+        <span class="summary-sig-arg">N2</span>,
+        <span class="summary-sig-arg">fluence_factor</span>,
+        <span class="summary-sig-arg">write_output</span>,
+        <span class="summary-sig-arg">importance_sampling</span>)</span><br />
+      Computes HCP response and RE/RBE using compound Poison process and 
+      statistical sampling (CPP_SS, the 'SPISS' algorithm)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.AT_SPISS">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="pyamtrack.AmTrack-class.html#AT_GSM" class="summary-sig-name">AT_GSM</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">E_MeV_u</span>,
+        <span class="summary-sig-arg">particle_no</span>,
+        <span class="summary-sig-arg">fluence_cm2</span>,
+        <span class="summary-sig-arg">material_no</span>,
+        <span class="summary-sig-arg">RDD_model</span>,
+        <span class="summary-sig-arg">RDD_parameters</span>,
+        <span class="summary-sig-arg">ER_model</span>,
+        <span class="summary-sig-arg">ER_parameters</span>,
+        <span class="summary-sig-arg">gamma_model</span>,
+        <span class="summary-sig-arg">gamma_parameters</span>,
+        <span class="summary-sig-arg">N_runs</span>,
+        <span class="summary-sig-arg">N2</span>,
+        <span class="summary-sig-arg">fluence_factor</span>,
+        <span class="summary-sig-arg">write_output</span>,
+        <span class="summary-sig-arg">nX</span>,
+        <span class="summary-sig-arg">voxel_size_m</span>,
+        <span class="summary-sig-arg">lethal_events_mode</span>)</span><br />
+      Computes HCP response and RE/RBE using summation of tracks an a 
+      Cartesian grid (the 'GSM' algorithm)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.AT_GSM">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="AT_IGK"></a><span class="summary-sig-name">AT_IGK</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.AT_IGK">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__str__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>x.__init__(...) initializes x; see x.__class__.__doc__ for 
+  signature</p>
+  <dl class="fields">
+    <dt>Overrides:
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="AT_SPIFF"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">AT_SPIFF</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">n</span>,
+        <span class="sig-arg">E_MeV_u</span>,
+        <span class="sig-arg">particle_no</span>,
+        <span class="sig-arg">fluence_cm2</span>,
+        <span class="sig-arg">material_no</span>,
+        <span class="sig-arg">RDD_model</span>,
+        <span class="sig-arg">RDD_parameters</span>,
+        <span class="sig-arg">ER_model</span>,
+        <span class="sig-arg">ER_parameters</span>,
+        <span class="sig-arg">gamma_model</span>,
+        <span class="sig-arg">gamma_parameters</span>,
+        <span class="sig-arg">N2</span>,
+        <span class="sig-arg">fluence_factor</span>,
+        <span class="sig-arg">write_output</span>,
+        <span class="sig-arg">shrink_tails</span>,
+        <span class="sig-arg">shrink_tails_under</span>,
+        <span class="sig-arg">adjust_N2</span>,
+        <span class="sig-arg">lethal_events_mode</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.AT_SPIFF">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Computes HCP response and RE/RBE using compound Poison process and 
+  successive convolutions (CPP_SC, the 'SPIFF' algorithm)</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>n</code></strong> (integer) - number of particle types in the mixed particle field</li>
+        <li><strong class="pname"><code>E_MeV_u</code></strong> (float list of length 'n') - energy of particles in the mixed particle field</li>
+        <li><strong class="pname"><code>particle_no</code></strong> (integer list of length 'n') - type of the particles in the mixed particle field</li>
+        <li><strong class="pname"><code>fluence_cm2</code></strong> (float list of length 'n') - fluences for the given particles, doses in Gy if negative</li>
+        <li><strong class="pname"><code>material_no</code></strong> (integer) - index number for detector material @see          
+          AT_DataMaterial.h for definition</li>
+        <li><strong class="pname"><code>RDD_model</code></strong> (integer) - index number for chosen radial dose distribution</li>
+        <li><strong class="pname"><code>RDD_parameters</code></strong> (list) - parameters for chosen radial dose distribution @see          
+          AT_RDD.h for definition</li>
+        <li><strong class="pname"><code>ER_model</code></strong> (integer) - index number for chosen electron-range model</li>
+        <li><strong class="pname"><code>ER_parameters</code></strong> (array of model depending length) - parameters for chosen electron-range model @see          
+          AT_ElectronRange.h for definition</li>
+        <li><strong class="pname"><code>gamma_model</code></strong> (integer) - index number for chosen gamma response</li>
+        <li><strong class="pname"><code>gamma_parameters</code></strong> (array of model depending length) - parameters for chosen gamma response @see          
+          AT_GammaResponse.h for definition</li>
+        <li><strong class="pname"><code>N2</code></strong> (number) - (algorithm specific) number of bins per factor of two in local 
+          dose array</li>
+        <li><strong class="pname"><code>fluence_factor</code></strong> (integer) - factor to scale the fluences given as &quot;fluence_cm2&quot; 
+          with</li>
+        <li><strong class="pname"><code>write_output</code></strong> (boolean) - if true, a protocol is written to 
+          &quot;SuccessiveConvolutions.txt&quot; in the working directory</li>
+        <li><strong class="pname"><code>shrink_tails</code></strong> (boolean) - (algorithm specific) if true, tails of the local dose 
+          distribution, contributing less than 
+          &quot;shrink_tails_under&quot; are cut</li>
+        <li><strong class="pname"><code>shrink_tails_under</code></strong> (float) - (algorithm specific) limit for tail cutting in local dose 
+          distribution</li>
+        <li><strong class="pname"><code>adjust_N2</code></strong> (boolean) - (algorithm specific) if true, &quot;N2&quot; will be increase if 
+          necessary at high fluence to ensure sufficient binning resolution</li>
+        <li><strong class="pname"><code>lethal_events_mode</code></strong> (boolean) - (algorithm specific) if true, allows to do calculations for cell 
+          survival</li>
+        <li><strong class="pname"><code>results</code></strong> - pointer to array of size 10 to be allocated by the user which 
+          will be used to return the results</li>
+        <li><strong class="pname"><code>results[0]</code></strong> - efficiency      (algorithm independent)  main result:   particle 
+          response at dose D / gamma response at dose D</li>
+        <li><strong class="pname"><code>results[1]</code></strong> - d_check        (algorithm independent)  sanity check:  total dose
+          (in Gy) as returned by the algorithm</li>
+        <li><strong class="pname"><code>results[2]</code></strong> - S_HCP           (algorithm independent)  absolute particle 
+          response</li>
+        <li><strong class="pname"><code>results[3]</code></strong> - S_gamma         (algorithm independent)  absolute gamma response</li>
+        <li><strong class="pname"><code>results[4]</code></strong> - not used        (algorithm independent)</li>
+        <li><strong class="pname"><code>results[5]</code></strong> - u               (algorithm specific)     mean number of tracks 
+          contributing to representative point</li>
+        <li><strong class="pname"><code>results[6]</code></strong> - u_start         (algorithm specific)     low starting value for 
+          mean number of tracks, where linearisation is applied</li>
+        <li><strong class="pname"><code>results[7]</code></strong> - n_convolutions  (algorithm specific)     number of convolutions 
+          performed</li>
+        <li><strong class="pname"><code>results[8]</code></strong> - not used        (algorithm specific)</li>
+        <li><strong class="pname"><code>results[9]</code></strong> - not used        (algorithm specific)</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>None</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="AT_SPISS"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">AT_SPISS</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">n</span>,
+        <span class="sig-arg">E_MeV_u</span>,
+        <span class="sig-arg">particle_no</span>,
+        <span class="sig-arg">fluence_cm2</span>,
+        <span class="sig-arg">material_no</span>,
+        <span class="sig-arg">RDD_model</span>,
+        <span class="sig-arg">RDD_parameters</span>,
+        <span class="sig-arg">ER_model</span>,
+        <span class="sig-arg">ER_parameters</span>,
+        <span class="sig-arg">gamma_model</span>,
+        <span class="sig-arg">gamma_parameters</span>,
+        <span class="sig-arg">n_runs</span>,
+        <span class="sig-arg">N2</span>,
+        <span class="sig-arg">fluence_factor</span>,
+        <span class="sig-arg">write_output</span>,
+        <span class="sig-arg">importance_sampling</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.AT_SPISS">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Computes HCP response and RE/RBE using compound Poison process and 
+  statistical sampling (CPP_SS, the 'SPISS' algorithm)</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>n</code></strong> (integer) - number of particle types in the mixed particle field</li>
+        <li><strong class="pname"><code>E_MeV_u</code></strong> - energy of particles in the mixed particle field (pointer to array
+          of size n)</li>
+        <li><strong class="pname"><code>particle_no</code></strong> - type of the particles in the mixed particle field (pointer to 
+          array of size n) @see          AT_DataParticle.h for definition</li>
+        <li><strong class="pname"><code>fluence_cm2</code></strong> - fluences for the given particles, doses in Gy if negative 
+          (pointer to array of size n)</li>
+        <li><strong class="pname"><code>material_no</code></strong> - index number for detector material (pointer to single variable) 
+          @see          AT_DataMaterial.h for definition</li>
+        <li><strong class="pname"><code>RDD_model</code></strong> - index number for chosen radial dose distribution (pointer to 
+          single variable)</li>
+        <li><strong class="pname"><code>RDD_parameters</code></strong> - parameters for chosen radial dose distribution (pointer to array 
+          of size depending on chosen model) @see          AT_RDD.h for 
+          definition</li>
+        <li><strong class="pname"><code>ER_model</code></strong> - index number for chosen electron-range model (pointer to single 
+          variable)</li>
+        <li><strong class="pname"><code>ER_parameters</code></strong> - parameters for chosen electron-range model (pointer to array of 
+          size depending on chosen model) @see          AT_ElectronRange.h 
+          for definition</li>
+        <li><strong class="pname"><code>gamma_model</code></strong> - index number for chosen gamma response (pointer to single 
+          variable)</li>
+        <li><strong class="pname"><code>gamma_parameters</code></strong> - parameters for chosen gamma response (pointer to array of size 
+          depending on chosen model) @see          AT_GammaResponse.h for 
+          definition</li>
+        <li><strong class="pname"><code>n_runs</code></strong> - (algorithm specific) number of points sampled for local dose 
+          distribution</li>
+        <li><strong class="pname"><code>N2</code></strong> - (algorithm specific) number of bins per factor of two in local 
+          dose array (pointer to single variable)</li>
+        <li><strong class="pname"><code>fluence_factor</code></strong> - factor to scale the fluences given as &quot;fluence_cm2&quot; 
+          with (pointer to single variable)</li>
+        <li><strong class="pname"><code>write_output</code></strong> - if true, a protocol is written to 
+          &quot;SuccessiveConvolutions.txt&quot; in the working directory 
+          (pointer to single variable)</li>
+        <li><strong class="pname"><code>importance_sampling</code></strong> - if unequal zero importance sampling will be applied to the single
+          impact local dose distribution</li>
+        <li><strong class="pname"><code>results</code></strong> - pointer to array of size 10 to be allocated by the user which 
+          will be used to return the results</li>
+        <li><strong class="pname"><code>results[0]</code></strong> - efficiency      (algorithm independent)  main result:   particle 
+          response at dose D / gamma response at dose D</li>
+        <li><strong class="pname"><code>results[1]</code></strong> - d_check         (algorithm independent)  sanity check:  total 
+          dose (in Gy) as returned by the algorithm</li>
+        <li><strong class="pname"><code>results[2]</code></strong> - S_HCP           (algorithm independent)  absolute particle 
+          response</li>
+        <li><strong class="pname"><code>results[3]</code></strong> - S_gamma         (algorithm independent)  absolute gamma response</li>
+        <li><strong class="pname"><code>results[4]</code></strong> - not used        (algorithm independent)</li>
+        <li><strong class="pname"><code>results[5]</code></strong> - not_used        (algorithm specific)</li>
+        <li><strong class="pname"><code>results[6]</code></strong> - not used        (algorithm specific)</li>
+        <li><strong class="pname"><code>results[7]</code></strong> - not_used        (algorithm specific)</li>
+        <li><strong class="pname"><code>results[8]</code></strong> - not used        (algorithm specific) @param results[9];   not 
+          used        (algorithm specific)</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>None</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="AT_GSM"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">AT_GSM</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">n</span>,
+        <span class="sig-arg">E_MeV_u</span>,
+        <span class="sig-arg">particle_no</span>,
+        <span class="sig-arg">fluence_cm2</span>,
+        <span class="sig-arg">material_no</span>,
+        <span class="sig-arg">RDD_model</span>,
+        <span class="sig-arg">RDD_parameters</span>,
+        <span class="sig-arg">ER_model</span>,
+        <span class="sig-arg">ER_parameters</span>,
+        <span class="sig-arg">gamma_model</span>,
+        <span class="sig-arg">gamma_parameters</span>,
+        <span class="sig-arg">N_runs</span>,
+        <span class="sig-arg">N2</span>,
+        <span class="sig-arg">fluence_factor</span>,
+        <span class="sig-arg">write_output</span>,
+        <span class="sig-arg">nX</span>,
+        <span class="sig-arg">voxel_size_m</span>,
+        <span class="sig-arg">lethal_events_mode</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.AT_GSM">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Computes HCP response and RE/RBE using summation of tracks an a 
+  Cartesian grid (the 'GSM' algorithm)</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>n</code></strong> - number of particle types in the mixed particle field (pointer to 
+          single variable)</li>
+        <li><strong class="pname"><code>E_MeV_u</code></strong> - energy of particles in the mixed particle field (pointer to array
+          of size n)</li>
+        <li><strong class="pname"><code>particle_no</code></strong> - type of the particles in the mixed particle field (pointer to 
+          array of size n) @see          AT_DataParticle.h for definition</li>
+        <li><strong class="pname"><code>fluence_cm2</code></strong> - fluences for the given particles, doses in Gy if negative 
+          (pointer to array of size n)</li>
+        <li><strong class="pname"><code>material_no</code></strong> - index number for detector material (pointer to single variable) 
+          @see          AT_DataMaterial.h for definition</li>
+        <li><strong class="pname"><code>RDD_model</code></strong> - index number for chosen radial dose distribution (pointer to 
+          single variable)</li>
+        <li><strong class="pname"><code>RDD_parameters</code></strong> - parameters for chosen radial dose distribution (pointer to array 
+          of size depending on chosen model) @see          AT_RDD.h for 
+          definition</li>
+        <li><strong class="pname"><code>ER_model</code></strong> - index number for chosen electron-range model (pointer to single 
+          variable)</li>
+        <li><strong class="pname"><code>ER_parameters</code></strong> - parameters for chosen electron-range model (pointer to array of 
+          size depending on chosen model) @see          AT_ElectronRange.h 
+          for definition</li>
+        <li><strong class="pname"><code>gamma_model</code></strong> - index number for chosen gamma response (pointer to single 
+          variable)</li>
+        <li><strong class="pname"><code>gamma_parameters</code></strong> - parameters for chosen gamma response (pointer to array of size 
+          depending on chosen model) @see          AT_GammaResponse.h for 
+          definition</li>
+        <li><strong class="pname"><code>N_runs</code></strong> - (algorithm specific) number of runs within which track positions 
+          will be resampled</li>
+        <li><strong class="pname"><code>N2</code></strong> - (algorithm specific) number of bins per factor of two in local 
+          dose array (pointer to single variable)</li>
+        <li><strong class="pname"><code>fluence_factor</code></strong> - factor to scale the fluences given as &quot;fluence_cm2&quot; 
+          with (pointer to single variable)</li>
+        <li><strong class="pname"><code>write_output</code></strong> - if true, a protocol is written to 
+          &quot;SuccessiveConvolutions.txt&quot; in the working directory 
+          (pointer to single variable)</li>
+        <li><strong class="pname"><code>shrink_tails</code></strong> - (algorithm specific) if true, tails of the local dose 
+          distribution, contributing less than 
+          &quot;shrink_tails_under&quot; are cut (pointer to single 
+          variable)</li>
+        <li><strong class="pname"><code>shrink_tails_under</code></strong> - (algorithm specific) limit for tail cutting in local dose 
+          distribution (pointer to single variable)</li>
+        <li><strong class="pname"><code>adjust_N2</code></strong> - (algorithm specific) if true, &quot;N2&quot; will be increase if 
+          necessary at high fluence to ensure sufficient binning resolution</li>
+        <li><strong class="pname"><code>lethal_events_mode</code></strong> - (algorithm specific) if true, allows to do calculations for cell 
+          survival</li>
+        <li><strong class="pname"><code>nX</code></strong> - (algorithm specific) number of voxels of the grid in x (and y as 
+          the grid is quadratic)</li>
+        <li><strong class="pname"><code>voxel_size_m</code></strong> - side length of a voxel in m</li>
+        <li><strong class="pname"><code>results</code></strong> - pointer to array of size 10 to be allocated by the user which 
+          will be used to return the results</li>
+        <li><strong class="pname"><code>results[0]</code></strong> - efficiency      (algorithm independent)  main result:   particle 
+          response at dose D / gamma response at dose D</li>
+        <li><strong class="pname"><code>results[1]</code></strong> - d_check         (algorithm independent)  sanity check:  total 
+          dose (in Gy) as returned by the algorithm</li>
+        <li><strong class="pname"><code>results[2]</code></strong> - S_HCP           (algorithm independent)  absolute particle 
+          response</li>
+        <li><strong class="pname"><code>results[3]</code></strong> - S_gamma         (algorithm independent)  absolute gamma response</li>
+        <li><strong class="pname"><code>results[4]</code></strong> - n_particles     (algorithm independent)  average number of 
+          particle tracks on the detector grid</li>
+        <li><strong class="pname"><code>results[5]</code></strong> - sd_efficiency   (algorithm specific)     standard deviation for 
+          results[0]</li>
+        <li><strong class="pname"><code>results[6]</code></strong> - sd_d_check      (algorithm specific)     standard deviation for 
+          results[1]</li>
+        <li><strong class="pname"><code>results[7]</code></strong> - sd_S_HCP        (algorithm specific)     standard deviation for 
+          results[2]</li>
+        <li><strong class="pname"><code>results[8]</code></strong> - sd_S_gamma      (algorithm specific)     standard deviation for 
+          results[3]</li>
+        <li><strong class="pname"><code>results[9]</code></strong> - sd_n_particles  (algorithm specific)     standard deviation for 
+          results[4]</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>None</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="pyamtrack-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >PyAmTrack</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Feb 17 19:15:32 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
