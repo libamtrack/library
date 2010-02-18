@@ -62,9 +62,9 @@ UI:AT_UI.o $(LIBOBJS)
 		$(RMCMD) *.o
 
 clean:
-		$(RMCMD) *.o
-		$(RMCMD) $(NAMELIB)
-		$(RMCMD) $(NAMEEXE)
+		- $(RMCMD) *.o
+		- $(RMCMD) $(NAMELIB)
+		- $(RMCMD) $(NAMEEXE)
 
 $(LIBOBJS):$(LIBCOBJS) $(LIBHOBJS)
 		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) $(LIBCOBJS)
