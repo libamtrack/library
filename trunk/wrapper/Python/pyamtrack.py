@@ -174,33 +174,33 @@ class AmTrack(object):
         Computes HCP response and RE/RBE using compound Poison process and
         statistical sampling (CPP_SS, the 'SPISS' algorithm)
 
-        @param  n:     number of particle types in the mixed particle field
+        @param  n:     number of particle types in the mixed particle field 
         @type n: integer
-        @param  E_MeV_u:     energy of particles in the mixed particle field
-        (pointer to array of size n)
-        @param  particle_no:   type of the particles in the mixed particle field
-        (pointer to array of size n)
-        @see          AT_DataParticle.h for definition
-        @param  fluence_cm2:   fluences for the given particles, doses in Gy if
-        negative (pointer to array of size n)
-        @param  material_no:   index number for detector material
-        (pointer to single variable)
+        @param  E_MeV_u:      energy of particles in the mixed particle field
+        @type   E_MeV_u: float list of length 'n'
+        @param  particle_no:    type of the particles in the mixed particle field 
+        @see       AT_DataParticle.h: for definition
+        @type particle_no: integer list of length 'n'
+        @param  fluence_cm2:    fluences for the given particles, doses in Gy if negative
+        @type  fluence_cm2:  float list of length 'n'
+        @param  material_no:    index number for detector material
         @see          AT_DataMaterial.h for definition
-        @param  RDD_model:   index number for chosen radial dose distribution
-        (pointer to single variable)
+        @type material_no: integer
+        @param  RDD_model:    index number for chosen radial dose distribution
+        @type RDD_model: integer
         @param  RDD_parameters:   parameters for chosen radial dose distribution
-        (pointer to array of size depending on chosen model)
         @see          AT_RDD.h for definition
+        @type RDD_parameters: list
         @param  ER_model:   index number for chosen electron-range model
-        (pointer to single variable)
+        @type ER_model: integer
         @param  ER_parameters:   parameters for chosen electron-range model
-        (pointer to array of size depending on chosen model)
         @see          AT_ElectronRange.h for definition
+        @type ER_parameters: array of model depending length
         @param  gamma_model:   index number for chosen gamma response
-        (pointer to single variable)
+        @type gamma_model: integer
         @param  gamma_parameters: parameters for chosen gamma response
-        (pointer to array of size depending on chosen model)
         @see          AT_GammaResponse.h for definition
+        @type gamma_parameters: array of model depending length
         @param  n_runs: (algorithm specific) number of points sampled for
         local dose distribution
         @param  N2:     (algorithm specific) number of bins per factor of two
@@ -274,33 +274,33 @@ class AmTrack(object):
         '''
         Computes HCP response and RE/RBE using summation of tracks an a Cartesian grid (the 'GSM' algorithm)
 
-        @param  n:     number of particle types in the mixed particle field
-        (pointer to single variable)
-        @param  E_MeV_u:     energy of particles in the mixed particle field
-        (pointer to array of size n)
-        @param  particle_no:   type of the particles in the mixed particle field
-        (pointer to array of size n)
-        @see          AT_DataParticle.h for definition
-        @param  fluence_cm2:   fluences for the given particles, doses in Gy if negative
-        (pointer to array of size n)
-        @param  material_no:   index number for detector material
-        (pointer to single variable)
+        @param  n:     number of particle types in the mixed particle field 
+        @type n: integer
+        @param  E_MeV_u:      energy of particles in the mixed particle field
+        @type   E_MeV_u: float list of length 'n'
+        @param  particle_no:    type of the particles in the mixed particle field 
+        @see       AT_DataParticle.h: for definition
+        @type particle_no: integer list of length 'n'
+        @param  fluence_cm2:    fluences for the given particles, doses in Gy if negative
+        @type  fluence_cm2:  float list of length 'n'
+        @param  material_no:    index number for detector material
         @see          AT_DataMaterial.h for definition
-        @param  RDD_model:   index number for chosen radial dose distribution
-        (pointer to single variable)
+        @type material_no: integer
+        @param  RDD_model:    index number for chosen radial dose distribution
+        @type RDD_model: integer
         @param  RDD_parameters:   parameters for chosen radial dose distribution
-        (pointer to array of size depending on chosen model)
         @see          AT_RDD.h for definition
+        @type RDD_parameters: list
         @param  ER_model:   index number for chosen electron-range model
-        (pointer to single variable)
+        @type ER_model: integer
         @param  ER_parameters:   parameters for chosen electron-range model
-        (pointer to array of size depending on chosen model)
         @see          AT_ElectronRange.h for definition
+        @type ER_parameters: array of model depending length
         @param  gamma_model:   index number for chosen gamma response
-        (pointer to single variable)
+        @type gamma_model: integer
         @param  gamma_parameters: parameters for chosen gamma response
-        (pointer to array of size depending on chosen model)
         @see          AT_GammaResponse.h for definition
+        @type gamma_parameters: array of model depending length
         @param  N_runs:      (algorithm specific) number of runs within which track
         positions will be resampled
         @param  N2:     (algorithm specific) number of bins per factor of two in
@@ -379,9 +379,102 @@ class AmTrack(object):
         return AT_GSM_output
         
 
-    def AT_IGK (self):
-        print 'To be included'       
+    def AT_IGK (self, n, E_MeV_u, particle_no, fluence_cm2, material_no, RDD_model, RDD_parameters, ER_model,
+                ER_parameters, gamma_model, gamma_parameters, saturation_cross_section_factor):
+        '''
+        Computes HCP response and RE/RBE using Katz\' Ion-Gamma-Kill approach
+        according to Waligorski, 1988
+
+        @param  n:     number of particle types in the mixed particle field 
+        @type n: integer
+        @param  E_MeV_u:      energy of particles in the mixed particle field
+        @type   E_MeV_u: float list of length 'n'
+        @param  particle_no:    type of the particles in the mixed particle field 
+        @see       AT_DataParticle.h: for definition
+        @type particle_no: integer list of length 'n'
+        @param  fluence_cm2:    fluences for the given particles, doses in Gy if negative
+        @type  fluence_cm2:  float list of length 'n'
+        @param  material_no:    index number for detector material
+        @see          AT_DataMaterial.h for definition
+        @type material_no: integer
+        @param  RDD_model:    index number for chosen radial dose distribution
+        @type RDD_model: integer
+        @param  RDD_parameters:   parameters for chosen radial dose distribution
+        @see          AT_RDD.h for definition
+        @type RDD_parameters: list
+        @param  ER_model:   index number for chosen electron-range model
+        @type ER_model: integer
+        @param  ER_parameters:   parameters for chosen electron-range model
+        @see          AT_ElectronRange.h for definition
+        @type ER_parameters: array of model depending length
+        @param  gamma_model:   index number for chosen gamma response
+        @type gamma_model: integer
+        @param  gamma_parameters: parameters for chosen gamma response
+        @see          AT_GammaResponse.h for definition
+        @type gamma_parameters: array of model depending length 
+        @param  saturation_cross_section_factor:  (algorithm specific)  scaling factor for the saturation cross section
+        @see          Waligorski, 1988
+        @type saturation_cross_section_factor: float
+        @param  results:      pointer to array of size 10 to be allocated by the user which will be used to return the results
+        @param results[0]:    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D
+        @param results[1]:    d_check         (algorithm independent)  not available with IGK
+        @param results[2]:    S_HCP           (algorithm independent)  absolute particle response
+        @param results[3]:    S_gamma         (algorithm independent)  absolute gamma response
+        @param results[4]:    n_particles     (algorithm independent)  not available with IGK
+        @param results[5]:    sI_cm2          (algorithm specific)     resulting ion saturation cross section in cm2
+        @param results[6]:    gamma_dose_Gy   (algorithm specific)     dose contribution from gamma kills
+        @param results[7]:    P_I             (algorithm specific)     ion kill probability
+        @param results[8]:    P_G             (algorithm specific)     gamma kill probability
+        @param results[9]:    not used        (algorithm specific)
+        @return:  none
+        '''
+        #conversion of Python variables to C type variables
+        n_ctype =                  ctypes.byref(ctypes.c_int(n))
+        tmp_array =         ctypes.c_float * len(E_MeV_u)
+        E_MeV_u_ctype =     ctypes.byref(tmp_array(*E_MeV_u))
+        tmp_array =         ctypes.c_long * len(particle_no)
+        particle_no_ctype = ctypes.byref(tmp_array(*particle_no))
+        tmp_array =         ctypes.c_float * len(fluence_cm2)
+        fluence_cm2_ctype =  ctypes.byref(tmp_array(*fluence_cm2))
+        material_no_ctype =        ctypes.byref(ctypes.c_int(material_no))
+        RDD_model_ctype =          ctypes.byref(ctypes.c_int(RDD_model))
+        tmp_array = ctypes.c_float* len(RDD_parameters)        
+        RDD_parameters_ctype =     ctypes.byref(tmp_array(*RDD_parameters))   
+        ER_model_ctype =           ctypes.byref(ctypes.c_int(ER_model))        
+        tmp_array = ctypes.c_float* len(ER_parameters)        
+        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))        
+        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))        
+        tmp_array = ctypes.c_float* len(gamma_parameters)        
+        gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))
+        saturation_cross_section_factor_ctype = ctypes.c_float(saturation_cross_section_factor)      
+        tenfloats = ctypes.c_float*10
+        results = tenfloats(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
         
+        c_at_igk = self.libamtrack.AT_IGK
+        c_at_igk.restype = ctypes.c_float  *10       
+        
+        c_at_igk_output = c_at_igk(n_ctype,  E_MeV_u_ctype,  particle_no_ctype,
+                                   fluence_cm2_ctype, material_no_ctype, RDD_model_ctype,
+                                   RDD_parameters_ctype, ER_model_ctype, ER_parameters_ctype,
+                                   gamma_model_ctype,  gamma_parameters_ctype, saturation_cross_section_factor_ctype,  results)
+                                   
+        AT_IGK_output = []
+        for item in results:
+            AT_IGK_output.append(item)
+            
+        return AT_IGK_output
+   
+
+
+    def AT_interparticleDistance_m(self):
+        print 'To be included'
+
+    def AT_interparticleDistance_Gy(self):
+        print 'To be included'
+
+    def AT_interparticleDistance_cm2(self):
+        print 'To be included'                        
+
 
 
 
@@ -392,7 +485,7 @@ def test_suite():
     print'\n----------\n- pyamtrack test run\n----------\n\n'
     # test parameters
     #variable set
-    material_no = 5 # Alanine
+    material_no = 51# Alanine
     n = 2
     E_MeV_u = [100.0, 100.0]
     particle_no = [18,1] #C-12
@@ -414,7 +507,7 @@ def test_suite():
     importance_sampling = 0
     voxel_size_m = 0.001
     nX = 10
-
+    saturation_cross_section_factor = 1.0
 
     test_obj = AmTrack()
     print 'SPISS\nResults:\n'
@@ -423,11 +516,15 @@ def test_suite():
                                           N2, fluence_factor, write_output, importance_sampling)
 
 
-    
     print'SPIFF\nResults:\n'
     print test_obj.AT_SPIFF(n, E_MeV_u, particle_no, fluence_cm2, material_no, RDD_model, RDD_parameters, 
                             ER_model, ER_parameters, gamma_model, gamma_parameters,  N2, fluence_factor, write_output,  
                             shrink_tails, shrink_tails_under, adjust_N2, lethal_events_mode)
+
+    
+    print'IGK\nResults\n'
+    print test_obj.AT_IGK (self, n, E_MeV_u, particle_no, fluence_cm2, material_no, RDD_model, RDD_parameters, ER_model,
+                ER_parameters, gamma_model, gamma_parameters, saturation_cross_section_factor)
 
     print'GSM\ntest skipped\n'
     # test_out= test_obj.AT_GSM(n, E_MeV_u, particle_no, fluence_cm2, material_no,
