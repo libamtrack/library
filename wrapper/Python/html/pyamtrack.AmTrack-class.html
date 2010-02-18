@@ -214,9 +214,71 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="AT_IGK"></a><span class="summary-sig-name">AT_IGK</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="pyamtrack.AmTrack-class.html#AT_IGK" class="summary-sig-name">AT_IGK</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">E_MeV_u</span>,
+        <span class="summary-sig-arg">particle_no</span>,
+        <span class="summary-sig-arg">fluence_cm2</span>,
+        <span class="summary-sig-arg">material_no</span>,
+        <span class="summary-sig-arg">RDD_model</span>,
+        <span class="summary-sig-arg">RDD_parameters</span>,
+        <span class="summary-sig-arg">ER_model</span>,
+        <span class="summary-sig-arg">ER_parameters</span>,
+        <span class="summary-sig-arg">gamma_model</span>,
+        <span class="summary-sig-arg">gamma_parameters</span>,
+        <span class="summary-sig-arg">saturation_cross_section_factor</span>)</span><br />
+      Computes HCP response and RE/RBE using Katz' Ion-Gamma-Kill approach 
+      according to Waligorski, 1988</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.AT_IGK">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="AT_interparticleDistance_m"></a><span class="summary-sig-name">AT_interparticleDistance_m</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.AT_interparticleDistance_m">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="AT_interparticleDistance_Gy"></a><span class="summary-sig-name">AT_interparticleDistance_Gy</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.AT_interparticleDistance_Gy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="AT_interparticleDistance_cm2"></a><span class="summary-sig-name">AT_interparticleDistance_cm2</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.AT_interparticleDistance_cm2">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -435,29 +497,20 @@ object --+
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>n</code></strong> (integer) - number of particle types in the mixed particle field</li>
-        <li><strong class="pname"><code>E_MeV_u</code></strong> - energy of particles in the mixed particle field (pointer to array
-          of size n)</li>
-        <li><strong class="pname"><code>particle_no</code></strong> - type of the particles in the mixed particle field (pointer to 
-          array of size n) @see          AT_DataParticle.h for definition</li>
-        <li><strong class="pname"><code>fluence_cm2</code></strong> - fluences for the given particles, doses in Gy if negative 
-          (pointer to array of size n)</li>
-        <li><strong class="pname"><code>material_no</code></strong> - index number for detector material (pointer to single variable) 
-          @see          AT_DataMaterial.h for definition</li>
-        <li><strong class="pname"><code>RDD_model</code></strong> - index number for chosen radial dose distribution (pointer to 
-          single variable)</li>
-        <li><strong class="pname"><code>RDD_parameters</code></strong> - parameters for chosen radial dose distribution (pointer to array 
-          of size depending on chosen model) @see          AT_RDD.h for 
-          definition</li>
-        <li><strong class="pname"><code>ER_model</code></strong> - index number for chosen electron-range model (pointer to single 
-          variable)</li>
-        <li><strong class="pname"><code>ER_parameters</code></strong> - parameters for chosen electron-range model (pointer to array of 
-          size depending on chosen model) @see          AT_ElectronRange.h 
-          for definition</li>
-        <li><strong class="pname"><code>gamma_model</code></strong> - index number for chosen gamma response (pointer to single 
-          variable)</li>
-        <li><strong class="pname"><code>gamma_parameters</code></strong> - parameters for chosen gamma response (pointer to array of size 
-          depending on chosen model) @see          AT_GammaResponse.h for 
-          definition</li>
+        <li><strong class="pname"><code>E_MeV_u</code></strong> (float list of length 'n') - energy of particles in the mixed particle field</li>
+        <li><strong class="pname"><code>particle_no</code></strong> (integer list of length 'n') - type of the particles in the mixed particle field</li>
+        <li><strong class="pname"><code>fluence_cm2</code></strong> (float list of length 'n') - fluences for the given particles, doses in Gy if negative</li>
+        <li><strong class="pname"><code>material_no</code></strong> (integer) - index number for detector material @see          
+          AT_DataMaterial.h for definition</li>
+        <li><strong class="pname"><code>RDD_model</code></strong> (integer) - index number for chosen radial dose distribution</li>
+        <li><strong class="pname"><code>RDD_parameters</code></strong> (list) - parameters for chosen radial dose distribution @see          
+          AT_RDD.h for definition</li>
+        <li><strong class="pname"><code>ER_model</code></strong> (integer) - index number for chosen electron-range model</li>
+        <li><strong class="pname"><code>ER_parameters</code></strong> (array of model depending length) - parameters for chosen electron-range model @see          
+          AT_ElectronRange.h for definition</li>
+        <li><strong class="pname"><code>gamma_model</code></strong> (integer) - index number for chosen gamma response</li>
+        <li><strong class="pname"><code>gamma_parameters</code></strong> (array of model depending length) - parameters for chosen gamma response @see          
+          AT_GammaResponse.h for definition</li>
         <li><strong class="pname"><code>n_runs</code></strong> - (algorithm specific) number of points sampled for local dose 
           distribution</li>
         <li><strong class="pname"><code>N2</code></strong> - (algorithm specific) number of bins per factor of two in local 
@@ -527,31 +580,21 @@ object --+
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>n</code></strong> - number of particle types in the mixed particle field (pointer to 
-          single variable)</li>
-        <li><strong class="pname"><code>E_MeV_u</code></strong> - energy of particles in the mixed particle field (pointer to array
-          of size n)</li>
-        <li><strong class="pname"><code>particle_no</code></strong> - type of the particles in the mixed particle field (pointer to 
-          array of size n) @see          AT_DataParticle.h for definition</li>
-        <li><strong class="pname"><code>fluence_cm2</code></strong> - fluences for the given particles, doses in Gy if negative 
-          (pointer to array of size n)</li>
-        <li><strong class="pname"><code>material_no</code></strong> - index number for detector material (pointer to single variable) 
-          @see          AT_DataMaterial.h for definition</li>
-        <li><strong class="pname"><code>RDD_model</code></strong> - index number for chosen radial dose distribution (pointer to 
-          single variable)</li>
-        <li><strong class="pname"><code>RDD_parameters</code></strong> - parameters for chosen radial dose distribution (pointer to array 
-          of size depending on chosen model) @see          AT_RDD.h for 
-          definition</li>
-        <li><strong class="pname"><code>ER_model</code></strong> - index number for chosen electron-range model (pointer to single 
-          variable)</li>
-        <li><strong class="pname"><code>ER_parameters</code></strong> - parameters for chosen electron-range model (pointer to array of 
-          size depending on chosen model) @see          AT_ElectronRange.h 
-          for definition</li>
-        <li><strong class="pname"><code>gamma_model</code></strong> - index number for chosen gamma response (pointer to single 
-          variable)</li>
-        <li><strong class="pname"><code>gamma_parameters</code></strong> - parameters for chosen gamma response (pointer to array of size 
-          depending on chosen model) @see          AT_GammaResponse.h for 
-          definition</li>
+        <li><strong class="pname"><code>n</code></strong> (integer) - number of particle types in the mixed particle field</li>
+        <li><strong class="pname"><code>E_MeV_u</code></strong> (float list of length 'n') - energy of particles in the mixed particle field</li>
+        <li><strong class="pname"><code>particle_no</code></strong> (integer list of length 'n') - type of the particles in the mixed particle field</li>
+        <li><strong class="pname"><code>fluence_cm2</code></strong> (float list of length 'n') - fluences for the given particles, doses in Gy if negative</li>
+        <li><strong class="pname"><code>material_no</code></strong> (integer) - index number for detector material @see          
+          AT_DataMaterial.h for definition</li>
+        <li><strong class="pname"><code>RDD_model</code></strong> (integer) - index number for chosen radial dose distribution</li>
+        <li><strong class="pname"><code>RDD_parameters</code></strong> (list) - parameters for chosen radial dose distribution @see          
+          AT_RDD.h for definition</li>
+        <li><strong class="pname"><code>ER_model</code></strong> (integer) - index number for chosen electron-range model</li>
+        <li><strong class="pname"><code>ER_parameters</code></strong> (array of model depending length) - parameters for chosen electron-range model @see          
+          AT_ElectronRange.h for definition</li>
+        <li><strong class="pname"><code>gamma_model</code></strong> (integer) - index number for chosen gamma response</li>
+        <li><strong class="pname"><code>gamma_parameters</code></strong> (array of model depending length) - parameters for chosen gamma response @see          
+          AT_GammaResponse.h for definition</li>
         <li><strong class="pname"><code>N_runs</code></strong> - (algorithm specific) number of runs within which track positions 
           will be resampled</li>
         <li><strong class="pname"><code>N2</code></strong> - (algorithm specific) number of bins per factor of two in local 
@@ -601,6 +644,76 @@ object --+
   </dl>
 </td></tr></table>
 </div>
+<a name="AT_IGK"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">AT_IGK</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">n</span>,
+        <span class="sig-arg">E_MeV_u</span>,
+        <span class="sig-arg">particle_no</span>,
+        <span class="sig-arg">fluence_cm2</span>,
+        <span class="sig-arg">material_no</span>,
+        <span class="sig-arg">RDD_model</span>,
+        <span class="sig-arg">RDD_parameters</span>,
+        <span class="sig-arg">ER_model</span>,
+        <span class="sig-arg">ER_parameters</span>,
+        <span class="sig-arg">gamma_model</span>,
+        <span class="sig-arg">gamma_parameters</span>,
+        <span class="sig-arg">saturation_cross_section_factor</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="pyamtrack-pysrc.html#AmTrack.AT_IGK">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Computes HCP response and RE/RBE using Katz' Ion-Gamma-Kill approach 
+  according to Waligorski, 1988</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>n</code></strong> (integer) - number of particle types in the mixed particle field</li>
+        <li><strong class="pname"><code>E_MeV_u</code></strong> (float list of length 'n') - energy of particles in the mixed particle field</li>
+        <li><strong class="pname"><code>particle_no</code></strong> (integer list of length 'n') - type of the particles in the mixed particle field</li>
+        <li><strong class="pname"><code>fluence_cm2</code></strong> (float list of length 'n') - fluences for the given particles, doses in Gy if negative</li>
+        <li><strong class="pname"><code>material_no</code></strong> (integer) - index number for detector material @see          
+          AT_DataMaterial.h for definition</li>
+        <li><strong class="pname"><code>RDD_model</code></strong> (integer) - index number for chosen radial dose distribution</li>
+        <li><strong class="pname"><code>RDD_parameters</code></strong> (list) - parameters for chosen radial dose distribution @see          
+          AT_RDD.h for definition</li>
+        <li><strong class="pname"><code>ER_model</code></strong> (integer) - index number for chosen electron-range model</li>
+        <li><strong class="pname"><code>ER_parameters</code></strong> (array of model depending length) - parameters for chosen electron-range model @see          
+          AT_ElectronRange.h for definition</li>
+        <li><strong class="pname"><code>gamma_model</code></strong> (integer) - index number for chosen gamma response</li>
+        <li><strong class="pname"><code>gamma_parameters</code></strong> (array of model depending length) - parameters for chosen gamma response @see          
+          AT_GammaResponse.h for definition</li>
+        <li><strong class="pname"><code>saturation_cross_section_factor</code></strong> (float) - (algorithm specific)  scaling factor for the saturation cross 
+          section @see          Waligorski, 1988</li>
+        <li><strong class="pname"><code>results</code></strong> - pointer to array of size 10 to be allocated by the user which 
+          will be used to return the results</li>
+        <li><strong class="pname"><code>results[0]</code></strong> - efficiency      (algorithm independent)  main result:   particle 
+          response at dose D / gamma response at dose D</li>
+        <li><strong class="pname"><code>results[1]</code></strong> - d_check         (algorithm independent)  not available with IGK</li>
+        <li><strong class="pname"><code>results[2]</code></strong> - S_HCP           (algorithm independent)  absolute particle 
+          response</li>
+        <li><strong class="pname"><code>results[3]</code></strong> - S_gamma         (algorithm independent)  absolute gamma response</li>
+        <li><strong class="pname"><code>results[4]</code></strong> - n_particles     (algorithm independent)  not available with IGK</li>
+        <li><strong class="pname"><code>results[5]</code></strong> - sI_cm2          (algorithm specific)     resulting ion saturation
+          cross section in cm2</li>
+        <li><strong class="pname"><code>results[6]</code></strong> - gamma_dose_Gy   (algorithm specific)     dose contribution from 
+          gamma kills</li>
+        <li><strong class="pname"><code>results[7]</code></strong> - P_I             (algorithm specific)     ion kill probability</li>
+        <li><strong class="pname"><code>results[8]</code></strong> - P_G             (algorithm specific)     gamma kill probability</li>
+        <li><strong class="pname"><code>results[9]</code></strong> - not used        (algorithm specific)</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>none</dd>
+  </dl>
+</td></tr></table>
+</div>
 <br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
@@ -633,7 +746,7 @@ object --+
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Feb 17 19:15:32 2010
+    Generated by Epydoc 3.0.1 on Thu Feb 18 13:12:59 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
