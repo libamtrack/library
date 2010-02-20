@@ -225,7 +225,7 @@ void AT_max_E_transfer_MeV(  const long*  n,
    */
 
   float* E_MeV_u_copy   =  (float*)calloc(*n, sizeof(float));
-  memccpy(E_MeV_u_copy,E_MeV_u,*n,sizeof(float));
+  memcpy(E_MeV_u_copy,E_MeV_u,(*n)*sizeof(float));
 
   int*  relativistic    =  (int*)calloc(*n, sizeof(int));
   long  i;
