@@ -81,5 +81,83 @@ void AT_max_electron_range_m_R(  const int*  n,
       max_electron_range_m);
 
   free(particle_no_long);
+}
 
+
+void AT_D_RDD_Gy_R( const int*  n,
+    const float*  r_m,
+    /* radiation field parameters */
+    const float*  E_MeV_u,
+    const int*  particle_no,
+    /* detector parameters */
+    const int*  material_no,
+    /* radial dose distribution model */
+    const int*  rdd_model,
+    const float*  rdd_parameter,
+    /* electron range model */
+    const int*  er_model,
+    const float*  er_parameter,
+    float*  D_RDD_Gy){
+
+  const long n_long = (long)(*n);
+  const long material_no_long = (long)(*material_no);
+  const long er_model_long = (long)(*er_model);
+  const long rdd_model_long = (long)(*rdd_model);
+  long i;
+  long * particle_no_long = (long*)calloc(*n,sizeof(long));
+  for(i = 0 ; i < *n ; i++){
+    particle_no_long[i] = (long)particle_no[i];
+  }
+
+  AT_D_RDD_Gy( &n_long,
+      r_m,
+      E_MeV_u,
+      particle_no_long,
+      &material_no_long,
+      &rdd_model_long,
+      rdd_parameter,
+      &er_model_long,
+      er_parameter,
+      D_RDD_Gy);
+
+  free(particle_no_long);
+}
+
+void AT_r_RDD_m_R  ( const int*  n,
+    const float*  D_RDD_Gy,
+    /* radiation field parameters */
+    const float*  E_MeV_u,
+    const int*  particle_no,
+    /* detector parameters */
+    const int*  material_no,
+    /* radial dose distribution model */
+    const int*  rdd_model,
+    const float*  rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+    /* electron range model */
+    const int*  er_model,
+    const float*  er_parameter,
+    float*  r_RDD_m){
+
+  const long n_long = (long)(*n);
+  const long material_no_long = (long)(*material_no);
+  const long er_model_long = (long)(*er_model);
+  const long rdd_model_long = (long)(*rdd_model);
+  long i;
+  long * particle_no_long = (long*)calloc(*n,sizeof(long));
+  for(i = 0 ; i < *n ; i++){
+    particle_no_long[i] = (long)particle_no[i];
+  }
+
+  AT_r_RDD_m( &n_long,
+      D_RDD_Gy,
+      E_MeV_u,
+      particle_no_long,
+      &material_no_long,
+      &rdd_model_long,
+      rdd_parameter,
+      &er_model_long,
+      er_parameter,
+      r_RDD_m);
+
+  free(particle_no_long);
 }

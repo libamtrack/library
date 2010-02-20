@@ -63,8 +63,6 @@ static  double  m_to_um               =  1e6;
 
 static  double  pi                    =  3.14159265;
 
-
-
 enum Method{
   ME_Grid      = 1,
       ME_SPIFF = 2,

@@ -31,6 +31,7 @@
 
 #include "AT_PhysicsRoutines.h"
 #include "AT_ElectronRange.h"
+#include "AT_RDD.h"
 
 void AT_max_E_transfer_MeV_R(  const int*  n,
     const float*  E_MeV_u,
@@ -45,6 +46,36 @@ void AT_max_electron_range_m_R(  const int*  n,
     const int*   er_model,
     // results
     float*  max_electron_range_m);
+
+void AT_D_RDD_Gy_R( const int*  n,
+    const float*  r_m,
+    /* radiation field parameters */
+    const float*  E_MeV_u,
+    const int*  particle_no,
+    /* detector parameters */
+    const int*  material_no,
+    /* radial dose distribution model */
+    const int*  rdd_model,
+    const float*  rdd_parameter,
+    /* electron range model */
+    const int*  er_model,
+    const float*  er_parameter,
+    float*  D_RDD_Gy);
+
+void AT_r_RDD_m_R  ( const int*  n,
+    const float*  D_RDD_Gy,
+    /* radiation field parameters */
+    const float*  E_MeV_u,
+    const int*  particle_no,
+    /* detector parameters */
+    const int*  material_no,
+    /* radial dose distribution model */
+    const int*  rdd_model,
+    const float*  rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+    /* electron range model */
+    const int*  er_model,
+    const float*  er_parameter,
+    float*  r_RDD_m);
 
 
 #endif /* AT_WRAPPER_R_H_ */
