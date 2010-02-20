@@ -31,42 +31,46 @@
 
 #include "AT_DataMaterial.h"
 
-//TODO get material names from AT_Material_Data
 void getMaterialName(
     const long* material_no,
     char* material_name){
-  switch( (int)(*material_no) ){
-  case Water_Liquid:
-    strcpy(material_name,"Water, Liquid");
-    break;
-  case Aluminum_Oxide:
-    strcpy(material_name,"Aluminum Oxide");
-    break;
-  case Aluminum:
-    strcpy(material_name,"Aluminum");
-    break;
-  case PMMA:
-    strcpy(material_name,"PMMA");
-    break;
-  default:
+
+  // find look-up index for material number in material data table
+  long  match;
+  const long n_tmp = 1;
+
+  pmatchi(  material_no,
+      &n_tmp,
+      AT_Material_Data.material_no,
+      &AT_Material_Data.n,
+      &match);
+
+  if( match != -1){
+    strcpy(material_name, AT_Material_Data.material_name[match]);
+  } else {
     strcpy(material_name,"*** invalid choice ***");
-    break;
   }
 }
 
-//TODO get material names from AT_Material_Data
 void getMaterialNo(
     const char* material_name,
     long* material_no){
-  *material_no  = -1;
-  if( strcmp(material_name,"Water, Liquid") == 0)
-    *material_no = Water_Liquid;
-  if( strcmp(material_name,"Aluminum Oxide") == 0)
-    *material_no = Aluminum_Oxide;
-  if( strcmp(material_name,"Aluminum") == 0)
-    *material_no = Aluminum;
-  if( strcmp(material_name,"PMMA") == 0)
-    *material_no = PMMA;
+
+  // find look-up index for material name in material data table
+  long  match;
+  const long n_tmp = 1;
+
+  pmatchc(  &material_name,
+      &n_tmp,
+      AT_Material_Data.material_name,
+      &AT_Material_Data.n,
+      &match);
+
+  if( match != -1){
+    *material_no  = AT_Material_Data.material_no[match];
+  } else {
+    *material_no  = -1;
+  }
 }
 
 //TODO function to get properties of only one material can be useful

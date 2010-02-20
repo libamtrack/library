@@ -39,9 +39,9 @@
 #include "AT_DataParticle.h"
 #include "AT_PhysicsRoutines.h"
 
-///////////////////////////////////////////////////////////////////////
-// ER DATA
-
+/**
+ *  ER DATA
+ */
 enum ERModels{
   ER_Test                  = 1,
       ER_ButtsKatz         = 2,
@@ -70,7 +70,7 @@ static const er_data AT_ER_Data = {
 * Returns name of the electron model from index
 *
 * @param  ER_no    electron-range-model index
-* @return Er_name  string containing the electron-range model name
+* @param  Er_name  string containing the electron-range model name (output)
 */
 void  getERName(  const long* ER_no,
     char* ER_name);
@@ -83,7 +83,7 @@ void  getERName(  const long* ER_no,
 * @param  particle_no  particle indices for given field (vector of length n)
 * @param  material_no  index for detector material
 * @param  er_model  index for electron-range model chosen
-* @return  max_electron_range_m  electron range (track diameter) in m
+* @param  max_electron_range_m  electron range (track diameter) in m (output parameter)
 */
 void AT_max_electron_range_m( const long*  n,
     const float*  E_MeV_u,

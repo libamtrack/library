@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief ...
+ * @brief Gamma Response models
  */
 
 
@@ -34,31 +34,23 @@
 
 void getGammaName( const long* Gamma_no,
     char* Gamma_name){
-  switch( (int)(*Gamma_no) ){
-  case GR_Test:
-    strcpy(Gamma_name,"simple test gamma response");
-    break;
-  case GR_GeneralTarget:
-    strcpy(Gamma_name,"generalized multi-target/multi-hit gamma response");
-    break;
-  case GR_Radioluminescence:
-    strcpy(Gamma_name,"radioluminescence gamma response");
-    break;
-  case GR_ExpSaturation:
-    strcpy(Gamma_name,"exp.-sat. gamma response (obsolete, use gen. target/hit instead)");
-    break;
-  case GR_LinQuad:
-    strcpy(Gamma_name,"linear-quadratic gamma response");
-    break;
-  case GR_LinQuad_Log:
-    strcpy(Gamma_name,"lethal events number response");
-    break;
-  default:
+
+  // find look-up index for GR number in GR data table
+  long  match;
+  const long n_tmp = 1;
+
+  pmatchi(  Gamma_no,
+      &n_tmp,
+      AT_GR_Data.GR_no,
+      &AT_GR_Data.n,
+      &match);
+
+  if( match != -1){
+    strcpy(Gamma_name, AT_GR_Data.GR_name[match]);
+  } else {
     strcpy(Gamma_name,"*** invalid choice ***");
-    break;
   }
 }
-
 
 void AT_gamma_response( const long*  n,
     const float*  d_Gy,
@@ -233,7 +225,6 @@ void AT_gamma_response( const long*  n,
   }
   return;
 }
-
 
 void AT_get_gamma_response( const long*  n,
     const float*  d_Gy,
