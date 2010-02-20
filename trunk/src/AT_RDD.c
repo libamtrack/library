@@ -267,7 +267,9 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
               &I_eV,
               &alpha_g_cm2_MeV,
               &p_MeV,
-              &m_g_cm2);
+              &m_g_cm2,
+              NULL,
+              NULL);
   density_kg_m3      =  density_g_cm3 * 1000.0f;
 
   ///////////////////////////////////////////////////////////////
@@ -429,7 +431,9 @@ void AT_D_RDD_Gy  ( const  long*  n,
         &I_eV,
         &alpha_g_cm2_MeV,
         &p_MeV,
-        &m_g_cm2);
+        &m_g_cm2,
+        NULL,
+        NULL);
   float    density_kg_m3  =  density_g_cm3 * 1000.0f;
 
 
@@ -571,7 +575,9 @@ void AT_r_RDD_m  ( const  long*  n,
         &I_eV,
         &alpha_g_cm2_MeV,
         &p_MeV,
-        &m_g_cm2);
+        &m_g_cm2,
+        NULL,
+        NULL);
     float    density_kg_m3  =  density_g_cm3 * 1000.0f;
 
   if( *rdd_model == RDD_Test){
