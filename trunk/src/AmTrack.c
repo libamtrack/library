@@ -51,7 +51,6 @@ void AT_SPIFF(  const long*  n,
     const bool*   lethal_events_mode,
     float*  results)
 {
-
   FILE* output_file = NULL;
 
   if(*write_output){
@@ -879,7 +878,7 @@ void AT_IGK(  const long*  n,
     float*  results)
 {
   FILE*    output_file;
-  struct tm  *start_tm, *end_tm;  // TODO add reading end time marker
+  struct tm  *start_tm, *end_tm;
 
   time_t start_t, end_t;
   start_t = time(NULL);
@@ -992,6 +991,8 @@ void AT_IGK(  const long*  n,
   // BY A SINGLE FUNCTION
   ////////////////////////////////////////////////////////////////////////
 
+
+  //TODO rename KatseMitGlatse to something more reasonable
   output_file    =  fopen("KatseMitGlatse.log","w");
   if (output_file == NULL) return;                      // File error
 
@@ -1035,15 +1036,15 @@ void AT_IGK(  const long*  n,
   params->gamma_parameters[0]  = 1; // No multiple components
   params->gamma_parameters[4]  = 0;
 
-  float   S_HCP               = 0.0f;
-  float   S_gamma             = 0.0f;
+  float   S_HCP                = 0.0f;
+  float   S_gamma              = 0.0f;
 
-  double  sI_m2               = 0.0;
-  float   sI_cm2              = 0.0f;
-  float   P_I                 = 0.0f;
-  float   P_g                 = 0.0f;
-  float   gamma_contribution  = 0.0f;
-  float   cross_section_ratio = 0.0f;
+  double  sI_m2                = 0.0;
+  float   sI_cm2               = 0.0f;
+  float   P_I                  = 0.0f;
+  float   P_g                  = 0.0f;
+  float   gamma_contribution   = 0.0f;
+  float   cross_section_ratio  = 0.0f;
 
   for(i = 0; i < n_components; i++){
     long j;
@@ -1169,6 +1170,11 @@ fprintf(debf,"%s r=%g, integration from %g to %g , error no == %d\n",isp,*r_m,in
   free(dfdd);
 
   free(params);
+
+  end_t = time(NULL);
+  end_tm     = localtime(&end_t);
+  fprintf(output_file, "End time and date: %s\n", asctime(end_tm));
+
   fclose(output_file);
 }
 
@@ -1212,6 +1218,9 @@ void AT_SPISS(	const long* n,
   struct tm  *start_tm, *end_tm;
   time_t     start_t, end_t;
   start_t    = time(NULL);
+  start_tm = localtime(&start_t);
+
+  fprintf(output_file, "Start time and date: %s\n", asctime(start_tm));
 
   // The histogram initialization and handling has been adapted to SPIFF
   // although some features are not used here
@@ -1356,12 +1365,12 @@ void AT_SPISS(	const long* n,
 
       // (3) Apply importance sampling / weighting
       if (*importance_sampling){
-        weight	*=	(*importance_sampling) * pow(F, (*importance_sampling)-1.0f);
-        F		 =	pow(F, (*importance_sampling));
+        weight  *= (*importance_sampling) * pow(F, (*importance_sampling)-1.0f);
+        F        = pow(F, (*importance_sampling));
       }
 
       // (4) get dose d_Gy[j](r_max * F)
-      r_m				= f1_parameters[k*9 + 2] * sqrt(F);						// r_max for particle type k * 0..1
+      r_m        = f1_parameters[k*9 + 2] * sqrt(F); // r_max for particle type k * 0..1
       AT_D_RDD_Gy(  	&n_tmp,
           &r_m,
           &E_MeV_u[k],
@@ -1374,7 +1383,7 @@ void AT_SPISS(	const long* n,
           &d_j_Gy);
 
       // (5) Add dose
-      d_Gy		+=	d_j_Gy;
+      d_Gy += d_j_Gy;
     }
 
     // Fill dose into histogram
@@ -1392,15 +1401,15 @@ void AT_SPISS(	const long* n,
   }
 
   // Normalize f
-  float norm 		= 0.0f;
+  float norm    = 0.0f;
   float d_check	= 0.0f;
   for (i = 0; i < n_bins_f; i++){
-    norm	+= f_dd_Gy[i] * f[i];
+    norm       += f_dd_Gy[i] * f[i];
   }
   norm += f0;
   for (i = 0; i < n_bins_f; i++){
-    f[i]	/= norm;
-    d_check += f_d_Gy[i]*f_dd_Gy[i]*f[i];
+    f[i]       /= norm;
+    d_check    += f_d_Gy[i]*f_dd_Gy[i]*f[i];
   }
 
   fprintf(output_file, "SPISS\n");
@@ -1432,7 +1441,7 @@ void AT_SPISS(	const long* n,
   end_t  = time(NULL);
   end_tm = localtime(&end_t);
   float timespan_s  = difftime(end_t, start_t);
-  fprintf(output_file, "\nTime to run: %s\n", asctime(end_tm)); // TODO it does not make sense, we also have to use start_tm !
+  fprintf(output_file, "End time and date: %s\n", asctime(end_tm));
   fprintf(output_file, "\nTime per sample [s]:    %4.2e\n", timespan_s / *n_runs);
 
   fprintf(output_file, "\n");
