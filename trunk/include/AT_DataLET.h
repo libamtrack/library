@@ -49,6 +49,8 @@ typedef struct {
   const long    material_no[PSTAR_DATA_N];
 } pstar_data;
 
+
+//TODO needs to be moved to external file
 static const pstar_data AT_PSTAR_Data = {
     PSTAR_DATA_N,
 

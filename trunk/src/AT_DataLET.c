@@ -48,7 +48,7 @@ void getPSTARvalue(
     const float* y_table,
     float* y)
 {
-  // first: find those PSTAR entries that match the material name
+  // first: find those PSTAR entries that match the material number
   bool*    matches    =  (bool*)calloc(AT_PSTAR_Data.n, sizeof(bool));
   matchi(    material_no,
       AT_PSTAR_Data.material_no,
@@ -255,5 +255,3 @@ void AT_E_MeV_from_LET(  const long*  n,
   free( LET_MeV_cm2_g_copy );
   free( sE );
 }
-
-

@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief ...
+ * @brief Numerical routines
  */
 
 /*
@@ -288,6 +288,13 @@ int pbdv_(double *v,
   return 0;
 } /* pbdv_ */
 
+/**
+ * Compute parabolic cylinder function Dv(x) for small argument
+ * routines called: GAMMA
+ * @param x argument
+ * @param va order
+ * @param pd output Dv(x)
+ */
 int dvsa_(double *va,
     double *x,
     double *pd)
@@ -299,17 +306,6 @@ int dvsa_(double *va,
   static int m;
   static double r__, a0, g0, g1, r1, ep, gm, pi, vm, vt, ga0, va0, sq2,
   eps;
-//  extern /* Subroutine */ int gamma_(double *, double *);
-
-
-  /*       =================================================== */
-  /*       Purpose: Compute parabolic cylinder function Dv(x) */
-  /*                for small argument */
-  /*       Input:   x  --- Argument */
-  /*                va --- Order */
-  /*       Output:  PD --- Dv(x) */
-  /*       Routine called: GAMMA for computing �(x) */
-  /*       =================================================== */
 
   eps = 1e-15;
   pi = 3.141592653589793;
@@ -354,6 +350,15 @@ int dvsa_(double *va,
   return 0;
 } /* dvsa_ */
 
+/**
+ * Compute parabolic cylinder function Dv(x) for large argument
+ * Routines called:
+ *             (1) VVLA for computing Vv(x) for large |x|
+ *             (2) GAMMA for computing �(x)
+ * @param x argument
+ * @param va order
+ * @param pd output Dv(x)
+ */
 int dvla_(double *va, double *x, double *pd)
 {
   /* System generated locals */
@@ -362,20 +367,6 @@ int dvla_(double *va, double *x, double *pd)
   /* Local variables */
   static int k;
   static double r__, a0, x1, gl, ep, pi, vl, eps;
-//  extern /* Subroutine */ int vvla_(double *, double *, double *
-//  ), gamma_(double *, double *);
-
-
-  /*       ==================================================== */
-  /*       Purpose: Compute parabolic cylinder functions Dv(x) */
-  /*                for large argument */
-  /*       Input:   x  --- Argument */
-  /*                va --- Order */
-  /*       Output:  PD --- Dv(x) */
-  /*       Routines called: */
-  /*             (1) VVLA for computing Vv(x) for large |x| */
-  /*             (2) GAMMA for computing �(x) */
-  /*       ==================================================== */
 
   pi = 3.141592653589793;
   eps = 1e-12;
@@ -405,6 +396,15 @@ int dvla_(double *va, double *x, double *pd)
   return 0;
 } /* dvla_ */
 
+/**
+ * Compute parabolic cylinder function Vv(x) for large argument
+ * Routines called:
+ *             (1) DVLA for computing Dv(x) for large |x|
+ *             (2) GAMMA for computing �(x)
+ * @param x argument
+ * @param va order
+ * @param pv output Vv(x)
+ */
 int vvla_(double *va, double *x, double *pv)
 {
   /* System generated locals */
@@ -413,21 +413,6 @@ int vvla_(double *va, double *x, double *pv)
   /* Local variables */
   static int k;
   static double r__, a0, x1, gl, qe, pi, pdl, dsl, eps;
-//  extern /* Subroutine */ int dvla_(double *, double *, double *
-//  ), gamma_(double *, double *);
-
-
-  /*       =================================================== */
-  /*       Purpose: Compute parabolic cylinder function Vv(x) */
-  /*                for large argument */
-  /*       Input:   x  --- Argument */
-  /*                va --- Order */
-  /*       Output:  PV --- Vv(x) */
-  /*       Routines called: */
-  /*             (1) DVLA for computing Dv(x) for large |x| */
-  /*             (2) GAMMA for computing �(x) */
-  /*       =================================================== */
-
   pi = 3.141592653589793;
   eps = 1e-12;
   qe = exp(*x * .25f * *x);
@@ -458,6 +443,11 @@ int vvla_(double *va, double *x, double *pv)
   return 0;
 } /* vvla_ */
 
+/**
+ * Compute parabolic gamma function
+ * @param x argument (x is not equal to 0,-1,-2,...)
+ * @param ga output
+ */
 int gamma_(const double *x, double *ga)
 {
   /* Initialized data */
@@ -477,14 +467,6 @@ int gamma_(const double *x, double *ga)
   static double r__, z__;
   static int m1;
   static double pi, gr;
-
-
-  /*       ================================================== */
-  /*       Purpose: Compute gamma function �(x) */
-  /*       Input :  x  --- Argument of �(x) */
-  /*                       ( x is not equal to 0,-1,-2,���) */
-  /*       Output:  GA --- �(x) */
-  /*       ================================================== */
 
   pi = 3.141592653589793;
   if (*x == (double) ((int) (*x))) {
@@ -673,7 +655,8 @@ void nrerror(const char error_text[])
 #define MAXIT 60
 #define UNUSED (-1.11e30)
 
-/**   From Numerical Recipes in C, 2nd ed., 1992:
+/**
+ * From Numerical Recipes in C, 2nd ed., 1992:
  * Using Ridders' method, return the root of a function func known to lie between x1 and x2.
  * The root, returned as zriddr, will be refined to an approximate accuracy xacc.
  * @param func
@@ -695,8 +678,8 @@ float zriddr(float (*func)(float,void*), void * params, const float x1, const fl
     ans=UNUSED;                         //  Any highly unlikely value, to simplify logic below.
     for (j=1;j<=MAXIT;j++) {
       xm=0.5*(xl+xh);
-      fm=(*func)(xm,params);                     // First of two function evaluations per its=
-      s=sqrt(fm*fm-fl*fh);                   // eration.
+      fm=(*func)(xm,params);                     // First of two function evaluations per iteration
+      s=sqrt(fm*fm-fl*fh);
       if (s == 0.0) return ans;
       xnew=xm+(xm-xl)*((fl >= fh ? 1.0 : -1.0)*fm/s);   // Updating formula.
       if (fabs(xnew-ans) <= xacc) return ans;

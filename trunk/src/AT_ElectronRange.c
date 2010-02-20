@@ -31,32 +31,24 @@
 
 #include "AT_ElectronRange.h"
 
-// TODO rewrite that function to retrieve model names from AT_ER_Data
 void getERName(
     const long* ER_no,
     char* ER_name){
-  switch( (int)(*ER_no) ){
-  case ER_Test:
-    strcpy(ER_name,"simple test ER model");
-    break;
-  case ER_ButtsKatz:
-    strcpy(ER_name,"Butts & Katz' [Katz et al., 1972] ER model");
-    break;
-  case ER_Waligorski:
-    strcpy(ER_name,"Waligorski's ER model");
-    break;
-  case ER_Geiss:
-    strcpy(ER_name,"Geiss' [Geiss, 1997] ER model");
-    break;
-  case ER_Scholz:
-    strcpy(ER_name,"ER_Scholz' [Scholz, 2001] ER model");
-    break;
-  case ER_Tabata:
-    strcpy(ER_name,"ER_Tabata' [Tabata, 1972] ER model");
-    break;
-  default:
+
+  // find look-up index for ER number in ER data table
+  long  match;
+  const long n_tmp = 1;
+
+  pmatchi(  ER_no,
+      &n_tmp,
+      AT_ER_Data.ER_no,
+      &AT_ER_Data.n,
+      &match);
+
+  if( match != -1){
+    strcpy(ER_name, AT_ER_Data.ER_name[match]);
+  } else {
     strcpy(ER_name,"*** invalid choice ***");
-    break;
   }
 }
 
@@ -117,24 +109,24 @@ void AT_max_electron_range_m( const long*  n,
     }
     if( *er_model == ER_Tabata ){
       // general constants (best fit to experimental data)
-      double b1 = 2.335;
-      double b2 = 1.209;
-      double b3 = 1.78e-4;
-      double b4 = 0.9891;
-      double b5 = 3.01e-4;
-      double b6 = 1.468;
-      double b7 = 1.18e-2;
-      double b8 = 1.232;
-      double b9 = 0.109;
+      const double b1 = 2.335;
+      const double b2 = 1.209;
+      const double b3 = 1.78e-4;
+      const double b4 = 0.9891;
+      const double b5 = 3.01e-4;
+      const double b6 = 1.468;
+      const double b7 = 1.18e-2;
+      const double b8 = 1.232;
+      const double b9 = 0.109;
       // average A and Z for given material
-      double A = average_A;
-      double Z = average_Z;
+      const double A = average_A;
+      const double Z = average_Z;
       // constants...
-      double a1_g_cm2 = 0.1*b1*A / pow(Z,b2); // g_cm2
-      double a2 = b3*Z;
-      double a3 = b4 - b5*Z;
-      double a4 = b6 - b7*Z;
-      double a5 = b8 / pow(Z,b9);
+      const double a1_g_cm2 = 0.1*b1*A / pow(Z,b2); // g_cm2
+      const double a2 = b3*Z;
+      const double a3 = b4 - b5*Z;
+      const double a4 = b6 - b7*Z;
+      const double a5 = b8 / pow(Z,b9);
       double tau = 2.0 * gsl_pow_2(beta[i]) / (1. - gsl_pow_2(beta[i]));
       max_electron_range_m[i] = (a1_g_cm2)*(((gsl_sf_log(1 + a2 * tau))/a2) - ((a3*tau)/(1 + a4*pow(tau,a5))) );
     }
