@@ -613,7 +613,15 @@ static const pstar_data AT_PSTAR_Data = {
     ///////////////////////////////////////////////////////////////////////
 };
 
-// get LET-data for given material
+/**
+ * get LET-data for given material
+ * @param n
+ * @param x
+ * @param material_no
+ * @param x_table
+ * @param y_table
+ * @param y
+ */
 void getPSTARvalue(
     const long* n,
     const float* x,

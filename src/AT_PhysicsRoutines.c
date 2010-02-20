@@ -303,3 +303,42 @@ void AT_D_Gy(  const long*  n,
   }
 }
 
+void AT_interparticleDistance_m( const long*   n,
+    const float*  LET_MeV_cm2_g,
+    const float*  fluence_cm2,
+    float*  results_m
+){
+  long i;
+  float fluence;
+  for( i = 0 ; i < *n ; i++ ){
+    if( fluence_cm2[i] > 0 ){
+      results_m[i] = 2.0f / sqrt(M_PI*1e4*fluence_cm2[i]);
+    } else {
+      fluence = (-fluence_cm2[i]) / (LET_MeV_cm2_g[i] * MeV_g_to_J_kg);
+      results_m[i] = 2.0f / sqrt(M_PI*1e4*fluence);
+    }
+  }
+}
+
+void AT_inv_interparticleDistance_Gy( const long*   n,
+    const float*  LET_MeV_cm2_g,
+    const float*  distance_m,
+    float*  results_Gy
+){
+  long i;
+  float fluence;
+  for( i = 0 ; i < *n ; i++ ){
+    fluence = (2.0f/distance_m[i])*(2.0f/distance_m[i])*M_1_PI*1e-4;
+    results_Gy[i] = fluence * (LET_MeV_cm2_g[i] * MeV_g_to_J_kg);
+  }
+}
+
+void AT_inv_interparticleDistance_cm2( const long*   n,
+    const float*  distance_m,
+    float*  results_cm2
+){
+  long i;
+  for( i = 0 ; i < *n ; i++ ){
+    results_cm2[i] = (2.0f/distance_m[i])*(2.0f/distance_m[i])*M_1_PI*1e-4;
+  }
+}

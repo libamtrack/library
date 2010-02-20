@@ -31,10 +31,10 @@
 
 #include "AT_SuccessiveConvolutions.h"
 
-#define MEAN_HIT_NUMBER_LINEAR_APPROX_LIMIT    0.002
-#define  DEBUG_INTERVALS              8
-#define DEBUG_MEAN                10.0f
-#define DEBUG_SIGMA                1.0f
+#define MEAN_HIT_NUMBER_LINEAR_APPROX_LIMIT  0.002
+#define DEBUG_INTERVALS                      8
+#define DEBUG_MEAN                           10.0f
+#define DEBUG_SIGMA                          1.0f
 
 
 void  AT_SC_get_f1_array_size(
@@ -429,9 +429,9 @@ void  AT_SC_get_f_start( const float*  u_start,
 / Successive convolutions (Kellerer Algorithm)
 *******************************************************************************/
 
-///////////////////////////////////////////////////////////////////////////////////////
-// AT_SC_NORMAL
-///////////////////////////////////////////////////////////////////////////////////////
+/**
+ * AT_SC_NORMAL
+ */
 aKList  AT_SC_NORMAL(aKList theKList){
 
   if(theKList.write_output){
@@ -492,9 +492,9 @@ aKList  AT_SC_NORMAL(aKList theKList){
 
 
 
-///////////////////////////////////////////////////////////////////////////////////////
-// AT_SC_OUTPUT
-///////////////////////////////////////////////////////////////////////////////////////
+/**
+ * AT_SC_OUTPUT
+ */
 aKList  AT_SC_OUTPUT(aKList theKList){
 
   if(theKList.write_output){
@@ -563,10 +563,9 @@ aKList  AT_SC_OUTPUT(aKList theKList){
 
 
 
-///////////////////////////////////////////////////////////////////////////////////////
-// AT_SC_INTERP
-///////////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * AT_SC_INTERP
+ */
 aKList  AT_SC_INTERP(aKList theKList){
 
   theKList.A[1-1]          =  theKList.F[2-1] - theKList.F[1-1];
@@ -589,10 +588,9 @@ aKList  AT_SC_INTERP(aKList theKList){
   return(theKList);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-// AT_SC_RESET
-///////////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * AT_SC_RESET
+ */
 aKList  AT_SC_RESET(aKList theKList){
 
   if (theKList.N2 <= 256){
@@ -691,10 +689,9 @@ aKList  AT_SC_RESET(aKList theKList){
 
 
 
-///////////////////////////////////////////////////////////////////////////////////////
-// AT_SC_ZERO
-///////////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * AT_SC_ZERO
+ */
 aKList  AT_SC_ZERO(aKList theKList){
 
   if(theKList.write_output){
@@ -745,10 +742,9 @@ aKList  AT_SC_ZERO(aKList theKList){
 
 
 
-///////////////////////////////////////////////////////////////////////////////////////
-// AT_SC_SHRINK
-///////////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * AT_SC_SHRINK
+ */
 aKList  AT_SC_SHRINK(aKList theKList){
 
   float  EX            =  theKList.shrink_tails_under;
@@ -794,17 +790,10 @@ aKList  AT_SC_SHRINK(aKList theKList){
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////////
-// AT_SC_FOLD
-///////////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * AT_SC_FOLD
+ */
 aKList AT_SC_FOLD(aKList theKList){
-
-  //#ifdef _DEBUG
-  //  indnt_inc();
-  //  fprintf(debf,"%sbegin AT_SC_FOLD, size = %ld\n", isp, theKList.array_size);
-  //#endif
-
   float*  FDE          =  (float*)calloc(theKList.array_size, sizeof(float));
 
   if((theKList.CN >= 10.0) && (theKList.adjust_N2 == true)){
@@ -862,8 +851,12 @@ aKList AT_SC_FOLD(aKList theKList){
   return(theKList);
 }
 
-
-
+/**
+ * SuccessiveConvolutions
+ * @param  fdd    frequence:          H * DE        (f * dd)
+ * @param  dfdd   dose contribution:  H * E * DE    (f * d * dd)
+ * @param  d      first moment:                     (<d>)
+ */
 void   AT_SuccessiveConvolutions( const float*  u,
     const long*  n_bins_f,
     long*  N2,
@@ -872,9 +865,9 @@ void   AT_SuccessiveConvolutions( const float*  u,
     float*  f_dd_Gy,
     float*  f,
     float*  f0,
-    float*  fdd,                  // frequence:      H * DE      (f * dd)
-    float*  dfdd,                  // dose contribution:  H * E * DE    (f * d * dd)
-    float*  d,                    // first moment:            (<d>)
+    float*  fdd,
+    float*  dfdd,
+    float*  d,
     const bool*  write_output,
     const bool*  shrink_tails,
     const float*  shrink_tails_under,

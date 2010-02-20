@@ -112,4 +112,23 @@ void AT_D_Gy(  const long*  n,
     // results
      float* D_Gy);
 
+
+void AT_interparticleDistance_m(       const long*   n,
+    const float*  LET_MeV_cm2_g,
+    const float*  fluence_cm2,
+    float*  results_m
+);
+
+void AT_inv_interparticleDistance_Gy(  const long*   n,
+    const float*  LET_MeV_cm2_g,
+    const float*  distance_m,
+    float*  results_Gy
+);
+
+void AT_inv_interparticleDistance_cm2( const long*   n,
+    const float*  distance_m,
+    float*  results_cm2
+);
+
+
 #endif /* AT_PHYSICSROUTINES_H_ */

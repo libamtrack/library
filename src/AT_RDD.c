@@ -216,7 +216,8 @@ void AT_RDD_Katz_ext_GyS(int *n, float *r_m, float* a0_m, float* alpha, float* r
   };
 }
 
-/*  f1_parameters:
+/**
+ * @param f1_parameters
  *     0 - LET_MeV_cm2_g
  *     1 - r_min_m
  *     2 - r_max_m
@@ -684,7 +685,7 @@ void AT_r_RDD_m  ( const  long*  n,
 
     float Katz_point_coeff_Gy = AT_RDD_Katz_point_coeff_Gy(&(f1_parameters[5]),&Z_eff,&beta,&alpha,&density_kg_m3,&(f1_parameters[2]));
 ///////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
+
     for (i = 0; i < *n; i++){
       params->D0 = D_RDD_Gy[i];
       // if D is outside the definition, return -1
