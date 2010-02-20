@@ -30,12 +30,21 @@
 */
 
 #include "AT_PhysicsRoutines.h"
+#include "AT_ElectronRange.h"
 
 void AT_max_E_transfer_MeV_R(  const int*  n,
     const float*  E_MeV_u,
     const int*  particle_no,
     // results
     float*  max_E_transfer_MeV);
+
+void AT_max_electron_range_m_R(  const int*  n,
+    const float*  E_MeV_u,
+    const int*  particle_no,
+    const int*  material_no,
+    const int*   er_model,
+    // results
+    float*  max_electron_range_m);
 
 
 #endif /* AT_WRAPPER_R_H_ */

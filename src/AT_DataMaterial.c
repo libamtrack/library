@@ -31,6 +31,7 @@
 
 #include "AT_DataMaterial.h"
 
+//TODO get material names from AT_Material_Data
 void getMaterialName(
     const long* material_no,
     char* material_name){
@@ -53,6 +54,7 @@ void getMaterialName(
   }
 }
 
+//TODO get material names from AT_Material_Data
 void getMaterialNo(
     const char* material_name,
     long* material_no){
@@ -75,7 +77,9 @@ void AT_getMaterialData(    const long*  n,
     float*  I_eV,
     float*  alpha_g_cm2_MeV,
     float*  p_MeV,
-    float*  m_g_cm2)
+    float*  m_g_cm2,
+    float*  average_A,
+    float*  average_Z)
 {
   long*  match  =  (long*)calloc(*n, sizeof(long));
   pmatchi(  material_no,
@@ -115,6 +119,16 @@ void AT_getMaterialData(    const long*  n,
       m_g_cm2[i]      = AT_Material_Data.m_g_cm2[match[i]];
     }
   }
+  if( average_A != NULL ){
+    for(i = 0; i < *n; i++){
+      average_A[i]      = AT_Material_Data.average_A[match[i]];
+    }
+  }
+  if( average_Z != NULL ){
+    for(i = 0; i < *n; i++){
+      average_Z[i]      = AT_Material_Data.average_Z[match[i]];
+    }
+  }
   free(match);
 }
 
@@ -122,59 +136,6 @@ void AT_density_g_cm3_from_material_no( const long*  n,
     const long*  material_no,
     float*       density_g_cm3)
 {
-  AT_getMaterialData(n,material_no,density_g_cm3,NULL,NULL,NULL,NULL,NULL);
+  AT_getMaterialData(n,material_no,density_g_cm3,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 }
 
-//TODO should be removed and also all references
-void AT_density_g_cm3_from_material_name( const long*  n,
-    const char*  material_name,
-    float*       density_g_cm3)
-{
-  long  i;
-  long  match;
-  long  n_mat  = 1;
-  pmatchc(  &material_name,
-      &n_mat,
-      AT_Material_Data.material_name,
-      &AT_Material_Data.n,
-      &match);
-  for(i = 0; i < *n; i++){
-    density_g_cm3[i]    = AT_Material_Data.density_g_cm3[match];
-  }
-}
-
-void AT_density_g_cm3_from_material_nameS(  char**  material_name,
-    float*  density_g_cm3){
-  long  n;
-  n    = 1;
-  AT_density_g_cm3_from_material_name(  &n,
-      *material_name,
-      density_g_cm3);
-}
-
-//TODO should be removed and also all references
-void AT_electron_density_m3_from_material_name(  const long*  n,
-    const char*  material_name,
-    float*  electron_density_m3)
-{
-  long  i;
-  long  match;
-  long  n_mat  = 1;
-  pmatchc(  &material_name,
-      &n_mat,
-      AT_Material_Data.material_name,
-      &AT_Material_Data.n,
-      &match);
-  for(i = 0; i < *n; i++){
-    electron_density_m3[i]  = AT_Material_Data.electron_density_m3[match];
-  }
-}
-
-void AT_electron_density_m3_from_material_nameS(  char**  material_name,
-    float*  electron_density_m3){
-  long  n;
-  n    = 1;
-  AT_electron_density_m3_from_material_name(  &n,
-      *material_name,
-      electron_density_m3);
-}

@@ -53,6 +53,8 @@ typedef struct {
   const float   alpha_g_cm2_MeV[MATERIAL_DATA_N];
   const float   p_MeV[MATERIAL_DATA_N];
   const float   m_g_cm2[MATERIAL_DATA_N];
+  const float   average_A[MATERIAL_DATA_N];
+  const float   average_Z[MATERIAL_DATA_N];
   const char*   material_name[MATERIAL_DATA_N];
 } material_data;
 
@@ -65,6 +67,8 @@ static const material_data AT_Material_Data = {
     {  0.00231f,         0.003058f,        0.003266f,     0.001988f,  0.00216381f},
     {  1.761f,           1.748f,           1.745f,        1.762f,     1.79165987f},
     {  0.01153f,         0.01305f,         0.01230f,      0.01338f,   -100.0f},
+    {  14.3f,            0.0f,             0.0f,          0.0f,       0.0f},           //TODO find average A values
+    {  7.22f,            0.0f,             0.0f,          0.0f,       0.0f},           //TODO find average Z values
     {  "Water, Liquid", "Aluminum Oxide",  "Aluminum",    "PMMA",     "Alanine"     }
 };
 
@@ -82,26 +86,13 @@ void AT_getMaterialData( const long*  n,
     float*  I_eV,                  //TODO describe this !
     float*  alpha_g_cm2_MeV,       //TODO describe this !
     float*  p_MeV,                 //TODO describe this !
-    float*  m_g_cm2                //TODO describe this !
+    float*  m_g_cm2,               //TODO describe this !
+    float*  average_A,
+    float*  average_Z
     );
 
 void AT_density_g_cm3_from_material_no( const long*  n,
     const long*  material_no,
     float*       density_g_cm3);
-
-void AT_density_g_cm3_from_material_name( const long*  n,
-    const char*  material_name,
-    float*  density_g_cm3);
-
-void AT_density_g_cm3_from_material_nameS(    char**  material_name,
-    float*  density_g_cm3);
-
-void AT_electron_density_m3_from_material_name(  const long*  n,
-    const char*  material_name,
-    float*  electron_density_m3);
-
-void AT_electron_density_m3_from_material_nameS(  char**  material_name,
-    float*  electron_density_m3);
-
 
 #endif /* AT_DATAMATERIAL_H_ */

@@ -60,36 +60,6 @@ void getERName(
   }
 }
 
-// TODO move this functions to AT_Wrapper_R
-#ifdef _R
-void AT_max_electron_range_mS(  int*  n,
-    float*  E_MeV_u,
-    int*  particle_no,
-    int*  material_no,
-    int*   er_model,
-    float*  max_electron_range_m)
-{
-  long n_long = (long)(*n);
-  long material_no_long = (long)(*material_no);
-  long er_model_long = (long)(*er_model);
-
-  long i;
-  long * particle_no_long = (long*)calloc(*n,sizeof(long));
-  for(i = 0 ; i < *n ; i++){
-    particle_no_long[i] = (long)particle_no[i];
-  }
-
-  AT_max_electron_range_m( &n_long,
-      E_MeV_u,
-      particle_no_long,
-      &material_no_long,
-      &er_model_long,
-      max_electron_range_m);
-
-  free(particle_no_long);
-
-}
-#endif
 
 
 void AT_max_electron_range_m( const long*  n,
@@ -100,9 +70,13 @@ void AT_max_electron_range_m( const long*  n,
     float*  max_electron_range_m)
 {
   // Get density matching to material_name (only 1 name therefore n_mat = 1)
-  long  n_mat  = 1;
+  const long  n_mat  = 1;
   float material_density_g_cm3;
-  AT_density_g_cm3_from_material_no(&n_mat, material_no, &material_density_g_cm3);
+  float average_A;
+  float average_Z;
+
+  AT_getMaterialData( &n_mat, material_no, &material_density_g_cm3,
+      NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
   float* mass    =  (float*)calloc(*n, sizeof(float));
 
@@ -141,30 +115,28 @@ void AT_max_electron_range_m( const long*  n,
     if( *er_model == ER_Scholz ){
       max_electron_range_m[i] = 5e-5 * (float)pow(tmpE, 1.7);
     }
-    if( *er_model == ER_Tabata ){ // TODO implement also for other materials
-      if( *material_no == Water_Liquid ){
-        // general constants (best fit to experimental data)
-        double b1 = 2.335;
-        double b2 = 1.209;
-        double b3 = 1.78e-4;
-        double b4 = 0.9891;
-        double b5 = 3.01e-4;
-        double b6 = 1.468;
-        double b7 = 1.18e-2;
-        double b8 = 1.232;
-        double b9 = 0.109;
-        // average A and Z for given material
-        double A = 14.3;
-        double Z = 7.22;
-        // constants...
-        double a1_g_cm2 = 0.1*b1*A / pow(Z,b2); // g_cm2
-        double a2 = b3*Z;
-        double a3 = b4 - b5*Z;
-        double a4 = b6 - b7*Z;
-        double a5 = b8 / pow(Z,b9);
-        double tau = 2.0 * gsl_pow_2(beta[i]) / (1. - gsl_pow_2(beta[i]));
-        max_electron_range_m[i] = (a1_g_cm2)*(((gsl_sf_log(1 + a2 * tau))/a2) - ((a3*tau)/(1 + a4*pow(tau,a5))) );
-      }
+    if( *er_model == ER_Tabata ){
+      // general constants (best fit to experimental data)
+      double b1 = 2.335;
+      double b2 = 1.209;
+      double b3 = 1.78e-4;
+      double b4 = 0.9891;
+      double b5 = 3.01e-4;
+      double b6 = 1.468;
+      double b7 = 1.18e-2;
+      double b8 = 1.232;
+      double b9 = 0.109;
+      // average A and Z for given material
+      double A = average_A;
+      double Z = average_Z;
+      // constants...
+      double a1_g_cm2 = 0.1*b1*A / pow(Z,b2); // g_cm2
+      double a2 = b3*Z;
+      double a3 = b4 - b5*Z;
+      double a4 = b6 - b7*Z;
+      double a5 = b8 / pow(Z,b9);
+      double tau = 2.0 * gsl_pow_2(beta[i]) / (1. - gsl_pow_2(beta[i]));
+      max_electron_range_m[i] = (a1_g_cm2)*(((gsl_sf_log(1 + a2 * tau))/a2) - ((a3*tau)/(1 + a4*pow(tau,a5))) );
     }
 
     // Scale maximum el. range with material density relative to water (1/rho)

@@ -350,7 +350,7 @@ AT.max.electron.range					<-	function(	E.MeV.u,
 												ER.model){
 	n					<-	length(E.MeV.u)
 	range.m				<-	numeric(n)
-	res				<-	.C("AT_max_electron_range_mS", 	n						= as.integer(n),
+	res				<-	.C("AT_max_electron_range_m_R", 	n						= as.integer(n),
 															E.MeV.u					= as.single(E.MeV.u),
 															particle.no			= as.integer(particle.no),
 															material.no			= as.integer(material.no),

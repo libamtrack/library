@@ -260,7 +260,7 @@ void AT_max_E_transfer_MeV(  const long*  n,
 
 
 void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
-    const char**  material_name,
+    const long*  material_no,
     float*  dsE2dz)
 {
   long  i;
@@ -268,9 +268,13 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
   float  electron_density_m3;
   long  n_dummy = 1;
   for (i = 0; i < *n; i++){
-    AT_electron_density_m3_from_material_name(  &n_dummy,
-        material_name[i],
-        &electron_density_m3);
+
+    AT_getMaterialData(  &n_dummy,
+        material_no,
+        NULL,
+        &electron_density_m3,
+        NULL, NULL, NULL, NULL, NULL, NULL);
+
     tmp                  =  e_C * e_C * e_C * e_C * electron_density_m3;
     tmp                 /=  4.0 * pi * e0_F_m * e0_F_m;
     tmp                 /=  MeV_to_J * MeV_to_J * m_to_cm;
