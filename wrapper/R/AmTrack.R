@@ -47,7 +47,7 @@
 # AT.effective.charge.from.beta
 # AT.effective.charge.from.particle.no
 # AT.gamma.response
-# AT.max.E.transfER.MeV
+# AT.max.E.transfer.MeV
 # AT.particle.properties						
 # AT.read.spectrum
 # AT.max.electron.range
@@ -266,15 +266,15 @@ AT.CSDA.range.g.cm2	<-	function(		E.MeV.u,
 
 
 ######################
-AT.max.E.transfER.MeV		<-	function(	E.MeV.u,
+AT.max.E.transfer.MeV		<-	function(	E.MeV.u,
 												particle.no){
 	n							<-	length(E.MeV.u)
-	max.E.transfER.MeV		<-	numeric(n)
-	res							<-	.C(	"AT_max_E_transfer_MeV",	n						=	as.integer(n),
+	max.E.transfer.MeV		<-	numeric(n)
+	res							<-	.C(	"AT_max_E_transfer_MeV_R",	n						=	as.integer(n),
 																		E.MeV.u				=	as.single(E.MeV.u),
 																		particle.no		=	as.integer(particle.no),
-																		max.E.transfER.MeV	=	as.single(max.E.transfER.MeV))
-	return(res$max.E.transfER.MeV)						
+																		max.E.transfer.MeV	=	as.single(max.E.transfer.MeV))
+	return(res$max.E.transfer.MeV)						
 }
 
 

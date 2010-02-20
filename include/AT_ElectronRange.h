@@ -31,10 +31,13 @@
 
 #include <string.h>
 #include <stdio.h>
+#include "gsl/gsl_pow_int.h"
+#include "gsl/gsl_sf_log.h"
 
 #include "AT_NumericalRoutines.h"
 #include "AT_DataMaterial.h"
 #include "AT_DataParticle.h"
+#include "AT_PhysicsRoutines.h"
 
 ///////////////////////////////////////////////////////////////////////
 // ER DATA
@@ -45,10 +48,11 @@ enum ERModels{
       ER_Waligorski        = 3,
       ER_Geiss             = 4,
       ER_Scholz            = 5,
-      ER_Edmund            = 6
+      ER_Edmund            = 6,
+      ER_Tabata            = 7
 };
 
-#define ER_DATA_N    5
+#define ER_DATA_N    7
 
 typedef struct {
   long    n;
@@ -58,8 +62,8 @@ typedef struct {
 
 static const er_data AT_ER_Data = {
     ER_DATA_N,
-    {  ER_Test,                 ER_ButtsKatz,                                  ER_Waligorski,            ER_Geiss,                        ER_Scholz},
-    {  "simple test ER model",  "Butts & Katz' [Katz et al., 1972] ER model",  "Waligorski's ER model",  "Geiss' [Geiss, 1997] ER model", "ER_Scholz' [Scholz, 2001] ER model"}
+    {  ER_Test,                 ER_ButtsKatz,                                  ER_Waligorski,            ER_Geiss,                        ER_Scholz,                           ER_Tabata },
+    {  "simple test ER model",  "Butts & Katz' [Katz et al., 1972] ER model",  "Waligorski's ER model",  "Geiss' [Geiss, 1997] ER model", "ER_Scholz' [Scholz, 2001] ER model", "ER_Tabata [Tabata, 1972] ER model"}
 };
 
 /**

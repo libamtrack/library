@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief ...
+ * @brief Electron Range models
  */
 
 /*
@@ -31,6 +31,7 @@
 
 #include "AT_ElectronRange.h"
 
+// TODO rewrite that function to retrieve model names from AT_ER_Data
 void getERName(
     const long* ER_no,
     char* ER_name){
@@ -50,13 +51,16 @@ void getERName(
   case ER_Scholz:
     strcpy(ER_name,"ER_Scholz' [Scholz, 2001] ER model");
     break;
+  case ER_Tabata:
+    strcpy(ER_name,"ER_Tabata' [Tabata, 1972] ER model");
+    break;
   default:
     strcpy(ER_name,"*** invalid choice ***");
     break;
   }
 }
 
-
+// TODO move this functions to AT_Wrapper_R
 #ifdef _R
 void AT_max_electron_range_mS(  int*  n,
     float*  E_MeV_u,
@@ -104,6 +108,10 @@ void AT_max_electron_range_m( const long*  n,
 
   AT_mass_from_particle_no(n,particle_no,mass);
 
+  float* beta    =  (float*)calloc(*n, sizeof(float));
+
+  AT_beta_from_mass(n,E_MeV_u,mass,beta);
+
   long  i;
   for (i = 0; i < *n; i++){
     float tmpE  = E_MeV_u[i];
@@ -133,6 +141,31 @@ void AT_max_electron_range_m( const long*  n,
     if( *er_model == ER_Scholz ){
       max_electron_range_m[i] = 5e-5 * (float)pow(tmpE, 1.7);
     }
+    if( *er_model == ER_Tabata ){ // TODO implement also for other materials
+      if( *material_no == Water_Liquid ){
+        // general constants (best fit to experimental data)
+        double b1 = 2.335;
+        double b2 = 1.209;
+        double b3 = 1.78e-4;
+        double b4 = 0.9891;
+        double b5 = 3.01e-4;
+        double b6 = 1.468;
+        double b7 = 1.18e-2;
+        double b8 = 1.232;
+        double b9 = 0.109;
+        // average A and Z for given material
+        double A = 14.3;
+        double Z = 7.22;
+        // constants...
+        double a1_g_cm2 = 0.1*b1*A / pow(Z,b2); // g_cm2
+        double a2 = b3*Z;
+        double a3 = b4 - b5*Z;
+        double a4 = b6 - b7*Z;
+        double a5 = b8 / pow(Z,b9);
+        double tau = 2.0 * gsl_pow_2(beta[i]) / (1. - gsl_pow_2(beta[i]));
+        max_electron_range_m[i] = (a1_g_cm2)*(((gsl_sf_log(1 + a2 * tau))/a2) - ((a3*tau)/(1 + a4*pow(tau,a5))) );
+      }
+    }
 
     // Scale maximum el. range with material density relative to water (1/rho)
     max_electron_range_m[i]    /= material_density_g_cm3;
@@ -142,4 +175,5 @@ void AT_max_electron_range_m( const long*  n,
 
   }
   free(mass);
+  free(beta);
 }
