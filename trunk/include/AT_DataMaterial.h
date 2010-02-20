@@ -66,9 +66,9 @@ static const material_data AT_Material_Data = {
     {  75.0f,            145.2f,           166.0f,        74.0f,      71.9f},
     {  0.00231f,         0.003058f,        0.003266f,     0.001988f,  0.00216381f},
     {  1.761f,           1.748f,           1.745f,        1.762f,     1.79165987f},
-    {  0.01153f,         0.01305f,         0.01230f,      0.01338f,   -100.0f},
+    {  0.01153f,         0.01305f,         0.01230f,      0.01338f,   -100.0f},        //TODO why there is -100 for alanine ?
     {  14.3f,            0.0f,             27.0f,         0.0f,       0.0f},           //TODO find average A values
-    {  7.22f,            0.0f,             13.0f          0.0f,       0.0f},           //TODO find average Z values
+    {  7.22f,            0.0f,             13.0f,         0.0f,       0.0f},           //TODO find average Z values
     {  "Water, Liquid", "Aluminum Oxide",  "Aluminum",    "PMMA",     "Alanine"     }
 };
 
