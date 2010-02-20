@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief ...
+ * @brief Radial Dose Distribution models
  */
 
 /*
@@ -294,21 +294,21 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
   /////////////////////////////////////////////////////////////////////////////
   // MODEL SPECIFIC PARAMETERS
   if( *rdd_model == RDD_Test){
-    f1_parameters[1]   = 0.0f;                                                // r_min_m
-    f1_parameters[6]  = 1.0f / (pi * f1_parameters[2]*f1_parameters[2] * m_to_cm * m_to_cm);                // pi * r_max_m^2 = Track area -> single_impact_fluence [1/cm2]
-    f1_parameters[5]  = f1_parameters[6] * f1_parameters[0] * MeV_to_J * 1000.0f;                      // LET  / track area = Norm.constant k
-    f1_parameters[3]  = f1_parameters[5];                                          // d_min_Gy = k
-    f1_parameters[4]  = f1_parameters[5];                                          // d_max_Gy = k
-    f1_parameters[7]  = f1_parameters[0] * f1_parameters[5] * MeV_g_to_J_kg;                        // single_impact_dose = LET * fluence;
-    f1_parameters[8]  = f1_parameters[0];                                          // dEdx = LET
+    f1_parameters[1]   = 0.0f;                                                                  // r_min_m
+    f1_parameters[6]  = 1.0f / (pi * f1_parameters[2]*f1_parameters[2] * m_to_cm * m_to_cm);    // pi * r_max_m^2 = Track area -> single_impact_fluence [1/cm2]
+    f1_parameters[5]  = f1_parameters[6] * f1_parameters[0] * MeV_to_J * 1000.0f;               // LET  / track area = Norm.constant k
+    f1_parameters[3]  = f1_parameters[5];                                                       // d_min_Gy = k
+    f1_parameters[4]  = f1_parameters[5];                                                       // d_max_Gy = k
+    f1_parameters[7]  = f1_parameters[0] * f1_parameters[5] * MeV_g_to_J_kg;                    // single_impact_dose = LET * fluence;
+    f1_parameters[8]  = f1_parameters[0];                                                       // dEdx = LET
   }
 
   if( *rdd_model == RDD_KatzPoint || *rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget){
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
     float alpha        =   1.667f;
-    float w_el_keV      =  2.0f * electron_mass_MeV_c2 * 1000.0f * beta*beta / (1 - beta*beta);
+    float w_el_keV     =  2.0f * electron_mass_MeV_c2 * 1000.0f * beta*beta / (1 - beta*beta);
     if(w_el_keV <= 1.0f){
-      alpha          = 1.079f;
+      alpha           = 1.079f;
     }
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
 
@@ -318,8 +318,8 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
     float  N_el_cm3    =  electron_density_m3 / (100*100*100);
     float  C_J_cm      =  2.0f * pi * N_el_cm3 * (e_esu*e_esu*e_esu*e_esu) / (electron_mass_g * c_cm_s *c_cm_s) * 1e-7;   // energy constant [J/cm] not [erg/cm] hence 10^-7
-    float  C_J_m      =  C_J_cm * 100.0f;
-    f1_parameters[5]    =   C_J_m;                      // Norm.constant k
+    float  C_J_m       =  C_J_cm * 100.0f;
+    f1_parameters[5]   =   C_J_m;                      // Norm.constant k
 
 
     // Get dEdx by simple integration from r_min_m (in case of RDD_Site = a0) to r_max_m
@@ -328,11 +328,11 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
     float Katz_point_coeff_Gy = AT_RDD_Katz_point_coeff_Gy(&C_J_m,&Z_eff,&beta,&alpha,&density_kg_m3,&(f1_parameters[2]));
     float Katz_dEdx_coeff_J_m = AT_RDD_Katz_dEdx_coeff_J_m(&(f1_parameters[2]),&density_kg_m3,&Katz_point_coeff_Gy);
-    dEdx_J_m = AT_RDD_Katz_dEdx_J_m(&alpha,&(f1_parameters[1]),&(f1_parameters[2]),&Katz_dEdx_coeff_J_m);
+    dEdx_J_m                  = AT_RDD_Katz_dEdx_J_m(&alpha,&(f1_parameters[1]),&(f1_parameters[2]),&Katz_dEdx_coeff_J_m);
 
-    float  dEdx_MeV_g_cm2    =  dEdx_J_m / 100.0f / density_g_cm3 / MeV_to_J;
+    float  dEdx_MeV_g_cm2     =  dEdx_J_m / 100.0f / density_g_cm3 / MeV_to_J;
 
-    f1_parameters[8]    =   dEdx_MeV_g_cm2;
+    f1_parameters[8]          =   dEdx_MeV_g_cm2;
 
     if( *rdd_model != RDD_ExtTarget )
       f1_parameters[3]    =  rdd_parameter[1];
@@ -423,6 +423,8 @@ void AT_D_RDD_Gy  ( const  long*  n,
       /* calculated parameters */
       f1_parameters);
 
+  // TODO assign f1_parameters to some more human-readable names
+
   // Get material data
   float     density_g_cm3, electron_density_m3, I_eV, alpha_g_cm2_MeV, p_MeV, m_g_cm2;
   AT_getMaterialData(  &n_tmp,
@@ -454,23 +456,23 @@ void AT_D_RDD_Gy  ( const  long*  n,
   if( *rdd_model == RDD_KatzPoint || *rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget || *rdd_model == RDD_Edmund){
     // Get beta, Z and Zeff
     float  beta    = 0.0f;
-    long  Z      = 0;
-    float  Z_eff    = 0.0f;
+    long   Z       = 0;
+    float  Z_eff   = 0.0f;
     AT_beta_from_particle_no(  &n_tmp,
                   E_MeV_u,
                   particle_no,
                   &beta);
     AT_Z_from_particle_no(  &n_tmp,
-                particle_no,
-                &Z);
+                  particle_no,
+                  &Z);
     AT_effective_charge_from_beta(  &n_tmp,
-                    &beta,
-                    &Z,
-                    &Z_eff);
+                  &beta,
+                  &Z,
+                  &Z_eff);
 
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
-    float alpha        =   1.667f;
-    float w_el_keV      =  2.0f * electron_mass_MeV_c2 * 1000.0f * beta*beta / (1 - beta*beta);
+    float alpha      = 1.667f;
+    float w_el_keV   = 2.0f * electron_mass_MeV_c2 * 1000.0f * beta*beta / (1.0f - beta*beta);
     if(w_el_keV <= 1.0f){
       alpha          = 1.079f;
     }
@@ -484,7 +486,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
       if (r_m[i] >= f1_parameters[1] && r_m[i] <= f1_parameters[2] && *rdd_model != RDD_ExtTarget){          // in between r_min and r_max --> D = KatzPoint
         //D_RDD_Gy[i]        = f1_parameters[5] * Z_eff*Z_eff / (2.0f * pi * r_m[i]*r_m[i] * beta*beta * alpha * density_kg_m3) * pow(1.0f - r_m[i] / f1_parameters[2], 1.0f / alpha);
         D_RDD_Gy[i]        = AT_RDD_Katz_point_Gy(&(r_m[i]),&alpha,&(f1_parameters[2]),&Katz_point_coeff_Gy);
-        D_RDD_Gy[i]        = fmaxf(D_RDD_Gy[i], f1_parameters[3]);        // Cut-off low doses
+        D_RDD_Gy[i]        = fmaxf(D_RDD_Gy[i], f1_parameters[3]);          // Cut-off low doses
       }
       if (r_m[i] <= f1_parameters[1] && *rdd_model == RDD_Site){            // r < r_min_m (for RDD_Site) --> D = d_max_Gy
         D_RDD_Gy[i]        = f1_parameters[4];
@@ -510,6 +512,21 @@ void AT_D_RDD_Gy  ( const  long*  n,
       }
     }
   }// end RDD_Geiss
+
+  if( *rdd_model == RDD_Cucinotta){
+    // Loop over all r_m given
+    for (i = 0; i < *n; i++){
+      D_RDD_Gy[i]    =  0.0f;
+      if (r_m[i] < f1_parameters[1]){
+//        D_RDD_Gy[i]    =  f1_parameters[5];
+        D_RDD_Gy[i]    =  0.0f;
+      }
+      if ((f1_parameters[1] <= r_m[i]) && (r_m[i] <= f1_parameters[2])){
+//        D_RDD_Gy[i]    =  f1_parameters[5] * (f1_parameters[1] / r_m[i]) * (f1_parameters[1] / r_m[i]);
+        D_RDD_Gy[i]    =  0.0f;
+      }
+    }
+  }// end RDD_Cucinotta
 
   free(f1_parameters);
 }
@@ -550,10 +567,10 @@ void AT_r_RDD_m  ( const  long*  n,
     float*  r_RDD_m)
 {
   long     i;
-  long    n_tmp      = 1;
+  long     n_tmp      = 1;
   // Get f1 parameters
   long     n_f1_parameters = 9;
-  float*    f1_parameters   = (float*)calloc(n_f1_parameters, sizeof(float));
+  float*   f1_parameters   = (float*)calloc(n_f1_parameters, sizeof(float));
   AT_RDD_f1_parameters(      /* radiation field parameters */
     E_MeV_u,
     particle_no,
@@ -570,16 +587,16 @@ void AT_r_RDD_m  ( const  long*  n,
   // Get material data
   float     density_g_cm3, electron_density_m3, I_eV, alpha_g_cm2_MeV, p_MeV, m_g_cm2;
   AT_getMaterialData(  &n_tmp,
-        material_no,
-        &density_g_cm3,
-        &electron_density_m3,
-        &I_eV,
-        &alpha_g_cm2_MeV,
-        &p_MeV,
-        &m_g_cm2,
-        NULL,
-        NULL);
-    float    density_kg_m3  =  density_g_cm3 * 1000.0f;
+      material_no,
+      &density_g_cm3,
+      &electron_density_m3,
+      &I_eV,
+      &alpha_g_cm2_MeV,
+      &p_MeV,
+      &m_g_cm2,
+      NULL,
+      NULL);
+  float  density_kg_m3  =  density_g_cm3 * 1000.0f;
 
   if( *rdd_model == RDD_Test){
     // Loop over all doses given
@@ -660,20 +677,20 @@ void AT_r_RDD_m  ( const  long*  n,
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
     // Get beta, Z and Zeff
-    float  beta    = 0.0f;
-    long  Z      = 0;
-    float  Z_eff    = 0.0f;
+    float  beta   = 0.0f;
+    long  Z       = 0;
+    float  Z_eff  = 0.0f;
     AT_beta_from_particle_no(  &n_tmp,
                   E_MeV_u,
                   particle_no,
                   &beta);
     AT_Z_from_particle_no(  &n_tmp,
-                particle_no,
-                &Z);
+                  particle_no,
+                  &Z);
     AT_effective_charge_from_beta(  &n_tmp,
-                    &beta,
-                    &Z,
-                    &Z_eff);
+                  &beta,
+                  &Z,
+                  &Z_eff);
 
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
     float alpha        =   1.667f;
@@ -684,7 +701,6 @@ void AT_r_RDD_m  ( const  long*  n,
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
 
     float Katz_point_coeff_Gy = AT_RDD_Katz_point_coeff_Gy(&(f1_parameters[5]),&Z_eff,&beta,&alpha,&density_kg_m3,&(f1_parameters[2]));
-///////////////////////////////////////////////////////////////////////////////////
 
     for (i = 0; i < *n; i++){
       params->D0 = D_RDD_Gy[i];
@@ -722,7 +738,6 @@ void AT_r_RDD_m  ( const  long*  n,
     free(params->D_RDD_Gy);
     free(params);
   }// end RDD_KatzPoint & RDD_Site
-
 
   free(f1_parameters);
 

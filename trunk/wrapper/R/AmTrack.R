@@ -36,6 +36,7 @@
 #              material.name as character cas cause trouble, replaces by material.no (int)
 # 2009-Jun-26: Added Edmund transport (CSDA)
 # 2010-Feb-08: Minor changes
+# 2010-Feb-20: Transport functions removed as they were removed already from the library, lgrz
 ################################################################################################
 
 ################################################################################################
@@ -47,10 +48,10 @@
 # AT.effective.charge.from.beta
 # AT.effective.charge.from.particle.no
 # AT.gamma.response
-# AT.max.E.transfer.MeV
+# AT.max.E.transfer.MeV                      OK
 # AT.particle.properties						
 # AT.read.spectrum
-# AT.max.electron.range
+# AT.max.electron.range                      OK
 # AT.D.Gy
 #
 # :::MATERIAL FUNCTIONS:::
@@ -58,11 +59,6 @@
 # AT.density.g.cm3
 # AT.LET.MeV.cm2.g
 # AT.electron.density.m3
-#
-# :::TRANSPORT FUNCTIONS:::
-# AT.Bortfeld.Transport.Protons
-# AT.Bortfeld.Transport.Proton.Spectrum
-# AT.Edmund.Transport
 #
 # ::: KATZ MODEL TEST FUNCTIONS:::
 # AT.RDD.Katz.point.kernel
@@ -72,8 +68,8 @@
 # AT.RDD.Katz.ext.kernel.D.Gy
 #
 # :::RADIAL DOSE FUNCTIONS:::
-# AT.RDD.D.Gy
-# AT.RDD.r.m
+# AT.RDD.D.Gy                                OK
+# AT.RDD.r.m                                 OK
 # AT.RDD.f1.parameters
 #
 # :::Successive convolution FUNCTIONS:::
@@ -90,7 +86,7 @@
 
 debug <- F
 
-print("libamtrack S/R wrapping script - 2010/02/08")
+print("libamtrack S/R wrapping script - 2010/02/20")
 
 ##################
 AT.beta.from.mass	<-	function(	E.MeV.u,
@@ -538,7 +534,7 @@ AT.RDD.D.Gy					<-	function(	r.m,
 		if(debug == T) cat("parameters a0=",RDD.parameters[2],"\n")
 	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[3],"\n")}
 			
-		res					<-	.C(	"AT_D_RDD_Gy",	n						=	as.integer(n),
+		res					<-	.C(	"AT_D_RDD_Gy_R",	n						=	as.integer(n),
 														r.m						=	as.single(r.m),
 														E.MeV.u				=	as.single(E.MeV.u),
 														particle.no			=	as.integer(particle.no),
@@ -592,7 +588,7 @@ AT.RDD.r.m					<-	function(	D.Gy,
 		if(debug == T) cat("parameters a0=",RDD.parameters[2],"\n")
 	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[3],"\n")}
 				
-		res					<-	.C(	"AT_r_RDD_m",	n						=	as.integer(n),
+		res					<-	.C(	"AT_r_RDD_m_R",	n						=	as.integer(n),
 														D.Gy					=	as.single(D.Gy),
 														E.MeV.u				=	as.single(E.MeV.u),
 														particle.no			=	as.integer(particle.no),
@@ -1164,186 +1160,6 @@ AT.RBE <- function( alpha.ion,
 	return (RBE)										 
 }
 
-														
-###############################################################################################
-# Transport functions
-################################################################################################
-
-##############################
-AT.Bortfeld.Transport.Protons				<-	function(	E.initial.MeV,
-																sE.initial.MeV,
-																fluence.initial.cm2,
-																plateau.dose.material.name,
-																n.shielding.slabs,
-																shielding.thickness.m,
-																shielding.material.name,
-																n.detector.slabs,
-																detector.thickness.m,
-																detector.material.name){
-
-	if(F){
-		
-	E.initial.MeV						<-	150
-sE.initial.MeV					<-	0
-fluence.initial.cm2				<-	1e8
-plateau.dose.material.name		<-	"Water, Liquid"
-n.shielding.slabs					<-	1
-shielding.thickness.m			<-	0.01
-shielding.material.name			<-	"Water, Liquid"
-n.detector.slabs					<-	300
-detector.thickness.m				<-	0.30
-detector.material.name			<-	"Water, Liquid"
-}
-
-	plateau.dose.Gy					<-	numeric(1)
-	plateau.dose.noNuc.Gy			<-	numeric(1)
-	detector.z.cm						<-	numeric(n.detector.slabs)
-	detector.E.MeV					<-	numeric(n.detector.slabs)
-	detector.sE.MeV					<-	numeric(n.detector.slabs)
-	detector.fluence.cm2				<-	numeric(n.detector.slabs)
-	detector.dfluencedz.cm			<-	numeric(n.detector.slabs)
-	detector.LET.MeV.g.cm2			<-	numeric(n.detector.slabs)
-	detector.dose.Gy					<-	numeric(n.detector.slabs)
-	detector.dose.noNuc.Gy			<-	numeric(n.detector.slabs)
-	detector.geom.factor				<-	numeric(1)
-	
-	res					<-	.C(	"AT_BortfeldTransportProtonS",	E.initial.MeV						=	as.single(E.initial.MeV),
-																		sE.initial.MeV					=	as.single(sE.initial.MeV),
-																		fluence.initial.cm2				=	as.single(fluence.initial.cm2),
-																		plateau.dose.material.name		=	as.character(plateau.dose.material.name),
-																		n.shielding.slabs					=	as.integer(n.shielding.slabs),
-																		shielding.thickness.m			=	as.single(shielding.thickness.m),
-																		shielding.material.name			=	as.character(shielding.material.name),
-																		n.detector.slabs					=	as.integer(n.detector.slabs),
-																		detector.thickness.m				=	as.single(detector.thickness.m),
-																		detector.material.name			=	as.character(detector.material.name),
-																		plateau.dose.Gy					=	as.single(plateau.dose.Gy),
-																		plateau.dose.noNuc.Gy			=	as.single(plateau.dose.noNuc.Gy),
-																		detector.z.cm						=	as.single(detector.z.cm),
-																		detector.E.MeV					=	as.single(detector.E.MeV),
-																		detector.sE.MeV					=	as.single(detector.sE.MeV),
-																		detector.fluence.cm2				=	as.single(detector.fluence.cm2),
-																		detector.dfluencedz.cm			=	as.single(detector.dfluencedz.cm),
-																		detector.LET.MeV.g.cm2			=	as.single(detector.LET.MeV.g.cm2),
-																		detector.dose.Gy					=	as.single(detector.dose.Gy),
-																		detector.dose.noNuc.Gy			=	as.single(detector.dose.noNuc.Gy),
-																		detector.geom.factor				=	as.single(detector.geom.factor))
-	
-	LET					<-	AT.LET.MeV.cm2.g(	res$detector.E.MeV,
-													rep(1, n.detector.slabs),			# only protons!
-													detector.material.name)
-	eff.fluence		<-	res$detector.dose.Gy / LET 	* 6.24150974e12
-	
-	df					<-	data.frame(	detector.z.cm				=	res$detector.z.cm,
-											detector.E.MeV			=	res$detector.E.MeV,
-											detector.sE.MeV			=	res$detector.sE.MeV,
-											detector.fluence.cm2		=	res$detector.fluence.cm2,
-											detector.dfluencedz.cm	=	res$detector.dfluencedz.cm,
-											detector.eff.fluence.cm2=	eff.fluence,
-											detector.LET.MeV.g.cm2	=	res$detector.LET.MeV.g.cm2,
-											detector.dose.Gy			=	res$detector.dose.Gy,
-											detector.dose.noNuc.Gy	=	res$detector.dose.noNuc.Gy,
-											plateau.dose.Gy			=	rep(res$plateau.dose.Gy, n.detector.slabs),
-											plateau.dose.noNuc.Gy	=	rep(res$plateau.dose.noNuc.Gy, n.detector.slabs),
-											detector.geom.factor		=	rep(res$detector.geom.factor, n.detector.slabs))
-	return(df)						
-													
-}
-
-######################################
-AT.Bortfeld.Transport.Proton.Spectrum			<-	function(	E.initial.spectrum.MeV,
-																		fluence.initial.spectrum.cm2,
-																		plateau.dose.material.name,
-																		n.shielding.slabs,
-																		shielding.thickness.m,
-																		shielding.material.name,
-																		n.detector.slabs,
-																		detector.thickness.m,
-																		detector.material.name){
-	
-	n.bins								<-	length(E.initial.spectrum.MeV)
-	sE.initial.spectrum.MeV			<-	rep(0.454, n.bins)															# approximate rectagluar bin width by Gaussian stdev (see Excel file: BinWidthStDevApproximation.xls)
-	fluence.norm						<-	fluence.initial.spectrum.cm2 / sum(fluence.initial.spectrum.cm2)
-	
-	df									<-	expand.grid(	E.MeV				=	E.initial.spectrum.MeV,
-															detector.z.cm		=	1:n.detector.slabs)
-											
-	n									<-	nrow(df)
-	df$norm.fluence					<-	numeric(n)
-	df$detector.E.MeV					<-	numeric(n)
-	df$detector.sE.MeV				<-	numeric(n)
-	df$detector.fluence.cm2			<-	numeric(n)
-	df$detector.eff.fluence.cm2		<-	numeric(n)
-	df$detector.dose.Gy				<-	numeric(n)
-
-	for (i in 1:length(E.initial.spectrum.MeV)){
-		#i<-1
-		cur.E.initial.MeV					<-		E.initial.spectrum.MeV[i]
-		cur.sE.initial.MeV				<-		sE.initial.spectrum.MeV[i]
-		cur.fluence.initial.cm2			<-		fluence.initial.spectrum.cm2[i]
-		cur.res							<-		AT.Bortfeld.Transport.Protons(	cur.E.initial.MeV	,
-																							cur.sE.initial.MeV,
-																							cur.fluence.initial.cm2,
-																							plateau.dose.material.name,
-																							n.shielding.slabs,
-																							shielding.thickness.m,
-																							shielding.material.name,
-																							n.detector.slabs,
-																							detector.thickness.m,
-																							detector.material.name)
-		ii										<-		df$E.MeV == cur.E.initial.MeV
-		df$norm.fluence[ii]					<-		rep(fluence.norm[i], sum (ii))
-		df$detector.z.cm[ii]					<-		cur.res$detector.z.cm
-		df$detector.E.MeV	[ii]				<-		cur.res$detector.E.MeV
-		df$detector.sE.MeV[ii]				<-		cur.res$detector.sE.MeV
-		df$detector.fluence.cm2[ii]			<-		cur.res$detector.fluence.cm2
-		df$detector.eff.fluence.cm2[ii]	<-		cur.res$detector.eff.fluence.cm2
-		df$detector.dose.Gy[ii]				<-		cur.res$detector.dose.Gy
-	}
-	
-	new.df		<-	data.frame(	detector.z.cm					=	unique(df$detector.z.cm),
-									detector.dose.Gy				=	length(unique(df$detector.z.cm)),
-									detector.eff.fluence.cm2	=	length(unique(df$detector.z.cm)))
-	for (cur.detector.z.cm in unique(df$detector.z.cm)){
-		ii											<-		df$detector.z.cm == cur.detector.z.cm
-		jj											<-		new.df$detector.z.cm == cur.detector.z.cm
-		new.df$detector.dose.Gy[jj]				<-		sum(	df$norm.fluence[ii] * df$detector.dose.Gy[ii])
-		new.df$detector.eff.fluence.cm2[jj]	<-		sum(	df$detector.eff.fluence.cm2[ii])
-	}	
-	
-	dE.bins.MeV		<-	diff(E.bins.limits)
-	E.bins.mid.MeV	<-	E.bins.limits + c(dE.bins.MeV, 0) / 2
-	E.bins.mid.MeV	<-	E.bins.mid.MeV[-length(E.bins.mid.MeV)]
-	tmp					<-	data.frame(	E.bins.mid.MeV	= E.bins.mid.MeV,
-											dE.bins.MeV		= dE.bins.MeV)
-																		
-	df.spectrum	<-	expand.grid(	detector.z.cm		= unique(df$detector.z.cm),
-										E.bins.mid.MeV	= tmp$E.bins.mid.MeV)
-	df.spectrum	<-	merge(df.spectrum, tmp, by = "E.bins.mid.MeV")
-	
-	df.spectrum$dFdE	<-	numeric(nrow(df.spectrum))
-	df.spectrum		<-	df.spectrum[order(df.spectrum$detector.z.cm, df.spectrum$E.bins.mid.MeV),]	
-	
-	for(i in 1:nrow(df)){
-		#i<-67
-		# convert mean / stdev to shape / scale for gamma distribution
-		if(df$detector.E.MeV[i] > 0){
-			k.shape	<-	df$detector.E.MeV[i]^2 / df$detector.sE.MeV[i]^2
-			th.scale	<-	df$detector.sE.MeV[i]^2 / df$detector.E.MeV[i]
-			contrib.dFdE			<-	df$detector.eff.fluence.cm[i] * pgamma(E.bins.limits, shape = k.shape, scale = th.scale)
-			contrib.dFdE			<-	diff(contrib.dFdE)
-			ii						<-	df.spectrum$detector.z.cm == df$detector.z.cm[i]
-			df.spectrum$dFdE[ii]	<-	df.spectrum$dFdE[ii] + contrib.dFdE
-			print(paste("Composing spectra - at", round(i/nrow(df) * 100, 2), "%."))
-		}else{
-			print(paste("Composing spectra - at", round(i/nrow(df) * 100, 2), "%, zero contribution due to E = 0"))
-		}
-	}
-
-	df			<-	merge(df.spectrum, new.df, by = "detector.z.cm")
-	df			<-	df[order(df$detector.z.cm, df$E.bins.mid.MeV),]
-	return(df)
-}
 AT.Edmund.Transport	<- 	function(			E.start.MeV.u,
 												E.min.MeV.u		=	1e-2,
 												particle.no		=	1,				# proton
