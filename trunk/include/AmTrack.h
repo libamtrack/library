@@ -13,6 +13,7 @@
  *    Created on: 28.07.2009
  *    Author: greilich
  *
+ *
  *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
@@ -110,23 +111,6 @@ void AT_SPIFF(  const long*  n,
     const bool*   lethal_events_mode,
     float*  results);
 
-void AT_interparticleDistance_m(       const long*   n,
-    const float*  LET_MeV_cm2_g,
-    const float*  fluence_cm2,
-    float*  results_m
-);
-
-void AT_inv_interparticleDistance_Gy(  const long*   n,
-    const float*  LET_MeV_cm2_g,
-    const float*  distance_m,
-    float*  results_Gy
-);
-
-void AT_inv_interparticleDistance_cm2( const long*   n,
-    const float*  distance_m,
-    float*  results_cm2
-);
-
 /**
 * Computes HCP response and RE/RBE using summation of tracks
 * an a Cartesian grid (the 'GSM' algorithm)
@@ -193,7 +177,7 @@ void AT_GSM(  const long*  n,
 
 /**
 * Computes HCP response and RE/RBE using Katz' Ion-Gamma-Kill approach
-* according to Waligórski, 1988
+* according to Waligorski, 1988
 *
 * @param  n      number of particle types in the mixed particle field (pointer to single variable)
 * @param  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
@@ -212,7 +196,7 @@ void AT_GSM(  const long*  n,
 * @param  gamma_parameters  parameters for chosen gamma response (pointer to array of size depending on chosen model)
 * @see          AT_GammaResponse.h for definition
 * @param  saturation_cross_section_factor  (algorithm specific)  scaling factor for the saturation cross section
-* @see          Waligórski, 1988
+* @see          Waligorski, 1988
 * @param  results      pointer to array of size 10 to be allocated by the user which will be used to return the results
 *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D
 *    results[1]    d_check         (algorithm independent)  not available with IGK

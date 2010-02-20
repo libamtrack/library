@@ -31,6 +31,3 @@
 */
 
 #include "AT_Constants.h"
-
-
-
