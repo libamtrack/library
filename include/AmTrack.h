@@ -52,6 +52,14 @@ extern char isp[];
 extern FILE * debf;
 
 /**
+* Prints name for debugging
+*
+* @return  none
+*/
+void AT_PrintName(  void);
+
+
+/**
 * Computes HCP response and RE/RBE using compound Poison process and
 * successive convolutions (CPP_SC, the 'SPIFF' algorithm)
 *
