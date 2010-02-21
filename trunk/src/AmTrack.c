@@ -31,6 +31,10 @@
 
 #include "AmTrack.h"
 
+void AT_PrintName(void){
+  printf("This is libamtrack.\n");
+}
+
 void AT_SPIFF(  const long*  n,
     const float*  E_MeV_u,
     const long*  particle_no,
