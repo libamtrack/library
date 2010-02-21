@@ -58,6 +58,7 @@ typedef struct {
   const char*   material_name[MATERIAL_DATA_N];
 } material_data;
 
+// TODO: replace electron density by conversion routine using A, Z
 static const material_data AT_Material_Data = {
     MATERIAL_DATA_N,
     {  Water_Liquid,     Aluminum_Oxide,   Aluminum,      PMMA,       Alanine},
@@ -66,7 +67,7 @@ static const material_data AT_Material_Data = {
     {  75.0f,            145.2f,           166.0f,        74.0f,      71.9f},
     {  0.00231f,         0.003058f,        0.003266f,     0.001988f,  0.00216381f},
     {  1.761f,           1.748f,           1.745f,        1.762f,     1.79165987f},
-    {  0.01153f,         0.01305f,         0.01230f,      0.01338f,   -100.0f},        //TODO why there is -100 for alanine ?
+    {  0.01153f,         0.01305f,         0.01230f,      0.01338f,   -100.0f},        // No data processed for nuclear interactions in Alanine, hence set to -100
     {  14.3f,            0.0f,             27.0f,         0.0f,       0.0f},           //TODO find average A values
     {  7.22f,            0.0f,             13.0f,         0.0f,       0.0f},           //TODO find average Z values
     {  "Water, Liquid", "Aluminum Oxide",  "Aluminum",    "PMMA",     "Alanine"     }
@@ -79,14 +80,33 @@ void getMaterialName( const long* material_no,
 void getMaterialNo( const char* material_name,
     long* material_no);
 
+
+/**
+* Returns material data
+* @param  n  number of materials the routine is called for (pointer to single variable)
+* @param  material_no  material indices (pointer to long array of length n)
+* @param  density_g_cm3  material density in g/cm3 (pointer to float array of length n)
+* @param  electron_density_m3  electron density in 1/m3 (pointer to float array of length n)
+* @param  I_eV  mean ionization potential in eV (pointer to float array of length n)
+* @param  alpha_g_cm2_MeV  fit parameter for power-law representation of stp.power/range/E-dependence (pointer to float array of length n)
+* @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
+*       Here, however, we use the mass stopping power. The correct dimension is g/(cm^2 * MeV^p)
+* @param  p_MeV  fit parameter for power-law representation of stp.power/range/E-dependence (pointer to float array of length n)
+* @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
+*       p is actually dimenionless, it should be nevertheless indicated, that the energy must be given in MeV
+* @param  m_g_cm2  fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni, 1982 (pointer to float array of length n)
+* @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
+* @param  average_A  average mass number (pointer to float array of length n)
+* @param  average_Z  average atomic number (pointer to float array of length n)
+*/
 void AT_getMaterialData( const long*  n,
     const long*  material_no,
     float*  density_g_cm3,
     float*  electron_density_m3,
-    float*  I_eV,                  //TODO describe this !
-    float*  alpha_g_cm2_MeV,       //TODO describe this !
-    float*  p_MeV,                 //TODO describe this !
-    float*  m_g_cm2,               //TODO describe this !
+    float*  I_eV,
+    float*  alpha_g_cm2_MeV,
+    float*  p_MeV,
+    float*  m_g_cm2,
     float*  average_A,
     float*  average_Z
     );
