@@ -112,6 +112,27 @@ void AT_D_Gy(  const long*  n,
     // results
      float* D_Gy);
 
+/**
+* Converts pair-wise physical beam parameters of a symmetric, double Gaussian shape beam (lateral), i.e.
+* central (peak) fluence / width (std.dev.)
+* and accelerator parameters, i.e.
+* total number of particle / FWHM
+*
+* The routine completes the missing data, e.g. FWHM if sigma given, fluence_cm2 (if set 0) if N given etc.
+* If both sigma_cm and FWHM or fluence_cm2 and N are given the physical parameters are taken and the acc. reevaluated
+*
+* @param  n      length of vectors for parameters (pointer to single variable)
+* @param  fluence_cm2     fluence in beam center (pointer to array of size n)
+* @param  sigma_cm      beam width stdev (pointer to array of size n)
+* @param  N     pointer to vector of size n to be allocated by the user which will be used to return the results (absolute particle number)
+* @param  FWHM_mm  pointer to vector of size n to be allocated by the user which will be used to return the results (in mm)
+* @return  none
+*/
+void AT_convert_beam_parameters(  const long*  n,
+    float* fluence_cm2,
+    float* sigma_cm,
+    float* N,
+    float* FWHM_mm);
 
 void AT_interparticleDistance_m(       const long*   n,
     const float*  LET_MeV_cm2_g,
