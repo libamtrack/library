@@ -53,6 +53,7 @@
 # AT.read.spectrum
 # AT.max.electron.range                      OK
 # AT.D.Gy
+# AT.convert.beam.parameters
 #
 # :::MATERIAL FUNCTIONS:::
 # AT.get.material.data
@@ -86,7 +87,7 @@
 
 debug <- F
 
-print("libamtrack S/R wrapping script - 2010/02/20")
+print("libamtrack S/R wrapping script - 2010/02/21")
 
 ##################
 AT.beta.from.mass	<-	function(	E.MeV.u,
@@ -332,6 +333,33 @@ AT.scaled.energy.from.particle.no	<-	function(	energy 				= E.MeV.u,
 																					particle.no	=	as.integer(particle.no),
 																					scaled.energy		=	as.single(scaled.energy))
 	return(res$scaled.energy)						
+}
+
+#############################
+AT.convert.beam.parameters	<-	function(	N 				= 0,
+											FWHM.mm			= 0,
+											fluence.cm2		= 0,
+											sigma.cm		= 0){
+	n					<-	max(length(N), length(FWHM.mm), length(fluence.cm2), length(sigma.cm))
+	if(N == 0){
+		N					<-	numeric(n)
+	}
+	if(FWHM.mm == 0){
+		FWHM.mm				<-	numeric(n)
+	}
+	if(fluence.cm2 == 0){
+		fluence.cm2			<-	numeric(n)
+	}
+	if(sigma.cm == 0){
+		sigma.cm			<-	numeric(n)
+	}
+	
+	res					<-	.C(	"AT_convert_beam_parameters",						n					=	as.integer(n),
+																					N					=	as.single(N),
+																					FWHM.mm				=	as.single(FWHM.mm),
+																					fluence.cm2			=	as.single(fluence.cm2),
+																					sigma.cm			=	as.single(sigma.cm))
+	return(res)						
 }
 
 

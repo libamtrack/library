@@ -320,6 +320,36 @@ void AT_interparticleDistance_m( const long*   n,
   }
 }
 
+void AT_convert_beam_parameters(  const long*  n,
+    float* fluence_cm2,
+    float* sigma_cm,
+    float* N,
+    float* FWHM_mm)
+{
+  long  i;
+  if(sigma_cm[0] == 0.0f){
+    for (i = 0; i < *n; i++){
+      sigma_cm[i]    = FWHM_mm[i] * (2.354820046f * cm_to_mm);                                // 2 * sqrt(2*ln(2))
+    }
+  }else{
+    for (i = 0; i < *n; i++){
+      FWHM_mm[i]     = sigma_cm[i] / (2.354820046f * cm_to_mm);
+    }
+  }
+
+  if(fluence_cm2[0] == 0.0f){
+    for (i = 0; i < *n; i++){
+      if(sigma_cm[i] != 0.0f){
+        fluence_cm2[i] = N[i] / (sigma_cm[i] * sigma_cm[i] * 2.0f * pi);
+      }
+    }
+  }else{
+    for (i = 0; i < *n; i++){
+      N[i]           = fluence_cm2[i] * sigma_cm[i] * sigma_cm[i] * 2.0f * pi;
+    }
+  }
+}
+
 void AT_inv_interparticleDistance_Gy( const long*   n,
     const float*  LET_MeV_cm2_g,
     const float*  distance_m,
