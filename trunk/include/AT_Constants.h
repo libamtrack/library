@@ -59,6 +59,7 @@ static  double  MeV_g_to_J_kg         =  1.60217646e-10;
 static  double  GeV_g_to_J_kg         =  1.60217646e-7;
 static  double  keV_um_to_MeV_m       =  1000.0;
 static  double  m_to_cm               =  100.0;
+static  double  cm_to_mm              =  10.0;
 static  double  m_to_um               =  1e6;
 
 static  double  pi                    =  3.14159265;
