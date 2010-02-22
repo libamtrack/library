@@ -329,11 +329,11 @@ void AT_convert_beam_parameters(  const long*  n,
   long  i;
   if(sigma_cm[0] == 0.0f){
     for (i = 0; i < *n; i++){
-      sigma_cm[i]    = FWHM_mm[i] * (2.354820046f * cm_to_mm);                                // 2 * sqrt(2*ln(2))
+      sigma_cm[i]    = FWHM_mm[i] / (2.354820046f * cm_to_mm);                                // 2 * sqrt(2*ln(2))
     }
   }else{
     for (i = 0; i < *n; i++){
-      FWHM_mm[i]     = sigma_cm[i] / (2.354820046f * cm_to_mm);
+      FWHM_mm[i]     = sigma_cm[i] * (2.354820046f * cm_to_mm);
     }
   }
 
