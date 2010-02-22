@@ -355,10 +355,10 @@ AT.convert.beam.parameters	<-	function(	N 				= 0,
 	}
 	
 	res					<-	.C(	"AT_convert_beam_parameters",						n					=	as.integer(n),
-																					N					=	as.single(N),
-																					FWHM.mm				=	as.single(FWHM.mm),
 																					fluence.cm2			=	as.single(fluence.cm2),
-																					sigma.cm			=	as.single(sigma.cm))
+																					sigma.cm			=	as.single(sigma.cm),
+																					N					=	as.single(N),
+																					FWHM.mm				=	as.single(FWHM.mm))
 	return(res)						
 }
 
