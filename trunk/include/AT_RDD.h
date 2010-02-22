@@ -101,31 +101,31 @@ void AT_D_RDD_Gy( const long*  n,
     const float*  r_m,
     /* radiation field parameters */
     const float*  E_MeV_u,
-    const long*  particle_no,
+    const long*   particle_no,
     /* detector parameters */
-    const long*  material_no,
+    const long*   material_no,
     /* radial dose distribution model */
-    const long*  rdd_model,
+    const long*   rdd_model,
     const float*  rdd_parameter,
     /* electron range model */
-    const long*  er_model,
+    const long*   er_model,
     const float*  er_parameter,
-    float*  D_RDD_Gy);
+    float*        D_RDD_Gy);
 
 void AT_r_RDD_m  ( const long*  n,
     const float*  D_RDD_Gy,
     /* radiation field parameters */
     const float*  E_MeV_u,
-    const long*  particle_no,
+    const long*   particle_no,
     /* detector parameters */
-    const long*  material_no,
+    const long*   material_no,
     /* radial dose distribution model */
-    const long*  rdd_model,
-    const float*  rdd_parameter,   /* parameters: LEM: E_MeV_u, particle_no, material_name, a0 */
+    const long*   rdd_model,
+    const float*  rdd_parameter,
     /* electron range model */
-    const long*  er_model,
+    const long*   er_model,
     const float*  er_parameter,
-    float*  r_RDD_m);
+    float*        r_RDD_m);
 
 void AT_RDD_f1_parameters(  /* radiation field parameters */
     const float*  E_MeV_u,
@@ -174,14 +174,14 @@ void           AT_RDD_Katz_ext_GyS(         int *n, float *r_m, float* a0_m, flo
 typedef struct {
   /* radiation field parameters */
   float*  E_MeV_u;
-  long*  particle_no;
+  long*   particle_no;
   /* detector parameters */
-  long*  material_no;
+  long*   material_no;
   /* radial dose distribution model */
-  long*  rdd_model;
+  long*   rdd_model;
   float*  rdd_parameters;
   /* electron range model */
-  long*  er_model;
+  long*   er_model;
   float*  er_parameters;
   /* gamma response parameter*/
   float  gamma_parameters[5];
@@ -192,14 +192,14 @@ typedef struct {
   float*  r_m;
   /* radiation field parameters */
   float*  E_MeV_u;
-  long*  particle_no;
+  long*   particle_no;
   /* detector parameters */
-  long*  material_no;
+  long*   material_no;
   /* radial dose distribution model */
-  long*  rdd_model;
+  long*   rdd_model;
   float*  rdd_parameter;
   /* electron range model */
-  long*  er_model;
+  long*   er_model;
   float*  er_parameter;
   /* calculated parameters */
   float*  D_RDD_Gy;
