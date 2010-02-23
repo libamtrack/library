@@ -263,19 +263,13 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
                   &Z,
                   &Z_eff);
 
-  // Get energy constant C == k
-  // TODO are I_eV, alpha_g_cm2_MeV, p_MeV, m_g_cm2 needed here ?
-  float   density_g_cm3, density_kg_m3, electron_density_m3, I_eV, alpha_g_cm2_MeV, p_MeV, m_g_cm2;
+  // Get density
+  float   density_g_cm3, density_kg_m3, electron_density_m3;
   AT_getMaterialData(  &n_tmp,
               material_no,
               &density_g_cm3,
               &electron_density_m3,
-              &I_eV,
-              &alpha_g_cm2_MeV,
-              &p_MeV,
-              &m_g_cm2,
-              NULL,
-              NULL);
+              NULL, NULL, NULL, NULL, NULL, NULL);
   density_kg_m3      =  density_g_cm3 * 1000.0f;
 
   ///////////////////////////////////////////////////////////////
@@ -299,7 +293,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
   // MODEL SPECIFIC PARAMETERS
   if( *rdd_model == RDD_Test){
     f1_parameters[1]   = 0.0f;                                                                  // r_min_m
-    f1_parameters[6]  = M_1_PI / gsl_pow_2( max_electron_range_m * m_to_cm );                // pi * r_max_m^2 = Track area -> single_impact_fluence [1/cm2]
+    f1_parameters[6]  = M_1_PI / gsl_pow_2( max_electron_range_m * m_to_cm );                   // pi * r_max_m^2 = Track area -> single_impact_fluence [1/cm2]
     f1_parameters[5]  = f1_parameters[6] * LET_MeV_cm2_g * MeV_to_J * 1000.0f;                  // LET  / track area = Norm.constant k
     f1_parameters[3]  = f1_parameters[5];                                                       // d_min_Gy = k
     f1_parameters[4]  = f1_parameters[5];                                                       // d_max_Gy = k
@@ -309,9 +303,10 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
   if( *rdd_model == RDD_KatzPoint || *rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget || *rdd_model == RDD_Edmund){
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
-    float alpha        =   1.667f;
-    float w_el_keV     =  2.0f * electron_mass_MeV_c2 * 1000.0f * beta*beta / (1 - beta*beta);
-    if(w_el_keV <= 1.0f){
+    float alpha        =  1.667f;
+    float wmax_MeV     =  0.0f;
+    AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,particle_no,&wmax_MeV);
+    if(wmax_MeV <= 1e-3){  // if wmax < 1keV
       alpha           = 1.079f;
     }
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
@@ -324,7 +319,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     float  N_el_cm3    =  electron_density_m3 / (1e6);
     float  C_J_cm      =  2.0f * M_PI * N_el_cm3 * gsl_pow_4(e_esu) / (electron_mass_g * gsl_pow_2(c_cm_s)) * 1e-7;   // energy constant [J/cm] not [erg/cm] hence 10^-7
     float  C_J_m       =  C_J_cm * 100.0f;
-    f1_parameters[5]   =   C_J_m;                      // Norm.constant k
+    f1_parameters[5]   =  C_J_m;                      // Norm.constant k
 
 
     // Get dEdx by simple integration from r_min_m (in case of RDD_Site = a0) to r_max_m
@@ -392,7 +387,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
   if( *rdd_model == RDD_Cucinotta){ // TODO to be implemented
     f1_parameters[1]  = 0.0f;  // "r_min_m" = a0
-    f1_parameters[5]  = 0.0f;                    // k = LET / tmp
+    f1_parameters[5]  = 0.0f;  // k = LET / tmp
     f1_parameters[6]  = M_1_PI / gsl_pow_2( max_electron_range_m * m_to_cm );   // single_impact_fluence [1/cm2]
     f1_parameters[7]  = LET_MeV_cm2_g * MeV_g_to_J_kg * f1_parameters[6];       // single_impact_dose = LET * single_impact_fluence
     f1_parameters[4]  = f1_parameters[5];                                       // d_max_Gy = k
@@ -443,17 +438,11 @@ void AT_D_RDD_Gy  ( const  long*  n,
   // TODO assign f1_parameters to some more human-readable names
 
   // Get material data
-  float     density_g_cm3, electron_density_m3, I_eV, alpha_g_cm2_MeV, p_MeV, m_g_cm2;
+  float     density_g_cm3;
   AT_getMaterialData(  &n_tmp,
         material_no,
         &density_g_cm3,
-        &electron_density_m3,
-        &I_eV,
-        &alpha_g_cm2_MeV,
-        &p_MeV,
-        &m_g_cm2,
-        NULL,
-        NULL);
+        NULL, NULL, NULL, NULL, NULL, NULL, NULL);
   float    density_kg_m3  =  density_g_cm3 * 1000.0f;
 
 
@@ -488,10 +477,11 @@ void AT_D_RDD_Gy  ( const  long*  n,
                   &Z_eff);
 
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
-    float alpha      = 1.667f;
-    float w_el_keV   = 2.0f * electron_mass_MeV_c2 * 1000.0f * beta*beta / (1.0f - beta*beta);
-    if(w_el_keV <= 1.0f){
-      alpha          = 1.079f;
+    float alpha        =  1.667f;
+    float wmax_MeV     =  0.0f;
+    AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,particle_no,&wmax_MeV);
+    if(wmax_MeV <= 1e-3){  // if wmax < 1keV
+      alpha           = 1.079f;
     }
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
 
@@ -602,17 +592,11 @@ void AT_r_RDD_m  ( const  long*  n,
     /* calculated parameters */
     f1_parameters);
   // Get material data
-  float     density_g_cm3, electron_density_m3, I_eV, alpha_g_cm2_MeV, p_MeV, m_g_cm2;
+  float     density_g_cm3;
   AT_getMaterialData(  &n_tmp,
       material_no,
       &density_g_cm3,
-      &electron_density_m3,
-      &I_eV,
-      &alpha_g_cm2_MeV,
-      &p_MeV,
-      &m_g_cm2,
-      NULL,
-      NULL);
+      NULL, NULL, NULL, NULL, NULL, NULL, NULL);
   float  density_kg_m3  =  density_g_cm3 * 1000.0f;
 
   if( *rdd_model == RDD_Test){
@@ -710,11 +694,13 @@ void AT_r_RDD_m  ( const  long*  n,
                   &Z_eff);
 
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
-    float alpha        =   1.667f;
-    float w_el_keV      =  2.0f * electron_mass_MeV_c2 * 1000.0f * beta*beta / (1 - beta*beta);
-    if(w_el_keV <= 1.0f){
-      alpha          = 1.079f;
+    float alpha        =  1.667f;
+    float wmax_MeV     =  0.0f;
+    AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,particle_no,&wmax_MeV);
+    if(wmax_MeV <= 1e-3){  // if wmax < 1keV
+      alpha           = 1.079f;
     }
+
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
 
     float Katz_point_coeff_Gy = AT_RDD_Katz_point_coeff_Gy(&(f1_parameters[5]),&Z_eff,&beta,&alpha,&density_kg_m3,&(f1_parameters[2]));
@@ -780,7 +766,7 @@ double AT_D_RDD_Gy_int( double  r_m,
       par->er_parameters,
       &D_Gy);
 
-  return (2.0 * pi * r_m * (double)D_Gy);
+  return (2.0 * M_PI * r_m * (double)D_Gy);
 }
 
 double AT_sI_int( double  r_m,
