@@ -102,7 +102,7 @@ void AT_max_electron_range_m( const long*  n,
     a5 = b8 / pow(average_Z,b9);
   }
 
-  float max_electron_range_g_cm2;
+  float max_electron_range_g_cm2 = 0.0f;
 
   /********************************************************
    *********************  PARTICLE LOOP *******************
