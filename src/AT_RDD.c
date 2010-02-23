@@ -216,18 +216,11 @@ void AT_RDD_Katz_ext_GyS(int *n, float *r_m, float* a0_m, float* alpha, float* r
   };
 }
 
-/**
- * @param f1_parameters
- *     0 - LET_MeV_cm2_g
- *     1 - r_min_m
- *     2 - r_max_m
- *     3 - d_min_Gy
- *     4 - d_max_Gy
- *     5 - k             (norm. constant)
- *     6 - single_impact_fluence_cm2
- *     7 - single_impact_dose_Gy
- *     8 - dEdx_MeV_cm2_g
- */
+
+inline float AT_RDD_Cucinotta_C(float Z, float beta){
+  return Z*beta;
+}
+
 void AT_RDD_f1_parameters(  /* radiation field parameters */
     const float*  E_MeV_u,
     const long*  particle_no,
@@ -242,7 +235,6 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     /* calculated parameters */
     float * f1_parameters)
 {
-  // Get beta, Z and Zeff
   long  n_tmp    = 1;
   float beta     = 0.0f;
   long  Z        = 0;
@@ -250,6 +242,13 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
   float LET_MeV_cm2_g = 0.0f;
   float max_electron_range_m = 0.0f;
+  float r_min_m = 0.0f;
+  float single_impact_fluence_cm2 = 0.0f;
+  float single_impact_dose_Gy = 0.0f;
+  float norm_constant_Gy = 0.0f;
+  float d_min_Gy = 0.0f;
+  float d_max_Gy = 0.0f;
+  float dEdx_MeV_cm2_g = 0.0f;
 
   AT_beta_from_particle_no(  &n_tmp,
                   E_MeV_u,
@@ -281,7 +280,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
             &LET_MeV_cm2_g);
 
   /////////////////////////////////////////////////////////////////////////////
-  // PARAMETER 1: Get the maximum electron range (same for all RDD models)
+  // PARAMETER 2: Get the maximum electron range (same for all RDD models)
   AT_max_electron_range_m(  &n_tmp,
                 E_MeV_u,
                 particle_no,
@@ -289,16 +288,24 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
                 er_model,
                 &max_electron_range_m);
 
+
+  /////////////////////////////////////////////////////////////////////////////
+  // PARAMETER 6: Get the single impact fluence (same for all RDD models)
+  single_impact_fluence_cm2  = M_1_PI / gsl_pow_2( max_electron_range_m * m_to_cm ); // pi * r_max_m^2 = Track area -> single_impact_fluence [1/cm2]
+
+
   /////////////////////////////////////////////////////////////////////////////
   // MODEL SPECIFIC PARAMETERS
   if( *rdd_model == RDD_Test){
-    f1_parameters[1]   = 0.0f;                                                                  // r_min_m
-    f1_parameters[6]  = M_1_PI / gsl_pow_2( max_electron_range_m * m_to_cm );                   // pi * r_max_m^2 = Track area -> single_impact_fluence [1/cm2]
-    f1_parameters[5]  = f1_parameters[6] * LET_MeV_cm2_g * MeV_to_J * 1000.0f;                  // LET  / track area = Norm.constant k
-    f1_parameters[3]  = f1_parameters[5];                                                       // d_min_Gy = k
-    f1_parameters[4]  = f1_parameters[5];                                                       // d_max_Gy = k
-    f1_parameters[7]  = LET_MeV_cm2_g * f1_parameters[5] * MeV_g_to_J_kg;                       // single_impact_dose = LET * fluence;
-    f1_parameters[8]  = LET_MeV_cm2_g;                                                          // dEdx = LET
+    r_min_m = 0.0f;                                                                             // r_min_m
+    norm_constant_Gy = single_impact_fluence_cm2 * LET_MeV_cm2_g * MeV_to_J * 1000.0f;          // LET  / track area = Norm.constant k
+    single_impact_dose_Gy = LET_MeV_cm2_g * f1_parameters[5] * MeV_g_to_J_kg;                   // single_impact_dose = LET * fluence;
+    d_min_Gy = norm_constant_Gy;                                                                // d_min_Gy = k
+    d_max_Gy = norm_constant_Gy;                                                                // d_max_Gy = k
+    dEdx_MeV_cm2_g = LET_MeV_cm2_g;                                                             // dEdx = LET
+
+    // Save parameters to f1_parameters table
+    f1_parameters[1]  = r_min_m;
   }
 
   if( *rdd_model == RDD_KatzPoint || *rdd_model == RDD_Site || *rdd_model == RDD_ExtTarget || *rdd_model == RDD_Edmund){
@@ -311,15 +318,15 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     }
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
 
-    f1_parameters[1]    =  rdd_parameter[0];                // r_min_m
-    if (max_electron_range_m <= f1_parameters[1]){
-      f1_parameters[1] = max_electron_range_m;
+    r_min_m          =  rdd_parameter[0];
+    if (max_electron_range_m <= r_min_m){
+      r_min_m = max_electron_range_m;
     }                  // If r.max < a0 or r.min, r.min = r.max, not a0
 
     float  N_el_cm3    =  electron_density_m3 / (1e6);
     float  C_J_cm      =  2.0f * M_PI * N_el_cm3 * gsl_pow_4(e_esu) / (electron_mass_g * gsl_pow_2(c_cm_s)) * 1e-7;   // energy constant [J/cm] not [erg/cm] hence 10^-7
     float  C_J_m       =  C_J_cm * 100.0f;
-    f1_parameters[5]   =  C_J_m;                      // Norm.constant k
+    norm_constant_Gy   =  C_J_m;                      // Norm.constant k
 
 
     // Get dEdx by simple integration from r_min_m (in case of RDD_Site = a0) to r_max_m
@@ -328,76 +335,87 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
     float Katz_point_coeff_Gy = AT_RDD_Katz_point_coeff_Gy(&C_J_m,&Z_eff,&beta,&alpha,&density_kg_m3,&max_electron_range_m);
     float Katz_dEdx_coeff_J_m = AT_RDD_Katz_dEdx_coeff_J_m(&max_electron_range_m,&density_kg_m3,&Katz_point_coeff_Gy);
-    dEdx_J_m                  = AT_RDD_Katz_dEdx_J_m(&alpha,&(f1_parameters[1]),&max_electron_range_m,&Katz_dEdx_coeff_J_m);
+    dEdx_J_m                  = AT_RDD_Katz_dEdx_J_m(&alpha,&r_min_m,&max_electron_range_m,&Katz_dEdx_coeff_J_m);
 
-    float  dEdx_MeV_g_cm2     =  dEdx_J_m / 100.0f / density_g_cm3 / MeV_to_J;
-
-    f1_parameters[8]          =   dEdx_MeV_g_cm2;
+    dEdx_MeV_cm2_g            =  dEdx_J_m / 100.0f / density_g_cm3 / MeV_to_J;
 
     if( *rdd_model != RDD_ExtTarget )
-      f1_parameters[3]    =  rdd_parameter[1];
+      d_min_Gy    =  rdd_parameter[1];
     else
-      f1_parameters[3]    =  rdd_parameter[2];
+      d_min_Gy    =  rdd_parameter[2];
 
     // d_max_Gy
     if(*rdd_model == RDD_Site){
       float tmp = 0.0f;
-      f1_parameters[4]    =  AT_RDD_Katz_site_Gy(&tmp,&alpha,&(f1_parameters[1]),&max_electron_range_m,&LET_J_m,&density_kg_m3,&Katz_dEdx_coeff_J_m,&Katz_point_coeff_Gy);
+      d_max_Gy    =  AT_RDD_Katz_site_Gy(&tmp,&alpha,&r_min_m,&max_electron_range_m,&LET_J_m,&density_kg_m3,&Katz_dEdx_coeff_J_m,&Katz_point_coeff_Gy);
     }else if(  *rdd_model == RDD_Edmund){
-      float tmp =  LET_MeV_cm2_g - f1_parameters[8];  // LET - dEdx (MeV_g_cm2)
+      float tmp =  LET_MeV_cm2_g - dEdx_MeV_cm2_g;  // LET - dEdx (MeV_g_cm2)
       if(tmp > 0){
         tmp *=  density_g_cm3; // MeV / cm
         tmp *=  MeV_to_J;      // J / cm
         tmp *=  100.0f;        // J / m
         float core_kg_m  = M_PI * gsl_pow_2(rdd_parameter[0]) * density_kg_m3;  // kg / m
-        f1_parameters[4] = tmp / core_kg_m;                                     // J / kg = Gy
+        d_max_Gy = tmp / core_kg_m;                                             // J / kg = Gy
       }else{
-        f1_parameters[4] = 1e-11;
+        d_max_Gy = 1e-11;
       }
     }else if(*rdd_model == RDD_KatzPoint){
-      f1_parameters[4]    =  AT_RDD_Katz_point_Gy(&(f1_parameters[1]),&alpha,&max_electron_range_m,&Katz_point_coeff_Gy);
+      d_max_Gy    =  AT_RDD_Katz_point_Gy(&r_min_m,&alpha,&max_electron_range_m,&Katz_point_coeff_Gy);
     } else { // RDD_ExtTarget
-      f1_parameters[4]    =  AT_RDD_Katz_ext_Gy(&(f1_parameters[1]),&(rdd_parameter[1]),&alpha,&(f1_parameters[1]),&max_electron_range_m,&Katz_point_coeff_Gy);
+      d_max_Gy    =  AT_RDD_Katz_ext_Gy(&r_min_m,&(rdd_parameter[1]),&alpha,&r_min_m,&max_electron_range_m,&Katz_point_coeff_Gy);
     }
 
-    // single impact fluence
-    f1_parameters[6]  = M_1_PI / gsl_pow_2( max_electron_range_m * m_to_cm );  // single_impact_fluence [1/cm2]
     // single_impact_dose
     if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund){
-      f1_parameters[7]    =  LET_MeV_cm2_g * MeV_g_to_J_kg * f1_parameters[6];        // LET * fluence
+      single_impact_dose_Gy    =  LET_MeV_cm2_g * MeV_g_to_J_kg * single_impact_fluence_cm2;        // LET * fluence
     }else{
-      f1_parameters[7]    =  f1_parameters[8] * MeV_g_to_J_kg * f1_parameters[6];        // dEdx * fluence
+      single_impact_dose_Gy    =  dEdx_MeV_cm2_g * MeV_g_to_J_kg * single_impact_fluence_cm2;       // dEdx * fluence
     }
+
+    // Save parameters to f1_parameters table
+    f1_parameters[1]  = r_min_m;
   }
 
   if( *rdd_model == RDD_Geiss){
-    f1_parameters[1]  =  rdd_parameter[0];                              // "r_min_m" = a0
-    if (max_electron_range_m <= f1_parameters[1]){
-      f1_parameters[1] = max_electron_range_m;}      // If r.max < a0, r.min = r.max, not a0
+    float a0_m                 = 0.0;
+    a0_m                       =  rdd_parameter[0];                                          // "r_min_m" = a0
+    if (max_electron_range_m <= a0_m){
+      a0_m = max_electron_range_m;}      // If r.max < a0, r.min = r.max, not a0
     // Normalization to match with LET
-    float  tmp      = (float)(0.5f + log(max_electron_range_m / f1_parameters[1]));
-    tmp            *= 2.0f * M_PI * gsl_pow_2(f1_parameters[1] * m_to_cm);
-    f1_parameters[5]  = LET_MeV_cm2_g * MeV_g_to_J_kg / tmp;                    // k = LET / tmp
-    f1_parameters[6]  = M_1_PI / gsl_pow_2( max_electron_range_m * m_to_cm );   // single_impact_fluence [1/cm2]
-    f1_parameters[7]  = LET_MeV_cm2_g * MeV_g_to_J_kg * f1_parameters[6];              // single_impact_dose = LET * single_impact_fluence
-    f1_parameters[4]  = f1_parameters[5];                                // d_max_Gy = k
-    f1_parameters[3]  = f1_parameters[5] * gsl_pow_2( f1_parameters[1] / max_electron_range_m);        // d_min_Gy
-    f1_parameters[8]  = LET_MeV_cm2_g;                                // dEdx = LET
+    float  tmp                 = (float)(0.5f + log(max_electron_range_m / a0_m));
+    tmp                       *= 2.0f * M_PI * gsl_pow_2(a0_m * m_to_cm);
+    norm_constant_Gy           = LET_MeV_cm2_g * MeV_g_to_J_kg / tmp;                         // k = LET / tmp
+    single_impact_dose_Gy      = LET_MeV_cm2_g * MeV_g_to_J_kg * single_impact_fluence_cm2;   // single_impact_dose = LET * single_impact_fluence
+    d_max_Gy                   = norm_constant_Gy;                                            // d_max_Gy = k
+    d_min_Gy                   = norm_constant_Gy * gsl_pow_2( a0_m / max_electron_range_m);  // d_min_Gy
+    dEdx_MeV_cm2_g             = LET_MeV_cm2_g;                                               // dEdx = LET
+
+    // Save parameters to f1_parameters table
+    f1_parameters[1]  = a0_m;
   }
 
   if( *rdd_model == RDD_Cucinotta){ // TODO to be implemented
-    f1_parameters[1]  = 0.0f;  // "r_min_m" = a0
-    f1_parameters[5]  = 0.0f;  // k = LET / tmp
-    f1_parameters[6]  = M_1_PI / gsl_pow_2( max_electron_range_m * m_to_cm );   // single_impact_fluence [1/cm2]
-    f1_parameters[7]  = LET_MeV_cm2_g * MeV_g_to_J_kg * f1_parameters[6];       // single_impact_dose = LET * single_impact_fluence
-    f1_parameters[4]  = f1_parameters[5];                                       // d_max_Gy = k
-    f1_parameters[3]  = f1_parameters[5] * gsl_pow_2( f1_parameters[1] / max_electron_range_m);        // d_min_Gy
-    f1_parameters[8]  = LET_MeV_cm2_g;                                          // dEdx = LET
+    r_min_m  = 0.0f;
+    norm_constant_Gy  = 0.0f;  // k = ????
+    single_impact_dose_Gy  = LET_MeV_cm2_g * MeV_g_to_J_kg * single_impact_fluence_cm2;  // single_impact_dose = LET * single_impact_fluence
+    d_max_Gy  = 0.0f;                                      // d_max_Gy = k
+    d_min_Gy  = 0.0f;
+    dEdx_MeV_cm2_g  = LET_MeV_cm2_g;                       // dEdx = LET
+
+    // Save parameters to f1_parameters table
+    f1_parameters[1]  = r_min_m;
   }
 
-  // write data to output table:
+  // write data to output table (apart from f1_parameters[0] which sometimes is
+  // r_min_m and sometimes a0_m )
   f1_parameters[0] = LET_MeV_cm2_g;
   f1_parameters[2] = max_electron_range_m;
+  f1_parameters[3]  = d_min_Gy;
+  f1_parameters[4]  = d_max_Gy;
+  f1_parameters[5]  = norm_constant_Gy;
+  f1_parameters[6]  = single_impact_fluence_cm2;
+  f1_parameters[7]  = single_impact_dose_Gy;
+  f1_parameters[8]  = LET_MeV_cm2_g;
 
 }
 

@@ -79,10 +79,10 @@ typedef struct {
 static const rdd_data AT_RDD_Data = {
     RDD_DATA_N,
     {  RDD_Test,                     RDD_KatzPoint,                                RDD_Geiss,                         RDD_Site,                                        RDD_ExtTarget,                                                RDD_Edmund,                     RDD_Cucinotta},
-    {  0,                            2,                                            1,                                 2,                                               3,                                                            2,                              0},
-    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                   {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"r_min_m","a0_m","D_min_Gy"},                                {"a0_m","d_min_Gy",""},         {"","",""}},
-    {  {0,0,0},                      {1e-10, 1e-10,0},                             {5e-8,0,0},                        {5e-8,1e-10,0},                                  {1e-10, 5e-8, 1e-10},                                         {5e-8,1e-10,0},                 {0,0,0}},
-    {  "Simple step test function",  "Katz' point target RDD [Katz et al., 1972]", "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Katz' extended target, as defined in [Edmund et al., 2007]", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [TODO]"}
+    {  0,                            2,                                            1,                                 2,                                               3,                                                            2,                              1},
+    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                   {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"r_min_m","a0_m","D_min_Gy"},                                {"a0_m","d_min_Gy",""},         {"r_min_m","",""}},
+    {  {0,0,0},                      {1e-10, 1e-10,0},                             {5e-8,0,0},                        {5e-8,1e-10,0},                                  {1e-10, 5e-8, 1e-10},                                         {5e-8,1e-10,0},                 {5e-11,0,0}},
+    {  "Simple step test function",  "Katz' point target RDD [Katz et al., 1972]", "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Katz' extended target, as defined in [Edmund et al., 2007]", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. ]"}
 };
 
 /**
@@ -127,17 +127,36 @@ void AT_r_RDD_m  ( const long*  n,
     const float*  er_parameter,
     float*        r_RDD_m);
 
+/**
+ * @param E_MeV_u
+ * @param particle_no
+ * @param material_no
+ * @param rdd_model
+ * @param rdd_parameter
+ * @param er_model
+ * @param er_parameter
+ * @param f1_parameters (output)\n
+ *     0 - LET_MeV_cm2_g \n
+ *     1 - r_min_m \n
+ *     2 - r_max_m \n
+ *     3 - d_min_Gy \n
+ *     4 - d_max_Gy \n
+ *     5 - k             (norm. constant) \n
+ *     6 - single_impact_fluence_cm2 \n
+ *     7 - single_impact_dose_Gy \n
+ *     8 - dEdx_MeV_cm2_g
+ */
 void AT_RDD_f1_parameters(  /* radiation field parameters */
-    const float*  E_MeV_u,
+    const float* E_MeV_u,
     const long*  particle_no,
     /* detector parameters */
     const long*  material_no,
     /* radial dose distribution model */
     const long*  rdd_model,
-    const float*  rdd_parameter,
+    const float* rdd_parameter,
     /* electron range model */
     const long*  er_model,
-    const float*  er_parameter,
+    const float* er_parameter,
     /* calculated parameters */
     float * f1_parameters);
 
