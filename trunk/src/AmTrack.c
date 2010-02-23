@@ -98,12 +98,15 @@ void AT_SPIFF(  const long*  n,
 
   long i;
 
-  //############################
-  //For timing debugging only
-  // otherwise comment out
-  int n_runs = 1000;
-  for (i = 0; i < n_runs; i++){
-    //############################
+
+  //TODO timining debuggin should be done in better way (with some switch for example)
+
+//  //############################
+//  //For timing debugging only
+//  // otherwise comment out
+//  int n_runs = 1;
+//  for (i = 0; i < n_runs; i++){
+//    //############################
 
     f1_parameters      =  (float*)calloc(9 * (*n), sizeof(float));
 
@@ -220,14 +223,12 @@ void AT_SPIFF(  const long*  n,
         f_d_Gy,
         f_dd_Gy,
 
-
         f,
         &f0,
         gamma_model,
         gamma_parameters,
         lethal_events_mode,
         // return
-
 
         S,
         &S_HCP,
@@ -242,12 +243,12 @@ void AT_SPIFF(  const long*  n,
     results[6]      =  u_start;
     results[7]      =  n_convolutions;
 
-
-    //############################
-    //For timing debugging only
-    // otherwise comment out
-  }
-  //############################
+//
+//    //############################
+//    //For timing debugging only
+//    // otherwise comment out
+//  }
+//  //############################
 
   end_t  = time(NULL);
   end_tm = localtime(&end_t);
@@ -260,7 +261,7 @@ void AT_SPIFF(  const long*  n,
     fprintf(output_file, "\ndose check / Gy:         %4.3e Gy", results[1]);
     fprintf(output_file, "\nmean impact number u:    %4.3e Gy", results[5]);
     fprintf(output_file, "\nstart impact number:     %4.3e Gy", results[6]);
-    fprintf(output_file, "\nnumber of convolutions:  %4.3e Gy", results[7]);
+    fprintf(output_file, "\nnumber of convolutions:  %ld",      (long)(results[7]));
     fprintf(output_file, "\n\nf0: %4.3e\n", f0);
     for (i = 0; i < n_bins_f_used;i++){
       fprintf(output_file, "%ld; %4.2e; %4.2e; %4.2e\n",     i+1, f_d_Gy[i], f_dd_Gy[i], f[i]);
