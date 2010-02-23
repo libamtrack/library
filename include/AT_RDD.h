@@ -162,6 +162,8 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
 //TODO rewrite Katz functions with const parameters
 
+inline float AT_RDD_Katz(const float r_m, const float r_max_m, const float material_density_kg_m3, const float beta, const float Z_eff, const float C_MeV_m);
+
 float          AT_D_RDD_Gy_solver(          const float r , void * params );
 double         AT_P_RDD(                    double  r_m, void* params);
 double         AT_sI_int(                   double  r_m, void* params);
