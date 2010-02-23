@@ -44,6 +44,8 @@ void AT_beta_from_mass( const long*  n,
     // Get rest energy
     float  E0_MeV    =  (float)proton_mass_MeV_c2 * mass[i];
 
+    //TODO E_MeV/E0_MeV = E_MeV_u[i] / proton_mass_MeV_c2 , so why do we need particle mass here ?
+
     // Return relativistic speed
     beta[i]        =  (float)sqrt(1 - 1/((1 + E_MeV/E0_MeV)*(1 + E_MeV/E0_MeV)));
   }
@@ -63,6 +65,9 @@ void AT_E_from_beta_and_mass(  const long*  n,
     E_MeV_u[i]      =  E0_MeV * (1.0f / (1 - beta[i]*beta[i]) - 1);
 
     E_MeV_u[i]      /=  mass[i];
+
+    //TODO E_MeV/E0_MeV = E_MeV_u[i] / proton_mass_MeV_c2 , so why do we need particle mass here ?
+
   }
 }
 

@@ -59,6 +59,7 @@ extern FILE * debf;
 void AT_PrintName(  void);
 
 
+// TODO doxygen does not see newline (results table is badly formatted)
 /**
 * Computes HCP response and RE/RBE using compound Poison process and
 * successive convolutions (CPP_SC, the 'SPIFF' algorithm)

@@ -68,11 +68,12 @@ static const material_data AT_Material_Data = {
     {  0.00231f,         0.003058f,        0.003266f,     0.001988f,  0.00216381f},
     {  1.761f,           1.748f,           1.745f,        1.762f,     1.79165987f},
     {  0.01153f,         0.01305f,         0.01230f,      0.01338f,   -100.0f},        // No data processed for nuclear interactions in Alanine, hence set to -100
-    {  14.3f,            0.0f,             27.0f,         0.0f,       0.0f},           //TODO find average A values
+    {  13.0f,            0.0f,             27.0f,         0.0f,       0.0f},           //TODO find average A values
     {  7.22f,            0.0f,             13.0f,         0.0f,       0.0f},           //TODO find average Z values
     {  "Water, Liquid", "Aluminum Oxide",  "Aluminum",    "PMMA",     "Alanine"     }
 };
 
+//TODO Cucinnotta calculated average A for water as 14.3, but it seems that it is 13.0 (Leszek)
 
 void getMaterialName( const long* material_no,
     char* material_name);
@@ -97,7 +98,16 @@ void getMaterialNo( const char* material_name,
 * @param  m_g_cm2  fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni, 1982 (pointer to float array of length n)
 * @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
 * @param  average_A  average mass number (pointer to float array of length n)
-* @param  average_Z  average atomic number (pointer to float array of length n)
+* let f_i be fraction by weight of the constituent element with atomic number Z_i and atomic weight A_i<BR>
+* let us define average_Z/A = \sum_i f_i Z_i / A_i <BR>
+* then we have: average_A = average_Z / (average_Z/A)
+* for water (H20) we have: average_Z/A = (2/18) * (1/1) + (16/18)*(8/16) = 0.5555
+* average_A = 7.22 / 0.555 = 13
+* @param  average_Z  average atomic number (pointer to float array of length n)<BR>
+* let f_i be fraction by weight of the constituent element with atomic number Z_i and atomic weight A_i<BR>
+* average_Z = \sum_i f_i Z_i <BR>
+* for water (H20) we have: average_Z = (2/18)*1 + (16/18)*8 = 7.22
+* @see Tabata, T. (1972) Generalized semiempirical equations for the extrapolated range of electrons, Nucl. Instr and Meth. 103, 85-91.
 */
 void AT_getMaterialData( const long*  n,
     const long*  material_no,

@@ -61,83 +61,87 @@ void AT_max_electron_range_m( const long*  n,
     const long*   er_model,
     float*  max_electron_range_m)
 {
+
+  /********************************************************
+   ********* CALCULATION BEFORE PARTICLE LOOP *************
+   *******************************************************/
+
   // Get density matching to material_name (only 1 name therefore n_mat = 1)
   const long  n_mat  = 1;
   float material_density_g_cm3;
   float average_A;
   float average_Z;
-
   AT_getMaterialData( &n_mat, material_no, &material_density_g_cm3,
       NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
-  float* mass    =  (float*)calloc(*n, sizeof(float));
-
-  AT_mass_from_particle_no(n,particle_no,mass);
-
+  // Get beta from energy
   float* beta    =  (float*)calloc(*n, sizeof(float));
+  AT_beta_from_particle_no(n,E_MeV_u,particle_no,beta);
 
-  AT_beta_from_mass(n,E_MeV_u,mass,beta);
+  // Get energy of delta-electron from energy of ion
+  float* wmax_MeV =  (float*)calloc(*n, sizeof(float));
+  AT_max_E_transfer_MeV(n,E_MeV_u,particle_no,wmax_MeV);
 
+  double a1_g_cm2,a2,a3,a4,a5; // needed in Tabata ER model
+  if( *er_model == ER_Tabata ){
+    // general constants (best fit to experimental data)
+    const double b1_g_cm2 = 0.2335;
+    const double b2 = 1.209;
+    const double b3 = 1.78e-4;
+    const double b4 = 0.9891;
+    const double b5 = 3.01e-4;
+    const double b6 = 1.468;
+    const double b7 = 1.18e-2;
+    const double b8 = 1.232;
+    const double b9 = 0.109;
+    // constants...
+    a1_g_cm2 = b1_g_cm2*average_A / pow(average_Z,b2); // g_cm2
+    a2 = b3*average_A;
+    a3 = b4 - b5*average_Z;
+    a4 = b6 - b7*average_Z;
+    a5 = b8 / pow(average_Z,b9);
+  }
+
+  float max_electron_range_g_cm2;
+
+  /********************************************************
+   *********************  PARTICLE LOOP *******************
+   *******************************************************/
   long  i;
   for (i = 0; i < *n; i++){
-    float tmpE  = E_MeV_u[i];
-    if (tmpE < 0) {tmpE *= -1.0f;}  // E can be set neg. if non-PSTAR are given --> use pos. value
+    float tmpE_MeV_u  = E_MeV_u[i];
+    if (tmpE_MeV_u < 0) {tmpE_MeV_u *= -1.0f;}  // E can be set neg. if non-PSTAR are given --> use pos. value //TODO what does it mean ?
 
-    float E_div_E0 = E_MeV_u[i] / (mass[i]*proton_mass_MeV_c2);
-    float w_keV;
+    float wmax_keV = wmax_MeV[i] * 1000.0f;
+
     if( *er_model == ER_ButtsKatz ){
-      w_keV = 2 * electron_mass_MeV_c2 * ( E_div_E0*E_div_E0 + 2*E_div_E0) * 1e3;
-      max_electron_range_m[i] = 1e-5 * w_keV;
+      max_electron_range_g_cm2 = 1e-5 * wmax_keV;
     }
     if( *er_model == ER_Waligorski ){
       double alpha = 1.667;
-      w_keV = 2 * electron_mass_MeV_c2 * ( E_div_E0*E_div_E0 + 2*E_div_E0) * 1e3;
-      if( w_keV < 1. ) alpha = 1.079;
-      max_electron_range_m[i] =  6* 1e-6 * (float)pow( w_keV, alpha );
+      if( wmax_keV < 1. ) alpha = 1.079;
+      max_electron_range_g_cm2 =  6* 1e-6 * (float)pow( wmax_keV, alpha );
     }
     if( *er_model == ER_Edmund ){
       double alpha = 1.67;
-      w_keV = 2 * electron_mass_MeV_c2 * ( E_div_E0*E_div_E0 + 2*E_div_E0) * 1e3;
-      if( w_keV < 1. ) alpha = 1.079;
-      max_electron_range_m[i] =  6.13*1e-6 * (float)pow( w_keV, alpha );
+      if( wmax_keV < 1. ) alpha = 1.079;
+      max_electron_range_g_cm2 =  6.13*1e-6 * (float)pow( wmax_keV, alpha );
     }
     if( *er_model == ER_Geiss ){
-      max_electron_range_m[i] = 4e-5 * (float)pow(tmpE, 1.5);
+      max_electron_range_g_cm2 = 4e-5 * (float)pow(tmpE_MeV_u, 1.5);
     }
     if( *er_model == ER_Scholz ){
-      max_electron_range_m[i] = 5e-5 * (float)pow(tmpE, 1.7);
+      max_electron_range_g_cm2 = 5e-5 * (float)pow(tmpE_MeV_u, 1.7);
     }
     if( *er_model == ER_Tabata ){
-      // general constants (best fit to experimental data)
-      const double b1 = 2.335;
-      const double b2 = 1.209;
-      const double b3 = 1.78e-4;
-      const double b4 = 0.9891;
-      const double b5 = 3.01e-4;
-      const double b6 = 1.468;
-      const double b7 = 1.18e-2;
-      const double b8 = 1.232;
-      const double b9 = 0.109;
-      // average A and Z for given material
-      const double A = average_A;
-      const double Z = average_Z;
-      // constants...
-      const double a1_g_cm2 = 0.1*b1*A / pow(Z,b2); // g_cm2
-      const double a2 = b3*Z;
-      const double a3 = b4 - b5*Z;
-      const double a4 = b6 - b7*Z;
-      const double a5 = b8 / pow(Z,b9);
-      double tau = 2.0 * gsl_pow_2(beta[i]) / (1. - gsl_pow_2(beta[i]));
-      max_electron_range_m[i] = (a1_g_cm2)*(((gsl_sf_log(1 + a2 * tau))/a2) - ((a3*tau)/(1 + a4*pow(tau,a5))) );
+      double tau = 2.0f * gsl_pow_2(beta[i]) / (1. - gsl_pow_2(beta[i]));
+      max_electron_range_g_cm2 = (a1_g_cm2)*(((gsl_sf_log(1 + a2 * tau))/a2) - ((a3*tau)/(1 + a4*pow(tau,a5))) );
     }
 
-    // Scale maximum el. range with material density relative to water (1/rho)
-    max_electron_range_m[i]    /= material_density_g_cm3;
-
-    // covert cm to m
-    max_electron_range_m[i]    /= 1e2;  // cm to m
+    // Scale maximum el. range with material density relative to water (1/rho) and convert cm to m
+    max_electron_range_m[i]    = 1e-2 * max_electron_range_g_cm2 / material_density_g_cm3;
 
   }
-  free(mass);
   free(beta);
+  free(wmax_MeV);
 }
