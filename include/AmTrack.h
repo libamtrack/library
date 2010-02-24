@@ -41,7 +41,10 @@
 #include "AT_RDD.h"
 #include "AT_SuccessiveConvolutions.h"
 #include "AT_GammaResponse.h"
+#include "AT_PhysicsRoutines.h"
 #include "AT_NumericalRoutines.h"
+
+#include "AT_Wrapper_Java.h"
 
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_integration.h>
