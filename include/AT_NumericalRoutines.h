@@ -41,10 +41,6 @@
 #include <malloc.h>
 #include <string.h>
 
-extern int indent_counter;
-extern char isp[];
-extern FILE * debf;
-
 long int lminl(const long int x, const long int y);
 
 long int lmaxl(const long int x, const long int y);

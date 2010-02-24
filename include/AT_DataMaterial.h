@@ -34,12 +34,15 @@
 
 #include "AT_NumericalRoutines.h"
 
+/**
+ * Materials code numbers
+ */
 enum material_no{
-  Water_Liquid         = 1,
-  Aluminum_Oxide       = 2,
-  Aluminum             = 3,
-  PMMA                 = 4,
-  Alanine              = 5
+  Water_Liquid         = 1, /**< Liquid water */
+  Aluminum_Oxide       = 2, /**< TODO */
+  Aluminum             = 3, /**< TODO */
+  PMMA                 = 4, /**< TODO */
+  Alanine              = 5  /**< TODO */
 };
 
 #define MATERIAL_DATA_N    5

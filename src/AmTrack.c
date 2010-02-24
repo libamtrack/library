@@ -1066,7 +1066,7 @@ void AT_IGK(  const long*  n,
     F.function           = &AT_sI_int;
     F.params             = (void*)params;
     float   lower_lim_m  = 0.0;
-    if(*RDD_model == RDD_KatzPoint){
+    if(*RDD_model == RDD_KatzButtsPoint){
       lower_lim_m = RDD_parameters[0];
     }
     float   upper_lim_m;
@@ -1103,7 +1103,7 @@ fprintf(debf,"%s r=%g, integration from %g to %g , error no == %d\n",isp,*r_m,in
     // Get saturation cross-section
     float   s0_m2 = 0.0f;
     float   a0_m  = 0.0f;
-    if(*RDD_model == RDD_ExtTarget){
+    if(*RDD_model == RDD_KatzZhangPoint){
       a0_m = RDD_parameters[1];
     }
     if(*RDD_model == RDD_Geiss ||

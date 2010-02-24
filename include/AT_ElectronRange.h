@@ -40,16 +40,16 @@
 #include "AT_PhysicsRoutines.h"
 
 /**
- *  ER DATA
+ * Electron range models code numbers
  */
 enum ERModels{
-  ER_Test                  = 1,
-      ER_ButtsKatz         = 2,
-      ER_Waligorski        = 3,
-      ER_Geiss             = 4,
-      ER_Scholz            = 5,
-      ER_Edmund            = 6,
-      ER_Tabata            = 7
+  ER_Test                  = 1,     /**< TODO */
+      ER_ButtsKatz         = 2,     /**< TODO */
+      ER_Waligorski        = 3,     /**< TODO */
+      ER_Geiss             = 4,     /**< TODO */
+      ER_Scholz            = 5,     /**< TODO */
+      ER_Edmund            = 6,     /**< TODO */
+      ER_Tabata            = 7      /**< TODO */
 };
 
 #define ER_DATA_N    7

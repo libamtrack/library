@@ -47,9 +47,6 @@
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_randist.h>
 
-extern int indent_counter;
-extern char isp[];
-extern FILE * debf;
 
 /**
 * Prints name for debugging
@@ -85,8 +82,8 @@ void AT_PrintName(  void);
 * @param  shrink_tails    (algorithm specific) if true, tails of the local dose distribution, contributing less than "shrink_tails_under" are cut (pointer to single variable)
 * @param  shrink_tails_under  (algorithm specific) limit for tail cutting in local dose distribution (pointer to single variable)
 * @param  adjust_N2    (algorithm specific) if true, "N2" will be increase if necessary at high fluence to ensure sufficient binning resolution
-* @param  lethal_events_mode (algorithm specific) if true, allows to do calculations for cell survival
-* @param  results      pointer to array of size 10 to be allocated by the user which will be used to return the results\n
+* @param[in]  lethal_events_mode (algorithm specific) if true, allows to do calculations for cell survival
+* @param[out]  results      pointer to array of size 10 to be allocated by the user which will be used to return the results\n
 *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
 *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm\n
 *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n

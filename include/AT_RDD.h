@@ -48,48 +48,48 @@
 #include "AT_PhysicsRoutines.h"
 #include "AT_GammaResponse.h"
 
-extern int indent_counter;
-extern char isp[];
-extern FILE * debf;
 
-///////////////////////////////////////////////////////////////////////
-// RDD DATA
-
-enum RDDModels{
-  RDD_Test                 = 1,      /* no parameters */
-      RDD_KatzPoint        = 2,      /* parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
-      RDD_Geiss            = 3,      /* parameters: 0 - a0 [m] (core diameter) */
-      RDD_Site             = 4,      /* parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off)  */ // after Edmund et al., 2007, but modified with dose-cut off
-      RDD_ExtTarget        = 5,      /* parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */ //as defined in Edmund et al. , 2007
-      RDD_Edmund           = 6,      /* parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off)  */ // after Edmund et al., 2007, but modified with dose-cut off
-      RDD_Cucinotta        = 7       /* parameters: TODO  */
+/**
+ * RDD code numbers
+ */
+enum RDDModels {
+  RDD_Test                 = 1,      /**< no parameters */
+      RDD_KatzButtsPoint   = 2,      /**< parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
+      RDD_Geiss            = 3,      /**< parameters: 0 - a0 [m] (core diameter) */
+      RDD_Site             = 4,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off  */
+      RDD_KatzZhangPoint   = 5,      /**< parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */
+      RDD_Edmund           = 6,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off */
+      RDD_Cucinotta        = 7       /**< parameters: TODO  */
 };
 
 #define RDD_DATA_N    7
 
+/**
+ * RDD data
+ */
 typedef struct {
-  long    n;
-  long    RDD_no[RDD_DATA_N];
-  long    n_parameters[RDD_DATA_N];
-  char*   parameter_name[RDD_DATA_N][3];
-  float   parameter_default[RDD_DATA_N][3];
-  char*   RDD_name[RDD_DATA_N];
+  long    n;                                   /** TODO */
+  long    RDD_no[RDD_DATA_N];                  /** TODO */
+  long    n_parameters[RDD_DATA_N];            /** TODO */
+  char*   parameter_name[RDD_DATA_N][3];       /** TODO */
+  float   parameter_default[RDD_DATA_N][3];    /** TODO */
+  char*   RDD_name[RDD_DATA_N];                /** TODO */
 } rdd_data;
 
 static const rdd_data AT_RDD_Data = {
     RDD_DATA_N,
-    {  RDD_Test,                     RDD_KatzPoint,                                RDD_Geiss,                         RDD_Site,                                        RDD_ExtTarget,                                                RDD_Edmund,                     RDD_Cucinotta},
-    {  0,                            2,                                            1,                                 2,                                               3,                                                            2,                              1},
-    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                   {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"r_min_m","a0_m","D_min_Gy"},                                {"a0_m","d_min_Gy",""},         {"r_min_m","",""}},
-    {  {0,0,0},                      {1e-10, 1e-10,0},                             {5e-8,0,0},                        {5e-8,1e-10,0},                                  {1e-10, 5e-8, 1e-10},                                         {5e-8,1e-10,0},                 {5e-11,0,0}},
-    {  "Simple step test function",  "Katz' point target RDD [Katz et al., 1972]", "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Katz' extended target, as defined in [Edmund et al., 2007]", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. ]"}
+    {  RDD_Test,                     RDD_KatzButtsPoint,                                RDD_Geiss,                         RDD_Site,                                        RDD_KatzZhangPoint,                                            RDD_Edmund,                      RDD_Cucinotta},
+    {  0,                            2,                                                 1,                                 2,                                               2,                                                             2,                               1},
+    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                        {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"r_min_m","d_min_Gy",""},                                     {"a0_m","d_min_Gy",""},          {"r_min_m","",""}},
+    {  {0,0,0},                      {1e-10, 1e-10,0},                                  {5e-8,0,0},                        {5e-8,1e-10,0},                                  {1e-10, 1e-10,0},                                              {5e-8,1e-10,0},                  {5e-11,0,0}},
+    {  "Simple step test function",  "Katz' point target RDD [Butts,Katz et al., 1967]", "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Katz' point target, as defined in [Zhang,Katz et al., 1985]", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. 1997]"}
 };
 
 /**
 * Returns name of the radial dose distribution model from index
 *
-* @param  RDD_no   radial dose distribution model index
-* @param  RDD_name string containing radial dose distribution model name (output)
+* @param[in]   RDD_no   radial dose distribution model index
+* @param[out]  RDD_name string containing radial dose distribution model name
 */
 void getRDDName( const long* RDD_no,
     char* RDD_name);
@@ -128,14 +128,14 @@ void AT_r_RDD_m  ( const long*  n,
     float*        r_RDD_m);
 
 /**
- * @param E_MeV_u
- * @param particle_no
- * @param material_no
- * @param rdd_model
- * @param rdd_parameter
- * @param er_model
- * @param er_parameter
- * @param f1_parameters (output)\n
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] material_no
+ * @param[in] rdd_model
+ * @param[in] rdd_parameter
+ * @param[in] er_model
+ * @param[in] er_parameter
+ * @param[out] f1_parameters
  *     0 - LET_MeV_cm2_g \n
  *     1 - r_min_m \n
  *     2 - r_max_m \n
@@ -212,7 +212,7 @@ typedef struct {
   long*  n;
   float*  r_m;
   /* radiation field parameters */
-  float*  E_MeV_u;
+  float*  E_MeV_u;          /**< energy per nucleon */
   long*   particle_no;
   /* detector parameters */
   long*   material_no;
