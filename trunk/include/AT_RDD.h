@@ -54,12 +54,12 @@
  */
 enum RDDModels {
   RDD_Test                 = 1,      /**< no parameters */
-      RDD_KatzButtsPoint   = 2,      /**< parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
+      RDD_KatzPoint        = 2,      /**< parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
       RDD_Geiss            = 3,      /**< parameters: 0 - a0 [m] (core diameter) */
       RDD_Site             = 4,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off  */
-      RDD_KatzZhangPoint   = 5,      /**< parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */
+      RDD_KatzExtTarget    = 5,      /**< parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */
       RDD_Edmund           = 6,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off */
-      RDD_Cucinotta        = 7       /**< parameters: TODO  */
+      RDD_Cucinotta        = 7       /**< parameters: 0 - r_min [m] (lower integration limit)  */
 };
 
 #define RDD_DATA_N    7
@@ -78,25 +78,45 @@ typedef struct {
 
 static const rdd_data AT_RDD_Data = {
     RDD_DATA_N,
-    {  RDD_Test,                     RDD_KatzButtsPoint,                                RDD_Geiss,                         RDD_Site,                                        RDD_KatzZhangPoint,                                            RDD_Edmund,                      RDD_Cucinotta},
-    {  0,                            2,                                                 1,                                 2,                                               2,                                                             2,                               1},
-    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                        {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"r_min_m","d_min_Gy",""},                                     {"a0_m","d_min_Gy",""},          {"r_min_m","",""}},
-    {  {0,0,0},                      {1e-10, 1e-10,0},                                  {5e-8,0,0},                        {5e-8,1e-10,0},                                  {1e-10, 1e-10,0},                                              {5e-8,1e-10,0},                  {5e-11,0,0}},
-    {  "Simple step test function",  "Katz' point target RDD [Butts,Katz et al., 1967]", "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Katz' point target, as defined in [Zhang,Katz et al., 1985]", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. 1997]"}
+    {  RDD_Test,                     RDD_KatzPoint,                                      RDD_Geiss,                         RDD_Site,                                        RDD_KatzExtTarget,                                            RDD_Edmund,                      RDD_Cucinotta},
+    {  0,                            2,                                                  1,                                 2,                                               3,                                                             2,                               1},
+    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                         {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"r_min_m","d_min_Gy","a_0_m"},                                {"a0_m","d_min_Gy",""},          {"r_min_m","",""}},
+    {  {0,0,0},                      {1e-10, 1e-10,0},                                   {5e-8,0,0},                        {5e-8,1e-10,0},                                  {1e-10, 1e-10,5e-8},                                           {5e-8,1e-10,0},                  {5e-11,0,0}},
+    {  "Simple step test function",  "Katz' point target RDD",                           "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Katz' extended target RDD", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. 1997]"}
 };
 
 /**
-* Returns name of the radial dose distribution model from index
-*
-* @param[in]   RDD_no   radial dose distribution model index
-* @param[out]  RDD_name string containing radial dose distribution model name
-*/
+ * Returns name of the radial dose distribution model from index
+ *
+ * @param[in]   RDD_no   radial dose distribution model index
+ * @param[out]  RDD_name string containing radial dose distribution model name
+ */
 void getRDDName( const long* RDD_no,
     char* RDD_name);
 
+/**
+ * Returns number of the radial dose distribution model from its name
+ *
+ * @param[in]   RDD_name  string containing radial dose distribution model name
+ * @param[out]  RDD_no    radial dose distribution model index
+ */
 void getRDDNo( const char* RDD_name,
     long* RDD_no);
 
+/**
+ * Returns RDD as a function of distance r_m
+ *
+ * @param[in]   n
+ * @param[in]   r_m            distance [m]
+ * @param[in]   E_MeV_u
+ * @param[in]   particle_no
+ * @param[in]   material_no
+ * @param[in]   rdd_model
+ * @param[in]   rdd_parameter
+ * @param[in]   er_model
+ * @param[in]   er_parameter
+ * @param[out]  D_RDD_Gy       dose [Gy]
+ */
 void AT_D_RDD_Gy( const long*  n,
     const float*  r_m,
     /* radiation field parameters */
@@ -112,6 +132,20 @@ void AT_D_RDD_Gy( const long*  n,
     const float*  er_parameter,
     float*        D_RDD_Gy);
 
+/**
+ * Returns distance as a function of dose
+ *
+ * @param[in]   n
+ * @param[in]   D_RDD_Gy            dose [Gy]
+ * @param[in]   E_MeV_u
+ * @param[in]   particle_no
+ * @param[in]   material_no
+ * @param[in]   rdd_model
+ * @param[in]   rdd_parameter
+ * @param[in]   er_model
+ * @param[in]   er_parameter
+ * @param[out]  r_RDD_m             distance [m]
+ */
 void AT_r_RDD_m  ( const long*  n,
     const float*  D_RDD_Gy,
     /* radiation field parameters */
@@ -161,8 +195,9 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     float * f1_parameters);
 
 //TODO rewrite Katz functions with const parameters
-
-inline float AT_RDD_Katz(const float r_m, const float r_max_m, const float material_density_kg_m3, const float beta, const float Z_eff, const float C_MeV_m);
+inline float AT_RDD_Katz_C_J_m( const float electron_density_m3);
+inline float AT_RDD_Katz_LinearER(const float r_m, const float r_max_m, const float material_density_kg_m3, const float beta, const float Z_eff, const float C_J_m);
+inline float AT_RDD_Katz_PowerLawER(const float r_m, const float r_max_m, const float material_density_kg_m3, const float beta, const float Z_eff, const float C_J_m, const float alpha);
 
 float          AT_D_RDD_Gy_solver(          const float r , void * params );
 double         AT_P_RDD(                    double  r_m, void* params);
@@ -170,28 +205,25 @@ double         AT_sI_int(                   double  r_m, void* params);
 double         AT_D_RDD_Gy_int(             double  r_m, void* params);
 
 inline float   AT_RDD_Katz_point_kernel(    const float* x, const float* alpha);
-void           AT_RDD_Katz_point_kernelS(   int *n, float* x, float* alpha, float* f);
 inline float   AT_RDD_Katz_point_coeff_Gy(  const float* C_J_m,const float* Z_eff, const float* beta, const float* alpha, const float* density_kg_m3, const float* r_max_m);
 inline float   AT_RDD_Katz_point_Gy(        const float* r_m, const float* alpha, const float* r_max_m, const float* Katz_point_coeff_Gy);
-void           AT_RDD_Katz_point_GyS(       int *n, float* r_m, float* alpha, float* r_max_m,float* Katz_point_coeff_Gy, float * D);
 
 inline float   AT_RDD_Katz_dEdx_kernel(     const float* x, const float* alpha);
-void           AT_RDD_Katz_dEdx_kernelS(    int *n, float* x, float* alpha, float* f);
 double         AT_RDD_Katz_dEdx_integrand(  double x, void * params);
 inline float   AT_RDD_Katz_dEdx_coeff_J_m(  const float* r_max_m, const float* density_kg_m3, const float* Katz_point_coeff_Gy);
 float          AT_RDD_Katz_dEdx_J_m(        const float* alpha, const float* r_min_m, const float* r_max_m, const float* Katz_dEdx_coeff_J_m);
 
 inline float   AT_RDD_Katz_site_Gy(         const float* r_m, const float* alpha, const float* r_min_m, const float* r_max_m, const float* LET_J_m, const float* density_kg_m3, const float* Katz_dEdx_J_m, const float* Katz_point_coeff_Gy);
-void           AT_RDD_Katz_site_GyS(        int *n, float* r_m, float* alpha, float* r_min_m, float* r_max_m, float* LET_J_m, float* density_kg_m3, float* Katz_dEdx_J_m, float* Katz_point_coeff_Gy, float * D_Gy);
 
 float          geometryFunctionPhi(         const float* r0_m, const float* a0_m, const float* r_m);
 
 inline float   AT_RDD_Katz_ext_kernel_Gy(   const float* t_m, const float *r_m, const float* a0_m, const float* alpha, const float* r_min_m, const float* r_max_m, const float* Katz_point_coeff_Gy);
-void           AT_RDD_Katz_ext_kernel_GyS(  int *n, float* t_m, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy, float * D_Gy);
 double         AT_RDD_Katz_ext_integrand_Gy(double t_m, void * params);
 inline float   AT_RDD_Katz_ext_Gy(          const float *r_m, const float* a0_m, const float* alpha, const float* r_min_m, const float* r_max_m, const float* Katz_point_coeff_Gy);
-void           AT_RDD_Katz_ext_GyS(         int *n, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy, float * D_Gy);
 
+/**
+ * TODO
+ */
 typedef struct {
   /* radiation field parameters */
   float*  E_MeV_u;
@@ -208,6 +240,10 @@ typedef struct {
   float  gamma_parameters[5];
 } AT_P_RDD_parameters;
 
+
+/**
+ * TODO
+ */
 typedef struct {
   long*  n;
   float*  r_m;

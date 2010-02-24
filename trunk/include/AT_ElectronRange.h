@@ -43,13 +43,13 @@
  * Electron range models code numbers
  */
 enum ERModels{
-  ER_Test                  = 1,     /**< TODO */
-      ER_ButtsKatz         = 2,     /**< TODO */
-      ER_Waligorski        = 3,     /**< TODO */
-      ER_Geiss             = 4,     /**< TODO */
-      ER_Scholz            = 5,     /**< TODO */
-      ER_Edmund            = 6,     /**< TODO */
-      ER_Tabata            = 7      /**< TODO */
+  ER_Test                  = 1,     /**< dummy electron range models */
+      ER_ButtsKatz         = 2,     /**< Butts&Katz(?) electron range model, R = k * w, valid for ?? < w < 2keV , TODO ref needed [Katz et al., 1972] */
+      ER_Waligorski        = 3,     /**< Waligorski(?) electron range model, R = k * w ^ alpha, valid for ?? < w < 2keV TODO ref needed*/
+      ER_Geiss             = 4,     /**< Geiss(?) electron range model, R = k * w ^ alpha, valid for ?? < w < 2keV TODO ref needed [Geiss, 1997]*/
+      ER_Scholz            = 5,     /**< Scholz(?) electron range model, R = k * w ^ alpha, valid for ?? < w < 2keV TODO ref needed [Scholz, 2001]*/
+      ER_Edmund            = 6,     /**< Edmund(?) electron range model, R = k * w ^ alpha, valid for ?? < w < 2keV TODO ref needed*/
+      ER_Tabata            = 7      /**< Tabata electron range model, valid for 0.3keV < w < 30MeV TODO ref needed [Tabata, 1972]*/
 };
 
 #define ER_DATA_N    7
@@ -62,8 +62,8 @@ typedef struct {
 
 static const er_data AT_ER_Data = {
     ER_DATA_N,
-    {  ER_Test,                 ER_ButtsKatz,                                  ER_Waligorski,            ER_Geiss,                        ER_Scholz,                           ER_Tabata },
-    {  "simple test ER model",  "Butts & Katz' [Katz et al., 1972] ER model",  "Waligorski's ER model",  "Geiss' [Geiss, 1997] ER model", "ER_Scholz' [Scholz, 2001] ER model", "ER_Tabata [Tabata, 1972] ER model"}
+    {  ER_Test,                 ER_ButtsKatz,                       ER_Waligorski,                             ER_Geiss,                         ER_Scholz,                       ER_Edmund,                          ER_Tabata },
+    {  "simple test ER model",  "Butts & Katz' ER model (linear)",  "Waligorski's ER model (power-law wmax)",  "Geiss' ER model (power-law E)", "Scholz' ER model (power-law E)", "Edmund' ER model (power-law wmax)","Tabata  ER model"}
 };
 
 /**
