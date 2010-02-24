@@ -63,30 +63,30 @@ void AT_PrintName(  void);
 * Computes HCP response and RE/RBE using compound Poison process and
 * successive convolutions (CPP_SC, the 'SPIFF' algorithm)
 *
-* @param  n      number of particle types in the mixed particle field (pointer to single variable)
-* @param  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
-* @param  particle_no    type of the particles in the mixed particle field (pointer to array of size n)
+* @param[in]  n      number of particle types in the mixed particle field (pointer to single variable)
+* @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+* @param[in]  particle_no    type of the particles in the mixed particle field (pointer to array of size n)
 * @see          AT_DataParticle.h for definition
-* @param  fluence_cm2    fluences for the given particles, doses in Gy if negative (pointer to array of size n)
-* @param  material_no    index number for detector material (pointer to single variable)
+* @param[in]  fluence_cm2    fluences for the given particles, doses in Gy if negative (pointer to array of size n)
+* @param[in]  material_no    index number for detector material (pointer to single variable)
 * @see          AT_DataMaterial.h for definition
-* @param  RDD_model    index number for chosen radial dose distribution (pointer to single variable)
-* @param  RDD_parameters    parameters for chosen radial dose distribution (pointer to array of size depending on chosen model)
+* @param[in]  RDD_model    index number for chosen radial dose distribution (pointer to single variable)
+* @param[in]  RDD_parameters    parameters for chosen radial dose distribution (pointer to array of size depending on chosen model)
 * @see          AT_RDD.h for definition
-* @param  ER_model    index number for chosen electron-range model (pointer to single variable)
-* @param  ER_parameters    parameters for chosen electron-range model (pointer to array of size depending on chosen model)
+* @param[in]  ER_model    index number for chosen electron-range model (pointer to single variable)
+* @param[in]  ER_parameters    parameters for chosen electron-range model (pointer to array of size depending on chosen model)
 * @see          AT_ElectronRange.h for definition
-* @param  gamma_model    index number for chosen gamma response (pointer to single variable)
-* @param  gamma_parameters  parameters for chosen gamma response (pointer to array of size depending on chosen model)
+* @param[in]  gamma_model    index number for chosen gamma response (pointer to single variable)
+* @param[in]  gamma_parameters  parameters for chosen gamma response (pointer to array of size depending on chosen model)
 * @see          AT_GammaResponse.h for definition
-* @param  N2      (algorithm specific) number of bins per factor of two in local dose array (pointer to single variable)
-* @param  fluence_factor    factor to scale the fluences given as "fluence_cm2" with (pointer to single variable)
-* @param  write_output    if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory (pointer to single variable)
-* @param  shrink_tails    (algorithm specific) if true, tails of the local dose distribution, contributing less than "shrink_tails_under" are cut (pointer to single variable)
-* @param  shrink_tails_under  (algorithm specific) limit for tail cutting in local dose distribution (pointer to single variable)
-* @param  adjust_N2    (algorithm specific) if true, "N2" will be increase if necessary at high fluence to ensure sufficient binning resolution
+* @param[in,out]  N2      (algorithm specific) number of bins per factor of two in local dose array (pointer to single variable)
+* @param[in]  fluence_factor    factor to scale the fluences given as "fluence_cm2" with (pointer to single variable)
+* @param[in]  write_output    if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory (pointer to single variable)
+* @param[in]  shrink_tails    (algorithm specific) if true, tails of the local dose distribution, contributing less than "shrink_tails_under" are cut (pointer to single variable)
+* @param[in]  shrink_tails_under  (algorithm specific) limit for tail cutting in local dose distribution (pointer to single variable)
+* @param[in]  adjust_N2    (algorithm specific) if true, "N2" will be increase if necessary at high fluence to ensure sufficient binning resolution
 * @param[in]  lethal_events_mode (algorithm specific) if true, allows to do calculations for cell survival
-* @param[out]  results      pointer to array of size 10 to be allocated by the user which will be used to return the results\n
+* @param[out]  results      pointer to array of size 10 to be allocated by the user which will be used to return the results
 *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
 *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm\n
 *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -123,33 +123,33 @@ void AT_SPIFF(  const long*  n,
 * Computes HCP response and RE/RBE using summation of tracks
 * an a Cartesian grid (the 'GSM' algorithm)
 *
-* @param  n      number of particle types in the mixed particle field (pointer to single variable)
-* @param  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
-* @param  particle_no    type of the particles in the mixed particle field (pointer to array of size n)
+* @param[in]  n      number of particle types in the mixed particle field (pointer to single variable)
+* @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+* @param[in]  particle_no    type of the particles in the mixed particle field (pointer to array of size n)
 * @see          AT_DataParticle.h for definition
-* @param  fluence_cm2    fluences for the given particles, doses in Gy if negative (pointer to array of size n)
-* @param  material_no    index number for detector material (pointer to single variable)
+* @param[in]  fluence_cm2    fluences for the given particles, doses in Gy if negative (pointer to array of size n)
+* @param[in]  material_no    index number for detector material (pointer to single variable)
 * @see          AT_DataMaterial.h for definition
-* @param  RDD_model    index number for chosen radial dose distribution (pointer to single variable)
-* @param  RDD_parameters    parameters for chosen radial dose distribution (pointer to array of size depending on chosen model)
+* @param[in]  RDD_model    index number for chosen radial dose distribution (pointer to single variable)
+* @param[in]  RDD_parameters    parameters for chosen radial dose distribution (pointer to array of size depending on chosen model)
 * @see          AT_RDD.h for definition
-* @param  ER_model    index number for chosen electron-range model (pointer to single variable)
-* @param  ER_parameters    parameters for chosen electron-range model (pointer to array of size depending on chosen model)
+* @param[in]  ER_model    index number for chosen electron-range model (pointer to single variable)
+* @param[in]  ER_parameters    parameters for chosen electron-range model (pointer to array of size depending on chosen model)
 * @see          AT_ElectronRange.h for definition
-* @param  gamma_model    index number for chosen gamma response (pointer to single variable)
-* @param  gamma_parameters  parameters for chosen gamma response (pointer to array of size depending on chosen model)
+* @param[in]  gamma_model    index number for chosen gamma response (pointer to single variable)
+* @param[in]  gamma_parameters  parameters for chosen gamma response (pointer to array of size depending on chosen model)
 * @see          AT_GammaResponse.h for definition
-* @param  N_runs       (algorithm specific) number of runs within which track positions will be resampled
-* @param  N2      (algorithm specific) number of bins per factor of two in local dose array (pointer to single variable)
-* @param  fluence_factor    factor to scale the fluences given as "fluence_cm2" with (pointer to single variable)
-* @param  write_output    if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory (pointer to single variable)
-* @param  shrink_tails    (algorithm specific) if true, tails of the local dose distribution, contributing less than "shrink_tails_under" are cut (pointer to single variable)
-* @param  shrink_tails_under  (algorithm specific) limit for tail cutting in local dose distribution (pointer to single variable)
-* @param  adjust_N2    (algorithm specific) if true, "N2" will be increase if necessary at high fluence to ensure sufficient binning resolution
-* @param  lethal_events_mode (algorithm specific) if true, allows to do calculations for cell survival
-* @param  nX    (algorithm specific) number of voxels of the grid in x (and y as the grid is quadratic)
-* @param  voxel_size_m     side length of a voxel in m
-* @param  results      pointer to array of size 10 to be allocated by the user which will be used to return the results\n
+* @param[in]  N_runs       (algorithm specific) number of runs within which track positions will be resampled
+* @param[in]  N2      (algorithm specific) number of bins per factor of two in local dose array (pointer to single variable)
+* @param[in]  fluence_factor    factor to scale the fluences given as "fluence_cm2" with (pointer to single variable)
+* @param[in]  write_output    if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory (pointer to single variable)
+* @param[in]  shrink_tails    (algorithm specific) if true, tails of the local dose distribution, contributing less than "shrink_tails_under" are cut (pointer to single variable)
+* @param[in]  shrink_tails_under  (algorithm specific) limit for tail cutting in local dose distribution (pointer to single variable)
+* @param[in]  adjust_N2    (algorithm specific) if true, "N2" will be increase if necessary at high fluence to ensure sufficient binning resolution
+* @param[in]  lethal_events_mode (algorithm specific) if true, allows to do calculations for cell survival
+* @param[in]  nX    (algorithm specific) number of voxels of the grid in x (and y as the grid is quadratic)
+* @param[in]  voxel_size_m     side length of a voxel in m
+* @param[out]  results      pointer to array of size 10 to be allocated by the user which will be used to return the results
 *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
 *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm\n
 *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -187,25 +187,25 @@ void AT_GSM(  const long*  n,
 * Computes HCP response and RE/RBE using Katz' Ion-Gamma-Kill approach
 * according to Waligorski, 1988
 *
-* @param  n      number of particle types in the mixed particle field (pointer to single variable)
-* @param  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
-* @param  particle_no    type of the particles in the mixed particle field (pointer to array of size n)
+* @param[in]  n      number of particle types in the mixed particle field (pointer to single variable)
+* @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+* @param[in]  particle_no    type of the particles in the mixed particle field (pointer to array of size n)
 * @see          AT_DataParticle.h for definition
-* @param  fluence_cm2    fluences for the given particles, doses in Gy if negative (pointer to array of size n)
-* @param  material_no    index number for detector material (pointer to single variable)
+* @param[in]  fluence_cm2    fluences for the given particles, doses in Gy if negative (pointer to array of size n)
+* @param[in]  material_no    index number for detector material (pointer to single variable)
 * @see          AT_DataMaterial.h for definition
-* @param  RDD_model    index number for chosen radial dose distribution (pointer to single variable)
-* @param  RDD_parameters    parameters for chosen radial dose distribution (pointer to array of size depending on chosen model)
+* @param[in]  RDD_model    index number for chosen radial dose distribution (pointer to single variable)
+* @param[in]  RDD_parameters    parameters for chosen radial dose distribution (pointer to array of size depending on chosen model)
 * @see          AT_RDD.h for definition
-* @param  ER_model    index number for chosen electron-range model (pointer to single variable)
-* @param  ER_parameters    parameters for chosen electron-range model (pointer to array of size depending on chosen model)
+* @param[in]  ER_model    index number for chosen electron-range model (pointer to single variable)
+* @param[in]  ER_parameters    parameters for chosen electron-range model (pointer to array of size depending on chosen model)
 * @see          AT_ElectronRange.h for definition
-* @param  gamma_model    index number for chosen gamma response (pointer to single variable)
-* @param  gamma_parameters  parameters for chosen gamma response (pointer to array of size depending on chosen model)
+* @param[in]  gamma_model    index number for chosen gamma response (pointer to single variable)
+* @param[in]  gamma_parameters  parameters for chosen gamma response (pointer to array of size depending on chosen model)
 * @see          AT_GammaResponse.h for definition
-* @param  saturation_cross_section_factor  (algorithm specific)  scaling factor for the saturation cross section
+* @param[in]  saturation_cross_section_factor  (algorithm specific)  scaling factor for the saturation cross section
 * @see          Waligorski, 1988
-* @param  results      pointer to array of size 10 to be allocated by the user which will be used to return the results
+* @param[out]  results      pointer to array of size 10 to be allocated by the user which will be used to return the results
 *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
 *    results[1]    d_check         (algorithm independent)  not available with IGK\n
 *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -236,28 +236,28 @@ void AT_IGK(  const long*  n,
 * Computes HCP response and RE/RBE using compound Poison process and
 * statistical sampling (CPP_SS, the 'SPISS' algorithm)
 *
-* @param  n      number of particle types in the mixed particle field (pointer to single variable)
-* @param  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
-* @param  particle_no    type of the particles in the mixed particle field (pointer to array of size n)
+* @param[in]  n      number of particle types in the mixed particle field (pointer to single variable)
+* @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+* @param[in]  particle_no    type of the particles in the mixed particle field (pointer to array of size n)
 * @see          AT_DataParticle.h for definition
-* @param  fluence_cm2    fluences for the given particles, doses in Gy if negative (pointer to array of size n)
-* @param  material_no    index number for detector material (pointer to single variable)
+* @param[in]  fluence_cm2    fluences for the given particles, doses in Gy if negative (pointer to array of size n)
+* @param[in]  material_no    index number for detector material (pointer to single variable)
 * @see          AT_DataMaterial.h for definition
-* @param  RDD_model    index number for chosen radial dose distribution (pointer to single variable)
-* @param  RDD_parameters    parameters for chosen radial dose distribution (pointer to array of size depending on chosen model)
+* @param[in]  RDD_model    index number for chosen radial dose distribution (pointer to single variable)
+* @param[in]  RDD_parameters    parameters for chosen radial dose distribution (pointer to array of size depending on chosen model)
 * @see          AT_RDD.h for definition
-* @param  ER_model    index number for chosen electron-range model (pointer to single variable)
-* @param  ER_parameters    parameters for chosen electron-range model (pointer to array of size depending on chosen model)
+* @param[in]  ER_model    index number for chosen electron-range model (pointer to single variable)
+* @param[in]  ER_parameters    parameters for chosen electron-range model (pointer to array of size depending on chosen model)
 * @see          AT_ElectronRange.h for definition
-* @param  gamma_model    index number for chosen gamma response (pointer to single variable)
-* @param  gamma_parameters  parameters for chosen gamma response (pointer to array of size depending on chosen model)
+* @param[in]  gamma_model    index number for chosen gamma response (pointer to single variable)
+* @param[in]  gamma_parameters  parameters for chosen gamma response (pointer to array of size depending on chosen model)
 * @see          AT_GammaResponse.h for definition
-* @param  n_runs  (algorithm specific) number of points sampled for local dose distribution
-* @param  N2      (algorithm specific) number of bins per factor of two in local dose array (pointer to single variable)
-* @param  fluence_factor    factor to scale the fluences given as "fluence_cm2" with (pointer to single variable)
-* @param  write_output    if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory (pointer to single variable)
-* @param  importance_sampling  if unequal zero importance sampling will be applied to the single impact local dose distribution
-* @param  results      pointer to array of size 10 to be allocated by the user which will be used to return the results\n
+* @param[in] n_runs  (algorithm specific) number of points sampled for local dose distribution
+* @param[in]  N2      (algorithm specific) number of bins per factor of two in local dose array (pointer to single variable)
+* @param[in]  fluence_factor    factor to scale the fluences given as "fluence_cm2" with (pointer to single variable)
+* @param[in]  write_output    if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory (pointer to single variable)
+* @param[in]  importance_sampling  if unequal zero importance sampling will be applied to the single impact local dose distribution
+* @param[in]  results      pointer to array of size 10 to be allocated by the user which will be used to return the results
 *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
 *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm\n
 *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -268,7 +268,6 @@ void AT_IGK(  const long*  n,
 *    results[7]    not_used        (algorithm specific)\n
 *    results[8]    not used        (algorithm specific)\n
 *    results[9]    not used        (algorithm specific)\n
-* @return  none
 */
 void AT_SPISS(  const long* n,
     const float* E_MeV_u,
