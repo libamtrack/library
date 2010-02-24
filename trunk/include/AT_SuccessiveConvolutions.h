@@ -38,13 +38,9 @@
 #include <math.h>
 #include <malloc.h>
 
-extern int indent_counter;
-extern char isp[];
-extern FILE * debf;
-
 typedef struct{
 
-  long      array_size;                  // size of function arrays F..BI
+  long      array_size;                  /**< size of function arrays F..BI */
   long      N2;
   float      U;
 

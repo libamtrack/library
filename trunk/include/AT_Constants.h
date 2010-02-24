@@ -33,13 +33,7 @@
 
 #include <stdio.h>
 
-#define _LINUX // [_LINUX or _WINDOWS] : in Linux we have isnan function while in Windows we have _isnan
-#define _R // [_S or _R] in S we can pass long type to the function via as.single, but in R we pass int type
 //#define _DEBUG // debugging printouts
-
-extern int indent_counter;
-extern char isp[];
-extern FILE * debf;
 
 static  double  c_m_s                 =  299792458.0;                          // speed of light [m/s]
 static  double  c_cm_s                =  29979245800.0;                        // speed of light [cm/s]
@@ -64,10 +58,13 @@ static  double  m_to_um               =  1e6;
 
 static  double  pi                    =  3.14159265;
 
-enum Method{
-  ME_Grid      = 1,
-      ME_SPIFF = 2,
-      ME_Katz  = 3
+/**
+ * Algorithms code numbers
+ */
+enum Method{ //TODO shall be moved to other file
+  ME_Grid      = 1,     /**< TODO */
+      ME_SPIFF = 2,     /**< TODO */
+      ME_Katz  = 3      /**< TODO */
 };
 
 
