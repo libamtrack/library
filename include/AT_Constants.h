@@ -34,6 +34,7 @@
 #include <stdio.h>
 
 //#define _DEBUG // debugging printouts
+//#define _JAVA
 
 static  double  c_m_s                 =  299792458.0;                          // speed of light [m/s]
 static  double  c_cm_s                =  29979245800.0;                        // speed of light [cm/s]

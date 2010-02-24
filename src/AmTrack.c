@@ -35,36 +35,6 @@ void AT_PrintName(void){
   printf("This is libamtrack.\n");
 }
 
-/**
- * Wrapper for Java Interface Test
- * TODO: Move to AT_Wrapper_Java.c
- */
-JNIEXPORT jfloatArray JNICALL Java_AmTrack_AmTrackTestGUI_ATconvertBeamParameters
-  (JNIEnv *pEnv, jclass clazz, jfloat fluenceCm2, jfloat sigmaCm, jfloat n, jfloat fwhmMm)
-{
-  long  n_data          =       1;
-  float fluence_cm2     =       (float)fluenceCm2;
-  float sigma_cm        =       (float)sigmaCm;
-  float N               =       (float)n;
-  float FWHM_mm         =       (float)fwhmMm;
-
-  AT_convert_beam_parameters(     &n_data,
-                                  &fluence_cm2,
-                                  &sigma_cm,
-                                  &N,
-                                  &FWHM_mm);
-
-  jfloatArray results;
-  results              =       (*pEnv)->NewFloatArray(pEnv, 4);
-  jfloat* presults     =       (*pEnv)->GetFloatArrayElements(pEnv, results, 0);
-  presults[0]          =       (jfloat)fluence_cm2;
-  presults[1]          =       (jfloat)sigma_cm;
-  presults[2]          =       (jfloat)N;
-  presults[3]          =       (jfloat)FWHM_mm;
-  (*pEnv)->SetFloatArrayRegion(pEnv, results, 0, 4, presults);
-  return results;
-}
-
 void AT_SPIFF(  const long*  n,
     const float*  E_MeV_u,
     const long*  particle_no,
@@ -1096,7 +1066,7 @@ void AT_IGK(  const long*  n,
     F.function           = &AT_sI_int;
     F.params             = (void*)params;
     float   lower_lim_m  = 0.0;
-    if(*RDD_model == RDD_KatzButtsPoint){
+    if(*RDD_model == RDD_KatzPoint){
       lower_lim_m = RDD_parameters[0];
     }
     float   upper_lim_m;
@@ -1118,8 +1088,7 @@ void AT_IGK(  const long*  n,
         &error);
     if (status == GSL_EROUND || status == GSL_ESING){
 #ifdef _DEBUG
-indnt_init();
-fprintf(debf,"%s r=%g, integration from %g to %g , error no == %d\n",isp,*r_m,int_lim_m,(*r_m)+(*a0_m),status);
+printf("r=%g, integration from %g to %g , error no == %d\n",*r_m,int_lim_m,(*r_m)+(*a0_m),status);
 #endif
     }
 
@@ -1133,7 +1102,7 @@ fprintf(debf,"%s r=%g, integration from %g to %g , error no == %d\n",isp,*r_m,in
     // Get saturation cross-section
     float   s0_m2 = 0.0f;
     float   a0_m  = 0.0f;
-    if(*RDD_model == RDD_KatzZhangPoint){
+    if(*RDD_model == RDD_KatzExtTarget){
       a0_m = RDD_parameters[1];
     }
     if(*RDD_model == RDD_Geiss ||
