@@ -194,32 +194,205 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     /* calculated parameters */
     float * f1_parameters);
 
-//TODO rewrite Katz functions with const parameters
+
+/**
+ * Calculates C constant given by equation: C = 2 pi N e^4 / ( m c^2 (4 pi eps_0)^2)
+ * For water: C = 1.36662e-12 [J/m] = 8.53 [MeV/m]
+ *
+ * @param[in] electron_density_m3 electron density of given material [1/m^3]
+ * @return constant C [J/m]
+ */
 inline float AT_RDD_Katz_C_J_m( const float electron_density_m3);
-inline float AT_RDD_Katz_LinearER(const float r_m, const float r_max_m, const float material_density_kg_m3, const float beta, const float Z_eff, const float C_J_m);
-inline float AT_RDD_Katz_PowerLawER(const float r_m, const float r_max_m, const float material_density_kg_m3, const float beta, const float Z_eff, const float C_J_m, const float alpha);
 
-float          AT_D_RDD_Gy_solver(          const float r , void * params );
-double         AT_P_RDD(                    double  r_m, void* params);
-double         AT_sI_int(                   double  r_m, void* params);
-double         AT_D_RDD_Gy_int(             double  r_m, void* params);
 
-inline float   AT_RDD_Katz_point_kernel(    const float* x, const float* alpha);
-inline float   AT_RDD_Katz_point_coeff_Gy(  const float* C_J_m,const float* Z_eff, const float* beta, const float* alpha, const float* density_kg_m3, const float* r_max_m);
-inline float   AT_RDD_Katz_point_Gy(        const float* r_m, const float* alpha, const float* r_max_m, const float* Katz_point_coeff_Gy);
+/**
+ * Calculates coefficient
+ *
+ * coeff      =  (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1 /rmax^2
+ *
+ * @param[in] C_J_m                    constant C [J/m]
+ * @param[in] Z_eff                    effective ion charge Zeff
+ * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] material_density_kg_m3   material density rho [kg/m^3]
+ * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @return coeff [Gy]    calculated coefficient
+ */
+inline float   AT_RDD_Katz_coeff_Gy(  const float C_J_m,
+    const float Z_eff,
+    const float beta,
+    const float material_density_kg_m3,
+    const float r_max_m);
 
-inline float   AT_RDD_Katz_dEdx_kernel(     const float* x, const float* alpha);
-double         AT_RDD_Katz_dEdx_integrand(  double x, void * params);
-inline float   AT_RDD_Katz_dEdx_coeff_J_m(  const float* r_max_m, const float* density_kg_m3, const float* Katz_point_coeff_Gy);
-float          AT_RDD_Katz_dEdx_J_m(        const float* alpha, const float* r_min_m, const float* r_max_m, const float* Katz_dEdx_coeff_J_m);
+/**
+ * Calculates power-law ER kernel of Katz point RDD
+ *
+ * kernel(r)  =  1/x^2 * 1/alpha * (1 - x)^(1/alpha)              [here: x = r/rmax]
+ *
+ * @param[in] x                        dimensionless x = r/rmax
+ * @param[in] alpha                    parameter of ER model
+ * @return kernel    calculated kernel
+ */
+inline float AT_RDD_Katz_PowerLawER_kernel(    const float x,
+    const float alpha);
 
-inline float   AT_RDD_Katz_site_Gy(         const float* r_m, const float* alpha, const float* r_min_m, const float* r_max_m, const float* LET_J_m, const float* density_kg_m3, const float* Katz_dEdx_J_m, const float* Katz_point_coeff_Gy);
 
-float          geometryFunctionPhi(         const float* r0_m, const float* a0_m, const float* r_m);
+/**
+ * Calculates "old" Katz RDD (derived from linear ER model):
+ *
+ * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r * (1/r - 1/rmax)
+ *
+ * @param[in] r_m                      distance r [m]
+ * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] material_density_kg_m3   material density rho [kg/m^3]
+ * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] Z_eff                    effective ion charge Zeff
+ * @param[in] C_J_m                    constant C [J/m]
+ * @return D(r) [Gy] radial dose distribution at distance r
+ */
+inline float AT_RDD_Katz_LinearER_versionB_Gy(const float r_m,
+    const float r_max_m,
+    const float material_density_kg_m3,
+    const float beta,
+    const float Z_eff,
+    const float C_J_m);
 
-inline float   AT_RDD_Katz_ext_kernel_Gy(   const float* t_m, const float *r_m, const float* a0_m, const float* alpha, const float* r_min_m, const float* r_max_m, const float* Katz_point_coeff_Gy);
-double         AT_RDD_Katz_ext_integrand_Gy(double t_m, void * params);
-inline float   AT_RDD_Katz_ext_Gy(          const float *r_m, const float* a0_m, const float* alpha, const float* r_min_m, const float* r_max_m, const float* Katz_point_coeff_Gy);
+
+/**
+ * Calculates "new" Katz RDD (derived from power-law (on wmax) ER model):
+ *
+ * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r^2 * 1/alpha * (1 - r/rmax)^(1/alpha)
+ *
+ * Version A : using pre-calculated constant in following manner:
+ *
+ * D(r) = coeff * kernel(r)
+ *
+ * where:
+ *
+ * coeff      =  (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1 /rmax^2
+ * kernel(r)  =  1/x^2 * 1/alpha * (1 - x)^(1/alpha)              [here: x = r/rmax]
+ *
+ * @param[in] r_m                      distance r [m]
+ * @param[in] alpha                    parameter of ER model
+ * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @return D(r) [Gy] radial dose distribution at distance r
+ */
+inline float   AT_RDD_Katz_PowerLawER_versionA_Gy(        const float r_m,
+    const float alpha,
+    const float r_max_m,
+    const float Katz_point_coeff_Gy);
+
+
+/**
+ * Calculates "new" Katz RDD (derived from power-law (on wmax) ER model):
+ *
+ * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r^2 * 1/alpha * (1 - r/rmax)^(1/alpha)
+ *
+ * Version B : Direct calculation
+ *
+ * @param[in] r_m                      distance r [m]
+ * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] material_density_kg_m3   material density rho [kg/m^3]
+ * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] Z_eff                    effective ion charge Zeff
+ * @param[in] C_J_m                    constant C [J/m]
+ * @param[in] alpha                    parameter of ER model
+ * @return D(r) [Gy] radial dose distribution at distance r
+ */
+inline float    AT_RDD_Katz_PowerLawER_versionB_Gy(const float r_m,
+    const float r_max_m,
+    const float material_density_kg_m3,
+    const float beta,
+    const float Z_eff,
+    const float C_J_m,
+    const float alpha);
+
+
+/**
+ * TODO
+ */
+inline float   AT_RDD_Katz_dEdx_coeff_J_m(  const float r_max_m,
+    const float material_density_kg_m3,
+    const float Katz_point_coeff_Gy);
+
+/**
+ * TODO
+ */
+float          AT_RDD_Katz_PowerLawER_dEdx_versionA_J_m(        const float alpha,
+    const float r_min_m,
+    const float r_max_m,
+    const float Katz_dEdx_coeff_J_m);
+
+/**
+ * TODO
+ */
+inline float   AT_RDD_Katz_PowerLawER_site_versionA_Gy(         const float r_m,
+    const float alpha,
+    const float r_min_m,
+    const float r_max_m,
+    const float LET_J_m,
+    const float material_density_kg_m3,
+    const float Katz_dEdx_J_m,
+    const float Katz_point_coeff_Gy);
+
+/**
+ * TODO
+ */
+float          geometryFunctionPhi(         const float r0_m,
+    const float a0_m,
+    const float r_m);
+
+/**
+ * TODO
+ */
+inline float   AT_RDD_Katz_ext_kernel_Gy(   const float t_m,
+    const float r_m,
+    const float a0_m,
+    const float alpha,
+    const float r_min_m,
+    const float r_max_m,
+    const float Katz_point_coeff_Gy);
+
+/**
+ * TODO
+ */
+double         AT_RDD_Katz_ext_integrand_Gy(double t_m,
+    void * params);
+
+/**
+ * TODO
+ */
+inline float   AT_RDD_Katz_ext_Gy(          const float r_m,
+    const float a0_m,
+    const float alpha,
+    const float r_min_m,
+    const float r_max_m,
+    const float Katz_point_coeff_Gy);
+
+/**
+ * TODO
+ */
+float          AT_D_RDD_Gy_solver(          const float r ,
+    void * params );
+
+/**
+ * TODO
+ */
+double         AT_P_RDD(                    double  r_m,
+    void* params);
+
+/**
+ * TODO
+ */
+double         AT_sI_int(                   double  r_m,
+    void* params);
+
+/**
+ * TODO
+ */
+double         AT_D_RDD_Gy_int(             double  r_m,
+    void* params);
+
 
 /**
  * TODO
