@@ -59,7 +59,7 @@ enum RDDModels {
       RDD_Site             = 4,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off  */
       RDD_KatzExtTarget    = 5,      /**< parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */
       RDD_Edmund           = 6,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off */
-      RDD_Cucinotta        = 7       /**< parameters: 0 - r_min [m] (lower integration limit)  */
+      RDD_Cucinotta        = 7       /**< parameters: 0 - r_min [m] (lower integration limit),1 - d_min_Gy (lower dose cut-off)   */
 };
 
 //TODO move RDD_Site, RDD_KatzExtTarget to AT_averaged_RDD ?
@@ -87,9 +87,9 @@ typedef struct {
 static const rdd_data AT_RDD_Data = {
     RDD_DATA_N,
     {  RDD_Test,                     RDD_KatzPoint,                                      RDD_Geiss,                         RDD_Site,                                        RDD_KatzExtTarget,                                            RDD_Edmund,                      RDD_Cucinotta},
-    {  0,                            2,                                                  1,                                 2,                                               3,                                                             2,                               1},
-    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                         {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"r_min_m","d_min_Gy","a_0_m"},                                {"a0_m","d_min_Gy",""},          {"r_min_m","",""}},
-    {  {0,0,0},                      {1e-10, 1e-10,0},                                   {5e-8,0,0},                        {5e-8,1e-10,0},                                  {1e-10, 1e-10,5e-8},                                           {5e-8,1e-10,0},                  {5e-11,0,0}},
+    {  0,                            2,                                                  1,                                 2,                                               3,                                                             2,                               2},
+    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                         {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"r_min_m","d_min_Gy","a_0_m"},                                {"a0_m","d_min_Gy",""},          {"r_min_m","d_min_Gy",""}},
+    {  {0,0,0},                      {1e-10, 1e-10,0},                                   {5e-8,0,0},                        {5e-8,1e-10,0},                                  {1e-10, 1e-10,5e-8},                                           {5e-8,1e-10,0},                  {5e-11,1e-10,0}},
     {  "Simple step test function",  "Katz' point target RDD",                           "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Katz' extended target RDD", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. 1997]"}
 };
 
@@ -604,6 +604,126 @@ float          AT_RDD_Katz_PowerLawER_dEdx_versionA_J_m(        const float alph
     const float r_min_m,
     const float r_max_m,
     const float Katz_dEdx_coeff_J_m);
+
+
+/**
+ * Calculates short range modification function fS(r)
+ * for Cucinotta RDD
+ *
+ * fS(r) = 1.0/( r0/r + 0.6 + 1.7 beta + 1.1 beta^2)           [here r0 = 10^(-9) [m]]
+ *
+ * @param[in] r_m                      distance [m]
+ * @param[in] beta                     relative ion speed beta = v/c
+ * @return fS(r)
+ */
+inline float   AT_RDD_Cucinotta_f_shortRange( const float r_m,
+    const float beta);
+
+/**
+ * Calculates long range modification function fL(r)
+ * for Cucinotta RDD
+ *
+ * fL(r) = exp( -(r/(0.37rmax))^2 )
+ *
+ * @param[in] r_m                      distance [m]
+ * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @return fL(r)
+ */
+inline float   AT_RDD_Cucinotta_f_longRange( const float r_m,
+    const float r_max_m);
+
+
+/**
+ * Calculates radial component D_delta
+ * for Cucinotta RDD
+ *
+ * Ddelta(r) = C z^2 / beta^2 1/rho fS(r) fL(r) /r^2
+ *
+ * We calculate using pre-calculated constant in following manner:
+ *
+ * Ddelta(r) = coeff * fS(r) * fL(r) * rmax^2/r^2
+ *
+ * where:
+ *
+ * coeff      =  (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1 /rmax^2
+ *
+ * @param[in] r_m                      distance [m]
+ * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @return Ddelta(r) [Gy]
+ */
+inline float   AT_RDD_Cucinotta_Ddelta_Gy( const float r_m,
+    const float r_max_m,
+    const float beta,
+    const float Katz_point_coeff_Gy);
+
+
+/**
+ * Calculates normalization constant
+ * for Cucinotta RDD
+ *
+ * Cnorm      =  (LET - 2 pi \int_rmin^rmax Ddelta(r) r dr) / 2 pi \int_rmin^rmax Dexc(r) r dr
+ *
+ * @param[in] r_min_m                  minimum radius cut-off distance [m]
+ * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @return C norm
+ */
+inline float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
+    const float r_max_m,
+    const float beta,
+    const float Katz_point_coeff_Gy);
+
+/**
+ * Calculates excitation component D_exc
+ * for Cucinotta RDD
+ *
+ * Dexc(r) = C exp( - r / 2d ) / r^2            [where d = (beta/2) * (hbar * c / wr) and wr = 13eV ]
+ *
+ * We calculate using pre-calculated constant in following manner:
+ *
+ * Dexc(r) = Cnorm * coeff * exp( - r / 2d ) * (rmax/r)^2
+ *
+ * where:
+ *
+ * coeff      =  (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1 /rmax^2
+ *
+ * Cnorm      =  (LET - 2 pi \int_rmin^rmax Ddelta(r) r dr) / 2 pi \int_rmin^rmax Dexc(r) r dr //TODO rewrite
+ *
+ * @param[in] r_m                      distance [m]
+ * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @return Dexc(r) [Gy]
+ */
+inline float   AT_RDD_Cucinotta_Dexc_Gy( const float r_m,
+    const float r_max_m,
+    const float beta,
+    const float C_norm,
+    const float Katz_point_coeff_Gy);
+
+/**
+ * Calculates Cucinotta point RDD
+ *
+ * D(r)    = Dexc(r) + Ddelta(r)
+ *
+ * Ddelta(r) = C z^2 / beta^2 1/rho fS(r) fL(r) /r^2
+ *
+ * Dexc(r) = C exp( - r / 2d ) / r^2
+ *
+ * @param[in] r_m                      distance [m]
+ * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @return D(r) [Gy]
+ */
+inline float   AT_RDD_Cucinotta_Dpoint_Gy( const float r_m,
+    const float r_max_m,
+    const float beta,
+    const float C_norm,
+    const float Katz_point_coeff_Gy);
 
 
 /**
