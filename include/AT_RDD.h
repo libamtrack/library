@@ -62,6 +62,8 @@ enum RDDModels {
       RDD_Cucinotta        = 7       /**< parameters: 0 - r_min [m] (lower integration limit)  */
 };
 
+//TODO move RDD_Site, RDD_KatzExtTarget to AT_averaged_RDD ?
+
 /**
  * Total number of RDD models
  */
@@ -253,7 +255,7 @@ inline float AT_RDD_Katz_PowerLawER_PointDoseKernel(    const float x,
     const float alpha);
 
 /**
- * Calculates "new" Katz RDD (derived from linear (on wmax) ER model):
+ * Calculates "old" Katz RDD (derived from linear (on wmax) ER model):
  *
  * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r * (1/r - 1/rmax)
  *

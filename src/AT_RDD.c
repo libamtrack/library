@@ -146,6 +146,7 @@ inline float   AT_RDD_Katz_LinearER_DSite_Gy( const float r_m,
   //Dsite(r) = 1 / (rho pi a0^2) * (LET - dEdx)   for r < a0
   //Dsite(r) = D(r)                               for r >= a0
   if( r_m < a0_m ){
+    printf("LET = %g [J/m], plateau = %g [Gy], rmax = %g [m]\n", LET_J_m, M_1_PI * (LET_J_m - dEdx_J_m)/ (material_density_kg_m3 * gsl_pow_2(a0_m)) , r_max_m);
     return M_1_PI * (LET_J_m - dEdx_J_m)/ (material_density_kg_m3 * gsl_pow_2(a0_m));
   } else {
     return AT_RDD_Katz_LinearER_Dpoint_versionA_Gy(r_m,r_max_m,Katz_point_coeff_Gy);
@@ -213,8 +214,6 @@ inline float   AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const float x1,
    // kernel =  1/(pi x2^2 - pi x1^2) * (F2 - F1)
    const float F1 = (x1 / gsl_pow_2(alpha)) * ( (x1 / (4.0f * alpha)) * (1.0f/alpha - 1.0f) - 1.0f ) + log(x1);
    const float F2 = (x2 / gsl_pow_2(alpha)) * ( (x2 / (4.0f * alpha)) * (1.0f/alpha - 1.0f) - 1.0f ) + log(x2);
-//   printf("x2 = %g , x1 = %g \n", x2,x1);
-//   printf("F2 = %g , F1 = %g \n", F2,F1);
    return M_1_PI * (F2 - F1) / (gsl_pow_2(x2) - gsl_pow_2(x1));
  }
 
@@ -238,7 +237,6 @@ inline float   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const float a0_m,
 
   // dEdx = 2 pi rho \int_a0^rmax r D(r) dr =
   //      = 2 pi rho * (pi rmax^2 - pi a0^2) D_av(a0,rmax)
-
     return 2.0f * M_PI * material_density_kg_m3 * M_PI * \
             (gsl_pow_2(r_max_m) - gsl_pow_2(a0_m)) * \
             AT_RDD_Katz_PowerLawER_Daverage_Gy(a0_m,r_max_m,r_max_m,alpha,Katz_point_coeff_Gy);
@@ -499,7 +497,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
   if( *rdd_model == RDD_KatzPoint){
 
     // 1. set minimum r_min_m (f1_parameters[1])
-    r_min_m               =  rdd_parameter[0];                                                  // r_min_m
+    r_min_m               =  rdd_parameter[0];
     if (max_electron_range_m <= r_min_m){
       r_min_m             =  max_electron_range_m;
     }                  // If r.max < r.min, r.min = r.max
@@ -521,13 +519,13 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
       d_max_Gy              =  AT_RDD_Katz_LinearER_Dpoint_versionB_Gy(r_min_m, max_electron_range_m, density_kg_m3, beta, Z_eff, C_J_m);           // d_max_Gy gives as dose for r_min_m
     }
     // 4. set norm_constant_Gy (f1_parameters[5])
-    norm_constant_Gy      =  0.0;                                                               // not used here as this RDD model is not normalized
+    norm_constant_Gy      =  0.0;                                                                // not used here as this RDD model is not normalized
 
     // 5. calculate single_impact_dose_Gy (f1_parameters[7])
-    single_impact_dose_Gy   =  LET_MeV_cm2_g * single_impact_fluence_cm2 * MeV_g_to_J_kg;         // single_impact_dose = LET * fluence; TODO check how it should be defined
+    single_impact_dose_Gy   =  LET_MeV_cm2_g * single_impact_fluence_cm2 * MeV_g_to_J_kg;        // single_impact_dose = LET * fluence; TODO check how it should be defined
 
     // 6. calculate dEdx_MeV_cm2_g (f1_parameters[8])
-    dEdx_MeV_cm2_g          =  LET_MeV_cm2_g;                                                     // dEdx = LET ?? // TODO here we can calculate what is \int D(r) r dr
+    dEdx_MeV_cm2_g          =  LET_MeV_cm2_g;                                                    // dEdx = LET ?? // TODO here we can calculate what is \int D(r) r dr
 
     // Save parameters to f1_parameters table
     f1_parameters[1]        =  r_min_m;
@@ -562,9 +560,11 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     const float C_J_m               =  AT_RDD_Katz_C_J_m(electron_density_m3);
     const float Katz_point_coeff_Gy =  AT_RDD_Katz_coeff_Gy(C_J_m,Z_eff,beta,density_kg_m3,max_electron_range_m);
 
-    float  LET_J_m        =  LET_MeV_cm2_g * 10.0f; // [MeV * m^2 / kg]
-    LET_J_m              *=  density_kg_m3;       // [MeV / m]
-    LET_J_m              *=  MeV_to_J;            // [J/m]
+    float  LET_J_m        =  LET_MeV_cm2_g * density_g_cm3; // [MeV / cm]
+    LET_J_m              *=  100.0f;       // [MeV / m]
+    LET_J_m              *=  MeV_to_J;     // [J/m]
+
+    printf("LET = %g\n", LET_MeV_cm2_g);
 
     float  dEdx_J_m       =  0.0f;
 
@@ -577,14 +577,12 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
       }
 
       dEdx_J_m            =  AT_RDD_Katz_PowerLawER_dEdx_J_m(r_min_m, max_electron_range_m, density_kg_m3, alpha, Katz_point_coeff_Gy);
-      //printf("LET = %g [J/m], dEdX = %g [J/m]\n", LET_J_m, dEdx_J_m);
 
       d_max_Gy            =  AT_RDD_Katz_PowerLawER_DSite_Gy(0.0f, r_min_m, max_electron_range_m, density_kg_m3, alpha, LET_J_m, dEdx_J_m, Katz_point_coeff_Gy);
 
     } else if (*er_model == ER_ButtsKatz){ // calculate dEdx_MeV_cm2_g from "old" Katz RDD
 
       dEdx_J_m            =  AT_RDD_Katz_LinearER_dEdx_J_m(r_min_m, max_electron_range_m, density_kg_m3, Katz_point_coeff_Gy);
-      //printf("LET = %g [J/m], dEdX = %g [J/m]\n", LET_J_m, dEdx_J_m);
 
       d_max_Gy            =  AT_RDD_Katz_LinearER_DSite_Gy(0.0f, r_min_m, max_electron_range_m, density_kg_m3, LET_J_m, dEdx_J_m, Katz_point_coeff_Gy);
 
@@ -599,7 +597,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     single_impact_dose_Gy =  LET_MeV_cm2_g * single_impact_fluence_cm2 * MeV_g_to_J_kg;   // single_impact_dose = LET * fluence; TODO check how it should be defined
 
     // 6. calculate dEdx_MeV_cm2_g (f1_parameters[8])
-    dEdx_MeV_cm2_g        =  dEdx_J_m / 10.0f / density_g_cm3 / MeV_to_J;
+    dEdx_MeV_cm2_g        =  dEdx_J_m / 100.0f / density_g_cm3 / MeV_to_J;
 
     // Save parameters to f1_parameters table
     f1_parameters[1]      =  r_min_m;
@@ -680,9 +678,9 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     // 2. calculate minimum dose d_min_Gy (f1_parameters[3])
     // 3. calculate maximum dose d_max_Gy (f1_parameters[4])
     // 4. set norm_constant_Gy (f1_parameters[5])
-    float  tmp                 = (float)(0.5f + log(max_electron_range_m / a0_m));
-    tmp                       *= 2.0f * M_PI * gsl_pow_2(a0_m * m_to_cm);                      //Normalization to match with LET
-    norm_constant_Gy           = LET_MeV_cm2_g * MeV_g_to_J_kg / tmp;                         // k = LET / tmp
+    float  tmp_cm                 = (float)(0.5f + log(max_electron_range_m / a0_m));
+    tmp_cm                       *= 2.0f * M_PI * gsl_pow_2(a0_m * m_to_cm);                      //Normalization to match with LET
+    norm_constant_Gy           = LET_MeV_cm2_g * MeV_g_to_J_kg / tmp_cm;                         // k = LET / tmp
     d_max_Gy                   = norm_constant_Gy;                                            // d_max_Gy = k
     d_min_Gy                   = norm_constant_Gy * gsl_pow_2( a0_m / max_electron_range_m);  // d_min_Gy
 
@@ -794,6 +792,9 @@ void AT_D_RDD_Gy  ( const  long*  n,
    *************** LOOP OVER DISTANCE VECTOR **************
    *******************************************************/
   long     i;
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RDD_Test
   if( *rdd_model == RDD_Test){
     // Loop over all r_m given
     for (i = 0; i < *n; i++){
@@ -806,7 +807,8 @@ void AT_D_RDD_Gy  ( const  long*  n,
     }
   }// end RDD_Test
 
-
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RDD_KatzPoint
   if( *rdd_model == RDD_KatzPoint){ // RDD formula will be determined by form of ER model
     const float r_min_m  =  f1_parameters[1];
 
@@ -837,9 +839,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
         } // end if
       } // end for
 
-    } else { // linear law form of RDD for other ER models (old Katz style)
-
-      // TODO is it OK to use power-law (on E) ER models with old Katz RDD form ?
+    }  else if (*er_model == ER_ButtsKatz){ // linear law form of RDD for other ER models (old Katz style)
 
       // Loop over all r_m given
       for (i = 0; i < *n; i++){
@@ -850,15 +850,24 @@ void AT_D_RDD_Gy  ( const  long*  n,
         } // end if
       } // end for
 
+    } else { // other ER models
+
+      // Loop over all r_m given
+      for (i = 0; i < *n; i++){
+        D_RDD_Gy[i]        =  0.0f;
+      } // end for
     } // end if
 
   }// end RDD_KatzPoint
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RDD_KatzExtTarget
   if( *rdd_model == RDD_KatzExtTarget){
       //TODO needs to be re-implemented
   }// end RDD_KatzExtTarget
 
-
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RDD_Site
   if( *rdd_model == RDD_Site){
     const float r_min_m  =  f1_parameters[1];
 
@@ -867,12 +876,12 @@ void AT_D_RDD_Gy  ( const  long*  n,
     const float Katz_point_coeff_Gy = AT_RDD_Katz_coeff_Gy(C_J_m,Z_eff,beta,density_kg_m3,max_electron_range_m);
 
     // convert LET_MeV_cm2_g to LET_J_m
-    float  LET_J_m        =  LET_MeV_cm2_g * 10.f; // [MeV * m^2 / kg]
-    LET_J_m              *=  density_kg_m3;       // [MeV / m]
-    LET_J_m              *=  MeV_to_J;            // [J/m]
+    float  LET_J_m        =  LET_MeV_cm2_g * density_g_cm3; // [MeV / cm]
+    LET_J_m              *=  100.0f;       // [MeV / m]
+    LET_J_m              *=  MeV_to_J;     // [J/m]
 
     // convert dEdx_MeV_cm2_g to dEdx_J_m
-    const float dEdx_J_m  = dEdx_MeV_cm2_g * 10.0f * density_g_cm3 * MeV_to_J;
+    const float dEdx_J_m  = dEdx_MeV_cm2_g * 100.0f * density_g_cm3 * MeV_to_J;
 
     if( (*er_model == ER_Waligorski) || (*er_model == ER_Edmund) ){
 
@@ -910,7 +919,8 @@ void AT_D_RDD_Gy  ( const  long*  n,
 
   }// end RDD_Site
 
-
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RDD_Edmund
   if(*rdd_model == RDD_Edmund){
     const float r_min_m  =  f1_parameters[1];
 
@@ -944,6 +954,8 @@ void AT_D_RDD_Gy  ( const  long*  n,
 
   }// end RDD_Site
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RDD_Geiss
   if( *rdd_model == RDD_Geiss){
     // Loop over all r_m given
 
@@ -959,6 +971,8 @@ void AT_D_RDD_Gy  ( const  long*  n,
     }
   }// end RDD_Geiss
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RDD_Cucinotta
   if( *rdd_model == RDD_Cucinotta){
     const float r_min_m  =  f1_parameters[1];
     // Loop over all r_m given
@@ -995,7 +1009,7 @@ float AT_D_RDD_Gy_solver( const float r , void * params ){
   return (params_struct->D_RDD_Gy)[0]-(params_struct->D0);
 }
 
-
+// TODO needs to be rewritten
 void AT_r_RDD_m  ( const  long*  n,
     const float*  D_RDD_Gy,
     /* radiation field parameters */
