@@ -83,7 +83,6 @@ inline float   AT_RDD_Katz_LinearER_Dpoint_versionA_Gy(        const float r_m,
     const float Katz_point_coeff_Gy){
 
   float x = r_m/r_max_m;
-  printf("%e %e\n", r_m*1e9, Katz_point_coeff_Gy * AT_RDD_Katz_LinearER_PointDoseKernel(x));
   return Katz_point_coeff_Gy * AT_RDD_Katz_LinearER_PointDoseKernel(x);
 }
 
@@ -307,24 +306,41 @@ inline float   AT_RDD_Cucinotta_Ddelta_Gy( const float r_m,
   return Katz_point_coeff_Gy * AT_RDD_Cucinotta_f_longRange(r_m,r_max_m) * AT_RDD_Cucinotta_f_shortRange(r_m,beta) * gsl_pow_2(r_max_m/r_m);
 }
 
-/**
- * Calculates normalization constant
- * for Cucinotta RDD
- *
- * Cnorm      =  (LET - 2 pi \int_rmin^rmax Ddelta(r) r dr) / 2 pi \int_rmin^rmax Dexc(r) r dr
- *
- * @param[in] r_min_m                  minimum radius cut-off distance [m]
- * @param[in] r_max_m                  delta electron maximum range rmax [m]
- * @param[in] beta                     relative ion speed beta = v/c
- * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
- * @return C norm
- */ // TODO needs to be implemented
-inline float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
+
+// TODO needs to be implemented
+inline float   AT_RDD_Cucinotta_Ddelta_average_Gy(  const float r1_m,
+    const float r2_m,
     const float r_max_m,
     const float beta,
     const float Katz_point_coeff_Gy){
 
-  return 1.0f;
+  // Dav(r1,r2) = coeff/ (pi r2^2 - pi r1^2) * \int_r1^r2 fS(r) * fL(r) * rmax^2/r^2 r dr
+  return 1;
+}
+
+
+// TODO needs to be implemented
+inline float   AT_RDD_Cucinotta_Dexc_average_Gy(  const float r1_m,
+    const float r2_m,
+    const float r_max_m,
+    const float beta,
+    const float Katz_point_coeff_Gy){
+
+  //  Dav(r1,r2) = coeff/ (pi r2^2 - pi r1^2) * \int_r1^r2 exp( - r / 2d ) * (rmax/r)^2 r dr
+  return 1;
+}
+
+
+inline float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
+    const float r_max_m,
+    const float beta,
+    const float material_density_kg_m3,
+    const float LET_J_m,
+    const float Katz_point_coeff_Gy){
+
+  //Cnorm = (LET / (2 pi rho * ((pi rmax^2 - pi rmin^2)) ) - Ddelta_average(rmin,rmax) ) / Dexc_average(rmin,rmax)
+  const float LETfactor_Gy = 0.5 * LET_J_m / (material_density_kg_m3 * gsl_pow_2( M_PI ) * (gsl_pow_2(r_max_m) - gsl_pow_2(r_min_m)));
+  return (LETfactor_Gy - AT_RDD_Cucinotta_Ddelta_average_Gy(r_min_m,r_max_m,r_max_m,beta,Katz_point_coeff_Gy)) / AT_RDD_Cucinotta_Dexc_average_Gy(r_min_m,r_max_m,r_max_m,beta,Katz_point_coeff_Gy);
 }
 
 
@@ -780,7 +796,11 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     const float C_J_m     =  AT_RDD_Katz_C_J_m(electron_density_m3);
     const float Katz_point_coeff_Gy = AT_RDD_Katz_coeff_Gy(C_J_m, Z_eff, beta, density_kg_m3, max_electron_range_m);
 
-    norm_constant_Gy      =  AT_RDD_Cucinotta_Cnorm(r_min_m,max_electron_range_m,beta,Katz_point_coeff_Gy);
+    float  LET_J_m        =  LET_MeV_cm2_g * density_g_cm3; // [MeV / cm]
+    LET_J_m              *=  100.0f;       // [MeV / m]
+    LET_J_m              *=  MeV_to_J;     // [J/m]
+
+    norm_constant_Gy      =  AT_RDD_Cucinotta_Cnorm(r_min_m,max_electron_range_m,beta,density_kg_m3,LET_J_m,Katz_point_coeff_Gy);
 
     d_max_Gy              =  AT_RDD_Cucinotta_Dpoint_Gy(r_min_m,max_electron_range_m,beta,norm_constant_Gy,Katz_point_coeff_Gy);
 

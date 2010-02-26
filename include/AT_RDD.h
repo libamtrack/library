@@ -300,7 +300,7 @@ inline float AT_RDD_Katz_LinearER_Dpoint_versionB_Gy(const float r_m,
     const float material_density_kg_m3,
     const float beta,
     const float Z_eff,
-    const float C_J_m);
+    const float C_J_m); // TODO maybe we can remove it when we will be sure that "kernel" calculation works OK ?
 
 
 /**
@@ -658,22 +658,112 @@ inline float   AT_RDD_Cucinotta_Ddelta_Gy( const float r_m,
     const float beta,
     const float Katz_point_coeff_Gy);
 
+/**
+ * Calculates average dose for Cucinotta delta RDD.
+ * Here averaging is done over a shell between radius r_1 and r_2
+ *
+ * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 Ddelta(r) r dr
+ *
+ * We calculate using pre-calculated constant in following manner:
+ *
+ * Ddelta(r) = coeff * fS(r) * fL(r) * rmax^2/r^2
+ *
+ * Thus
+ *
+ * Dav(r1,r2) = coeff/ (pi r2^2 - pi r1^2) * \int_r1^r2 fS(r) * fL(r) * rmax^2/r^2 r dr
+ *
+ * where:
+ *
+ * coeff      =  (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1 /rmax^2
+ *
+ * @param[in] r1_m                     inner radius r1 (lower integration limit) [m]
+ * @param[in] r2_m                     outer radius r2 (upper integration limit) [m]
+ * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @return D(r) [Gy] average radial dose distribution between r1 and r2
+ */
+inline float   AT_RDD_Cucinotta_Ddelta_average_Gy(  const float r1_m,
+    const float r2_m,
+    const float r_max_m,
+    const float beta,
+    const float Katz_point_coeff_Gy);
+
+
+/**
+ * Calculates average dose for Cucinotta excitation RDD with Cnorm = 1
+ * Here averaging is done over a shell between radius r_1 and r_2
+ *
+ * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 Dexc(r) r dr
+ *
+ * We calculate using pre-calculated constant in following manner:
+ *
+ * Dexc(r) = Cnorm * coeff * exp( - r / 2d ) * (rmax/r)^2            [where d = (beta/2) * (hbar * c / wr) and wr = 13eV ]
+ *
+ * where:
+ *
+ * coeff      =  (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1 /rmax^2
+ * Cnorm      =  1
+ *
+ * Thus
+ *
+ * Dav(r1,r2) = coeff/ (pi r2^2 - pi r1^2) * \int_r1^r2 exp( - r / 2d ) * (rmax/r)^2 r dr
+ *
+ * where:
+ *
+ * coeff      =  (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1 /rmax^2
+ *
+ * @param[in] r1_m                     inner radius r1 (lower integration limit) [m]
+ * @param[in] r2_m                     outer radius r2 (upper integration limit) [m]
+ * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @return D(r) [Gy] average radial dose distribution between r1 and r2
+ */
+inline float   AT_RDD_Cucinotta_Dexc_average_Gy(  const float r1_m,
+    const float r2_m,
+    const float r_max_m,
+    const float beta,
+    const float Katz_point_coeff_Gy);
+
 
 /**
  * Calculates normalization constant
  * for Cucinotta RDD
  *
- * Cnorm      =  (LET - 2 pi \int_rmin^rmax Ddelta(r) r dr) / 2 pi \int_rmin^rmax Dexc(r) r dr
+ * We should have:
+ *
+ * LET = 2 pi rho \int_rmin^rmax D(r) r dr
+ *
+ * Thus:
+ *
+ * LET = 2 pi rho \int_rmin^rmax Ddelta(r) r dr + 2 pi rho \int_rmin^rmax Dexc(r) r dr
+ *
+ * and
+ *
+ * LET / (2 pi rho) = (pi rmax^2 - pi rmin^2) Ddelta_average(rmin,rmax) + (pi rmax^2 - pi rmin^2) * Cnorm * Dexc_average(rmin,rmax)
+ *
+ * so
+ *
+ * LET / (2 pi rho * ((pi rmax^2 - pi rmin^2)) )  = Ddelta_average(rmin,rmax) + Cnorm * Dexc_average(rmin,rmax)
+ *
+ * finally:
+ *
+ * Cnorm = (LET / (2 pi rho * ((pi rmax^2 - pi rmin^2)) ) - Ddelta_average(rmin,rmax) ) / Dexc_average(rmin,rmax)
  *
  * @param[in] r_min_m                  minimum radius cut-off distance [m]
  * @param[in] r_max_m                  delta electron maximum range rmax [m]
  * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] material_density_kg_m3   material density rho [kg/m^3]
+ * @param[in] LET_J_m                  LET [J/m]
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return C norm
  */
 inline float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
     const float r_max_m,
     const float beta,
+    const float material_density_kg_m3,
+    const float LET_J_m,
     const float Katz_point_coeff_Gy);
 
 /**
@@ -690,7 +780,7 @@ inline float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
  *
  * coeff      =  (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1 /rmax^2
  *
- * Cnorm      =  (LET - 2 pi \int_rmin^rmax Ddelta(r) r dr) / 2 pi \int_rmin^rmax Dexc(r) r dr //TODO rewrite
+ * Cnorm      =  Cnorm = (LET / (2 pi rho * ((pi rmax^2 - pi rmin^2)) ) - Ddelta_average(rmin,rmax) ) / Dexc_average(rmin,rmax)
  *
  * @param[in] r_m                      distance [m]
  * @param[in] r_max_m                  delta electron maximum range rmax [m]
