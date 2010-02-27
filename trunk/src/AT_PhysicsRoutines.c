@@ -1,33 +1,33 @@
 /**
  * @file
- * @brief Source file for Physics related routines
+ * @brief Physics related routines
  */
 
 /*
-*    AT_PhysicsRoutines.c
-*    ==============
-*
-*    Created on: 8.01.2010
-*    Author: kongruencja
-*
-*    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
-*
-*    This file is part of the AmTrack program (libamtrack.sourceforge.net).
-*
-*    AmTrack is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation, either version 3 of the License, or
-*    (at your option) any later version.
-*
-*    AmTrack is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with AmTrack (file: copying.txt).
-*    If not, see <http://www.gnu.org/licenses/>
-*/
+ *    AT_PhysicsRoutines.c
+ *    ==============
+ *
+ *    Created on: 8.01.2010
+ *    Author: kongruencja
+ *
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+ *
+ *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+ *
+ *    AmTrack is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    AmTrack is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with AmTrack (file: copying.txt).
+ *    If not, see <http://www.gnu.org/licenses/>
+ */
 
 #include "AT_PhysicsRoutines.h"
 
@@ -116,8 +116,8 @@ void AT_scaled_energy(  const long*  n,
 
   AT_Particle_Properties(n,particle_no,NULL,NULL,NULL,NULL,A,mass);
 
-  long dummy_n = 1;
-  long proton_particle_no = 1;
+  const long dummy_n = 1;
+  const long proton_particle_no = 1;
   float proton_mass;
 
   AT_mass_from_particle_no(&dummy_n,&proton_particle_no,&proton_mass);
@@ -150,8 +150,8 @@ void AT_E_MeV_u_from_scaled_energy(  const long*  n,
 
   AT_Particle_Properties(n,particle_no,NULL,NULL,NULL,NULL,A,mass);
 
-  long dummy_n = 1;
-  long proton_particle_no = 1;
+  const long dummy_n = 1;
+  const long proton_particle_no = 1;
   float proton_mass;
 
   AT_mass_from_particle_no(&dummy_n,&proton_particle_no,&proton_mass);
@@ -178,8 +178,9 @@ void AT_max_E_transfer_MeV(  const long*  n,
     float*  max_E_transfer_MeV)
 {
   /**
-   *  if E_MeV_u < 0:    use non-relativistic formula
+   * if E_MeV_u < 0:    use non-relativistic formula
    * if E_MeV_u > 0:    use relativistic formula
+   * // TODO instead of using negative values of the energy switch parameter "relativistic" should be added to argument list
    */
 
   float* E_MeV_u_copy   =  (float*)calloc(*n, sizeof(float));
@@ -188,11 +189,11 @@ void AT_max_E_transfer_MeV(  const long*  n,
   int*  relativistic    =  (int*)calloc(*n, sizeof(int));
   long  i;
   for (i = 0; i < *n; i++){
-    if(E_MeV_u[i] >= 0){
+    if(E_MeV_u_copy[i] >= 0){
       relativistic[i]      = 1;
     }else{
       relativistic[i]      = 0;
-      E_MeV_u_copy[i]     *= -1.0f;
+      E_MeV_u_copy[i]     *= -1.0f; // E_MeV_u_copy is negative so we set it back to positive value
     }
   }
 
@@ -204,7 +205,7 @@ void AT_max_E_transfer_MeV(  const long*  n,
 
   for (i = 0; i < *n; i++){
     if(relativistic[i] == 0){
-      max_E_transfer_MeV[i]  =  4.0f * electron_mass_MeV_c2 / proton_mass_MeV_c2 * E_MeV_u[i];
+      max_E_transfer_MeV[i]  =  4.0f * electron_mass_MeV_c2 / proton_mass_MeV_c2 * E_MeV_u_copy[i];
     }else{
       max_E_transfer_MeV[i]  =  2.0f * electron_mass_MeV_c2 * gsl_pow_2(beta[i]) / (1.0f - gsl_pow_2(beta[i]));
     }
@@ -232,9 +233,9 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
         &electron_density_m3,
         NULL, NULL, NULL, NULL, NULL, NULL);
 
-    tmp                  =  e_C * e_C * e_C * e_C * electron_density_m3;
-    tmp                 /=  4.0 * pi * e0_F_m * e0_F_m;
-    tmp                 /=  MeV_to_J * MeV_to_J * m_to_cm;
+    tmp                  =  gsl_pow_4(e_C) * electron_density_m3;
+    tmp                 /=  4.0 * M_PI * gsl_pow_2(e0_F_m);
+    tmp                 /=  gsl_pow_2(MeV_to_J) * m_to_cm;
     dsE2dz[i]            =  (float)tmp;
   }
 }
@@ -263,8 +264,8 @@ void AT_D_Gy(  const long*  n,
 void AT_interparticleDistance_m( const long*   n,
     const float*  LET_MeV_cm2_g,
     const float*  fluence_cm2,
-    float*  results_m
-){
+    float*  results_m)
+{
   long i;
   float fluence;
   for( i = 0 ; i < *n ; i++ ){
@@ -277,6 +278,7 @@ void AT_interparticleDistance_m( const long*   n,
   }
 }
 
+// TODO shall it be split into separate functions, like FWHM_to_sigma_cm and so on... ?
 void AT_convert_beam_parameters(  const long*  n,
     float* fluence_cm2,
     float* sigma_cm,
@@ -297,12 +299,12 @@ void AT_convert_beam_parameters(  const long*  n,
   if(fluence_cm2[0] == 0.0f){
     for (i = 0; i < *n; i++){
       if(sigma_cm[i] != 0.0f){
-        fluence_cm2[i] = N[i] / (sigma_cm[i] * sigma_cm[i] * 2.0f * pi);
+        fluence_cm2[i] = N[i] / (gsl_pow_2(sigma_cm[i]) * 2.0f * M_PI);
       }
     }
   }else{
     for (i = 0; i < *n; i++){
-      N[i]           = fluence_cm2[i] * sigma_cm[i] * sigma_cm[i] * 2.0f * pi;
+      N[i]           = fluence_cm2[i] * gsl_pow_2(sigma_cm[i]) * 2.0f * M_PI;
     }
   }
 }
@@ -310,22 +312,22 @@ void AT_convert_beam_parameters(  const long*  n,
 void AT_inv_interparticleDistance_Gy( const long*   n,
     const float*  LET_MeV_cm2_g,
     const float*  distance_m,
-    float*  results_Gy
-){
+    float*  results_Gy)
+{
   long i;
   float fluence;
   for( i = 0 ; i < *n ; i++ ){
-    fluence = (2.0f/distance_m[i])*(2.0f/distance_m[i])*M_1_PI*1e-4;
+    fluence = gsl_pow_2(2.0f/distance_m[i]) * M_1_PI * 1e-4;
     results_Gy[i] = fluence * (LET_MeV_cm2_g[i] * MeV_g_to_J_kg);
   }
 }
 
 void AT_inv_interparticleDistance_cm2( const long*   n,
     const float*  distance_m,
-    float*  results_cm2
-){
+    float*  results_cm2)
+{
   long i;
   for( i = 0 ; i < *n ; i++ ){
-    results_cm2[i] = (2.0f/distance_m[i])*(2.0f/distance_m[i])*M_1_PI*1e-4;
+    results_cm2[i] = gsl_pow_2(2.0f/distance_m[i]) * M_1_PI * 1e-4;
   }
 }
