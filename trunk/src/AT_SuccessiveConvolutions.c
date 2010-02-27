@@ -125,6 +125,8 @@ void  AT_SC_get_f1(
     float*  f1_dd_Gy,
     float*  f1)
 {
+
+  //TODO replace f_parameters and f1_parameters with human-readable variables
   ////////////////////////////////////////////////////////////////////////////////////////////
   // 1. normalize fluence, get total fluence and dose, eff. LET and mean impact parameter u,
   f_parameters[1]    = 0.0f;
