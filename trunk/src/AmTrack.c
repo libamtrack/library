@@ -1072,7 +1072,6 @@ void AT_IGK(  const long*  n,
     float   upper_lim_m;
     AT_max_electron_range_m(        &n_tmp,
         E_MeV_u,
-        particle_no,
         material_no,
         ER_model,
         &upper_lim_m);

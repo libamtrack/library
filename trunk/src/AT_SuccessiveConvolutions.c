@@ -1067,11 +1067,6 @@ void   AT_SuccessiveConvolutions( const float*  u,
     KList.N1        =  KList.N1 + 1;
     KList.CN        =  KList.CN * 2;
 
-    //#ifdef _DEBUG
-    //    fprintf(debf,"%sj = %ld out ouf %ld\n", isp, j , n_convolutions);
-    //    fprintf(debf,"%sKList.LEH = %ld\n", isp, KList.LEH);
-    //#endif
-
     if(KList.write_output){
       fprintf(  KList.output_file,
           "\n\n##############################################################\n");

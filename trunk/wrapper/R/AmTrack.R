@@ -90,28 +90,15 @@ debug <- F
 print("libamtrack S/R wrapping script - 2010/02/21")
 
 ##################
-AT.beta.from.mass	<-	function(	E.MeV.u,
-										mass){
+AT.beta.from.E	<-	function(	E.MeV.u ){
 	n		<-	length(E.MeV.u)
 	beta	<-	numeric(n)
-	res		<-	.C(	"AT_beta_from_mass",		n					=	as.integer(n),
+	res		<-	.C(	"AT_beta_from_E",		n					=	as.integer(n),
 												E.MeV.u			=	as.single(E.MeV.u),
-												mass				=	as.single(mass),
 												beta				=	as.single(beta))
 	return(res$beta)						
 }
 
-############################
-AT.beta.from.particle.no	<-	function(	E.MeV.u,
-												particle.no){
-	n		<-	length(E.MeV.u)
-	beta	<-	numeric(n)
-	res		<-	.C(	"AT_beta_from_particle_no",	n					=	as.integer(n),
-															E.MeV.u			=	as.single(E.MeV.u),
-															particle.no	=	as.integer(particle.no),
-															beta				=	as.single(beta))
-	return(res$beta)						
-}
 
 ##############################
 AT.density.g.cm3		<-	function(	material.name){
@@ -263,13 +250,11 @@ AT.CSDA.range.g.cm2	<-	function(		E.MeV.u,
 
 
 ######################
-AT.max.E.transfer.MeV		<-	function(	E.MeV.u,
-												particle.no){
+AT.max.E.transfer.MeV		<-	function(	E.MeV.u ){
 	n							<-	length(E.MeV.u)
 	max.E.transfer.MeV		<-	numeric(n)
 	res							<-	.C(	"AT_max_E_transfer_MeV_R",	n						=	as.integer(n),
 																		E.MeV.u				=	as.single(E.MeV.u),
-																		particle.no		=	as.integer(particle.no),
 																		max.E.transfer.MeV	=	as.single(max.E.transfer.MeV))
 	return(res$max.E.transfer.MeV)						
 }
@@ -369,14 +354,12 @@ AT.convert.beam.parameters	<-	function(	N 				= 0,
 
 ############
 AT.max.electron.range					<-	function(	E.MeV.u,
-												particle.no,
 												material.no,
 												ER.model){
 	n					<-	length(E.MeV.u)
 	range.m				<-	numeric(n)
 	res				<-	.C("AT_max_electron_range_m_R", 	n						= as.integer(n),
 															E.MeV.u					= as.single(E.MeV.u),
-															particle.no			= as.integer(particle.no),
 															material.no			= as.integer(material.no),
 															ER.model				= as.integer(ER.model),
 															range.m					= as.single(range.m))
@@ -395,8 +378,6 @@ AT.RDD.Katz.point.kernel					<-	function(	x,
 	n					<-	length(x)
 	f				<-	numeric(n)
   
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("alpha=",alpha,"\n")
 				
 		res					<-	.C(	"AT_RDD_Katz_point_kernelS",	n						=	as.integer(n),
 															x								=	as.single(x),
@@ -431,24 +412,6 @@ AT.RDD.Katz.point.D.Gy					<-	function(	r.m,
 	 return(res$D.Gy)						
 }
 
-############
-AT.RDD.Katz.dEdx.kernel					<-	function(	x,
-												alpha){
-	n					<-	length(x)
-	f				<-	numeric(n)
-  
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("alpha=",alpha,"\n")
-				
-		res					<-	.C(	"AT_RDD_Katz_dEdx_kernelS",	n						=	as.integer(n),
-															x								=	as.single(x),
-															alpha				=	as.single(alpha),
-															f								=	as.single(f))		
-
-		if(debug == T) cat("res=",res$f,"\n")
-			
-	 return(res$f)						
-}
 
 
 ############

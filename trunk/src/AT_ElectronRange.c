@@ -56,7 +56,6 @@ void getERName(
 
 void AT_max_electron_range_m( const long*  n,
     const float*  E_MeV_u,
-    const long*  particle_no,
     const long*  material_no,
     const long*   er_model,
     float*  max_electron_range_m)
@@ -76,13 +75,18 @@ void AT_max_electron_range_m( const long*  n,
 
   // Get beta from energy
   float* beta    =  (float*)calloc(*n, sizeof(float));
-  AT_beta_from_particle_no(n,E_MeV_u,particle_no,beta);
+  AT_beta_from_E(n,E_MeV_u,beta);
 
   // Get energy of delta-electron from energy of ion
   float* wmax_MeV =  (float*)calloc(*n, sizeof(float));
-  AT_max_E_transfer_MeV(n,E_MeV_u,particle_no,wmax_MeV);
+  AT_max_E_transfer_MeV(n,E_MeV_u,wmax_MeV);
 
-  double a1_g_cm2,a2,a3,a4,a5; // needed in Tabata ER model
+  // a1,..a5 needed in Tabata ER model
+  double a1_g_cm2 = 0;
+  double a2 = 0;
+  double a3 = 0;
+  double a4 = 0;
+  double a5 = 0;
   if( *er_model == ER_Tabata ){
     // general constants (best fit to experimental data)
     const double b1_g_cm2 = 0.2335;

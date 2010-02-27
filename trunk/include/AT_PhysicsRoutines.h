@@ -42,27 +42,32 @@
 #include "AT_ElectronRange.h"
 #include "AT_NumericalRoutines.h"
 
-
-void AT_beta_from_mass( const long*  n,
+/**
+ *  Return relativistic speed
+ *
+ * @param[in] n                        number of particles
+ * @param[in] E_MeV_u                  vector of energies of particle per nucleon [MeV]
+ * @param[out] beta                    vector of relative particle speed beta = v/c
+ */
+void AT_beta_from_E( const long*  n,
     const float*  E_MeV_u,
-    const float*  mass,
     float*  beta);
 
-void AT_E_from_beta_and_mass(  const long*  n,
+/**
+ *  Return energy per nucleon of particle with relative speed beta
+ *
+ * @param[in] n                        number of particles
+ * @param[in] beta                     vector of relative particle speed beta = v/c
+ * @param[out] E_MeV_u                 vector of energies of particle per nucleon [MeV]
+ */
+void AT_E_from_beta(  const long*  n,
     const float*  beta,
-    const float*  mass,
     float*  E_MeV_u);
 
 void AT_effective_charge_from_beta(  const long*  n,
     const float*  beta,
     const long*  Z,
     float*  effective_charge);
-
-void AT_beta_from_particle_no(  const long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
-    // results
-    float*  beta);
 
 /**
  * Get Bohr's energy spread (Wilson, 1947, Phys Rev 71, 385)
@@ -88,7 +93,6 @@ void AT_E_MeV_u_from_scaled_energy(  const long*  n,
 
 void AT_max_E_transfer_MeV(  const long*  n,
     const float*  E_MeV_u,
-    const long*  particle_no,
     // results
     float*  max_E_transfer_MeV);
 

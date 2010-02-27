@@ -31,43 +31,34 @@
 
 #include "AT_PhysicsRoutines.h"
 
-void AT_beta_from_mass( const long*  n,
+void AT_beta_from_E( const long*  n,
     const float*  E_MeV_u,
-    const float*  mass,
     float*  beta)
 {
   // loop over n to find beta for all given particles and energies
   long  i;
   for(i = 0; i < *n; i++){
-    float  E_MeV    =  E_MeV_u[i] * mass[i];
-
-    // Get rest energy
-    float  E0_MeV    =  (float)proton_mass_MeV_c2 * mass[i];
-
-    //TODO E_MeV/E0_MeV = E_MeV_u[i] / proton_mass_MeV_c2 , so why do we need particle mass here ?
 
     // Return relativistic speed
-    beta[i]        =  (float)sqrt(1 - 1/((1 + E_MeV/E0_MeV)*(1 + E_MeV/E0_MeV)));
+    // E_MeV/E0_MeV = E_MeV_u[i] / proton_mass_MeV_c2
+    // beta = sqrt(1. - 1/((1 + E_MeV/E0_MeV)*(1 + E_MeV/E0_MeV)))
+    beta[i]        =  (float)sqrt(1.0f - 1.0f/gsl_pow_2(1 + E_MeV_u[i]/proton_mass_MeV_c2));
   }
 }
 
-void AT_E_from_beta_and_mass(  const long*  n,
+void AT_E_from_beta(  const long*  n,
     const float*  beta,
-    const float*  mass,
     float*  E_MeV_u)
 {
   // loop over n to find beta for all given particles and energies
   long  i;
   for(i = 0; i < *n; i++){
     // Get rest energy
-    float  E0_MeV    =  (float)proton_mass_MeV_c2 * mass[i];
+    //float  E0_MeV    =  (float)proton_mass_MeV_c2 * mass[i];
+    //E_MeV_u[i]      =  E0_MeV * (1.0f / (1 - beta[i]*beta[i]) - 1);
+    //E_MeV_u[i]      /=  mass[i];
 
-    E_MeV_u[i]      =  E0_MeV * (1.0f / (1 - beta[i]*beta[i]) - 1);
-
-    E_MeV_u[i]      /=  mass[i];
-
-    //TODO E_MeV/E0_MeV = E_MeV_u[i] / proton_mass_MeV_c2 , so why do we need particle mass here ?
-
+    E_MeV_u[i]      =  proton_mass_MeV_c2 * (1.0f / (1.0f - gsl_pow_2(beta[i])) - 1.0f);
   }
 }
 
@@ -89,42 +80,6 @@ void AT_effective_charge_from_beta( const long*  n,
   }
 }
 
-
-void AT_beta_from_particle_no(  const long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
-    // results
-    float*  beta)
-{
-  float*  mass  =  (float*)calloc(*n, sizeof(float));
-  AT_mass_from_particle_no(n,particle_no,mass);
-
-  AT_beta_from_mass(  n,
-      E_MeV_u,
-      mass,
-      beta);
-
-  free(mass);
-}
-
-
-void AT_E_from_beta_and_particle_no( const  long*  n,
-    const float*  beta,
-    const long*  particle_no,
-    float*  E_MeV_u)
-{
-  float*  mass  =  (float*)calloc(*n, sizeof(float));
-  AT_mass_from_particle_no(n,particle_no,mass);
-
-  AT_E_from_beta_and_mass(  n,
-      beta,
-      mass,
-      E_MeV_u);
-
-  free(mass);
-}
-
-
 void AT_effective_charge_from_particle_no( const  long*  n,
     const float*  E_MeV_u,
     const long*  particle_no,
@@ -134,9 +89,8 @@ void AT_effective_charge_from_particle_no( const  long*  n,
   float*  beta  =  (float*)calloc(*n, sizeof(float));
   long*  Z    =  (long*)calloc(*n, sizeof(long));
 
-  AT_beta_from_particle_no(  n,
+  AT_beta_from_E(  n,
       E_MeV_u,
-      particle_no,
       beta);
 
   AT_Z_from_particle_no(n,particle_no,Z);
@@ -220,7 +174,6 @@ void AT_E_MeV_u_from_scaled_energy(  const long*  n,
 
 void AT_max_E_transfer_MeV(  const long*  n,
     const float*  E_MeV_u,
-    const long*  particle_no,
     // results
     float*  max_E_transfer_MeV)
 {
@@ -245,16 +198,15 @@ void AT_max_E_transfer_MeV(  const long*  n,
 
   // get relativistic speeds for all given particles and energies
   float*  beta  =  (float*)calloc(*n, sizeof(float));
-  AT_beta_from_particle_no(  n,
+  AT_beta_from_E(  n,
       E_MeV_u_copy,
-      particle_no,
       beta);
 
   for (i = 0; i < *n; i++){
     if(relativistic[i] == 0){
-      max_E_transfer_MeV[i]  =  4.0f * electron_mass_MeV_c2 / proton_mass_MeV_c2* E_MeV_u[i];
+      max_E_transfer_MeV[i]  =  4.0f * electron_mass_MeV_c2 / proton_mass_MeV_c2 * E_MeV_u[i];
     }else{
-      max_E_transfer_MeV[i]  =  2.0f * electron_mass_MeV_c2 * beta[i] * beta[i] / (1.0f - beta[i] * beta[i]);
+      max_E_transfer_MeV[i]  =  2.0f * electron_mass_MeV_c2 * gsl_pow_2(beta[i]) / (1.0f - gsl_pow_2(beta[i]));
     }
   }
 

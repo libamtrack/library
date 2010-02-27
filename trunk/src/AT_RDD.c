@@ -498,9 +498,8 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
    *********************** GET MODEL INDEPENDENT VARIABLES ***********************
    *******************************************************************************/
 
-  AT_beta_from_particle_no(  &n_tmp,
+  AT_beta_from_E(  &n_tmp,
                   E_MeV_u,
-                  particle_no,
                   &beta);
   AT_Z_from_particle_no(  &n_tmp,
                 particle_no,
@@ -531,7 +530,6 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
   // PARAMETER 2: Get the maximum electron range (same for all RDD models)
   AT_max_electron_range_m(  &n_tmp,
                 E_MeV_u,
-                particle_no,
                 material_no,
                 er_model,
                 &max_electron_range_m);
@@ -595,7 +593,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     if( (*er_model == ER_Waligorski) || (*er_model == ER_Edmund) ){
       float alpha         =  1.667f;
       float wmax_MeV      =  0.0f;
-      AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,particle_no,&wmax_MeV);                             // wmax - maximum delta-electron energy [MeV]
+      AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,&wmax_MeV);                                         // wmax - maximum delta-electron energy [MeV]
       if(wmax_MeV <= 1e-3){  // if wmax < 1keV
         alpha             =  1.079f;
       }
@@ -654,7 +652,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     if( (*er_model == ER_Waligorski) || (*er_model == ER_Edmund) ){ // calculate dEdx_MeV_cm2_g from "new" Katz RDD
       float alpha         =  1.667f;
       float wmax_MeV      =  0.0f;
-      AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,particle_no,&wmax_MeV);                               // wmax - maximum delta-electron energy [MeV]
+      AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,&wmax_MeV);                                         // wmax - maximum delta-electron energy [MeV]
       if(wmax_MeV <= 1e-3){  // if wmax < 1keV
         alpha             =  1.079f;
       }
@@ -705,7 +703,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     if( (*er_model == ER_Waligorski) || (*er_model == ER_Edmund) ){ // This model will work only with ER_Waligorski and ER_Edmund
       float alpha         =  1.667f;
       float wmax_MeV      =  0.0f;
-      AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,particle_no,&wmax_MeV);                               // wmax - maximum delta-electron energy [MeV]
+      AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,&wmax_MeV);                               // wmax - maximum delta-electron energy [MeV]
       if(wmax_MeV <= 1e-3){  // if wmax < 1keV
         alpha             =  1.079f;
       } // end if wmax
@@ -885,9 +883,8 @@ void AT_D_RDD_Gy  ( const  long*  n,
   float  beta    = 0.0f;
   long   Z       = 0;
   float  Z_eff   = 0.0f;
-  AT_beta_from_particle_no(  &n_tmp,
+  AT_beta_from_E(  &n_tmp,
                 E_MeV_u,
-                particle_no,
                 &beta);
   AT_Z_from_particle_no(  &n_tmp,
                 particle_no,
@@ -933,7 +930,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
     if( (*er_model == ER_Waligorski) || (*er_model == ER_Edmund) ){
 
       // calculate alpha
-      AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,particle_no,&wmax_MeV);           // wmax - maximum delta-electron energy [MeV]
+      AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,&wmax_MeV);           // wmax - maximum delta-electron energy [MeV]
       alpha               =  1.667f;
       if(wmax_MeV <= 1e-3){  // if wmax < 1keV
         alpha             = 1.079f;
@@ -997,7 +994,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
       // calculate alpha
       float alpha         =  1.667f;
       float wmax_MeV      =  0.0f;
-      AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,particle_no,&wmax_MeV);
+      AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,&wmax_MeV);
       if(wmax_MeV <= 1e-3){  // if wmax < 1keV
         alpha             = 1.079f;
       }
@@ -1037,7 +1034,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
     if( (*er_model == ER_Waligorski) || (*er_model == ER_Edmund) ){
       float alpha         =  1.667f;
       float wmax_MeV      =  0.0f;
-      AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,particle_no,&wmax_MeV);
+      AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,&wmax_MeV);
       if(wmax_MeV <= 1e-3){  // if wmax < 1keV
         alpha             = 1.079f;
       }
@@ -1260,9 +1257,8 @@ void AT_r_RDD_m  ( const  long*  n,
     float  beta   = 0.0f;
     long  Z       = 0;
     float  Z_eff  = 0.0f;
-    AT_beta_from_particle_no(  &n_tmp,
+    AT_beta_from_E(  &n_tmp,
                   E_MeV_u,
-                  particle_no,
                   &beta);
     AT_Z_from_particle_no(  &n_tmp,
                   particle_no,
@@ -1275,7 +1271,7 @@ void AT_r_RDD_m  ( const  long*  n,
     //////////////////////// PRELIMINARY: alpha only according to Katz E-R model ////////////////////////////
     float alpha        =  1.667f;
     float wmax_MeV     =  0.0f;
-    AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,particle_no,&wmax_MeV);
+    AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,&wmax_MeV);
     if(wmax_MeV <= 1e-3){  // if wmax < 1keV
       alpha           = 1.079f;
     }
