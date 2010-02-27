@@ -133,9 +133,10 @@ AT.effective.charge.from.beta	<-	function(	beta					= beta,
 }
 
 ##############################
-AT.electron.density.m3	<-	function(	material.name){
+# TODO function AT_electron_density_m3S missing in the library
+AT.electron.density.m3	<-	function(	material.no){
 	el.dens.m3			<-	numeric(1)
-	res					<-	.C(	"AT_electron_density_m3S",			material.name		=	as.character(material.name),
+	res					<-	.C(	"AT_electron_density_m3S",			material.no		=	as.integer(material.no),
 																		el.dens.m3			=	as.single(el.dens.m3))
 	return(res$el.dens.m3)						
 }
@@ -156,6 +157,7 @@ AT.gamma.response	<-	function(	d.Gy,
 }
 
 ##############################
+# TODO needs to go to AT_Wrapper_R
 AT.get.material.data	<-	function(	material.no){
 	density.g.cm3		<-	numeric(1)
 	el.dens.m3			<-	numeric(1)
@@ -165,7 +167,7 @@ AT.get.material.data	<-	function(	material.no){
 	m.g.cm2			<-	numeric(1)
 	n					<-	1
 	res					<-	.C(	"AT_getMaterialData",				n					=	as.integer(n),
-																		material.name		=	as.integer(material.no),
+																		material.no		=	as.integer(material.no),
 																		density.g.cm3		=	as.single(density.g.cm3),
 																		el.dens.m3			=	as.single(el.dens.m3),
 																		I.eV				=	as.single(I.eV),
