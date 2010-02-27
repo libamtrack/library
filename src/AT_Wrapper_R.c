@@ -39,26 +39,17 @@
 
 void AT_max_E_transfer_MeV_R(  const int*  n,
     const float*  E_MeV_u,
-    const int*  particle_no,
     // results
     float*  max_E_transfer_MeV){
 
   long  n_R           = (long)*n;
-  long* particle_no_R = (long*)calloc(n_R, sizeof(long));
 
-  int i;
-  for( i = 0 ; i < *n ; i++ ){
-    particle_no_R[i] = particle_no[i];
-  }
+  AT_max_E_transfer_MeV(  &n_R, E_MeV_u, max_E_transfer_MeV);
 
-  AT_max_E_transfer_MeV(  &n_R, E_MeV_u, particle_no_R , max_E_transfer_MeV);
-
-  free(particle_no_R);
 }
 
 void AT_max_electron_range_m_R(  const int*  n,
     const float*  E_MeV_u,
-    const int*  particle_no,
     const int*  material_no,
     const int*   er_model,
     float*  max_electron_range_m)
@@ -67,20 +58,12 @@ void AT_max_electron_range_m_R(  const int*  n,
   const long material_no_long = (long)(*material_no);
   const long er_model_long = (long)(*er_model);
 
-  long i;
-  long * particle_no_long = (long*)calloc(*n,sizeof(long));
-  for(i = 0 ; i < *n ; i++){
-    particle_no_long[i] = (long)particle_no[i];
-  }
-
   AT_max_electron_range_m( &n_long,
       E_MeV_u,
-      particle_no_long,
       &material_no_long,
       &er_model_long,
       max_electron_range_m);
 
-  free(particle_no_long);
 }
 
 

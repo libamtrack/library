@@ -69,8 +69,8 @@ static const er_data AT_ER_Data = {
 /**
 * Returns name of the electron model from index
 *
-* @param  ER_no    electron-range-model index
-* @param  Er_name  string containing the electron-range model name (output)
+* @param[in]   ER_no    electron-range-model index
+* @param[out]  Er_name  string containing the electron-range model name
 */
 void  getERName(  const long* ER_no,
     char* ER_name);
@@ -78,16 +78,14 @@ void  getERName(  const long* ER_no,
 /**
 * Returns the maximum electron range (track diameter) in m
 *
-* @param  n  number of particles in the incident field
-* @param  E_MeV_u  kinetic energy for particles in the given field (vector of length n)
-* @param  particle_no  particle indices for given field (vector of length n)
-* @param  material_no  index for detector material
-* @param  er_model  index for electron-range model chosen
-* @param  max_electron_range_m  electron range (track diameter) in m (output parameter)
+* @param[in]  n  number of particles in the incident field
+* @param[in]  E_MeV_u  kinetic energy for particles in the given field (vector of length n)
+* @param[in]  material_no  index for detector material
+* @param[in]  er_model  index for electron-range model chosen
+* @param[out] max_electron_range_m  electron range (track diameter) in m
 */
 void AT_max_electron_range_m( const long*  n,
     const float*  E_MeV_u,
-    const long*  particle_no,
     const long*  material_no,
     const long*  er_model,
     float*  max_electron_range_m);
