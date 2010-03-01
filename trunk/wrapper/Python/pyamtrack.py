@@ -8,7 +8,7 @@
    Created on: 16.02.2010
    Author: herrmann
    
-   Python class for interfacing AmTrack functions. Not all functions are fully implemented.
+   Python class for interfacing AmTrack functions. 
    
    Requirements: Python2.6
 
@@ -38,7 +38,7 @@
 import ctypes
 import sys
 import platform
-import numpy
+
 
 __status__ = 'Prototype'
 
@@ -132,7 +132,7 @@ class AmTrack(object):
         tmp_array =         ctypes.c_float * len(E_MeV_u)
         E_MeV_u_ctype =     ctypes.byref(tmp_array(*E_MeV_u))
         tmp_array =         ctypes.c_long * len(particle_no)
-        particle_no_ctype = ctypes.byref(tmp_array(*particle_no))
+        particle_no_ctype = ctypes.byref(tmp_array(*particle_no))     
         tmp_array =         ctypes.c_float * len(fluence_cm2)
         fluence_cm2_ctype =  ctypes.byref(tmp_array(*fluence_cm2))
         material_no_ctype =        ctypes.byref(ctypes.c_int(material_no))
@@ -141,8 +141,9 @@ class AmTrack(object):
         RDD_parameters_ctype =     ctypes.byref(tmp_array(*RDD_parameters))   
         ER_model_ctype =           ctypes.byref(ctypes.c_int(ER_model))        
         tmp_array = ctypes.c_float* len(ER_parameters)        
-        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))        
-        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))        
+        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))
+        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))
+        gamma_parameters.append(0.0) # required by AmTrac
         tmp_array = ctypes.c_float* len(gamma_parameters)        
         gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))    
         N2_ctype =                 ctypes.byref(ctypes.c_int(N2))
@@ -239,8 +240,9 @@ class AmTrack(object):
         RDD_parameters_ctype =     ctypes.byref(tmp_array(*RDD_parameters))   
         ER_model_ctype =           ctypes.byref(ctypes.c_int(ER_model))        
         tmp_array = ctypes.c_float* len(ER_parameters)        
-        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))        
-        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))        
+        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))
+        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))
+        gamma_parameters.append(0.0) # required by AmTrac
         tmp_array = ctypes.c_float* len(gamma_parameters)        
         gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))
         N_runs_ctype =             ctypes.byref(ctypes.c_long(int(n_runs)))
@@ -348,8 +350,9 @@ class AmTrack(object):
         RDD_parameters_ctype =     ctypes.byref(tmp_array(*RDD_parameters))   
         ER_model_ctype =           ctypes.byref(ctypes.c_int(ER_model))        
         tmp_array = ctypes.c_float* len(ER_parameters)        
-        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))        
-        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))        
+        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))
+        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))
+        gamma_parameters.append(0.0) # required by AmTrac
         tmp_array = ctypes.c_float* len(gamma_parameters)        
         gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))        
         N_runs_ctype = ctypes.pointer(ctypes.c_long(int(N_runs)))
@@ -442,8 +445,9 @@ class AmTrack(object):
         RDD_parameters_ctype =     ctypes.byref(tmp_array(*RDD_parameters))   
         ER_model_ctype =           ctypes.byref(ctypes.c_int(ER_model))        
         tmp_array = ctypes.c_float* len(ER_parameters)        
-        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))        
-        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))        
+        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))
+        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))
+        gamma_parameters.append(0.0) # required by AmTrac
         tmp_array = ctypes.c_float* len(gamma_parameters)        
         gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))
         saturation_cross_section_factor_ctype = ctypes.c_float(saturation_cross_section_factor)      
@@ -453,11 +457,8 @@ class AmTrack(object):
         c_at_igk = self.libamtrack.AT_IGK
         c_at_igk.restype = ctypes.c_float  *10       
         
-        c_at_igk_output = c_at_igk(n_ctype,  E_MeV_u_ctype,  particle_no_ctype,
-                                   fluence_cm2_ctype, material_no_ctype, RDD_model_ctype,
-                                   RDD_parameters_ctype, ER_model_ctype, ER_parameters_ctype,
-                                   gamma_model_ctype,  gamma_parameters_ctype, saturation_cross_section_factor_ctype,  results)
-                                   
+        c_at_igk_output = c_at_igk(n_ctype, E_MeV_u_ctype, particle_no_ctype, fluence_cm2_ctype, material_no_ctype, RDD_model_ctype, RDD_parameters_ctype, ER_model_ctype, ER_parameters_ctype, gamma_model_ctype, gamma_parameters_ctype, saturation_cross_section_factor_ctype, results)
+
         AT_IGK_output = []
         for item in results:
             AT_IGK_output.append(item)
