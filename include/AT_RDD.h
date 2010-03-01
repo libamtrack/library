@@ -7,36 +7,34 @@
  */
 
 /*
-*    AT_RDD.h
-*    ========
-*
-*    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
-*
-*    This file is part of the AmTrack program (libamtrack.sourceforge.net).
-*
-*    AmTrack is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation, either version 3 of the License, or
-*    (at your option) any later version.
-*
-*    AmTrack is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with AmTrack (file: copying.txt).
-*    If not, see <http://www.gnu.org/licenses/>
-*/
+ *    AT_RDD.h
+ *    ========
+ *
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+ *
+ *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+ *
+ *    AmTrack is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    AmTrack is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with AmTrack (file: copying.txt).
+ *    If not, see <http://www.gnu.org/licenses/>
+ */
 
 #include <string.h>
 
 #include <gsl/gsl_integration.h>
-#include <gsl/gsl_complex.h>
 #include <gsl/gsl_sf_exp.h>
 #include <gsl/gsl_sf_log.h>
 #include <gsl/gsl_sf_expint.h>
-#include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_const_mksa.h>
 #include <gsl/gsl_const_num.h>
 #include <gsl/gsl_math.h>
@@ -58,17 +56,14 @@ enum RDDModels {
       RDD_KatzPoint        = 2,      /**< parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
       RDD_Geiss            = 3,      /**< parameters: 0 - a0 [m] (core diameter) */
       RDD_Site             = 4,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off  */
-      RDD_KatzExtTarget    = 5,      /**< parameters: 0 - r_min [m] (core diameter), 1 - a0 [m] (target diameter), 2 - D_min [Gy] (cut-off dose) */
-      RDD_Edmund           = 6,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off */
-      RDD_Cucinotta        = 7       /**< parameters: 0 - r_min [m] (lower integration limit),1 - d_min_Gy (lower dose cut-off)   */
+      RDD_Edmund           = 5,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off */
+      RDD_Cucinotta        = 6       /**< parameters: 0 - r_min [m] (lower integration limit),1 - d_min_Gy (lower dose cut-off)   */
 };
-
-//TODO move RDD_Site, RDD_KatzExtTarget to AT_averaged_RDD ?
 
 /**
  * Total number of RDD models
  */
-#define RDD_DATA_N    7
+#define RDD_DATA_N    6
 
 /**
  * RDD data
@@ -87,11 +82,11 @@ typedef struct {
  */
 static const rdd_data AT_RDD_Data = {
     RDD_DATA_N,
-    {  RDD_Test,                     RDD_KatzPoint,                                      RDD_Geiss,                         RDD_Site,                                        RDD_KatzExtTarget,                                            RDD_Edmund,                      RDD_Cucinotta},
-    {  0,                            2,                                                  1,                                 2,                                               3,                                                             2,                               2},
-    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                         {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"r_min_m","d_min_Gy","a_0_m"},                                {"a0_m","d_min_Gy",""},          {"r_min_m","d_min_Gy",""}},
-    {  {0,0,0},                      {1e-10, 1e-10,0},                                   {5e-8,0,0},                        {5e-8,1e-10,0},                                  {1e-10, 1e-10,5e-8},                                           {5e-8,1e-10,0},                  {5e-11,1e-10,0}},
-    {  "Simple step test function",  "Katz' point target RDD",                           "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Katz' extended target RDD", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. 1997]"}
+    {  RDD_Test,                     RDD_KatzPoint,                                      RDD_Geiss,                         RDD_Site,                                        RDD_Edmund,                      RDD_Cucinotta},
+    {  0,                            2,                                                  1,                                 2,                                               2,                               2},
+    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                         {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"a0_m","d_min_Gy",""},          {"r_min_m","d_min_Gy",""}},
+    {  {0,0,0},                      {1e-10, 1e-10,0},                                   {5e-8,0,0},                        {5e-8,1e-10,0},                                  {5e-8,1e-10,0},                  {5e-11,1e-10,0}},
+    {  "Simple step test function",  "Katz' point target RDD",                           "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. 1997]"}
 };
 
 /**
@@ -828,39 +823,6 @@ inline float   AT_RDD_Cucinotta_Dpoint_Gy( const float r_m,
     const float Katz_point_coeff_Gy);
 
 
-/**
- * TODO
- */
-float          geometryFunctionPhi(         const float r0_m,
-    const float a0_m,
-    const float r_m);
-
-/**
- * TODO
- */
-inline float   AT_RDD_Katz_ext_kernel_Gy(   const float t_m,
-    const float r_m,
-    const float a0_m,
-    const float alpha,
-    const float r_min_m,
-    const float r_max_m,
-    const float Katz_point_coeff_Gy);
-
-/**
- * TODO
- */
-double         AT_RDD_Katz_ext_integrand_Gy(double t_m,
-    void * params);
-
-/**
- * TODO
- */
-inline float   AT_RDD_Katz_ext_Gy(          const float r_m,
-    const float a0_m,
-    const float alpha,
-    const float r_min_m,
-    const float r_max_m,
-    const float Katz_point_coeff_Gy);
 
 /**
  * TODO

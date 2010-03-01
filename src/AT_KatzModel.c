@@ -8,7 +8,7 @@
  *    ===========================
  *
  *    Created on: 01.03.2010
- *    Author: greilich
+ *    Author: kongruencja
  *
  *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
