@@ -536,7 +536,11 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
   ////////////////////////////////////////////////////////////////////////////////
   // PARAMETER 6: Get the single impact fluence (same for all RDD models)
-  single_impact_fluence_cm2  = M_1_PI / gsl_pow_2( max_electron_range_m * m_to_cm ); // pi * r_max_m^2 = Track area -> single_impact_fluence [1/cm2]
+  AT_single_impact_fluence_cm2( &n_tmp,
+      E_MeV_u,
+      material_no,
+      er_model,
+      &single_impact_fluence_cm2);
 
 
   /*******************************************************************************

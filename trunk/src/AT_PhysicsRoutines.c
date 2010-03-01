@@ -240,7 +240,6 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
   }
 }
 
-// TODO: Use this routine in AT_SC_get_f1... rather than local particle field to dose conversions
 void AT_D_Gy(  const long*  n,
     const float*        E_MeV_u,
     const long* particle_no,
@@ -258,6 +257,26 @@ void AT_D_Gy(  const long*  n,
   long  i;
   for (i = 0; i < *n; i++){
     D_Gy[i]     =       D_Gy[i] * fluence_cm2[i] * MeV_g_to_J_kg;
+  }
+}
+
+void AT_fluence_cm2(  const long*  n,
+    const float*  E_MeV_u,
+    const long* particle_no,
+    const float* D_Gy,
+    const long* material_no,
+    float* fluence_cm2)
+{
+  // Get LET (write already into fluence_cm2)
+  AT_LET_MeV_cm2_g(n,
+      E_MeV_u,
+      particle_no,
+      material_no,
+      fluence_cm2);
+  // Divide by dose, convert from Gy to MeV/g
+  long  i;
+  for (i = 0; i < *n; i++){
+    fluence_cm2[i]     =       fluence_cm2[i] / (D_Gy[i] * MeV_g_to_J_kg);
   }
 }
 
@@ -331,3 +350,211 @@ void AT_inv_interparticleDistance_cm2( const long*   n,
     results_cm2[i] = gsl_pow_2(2.0f/distance_m[i]) * M_1_PI * 1e-4;
   }
 }
+
+// TODO: Allow for passing negative values for fluence_cm2 meaning dose then?
+void AT_single_impact_fluence_cm2( const long* n,
+    const float* E_MeV_u,
+    const long* material_no,
+    const long* er_model,
+    float* single_impact_fluence_cm2)
+{
+  float* max_electron_range_m    = (float*)calloc(*n, sizeof(float));
+
+  // get max. electron ranges
+  void AT_max_electron_range_m( n,
+      E_MeV_u,
+      material_no,
+      er_model,
+      max_electron_range_m);
+
+  long i;
+  for( i = 0 ; i < *n ; i++ ){
+    single_impact_fluence_cm2[i] = M_1_PI / gsl_pow_2( max_electron_range_m[i] * m_to_cm ); // pi * r_max_m^2 = Track area -> single_impact_fluence [1/cm2]
+   }
+
+  free(max_electron_range_m);
+}
+
+void AT_total_D_Gy( const long* n,
+    const float* E_MeV_u,
+    const long* particle_no,
+    const float* fluence_cm2,
+    const long* material_no,
+    float* total_dose_Gy)
+{
+
+  float*  single_doses_Gy        =  (float*)calloc(*n, sizeof(float));
+
+  AT_D_Gy(      n,
+      E_MeV_u,
+      particle_no,
+      fluence_cm2,
+      material_no,
+      single_doses_Gy);
+
+  *total_dose_Gy = 0.0f;
+  long i;
+  for (i = 0; i < *n; i++){
+    *total_dose_Gy       += single_doses_Gy[i];
+  }
+  free(single_doses_Gy);
+}
+
+void AT_total_fluence_cm2( const long* n,
+    const float* E_MeV_u,
+    const long* particle_no,
+    const float* D_Gy,
+    const long* material_no,
+    float* total_fluence_cm2)
+{
+
+  float*  single_fluences_cm2        =  (float*)calloc(*n, sizeof(float));
+
+  AT_fluence_cm2(      n,
+      E_MeV_u,
+      particle_no,
+      D_Gy,
+      material_no,
+      single_fluences_cm2);
+
+  *total_fluence_cm2 = 0.0f;
+  long i;
+  for (i = 0; i < *n; i++){
+    *total_fluence_cm2       += single_fluences_cm2[i];
+  }
+  free(single_fluences_cm2);
+}
+
+void AT_fluenceweighted_E_MeV_u( const long*     n,
+    const float* E_MeV_u,
+    const float* fluence_cm2,
+    float* average_E_MeV_u)
+ {
+  long i;
+
+  float total_fluence_cm2 = 0.0f;
+  for (i = 0; i < *n; i++){
+    total_fluence_cm2 += fluence_cm2[i];
+  }
+
+  *average_E_MeV_u      = 0.0f;
+  for (i = 0; i < *n; i++){
+     *average_E_MeV_u += fluence_cm2[i] * E_MeV_u[i];
+   }
+
+   *average_E_MeV_u /= total_fluence_cm2;
+ }
+
+
+void AT_doseweighted_E_MeV_u( const long*     n,
+    const float* E_MeV_u,
+    const long* particle_no,
+    const float* fluence_cm2,
+    const long* material_no,
+   float* doseweighted_E_MeV_u)
+ {
+  long i;
+
+  float*  single_doses_Gy        =  (float*)calloc(*n, sizeof(float));
+
+  AT_D_Gy(      n,
+      E_MeV_u,
+      particle_no,
+      fluence_cm2,
+      material_no,
+      single_doses_Gy);
+
+  float total_dose_Gy = 0.0f;
+
+  for (i = 0; i < *n; i++){
+    total_dose_Gy       += single_doses_Gy[i];
+  }
+
+  *doseweighted_E_MeV_u      = 0.0f;
+  for (i = 0; i < *n; i++){
+     *doseweighted_E_MeV_u += single_doses_Gy[i] * E_MeV_u[i];
+   }
+
+   *doseweighted_E_MeV_u /= total_dose_Gy;
+
+   free(single_doses_Gy);
+}
+
+void AT_fluenceweighted_LET_MeV_cm2_g( const long*     n,
+    const float* E_MeV_u,
+    const long* particle_no,
+    const float* fluence_cm2,
+    const long* material_no,
+    float* average_LET_MeV_cm2_g)
+ {
+  long i;
+
+  float*  single_LETs_MeV_cm2_g        =  (float*)calloc(*n, sizeof(float));
+
+  float total_fluence_cm2 = 0.0f;
+  for (i = 0; i < *n; i++){
+    total_fluence_cm2 += fluence_cm2[i];
+  }
+
+  AT_LET_MeV_cm2_g(  n,
+      E_MeV_u,
+      particle_no,
+      material_no,
+      single_LETs_MeV_cm2_g);
+
+  *average_LET_MeV_cm2_g      = 0.0f;
+  for (i = 0; i < *n; i++){
+     *average_LET_MeV_cm2_g += fluence_cm2[i] * single_LETs_MeV_cm2_g[i];
+   }
+
+   *average_LET_MeV_cm2_g /= total_fluence_cm2;
+
+   free(single_LETs_MeV_cm2_g);
+}
+
+
+void AT_doseweighted_LET_MeV_cm2_g( const long*     n,
+    const float* E_MeV_u,
+    const long* particle_no,
+    const float* fluence_cm2,
+    const long* material_no,
+    float* doseweighted_LET_MeV_cm2_g)
+ {
+  long i;
+
+  float*  single_LETs_MeV_cm2_g  =  (float*)calloc(*n, sizeof(float));
+  float*  single_doses_Gy        =  (float*)calloc(*n, sizeof(float));
+
+  AT_LET_MeV_cm2_g(  n,
+      E_MeV_u,
+      particle_no,
+      material_no,
+      single_LETs_MeV_cm2_g);
+
+  AT_D_Gy(      n,
+      E_MeV_u,
+      particle_no,
+      fluence_cm2,
+      material_no,
+      single_doses_Gy);
+
+  float total_dose_Gy = 0.0f;
+
+  for (i = 0; i < *n; i++){
+    total_dose_Gy       += single_doses_Gy[i];
+  }
+
+  *doseweighted_LET_MeV_cm2_g      = 0.0f;
+  for (i = 0; i < *n; i++){
+     *doseweighted_LET_MeV_cm2_g += single_doses_Gy[i] * single_LETs_MeV_cm2_g[i];
+   }
+
+   *doseweighted_LET_MeV_cm2_g /= total_dose_Gy;
+
+   free(single_LETs_MeV_cm2_g);
+   free(single_doses_Gy);
+ }
+
+
+
+

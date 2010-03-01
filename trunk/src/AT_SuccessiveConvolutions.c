@@ -131,56 +131,51 @@ void  AT_SC_get_f1(
   // 1. normalize fluence, get total fluence and dose, eff. LET and mean impact parameter u,
   f_parameters[1]    = 0.0f;
 
-  // if fluences < 0 they are supposed to be D.set.Gy, so in that case convert them first
+  // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
   // only the first entry will be check
-  // feed the results back to the array passed to the routine
   long   i;
   float*  fluence_cm2_local    =  (float*)calloc(*n, sizeof(float));
-  if (fluence_cm2[0] >= 0){
+  float*  dose_Gy_local        =  (float*)calloc(*n, sizeof(float));
+
+  if(fluence_cm2_local[0] < 0){
     for (i = 0; i < *n; i++){
-      fluence_cm2_local[i]    = fluence_cm2[i];
+      dose_Gy_local[i] = -1.0f * fluence_cm2[i];
     }
-  }
-  else{
+    AT_fluence_cm2(  n,
+        E_MeV_u,
+        particle_no,
+        dose_Gy_local,
+        material_no,
+        fluence_cm2_local);
+  }else{
     for (i = 0; i < *n; i++){
-      fluence_cm2_local[i]    = -1.0f * fluence_cm2[i] / (f1_parameters[i*9] * MeV_g_to_J_kg);      // fluence / LET
-      //TODO move dose to fluence conversion to separate function
-      // fluence_cm2[i]        = fluence_cm2_local[i];
-      //printf("fluence_cm2[%ld] = %g\n", i, fluence_cm2[i]);
+      fluence_cm2_local[i] = fluence_cm2[i];
     }
+    AT_D_Gy(  n,
+        E_MeV_u,
+        particle_no,
+        fluence_cm2_local,
+        material_no,
+        dose_Gy_local);
   }
 
   for (i = 0; i < *n; i++){
+    f_parameters[2]  +=  dose_Gy_local[i];
     f_parameters[1]  +=  fluence_cm2_local[i];
   }
 
   float u_single;
   f_parameters[0]        =  0.0f;
-  f_parameters[2]        =  0.0f;
   f_parameters[3]        =  0.0f;
   f_parameters[4]        =  0.0f;
   f_parameters[5]        =  0.0f;
   f_parameters[6]        =  0.0f;
 
-  /*  f1_parameters:
-   *     0 - LET_MeV_cm2_g
-   *     1 - r_min_m
-   *     2 - r_max_m
-   *     3 - d_min_Gy
-   *     4 - d_max_Gy
-   *     5 - k             (norm. constant)
-   *     6 - single_impact_fluence_cm2
-   *     7 - single_impact_dose_Gy
-   *     8 - dEdx_MeV_cm2_g
-   */
-
-  //printf("f1_parameters[0] = %g\n", f1_parameters[0]);
-  //printf("f1_parameters[8] = %g\n", f1_parameters[8]);
-
+  //Todo: Replace by explicit routines in AT_PhysicsRoutines.c
   for (i = 0; i < *n; i++){
     norm_fluence[i]        =  fluence_cm2_local[i] / f_parameters[1];
     //printf("norm_fluence[%ld] = %g\n", i, norm_fluence[i]);
-    u_single          =  fluence_cm2_local[i] / f1_parameters[i*9 + 6];
+    u_single                    =  fluence_cm2_local[i] / f1_parameters[i*9 + 6];
     dose_contribution_Gy[i]    =  u_single * f1_parameters[i*9 + 7];
     //printf("dose_contribution_Gy[%ld] = %g\n", i, dose_contribution_Gy[i]);
     f_parameters[2]        +=  dose_contribution_Gy[i];
