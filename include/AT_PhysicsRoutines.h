@@ -151,6 +151,24 @@ void AT_D_Gy(  const long*  n,
     float* D_Gy);
 
 /**
+ * Returns fluence in 1/cm2 for each given particle
+ * @param[in]  n            number of particle types in the mixed particle field (pointer to single variable)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  D_Gy         dose / Gy for each particle type (pointer to array of size n)
+ * @param[in]  particle_no  type of the particles in the mixed particle field (pointer to array of size n)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[out] fluence_cm2         pointer to vector of size n to be allocated by the user which will be used to return the results
+ */
+void AT_fluence_cm2(  const long*  n,
+    const float*  E_MeV_u,
+    const long* particle_no,
+    const float* D_Gy,
+    const long* material_no,
+    float* fluence_cm2);
+
+/**
  * Converts pair-wise physical beam parameters of a symmetric, double Gaussian shape beam (lateral), i.e.
  * central (peak) fluence / width (std.dev.)
  * and accelerator parameters, i.e.
@@ -208,5 +226,145 @@ void AT_inv_interparticleDistance_cm2( const long*   n,
     float*  results_cm2
 );
 
+/**
+ * Computes the fluences at which (for a given material and electron-range model) every
+ * point of the detector lies within the area ONE track only
+ *
+ * Needed by SuccessiveConvolutions
+ *
+ * @param[in]  n            length of vectors for parameters (pointer to single variable)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]  er_model     index of electron-range model
+ * @see          AT_ElectronRange.h for definition
+ * @param[out] single_impact_fluence_cm2  results (one for each entry in the parameter vectors)
+  */
+void AT_single_impact_fluence_cm2( const long* n,
+    const float* E_MeV_u,
+    const long* material_no,
+    const long* er_model,
+    float* single_impact_fluence_cm2);
+
+/**
+ * Computes the total dose of a particle field
+ *
+ * Needed by SuccessiveConvolutions
+ *
+ * @param[in]  n            length of vectors for parameters (pointer to single variable)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  particle_no  particle index (pointer to array of size n)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[out] total_dose_Gy  result (pointer to float)
+  */
+void AT_total_D_Gy( const long* n,
+    const float* E_MeV_u,
+    const long* particle_no,
+    const float* fluence_cm2,
+    const long* material_no,
+    float* total_dose_Gy);
+
+/**
+ * Computes the total fluence of a particle field
+ *
+ * Needed by SuccessiveConvolutions
+ *
+ * @param[in]  n            length of vectors for parameters (pointer to single variable)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  particle_no  particle index (pointer to array of size n)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  D_Gy  doses of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[out] total_fluence_cm  result (pointer to float)
+  */
+void AT_total_fluence_cm2( const long* n,
+    const float* E_MeV_u,
+    const long* particle_no,
+    const float* D_Gy,
+    const long* material_no,
+    float* total_fluence_cm2);
+
+/**
+ * Computes the fluence-weighted average energy of a particle field
+ *
+ * Needed by SuccessiveConvolutions
+ *
+ * @param[in]  n            length of vectors for parameters (pointer to single variable)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (pointer to array of size n)
+ * @param[out] average_E_MeV_u  result (pointer to float)
+ */
+void AT_fluenceweighted_E_MeV_u( const long*     n,
+    const float* E_MeV_u,
+    const float* fluence_cm2,
+    float* average_E_MeV_u);
+
+/**
+ * Computes the dose-weighted average energy of a particle field
+ *
+ * Needed by SuccessiveConvolutions
+ *
+ * @param[in]  n            length of vectors for parameters (pointer to single variable)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  particle_no  particle index (pointer to array of size n)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[out] doseweighted_E_MeV_u  result (pointer to float)
+ */
+void AT_doseweighted_E_MeV_u( const long*     n,
+    const float* E_MeV_u,
+    const long* particle_no,
+    const float* fluence_cm2,
+    const long* material_no,
+    float* doseweighted_E_MeV_u);
+
+/**
+ * Computes the fluence-weighted average LET of a particle field
+ *
+ * Needed by SuccessiveConvolutions
+ *
+ * @param[in]  n            length of vectors for parameters (pointer to single variable)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  particle_no  particle index (pointer to array of size n)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[out] fluenceweighted_LET_MeV_cm2_g  result (pointer to float)
+ */
+void AT_fluenceweighted_LET_MeV_cm2_g( const long*     n,
+    const float* E_MeV_u,
+    const long* particle_no,
+    const float* fluence_cm2,
+    const long* material_no,
+    float* fluenceweighted_LET_MeV_cm2_g);
+
+/**
+ * Computes the dose-weighted average LET of a particle field
+ *
+ * Needed by SuccessiveConvolutions
+ *
+ * @param[in]  n            length of vectors for parameters (pointer to single variable)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  particle_no  particle index (pointer to array of size n)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (pointer to array of size n)
+ * @param[out] doseweighted_LET_MeV_cm2_g  result (pointer to float)
+ */
+void AT_doseweighted_LET_MeV_cm2_g( const long*     n,
+    const float* E_MeV_u,
+    const long* particle_no,
+    const float* fluence_cm2,
+    const long* material_no,
+    float* doseweighted_LET_MeV_cm2_g);
 
 #endif /* AT_PHYSICSROUTINES_H_ */
