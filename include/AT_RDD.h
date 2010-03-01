@@ -35,6 +35,7 @@
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_sf_exp.h>
 #include <gsl/gsl_sf_log.h>
+#include <gsl/gsl_sf_expint.h>
 #include <gsl/gsl_complex_math.h>
 #include <gsl/gsl_const_mksa.h>
 #include <gsl/gsl_const_num.h>
@@ -616,8 +617,8 @@ float          AT_RDD_Katz_PowerLawER_dEdx_versionA_J_m(        const float alph
  * @param[in] beta                     relative ion speed beta = v/c
  * @return fS(r)
  */
-inline float   AT_RDD_Cucinotta_f_shortRange( const float r_m,
-    const float beta);
+inline double   AT_RDD_Cucinotta_f_shortRange( const double r_m,
+    const double beta);
 
 /**
  * Calculates long range modification function fL(r)
@@ -629,8 +630,8 @@ inline float   AT_RDD_Cucinotta_f_shortRange( const float r_m,
  * @param[in] r_max_m                  delta electron maximum range rmax [m]
  * @return fL(r)
  */
-inline float   AT_RDD_Cucinotta_f_longRange( const float r_m,
-    const float r_max_m);
+inline double   AT_RDD_Cucinotta_f_longRange( const double r_m,
+    const double r_max_m);
 
 
 /**
@@ -653,10 +654,21 @@ inline float   AT_RDD_Cucinotta_f_longRange( const float r_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return Ddelta(r) [Gy]
  */
-inline float   AT_RDD_Cucinotta_Ddelta_Gy( const float r_m,
-    const float r_max_m,
-    const float beta,
-    const float Katz_point_coeff_Gy);
+inline double   AT_RDD_Cucinotta_Ddelta_Gy( const double r_m,
+    const double r_max_m,
+    const double beta,
+    const double Katz_point_coeff_Gy);
+
+/**
+ * Integrand in Cucinotta Ddelta calculation:
+ *
+ *  fS(r) * fL(r) /r;
+ * @param[in] r_m                      distance [m]
+ * @param[in] params                   vector of parameters (table of doubles)
+ * @return integrand  fS(r) * fL(r) /r
+ */
+double AT_RDD_Cucinotta_Ddelta_average_integrand_m(  double r_m,
+    void * params);
 
 /**
  * Calculates average dose for Cucinotta delta RDD.
@@ -683,11 +695,11 @@ inline float   AT_RDD_Cucinotta_Ddelta_Gy( const float r_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] average radial dose distribution between r1 and r2
  */
-inline float   AT_RDD_Cucinotta_Ddelta_average_Gy(  const float r1_m,
-    const float r2_m,
-    const float r_max_m,
-    const float beta,
-    const float Katz_point_coeff_Gy);
+inline double  AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
+    const double r2_m,
+    const double r_max_m,
+    const double beta,
+    const double Katz_point_coeff_Gy);
 
 
 /**
@@ -720,11 +732,11 @@ inline float   AT_RDD_Cucinotta_Ddelta_average_Gy(  const float r1_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] average radial dose distribution between r1 and r2
  */
-inline float   AT_RDD_Cucinotta_Dexc_average_Gy(  const float r1_m,
-    const float r2_m,
-    const float r_max_m,
-    const float beta,
-    const float Katz_point_coeff_Gy);
+inline double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
+    const double r2_m,
+    const double r_max_m,
+    const double beta,
+    const double Katz_point_coeff_Gy);
 
 
 /**
@@ -788,11 +800,11 @@ inline float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return Dexc(r) [Gy]
  */
-inline float   AT_RDD_Cucinotta_Dexc_Gy( const float r_m,
-    const float r_max_m,
-    const float beta,
-    const float C_norm,
-    const float Katz_point_coeff_Gy);
+inline double   AT_RDD_Cucinotta_Dexc_Gy( const double r_m,
+    const double r_max_m,
+    const double beta,
+    const double C_norm,
+    const double Katz_point_coeff_Gy);
 
 /**
  * Calculates Cucinotta point RDD
