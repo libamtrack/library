@@ -410,102 +410,6 @@ inline float   AT_RDD_Cucinotta_Dpoint_Gy( const float r_m,
   return (float)AT_RDD_Cucinotta_Dexc_Gy((double)r_m, (double)r_max_m, (double)beta, (double)C_norm, (double)Katz_point_coeff_Gy) + (float)AT_RDD_Cucinotta_Ddelta_Gy((double)r_m, (double)r_max_m, (double)beta, (double)Katz_point_coeff_Gy);
 }
 
-//////////////////////////////////////// Extended target calculations /////////////////////////////////////////////
-
-
-float
-geometryFunctionPhi (const float r0_m,
-    const float a0_m,
-    const float r_m)
-{
-  float res = 0.;
-  double factor = 0.;
-  gsl_complex carg, cres;
-  if (r_m <= fabs (r0_m - a0_m))
-  {
-    if (r0_m >= a0_m)
-      res = 0.0f;
-    else
-      res = (float)M_PI;
-  }
-  else
-  {
-    factor = gsl_pow_2 (a0_m) - gsl_pow_2 (r0_m - r_m);
-    factor /= gsl_pow_2 (r_m + r0_m) - gsl_pow_2 (a0_m);
-    GSL_SET_COMPLEX (&carg, sqrt (factor), 0.);
-    cres = gsl_complex_arctan (carg);
-    res = 2.0f * (float)(GSL_REAL (cres));
-  }
-  return res;
-}
-
-inline float AT_RDD_Katz_ext_kernel_Gy(const float t_m,
-    const float r_m,
-    const float a0_m,
-    const float alpha,
-    const float r_min_m,
-    const float r_max_m,
-    const float Katz_point_coeff_Gy){
-
-  if( t_m < r_min_m )
-    return 0.0;
-  if( t_m >= a0_m + r_m )
-    return 0.0;
-  if( (r_m >= a0_m) && (t_m <= r_m - a0_m))
-    return 0.0;
-  else
-    return  (1.0f/ (M_PI * a0_m*a0_m)) * AT_RDD_Katz_PowerLawER_Dpoint_versionA_Gy(t_m,alpha,r_max_m,Katz_point_coeff_Gy) *  geometryFunctionPhi(r_m,a0_m,t_m) * t_m;
-}
-
-double AT_RDD_Katz_ext_integrand_Gy(  double t_m,
-    void * params){
-
-  float r_m           = ((float*)params)[0];
-  float a0_m           = ((float*)params)[1];
-  float alpha         = ((float*)params)[2];
-  float r_min_m         = ((float*)params)[3];
-  float r_max_m         = ((float*)params)[4];
-  float Katz_point_coeff_Gy   = ((float*)params)[5];
-  float f_t_m         = (float)(t_m);
-  return (double)AT_RDD_Katz_ext_kernel_Gy(  f_t_m, r_m, a0_m, alpha,
-      r_min_m, r_max_m, Katz_point_coeff_Gy);
-}
-
-inline float AT_RDD_Katz_ext_Gy(  const float r_m,
-    const float a0_m,
-    const float alpha,
-    const float r_min_m,
-    const float r_max_m,
-    const float Katz_point_coeff_Gy){
-
-  double int_lim_m = 0.0f;
-  if( r_m > a0_m ){
-    int_lim_m = GSL_MAX(r_m - a0_m,r_min_m);
-  }
-  gsl_set_error_handler_off();
-
-  double ext_integral_Gy;
-  double error;
-  gsl_integration_workspace *w1 = gsl_integration_workspace_alloc (10000);
-  gsl_function F;
-  F.function = &AT_RDD_Katz_ext_integrand_Gy;
-  float params[] = {r_m,a0_m,alpha,r_min_m,r_max_m,Katz_point_coeff_Gy};
-  F.params = params;
-  int status = gsl_integration_qags (&F, int_lim_m, r_m+a0_m, 1e-9, 1e-4, 10000, w1, &ext_integral_Gy, &error);
-  if (status == GSL_EROUND || status == GSL_ESING){
-    ext_integral_Gy = -1.0f;
-  }
-  gsl_integration_workspace_free (w1);
-
-  return ext_integral_Gy;
-}
-
-
-inline float AT_RDD_Cucinotta_C(float Z,
-    float beta){
-
-  return Z*beta;
-}
 
 void AT_RDD_f1_parameters(  /* radiation field parameters */
     const float*  E_MeV_u,
@@ -661,16 +565,6 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     f1_parameters[1]        =  r_min_m;
   } // end RDD_KatzPoint
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // RDD_KatzExtTarget
-  if( *rdd_model == RDD_KatzExtTarget){ // TODO to be implemented
-    // 1. set minimum r_min_m (f1_parameters[1])
-    // 2. calculate minimum dose d_min_Gy (f1_parameters[3])
-    // 3. calculate maximum dose d_max_Gy (f1_parameters[4])
-    // 4. set norm_constant_Gy (f1_parameters[5])
-    // 5. calculate single_impact_dose_Gy (f1_parameters[7])
-    // 6. calculate dEdx_MeV_cm2_g (f1_parameters[8])
-  } // end RDD_KatzExtTarget
 
   //TODO check if there is any difference between RDD_Site and RDD_Edmund
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1014,12 +908,6 @@ void AT_D_RDD_Gy  ( const  long*  n,
   }// end RDD_KatzPoint
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // RDD_KatzExtTarget
-  if( *rdd_model == RDD_KatzExtTarget){
-      //TODO needs to be re-implemented
-  }// end RDD_KatzExtTarget
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // RDD_Site
   if( *rdd_model == RDD_Site){
     const float r_min_m   =  f1_parameters[1];
@@ -1240,7 +1128,7 @@ void AT_r_RDD_m  ( const  long*  n,
     }
   }// end RDD_Geiss
 
-  if( (*rdd_model == RDD_KatzPoint) || (*rdd_model == RDD_Site) || (*rdd_model == RDD_KatzExtTarget) || (*rdd_model == RDD_Edmund)){
+  if( (*rdd_model == RDD_KatzPoint) || (*rdd_model == RDD_Site) || (*rdd_model == RDD_Edmund)){
 
     const float r_min_m  =  f1_parameters[1];
 
@@ -1264,11 +1152,7 @@ void AT_r_RDD_m  ( const  long*  n,
       critical_r_m   = rdd_parameter[0] * (1.0f + 1e-6f);
       inv2_r_m       = fmaxf(rdd_parameter[0], max_electron_range_m * dev);
     }
-    if(*rdd_model == RDD_KatzExtTarget){
-      critical_r_m   = rdd_parameter[1];
-      inv2_r_m       = fmaxf(rdd_parameter[0], max_electron_range_m * dev);
-    }
-    if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund || *rdd_model == RDD_KatzExtTarget){
+    if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund ){
       AT_D_RDD_Gy  (  &n_tmp,                    // Use D(r) to find dose at jump of D_Site
                 &critical_r_m,
                 /* radiation field parameters */
@@ -1334,10 +1218,8 @@ void AT_r_RDD_m  ( const  long*  n,
         if(D_RDD_Gy[i] >= critical_d_Gy){
           if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund){
             r_RDD_m[i] = rdd_parameter[0];}
-          if(*rdd_model == RDD_KatzExtTarget){
-            r_RDD_m[i] = rdd_parameter[1];}
         }
-        if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund || *rdd_model == RDD_KatzExtTarget){
+        if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund){
           if(D_RDD_Gy[i] < critical_d_Gy && D_RDD_Gy[i] >= inv2_d_Gy){
             r_RDD_m[i] = sqrt(Katz_point_coeff_Gy / D_RDD_Gy[i]) * max_electron_range_m;}
           if(D_RDD_Gy[i] < inv2_d_Gy){
