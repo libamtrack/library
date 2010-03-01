@@ -281,53 +281,96 @@ float AT_RDD_Katz_PowerLawER_dEdx_versionA_J_m(  const float alpha,
 
 //////////////////////////////////////// Cucinotta model calculations /////////////////////////////////////////////
 
-inline float   AT_RDD_Cucinotta_f_shortRange( const float r_m,
-    const float beta){
+inline double   AT_RDD_Cucinotta_f_shortRange( const double r_m,
+    const double beta){
 
   // fS(r) = 1.0/( r0/r + 0.6 + 1.7 beta + 1.1 beta^2)           [here r0 = 10^(-9) [m]]
-  return 1.0f/(1e-9/r_m + 0.6f + 1.7f * beta + 1.1f * gsl_pow_2(beta));
+  return 1.0/(1e-9/r_m + 0.6 + 1.7 * beta + 1.1 * gsl_pow_2(beta));
 }
 
 
-inline float   AT_RDD_Cucinotta_f_longRange( const float r_m,
-    const float r_max_m){
+inline double   AT_RDD_Cucinotta_f_longRange( const double r_m,
+    const double r_max_m){
 
   //fL(r) = exp( -(r/(0.37rmax))^2 )
   return exp( - gsl_pow_2( r_m / (0.37 * r_max_m ) ) );
 }
 
 
-inline float   AT_RDD_Cucinotta_Ddelta_Gy( const float r_m,
-    const float r_max_m,
-    const float beta,
-    const float Katz_point_coeff_Gy){
+inline double AT_RDD_Cucinotta_Ddelta_Gy( const double r_m,
+    const double r_max_m,
+    const double beta,
+    const double Katz_point_coeff_Gy){
 
   // Ddelta(r) = coeff * fS(r) * fL(r) * rmax^2/r^2
   return Katz_point_coeff_Gy * AT_RDD_Cucinotta_f_longRange(r_m,r_max_m) * AT_RDD_Cucinotta_f_shortRange(r_m,beta) * gsl_pow_2(r_max_m/r_m);
 }
 
 
-// TODO needs to be implemented
-inline float   AT_RDD_Cucinotta_Ddelta_average_Gy(  const float r1_m,
-    const float r2_m,
-    const float r_max_m,
-    const float beta,
-    const float Katz_point_coeff_Gy){
+double AT_RDD_Cucinotta_Ddelta_average_integrand_m(  double r_m,
+    void * params){
 
-  // Dav(r1,r2) = coeff/ (pi r2^2 - pi r1^2) * \int_r1^r2 fS(r) * fL(r) * rmax^2/r^2 r dr
-  return 1;
+  double r_max_m  =  ((double*)params)[0];
+  double beta     =  ((double*)params)[1];
+  double res      =  1.0/r_m;
+  res            *=  AT_RDD_Cucinotta_f_shortRange( r_m, beta);
+  res            *=  AT_RDD_Cucinotta_f_longRange( r_m, r_max_m);
+  return res;
 }
 
 
-// TODO needs to be implemented
-inline float   AT_RDD_Cucinotta_Dexc_average_Gy(  const float r1_m,
-    const float r2_m,
-    const float r_max_m,
-    const float beta,
-    const float Katz_point_coeff_Gy){
+inline double   AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
+    const double r2_m,
+    const double r_max_m,
+    const double beta,
+    const double Katz_point_coeff_Gy){
+
+  // fL(r) = exp( -(r/(0.37rmax))^2 )
+  // fS(r) = 1.0/( r0/r + 0.6 + 1.7 beta + 1.1 beta^2)           [here r0 = 10^(-9) [m]]
+  // Dav(r1,r2) = coeff/ (pi r2^2 - pi r1^2) * \int_r1^r2 fS(r) * fL(r) * rmax^2/r^2 r dr
+  //  thus: ...
+  // Dav(r1,r2) = coeff/ (pi (r2/rmax)^2 - pi (r1/rmax)^2) * \int_r1^r2 fS(r) * fL(r) * 1/r dr
+
+  gsl_set_error_handler_off(); // TODO improve error handling
+
+  double delta_average_integral;
+  double error;
+  gsl_integration_workspace *w1 = gsl_integration_workspace_alloc (10000);
+  gsl_function F;
+  F.function = &AT_RDD_Cucinotta_Ddelta_average_integrand_m;
+  double params[] = {r_max_m, beta};
+  F.params = params;
+  int status = gsl_integration_qags (&F, r1_m, r2_m, 1e-11, 1e-7, 10000, w1, &delta_average_integral, &error);
+  //printf("integral = %g , error = %g, status = %d\n", delta_average_integral, error, status);
+  if (status > 0){
+    printf("integration error %d in AT_RDD_Cucinotta_Ddelta_average_Gy\n", status);
+    delta_average_integral = -1.0f;
+  }
+  gsl_integration_workspace_free (w1);
+
+  return (M_1_PI * Katz_point_coeff_Gy / (gsl_pow_2(r2_m/r_max_m) - gsl_pow_2(r1_m/r_max_m))) * delta_average_integral ;
+}
+
+
+inline double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
+    const double r2_m,
+    const double r_max_m,
+    const double beta,
+    const double Katz_point_coeff_Gy){
 
   //  Dav(r1,r2) = coeff/ (pi r2^2 - pi r1^2) * \int_r1^r2 exp( - r / 2d ) * (rmax/r)^2 r dr
-  return 1;
+  // \int_r1^r2 exp( - r / 2d ) * (rmax/r)^2 r dr = rmax^2 \int_r1^r2 exp( - r / 2d ) * 1/r * dr
+  // here:
+  // integral = \int_r1^r2 exp( - r / 2d ) * 1/r * dr = Ei( -r2 / 2d ) - Ei( -r2 / 2d )
+  // Ei is the exponential integral function
+  const double wr = 13.0 * GSL_CONST_MKSA_ELECTRON_VOLT;
+  const double d_m = 0.5 * beta * GSL_CONST_MKSA_PLANCKS_CONSTANT_HBAR * GSL_CONST_MKSA_SPEED_OF_LIGHT / wr; // TODO maybe d_m could be passed as argument
+  double FA = gsl_sf_expint_Ei( -0.5 * r1_m / d_m );
+  double FB = 0;
+  if( r2_m / d_m < 100.0f ){ // if x < -50 then Ei(x) < 1e-24, so we can assume than FB = 0
+    FB = gsl_sf_expint_Ei( -0.5 * r2_m / d_m );
+  }
+  return (M_1_PI * Katz_point_coeff_Gy / (gsl_pow_2(r2_m/r_max_m) - gsl_pow_2(r1_m/r_max_m))) * (FB - FA) ;
 }
 
 
@@ -344,17 +387,17 @@ inline float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
 }
 
 
-inline float   AT_RDD_Cucinotta_Dexc_Gy( const float r_m,
-    const float r_max_m,
-    const float beta,
-    const float C_norm,
-    const float Katz_point_coeff_Gy){
+inline double   AT_RDD_Cucinotta_Dexc_Gy( const double r_m,
+    const double r_max_m,
+    const double beta,
+    const double C_norm,
+    const double Katz_point_coeff_Gy){
 
   // Dexc(r) = C exp( - r / 2d ) / r^2            [where d = (beta/2) * (hbar * c / wr) and wr = 13eV ]
   // Dexc(r) = Cnorm * coeff * exp( - r / 2d ) * (rmax/r)^2
-  const float wr = 13.0 * GSL_CONST_MKSA_ELECTRON_VOLT;
-  const float d_m = 0.5f * beta * GSL_CONST_MKSA_PLANCKS_CONSTANT_HBAR * GSL_CONST_MKSA_SPEED_OF_LIGHT / wr;
-  return C_norm * Katz_point_coeff_Gy * exp( - 0.5f * r_m / d_m ) * gsl_pow_2(r_max_m/r_m);
+  const double wr = 13.0 * GSL_CONST_MKSA_ELECTRON_VOLT;
+  const double d_m = 0.5 * beta * GSL_CONST_MKSA_PLANCKS_CONSTANT_HBAR * GSL_CONST_MKSA_SPEED_OF_LIGHT / wr;
+  return C_norm * Katz_point_coeff_Gy * exp( - 0.5 * r_m / d_m ) * gsl_pow_2(r_max_m/r_m);
 }
 
 inline float   AT_RDD_Cucinotta_Dpoint_Gy( const float r_m,
@@ -364,7 +407,7 @@ inline float   AT_RDD_Cucinotta_Dpoint_Gy( const float r_m,
     const float Katz_point_coeff_Gy){
 
   // D(r)    = Dexc(r) + Ddelta(r)
-  return AT_RDD_Cucinotta_Dexc_Gy(r_m, r_max_m, beta, C_norm, Katz_point_coeff_Gy) + AT_RDD_Cucinotta_Ddelta_Gy(r_m, r_max_m, beta, Katz_point_coeff_Gy);
+  return (float)AT_RDD_Cucinotta_Dexc_Gy((double)r_m, (double)r_max_m, (double)beta, (double)C_norm, (double)Katz_point_coeff_Gy) + (float)AT_RDD_Cucinotta_Ddelta_Gy((double)r_m, (double)r_max_m, (double)beta, (double)Katz_point_coeff_Gy);
 }
 
 //////////////////////////////////////// Extended target calculations /////////////////////////////////////////////
