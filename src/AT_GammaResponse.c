@@ -257,7 +257,7 @@ void AT_get_gamma_response( const long*  n,
     *S_HCP    +=  S[i] * dd_Gy[i] * f[i];
   }
 
-  if( lethal_events_mode ){
+  if( *lethal_events_mode ){
     *S_HCP = expf( -(*S_HCP) );
   }
 
@@ -269,7 +269,7 @@ void AT_get_gamma_response( const long*  n,
       // return
       S_gamma);
 
-  if( lethal_events_mode ){
+  if( *lethal_events_mode ){
     *S_gamma = expf( -(*S_gamma) );
   }
 
