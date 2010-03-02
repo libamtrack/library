@@ -57,7 +57,8 @@ enum RDDModels {
       RDD_Geiss            = 3,      /**< parameters: 0 - a0 [m] (core diameter) */
       RDD_Site             = 4,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off  */
       RDD_Edmund           = 5,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off */
-      RDD_Cucinotta        = 6       /**< parameters: 0 - r_min [m] (lower integration limit),1 - d_min_Gy (lower dose cut-off)   */
+      RDD_Cucinotta        = 6,      /**< parameters: 0 - r_min [m] (lower integration limit),1 - d_min_Gy (lower dose cut-off)   */
+      RDD_KatzExtTarget    = 7       /** TODO: This is a dummy, replace */
 };
 
 /**
