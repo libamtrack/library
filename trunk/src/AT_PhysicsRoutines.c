@@ -276,7 +276,7 @@ void AT_fluence_cm2(  const long*  n,
   // Divide by dose, convert from Gy to MeV/g
   long  i;
   for (i = 0; i < *n; i++){
-    fluence_cm2[i]     =       fluence_cm2[i] / (D_Gy[i] * MeV_g_to_J_kg);
+    fluence_cm2[i]     =       (D_Gy[i] / MeV_g_to_J_kg) / fluence_cm2[i];
   }
 }
 
@@ -351,7 +351,6 @@ void AT_inv_interparticleDistance_cm2( const long*   n,
   }
 }
 
-// TODO: Allow for passing negative values for fluence_cm2 meaning dose then?
 void AT_single_impact_fluence_cm2( const long* n,
     const float* E_MeV_u,
     const long* material_no,
@@ -361,7 +360,7 @@ void AT_single_impact_fluence_cm2( const long* n,
   float* max_electron_range_m    = (float*)calloc(*n, sizeof(float));
 
   // get max. electron ranges
-  void AT_max_electron_range_m( n,
+  AT_max_electron_range_m( n,
       E_MeV_u,
       material_no,
       er_model,

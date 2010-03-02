@@ -137,7 +137,7 @@ void  AT_SC_get_f1(
   float*  fluence_cm2_local    =  (float*)calloc(*n, sizeof(float));
   float*  dose_Gy_local        =  (float*)calloc(*n, sizeof(float));
 
-  if(fluence_cm2_local[0] < 0){
+  if(fluence_cm2[0] < 0){
     for (i = 0; i < *n; i++){
       dose_Gy_local[i] = -1.0f * fluence_cm2[i];
     }
