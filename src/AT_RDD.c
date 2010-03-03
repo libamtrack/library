@@ -78,7 +78,7 @@ inline float AT_RDD_Katz_LinearER_PointDoseKernel(    const float x ){
 }
 
 
-inline float   AT_RDD_Katz_LinearER_Dpoint_versionA_Gy(        const float r_m,
+inline float   AT_RDD_Katz_LinearER_Dpoint_Gy(        const float r_m,
     const float r_max_m,
     const float Katz_point_coeff_Gy){
 
@@ -87,25 +87,12 @@ inline float   AT_RDD_Katz_LinearER_Dpoint_versionA_Gy(        const float r_m,
 }
 
 
-//TODO add ionization potential to this formula
-inline float AT_RDD_Katz_LinearER_Dpoint_versionB_Gy(const float r_m,
-    const float r_max_m,
-    const float material_density_kg_m3,
-    const float beta,
-    const float Z_eff,
-    const float C_J_m){
-
-  // D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r * (1/r - 1/rmax)
-  return (C_J_m / (2.0f * M_PI)) * (gsl_pow_2(Z_eff / beta)) * (1.0f/material_density_kg_m3) * (1.0f/r_m) * (1.0f/r_m - 1.0f/r_max_m);
-
-}
-
 
 inline float   AT_RDD_Katz_LinearER_DaverageKernel(  const float x1,
     const float x2){
 
-  // (log(x2/x1) - (x2-x1)) / (pi x2^2 - pi x1^2)
-  return M_1_PI * (log(x2/x1) - (x2-x1)) / (gsl_pow_2(x2) - gsl_pow_2(x1));
+  // 2 (log(x2/x1) - (x2-x1)) / (x2^2 - x1^2)
+  return 2.0f * (log(x2/x1) - (x2-x1)) / (gsl_pow_2(x2) - gsl_pow_2(x1));
 }
 
 
@@ -146,7 +133,7 @@ inline float   AT_RDD_Katz_LinearER_DSite_Gy( const float r_m,
   if( r_m < a0_m ){
     return M_1_PI * (LET_J_m - dEdx_J_m)/ (material_density_kg_m3 * gsl_pow_2(a0_m));
   } else {
-    return AT_RDD_Katz_LinearER_Dpoint_versionA_Gy(r_m,r_max_m,Katz_point_coeff_Gy);
+    return AT_RDD_Katz_LinearER_Dpoint_Gy(r_m,r_max_m,Katz_point_coeff_Gy);
   }
 
 }
@@ -162,7 +149,7 @@ inline float AT_RDD_Katz_PowerLawER_PointDoseKernel(const float x,
   return (1.0f/alpha) * (1.0f/ gsl_pow_2(x) )*pow(1.0f - x, 1.0f / (alpha));
 }
 
-inline float AT_RDD_Katz_PowerLawER_Dpoint_versionA_Gy(const float r_m,
+inline float AT_RDD_Katz_PowerLawER_Dpoint_Gy(const float r_m,
     const float alpha,
     const float r_max_m,
     const float Katz_point_coeff_Gy){
@@ -170,21 +157,6 @@ inline float AT_RDD_Katz_PowerLawER_Dpoint_versionA_Gy(const float r_m,
   float x = r_m/r_max_m;
   return Katz_point_coeff_Gy * AT_RDD_Katz_PowerLawER_PointDoseKernel(x,alpha);
 }
-
-
-//TODO add ionization potential to this formula
-inline float AT_RDD_Katz_PowerLawER_Dpoint_versionB_Gy(const float r_m,
-    const float r_max_m,
-    const float material_density_kg_m3,
-    const float beta,
-    const float Z_eff,
-    const float C_J_m,
-    const float alpha){
-
-  // D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r^2 * 1/alpha * (1 - r/rmax)^(1/alpha)
-  return (C_J_m / (2.0f * M_PI)) * (gsl_pow_2(Z_eff / beta)) * (1.0f/material_density_kg_m3) * (1.0f/gsl_pow_2(r_m)) * (1.0f/alpha) * pow(1.0f - (r_m/r_max_m), 1.0f / alpha);
-}
-
 
 inline float   AT_RDD_Katz_PowerLawER_DaverageKernel(  const float x1,
     const float x2,
@@ -194,12 +166,12 @@ inline float   AT_RDD_Katz_PowerLawER_DaverageKernel(  const float x1,
  // HGF1 =  _2F_1(-1/alpha,-1/alpha;(alpha-1)/alpha;1/x1)
  // C2 = (1-x2)^(1/alpha) ((x2-1)/x2)^(-1/alpha)
  // HGF2 =  _2F_1(-1/alpha,-1/alpha;(alpha-1)/alpha;1/x2)
-  // kernel =  1/(pi x2^2 - pi x1^2) * (C2* HGF2 - C1 * HGF1)
+  // kernel =  2/(x2^2 - x1^2) * (C2* HGF2 - C1 * HGF1)
   const float C1 = pow(1.0f-x1,1.0f/alpha) * pow((x1-1.0f)/x1,-1.0f/alpha);
   const float HGF1 = gsl_sf_hyperg_2F1(-1.0f/alpha,-1.0f/alpha,(alpha-1.0f)/alpha,1.0f/x1);
   const float C2 = pow(1.0f-x2,1.0f/alpha) * pow((x2-1.0f)/x2,-1.0f/alpha);
   const float HGF2 = gsl_sf_hyperg_2F1(-1.0f/alpha,-1.0f/alpha,(alpha-1.0f)/alpha,1.0f/x2);
-  return M_1_PI * (C2 * HGF2 - C1 * HGF1) / (gsl_pow_2(x2) - gsl_pow_2(x1));
+  return 2.0f * (C2 * HGF2 - C1 * HGF1) / (gsl_pow_2(x2) - gsl_pow_2(x1));
 }
 
 inline float   AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const float x1,
@@ -208,10 +180,10 @@ inline float   AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const float x1,
 
    // F1 = x1 / alpha^2 ( (x1 / 4alpha) * (1/alpha - 1) - 1 ) + log(x1)
    // F2 = x2 / alpha^2 ( (x2 / 4alpha) * (1/alpha - 1) - 1 ) + log(x2)
-   // kernel =  1/(pi x2^2 - pi x1^2) * (F2 - F1)
+   // kernel =  2/(x2^2 - x1^2) * (F2 - F1)
    const float F1 = (x1 / gsl_pow_2(alpha)) * ( (x1 / (4.0f * alpha)) * (1.0f/alpha - 1.0f) - 1.0f ) + log(x1);
    const float F2 = (x2 / gsl_pow_2(alpha)) * ( (x2 / (4.0f * alpha)) * (1.0f/alpha - 1.0f) - 1.0f ) + log(x2);
-   return M_1_PI * (F2 - F1) / (gsl_pow_2(x2) - gsl_pow_2(x1));
+   return 2.0f * (F2 - F1) / (gsl_pow_2(x2) - gsl_pow_2(x1));
  }
 
 inline float   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const float r1_m,
@@ -252,7 +224,7 @@ inline float   AT_RDD_Katz_PowerLawER_DSite_Gy( const float r_m,
   if( r_m < a0_m ){
     return M_1_PI * (LET_J_m - dEdx_J_m)/ (material_density_kg_m3 * gsl_pow_2(a0_m));
   } else {
-    return AT_RDD_Katz_PowerLawER_Dpoint_versionA_Gy(r_m,alpha,r_max_m,Katz_point_coeff_Gy);
+    return AT_RDD_Katz_PowerLawER_Dpoint_Gy(r_m,alpha,r_max_m,Katz_point_coeff_Gy);
   }
 }
 
@@ -265,7 +237,7 @@ inline float AT_RDD_Katz_dEdx_coeff_J_m(const float r_max_m,
   return 2 * M_PI * density_kg_m3 * r_max_m * r_max_m * Katz_point_coeff_Gy;
 }
 
-float AT_RDD_Katz_PowerLawER_dEdx_versionA_J_m(  const float alpha,
+float AT_RDD_Katz_PowerLawER_dEdx_directVersion_J_m(  const float alpha,
     const float r_min_m,
     const float r_max_m,
     const float Katz_dEdx_coeff_J_m){
@@ -327,9 +299,15 @@ inline double   AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
 
   // fL(r) = exp( -(r/(0.37rmax))^2 )
   // fS(r) = 1.0/( r0/r + 0.6 + 1.7 beta + 1.1 beta^2)           [here r0 = 10^(-9) [m]]
-  // Dav(r1,r2) = coeff/ (pi r2^2 - pi r1^2) * \int_r1^r2 fS(r) * fL(r) * rmax^2/r^2 r dr
+  // Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 Ddelta(r) 2 pi r dr
   //  thus: ...
-  // Dav(r1,r2) = coeff/ (pi (r2/rmax)^2 - pi (r1/rmax)^2) * \int_r1^r2 fS(r) * fL(r) * 1/r dr
+  // Dav(r1,r2) = 2 * coeff/ ((r2/rmax)^2 - (r1/rmax)^2) * \int_r1^r2 fS(r) * fL(r) * 1/r dr
+
+
+  if( (r2_m > r_max_m) || (r1_m > r_max_m) || (r1_m > r2_m)){
+    printf("wrong parameters given to AT_RDD_Cucinotta_Ddelta_average_Gy\n");
+    return 0.0f;
+  }
 
   gsl_set_error_handler_off(); // TODO improve error handling
 
@@ -348,7 +326,7 @@ inline double   AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
   }
   gsl_integration_workspace_free (w1);
 
-  return (M_1_PI * Katz_point_coeff_Gy / (gsl_pow_2(r2_m/r_max_m) - gsl_pow_2(r1_m/r_max_m))) * delta_average_integral ;
+  return (2.0 * Katz_point_coeff_Gy / (gsl_pow_2(r2_m/r_max_m) - gsl_pow_2(r1_m/r_max_m))) * delta_average_integral ;
 }
 
 
@@ -358,10 +336,16 @@ inline double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
     const double beta,
     const double Katz_point_coeff_Gy){
 
-  //  Dav(r1,r2) = coeff/ (pi r2^2 - pi r1^2) * \int_r1^r2 exp( - r / 2d ) * (rmax/r)^2 r dr
-  // \int_r1^r2 exp( - r / 2d ) * (rmax/r)^2 r dr = rmax^2 \int_r1^r2 exp( - r / 2d ) * 1/r * dr
+  if( (r2_m > r_max_m) || (r1_m > r_max_m) || (r1_m > r2_m) || (r1_m <= 0.0f) ){
+    printf("wrong parameters given to AT_RDD_Cucinotta_Dexc_average_Gy\n");
+    return 0.0f;
+  }
+
+  //  Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 Dexc(r) 2 pi r dr
+  //  Dav(r1,r2) = 2 coeff/ ((r2/rmax)^2 - (r1/rmax)^2) * \int_r1^r2 exp( - r / 2d ) * 1/r dr
+  //
   // here:
-  // integral = \int_r1^r2 exp( - r / 2d ) * 1/r * dr = Ei( -r2 / 2d ) - Ei( -r2 / 2d )
+  // integral = \int_r1^r2 exp( - r / 2d ) * 1/r * dr = Ei( -r2 / 2d ) - Ei( -r1 / 2d )
   // Ei is the exponential integral function
   const double wr = 13.0 * GSL_CONST_MKSA_ELECTRON_VOLT;
   const double d_m = 0.5 * beta * GSL_CONST_MKSA_PLANCKS_CONSTANT_HBAR * GSL_CONST_MKSA_SPEED_OF_LIGHT / wr; // TODO maybe d_m could be passed as argument
@@ -370,7 +354,7 @@ inline double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
   if( r2_m / d_m < 100.0f ){ // if x < -50 then Ei(x) < 1e-24, so we can assume than FB = 0
     FB = gsl_sf_expint_Ei( -0.5 * r2_m / d_m );
   }
-  return (M_1_PI * Katz_point_coeff_Gy / (gsl_pow_2(r2_m/r_max_m) - gsl_pow_2(r1_m/r_max_m))) * (FB - FA) ;
+  return (2.0 * Katz_point_coeff_Gy / (gsl_pow_2(r2_m/r_max_m) - gsl_pow_2(r1_m/r_max_m))) * (FB - FA) ;
 }
 
 
@@ -381,9 +365,19 @@ inline float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
     const float LET_J_m,
     const float Katz_point_coeff_Gy){
 
-  //Cnorm = (LET / (2 pi rho * ((pi rmax^2 - pi rmin^2)) ) - Ddelta_average(rmin,rmax) ) / Dexc_average(rmin,rmax)
-  const float LETfactor_Gy = 0.5 * LET_J_m / (material_density_kg_m3 * gsl_pow_2( M_PI ) * (gsl_pow_2(r_max_m) - gsl_pow_2(r_min_m)));
-  return (LETfactor_Gy - AT_RDD_Cucinotta_Ddelta_average_Gy(r_min_m,r_max_m,r_max_m,beta,Katz_point_coeff_Gy)) / AT_RDD_Cucinotta_Dexc_average_Gy(r_min_m,r_max_m,r_max_m,beta,Katz_point_coeff_Gy);
+  //Cnorm = (LET / (rho * ((pi rmax^2 - pi rmin^2)) ) - Ddelta_average(rmin,rmax) ) / Dexc_average(rmin,rmax)
+  const float LETfactor_Gy = LET_J_m / (material_density_kg_m3 * M_PI * (gsl_pow_2(r_max_m) - gsl_pow_2(r_min_m)));
+//  printf( "LET = %g\n", LETfactor_Gy);
+//  printf( "D_delta = %g\n", AT_RDD_Cucinotta_Ddelta_average_Gy(r_min_m,r_max_m,r_max_m,beta,Katz_point_coeff_Gy));
+//  printf( "D_exc = %g\n", AT_RDD_Cucinotta_Dexc_average_Gy(r_min_m,r_max_m,r_max_m,beta,Katz_point_coeff_Gy));
+  const float Ddelta_average_Gy = AT_RDD_Cucinotta_Ddelta_average_Gy(r_min_m,r_max_m,r_max_m,beta,Katz_point_coeff_Gy);
+  const float Dexc_average_Gy = AT_RDD_Cucinotta_Dexc_average_Gy(r_min_m,r_max_m,r_max_m,beta,Katz_point_coeff_Gy);
+  if( (LETfactor_Gy > 0) && (Ddelta_average_Gy > 0) && (Dexc_average_Gy > 0)){
+    return (LETfactor_Gy - Ddelta_average_Gy) / Dexc_average_Gy;
+  } else {
+    printf("problem in AT_RDD_Cucinotta_Cnorm\n");
+    return 0.0f;
+  }
 }
 
 
@@ -653,7 +647,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
       float Katz_point_coeff_Gy = AT_RDD_Katz_coeff_Gy(C_J_m,Z_eff,beta,density_kg_m3,max_electron_range_m);
       float Katz_dEdx_coeff_J_m = AT_RDD_Katz_dEdx_coeff_J_m(max_electron_range_m,density_kg_m3,Katz_point_coeff_Gy);
-      dEdx_J_m            =  AT_RDD_Katz_PowerLawER_dEdx_versionA_J_m(alpha,r_min_m,max_electron_range_m,Katz_dEdx_coeff_J_m);
+      dEdx_J_m            =  AT_RDD_Katz_PowerLawER_dEdx_directVersion_J_m(alpha,r_min_m,max_electron_range_m,Katz_dEdx_coeff_J_m);
 
       dEdx_MeV_cm2_g      =  dEdx_J_m / 100.0f / density_g_cm3 / MeV_to_J;
 
@@ -739,6 +733,9 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     LET_J_m              *=  MeV_to_J;     // [J/m]
 
     norm_constant_Gy      =  AT_RDD_Cucinotta_Cnorm(r_min_m,max_electron_range_m,beta,density_kg_m3,LET_J_m,Katz_point_coeff_Gy);
+    if( norm_constant_Gy == 0){
+      printf("problem\n"); // TODO handle this situation
+    }
 
     d_max_Gy              =  AT_RDD_Cucinotta_Dpoint_Gy(r_min_m,max_electron_range_m,beta,norm_constant_Gy,Katz_point_coeff_Gy);
 
@@ -978,7 +975,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
       for (i = 0; i < *n; i++){
         D_RDD_Gy[i]       =  0.0f;                                  // r < r_min_m (for RDD_KatzPoint) or r > r_max_m --> D = 0
         if (r_m[i] >= r_min_m && r_m[i] <= max_electron_range_m){          // in between r_min and r_max --> D = KatzPoint
-          D_RDD_Gy[i]     = AT_RDD_Katz_PowerLawER_Dpoint_versionA_Gy(r_m[i], alpha, max_electron_range_m, Katz_point_coeff_Gy);
+          D_RDD_Gy[i]     = AT_RDD_Katz_PowerLawER_Dpoint_Gy(r_m[i], alpha, max_electron_range_m, Katz_point_coeff_Gy);
           D_RDD_Gy[i]     = fmaxf(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses
         } // end if
         if (r_m[i] < r_min_m){            // r < r_min_m (for RDD_Site) --> D = d_max_Gy
