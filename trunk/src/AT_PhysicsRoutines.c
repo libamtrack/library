@@ -71,11 +71,11 @@ void AT_effective_charge_from_beta( const long*  n,
   // loop over n
   long  i;
   for (i = 0; i < *n; i++){
-    // Return effective charge according to Barkas-Bethe-approximation (but not for protons!)
+    // Return effective charge according to Barkas-Bethe-approximation
     if (Z[i]!=1){
-      effective_charge[i]  = (float)(Z[i]) * (1 - (float)exp(-125.0f * beta[i] / (pow(Z[i], 2.0f/3.0f))));//}
+      effective_charge[i]  = (float)(Z[i]) * (1.0f - expf(-125.0f * beta[i] / (pow(Z[i], 2.0f/3.0f))));
     }else{
-      effective_charge[i]  = (float)(Z[i]);
+      effective_charge[i]  = 1.0f - expf(-125.0f * beta[i]);
     }
   }
 }
