@@ -34,19 +34,24 @@
 #include "AT_DataParticle.h"
 #include "AT_PhysicsRoutines.h"
 
-
+/**
+ * Total number of elements in data table
+ */
 #define PSTAR_DATA_N    660
 
+/**
+ * TODO
+ */
 typedef struct {
-  const long    n;
-  const float   kin_E_MeV[PSTAR_DATA_N];
-  const float   stp_pow_el_MeV_cm2_g[PSTAR_DATA_N];
-  const float   stp_pow_nuc_MeV_cm2_g[PSTAR_DATA_N];
-  const float   stp_pow_tot_MeV_cm2_g[PSTAR_DATA_N];
-  const float   range_cdsa_g_cm2[PSTAR_DATA_N];
-  const float   range_proj_g_cm2[PSTAR_DATA_N];
-  const float   detour_factor[PSTAR_DATA_N];
-  const long    material_no[PSTAR_DATA_N];
+  const long    n;                                     /** TODO */
+  const float   kin_E_MeV[PSTAR_DATA_N];               /** TODO */
+  const float   stp_pow_el_MeV_cm2_g[PSTAR_DATA_N];    /** TODO */
+  const float   stp_pow_nuc_MeV_cm2_g[PSTAR_DATA_N];   /** TODO */
+  const float   stp_pow_tot_MeV_cm2_g[PSTAR_DATA_N];   /** TODO */
+  const float   range_cdsa_g_cm2[PSTAR_DATA_N];        /** TODO */
+  const float   range_proj_g_cm2[PSTAR_DATA_N];        /** TODO */
+  const float   detour_factor[PSTAR_DATA_N];           /** TODO */
+  const long    material_no[PSTAR_DATA_N];             /** TODO */
 } pstar_data;
 
 
@@ -632,12 +637,18 @@ void getPSTARvalue(
     const float* y_table,
     float* y);
 
+/**
+ * TODO
+ */
 void AT_LET_MeV_cm2_g(  const long*  n,
     const float*  E_MeV_u,
     const long*   particle_no,
     const long*   material_no,
     float*  LET_MeV_cm2_g);
 
+/**
+ * TODO
+ */
 void AT_LET_keV_um(  const long*  n,
     const float*  E_MeV_u,
     const long*   particle_no,
@@ -680,12 +691,19 @@ void AT_CSDA_range_m(  const long*  n,
     const long*   material_no,
     float*  CSDA_range_m);
 
+/**
+ * TODO
+ */
 void AT_E_MeV_from_CDSA_range(  const long*  n,
     const float*  CSDA_range_g_cm2,
     const long*   particle_no,
     const long*   material_no,
     float*  E_MeV);
 
+/**
+ * TODO write documentation
+ * TODO correct implementation - Zeff correction
+ */
 void AT_E_MeV_from_LET(  const long*  n,
     const float*  LET_MeV_cm2_g,
     const long*   particle_no,

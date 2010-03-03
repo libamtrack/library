@@ -31,15 +31,6 @@
 
 #include "AT_DataLET.h"
 
-/**
- * get LET-data for given material
- * @param n
- * @param x
- * @param material_no
- * @param x_table
- * @param y_table
- * @param y
- */
 void getPSTARvalue(
     const long* n,
     const float* x,
@@ -102,6 +93,7 @@ void AT_LET_MeV_cm2_g(  const long*  n,
     float*  LET_MeV_cm2_g)
 {
 
+  // TODO think if we shall use scaled energy or just energy per nucleon
   // get scaled energies for all given particles and energies
   float*  sE  =  (float*)calloc(*n, sizeof(float));
   AT_scaled_energy(  n,
@@ -110,19 +102,33 @@ void AT_LET_MeV_cm2_g(  const long*  n,
       sE);
 
   // get effective charge for all given particles and energies
-  float*  eC  =  (float*)calloc(*n, sizeof(float));
+  float*  Zeff_proton  =  (float*)calloc(*n, sizeof(float));
+  long*   particle_no_proton  =  (long*)calloc(*n, sizeof(long));
+  long   i;
+  for (i = 0; i < *n; i++){
+    particle_no_proton[i] = 1;
+  }
+  AT_effective_charge_from_particle_no(  n,
+      E_MeV_u,
+      particle_no_proton,
+      Zeff_proton);
+
+  // get effective charge for all given particles and energies
+  float*  Zeff_ion  =  (float*)calloc(*n, sizeof(float));
   AT_effective_charge_from_particle_no(  n,
       E_MeV_u,
       particle_no,
-      eC);
+      Zeff_ion);
 
   getPSTARvalue(n, sE, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, LET_MeV_cm2_g);
-  long   i;
   for (i = 0; i < *n; i++){
-    LET_MeV_cm2_g[i] *=   eC[i] * eC[i];
+    if( particle_no[i] != 1){ // for particles other than proton scale LET by (Zeff_ion / Zeff_proton)^2
+      LET_MeV_cm2_g[i] *=   gsl_pow_2(Zeff_ion[i] / Zeff_proton[i]);
+    }
   }
 
-  free(eC);
+  free(Zeff_ion);
+  free(Zeff_proton);
   free(sE);
 }
 
@@ -243,7 +249,7 @@ void AT_E_MeV_from_LET(  const long*  n,
   memcpy(LET_MeV_cm2_g_copy,LET_MeV_cm2_g,*n);
   long  i;
   for(i = 0; i < *n; i++){
-    LET_MeV_cm2_g_copy[i] /= (((float)charge[i])*((float)charge[i]));
+    LET_MeV_cm2_g_copy[i] /= gsl_pow_2( (float)charge[i] );;
   }
 
   getPSTARvalue(n, LET_MeV_cm2_g_copy, material_no, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, AT_PSTAR_Data.kin_E_MeV, sE);
