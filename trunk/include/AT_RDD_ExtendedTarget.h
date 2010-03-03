@@ -143,5 +143,7 @@ double         AT_RDD_Katz_ext_Gy(          const double r_m,
     const double Katz_point_coeff_Gy);
 
 
+//TODO implement inverse extended target RDD
+
 
 #endif /* AT_RDD_EXTENDEDTARGET_H_ */

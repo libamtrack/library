@@ -70,12 +70,12 @@ enum RDDModels {
  * RDD data
  */
 typedef struct {
-  long    n;                                   /** TODO */
-  long    RDD_no[RDD_DATA_N];                  /** TODO */
-  long    n_parameters[RDD_DATA_N];            /** TODO */
-  char*   parameter_name[RDD_DATA_N][3];       /** TODO */
-  float   parameter_default[RDD_DATA_N][3];    /** TODO */
-  char*   RDD_name[RDD_DATA_N];                /** TODO */
+  long    n;                                   /** total number of RDD models */
+  long    RDD_no[RDD_DATA_N];                  /** code number of RDD model*/
+  long    n_parameters[RDD_DATA_N];            /** number of model parameters */
+  char*   parameter_name[RDD_DATA_N][3];       /** list of names of model parameters*/
+  float   parameter_default[RDD_DATA_N][3];    /** default values of model paramters */
+  char*   RDD_name[RDD_DATA_N];                /** model names */
 } rdd_data;
 
 /**
@@ -260,7 +260,7 @@ inline float AT_RDD_Katz_PowerLawER_PointDoseKernel(    const float x,
  *
  * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r^2 * (1 - r/rmax)
  *
- * Version A : using pre-calculated constant in following manner:
+ * thus:
  *
  * D(r) = coeff * kernel(r)
  *
@@ -274,30 +274,10 @@ inline float AT_RDD_Katz_PowerLawER_PointDoseKernel(    const float x,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] radial dose distribution at distance r
  */
-inline float   AT_RDD_Katz_LinearER_Dpoint_versionA_Gy(        const float r_m,
+inline float   AT_RDD_Katz_LinearER_Dpoint_Gy(        const float r_m,
     const float r_max_m,
     const float Katz_point_coeff_Gy);
 
-
-/**
- * Calculates "old" Katz RDD (derived from linear ER model):
- *
- * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r * (1/r - 1/rmax)
- *
- * @param[in] r_m                      distance r [m]
- * @param[in] r_max_m                  delta electron maximum range rmax [m]
- * @param[in] material_density_kg_m3   material density rho [kg/m^3]
- * @param[in] beta                     relative ion speed beta = v/c
- * @param[in] Z_eff                    effective ion charge Zeff
- * @param[in] C_J_m                    constant C [J/m]
- * @return D(r) [Gy] radial dose distribution at distance r
- */
-inline float AT_RDD_Katz_LinearER_Dpoint_versionB_Gy(const float r_m,
-    const float r_max_m,
-    const float material_density_kg_m3,
-    const float beta,
-    const float Z_eff,
-    const float C_J_m); // TODO maybe we can remove it when we will be sure that "kernel" calculation works OK ?
 
 
 /**
@@ -305,7 +285,7 @@ inline float AT_RDD_Katz_LinearER_Dpoint_versionB_Gy(const float r_m,
  *
  * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r^2 * 1/alpha * (1 - r/rmax)^(1/alpha)
  *
- * Version A : using pre-calculated constant in following manner:
+ * thus:
  *
  * D(r) = coeff * kernel(r)
  *
@@ -320,45 +300,22 @@ inline float AT_RDD_Katz_LinearER_Dpoint_versionB_Gy(const float r_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] radial dose distribution at distance r
  */
-inline float   AT_RDD_Katz_PowerLawER_Dpoint_versionA_Gy(        const float r_m,
+inline float   AT_RDD_Katz_PowerLawER_Dpoint_Gy(        const float r_m,
     const float alpha,
     const float r_max_m,
     const float Katz_point_coeff_Gy);
 
-
-/**
- * Calculates "new" Katz RDD (derived from power-law (on wmax) ER model):
- *
- * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r^2 * 1/alpha * (1 - r/rmax)^(1/alpha)
- *
- * Version B : Direct calculation
- *
- * @param[in] r_m                      distance r [m]
- * @param[in] r_max_m                  delta electron maximum range rmax [m]
- * @param[in] material_density_kg_m3   material density rho [kg/m^3]
- * @param[in] beta                     relative ion speed beta = v/c
- * @param[in] Z_eff                    effective ion charge Zeff
- * @param[in] C_J_m                    constant C [J/m]
- * @param[in] alpha                    parameter of ER model
- * @return D(r) [Gy] radial dose distribution at distance r
- */
-inline float    AT_RDD_Katz_PowerLawER_Dpoint_versionB_Gy(const float r_m,
-    const float r_max_m,
-    const float material_density_kg_m3,
-    const float beta,
-    const float Z_eff,
-    const float C_J_m,
-    const float alpha);
 
 
 /**
  * Calculates average dose kernel for "old" Katz RDD (derived from linear (on wmax) ER model).
  * Here averaging is done over a shell between radius r_1 and r_2
  *
- * kernel(x1,x2) = 1/(pi x2^2 - pi x1^2) * \int_x1^x2 (1/x^2 - 1/x) x dx =
- *               = 1/(pi x2^2 - pi x1^2) * \int_x1^x2 (1/x - 1) dx =
- *               = 1/(pi x2^2 - pi x1^2) * (log(x) - x) |_x1^x2 dx =
- *               = (log(x2/x1) - (x2-x1)) / (pi x2^2 - pi x1^2)
+ * kernel(x1,x2) = 2 / (x2^2 - x1^2) * \int_x1^x2 point_kernel(x) x dx
+ * kernel(x1,x2) = 2 / (x2^2 - x1^2) * \int_x1^x2 (1/x^2 - 1/x) x dx =
+ *               = 2 / (x2^2 - x1^2) * \int_x1^x2 (1/x - 1) dx =
+ *               = 2 / (x2^2 - x1^2) * (log(x) - x) |_x1^x2 dx =
+ *               = 2 (log(x2/x1) - (x2-x1)) / (x2^2 - x1^2)
  *
  * @param[in] x1                     inner radius x1 (lower integration limit)
  * @param[in] x2                     outer radius x2 (upper integration limit)
@@ -371,8 +328,8 @@ inline float   AT_RDD_Katz_LinearER_DaverageKernel(  const float x1,
  * Calculates average dose kernel for "new" Katz RDD (derived from power-law (on wmax) ER model).
  * Here averaging is done over a shell between radius r_1 and r_2
  *
- * kernel = 1/(pi x2^2 - pi x1^2) * \int_x1^x2 1/x^2 * 1/alpha * (1 - x)^(1/alpha) x dx =
- *        = 1/(pi x2^2 - pi x1^2) * \int_x1^x2 1/x * 1/alpha * (1 - x)^(1/alpha) dx
+ * kernel = 2/(x2^2 - x1^2) * \int_x1^x2 1/x^2 * 1/alpha * (1 - x)^(1/alpha) x dx =
+ *        = 2/(x2^2 - x1^2) * \int_x1^x2 1/x * 1/alpha * (1 - x)^(1/alpha) dx
  *
  * now we use the information that:
  *
@@ -380,7 +337,7 @@ inline float   AT_RDD_Katz_LinearER_DaverageKernel(  const float x1,
  *
  * thus:
  *
- * kernel =  1/(pi x2^2 - pi x1^2) * (F2 - F1)
+ * kernel =  2/(x2^2 - x1^2) * (F2 - F1)
  *
  * where:
  *
@@ -403,8 +360,8 @@ inline float   AT_RDD_Katz_PowerLawER_DaverageKernel(  const float x1,
  * Calculates approximate value of average dose kernel for "new" Katz RDD (derived from power-law (on wmax) ER model).
  * Here averaging is done over a shell between radius r_1 and r_2
  *
- * kernel = 1/(pi x2^2 - pi x1^2) * \int_x1^x2 1/x^2 * 1/alpha * (1 - x)^(1/alpha) x dx =
- *        = 1/(pi x2^2 - pi x1^2) * \int_x1^x2 1/x * 1/alpha * (1 - x)^(1/alpha) dx
+ * kernel = 2/(x2^2 - x1^2) * \int_x1^x2 1/x^2 * 1/alpha * (1 - x)^(1/alpha) x dx =
+ *        = 2/(x2^2 - x1^2) * \int_x1^x2 1/x * 1/alpha * (1 - x)^(1/alpha) dx
  *
  * now we use the series expansion:
  *
@@ -416,7 +373,7 @@ inline float   AT_RDD_Katz_PowerLawER_DaverageKernel(  const float x1,
  *
  * thus:
  *
- * kernel =  1/(pi x2^2 - pi x1^2) * (F2 - F1)
+ * kernel =  2/(x2^2 - x1^2) * (F2 - F1)
  *
  * where:
  *
@@ -438,17 +395,17 @@ inline float   AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const float x1,
  * Calculates average dose for "old" Katz RDD (derived from linear (on wmax) ER model).
  * Here averaging is done over a shell between radius r_1 and r_2
  *
- * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 D(r) r dr
+ * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 D(r) 2 pi r dr
  *
- * Version A : using pre-calculated constant:
+ * thus:
  *
  * D(r) = coeff * kernel(r)
  *
- * Dav(r1,r2) = coeff * 1 / (pi r2^2 - pi r1^2) * \int_r1^r2 kernel(r) r dr
+ * Dav(r1,r2) = coeff * 2 / (r2^2 - r1^2) * \int_r1^r2 kernel(r) r dr
  *
  * substituting x1 = r1/rmax , x2 = r2/rmax we will have:
  *
- * Dav(r1,r2) = coeff * 1 / (pi x2^2 - pi x1^2) * \int_x1^x2 kernel(x) x dx
+ * Dav(r1,r2) = coeff * 2 / (x2^2 - x1^2) * \int_x1^x2 kernel(x) x dx
  *
  * in other words:
  *
@@ -470,17 +427,17 @@ inline float   AT_RDD_Katz_LinearER_Daverage_Gy(  const float r1_m,
  * Calculates average dose for "new" Katz RDD (derived from power-law (on wmax) ER model).
  * Here averaging is done over a shell between radius r_1 and r_2
  *
- * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 D(r) r dr
+ * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 D(r) 2 pi r dr
  *
- * Version A : using pre-calculated constant:
+ * thus:
  *
  * D(r) = coeff * kernel(r)
  *
- * Dav(r1,r2) = coeff * 1 / (pi r2^2 - pi r1^2) * \int_r1^r2 kernel(r) r dr
+ * Dav(r1,r2) = coeff * 2 / (r2^2 - r1^2) * \int_r1^r2 kernel(r) r dr
  *
  * substituting x1 = r1/rmax , x2 = r2/rmax we will have:
  *
- * Dav(r1,r2) = coeff * 1 / (pi x2^2 - pi x1^2) * \int_x1^x2 kernel(x) x dx
+ * Dav(r1,r2) = coeff * 2 / (x2^2 - x1^2) * \int_x1^x2 kernel(x) x dx
  *
  * in other words:
  *
@@ -505,7 +462,7 @@ inline float   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const float r1_m,
  * Calculates energy delivered to shell between radius a_0 and r_max
  * for "old" Katz RDD (derived from linear (on wmax) ER model).
  *
- * dEdx = 2 pi rho \int_a0^rmax r D(r) dr =
+ * dEdx = rho \int_a0^rmax  D(r) 2 pi r dr =
  *      = 2 pi rho * (pi rmax^2 - pi a0^2) D_av(a0,rmax)
  *
  * @param[in] a0_m                     inner radius a0 (lower integration limit) [m]
@@ -523,7 +480,7 @@ inline float   AT_RDD_Katz_LinearER_dEdx_J_m(  const float a0_m,
  * Calculates energy delivered to shell between radius a_0 and r_max
  * for "new" Katz RDD (derived from power-law (on wmax) ER model).
  *
- * dEdx = 2 pi rho \int_a0^rmax r D(r) dr =
+ * dEdx = rho \int_a0^rmax D(r) 2 pi r dr =
  *      = 2 pi rho * (pi rmax^2 - pi a0^2) D_av(a0,rmax)
  *
  * @param[in] a0_m                     inner radius a0 (lower integration limit) [m]
@@ -597,7 +554,7 @@ inline float   AT_RDD_Katz_dEdx_coeff_J_m(  const float r_max_m,
 /**
  * TODO
  */
-float          AT_RDD_Katz_PowerLawER_dEdx_versionA_J_m(        const float alpha,
+float          AT_RDD_Katz_PowerLawER_dEdx_directVersion_J_m(        const float alpha,
     const float r_min_m,
     const float r_max_m,
     const float Katz_dEdx_coeff_J_m);
@@ -670,7 +627,7 @@ double AT_RDD_Cucinotta_Ddelta_average_integrand_m(  double r_m,
  * Calculates average dose for Cucinotta delta RDD.
  * Here averaging is done over a shell between radius r_1 and r_2
  *
- * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 Ddelta(r) r dr
+ * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 Ddelta(r) 2 pi r dr
  *
  * We calculate using pre-calculated constant in following manner:
  *
@@ -678,7 +635,7 @@ double AT_RDD_Cucinotta_Ddelta_average_integrand_m(  double r_m,
  *
  * Thus
  *
- * Dav(r1,r2) = coeff/ (pi r2^2 - pi r1^2) * \int_r1^r2 fS(r) * fL(r) * rmax^2/r^2 r dr
+ * Dav(r1,r2) = 2 * coeff/ ((r2/rmax)^2 - (r1/rmax)^2) * \int_r1^r2 fS(r) * fL(r) * 1/r dr
  *
  * where:
  *
@@ -702,7 +659,7 @@ inline double  AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
  * Calculates average dose for Cucinotta excitation RDD with Cnorm = 1
  * Here averaging is done over a shell between radius r_1 and r_2
  *
- * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 Dexc(r) r dr
+ * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 Dexc(r) 2 pi r dr
  *
  * We calculate using pre-calculated constant in following manner:
  *
@@ -715,7 +672,7 @@ inline double  AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
  *
  * Thus
  *
- * Dav(r1,r2) = coeff/ (pi r2^2 - pi r1^2) * \int_r1^r2 exp( - r / 2d ) * (rmax/r)^2 r dr
+ * Dav(r1,r2) = 2 coeff/ ((r2/rmax)^2 - (r1/rmax)^2) * \int_r1^r2 exp( - r / 2d ) * 1/r dr
  *
  * where:
  *
