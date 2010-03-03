@@ -116,11 +116,16 @@ void AT_E_from_beta(  const long*  n,
     float*  E_MeV_u);
 
 /**
- * Effective charge
+ * Effective charge according to Barkas-Bethe-approximation:
+ *
+ * Zeff = Z * exp( -125 * beta / Z^(2/3) )
+ *
+ * calculated for particle with given relative speed beta
+ *
  * @param[in] n                        number of particles
  * @param[in] beta                     vector of relative particle speed beta = v/c
- * @param[in] Z                        TODO
- * @param[out] effective_charge
+ * @param[in] Z                        atomic number Z of ion
+ * @param[out] effective_charge of ion
  */
 void AT_effective_charge_from_beta(  const long*  n,
     const float*  beta,
@@ -138,21 +143,26 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
     float*  dsE2dz);
 
 /**
- * Effective charge
+ * Effective charge according to Barkas-Bethe-approximation:
+ *
+ * Zeff = Z * exp( -125 * beta / Z^(2/3) )
+ *
+ * calculated for particle with given energy per nucleon
+ *
  * @param[in] n                        number of particles
- * @param[in] E_MeV_u                  TODO
+ * @param[in] E_MeV_u                  vector of energies of particle per nucleon [MeV]
  * @param[in] particle_no              TODO
  * @param[out] effective_charge
  */
 void AT_effective_charge_from_particle_no(  const long*  n,
     const float*  E_MeV_u,
     const long*  particle_no,
-    float*  effective_charge);
+    float*  effective_charge); // TODO maybe this could be renamed to AT_effective_charge_from_E ? or AT_effective_charge_from_E_and_particle_no ?
 
 /**
  * Scaled energy TODO
  * @param[in] n                        number of particles
- * @param[in] E_MeV_u                  TODO
+ * @param[in] E_MeV_u                  vector of energies of particle per nucleon [MeV]
  * @param[in] particle_no              TODO
  * @param[out] scaled_energy
  */
@@ -176,7 +186,7 @@ void AT_E_MeV_u_from_scaled_energy(  const long*  n,
 /**
  * Max energy transfer TODO
  * @param[in] n                        number of particles
- * @param[in] E_MeV_u                  TODO
+ * @param[in] E_MeV_u                  vector of energies of particle per nucleon [MeV]
  * @param[out] max_E_transfer_MeV
  */
 void AT_max_E_transfer_MeV(  const long*  n,
