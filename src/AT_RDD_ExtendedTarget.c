@@ -165,7 +165,7 @@ void AT_RDD_ExtendedTarget_Gy( const long*  n,
           alpha             =  1.079f;
         }
 
-        r_m[i] = 0.0f;
+        D_RDD_Gy[i] = 0.0f;
 
         if( (r_m[i] <=  0.01 * (*a0_m)) && (r_m[i] >=  r_min_m)){
           D_RDD_Gy[i] = AT_RDD_Katz_PowerLawER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, alpha, Katz_point_coeff_Gy );
