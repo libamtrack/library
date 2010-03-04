@@ -533,17 +533,20 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     d_min_Gy              =  rdd_parameter[1];                                                 // d_min_Gy given as model parameter
 
     // 3. calculate maximum dose d_max_Gy (f1_parameters[4])
-    float  C_J_m          =  AT_RDD_Katz_C_J_m(electron_density_m3);  // TODO think if C_J_m can be saved to f1_parameters[5]
-    if( (*er_model == ER_Waligorski) || (*er_model == ER_Edmund) ){
+    const float  C_J_m    =  AT_RDD_Katz_C_J_m(electron_density_m3);  // TODO think if C_J_m can be saved to f1_parameters[5]
+    const float Katz_point_coeff_Gy =  AT_RDD_Katz_coeff_Gy(C_J_m,Z_eff,beta,density_kg_m3,max_electron_range_m);
+    if( (*er_model == ER_Waligorski) || (*er_model == ER_Edmund) ){ // "new" Katz RDD
       float alpha         =  1.667f;
       float wmax_MeV      =  0.0f;
       AT_max_E_transfer_MeV(&n_tmp,E_MeV_u,&wmax_MeV);                                         // wmax - maximum delta-electron energy [MeV]
       if(wmax_MeV <= 1e-3){  // if wmax < 1keV
         alpha             =  1.079f;
       }
-      d_max_Gy            =  AT_RDD_Katz_PowerLawER_Dpoint_versionB_Gy(r_min_m, max_electron_range_m, density_kg_m3, beta, Z_eff, C_J_m, alpha);  // d_max_Gy gives as dose for r_min_m
-    } else {
-      d_max_Gy            =  AT_RDD_Katz_LinearER_Dpoint_versionB_Gy(r_min_m, max_electron_range_m, density_kg_m3, beta, Z_eff, C_J_m);           // d_max_Gy gives as dose for r_min_m
+      d_max_Gy            =  AT_RDD_Katz_PowerLawER_Dpoint_Gy(r_min_m,alpha, max_electron_range_m, Katz_point_coeff_Gy); // d_max_Gy given as dose for r_min_m
+    } else if (*er_model == ER_ButtsKatz){ // "old" Katz RDD
+      d_max_Gy            =  AT_RDD_Katz_LinearER_Dpoint_Gy(r_min_m, max_electron_range_m, Katz_point_coeff_Gy); // d_max_Gy given as dose for r_min_m
+    } else { // not supported ER model
+      d_max_Gy            =  0.0;
     }
     // 4. set norm_constant_Gy (f1_parameters[5])
     norm_constant_Gy      =  0.0;                                                              // not used here as this RDD model is not normalized
@@ -574,7 +577,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     d_min_Gy              =  rdd_parameter[1];                                                  // d_min_Gy given as model parameter
 
     // 3. calculate maximum dose d_max_Gy (f1_parameters[4])
-    const float C_J_m               =  AT_RDD_Katz_C_J_m(electron_density_m3);
+    const float C_J_m     =  AT_RDD_Katz_C_J_m(electron_density_m3);
     const float Katz_point_coeff_Gy =  AT_RDD_Katz_coeff_Gy(C_J_m,Z_eff,beta,density_kg_m3,max_electron_range_m);
 
     float  LET_J_m        =  LET_MeV_cm2_g * density_g_cm3; // [MeV / cm]
@@ -858,10 +861,12 @@ void AT_D_RDD_Gy  ( const  long*  n,
     // TODO shall we move from J_m and m to more reasonable units ?
     // we have for water C_J_m = 1.22e-12 and r_m usually ~ 1e-8
     // calculations in C_J_um and r_um would be more precize
-    float  C_J_m          =  AT_RDD_Katz_C_J_m(electron_density_m3);
+    const float  C_J_m     =  AT_RDD_Katz_C_J_m(electron_density_m3);
+    const float Katz_point_coeff_Gy =  AT_RDD_Katz_coeff_Gy(C_J_m,Z_eff,beta,density_kg_m3,max_electron_range_m);
 
     float alpha           =  1.0f;
     float wmax_MeV        =  0.0f;
+
 
     // use power law form of RDD for power law ER models (new Katz style)
     if( (*er_model == ER_Waligorski) || (*er_model == ER_Edmund) ){
@@ -877,7 +882,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
       for (i = 0; i < *n; i++){
         D_RDD_Gy[i]       =  0.0f;
         if (r_m[i] >= r_min_m && r_m[i] <= max_electron_range_m){
-          D_RDD_Gy[i]     = AT_RDD_Katz_PowerLawER_Dpoint_versionB_Gy(r_m[i], max_electron_range_m, density_kg_m3, beta, Z_eff, C_J_m, alpha);
+          D_RDD_Gy[i]     = AT_RDD_Katz_PowerLawER_Dpoint_Gy(r_m[i], alpha, max_electron_range_m, Katz_point_coeff_Gy);
           // D_RDD_Gy[i]        = fmaxf(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses // TODO is this cutoff necessary here ?
         } // end if
       } // end for
@@ -888,12 +893,12 @@ void AT_D_RDD_Gy  ( const  long*  n,
       for (i = 0; i < *n; i++){
         D_RDD_Gy[i]       =  0.0f;
         if (r_m[i] >= r_min_m && r_m[i] <= max_electron_range_m){
-          D_RDD_Gy[i]     = AT_RDD_Katz_LinearER_Dpoint_versionB_Gy(r_m[i], max_electron_range_m, density_kg_m3, beta, Z_eff, C_J_m);
+          D_RDD_Gy[i]     = AT_RDD_Katz_LinearER_Dpoint_Gy(r_m[i], max_electron_range_m, Katz_point_coeff_Gy);
           // D_RDD_Gy[i]        = fmaxf(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses // TODO is this cutoff necessary here ?
         } // end if
       } // end for
 
-    } else { // other ER models
+    } else { // other not supported ER models
 
       // Loop over all r_m given
       for (i = 0; i < *n; i++){
