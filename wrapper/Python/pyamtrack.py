@@ -37,29 +37,29 @@
 
 import ctypes
 import sys
-import platform
+from  platform import python_version
 
 
 __status__ = 'Prototype'
 
+operating_system = platform.system()
+if operating_system == 'Windows':
+    self.libamtrack = ctypes.cdll.libamtrack
+    # should be working under Windows, but never has been tested
+    # if you have tried it under Windows, I'D be happy to hear your
+    # experience
+else:
+    self.libamtrack = ctypes.cdll.LoadLibrary("libamtrack.so")
+# python version controll
+py_version = python_version()
+if int(py_version[0]) < 3 and int(py_version[2]) <= 5:
+    print 'ERROR:\nYou are using Python%s\nPython2.6 or later needed!\n'%py_version
+    sys.exit(0)
 
+    
 class AmTrack(object):
     def __init__ (self):
         print '\npyamtrack\n-----\n'
-        operating_system = platform.system()
-        if operating_system == 'Windows':
-            self.libamtrack = ctypes.cdll.libamtrack
-            # should be working under Windows, but never has been tested
-            # if you have tried it under Windows, I'D be happy to hear your
-            # experience
-        else:
-            self.libamtrack = ctypes.cdll.LoadLibrary("libamtrack.so")
-        # python version controll
-        py_version = platform.python_version()
-        if int(py_version[0]) < 3 and int(py_version[2]) <= 5:
-            print 'ERROR:\nYou are using Python%s\nPython2.6 or later needed!\n'%py_version
-            sys.exit(0)
-        
 
     def AT_SPIFF (self, n, E_MeV_u, particle_no, fluence_cm2, material_no, RDD_model, RDD_parameters, 
                   ER_model, ER_parameters, gamma_model, gamma_parameters,  N2, fluence_factor, write_output,  
@@ -143,7 +143,7 @@ class AmTrack(object):
         tmp_array = ctypes.c_float* len(ER_parameters)        
         ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))
         gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))
-        gamma_parameters.append(0.0) # required by AmTrac
+        gamma_parameters.append(0.0) # required by AmTrack
         tmp_array = ctypes.c_float* len(gamma_parameters)        
         gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))    
         N2_ctype =                 ctypes.byref(ctypes.c_int(N2))
