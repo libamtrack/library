@@ -35,6 +35,11 @@ void AT_PrintName(void){
   printf("This is libamtrack.\n");
 }
 
+
+int AT_GetNumber(void){ // TODO to be removed
+  return 137;
+}
+
 void AT_SPIFF(  const long*  n,
     const float*  E_MeV_u,
     const long*  particle_no,
