@@ -222,16 +222,16 @@ void test_AT_SPIFF(  float* fluence_cm2)
 //      results);
 //}
 
-int main(){
-//  test_AT_SPISS();
-//  test_AT_GSM();
-//	test_AT_SPIFF();
-  double dose_gy = 0.001;
-  float fluence_cm2[] = {0.001};
-  while (dose_gy <= 1000){
-    fluence_cm2[0] =-1.0f* dose_gy;
-    test_AT_SPIFF(fluence_cm2);
-    dose_gy = dose_gy *1.1;
-    }
-  return 0;
-};
+//int main(){
+////  test_AT_SPISS();
+////  test_AT_GSM();
+////	test_AT_SPIFF();
+//  double dose_gy = 0.001;
+//  float fluence_cm2[] = {0.001};
+//  while (dose_gy <= 1000){
+//    fluence_cm2[0] =-1.0f* dose_gy;
+//    test_AT_SPIFF(fluence_cm2);
+//    dose_gy = dose_gy *1.1;
+//    }
+//  return 0;
+//};
