@@ -469,10 +469,10 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
   ////////////////////////////////////////////////////////////////////////////////
   // PARAMETER 2: Get the maximum electron range (same for all RDD models)
-  AT_max_electron_range_m(  &n_tmp,
+  AT_max_electron_range_m(  n_tmp,
                 E_MeV_u,
-                material_no,
-                er_model,
+                *material_no,
+                *er_model,
                 &max_electron_range_m);
 
   ////////////////////////////////////////////////////////////////////////////////

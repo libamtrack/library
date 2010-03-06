@@ -122,10 +122,10 @@ void AT_RDD_ExtendedTarget_Gy( const long*  n,
 
   // Get the maximum electron range
   float  max_electron_range_m = 0.0f;
-  AT_max_electron_range_m(  &n_tmp,
+  AT_max_electron_range_m(  n_tmp,
                 E_MeV_u,
-                material_no,
-                er_model,
+                *material_no,
+                *er_model,
                 &max_electron_range_m);
 
   const float C_J_m               =  AT_RDD_Katz_C_J_m(electron_density_m3);
