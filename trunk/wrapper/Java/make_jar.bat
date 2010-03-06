@@ -12,7 +12,6 @@ set gsllib="C:\Program Files\GnuWin32\lib"
 set gsldllA="C:\Program Files\GnuWin32\bin\libgsl.dll"
 set gsldllB="C:\Program Files\GnuWin32\bin\libgslcblas.dll"
 set gccexe="C:\Program Files\MinGW\bin\gcc.exe"
-set ldexe="C:\Program Files\MinGW\bin\ld.exe"
 
 :: Generate interface elements using SWIG 
 mkdir java-swig-src
@@ -51,5 +50,5 @@ del bin\*.class
 
 :: keystore created using command "keystore -keygen -keystore myk -alias jdc", password "libamtrack"
 
-%jarsignerexe% -keystore myk -signedjar examplesigned.jar example.jar jdc
-move examplesigned.jar webstart\
+%jarsignerexe% -keystore myk -signedjar examplesigned-Windows.jar example.jar jdc
+move examplesigned-Windows.jar webstart\
