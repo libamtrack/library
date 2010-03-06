@@ -20,7 +20,10 @@ import java.lang.reflect.*;
 public class NewSwingApp extends javax.swing.JFrame {
 
 
-
+	/**
+	 * Add custom directory to java.library.path of local JVM
+	 * @param s local filesystem directory
+	 */
 	public static void addDir(String s) throws IOException {
 		try {
 			// This enables the java.library.path to be modified at runtime
@@ -46,45 +49,60 @@ public class NewSwingApp extends javax.swing.JFrame {
 		}
 	}
 
-	
-	
-private static String downloadLibrary(String name)
-{
-   try
-   {
-     // Get input stream from jar resource
-     InputStream inputStream = NewSwingApp.class.getResource("/" + name + ".dll").openStream();  
 
-     // Copy resource to filesystem in a temp folder with a unique name
-	 File temporaryFile = File.createTempFile("katze", ".dll");
-     String tmpdir = temporaryFile.getParent();
+	/**
+	 * Copy library file from jar archive to temp directory of local filesystem
+	 * @param name core name of the library 
+	 */
+	private static String downloadLibrary(String name)
+	{
+		try
+		{
+			// Get input stream from jar resource
+			// Copy resource to filesystem in a temp folder with a unique name
+			File temporaryFile = File.createTempFile("tmpfile", ".file");
+			String tmpdir = temporaryFile.getParent();
 
-     String path = tmpdir + File.separator + name + ".dll";
-     File temporaryDll = new File(path);
-     FileOutputStream outputStream = new FileOutputStream(temporaryDll);
-     byte[] array = new byte[8192];
-     int read = 0;
-     while ( (read = inputStream.read(array)) > 0)
-         outputStream.write(array, 0, read);
-     outputStream.close();  
+			InputStream inputStream;
+			String path;
+			String OS = System.getProperty("os.name").toLowerCase();
+			if (OS.indexOf("windows") > -1) {
+				inputStream = NewSwingApp.class.getResource("/" + name + ".dll").openStream();  
+				path = tmpdir + File.separator + name + ".dll";
 
-     // Delete on exit the dll
-     temporaryDll.deleteOnExit();  
-	 temporaryFile.deleteOnExit();  
+			} else {
+				if( name.indexOf("lib") < 0){
+					name = "lib" + name;
+				}
+				inputStream = NewSwingApp.class.getResource("/" + name + ".so").openStream();  
+				path = tmpdir + File.separator + name + ".so";
 
-     System.out.println("saving... " + temporaryDll.getPath());
-     
-     // Finally, load the dll
-     return new String(temporaryDll.getPath());
-   }
-   catch(Throwable e)
-   {
-       e.printStackTrace();
-       return new String("");
-   }  
+			}
 
-}
-	
+			File temporaryDll = new File(path);
+			FileOutputStream outputStream = new FileOutputStream(temporaryDll);
+			byte[] array = new byte[8192];
+			int read = 0;
+			while ( (read = inputStream.read(array)) > 0)
+				outputStream.write(array, 0, read);
+			outputStream.close();  
+
+			// Delete on exit the dll
+			temporaryDll.deleteOnExit();  
+			temporaryFile.deleteOnExit();  
+
+			System.out.println("saving... " + temporaryDll.getPath());
+
+			// Finally, load the dll
+			return new String(temporaryDll.getPath());
+		}
+		catch(Throwable e)
+		{
+			e.printStackTrace();
+			return new String("");
+		}  
+	}
+
 	private JMenu jMenu5;
 	private JTextField jTextField1;
 	private JPanel jPanel1;
@@ -107,29 +125,32 @@ private static String downloadLibrary(String name)
 	static {
 
 		try{ 
-		File temporaryDll = File.createTempFile("dupa", ".dll");
+			// Find path to temporary directory
+			File temporaryDll = File.createTempFile("temp", ".file");
+			String tmpdir = temporaryDll.getParent();
+			// Add temporary directory to java.lib.path
+			addDir(tmpdir);
 
-        //System.out.println("tmp dir " + );
+		} catch(Exception e){
+		}
 
-        String tmpdir = temporaryDll.getParent();
-        
-        addDir(tmpdir);
-        
-        } catch(Exception e){
-        }
-
-        downloadLibrary("libgslcblas");
+		downloadLibrary("libgslcblas");
 		downloadLibrary("libgsl");
 		downloadLibrary("example");
-		
-				
-		System.loadLibrary("libgslcblas");
-		System.loadLibrary("libgsl");
+
+		String OS = System.getProperty("os.name").toLowerCase();
+		if (OS.indexOf("windows") > -1) {
+			System.loadLibrary("libgslcblas");
+			System.loadLibrary("libgsl");
+		} else {
+			System.loadLibrary("gslcblas");
+			System.loadLibrary("gsl");
+		}
+
 		System.loadLibrary("example");
-				
+
 	}
-
-
+	
 	//public static native int AT_GetNumber();
 
 	/**
@@ -148,7 +169,8 @@ private static String downloadLibrary(String name)
 
 	public NewSwingApp(String s) {
 		super();
-		initGUI(s);
+		this.initGUI(s);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	private void initGUI(String s) {
