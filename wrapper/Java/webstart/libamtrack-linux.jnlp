@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0+" codebase="file:///home/grzanka/workspace/AmTrack_reorgan/wrapper/Java/webstart">
+<information>
+<title>HellowWorld Example</title>
+<vendor>ABC Ltd</vendor>
+<homepage href="HelloWorld.html"/>
+<description>JNI Test</description>
+<description kind="short">JNI Test</description>
+</information>
+<security>
+<all-permissions/>
+</security>
+<resources>
+<j2se version="1.4+" href="http://java.sun.com/products/autodl/j2se"/>
+<j2se version="1.4+"/>
+<jar href="examplesigned-Linux.jar" main="true" download="eager"/>
+</resources>
+<resources os="Linux">
+<nativelib href="examplesigned-Linux.jar" download="eager"/>
+</resources>
+<application-desc main-class="NewSwingApp"/>
+</jnlp>
+
