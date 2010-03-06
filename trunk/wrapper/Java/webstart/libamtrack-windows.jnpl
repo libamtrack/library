@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jnlp spec="1.0+" codebase="file:///C:/Documents and Settings/grzanka/workspace/AmTrack_reorgan/wrapper/Java/webstart">
+<jnlp spec="1.0+" codebase="file:///Z:/libamtrack">
 <information>
 <title>HellowWorld Example</title>
 <vendor>ABC Ltd</vendor>
-<homepage href="HellowWorld.html"/>
+<homepage href="HelloWorld.html"/>
 <description>JNI Test</description>
 <description kind="short">JNI Test</description>
 </information>
@@ -13,10 +13,10 @@
 <resources>
 <j2se version="1.4+" href="http://java.sun.com/products/autodl/j2se"/>
 <j2se version="1.4+"/>
-<jar href="examplesigned.jar" main="true" download="eager"/>
+<jar href="examplesigned-Windows.jar" main="true" download="eager"/>
 </resources>
 <resources os="Windows">
-<nativelib href="examplesigned.jar" download="eager"/>
+<nativelib href="examplesigned-Windows.jar" download="eager"/>
 </resources>
 <application-desc main-class="NewSwingApp"/>
 </jnlp>
