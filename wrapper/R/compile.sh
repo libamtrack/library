@@ -3,6 +3,7 @@
 SWIGEXE=swig
 GSLINCLUDE="/usr/include"
 RINCLUDE="/usr/share/R/include/"
+RLIB="/usr/lib/R/lib"
 GSLLIB="/usr/lib"
 GSLDLLA="/usr/lib/libgsl.so"
 GSLDLLB="/usr/lib/libgslcblas.so"
@@ -27,7 +28,7 @@ $GCCEXE -DDUPA -I.. -I../../include -I$RINCLUDE -fPIC -c c-swig-src/$SWIGWRAPPER
 
 # Linking 
 # be carefull here - library should have name example.so (not libexample.so !!!) or example.dll
-$GCCEXE -shared -L$GSLLIB -L/usr/lib/R/lib -oexample.so obj/*.o -lgsl -lgslcblas -lm -lR 
+$GCCEXE -shared -L$GSLLIB -L$RLIB -oexample.so obj/*.o -lgsl -lgslcblas -lm -lR 
 
 rm obj/*.o
 rm c-swig-src/$SWIGWRAPPER.c
