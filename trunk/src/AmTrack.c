@@ -1075,10 +1075,10 @@ void AT_IGK(  const long*  n,
       lower_lim_m = RDD_parameters[0];
     }
     float   upper_lim_m;
-    AT_max_electron_range_m(        &n_tmp,
+    AT_max_electron_range_m(        n_tmp,
         E_MeV_u,
-        material_no,
-        ER_model,
+        *material_no,
+        *ER_model,
         &upper_lim_m);
 
     int status      = gsl_integration_qags (        &F,

@@ -1,9 +1,12 @@
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 
 import javax.swing.*;
 
 import java.io.*;
 import java.lang.reflect.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo
@@ -104,6 +107,12 @@ public class NewSwingApp extends javax.swing.JFrame {
 	}
 
 	private JMenu jMenu5;
+	private JLabel jLabel1;
+	private JTextField jTextField2;
+	private JPanel jPanel4;
+	private JPanel jPanel3;
+	private JPanel jPanel2;
+	private JTabbedPane jTabbedPane1;
 	private JTextField jTextField1;
 	private JPanel jPanel1;
 	private JMenuItem deleteMenuItem;
@@ -117,6 +126,11 @@ public class NewSwingApp extends javax.swing.JFrame {
 	private JMenuItem closeFileMenuItem;
 	private JMenuItem saveAsMenuItem;
 	private JMenuItem saveMenuItem;
+	private JLabel jLabel3;
+	private AbstractAction abstractAction1;
+	private JButton jButton1;
+	private JLabel jLabel2;
+	private JTextField jTextField3;
 	private JMenuItem openFileMenuItem;
 	private JMenuItem newFileMenuItem;
 	private JMenu jMenu3;
@@ -151,8 +165,6 @@ public class NewSwingApp extends javax.swing.JFrame {
 
 	}
 	
-	//public static native int AT_GetNumber();
-
 	/**
 	 * Auto-generated main method to display this JFrame
 	 */
@@ -173,19 +185,84 @@ public class NewSwingApp extends javax.swing.JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
+	
+	public void UpdateER(){
+		
+		double E_MeV_u = Double.parseDouble( jTextField2.getText() );
+		int n = 1;
+		int ER_Model = 2;
+		int material_no = 1;
+		
+		float E_MeV_u_table[] = {(float)E_MeV_u};
+		float rest[] = {0.0f};
+		example.AT_max_electron_range_m(n, E_MeV_u_table, material_no, ER_Model, rest);
+		
+		double res = (double)rest[0];
+		NumberFormat formatter = new DecimalFormat("0.000E0"); 		
+		String s = formatter.format(res);
+		jTextField3.setText(s);
+	}
+	
 	private void initGUI(String s) {
 		try {
 			{
 				jPanel1 = new JPanel();
 				getContentPane().add(jPanel1, BorderLayout.CENTER);
+				jPanel1.setPreferredSize(new java.awt.Dimension(568, 327));
 				{
-					jTextField1 = new JTextField();
-					jPanel1.add(jTextField1);
-					jTextField1.setText(s);
-					jTextField1.setPreferredSize(new java.awt.Dimension(155, 83));
+					jTabbedPane1 = new JTabbedPane();
+					jPanel1.add(jTabbedPane1);
+					jTabbedPane1.setPreferredSize(new java.awt.Dimension(528, 285));
+					{
+						jPanel2 = new JPanel();
+						jTabbedPane1.addTab("ER model", null, jPanel2, null);
+						{
+							jLabel1 = new JLabel();
+							jPanel2.add(jLabel1);
+							jLabel1.setText("Particle energy [MeV/u]");
+						}
+						{
+							jTextField2 = new JTextField();
+							jPanel2.add(jTextField2);
+							jTextField2.setText("60");
+							jTextField2.setPreferredSize(new java.awt.Dimension(126, 22));
+						}
+						{
+							jLabel2 = new JLabel();
+							jPanel2.add(jLabel2);
+							jLabel2.setText("Range [m]");
+						}
+						{
+							jTextField3 = new JTextField();
+							jPanel2.add(jTextField3);
+							jTextField3.setPreferredSize(new java.awt.Dimension(168, 22));
+							jTextField3.setText("0");
+						}
+						{
+							jButton1 = new JButton();
+							jPanel2.add(jButton1);
+							jButton1.setText("Go");
+							jButton1.setAction(getAbstractAction1());
+							jButton1.setPreferredSize(new java.awt.Dimension(78, 38));
+						}
+					}
+					{
+						jPanel3 = new JPanel();
+						jTabbedPane1.addTab("RDD model", null, jPanel3, null);
+					}
+					{
+						jPanel4 = new JPanel();
+						jTabbedPane1.addTab("Physics", null, jPanel4, null);
+						{
+							jTextField1 = new JTextField();
+							jPanel4.add(getJLabel3());
+							jPanel4.add(jTextField1);
+							jTextField1.setText(s);
+							jTextField1.setPreferredSize(new java.awt.Dimension(76, 28));
+						}
+					}
 				}
 			}
-			setSize(400, 300);
 			{
 				jMenuBar1 = new JMenuBar();
 				setJMenuBar(jMenuBar1);
@@ -240,8 +317,7 @@ public class NewSwingApp extends javax.swing.JFrame {
 					{
 						copyMenuItem = new JMenuItem();
 						jMenu4.add(copyMenuItem);
-
-						copyMenuItem.setText(s);
+						copyMenuItem.setText("Copy");
 					}
 					{
 						pasteMenuItem = new JMenuItem();
@@ -269,9 +345,29 @@ public class NewSwingApp extends javax.swing.JFrame {
 					}
 				}
 			}
+			pack();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private AbstractAction getAbstractAction1() {
+		if(abstractAction1 == null) {
+			abstractAction1 = new AbstractAction("Go", null) {
+				public void actionPerformed(ActionEvent evt) {
+					UpdateER();
+				}
+			};
+		}
+		return abstractAction1;
+	}
+	
+	private JLabel getJLabel3() {
+		if(jLabel3 == null) {
+			jLabel3 = new JLabel();
+			jLabel3.setText("Magic number is ...");
+		}
+		return jLabel3;
 	}
 
 }

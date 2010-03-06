@@ -54,10 +54,10 @@ void getERName(
 
 
 
-void AT_max_electron_range_m( const long*  n,
+void AT_max_electron_range_m( const long  n,
     const float*  E_MeV_u,
-    const long*  material_no,
-    const long*   er_model,
+    const long    material_no,
+    const long    er_model,
     float*  max_electron_range_m)
 {
 
@@ -70,16 +70,16 @@ void AT_max_electron_range_m( const long*  n,
   float material_density_g_cm3;
   float average_A;
   float average_Z;
-  AT_getMaterialData( &n_mat, material_no, &material_density_g_cm3,
+  AT_getMaterialData( &n_mat, &material_no, &material_density_g_cm3,
       NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
   // Get beta from energy
-  float* beta    =  (float*)calloc(*n, sizeof(float));
-  AT_beta_from_E(n,E_MeV_u,beta);
+  float* beta    =  (float*)calloc(n, sizeof(float));
+  AT_beta_from_E(&n,E_MeV_u,beta);
 
   // Get energy of delta-electron from energy of ion
-  float* wmax_MeV =  (float*)calloc(*n, sizeof(float));
-  AT_max_E_transfer_MeV(n,E_MeV_u,wmax_MeV);
+  float* wmax_MeV =  (float*)calloc(n, sizeof(float));
+  AT_max_E_transfer_MeV(&n,E_MeV_u,wmax_MeV);
 
   // a1,..a5 needed in Tabata ER model
   double a1_g_cm2 = 0;
@@ -87,7 +87,7 @@ void AT_max_electron_range_m( const long*  n,
   double a3 = 0;
   double a4 = 0;
   double a5 = 0;
-  if( *er_model == ER_Tabata ){
+  if( er_model == ER_Tabata ){
     // general constants (best fit to experimental data)
     const double b1_g_cm2 = 0.2335;
     const double b2 = 1.209;
@@ -112,32 +112,32 @@ void AT_max_electron_range_m( const long*  n,
    *********************  PARTICLE LOOP *******************
    *******************************************************/
   long  i;
-  for (i = 0; i < *n; i++){
+  for (i = 0; i < n; i++){
     float tmpE_MeV_u  = E_MeV_u[i];
     if (tmpE_MeV_u < 0) {tmpE_MeV_u *= -1.0f;}  // E can be set neg. if non-PSTAR are given --> use pos. value //TODO what does it mean ?
 
     float wmax_keV = wmax_MeV[i] * 1000.0f;
 
-    if( *er_model == ER_ButtsKatz ){
+    if( er_model == ER_ButtsKatz ){
       max_electron_range_g_cm2 = 1e-5 * wmax_keV;
     }
-    if( *er_model == ER_Waligorski ){
+    if( er_model == ER_Waligorski ){
       double alpha = 1.667;
       if( wmax_keV < 1. ) alpha = 1.079;
       max_electron_range_g_cm2 =  6* 1e-6 * (float)pow( wmax_keV, alpha );
     }
-    if( *er_model == ER_Edmund ){
+    if( er_model == ER_Edmund ){
       double alpha = 1.67;
       if( wmax_keV < 1. ) alpha = 1.079;
       max_electron_range_g_cm2 =  6.13*1e-6 * (float)pow( wmax_keV, alpha );
     }
-    if( *er_model == ER_Geiss ){
+    if( er_model == ER_Geiss ){
       max_electron_range_g_cm2 = 4e-5 * (float)pow(tmpE_MeV_u, 1.5);
     }
-    if( *er_model == ER_Scholz ){
+    if( er_model == ER_Scholz ){
       max_electron_range_g_cm2 = 5e-5 * (float)pow(tmpE_MeV_u, 1.7);
     }
-    if( *er_model == ER_Tabata ){
+    if( er_model == ER_Tabata ){
       double tau = 2.0f * gsl_pow_2(beta[i]) / (1. - gsl_pow_2(beta[i]));
       max_electron_range_g_cm2 = (a1_g_cm2)*(((gsl_sf_log(1 + a2 * tau))/a2) - ((a3*tau)/(1 + a4*pow(tau,a5))) );
     }

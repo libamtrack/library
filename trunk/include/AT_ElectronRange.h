@@ -84,10 +84,11 @@ void  getERName(  const long* ER_no,
 * @param[in]  er_model  index for electron-range model chosen
 * @param[out] max_electron_range_m  electron range (track diameter) in m
 */
-void AT_max_electron_range_m( const long*  n,
+void AT_max_electron_range_m( const long  n,
     const float*  E_MeV_u,
-    const long*  material_no,
-    const long*  er_model,
+    const long    material_no,
+    const long    er_model,
     float*  max_electron_range_m);
+
 
 #endif /* AT_ELECTRONRANGE_H_ */
