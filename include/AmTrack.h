@@ -45,8 +45,6 @@
 #include "AT_PhysicsRoutines.h"
 #include "AT_NumericalRoutines.h"
 
-#include "AT_Wrapper_Java.h"
-
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_randist.h>
