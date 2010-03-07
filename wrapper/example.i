@@ -13,8 +13,21 @@
  extern int fact(int n);
  extern int my_mod(int x, int y);
  extern char *get_time();
+ 
+ /* If you need to interface new function, add it here */
+ 
  extern void AT_PrintName(  void);
  extern int AT_GetNumber(  void);
+
+/************************ R ******************************/
+/* SWIG does not support (yet) passing of arrays between */
+/* R and C. Only simple data types are supported         */
+
+/********************** JAVA *****************************/
+/* Following trick will enable passing arrays as pointers */
+/* Arrays of long (long* pointers) are not supported on 64-bit JVM */
+/* Arrays of floats, doubles are fully supported */
+/* Single value passed by value is supported for any type */ 
 
 %include "arrays_java.i"
 %apply float[] {float *};
