@@ -144,3 +144,29 @@ void AT_r_RDD_m_R  ( const int*  n,
 
   free(particle_no_long);
 }
+
+void AT_RDD_ExtendedTarget_Gy_R( const int*  n,
+    const float* r_m,
+    const float*  a0_m,
+    /* radiation field parameters */
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    /* detector parameters */
+    const int*    material_no,
+    /* radial dose distribution model */
+    const int*    rdd_model,
+    const float* rdd_parameter,
+    /* electron range model */
+    const int*    er_model,
+    const float* er_parameter,
+    float*       D_RDD_Gy){
+
+  const long n_long = (long)(*n);
+  const long material_no_long = (long)(*material_no);
+  const long er_model_long = (long)(*er_model);
+  const long rdd_model_long = (long)(*rdd_model);
+  const long particle_no_long = (long)(*particle_no);
+
+  AT_RDD_ExtendedTarget_Gy(n_long,r_m,*a0_m,*E_MeV_u,particle_no_long,material_no_long,rdd_model_long,rdd_parameter,er_model_long,er_parameter,D_RDD_Gy);
+
+}

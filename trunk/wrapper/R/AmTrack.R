@@ -70,6 +70,7 @@
 #
 # :::RADIAL DOSE FUNCTIONS:::
 # AT.RDD.D.Gy                                OK
+# AT.RDD.D.ext.Gy                            OK
 # AT.RDD.r.m                                 OK
 # AT.RDD.f1.parameters
 #
@@ -596,6 +597,65 @@ AT.RDD.r.m					<-	function(	D.Gy,
 			
 	 return(res$r.m)						
 }
+
+############
+AT.RDD.D.ext.Gy					<-	function(	r.m,
+												a0.m,
+												E.MeV.u,
+												particle.no,
+												material.no,
+												ER.model,
+												ER.parameters,
+												RDD.model,
+												RDD.parameters){
+												
+	n					<-	length(r.m)
+	D.Gy				<-	numeric(n)
+  
+
+ 	if(debug == T) cat("n =",n,"\n")
+ 	if(debug == T) cat("r.m=",r.m,"\n")
+
+	 if( RDD.model == 1 ){ 
+	 	if(debug == T) cat("RDD_test model\n")}
+
+	 if( RDD.model == 2 ){ 
+	 	if(debug == T) cat("RDD_KatzPoint model\n")
+	 	if(debug == T) cat("parameters r.min.m=",RDD.parameters[1],"\n")
+	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[2],"\n")}
+
+	 if( RDD.model == 3 ){ 
+	  if(debug == T) cat("RDD_Geiss model\n")
+	  if(debug == T) cat("parameters a0=",RDD.parameters[1],"\n")}
+
+	 if( RDD.model == 4 ){ 
+	  if(debug == T) cat("RDD_Site model\n")
+		if(debug == T) cat("parameters a0=",RDD.parameters[1],"\n")
+	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[2],"\n")}
+		
+		 if( RDD.model == 5 ){ 
+	  if(debug == T) cat("RDD_ExtTarget model\n")
+	 	if(debug == T) cat("parameters r.min.m=",RDD.parameters[1],"\n")
+		 if(debug == T) cat("parameters a0=",RDD.parameters[2],"\n")
+	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[3],"\n")}
+			
+		res					<-	.C(	"AT_RDD_ExtendedTarget_Gy_R",	n						=	as.integer(n),
+														r.m						=	as.single(r.m),
+														a0.m						=	as.single(a0.m),
+														E.MeV.u				=	as.single(E.MeV.u),
+														particle.no			=	as.integer(particle.no),
+														material.no			=	as.integer(material.no),
+														RDD.model				=	as.integer(RDD.model),
+														RDD.parameters		=	as.single(RDD.parameters),
+														ER.model				=	as.integer(ER.model),
+														ER.parameters			=	as.single(ER.parameters),
+														D.Gy					=	as.single(D.Gy))		
+
+			if(debug == T) cat("dose=",res$D.Gy,"\n")
+			
+	 return(res$D.Gy)						
+}
+
 
 #####################
 AT.RDD.f1.parameters	<-	function(	E.MeV.u,
