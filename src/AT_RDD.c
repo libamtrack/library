@@ -640,6 +640,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
       // Get dEdx by simple integration from r_min_m to r_max_m
       float  dEdx_J_m     =  0.0f;
 
+      float Katz_dEdx_coeff_J_m = AT_RDD_Katz_dEdx_coeff_J_m(max_electron_range_m,density_kg_m3,Katz_point_coeff_Gy);
       dEdx_J_m            =  AT_RDD_Katz_PowerLawER_dEdx_directVersion_J_m(alpha,r_min_m,max_electron_range_m,Katz_dEdx_coeff_J_m);
 
       dEdx_MeV_cm2_g      =  dEdx_J_m / 100.0f / density_g_cm3 / MeV_to_J;
@@ -739,6 +740,41 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     f1_parameters[1]      =  r_min_m;
   }// end RDD_Cucinotta
 
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RDD_KatzExtTarget
+  if( *rdd_model == RDD_KatzExtTarget){ // TODO To be removed
+
+    // 1. set minimum r_min_m (f1_parameters[1])
+    r_min_m               =  rdd_parameter[0];
+    if (max_electron_range_m <= r_min_m){
+      r_min_m             =  max_electron_range_m;
+    }                  // If r.max < r.min, r.min = r.max
+
+    // 2. calculate minimum dose d_min_Gy (f1_parameters[3])
+    d_min_Gy              =  rdd_parameter[2];
+
+    // 3. calculate maximum dose d_max_Gy (f1_parameters[4])
+    const long n_tmp      =  1;
+    const float a0_m      =  rdd_parameter[1];
+    const float rdd_basic_parameter[] = {rdd_parameter[0], rdd_parameter[2]};
+
+    AT_RDD_ExtendedTarget_Gy(n_tmp,&r_min_m,a0_m,*E_MeV_u,*particle_no,*material_no,RDD_KatzPoint,rdd_basic_parameter,*er_model,er_parameter,&d_max_Gy);
+
+    // 4. set norm_constant_Gy (f1_parameters[5])
+    norm_constant_Gy      =  0.0f;
+
+    // 5. calculate single_impact_dose_Gy (f1_parameters[7])
+    single_impact_dose_Gy =  LET_MeV_cm2_g * MeV_g_to_J_kg * single_impact_fluence_cm2;        // LET * fluence
+
+    // 6. calculate dEdx_MeV_cm2_g (f1_parameters[8])
+    dEdx_MeV_cm2_g        =  LET_MeV_cm2_g;   // TODO move norm_constant_Gy to dEdx_MeV_cm2_g
+
+    // Save parameters to f1_parameters table
+    f1_parameters[1]      =  r_min_m;
+  }// end RDD_Cucinotta
+
+
   // write data to output table (apart from f1_parameters[0] which sometimes is
   // r_min_m and sometimes a0_m )
   f1_parameters[0]  = LET_MeV_cm2_g;
@@ -775,6 +811,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
   // Get f1 parameters
   const long n_f1_parameters = 9;
   float*   f1_parameters     = (float*)calloc(n_f1_parameters, sizeof(float));
+
   AT_RDD_f1_parameters(      /* radiation field parameters */
       E_MeV_u,
       particle_no,
@@ -788,6 +825,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
       er_parameter,
       /* calculated parameters */
       f1_parameters);
+
 
   // f1_parameters decoded
   const float LET_MeV_cm2_g             =  f1_parameters[0];
@@ -993,7 +1031,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
   if( *rdd_model == RDD_Cucinotta){
 
     const float r_min_m   =  f1_parameters[1];
-    const float C_norm    = norm_constant_Gy;
+    const float C_norm    =  norm_constant_Gy;
 
     // Loop over all r_m given
     for (i = 0; i < *n; i++){
@@ -1006,6 +1044,17 @@ void AT_D_RDD_Gy  ( const  long*  n,
       }
     }
   }// end RDD_Cucinotta
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RDD_KatzExtTarget TODO remove this dirty fix
+  if( *rdd_model == RDD_KatzExtTarget){
+
+    const float a0_m   =  rdd_parameter[1];
+
+    const float rdd_basic_parameter[] = {rdd_parameter[0], rdd_parameter[2]};
+
+    AT_RDD_ExtendedTarget_Gy(*n,r_m,a0_m,*E_MeV_u,*particle_no,*material_no,RDD_KatzPoint,rdd_basic_parameter,*er_model,er_parameter,D_RDD_Gy);
+  }
 
   free(f1_parameters);
 }

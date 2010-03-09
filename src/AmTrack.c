@@ -897,7 +897,7 @@ void AT_IGK(  const long*  n,
   float fluence_factor = 1.0;
 
   ////////////////////////////////////////////////////////////////////////
-  // SECTION BELOW IS THE SAME FOR ALL METHODS AND SHOULD BE REPLACES
+  // TODO SECTION BELOW IS THE SAME FOR ALL METHODS AND SHOULD BE REPLACES
   // BY A SINGLE FUNCTION
   ////////////////////////////////////////////////////////////////////////
 
@@ -997,7 +997,7 @@ void AT_IGK(  const long*  n,
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // SECTION ABOVE IS THE SAME FOR ALL METHODS AND SHOULD BE REPLACES
+  // TODO SECTION ABOVE IS THE SAME FOR ALL METHODS AND SHOULD BE REPLACES
   // BY A SINGLE FUNCTION
   ////////////////////////////////////////////////////////////////////////
 
