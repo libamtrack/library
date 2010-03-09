@@ -1149,7 +1149,7 @@ void AT_r_RDD_m  ( const  long*  n,
     }
   }// end RDD_Geiss
 
-  if( (*rdd_model == RDD_KatzPoint) || (*rdd_model == RDD_Site) || (*rdd_model == RDD_Edmund)){
+  if( (*rdd_model == RDD_KatzPoint) || (*rdd_model == RDD_Site) || (*rdd_model == RDD_KatzExtTarget) || (*rdd_model == RDD_Edmund)){
 
     const float r_min_m  =  f1_parameters[1];
 
@@ -1173,7 +1173,11 @@ void AT_r_RDD_m  ( const  long*  n,
       critical_r_m   = rdd_parameter[0] * (1.0f + 1e-6f);
       inv2_r_m       = fmaxf(rdd_parameter[0], max_electron_range_m * dev);
     }
-    if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund ){
+    if(*rdd_model == RDD_KatzExtTarget){
+      critical_r_m   = rdd_parameter[1];
+      inv2_r_m       = fmaxf(rdd_parameter[0], max_electron_range_m * dev);
+    }
+    if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund || *rdd_model == RDD_KatzExtTarget){
       AT_D_RDD_Gy  (  &n_tmp,                    // Use D(r) to find dose at jump of D_Site
                 &critical_r_m,
                 /* radiation field parameters */
@@ -1239,8 +1243,10 @@ void AT_r_RDD_m  ( const  long*  n,
         if(D_RDD_Gy[i] >= critical_d_Gy){
           if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund){
             r_RDD_m[i] = rdd_parameter[0];}
+          if(*rdd_model == RDD_KatzExtTarget){
+            r_RDD_m[i] = rdd_parameter[1];}            
         }
-        if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund){
+        if(*rdd_model == RDD_Site || *rdd_model == RDD_Edmund || *rdd_model == RDD_KatzExtTarget){
           if(D_RDD_Gy[i] < critical_d_Gy && D_RDD_Gy[i] >= inv2_d_Gy){
             r_RDD_m[i] = sqrt(Katz_point_coeff_Gy / D_RDD_Gy[i]) * max_electron_range_m;}
           if(D_RDD_Gy[i] < inv2_d_Gy){
