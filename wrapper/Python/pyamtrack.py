@@ -38,18 +38,20 @@
 import ctypes
 import sys
 from  platform import python_version
+from platform import system as os_system
+
 
 
 __status__ = 'Prototype'
 
-operating_system = platform.system()
+operating_system = os_system()
 if operating_system == 'Windows':
-    self.libamtrack = ctypes.cdll.libamtrack
+    libamtrack = ctypes.cdll.libamtrack
     # should be working under Windows, but never has been tested
     # if you have tried it under Windows, I'D be happy to hear your
     # experience
 else:
-    self.libamtrack = ctypes.cdll.LoadLibrary("libamtrack.so")
+    libamtrack = ctypes.cdll.LoadLibrary("libamtrack.so")
 # python version controll
 py_version = python_version()
 if int(py_version[0]) < 3 and int(py_version[2]) <= 5:
@@ -156,7 +158,7 @@ class AmTrack(object):
         tenfloats = ctypes.c_float*10
         results = tenfloats(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
         
-        c_at_spiff = self.libamtrack.AT_SPIFF
+        c_at_spiff = libamtrack.AT_SPIFF
         c_at_spiff.restype = ctypes.c_float *10
         c_at_spiff_output = c_at_spiff(n_ctype, E_MeV_u_ctype, particle_no_ctype, fluence_cm2_ctype, material_no_ctype,
                                        RDD_model_ctype, RDD_parameters_ctype, ER_model_ctype, ER_parameters_ctype,
@@ -253,7 +255,7 @@ class AmTrack(object):
         tenfloats = ctypes.c_float*10
         results = tenfloats(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
         
-        c_at_spiss = self.libamtrack.AT_SPISS
+        c_at_spiss = libamtrack.AT_SPISS
         c_at_spiss.restype = ctypes.c_float *10
         
         c_at_spiss_output =  c_at_spiss(n_ctype, E_MeV_u_ctype, particle_no_ctype, fluence_cm2_ctype,
@@ -365,7 +367,7 @@ class AmTrack(object):
         tenfloats = ctypes.c_float*10
         results = tenfloats(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
         
-        c_at_gsm = self.libamtrack.AT_GSM
+        c_at_gsm = libamtrack.AT_GSM
         c_at_gsm.restype = ctypes.c_float  *10
         
         c_at_gsm_output = c_at_gsm(n_ctype,  E_MeV_u_ctype,  particle_no_ctype,
@@ -454,7 +456,7 @@ class AmTrack(object):
         tenfloats = ctypes.c_float*10
         results = tenfloats(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
         
-        c_at_igk = self.libamtrack.AT_IGK
+        c_at_igk = libamtrack.AT_IGK
         c_at_igk.restype = ctypes.c_float  *10       
         
         c_at_igk_output = c_at_igk(n_ctype, E_MeV_u_ctype, particle_no_ctype, fluence_cm2_ctype, material_no_ctype, RDD_model_ctype, RDD_parameters_ctype, ER_model_ctype, ER_parameters_ctype, gamma_model_ctype, gamma_parameters_ctype, saturation_cross_section_factor_ctype, results)
