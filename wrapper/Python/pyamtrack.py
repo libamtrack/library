@@ -164,11 +164,25 @@ class AmTrack(object):
         
         c_at_spiff = libamtrack.AT_SPIFF
         c_at_spiff.restype = ctypes.c_float *10
-        c_at_spiff_output = c_at_spiff(n_ctype, E_MeV_u_ctype, particle_no_ctype, fluence_cm2_ctype, material_no_ctype,
-                                       RDD_model_ctype, RDD_parameters_ctype, ER_model_ctype, ER_parameters_ctype,
-                                       gamma_model_ctype, gamma_parameters_ctype, N2_ctype, fluence_factor_ctype,
-                                       write_output_ctype, shrink_tails_ctype, shrink_tails_under_ctype, adjust_N2_ctype,
-                                       lethal_events_mode_ctype, results)
+        c_at_spiff_output = c_at_spiff(n_ctype, 
+                                       E_MeV_u_ctype, 
+                                       particle_no_ctype, 
+                                       fluence_cm2_ctype, 
+                                       material_no_ctype,                   
+                                       RDD_model_ctype, 
+                                       RDD_parameters_ctype, 
+                                       ER_model_ctype, 
+                                       ER_parameters_ctype,          
+                                       gamma_model_ctype, 
+                                       gamma_parameters_ctype, 
+                                       N2_ctype, 
+                                       fluence_factor_ctype,
+                                       write_output_ctype, 
+                                       shrink_tails_ctype, 
+                                       shrink_tails_under_ctype, 
+                                       adjust_N2_ctype,
+                                       lethal_events_mode_ctype, 
+                                       results)
         AT_SPIFF_output = []
         for item in results:
             AT_SPIFF_output.append(item)
@@ -262,11 +276,23 @@ class AmTrack(object):
         c_at_spiss = libamtrack.AT_SPISS
         c_at_spiss.restype = ctypes.c_float *10
         
-        c_at_spiss_output =  c_at_spiss(n_ctype, E_MeV_u_ctype, particle_no_ctype, fluence_cm2_ctype,
-                                        material_no_ctype, RDD_model_ctype, RDD_parameters_ctype,
-                                        ER_model_ctype, ER_parameters_ctype, gamma_model_ctype,
-                                        gamma_parameters_ctype, N_runs_ctype, N2_ctype, fluence_factor_ctype,
-                                        write_output_ctype, importance_sampling_ctype,  results)
+        c_at_spiss_output =  c_at_spiss(n_ctype, 
+                                        E_MeV_u_ctype, 
+                                        particle_no_ctype, 
+                                        fluence_cm2_ctype,
+                                        material_no_ctype, 
+                                        RDD_model_ctype, 
+                                        RDD_parameters_ctype,
+                                        ER_model_ctype, 
+                                        ER_parameters_ctype, 
+                                        gamma_model_ctype,
+                                        gamma_parameters_ctype, 
+                                        N_runs_ctype, 
+                                        N2_ctype, 
+                                        fluence_factor_ctype,
+                                        write_output_ctype, 
+                                        importance_sampling_ctype,  
+                                        results)
         
         AT_SPISS_output = []
         for item in results:
@@ -374,8 +400,24 @@ class AmTrack(object):
         c_at_gsm = libamtrack.AT_GSM
         c_at_gsm.restype = ctypes.c_float  *10
         
-        c_at_gsm_output = c_at_gsm(n_ctype,  E_MeV_u_ctype,  particle_no_ctype,
-                                   fluence_cm2_ctype, material_no_ctype, RDD_model_ctype, RDD_parameters_ctype, ER_model_ctype, ER_parameters_ctype, gamma_model_ctype,  gamma_parameters_ctype, N_runs_ctype, N2_ctype, fluence_factor_ctype, write_output_ctype, nX_ctype, voxel_size_m_ctype, lethal_events_mode_ctype,  results)
+        c_at_gsm_output = c_at_gsm(n_ctype,  
+                                   E_MeV_u_ctype,  
+                                   particle_no_ctype,
+                                   fluence_cm2_ctype, 
+                                   material_no_ctype, 
+                                   RDD_model_ctype, 
+                                   RDD_parameters_ctype, 
+                                   ER_model_ctype, 
+                                   ER_parameters_ctype, 
+                                   gamma_model_ctype,  
+                                   gamma_parameters_ctype, 
+                                   N_runs_ctype, N2_ctype, 
+                                   fluence_factor_ctype, 
+                                   write_output_ctype, 
+                                   nX_ctype, 
+                                   voxel_size_m_ctype, 
+                                   lethal_events_mode_ctype, 
+                                   results)
 
         AT_GSM_output = []
         for item in results:
@@ -441,24 +483,41 @@ class AmTrack(object):
         tmp_array =         ctypes.c_float * len(fluence_cm2)
         fluence_cm2_ctype =  ctypes.byref(tmp_array(*fluence_cm2))
         material_no_ctype =        ctypes.byref(ctypes.c_int(material_no))
+
         RDD_model_ctype =          ctypes.byref(ctypes.c_int(RDD_model))
         tmp_array = ctypes.c_float* len(RDD_parameters)        
-        RDD_parameters_ctype =     ctypes.byref(tmp_array(*RDD_parameters))   
+        RDD_parameters_ctype =     ctypes.byref(tmp_array(*RDD_parameters)) 
+  
         ER_model_ctype =           ctypes.byref(ctypes.c_int(ER_model))        
         tmp_array = ctypes.c_float* len(ER_parameters)        
         ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))
+
         gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))
         gamma_parameters.append(0.0) # required by AmTrack
         tmp_array = ctypes.c_float* len(gamma_parameters)        
         gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))
-        saturation_cross_section_factor_ctype = ctypes.c_float(saturation_cross_section_factor)      
+
+        saturation_cross_section_factor_ctype = ctypes.byref(ctypes.c_float(saturation_cross_section_factor))
+
         tenfloats = ctypes.c_float*10
         results = tenfloats(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
         
         c_at_igk = libamtrack.AT_IGK
         c_at_igk.restype = ctypes.c_float  *10       
         
-        c_at_igk_output = c_at_igk(n_ctype, E_MeV_u_ctype, particle_no_ctype, fluence_cm2_ctype, material_no_ctype, RDD_model_ctype, RDD_parameters_ctype, ER_model_ctype, ER_parameters_ctype, gamma_model_ctype, gamma_parameters_ctype, saturation_cross_section_factor_ctype, results)
+        c_at_igk_output = c_at_igk(n_ctype, 
+                                   E_MeV_u_ctype, 
+                                   particle_no_ctype, 
+                                   fluence_cm2_ctype, 
+                                   material_no_ctype, 
+                                   RDD_model_ctype, 
+                                   RDD_parameters_ctype, 
+                                   ER_model_ctype, 
+                                   ER_parameters_ctype, 
+                                   gamma_model_ctype, 
+                                   gamma_parameters_ctype, 
+                                   saturation_cross_section_factor_ctype, 
+                                   results)
 
         AT_IGK_output = []
         for item in results:
@@ -506,7 +565,24 @@ class AmSpiffRun(AmTrack):
         '''
         runs AT_SPIFF algorithm
         '''
-        self.results = self.AT_SPIFF(self.number_particles, self.E_MeV_u, self.particle_no, self.fluence_cm2, self.material_no, self.RDD_model, self.RDD_parameters, self.ER_model, self.ER_parameters, self.gamma_model, self.gamma_parameters, self.N2, self.fluence_factor, self.write_output, self.shrink_tails, self.shrink_tails_under, self.adjust_N2, self.lethal_events_mode)
+        self.results = self.AT_SPIFF(self.number_particles, 
+                                     self.E_MeV_u, 
+                                     self.particle_no, 
+                                     self.fluence_cm2, 
+                                     self.material_no, 
+                                     self.RDD_model, 
+                                     self.RDD_parameters, 
+                                     self.ER_model, 
+                                     self.ER_parameters, 
+                                     self.gamma_model, 
+                                     self.gamma_parameters, 
+                                     self.N2, 
+                                     self.fluence_factor, 
+                                     self.write_output, 
+                                     self.shrink_tails, 
+                                     self.shrink_tails_under, 
+                                     self.adjust_N2, 
+                                     self.lethal_events_mode)
         self.efficency = self.results[0]
         self.d_check= self.results[1]
         self.gamma_response = self.results[2]
@@ -587,9 +663,20 @@ class AmIgkRun(AmTrack):
         '''
         RUN AT_IGK
         '''
-        self.results = self.AT_IGK(self.number_particles, self.E_MeV_u, self.particle_no, self.fluence_cm2, self.material_no, self.RDD_model, self.RDD_parameters, self.ER_model, self.ER_parameters, self.gamma_model, self.gamma_parameters, self.saturation_cross_section_factor)
+        self.results = self.AT_IGK(self.number_particles, 
+                                   self.E_MeV_u, 
+                                   self.particle_no, 
+                                   self.fluence_cm2, 
+                                   self.material_no, 
+                                   self.RDD_model, 
+                                   self.RDD_parameters, 
+                                   self.ER_model, 
+                                   self.ER_parameters, 
+                                   self.gamma_model, 
+                                   self.gamma_parameters, 
+                                   self.saturation_cross_section_factor)
         self.efficency = self.results[0]
-        self.d_check= self.results[1]
+        self.d_check = self.results[1]
         self.gamma_response = self.results[2]
         self.hcp_response = self.results[3]
 
@@ -631,7 +718,25 @@ class AmGsmRun(AmTrack):
         '''
         runs AT_GSM algorithm
         '''
-        self.results = self.AT_GSM(self.number_particles, self.E_MeV_u, self.particle_no, self.fluence_cm2, self.material_no, self.RDD_model, self.RDD_parameters, self.ER_model, self.ER_parameters, self.gamma_model, self.gamma_parameters, self.n_runs, self.n2, self.fluence_factor, self.write_output, self.shrink_tails, self.shrink_tails_under, self.adjust_N2, self.lethal_events_mode)
+        self.results = self.AT_GSM(self.number_particles, 
+                                   self.E_MeV_u, 
+                                   self.particle_no, 
+                                   self.fluence_cm2, 
+                                   self.material_no, 
+                                   self.RDD_model, 
+                                   self.RDD_parameters, 
+                                   self.ER_model, 
+                                   self.ER_parameters, 
+                                   self.gamma_model, 
+                                   self.gamma_parameters, 
+                                   self.n_runs, 
+                                   self.n2, 
+                                   self.fluence_factor, 
+                                   self.write_output, 
+                                   self.shrink_tails, 
+                                   self.shrink_tails_under, 
+                                   self.adjust_N2, 
+                                   self.lethal_events_mode)
         self.efficency = self.results[0]
         self.d_check= self.results[1]
         self.gamma_response = self.results[2]
@@ -677,7 +782,22 @@ class AmSpissRun(AmTrack):
         '''
         runs AT_SPISS algorithm
         '''
-        self.results = self.AT_SPISS(self.number_particles, self.E_MeV_u, self.particle_no, self.fluence_cm2, self.material_no, self.RDD_model, self.RDD_parameters, self.ER_model, self.ER_parameters, self.gamma_model, self.gamma_parameters, self.n_runs, self.n2, self.fluence_factor, self.write_output,self.importance_sampling)
+        self.results = self.AT_SPISS(self.number_particles, 
+                                     self.E_MeV_u, 
+                                     self.particle_no, 
+                                     self.fluence_cm2, 
+                                     self.material_no, 
+                                     self.RDD_model, 
+                                     self.RDD_parameters, 
+                                     self.ER_model, 
+                                     self.ER_parameters, 
+                                     self.gamma_model, 
+                                     self.gamma_parameters, 
+                                     self.n_runs, 
+                                     self.n2, 
+                                     self.fluence_factor, 
+                                     self.write_output,
+                                     self.importance_sampling)
         self.efficency = self.results[0]
         self.d_check= self.results[1]
         self.gamma_response = self.results[2]
@@ -690,54 +810,11 @@ def test_suite():
     test script for pyamtrack, runs all functions in a row
     '''
     print'\n----------\n- pyamtrack test run\n----------\n\n'
-#TODO: rewrite object oriented
-    # test parameters
-    #variable set
-    material_no = 51# Alanine
-    n = 2
-    E_MeV_u = [100.0, 100.0]
-    particle_no = [18,1] #C-12
-    fluence_cm2 = [-10. ,-1.0]
-    RDD_model = 3 # Geiss
-    RDD_parameters =  [5e-8, 0]
-    ER_model = 4 # Geiss
-    ER_parameters = [1]
-    gamma_model = 4
-    gamma_parameters = [1, 10]
-    N2 = 40
-    fluence_factor = 1.0
-    write_output = True
-    shrink_tails = True
-    shrink_tails_under = 1e-30
-    adjust_N2 = True
-    lethal_events_mode = False
-    N_runs= 1e3 
-    importance_sampling = 0
-    voxel_size_m = 0.001
-    nX = 10
-    saturation_cross_section_factor = 1.0
-
-    test_obj = AmTrack()
-    print 'SPISS\nResults:\n'
-    print test_obj.AT_SPISS(n, E_MeV_u, particle_no, fluence_cm2, material_no, RDD_model,
-                                          RDD_parameters, ER_model, ER_parameters, gamma_model, gamma_parameters, N_runs,  
-                                          N2, fluence_factor, write_output, importance_sampling)
-
-
-    print'SPIFF\nResults:\n'
-    print test_obj.AT_SPIFF(n, E_MeV_u, particle_no, fluence_cm2, material_no, RDD_model, RDD_parameters, 
-                            ER_model, ER_parameters, gamma_model, gamma_parameters,  N2, fluence_factor, write_output,  
-                            shrink_tails, shrink_tails_under, adjust_N2, lethal_events_mode)
-
-    
-    print'IGK\nResults\n'
-    print test_obj.AT_IGK (self, n, E_MeV_u, particle_no, fluence_cm2, material_no, RDD_model, RDD_parameters, ER_model,
-                ER_parameters, gamma_model, gamma_parameters, saturation_cross_section_factor)
-
-    print'GSM\ntest skipped\n'
-    # test_out= test_obj.AT_GSM(n, E_MeV_u, particle_no, fluence_cm2, material_no,
-    #                          RDD_model, RDD_parameters, ER_model, ER_parameters,
-    #                          gamma_model, gamma_parameters, N_runs, N2, fluence_factor,  write_output, nX, voxel_size_m, lethal_events_mode)
+    test_run = AmSpiffRun()
+    print test_run.particle_no
+    test_run.run()
+    print 'Efficency: %.4f\n'%test_run.efficency
+    print test_run.__dict__()
 
 
 if __name__ == "__main__":
