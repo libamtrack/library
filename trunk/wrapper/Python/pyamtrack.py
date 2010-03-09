@@ -33,7 +33,8 @@
 
 #TODO: SPISS to be made consistent in main library
 #TODO: complete epydoc markups
-
+#TODO: proper class implementation after Pyton programming guidelines
+#TODO: set sensefull defaults for single algorithms
 
 import ctypes
 import sys
@@ -60,6 +61,9 @@ if int(py_version[0]) < 3 and int(py_version[2]) <= 5:
 
     
 class AmTrack(object):
+    '''
+    \'Mother\' class for the AmTrack objects.
+    '''
     def __init__ (self):
         print '\npyamtrack\n-----\n'
 
@@ -371,11 +375,7 @@ class AmTrack(object):
         c_at_gsm.restype = ctypes.c_float  *10
         
         c_at_gsm_output = c_at_gsm(n_ctype,  E_MeV_u_ctype,  particle_no_ctype,
-                                   fluence_cm2_ctype, material_no_ctype, RDD_model_ctype,
-                                   RDD_parameters_ctype, ER_model_ctype, ER_parameters_ctype,
-                                   gamma_model_ctype,  gamma_parameters_ctype, N_runs_ctype,
-                                   N2_ctype, fluence_factor_ctype, write_output_ctype,  nX_ctype,
-                                   voxel_size_m_ctype, lethal_events_mode_ctype,  results)
+                                   fluence_cm2_ctype, material_no_ctype, RDD_model_ctype, RDD_parameters_ctype, ER_model_ctype, ER_parameters_ctype, gamma_model_ctype,  gamma_parameters_ctype, N_runs_ctype, N2_ctype, fluence_factor_ctype, write_output_ctype, nX_ctype, voxel_size_m_ctype, lethal_events_mode_ctype,  results)
 
         AT_GSM_output = []
         for item in results:
@@ -384,8 +384,7 @@ class AmTrack(object):
         return AT_GSM_output
         
 
-    def AT_IGK (self, n, E_MeV_u, particle_no, fluence_cm2, material_no, RDD_model, RDD_parameters, ER_model,
-                ER_parameters, gamma_model, gamma_parameters, saturation_cross_section_factor):
+    def AT_IGK (self, n, E_MeV_u, particle_no, fluence_cm2, material_no, RDD_model, RDD_parameters, ER_model, ER_parameters, gamma_model, gamma_parameters, saturation_cross_section_factor):
         '''
         Computes HCP response and RE/RBE using Katz\' Ion-Gamma-Kill approach
         according to Waligorski, 1988
@@ -449,7 +448,7 @@ class AmTrack(object):
         tmp_array = ctypes.c_float* len(ER_parameters)        
         ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))
         gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))
-        gamma_parameters.append(0.0) # required by AmTrac
+        gamma_parameters.append(0.0) # required by AmTrack
         tmp_array = ctypes.c_float* len(gamma_parameters)        
         gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))
         saturation_cross_section_factor_ctype = ctypes.c_float(saturation_cross_section_factor)      
@@ -468,16 +467,221 @@ class AmTrack(object):
         return AT_IGK_output
    
 
+class AmSpiffRun(AmTrack):
+    '''
+    AmSpiffRun object.
+    '''
+    def __init__ (self,n = 1, E_MeV_u = [100.0], particle_no =[18], fluence_cm2=[-1.0], material_no = 5, RDD_model = 3, RDD_parameters = [5e-8,0.0,0.0], ER_model= 2, ER_parameters=[0.0, 0.0], gamma_model=2, gamma_parameters=[1,10.5e4,1,1], N2 =40 , fluence_factor =1.0, write_output = True, shrink_tails = True, shrink_tails_under= 1e-30 , adjust_N2 = True, lethal_events_mode = False):
+        self.number_particles = n
+        self.E_MeV_u = E_MeV_u
+        self.particle_no = particle_no
+        self.fluence_cm2 = fluence_cm2
+        self.material_no= material_no
+        self.RDD_model= RDD_model
+        self.RDD_parameters = RDD_parameters
+        self.ER_model = ER_model
+        self.ER_parameters = ER_parameters
+        self.gamma_model = gamma_model
+        self.gamma_parameters = gamma_parameters
+        self.N2 = N2
+        self.fluence_factor = fluence_factor
+        self.write_output = write_output
+        self.shrink_tails = shrink_tails
+        self.shrink_tails_under = shrink_tails_under
+        self.adjust_N2 = adjust_N2
+        self.lethal_events_mode = lethal_events_mode
+        #results
+        self.efficency = 0.0
+        self.d_check = 0.0
+        self.gamma_response = 0.0
+        self.hcp_response = 0.0
+        self.no_tracks = 0.0
+        self.u_start = 0.0
+        self.n_convolutions = 0.0
+        self.results = [0.0]*10
+    
+        self.SC_data = [] #todo better use of numpy arrays
 
-    def AT_interparticleDistance_m(self):
-        print 'To be included'
+    def run(self):
+        '''
+        runs AT_SPIFF algorithm
+        '''
+        self.results = self.AT_SPIFF(self.number_particles, self.E_MeV_u, self.particle_no, self.fluence_cm2, self.material_no, self.RDD_model, self.RDD_parameters, self.ER_model, self.ER_parameters, self.gamma_model, self.gamma_parameters, self.N2, self.fluence_factor, self.write_output, self.shrink_tails, self.shrink_tails_under, self.adjust_N2, self.lethal_events_mode)
+        self.efficency = self.results[0]
+        self.d_check= self.results[1]
+        self.gamma_response = self.results[2]
+        self.hcp_response = self.results[3]
+        self.no_tracks = self.results[5]
+        self.u_start = self.results[6]
+        self.n_convolutions = self.results[7]
 
-    def AT_interparticleDistance_Gy(self):
-        print 'To be included'
 
-    def AT_interparticleDistance_cm2(self):
-        print 'To be included'                        
+    def evaluate_SC(self):
+        '''
+        extract data from file \'SuccessiveConvolutions.log\'
+        '''
+        SC_file = open('SuccessiveConvolutions.log','r')
+        SC_content = SC_file.readlines()
+        SC_file.close()        
+        start_stop =[0,0]
+        for line_no,line in enumerate(SC_content):
+            if string.split(line) ==['This', 'is', 'main'] :
+                start_stop[0]= start_stop[1]
+                start_stop[1]=line_no
+        line_no = start_stop[0]
+        is_data = False
+        data_i =[]
+        data_E = []
+        data_DE= []
+        data_H = []
+        data_F = []
+        while line_no < start_stop[1]:
+            line = string.split(SC_content[line_no])
+            if is_data and line == []:
+                is_data = False
+            if is_data:
+                data_i.append(str(line[0]))
+                data_E.append(float(line[1]))
+                data_DE.append(float(line[2]))
+                data_H.append(float(line[3]))
+                data_F.append(float(line[4]))                             
+            if line ==['i','E','DE','H','F']:
+                is_data = True
+            line_no = line_no +1
+        data_i =numpy.array(data_i)
+        data_E =numpy.array(data_E)
+        data_DE =numpy.array(data_DE)
+        data_H =numpy.array(data_H)
+        data_F =numpy.array(data_F)        
+        self.SC_data= [data_i, data_E, data_DE, data_H, data_F]
 
+
+class AmIgkRun(AmTrack):
+    '''
+    IGK RUN CLASS
+    '''
+    def __init__ (self,n = 1, E_MeV_u = [100.0], particle_no =[18], fluence_cm2=[-1.0], material_no = 5, RDD_model = 2, RDD_parameters = [1e-10,1e-10,0.0], ER_model= 2, ER_parameters=[0.0, 0.0], gamma_model=2, gamma_parameters=[1,10.5e4,1,1], saturation_cross_section_factor=1 ):
+        self.number_particles = n
+        self.E_MeV_u = E_MeV_u
+        self.particle_no = particle_no
+        self.fluence_cm2 = fluence_cm2
+        self.material_no= material_no
+        self.RDD_model= RDD_model
+        self.RDD_parameters = RDD_parameters
+        self.ER_model = ER_model
+        self.ER_parameters = ER_parameters
+        self.gamma_model = gamma_model
+        self.gamma_parameters = gamma_parameters
+        self.saturation_cross_section_factor = saturation_cross_section_factor
+        #results
+        self.efficency = 0.0
+        self.d_check = 0.0
+        self.gamma_response = 0.0
+        self.hcp_response = 0.0
+        self.no_tracks = 0.0
+        self.u_start = 0.0
+        self.n_convolutions = 0.0
+        self.results = [0.0]*10
+
+    def run(self):
+        '''
+        RUN AT_IGK
+        '''
+        self.results = self.AT_IGK(self.number_particles, self.E_MeV_u, self.particle_no, self.fluence_cm2, self.material_no, self.RDD_model, self.RDD_parameters, self.ER_model, self.ER_parameters, self.gamma_model, self.gamma_parameters, self.saturation_cross_section_factor)
+        self.efficency = self.results[0]
+        self.d_check= self.results[1]
+        self.gamma_response = self.results[2]
+        self.hcp_response = self.results[3]
+
+class AmGsmRun(AmTrack):
+    '''
+    GSM RUN CLASS
+    '''
+    def __init__ (self,n = 1, E_MeV_u = [100.0], particle_no =[18], fluence_cm2=[-1.0], material_no = 5, RDD_model = 2, RDD_parameters = [1e-10,1e-10,0.0], ER_model= 2, ER_parameters=[0.0, 0.0], gamma_model=2, gamma_parameters = [1,10.5e4,1,1],n_runs = 1e4, n2 = 40 , fluence_factor = 1.0, write_output = True, nX = 20, voxel_size_m = 1e-10, lethal_events_mode = False  ):
+        self.number_particles = n
+        self.E_MeV_u = E_MeV_u
+        self.particle_no = particle_no
+        self.fluence_cm2 = fluence_cm2
+        self.material_no= material_no
+        self.RDD_model= RDD_model
+        self.RDD_parameters = RDD_parameters
+        self.ER_model = ER_model
+        self.ER_parameters = ER_parameters
+        self.gamma_model = gamma_model
+        self.gamma_parameters = gamma_parameters
+        self.n_runs = n_runs
+        self.n2 = n2
+        self.fluence_factor = fluence_factor
+        self.write_output = write_output
+        self.nX = nX
+        self.voxel_size_m = voxel_size_m
+        self.lethal_events_mode = lethal_events_mode
+        #results
+        self.efficency = 0.0
+        self.d_check = 0.0
+        self.gamma_response = 0.0
+        self.hcp_response = 0.0
+        self.si_cm2 = 0.0
+        self.gamma_dose_Gy = 0.0
+        self.P_I = 0.0
+        self.P_G = 0.0
+        self.results = [0.0]*10
+
+    def run(self):
+        '''
+        runs AT_GSM algorithm
+        '''
+        self.results = self.AT_GSM(self.number_particles, self.E_MeV_u, self.particle_no, self.fluence_cm2, self.material_no, self.RDD_model, self.RDD_parameters, self.ER_model, self.ER_parameters, self.gamma_model, self.gamma_parameters, self.n_runs, self.n2, self.fluence_factor, self.write_output, self.shrink_tails, self.shrink_tails_under, self.adjust_N2, self.lethal_events_mode)
+        self.efficency = self.results[0]
+        self.d_check= self.results[1]
+        self.gamma_response = self.results[2]
+        self.hcp_response = self.results[3]
+        self.si_cm2 = self.results[5]
+        self.gamma_dose_Gy = self.results[6]
+        self.P_I = self.results[7]
+        self.P_G = self.results[8]
+
+
+class AmSpissRun(AmTrack):
+    '''
+    AmSpissRun object.
+    '''
+    def __init__ (self,n = 1, E_MeV_u = [100.0], particle_no =[18], fluence_cm2=[-1.0], material_no = 5, RDD_model = 3, RDD_parameters = [5e-8,0.0,0.0], ER_model= 2, ER_parameters=[0.0, 0.0], gamma_model=2, gamma_parameters=[1,10.5e4,1,1], n_runs =1e4, n2 =40 , fluence_factor =1.0, write_output = True, importance_sampling = 0):
+        self.number_particles = n
+        self.E_MeV_u = E_MeV_u
+        self.particle_no = particle_no
+        self.fluence_cm2 = fluence_cm2
+        self.material_no= material_no
+        self.RDD_model= RDD_model
+        self.RDD_parameters = RDD_parameters
+        self.ER_model = ER_model
+        self.ER_parameters = ER_parameters
+        self.gamma_model = gamma_model
+        self.gamma_parameters = gamma_parameters
+        self.n_runs = n_runs
+        self.n2 = n2
+        self.fluence_factor = fluence_factor
+        self.write_output = write_output
+        self.importance_sampling = importance_sampling
+        #results
+        self.efficency = 0.0
+        self.d_check = 0.0
+        self.gamma_response = 0.0
+        self.hcp_response = 0.0
+
+        self.results = [0.0]*10
+    
+  
+
+    def run(self):
+        '''
+        runs AT_SPISS algorithm
+        '''
+        self.results = self.AT_SPISS(self.number_particles, self.E_MeV_u, self.particle_no, self.fluence_cm2, self.material_no, self.RDD_model, self.RDD_parameters, self.ER_model, self.ER_parameters, self.gamma_model, self.gamma_parameters, self.n_runs, self.n2, self.fluence_factor, self.write_output,self.importance_sampling)
+        self.efficency = self.results[0]
+        self.d_check= self.results[1]
+        self.gamma_response = self.results[2]
+        self.hcp_response = self.results[3]
 
 
 
@@ -486,6 +690,7 @@ def test_suite():
     test script for pyamtrack, runs all functions in a row
     '''
     print'\n----------\n- pyamtrack test run\n----------\n\n'
+#TODO: rewrite object oriented
     # test parameters
     #variable set
     material_no = 51# Alanine
