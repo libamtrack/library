@@ -229,46 +229,23 @@ inline float   AT_RDD_Katz_coeff_Gy(  const float C_J_m,
     const float material_density_kg_m3,
     const float r_max_m);
 
-/**
- * Calculates linear ER kernel of Katz point RDD
- *
- * kernel(r)  =  1/x^2 * (1 - x) = 1/x^2 - 1/x                    [here: x = r/rmax]
- *
- * @param[in] x                        dimensionless x = r/rmax
- * @return kernel                      calculated kernel
- */
-inline float AT_RDD_Katz_LinearER_PointDoseKernel(    const float x );
-
-
-/**
- * Calculates power-law ER kernel of Katz point RDD
- *
- * kernel(r)  =  1/x^2 * 1/alpha * (1 - x)^(1/alpha)              [here: x = r/rmax]
- *
- * @param[in] x                        dimensionless x = r/rmax
- * @param[in] alpha                    parameter of ER model
- * @return kernel    calculated kernel
- */
-inline float AT_RDD_Katz_PowerLawER_PointDoseKernel(    const float x,
-    const float alpha);
 
 /**
  * Calculates "old" Katz RDD (derived from linear (on wmax) ER model):
  *
- * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r * (1/r - 1/rmax)
+ * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho *  1/r * (1/r - 1/rmax)
  *
  * or:
  *
- * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r^2 * (1 - r/rmax)
+ * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/rmax^2 * rmax/r * (rmax/r - 1.)
  *
  * thus:
  *
- * D(r) = coeff * kernel(r)
+ * D(r) = coeff * 1/rmax^2 * rmax/r * (rmax/r - 1.)
  *
  * where:
  *
  * coeff      =  (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1 /rmax^2
- * kernel(r)  =  1/x^2 * (1 - x)              [here: x = r/rmax]
  *
  * @param[in] r_m                      distance r [m]
  * @param[in] r_max_m                  delta electron maximum range rmax [m]
@@ -288,12 +265,11 @@ inline float   AT_RDD_Katz_LinearER_Dpoint_Gy(        const float r_m,
  *
  * thus:
  *
- * D(r) = coeff * kernel(r)
+ * D(r) = coeff * 1/alpha * (rmax/r)^2 * (1 - r/rmax)^(1/alpha)
  *
  * where:
  *
  * coeff      =  (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1 /rmax^2
- * kernel(r)  =  1/x^2 * 1/alpha * (1 - x)^(1/alpha)              [here: x = r/rmax]
  *
  * @param[in] r_m                      distance r [m]
  * @param[in] alpha                    parameter of ER model
@@ -352,7 +328,7 @@ inline float   AT_RDD_Katz_LinearER_DaverageKernel(  const float x1,
  * @param[in] alpha                  parameter of ER model
  * @return kernel                    calculated kernel
  */
-inline float   AT_RDD_Katz_PowerLawER_DaverageKernel(  const float x1,
+float   AT_RDD_Katz_PowerLawER_DaverageKernel(  const float x1,
     const float x2,
     const float alpha);
 
@@ -389,7 +365,6 @@ inline float   AT_RDD_Katz_PowerLawER_DaverageKernel(  const float x1,
 inline float   AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const float x1,
     const float x2,
     const float alpha);
-
 
 
 /**
@@ -472,7 +447,7 @@ inline float   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const float r1_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return dEdx [J/m] energy delivered to shell between radius a_0 and r_max
  */
-inline float   AT_RDD_Katz_LinearER_dEdx_J_m(  const float a0_m,
+float   AT_RDD_Katz_LinearER_dEdx_J_m(  const float a0_m,
     const float r_max_m,
     const float material_density_kg_m3,
     const float Katz_point_coeff_Gy);
@@ -491,7 +466,7 @@ inline float   AT_RDD_Katz_LinearER_dEdx_J_m(  const float a0_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return dEdx [J/m] energy delivered to shell between radius a_0 and r_max
  */
-inline float   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const float a0_m,
+float   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const float a0_m,
     const float r_max_m,
     const float material_density_kg_m3,
     const float alpha,
@@ -512,7 +487,7 @@ inline float   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const float a0_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return dEdx [J/m] energy delivered to shell between radius a_0 and r_max
  */
-inline float   AT_RDD_Katz_LinearER_DSite_Gy( const float r_m,
+float   AT_RDD_Katz_LinearER_DSite_Gy( const float r_m,
     const float a0_m,
     const float r_max_m,
     const float material_density_kg_m3,
@@ -536,7 +511,7 @@ inline float   AT_RDD_Katz_LinearER_DSite_Gy( const float r_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return dEdx [J/m] energy delivered to shell between radius a_0 and r_max
  */
-inline float   AT_RDD_Katz_PowerLawER_DSite_Gy( const float r_m,
+float   AT_RDD_Katz_PowerLawER_DSite_Gy( const float r_m,
     const float a0_m,
     const float r_max_m,
     const float material_density_kg_m3,
@@ -649,7 +624,7 @@ double AT_RDD_Cucinotta_Ddelta_average_integrand_m(  double r_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] average radial dose distribution between r1 and r2
  */
-inline double  AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
+double  AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
     const double r2_m,
     const double r_max_m,
     const double beta,
@@ -686,7 +661,7 @@ inline double  AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] average radial dose distribution between r1 and r2
  */
-inline double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
+double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
     const double r2_m,
     const double r_max_m,
     const double beta,
@@ -725,7 +700,7 @@ inline double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return C norm
  */
-inline float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
+float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
     const float r_max_m,
     const float beta,
     const float material_density_kg_m3,
@@ -754,7 +729,7 @@ inline float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return Dexc(r) [Gy]
  */
-inline double   AT_RDD_Cucinotta_Dexc_Gy( const double r_m,
+double   AT_RDD_Cucinotta_Dexc_Gy( const double r_m,
     const double r_max_m,
     const double beta,
     const double C_norm,
