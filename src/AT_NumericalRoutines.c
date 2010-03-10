@@ -530,7 +530,7 @@ void AT_Funs(  const float*  fz,
   *funs = 0.0f;
 
   if(zeta > -5.0 && zeta < 10){
-    double  tmp1  =  1.0 / (sqrt(2.0 * pi) * sigma);
+    double  tmp1  =  1.0 / (sqrt(2.0 * M_PI) * sigma);
     double  tmp2  =  exp(-1.0 * u * u / (4.0 * sigma * sigma)) * pow(sigma, ni);
     double  tmp3;
     gamma_(&ni, &tmp3);

@@ -87,6 +87,8 @@ void getGammaName(  const long* Gamma_no,
 *
 * PUBLIC
 *
+* TODO this method is not implemented yet !
+*
 * @param  Method_no  response model index
 * @return Method_name  string containing response model name
 */
