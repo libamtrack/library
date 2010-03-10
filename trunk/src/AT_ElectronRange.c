@@ -36,13 +36,12 @@ void getERName(
     char* ER_name){
 
   // find look-up index for ER number in ER data table
-  long  match;
-  const long n_tmp = 1;
+  int  match;
 
-  pmatchi(  &((long)ER_no),
-      &n_tmp,
+  pmatchi_int(  &ER_no,
+      1,
       AT_ER_Data.ER_no,
-      &AT_ER_Data.n,
+      AT_ER_Data.n,
       &match);
 
   if( match != -1){
@@ -67,10 +66,11 @@ void AT_max_electron_range_m( const long  n,
 
   // Get density matching to material_name (only 1 name therefore n_mat = 1)
   const long  n_mat  = 1;
-  float material_density_g_cm3;
-  float average_A;
-  float average_Z;
-  AT_getMaterialData( &n_mat, &((long)material_no), &material_density_g_cm3,
+  double material_density_g_cm3;
+  double average_A;
+  double average_Z;
+  long  material_no_long = (long)material_no;
+  AT_getMaterialData( n_mat, &material_no_long, &material_density_g_cm3,
       NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
   // Get beta from energy
@@ -143,7 +143,7 @@ void AT_max_electron_range_m( const long  n,
     }
 
     // Scale maximum el. range with material density relative to water (1/rho) and convert cm to m
-    max_electron_range_m[i]    = 1e-2 * max_electron_range_g_cm2 / material_density_g_cm3;
+    max_electron_range_m[i]    = 1e-2 * max_electron_range_g_cm2 / (float)material_density_g_cm3;
 
   }
   free(beta);
