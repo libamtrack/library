@@ -291,4 +291,13 @@ void AT_SPISS(  const long* n,
     const long*  importance_sampling,
     float*  results);
 
+/**
+ * Algorithms code numbers
+ */
+enum Method{ //TODO shall be moved to other file
+  ME_Grid      = 1,     /**< TODO */
+      ME_SPIFF = 2,     /**< TODO */
+      ME_Katz  = 3      /**< TODO */
+};
+
 #endif /* AmTrack_H_ */
