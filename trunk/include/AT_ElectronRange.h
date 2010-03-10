@@ -45,18 +45,18 @@
 enum ERModels{
   ER_Test                  = 1,     /**< dummy electron range models */
       ER_ButtsKatz         = 2,     /**< Butts&Katz(?) electron range model, R = k * w, valid for ?? < w < 2keV , TODO ref needed [Katz et al., 1972] */
-      ER_Waligorski        = 3,     /**< Waligorski(?) electron range model, R = k * w ^ alpha, valid for ?? < w < 2keV TODO ref needed*/
-      ER_Geiss             = 4,     /**< Geiss(?) electron range model, R = k * w ^ alpha, valid for ?? < w < 2keV TODO ref needed [Geiss, 1997]*/
-      ER_Scholz            = 5,     /**< Scholz(?) electron range model, R = k * w ^ alpha, valid for ?? < w < 2keV TODO ref needed [Scholz, 2001]*/
-      ER_Edmund            = 6,     /**< Edmund(?) electron range model, R = k * w ^ alpha, valid for ?? < w < 2keV TODO ref needed*/
+      ER_Waligorski        = 3,     /**< Waligorski(?) electron range model, R = k * w ^ alpha, valid for ?? < w < ? TODO ref needed*/
+      ER_Geiss             = 4,     /**< Geiss(?) electron range model, R = k * E ^ alpha, valid for ?? < w < ? TODO ref needed [Geiss, 1997]*/
+      ER_Scholz            = 5,     /**< Scholz(?) electron range model, R = k * E ^ alpha, valid for ?? < w < ? TODO ref needed [Scholz, 2001]*/
+      ER_Edmund            = 6,     /**< Edmund(?) electron range model, R = k * w ^ alpha, valid for ?? < w < ? TODO ref needed*/
       ER_Tabata            = 7      /**< Tabata electron range model, valid for 0.3keV < w < 30MeV TODO ref needed [Tabata, 1972]*/
 };
 
 #define ER_DATA_N    7
 
 typedef struct {
-  long    n;
-  long    ER_no[ER_DATA_N];
+  int     n;
+  int     ER_no[ER_DATA_N];
   char*   ER_name[ER_DATA_N];
 } er_data;
 
@@ -72,7 +72,7 @@ static const er_data AT_ER_Data = {
 * @param[in]   ER_no    electron-range-model index
 * @param[out]  Er_name  string containing the electron-range model name
 */
-void  getERName(  const long* ER_no,
+void  getERName(  const int ER_no,
     char* ER_name);
 
 /**
@@ -86,9 +86,10 @@ void  getERName(  const long* ER_no,
 */
 void AT_max_electron_range_m( const long  n,
     const float*  E_MeV_u,
-    const long    material_no,
-    const long    er_model,
+    const int    material_no,
+    const int    er_model,
     float*  max_electron_range_m);
 
+//TODO replace float by double
 
 #endif /* AT_ELECTRONRANGE_H_ */

@@ -362,8 +362,8 @@ void AT_single_impact_fluence_cm2( const long* n,
   // get max. electron ranges
   AT_max_electron_range_m( *n,
       E_MeV_u,
-      *material_no,
-      *er_model,
+      (int)(*material_no),
+      (int)(*er_model),
       max_electron_range_m);
 
   long i;

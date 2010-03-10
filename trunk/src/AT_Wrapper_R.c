@@ -55,13 +55,11 @@ void AT_max_electron_range_m_R(  const int*  n,
     float*  max_electron_range_m)
 {
   const long n_long = (long)(*n);
-  const long material_no_long = (long)(*material_no);
-  const long er_model_long = (long)(*er_model);
 
   AT_max_electron_range_m( n_long,
       E_MeV_u,
-      material_no_long,
-      er_model_long,
+      *material_no,
+      *er_model,
       max_electron_range_m);
 
 }

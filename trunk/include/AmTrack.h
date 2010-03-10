@@ -284,8 +284,8 @@ void AT_SPISS(  const long* n,
     const float* ER_parameters,
     const long*  gamma_model,
     const float* gamma_parameters,
-    const long*  n_runs, // TODO check sequence
-    const long*  N2, // TODO check sequence
+    const long*  n_runs,
+    const long*  N2,
     const float* fluence_factor,
     const int*   write_output,
     const long*  importance_sampling,
@@ -294,10 +294,10 @@ void AT_SPISS(  const long* n,
 /**
  * Algorithms code numbers
  */
-enum Method{ //TODO shall be moved to other file
-  ME_Grid      = 1,     /**< TODO */
-      ME_SPIFF = 2,     /**< TODO */
-      ME_Katz  = 3      /**< TODO */
+enum Method{ //TODO is it used anywhere ?
+  ME_Grid      = 1,     /**< Grid summation method */
+      ME_SPIFF = 2,     /**< Spiff algorithm */
+      ME_Katz  = 3      /**< Katz model */
 };
 
 #endif /* AmTrack_H_ */

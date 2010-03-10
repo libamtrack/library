@@ -32,14 +32,14 @@
 #include "AT_ElectronRange.h"
 
 void getERName(
-    const long* ER_no,
+    const int ER_no,
     char* ER_name){
 
   // find look-up index for ER number in ER data table
   long  match;
   const long n_tmp = 1;
 
-  pmatchi(  ER_no,
+  pmatchi(  &((long)ER_no),
       &n_tmp,
       AT_ER_Data.ER_no,
       &AT_ER_Data.n,
@@ -53,11 +53,11 @@ void getERName(
 }
 
 
-
+//TODO replace float by double
 void AT_max_electron_range_m( const long  n,
     const float*  E_MeV_u,
-    const long    material_no,
-    const long    er_model,
+    const int    material_no,
+    const int    er_model,
     float*  max_electron_range_m)
 {
 
@@ -70,7 +70,7 @@ void AT_max_electron_range_m( const long  n,
   float material_density_g_cm3;
   float average_A;
   float average_Z;
-  AT_getMaterialData( &n_mat, &material_no, &material_density_g_cm3,
+  AT_getMaterialData( &n_mat, &((long)material_no), &material_density_g_cm3,
       NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
   // Get beta from energy
