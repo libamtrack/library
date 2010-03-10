@@ -45,11 +45,11 @@ GCCDIR    = $(MINGWPATH)\bin$(DSEP)
 endif
 
 
-LIBCOBJS  = $(SRCDIR)$(DSEP)AmTrack.c $(SRCDIR)$(DSEP)AT_Constants.c $(SRCDIR)$(DSEP)AT_GammaResponse.c $(SRCDIR)$(DSEP)AT_DataLET.c $(SRCDIR)$(DSEP)AT_DataMaterial.c $(SRCDIR)$(DSEP)AT_DataParticle.c $(SRCDIR)$(DSEP)AT_ElectronRange.c $(SRCDIR)$(DSEP)AT_GammaResponse.c $(SRCDIR)$(DSEP)AT_NumericalRoutines.c $(SRCDIR)$(DSEP)AT_PhysicsRoutines.c $(SRCDIR)$(DSEP)AT_RDD.c $(SRCDIR)$(DSEP)AT_SuccessiveConvolutions.c $(SRCDIR)$(DSEP)AT_UI.c
+LIBCOBJS  = $(SRCDIR)$(DSEP)AmTrack.c $(SRCDIR)$(DSEP)AT_Constants.c $(SRCDIR)$(DSEP)AT_GammaResponse.c $(SRCDIR)$(DSEP)AT_DataLET.c $(SRCDIR)$(DSEP)AT_DataMaterial.c $(SRCDIR)$(DSEP)AT_DataParticle.c $(SRCDIR)$(DSEP)AT_ElectronRange.c $(SRCDIR)$(DSEP)AT_GammaResponse.c $(SRCDIR)$(DSEP)AT_NumericalRoutines.c $(SRCDIR)$(DSEP)AT_PhysicsRoutines.c $(SRCDIR)$(DSEP)AT_RDD.c $(SRCDIR)$(DSEP)AT_RDD_ExtendedTarget.c $(SRCDIR)$(DSEP)AT_SuccessiveConvolutions.c $(SRCDIR)$(DSEP)AT_UI.c
 
-LIBHOBJS  = $(INCLDIR)$(DSEP)AmTrack.h $(INCLDIR)$(DSEP)AT_Constants.h $(INCLDIR)$(DSEP)AT_GammaResponse.h $(INCLDIR)$(DSEP)AT_DataLET.h $(INCLDIR)$(DSEP)AT_DataMaterial.h $(INCLDIR)$(DSEP)AT_DataParticle.h $(INCLDIR)$(DSEP)AT_ElectronRange.h $(INCLDIR)$(DSEP)AT_GammaResponse.h $(INCLDIR)$(DSEP)AT_NumericalRoutines.h $(INCLDIR)$(DSEP)AT_PhysicsRoutines.h $(INCLDIR)$(DSEP)AT_RDD.h $(INCLDIR)$(DSEP)AT_SuccessiveConvolutions.h 
+LIBHOBJS  = $(INCLDIR)$(DSEP)AmTrack.h $(INCLDIR)$(DSEP)AT_Constants.h $(INCLDIR)$(DSEP)AT_GammaResponse.h $(INCLDIR)$(DSEP)AT_DataLET.h $(INCLDIR)$(DSEP)AT_DataMaterial.h $(INCLDIR)$(DSEP)AT_DataParticle.h $(INCLDIR)$(DSEP)AT_ElectronRange.h $(INCLDIR)$(DSEP)AT_GammaResponse.h $(INCLDIR)$(DSEP)AT_NumericalRoutines.h $(INCLDIR)$(DSEP)AT_PhysicsRoutines.h $(INCLDIR)$(DSEP)AT_RDD.h $(INCLDIR)$(DSEP)AT_RDD_ExtendedTarget.h $(INCLDIR)$(DSEP)AT_SuccessiveConvolutions.h 
 
-LIBOBJS  = AmTrack.o AT_Constants.o AT_DataLET.o AT_DataMaterial.o AT_DataParticle.o AT_ElectronRange.o AT_GammaResponse.o AT_NumericalRoutines.o AT_PhysicsRoutines.o AT_RDD.o AT_SuccessiveConvolutions.o
+LIBOBJS  = AmTrack.o AT_Constants.o AT_DataLET.o AT_DataMaterial.o AT_DataParticle.o AT_ElectronRange.o AT_GammaResponse.o AT_NumericalRoutines.o AT_PhysicsRoutines.o AT_RDD.o AT_RDD_ExtendedTarget.o AT_SuccessiveConvolutions.o
 
 
 all:$(LIBOBJS)
@@ -72,24 +72,4 @@ $(LIBOBJS):$(LIBCOBJS) $(LIBHOBJS)
 
 AT_UI.o:$(SRCDIR)$(DSEP)AT_UI.c 
 		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) $(SRCDIR)$(DSEP)AT_UI.c
-
-# BELOW: sniplets from Leszeks makefile 2009/12/27
-# TODO: merge makefiles
-#
-#LIBOBJFILES  = AT_Constants.o AT_FileOperations.o AT_Functions.o AT_GammaResponse.o AT_ParabolicCylinderFunction.o AT_RDD.o AT_SuccessiveConvolutions.o AT_Transport.o AT_Utils.o AmTrack.o 
-#
-#OBJFILES := $(patsubst %.c,%.o,$(wildcard *.c))
-#
-#all: libAT.so
-#		echo "Linking"
-#
-#clean:
-#		rm -f *.o
-#
-#libAT.so: $(LIBOBJFILES)
-#		gcc $(LDFLAGS) -I../include/ -o libAT.so $(LIBOBJFILES)
-#
-#$(OBJFILES): *.c
-#		gcc $(CFLAGS) -I../include/ -c -o $@ $<
-
 
