@@ -1077,8 +1077,8 @@ void AT_IGK(  const long*  n,
     float   upper_lim_m;
     AT_max_electron_range_m(        n_tmp,
         E_MeV_u,
-        *material_no,
-        *ER_model,
+        (int)(*material_no),
+        (int)(*ER_model),
         &upper_lim_m);
 
     int status      = gsl_integration_qags (        &F,
@@ -1096,7 +1096,7 @@ printf("r=%g, integration from %g to %g , error no == %d\n",*r_m,int_lim_m,(*r_m
 #endif
     }
 
-    sI_m2  *= 2*pi;
+    sI_m2  *= 2.0 * M_PI;
     sI_cm2  = (float)sI_m2 * 10000;
 
     gsl_integration_workspace_free (w1);
@@ -1114,7 +1114,7 @@ printf("r=%g, integration from %g to %g , error no == %d\n",*r_m,int_lim_m,(*r_m
         *RDD_model == RDD_Edmund){
       a0_m  =  RDD_parameters[0];
     }
-    s0_m2   = (*saturation_cross_section_factor) * pi * a0_m * a0_m;
+    s0_m2   = (*saturation_cross_section_factor) * M_PI * gsl_pow_2(a0_m);
 
     // Ion-kill probability
     float   fluence_cm2  = norm_fluence[0] * f_parameters[1];      // norm. fluence for particle i * total_fluence
@@ -1206,8 +1206,8 @@ void AT_SPISS(	const long* n,
     const float* ER_parameters,
     const long*  gamma_model,
     const float* gamma_parameters,
-    const long*  n_runs, // TODO check sequence
-    const long*  N2, // TODO check sequence
+    const long*  n_runs,
+    const long*  N2,
     const float* fluence_factor,
     const int*   write_output,
     const long*  importance_sampling,
