@@ -234,11 +234,11 @@ inline double AT_RDD_Katz_C_J_m( const double electron_density_m3);
  * @param[in] r_max_m                  delta electron maximum range rmax [m]
  * @return coeff [Gy]                  calculated coefficient
  */
-inline float   AT_RDD_Katz_coeff_Gy(  const double C_J_m,
-    const float Z_eff,
-    const float beta,
-    const float material_density_kg_m3,
-    const float r_max_m);
+inline double AT_RDD_Katz_coeff_Gy(const double C_J_m,
+    const double Z_eff,
+    const double beta,
+    const double density_kg_m3,
+    const double r_max_m);
 
 
 /**
@@ -321,9 +321,9 @@ inline float   AT_RDD_Katz_PowerLawER_Dpoint_Gy(        const float r_m,
  * @param[in] alpha                  parameter of ER model
  * @return kernel                    calculated kernel
  */
-float   AT_RDD_Katz_PowerLawER_DaverageKernel(  const float x1,
-    const float x2,
-    const float alpha);
+double   AT_RDD_Katz_PowerLawER_DaverageKernel(  const double x1,
+    const double x2,
+    const double alpha);
 
 
 /**
@@ -355,9 +355,9 @@ float   AT_RDD_Katz_PowerLawER_DaverageKernel(  const float x1,
  * @param[in] alpha                  parameter of ER model
  * @return kernel                    calculated kernel
  */
-inline float   AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const float x1,
-    const float x2,
-    const float alpha);
+double   AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const double x1,
+    const double x2,
+    const double alpha);
 
 
 /**
@@ -419,7 +419,7 @@ inline float   AT_RDD_Katz_LinearER_Daverage_Gy(  const float r1_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] average radial dose distribution between r1 and r2
  */
-inline float   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const float r1_m,
+float   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const float r1_m,
     const float r2_m,
     const float r_max_m,
     const float alpha,

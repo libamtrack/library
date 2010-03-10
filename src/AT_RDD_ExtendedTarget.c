@@ -129,7 +129,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
                 er_model,
                 &max_electron_range_m);
 
-  const float C_J_m               =  AT_RDD_Katz_C_J_m(electron_density_m3);
+  const double C_J_m               =  AT_RDD_Katz_C_J_m((double)electron_density_m3);
 
   // Get LET
   float  LET_MeV_cm2_g  =  0.0f;
@@ -143,7 +143,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
   LET_J_m              *=  100.0f;       // [MeV / m]
   LET_J_m              *=  MeV_to_J;     // [J/m]
 
-  float Katz_point_coeff_Gy =  AT_RDD_Katz_coeff_Gy(C_J_m,Z_eff,beta,density_kg_m3,max_electron_range_m);
+  double Katz_point_coeff_Gy =  AT_RDD_Katz_coeff_Gy(C_J_m,(double)Z_eff,(double)beta,(double)density_kg_m3,(double)max_electron_range_m);
   float r_max_m = GSL_MIN((double)a0_m, max_electron_range_m);
 
   float alpha           =  0.0f;
@@ -172,7 +172,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
       if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
 
         if( (r_m[i] <=  0.01 * a0_m) && (r_m[i] >=  r_min_m)){
-          D_RDD_Gy[i] = AT_RDD_Katz_PowerLawER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, alpha, Katz_point_coeff_Gy );
+          D_RDD_Gy[i] = AT_RDD_Katz_PowerLawER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, alpha, (float)Katz_point_coeff_Gy );
           if( max_electron_range_m < a0_m ){
             D_RDD_Gy[i] *= (gsl_pow_2(r_max_m) - gsl_pow_2(r_min_m));
             D_RDD_Gy[i] /= (gsl_pow_2(a0_m) - gsl_pow_2(r_min_m));
@@ -180,7 +180,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
         }
 
         if( (r_m[i] >=  100.0 * a0_m) && (r_m[i] <= max_electron_range_m) ){
-          D_RDD_Gy[i] = AT_RDD_Katz_PowerLawER_Dpoint_Gy( r_m[i], alpha, max_electron_range_m, Katz_point_coeff_Gy );
+          D_RDD_Gy[i] = AT_RDD_Katz_PowerLawER_Dpoint_Gy( r_m[i], alpha, max_electron_range_m, (float)Katz_point_coeff_Gy );
         }
 
         if( (r_m[i] <  100.0 * a0_m) && (r_m[i] >  0.01 * a0_m) ){
@@ -191,7 +191,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
       } else if (er_model == ER_ButtsKatz){ // "old" Katz RDD
 
         if( (r_m[i] <=  0.01 * a0_m) && (r_m[i] >=  r_min_m)){
-          D_RDD_Gy[i] = AT_RDD_Katz_LinearER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, Katz_point_coeff_Gy );
+          D_RDD_Gy[i] = AT_RDD_Katz_LinearER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, (float)Katz_point_coeff_Gy );
           if( max_electron_range_m < a0_m ){
             D_RDD_Gy[i] *= (gsl_pow_2(r_max_m) - gsl_pow_2(r_min_m));
             D_RDD_Gy[i] /= (gsl_pow_2(a0_m) - gsl_pow_2(r_min_m));
@@ -199,7 +199,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
         }
 
         if( (r_m[i] >=  100.0 * a0_m) && (r_m[i] <= max_electron_range_m) ){
-          D_RDD_Gy[i] = AT_RDD_Katz_LinearER_Dpoint_Gy( r_m[i], max_electron_range_m, Katz_point_coeff_Gy );
+          D_RDD_Gy[i] = AT_RDD_Katz_LinearER_Dpoint_Gy( r_m[i], max_electron_range_m, (float)Katz_point_coeff_Gy );
         }
 
         if( (r_m[i] <  100.0 * a0_m) && (r_m[i] >  0.01 * a0_m) ){
