@@ -23,11 +23,19 @@
 #
 ################################################################################################
 
-debug				<-	T
-library(lattice)
-dyn.load("example.so")
+# clear workspace
+rm( list = ls() )
 
-source("AmTrack.R")
+# load libAmTrack library
+dyn.load("../../Release/libAmTrack.dll")
+
+# load wrapping scripts
+source("../../wrapper/R/AmTrack.R")
+
+# necessary library for plotting
+library("lattice")
+
+debug				<-	F
 
 ################################################################################################
 # RDDs
@@ -38,10 +46,10 @@ particle.no		<-	c(1, 5, 18)					# p, He-4, C-12
 material.no		<-	c(1, 2)
 
 RDD.model			<-	c(1, 2, 3, 4, 5)
-RDD.model.names	<-	c("Test", "Katz-Point", "Geiss", "Site", "Extended target")
+RDD.model.names	<-	c("Test", "Katz-Point", "Geiss", "Site", "Extended target")  #TODO needs to be checked
 RDD.parameters	<-	list(c(0), c(1e-11, 1e-11), c(5e-8), c(5e-8, 1e-11), c(1e-10, 5e-8, 1e-11))					
 
-ER.model			<-	2 								# (Waligórski)
+ER.model			<-	2 								# (Waligorski)
 ER.parameters		<-	1
 
 df.RDD				<-	expand.grid(	r.m				=	10^seq(-12, 0, by = 0.02),
@@ -70,14 +78,14 @@ for (cur.EPMM in unique(df.RDD$EPMM)){
 												RDD.parameters	=	RDD.parameters[[unique(df.RDD$RDD.model[ii])]])			
 }
 
-xyplot(		data = df.RDD,
-			log10(D.Gy) ~ log10(r.m)|paste(E.MeV.u, "MeV/u")*paste("particle no.", sprintf("%02d",particle.no)*paste("material no.", material.no),
+p1 <- xyplot(		data = df.RDD,
+			log10(D.Gy) ~ log10(r.m)|paste(E.MeV.u, "MeV/u")*paste("particle no.", sprintf("%02d",particle.no))*paste("material no.", material.no),
 			groups		=	RDD.model.name,
 			type		=	'l',
 			as.table	=	T)
 
-xyplot(		data = df.RDD,
-			log10(D.Gy) ~ log10(r.m)|RDD.model.name*paste("particle no.", leading.zeros(particle.no, 2)),
+p2 <- xyplot(		data = df.RDD,
+			log10(D.Gy) ~ log10(r.m)|RDD.model.name*paste("particle no.", sprintf("%02d",particle.no)),
 			groups		=	paste(E.MeV.u, "MeV/u"),
 			type		=	'l',
 			as.table	=	T)
@@ -92,31 +100,28 @@ ER.models 					<- c(1, 2, 3, 4, 5)
 ER.model.names 			<- c("Test", "Butts & Katz", "Waligorski", "Geiss", "Scholz")
 
 n 							<- length(E.MeV.u) 
-particle.no				<- 1				# protons
 material.no	 			<- 1 				# Water
 
 df.ER						<- expand.grid( 	E.MeV.u 			= E.MeV.u , 
 												ER.model 			= ER.models,
-												particle.no		= particle.no,
 												material.no		= material.no)
 
 df.ER$ER.model.name		<- as.character(ER.model.names[df.ER$ER.model])
 df.ER$range.m				<- numeric(nrow(df.ER))
 
 # Conditioning variable
-df.ER$PMM					<-	paste(df.ER$particle.no, df.ER$material.no, df.ER$ER.model, sep = "-")
+df.ER$PMM					<-	paste(df.ER$material.no, df.ER$ER.model, sep = "-")
 
 for(cur.PMM in unique(df.ER$PMM) ){
  	#cur.PMM<-unique(df.ER$PMM)[1]
 	ii					<-	cur.PMM == df.ER$PMM
 	df.ER$range.m[ii] 		<- 	AT.max.electron.range(	E.MeV.u 		= df.ER$E.MeV.u[ii], 
-																particle.no	= df.ER$particle.no[ii], 
 																material.no	= unique(df.ER$material.no[ii]), 
 																ER.model		= unique(df.ER$ER.model[ii]))
 }
 
-xyplot(		data = df.ER,
-			log10(range.m) ~ log10(E.MeV.u)|paste("material no.", material.no)*paste("particle no.", leading.zeros(particle.no, 2)),
+p3 <- xyplot(		data = df.ER,
+			log10(range.m) ~ log10(E.MeV.u)|paste("material no.", material.no),
 			groups		=	ER.model.name,
 			type		=	'l',
 			as.table	=	T)
@@ -162,10 +167,20 @@ for(cur.M in unique(df.GR$GR.model)){
 													gamma.parameters	= GR.parameters[[unique(df.GR$GR.model[ii])]])
 }
 
-xyplot(		data = df.GR,
+p4 <- xyplot(		data = df.GR,
 			log10(S) ~ log10(D.Gy),
 			groups		=	GR.model.name,
 			type		=	'l',
 			ylim		=  c(-3, 3),
 			xlim		=  c(-2, 3),
 			as.table	=	T)
+			
+			
+pdf("Submodels.pdf")
+
+p1
+p2
+p3
+p4
+
+dev.off()
