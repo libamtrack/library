@@ -94,7 +94,7 @@ void AT_gamma_response( const long*  n,
     }
     for (j = 0; j < n_gamma_parameter / 4; j++){            // loop over all components
       float k      =  gamma_parameter[j * 4];
-      float D1    =  gamma_parameter[j * 4 + 1];
+      float D1     =  gamma_parameter[j * 4 + 1];
       float c      =  gamma_parameter[j * 4 + 2];
       float m      =  gamma_parameter[j * 4 + 3];
 
@@ -141,9 +141,9 @@ void AT_gamma_response( const long*  n,
 
     for (i = 0; i < *n; i++){
       if(d_Gy[i]  <= D1){
-        S[i]    =  c0 * d_Gy[i] + 0.5f * B * d_Gy[i] * d_Gy[i];}
+        S[i]    =  c0 * d_Gy[i] + 0.5f * B * gsl_pow_2(d_Gy[i]);}
       else{
-        S[i]    =  c0 * D1 + 0.5f * B * D1 * D1 + Smax * (d_Gy[i] - D1);}
+        S[i]    =  c0 * D1 + 0.5f * B * gsl_pow_2(D1) + Smax * (d_Gy[i] - D1);}
     }
   }
 
@@ -183,9 +183,9 @@ void AT_gamma_response( const long*  n,
 
     for (i = 0; i < *n; i++){
       if( d_Gy[i] < D0 ){
-        S[i]    =  expf( -alpha * d_Gy[i] - beta * d_Gy[i] * d_Gy[i]);
+        S[i]    =  expf( -alpha * d_Gy[i] - beta * gsl_pow_2(d_Gy[i]));
       } else {
-        S[i]    =  expf(  -alpha * D0 - beta * D0 * D0 - ( alpha + 2 * beta * D0) * (d_Gy[i] - D0) );
+        S[i]    =  expf( -alpha * D0 - beta * gsl_pow_2(D0) - ( alpha + 2 * beta * D0) * (d_Gy[i] - D0) );
       }
     }
   }
@@ -214,13 +214,10 @@ void AT_gamma_response( const long*  n,
       if( d_Gy[i] < D0 ){
         S[i]    =       alpha * d_Gy[i] + beta * d_Gy[i] * d_Gy[i];
       } else {
-        S[i]    =       alpha * D0 + beta * D0 * D0 + ( alpha + 2 * beta * D0) * (d_Gy[i] - D0);
+        S[i]    =       alpha * D0 + beta * gsl_pow_2(D0) + ( alpha + 2 * beta * D0) * (d_Gy[i] - D0);
       }
     }
   }
-
-  printf("GR model %ld \n" ,  *gamma_model);
-
 }
 
 void AT_get_gamma_response( const long*  n,
