@@ -55,11 +55,13 @@ void getRDDNo(const char* RDD_name, long* RDD_no){
 
 //////////////////////////////////////// Coefficients /////////////////////////////////////////////
 
-inline float AT_RDD_Katz_C_J_m( const float electron_density_m3){
-  return 2.0f * M_PI * electron_density_m3 * gsl_pow_4(GSL_CONST_MKSA_ELECTRON_CHARGE) / (GSL_CONST_MKSA_MASS_ELECTRON * gsl_pow_2(GSL_CONST_MKSA_SPEED_OF_LIGHT * 4.0f * M_PI * GSL_CONST_MKSA_VACUUM_PERMITTIVITY));
+inline double AT_RDD_Katz_C_J_m( const double electron_density_m3){
+  // C = 2 pi N e^4 / ( m c^2 (4 pi eps_0)^2)
+  // C = N e^4 / ( 8 m pi (c * eps_0)^2)
+  return electron_density_m3 * gsl_pow_4(GSL_CONST_MKSA_ELECTRON_CHARGE) / (8.0 * GSL_CONST_MKSA_MASS_ELECTRON * M_PI * gsl_pow_2(GSL_CONST_MKSA_SPEED_OF_LIGHT * GSL_CONST_MKSA_VACUUM_PERMITTIVITY));
 }
 
-inline float AT_RDD_Katz_coeff_Gy(const float C_J_m,
+inline float AT_RDD_Katz_coeff_Gy(const double C_J_m,
     const float Z_eff,
     const float beta,
     const float density_kg_m3,
@@ -82,23 +84,13 @@ inline float   AT_RDD_Katz_LinearER_Dpoint_Gy(        const float r_m,
 
 
 
-inline float   AT_RDD_Katz_LinearER_DaverageKernel(  const float x1,
-    const float x2){
-
-  // 2 (log(x2/x1) - (x2-x1)) / (x2^2 - x1^2)
-  return 2.0f * (log(x2/x1) - (x2-x1)) / (gsl_pow_2(x2) - gsl_pow_2(x1));
-}
-
-
 inline float   AT_RDD_Katz_LinearER_Daverage_Gy(  const float r1_m,
     const float r2_m,
     const float r_max_m,
     const float Katz_point_coeff_Gy){
 
-  //Dav(r1,r2) = coeff * kernel_av( x1, x2 )
-  const float x1 = r1_m / r_max_m;
-  const float x2 = r2_m / r_max_m;
-  return Katz_point_coeff_Gy * AT_RDD_Katz_LinearER_DaverageKernel(x1,x2);
+  // Dav(r1,r2) = 2 * coeff * ( log(r2/r1) - (r2 - r1)/rmax ) / ((r2/rmax)^2 - (r1/rmax)^2)
+  return 2.0f * Katz_point_coeff_Gy * ( log(r2_m/r1_m) - (r2_m - r1_m)/r_max_m ) / (gsl_pow_2(r2_m/r_max_m) - gsl_pow_2(r1_m/r_max_m));
 }
 
 float   AT_RDD_Katz_LinearER_dEdx_J_m(  const float a0_m,
@@ -106,16 +98,10 @@ float   AT_RDD_Katz_LinearER_dEdx_J_m(  const float a0_m,
     const float material_density_kg_m3,
     const float Katz_point_coeff_Gy){
 
-// dEdx = 2 pi rho \int_a0^rmax r D(r) dr =
-//      = 2 pi rho * (pi rmax^2 - pi a0^2) D_av(a0,rmax)
+// dEdx = rho \int_a0^rmax r D(r) dr =
+//      = rho * (pi rmax^2 - pi a0^2) * D_av(a0,rmax)
 
-  float res1 = 2.0f * M_PI * material_density_kg_m3 * M_PI * \
-      (gsl_pow_2(r_max_m) - gsl_pow_2(a0_m)) * \
-      AT_RDD_Katz_LinearER_Daverage_Gy(a0_m,r_max_m,r_max_m,Katz_point_coeff_Gy);
-
-  float res2 = AT_RDD_Katz_C_J_m(3.3456e29f) / gsl_pow_2(0.428196) * ( log(r_max_m/a0_m) - 1.0f + a0_m/r_max_m);
-
-  return 2.0f * M_PI * material_density_kg_m3 * M_PI * \
+  return material_density_kg_m3 * M_PI * \
           (gsl_pow_2(r_max_m) - gsl_pow_2(a0_m)) * \
           AT_RDD_Katz_LinearER_Daverage_Gy(a0_m,r_max_m,r_max_m,Katz_point_coeff_Gy);
 }
@@ -197,9 +183,9 @@ float   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const float a0_m,
     const float alpha,
     const float Katz_point_coeff_Gy){
 
-  // dEdx = 2 pi rho \int_a0^rmax r D(r) dr =
-  //      = 2 pi rho * (pi rmax^2 - pi a0^2) D_av(a0,rmax)
-    return 2.0f * M_PI * material_density_kg_m3 * M_PI * \
+  // dEdx = rho \int_a0^rmax r D(r) dr =
+  //      = rho * (pi rmax^2 - pi a0^2) D_av(a0,rmax)
+    return material_density_kg_m3 * M_PI * \
             (gsl_pow_2(r_max_m) - gsl_pow_2(a0_m)) * \
             AT_RDD_Katz_PowerLawER_Daverage_Gy(a0_m,r_max_m,r_max_m,alpha,Katz_point_coeff_Gy);
   }
@@ -488,13 +474,13 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     } // end if
   }
 
-  float C_J_m               =  0.0f;
+  double C_J_m              =  0.0;
   float Katz_point_coeff_Gy =  0.0f;
   if( (*rdd_model == RDD_KatzPoint) || (*rdd_model == RDD_Site) || (*rdd_model == RDD_Edmund) || (*rdd_model == RDD_Cucinotta)){
     // TODO shall we move from J_m and m to more reasonable units ?
     // we have for water C_J_m = 1.22e-12 and r_m usually ~ 1e-8
     // calculations in C_J_um and r_um would be more precise
-    C_J_m                   =  AT_RDD_Katz_C_J_m(electron_density_m3);
+    C_J_m                   =  AT_RDD_Katz_C_J_m((double)electron_density_m3);
     Katz_point_coeff_Gy     =  AT_RDD_Katz_coeff_Gy(C_J_m,Z_eff,beta,density_kg_m3,max_electron_range_m);
   }
 
@@ -655,7 +641,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     } //end if er_model
 
     // 4. set norm_constant_Gy (f1_parameters[5])
-    norm_constant_Gy      =  C_J_m;                      // Norm.constant k // TODO is Gy = J_m ?
+    norm_constant_Gy      =  (float)C_J_m;                      // Norm.constant k // TODO is Gy = J_m ?
 
     // 5. calculate single_impact_dose_Gy (f1_parameters[7])
     single_impact_dose_Gy =  LET_MeV_cm2_g * MeV_g_to_J_kg * single_impact_fluence_cm2;        // LET * fluence
@@ -869,7 +855,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
     // TODO shall we move from J_m and m to more reasonable units ?
     // we have for water C_J_m = 1.22e-12 and r_m usually ~ 1e-8
     // calculations in C_J_um and r_um would be more precise
-    const float C_J_m       =  AT_RDD_Katz_C_J_m(electron_density_m3);
+    const double C_J_m      =  AT_RDD_Katz_C_J_m((double)electron_density_m3);
     Katz_point_coeff_Gy     =  AT_RDD_Katz_coeff_Gy(C_J_m,Z_eff,beta,density_kg_m3,max_electron_range_m);
   }
 
