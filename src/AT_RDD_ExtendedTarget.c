@@ -172,7 +172,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
       if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
 
         if( (r_m[i] <=  0.01 * a0_m) && (r_m[i] >=  r_min_m)){
-          D_RDD_Gy[i] = AT_RDD_Katz_PowerLawER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, alpha, (float)Katz_point_coeff_Gy );
+          D_RDD_Gy[i] = (float)AT_RDD_Katz_PowerLawER_Daverage_Gy( (double)r_min_m, (double)r_max_m, (double)max_electron_range_m, (double)alpha, Katz_point_coeff_Gy );
           if( max_electron_range_m < a0_m ){
             D_RDD_Gy[i] *= (gsl_pow_2(r_max_m) - gsl_pow_2(r_min_m));
             D_RDD_Gy[i] /= (gsl_pow_2(a0_m) - gsl_pow_2(r_min_m));
@@ -180,7 +180,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
         }
 
         if( (r_m[i] >=  100.0 * a0_m) && (r_m[i] <= max_electron_range_m) ){
-          D_RDD_Gy[i] = AT_RDD_Katz_PowerLawER_Dpoint_Gy( r_m[i], alpha, max_electron_range_m, (float)Katz_point_coeff_Gy );
+          D_RDD_Gy[i] = (float)AT_RDD_Katz_PowerLawER_Dpoint_Gy( (double)r_m[i], (double)alpha, (double)max_electron_range_m, Katz_point_coeff_Gy );
         }
 
         if( (r_m[i] <  100.0 * a0_m) && (r_m[i] >  0.01 * a0_m) ){
@@ -191,7 +191,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
       } else if (er_model == ER_ButtsKatz){ // "old" Katz RDD
 
         if( (r_m[i] <=  0.01 * a0_m) && (r_m[i] >=  r_min_m)){
-          D_RDD_Gy[i] = AT_RDD_Katz_LinearER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, (float)Katz_point_coeff_Gy );
+          D_RDD_Gy[i]  =  (float)AT_RDD_Katz_LinearER_Daverage_Gy( (double)r_min_m, (double)r_max_m, (double)max_electron_range_m, Katz_point_coeff_Gy );
           if( max_electron_range_m < a0_m ){
             D_RDD_Gy[i] *= (gsl_pow_2(r_max_m) - gsl_pow_2(r_min_m));
             D_RDD_Gy[i] /= (gsl_pow_2(a0_m) - gsl_pow_2(r_min_m));
@@ -199,7 +199,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
         }
 
         if( (r_m[i] >=  100.0 * a0_m) && (r_m[i] <= max_electron_range_m) ){
-          D_RDD_Gy[i] = AT_RDD_Katz_LinearER_Dpoint_Gy( r_m[i], max_electron_range_m, (float)Katz_point_coeff_Gy );
+          D_RDD_Gy[i] = (float)AT_RDD_Katz_LinearER_Dpoint_Gy( (double)r_m[i], (double)max_electron_range_m, Katz_point_coeff_Gy );
         }
 
         if( (r_m[i] <  100.0 * a0_m) && (r_m[i] >  0.01 * a0_m) ){
