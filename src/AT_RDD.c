@@ -71,19 +71,13 @@ inline float AT_RDD_Katz_coeff_Gy(const float C_J_m,
 
 //////////////////////////////////////// Linear ER model calculations /////////////////////////////////////////////
 
-inline float AT_RDD_Katz_LinearER_PointDoseKernel(    const float x ){
-
-  // 1/x^2 * (1 - x) = 1/x^2 - 1/x                    [here: x = r/rmax]
-  return (1.0f/gsl_pow_2(x)) - 1.0f/x;
-}
-
 
 inline float   AT_RDD_Katz_LinearER_Dpoint_Gy(        const float r_m,
     const float r_max_m,
     const float Katz_point_coeff_Gy){
 
-  float x = r_m/r_max_m;
-  return Katz_point_coeff_Gy * AT_RDD_Katz_LinearER_PointDoseKernel(x);
+  // D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/rmax^2 * rmax/r * (rmax/r - 1.)
+  return Katz_point_coeff_Gy * r_max_m/r_m * (r_max_m/r_m - 1.0f);
 }
 
 
@@ -107,7 +101,7 @@ inline float   AT_RDD_Katz_LinearER_Daverage_Gy(  const float r1_m,
   return Katz_point_coeff_Gy * AT_RDD_Katz_LinearER_DaverageKernel(x1,x2);
 }
 
-inline float   AT_RDD_Katz_LinearER_dEdx_J_m(  const float a0_m,
+float   AT_RDD_Katz_LinearER_dEdx_J_m(  const float a0_m,
     const float r_max_m,
     const float material_density_kg_m3,
     const float Katz_point_coeff_Gy){
@@ -115,12 +109,18 @@ inline float   AT_RDD_Katz_LinearER_dEdx_J_m(  const float a0_m,
 // dEdx = 2 pi rho \int_a0^rmax r D(r) dr =
 //      = 2 pi rho * (pi rmax^2 - pi a0^2) D_av(a0,rmax)
 
+  float res1 = 2.0f * M_PI * material_density_kg_m3 * M_PI * \
+      (gsl_pow_2(r_max_m) - gsl_pow_2(a0_m)) * \
+      AT_RDD_Katz_LinearER_Daverage_Gy(a0_m,r_max_m,r_max_m,Katz_point_coeff_Gy);
+
+  float res2 = AT_RDD_Katz_C_J_m(3.3456e29f) / gsl_pow_2(0.428196) * ( log(r_max_m/a0_m) - 1.0f + a0_m/r_max_m);
+
   return 2.0f * M_PI * material_density_kg_m3 * M_PI * \
           (gsl_pow_2(r_max_m) - gsl_pow_2(a0_m)) * \
           AT_RDD_Katz_LinearER_Daverage_Gy(a0_m,r_max_m,r_max_m,Katz_point_coeff_Gy);
 }
 
-inline float   AT_RDD_Katz_LinearER_DSite_Gy( const float r_m,
+float   AT_RDD_Katz_LinearER_DSite_Gy( const float r_m,
     const float a0_m,
     const float r_max_m,
     const float material_density_kg_m3,
@@ -142,30 +142,23 @@ inline float   AT_RDD_Katz_LinearER_DSite_Gy( const float r_m,
 //////////////////////////////////////// Power law ER model calculations /////////////////////////////////////////////
 
 
-inline float AT_RDD_Katz_PowerLawER_PointDoseKernel(const float x,
-    const float alpha){
-
-  // 1/x^2 * 1/alpha * (1 - x)^(1/alpha)              [here: x = r/rmax]
-  return (1.0f/alpha) * (1.0f/ gsl_pow_2(x) )*pow(1.0f - x, 1.0f / (alpha));
-}
-
 inline float AT_RDD_Katz_PowerLawER_Dpoint_Gy(const float r_m,
     const float alpha,
     const float r_max_m,
     const float Katz_point_coeff_Gy){
 
-  float x = r_m/r_max_m;
-  return Katz_point_coeff_Gy * AT_RDD_Katz_PowerLawER_PointDoseKernel(x,alpha);
+  // D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1/r^2 * 1/alpha * (1 - r/rmax)^(1/alpha)
+  return Katz_point_coeff_Gy * (1.0f/alpha) * gsl_pow_2(r_max_m/r_m) * pow(1.0f - r_m/r_max_m, 1.0f / (alpha));
 }
 
-inline float   AT_RDD_Katz_PowerLawER_DaverageKernel(  const float x1,
+float   AT_RDD_Katz_PowerLawER_DaverageKernel(  const float x1,
     const float x2,
     const float alpha){
 
- // C1 = (1-x1)^(1/alpha) ((x1-1)/x1)^(-1/alpha)
- // HGF1 =  _2F_1(-1/alpha,-1/alpha;(alpha-1)/alpha;1/x1)
- // C2 = (1-x2)^(1/alpha) ((x2-1)/x2)^(-1/alpha)
- // HGF2 =  _2F_1(-1/alpha,-1/alpha;(alpha-1)/alpha;1/x2)
+  // C1 = (1-x1)^(1/alpha) ((x1-1)/x1)^(-1/alpha)
+  // HGF1 =  _2F_1(-1/alpha,-1/alpha;(alpha-1)/alpha;1/x1)
+  // C2 = (1-x2)^(1/alpha) ((x2-1)/x2)^(-1/alpha)
+  // HGF2 =  _2F_1(-1/alpha,-1/alpha;(alpha-1)/alpha;1/x2)
   // kernel =  2/(x2^2 - x1^2) * (C2* HGF2 - C1 * HGF1)
   const float C1 = pow(1.0f-x1,1.0f/alpha) * pow((x1-1.0f)/x1,-1.0f/alpha);
   const float HGF1 = gsl_sf_hyperg_2F1(-1.0f/alpha,-1.0f/alpha,(alpha-1.0f)/alpha,1.0f/x1);
@@ -198,7 +191,7 @@ inline float   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const float r1_m,
   return Katz_point_coeff_Gy * AT_RDD_Katz_PowerLawER_DaverageKernel_approx(x1,x2,alpha);
 }
 
-inline float   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const float a0_m,
+float   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const float a0_m,
     const float r_max_m,
     const float material_density_kg_m3,
     const float alpha,
@@ -211,7 +204,7 @@ inline float   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const float a0_m,
             AT_RDD_Katz_PowerLawER_Daverage_Gy(a0_m,r_max_m,r_max_m,alpha,Katz_point_coeff_Gy);
   }
 
-inline float   AT_RDD_Katz_PowerLawER_DSite_Gy( const float r_m,
+float   AT_RDD_Katz_PowerLawER_DSite_Gy( const float r_m,
     const float a0_m,
     const float r_max_m,
     const float material_density_kg_m3,
@@ -291,7 +284,7 @@ double AT_RDD_Cucinotta_Ddelta_average_integrand_m(  double r_m,
 }
 
 
-inline double   AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
+double   AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
     const double r2_m,
     const double r_max_m,
     const double beta,
@@ -330,7 +323,7 @@ inline double   AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
 }
 
 
-inline double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
+double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
     const double r2_m,
     const double r_max_m,
     const double beta,
@@ -358,7 +351,7 @@ inline double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
 }
 
 
-inline float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
+float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
     const float r_max_m,
     const float beta,
     const float material_density_kg_m3,
@@ -381,7 +374,7 @@ inline float   AT_RDD_Cucinotta_Cnorm( const float r_min_m,
 }
 
 
-inline double   AT_RDD_Cucinotta_Dexc_Gy( const double r_m,
+double   AT_RDD_Cucinotta_Dexc_Gy( const double r_m,
     const double r_max_m,
     const double beta,
     const double C_norm,
@@ -871,13 +864,12 @@ void AT_D_RDD_Gy  ( const  long*  n,
     } // end if
   }
 
-  float C_J_m               =  0.0f;
   float Katz_point_coeff_Gy =  0.0f;
   if( (*rdd_model == RDD_KatzPoint) || (*rdd_model == RDD_Site) || (*rdd_model == RDD_Edmund) || (*rdd_model == RDD_Cucinotta)){
     // TODO shall we move from J_m and m to more reasonable units ?
     // we have for water C_J_m = 1.22e-12 and r_m usually ~ 1e-8
     // calculations in C_J_um and r_um would be more precise
-    C_J_m                   =  AT_RDD_Katz_C_J_m(electron_density_m3);
+    const float C_J_m       =  AT_RDD_Katz_C_J_m(electron_density_m3);
     Katz_point_coeff_Gy     =  AT_RDD_Katz_coeff_Gy(C_J_m,Z_eff,beta,density_kg_m3,max_electron_range_m);
   }
 
@@ -995,7 +987,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
           D_RDD_Gy[i]     = AT_RDD_Katz_PowerLawER_Dpoint_Gy(r_m[i], alpha, max_electron_range_m, Katz_point_coeff_Gy);
           D_RDD_Gy[i]     = fmaxf(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses
         } // end if
-        if (r_m[i] < r_min_m){            // r < r_min_m (for RDD_Site) --> D = d_max_Gy
+        if (r_m[i] < r_min_m){            // r < r_min_m --> D = d_max_Gy
           D_RDD_Gy[i]     = d_max_Gy;
         } // end if
       } // end for
