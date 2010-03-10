@@ -202,13 +202,24 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
 
 /**
- * Calculates C constant given by equation: C = 2 pi N e^4 / ( m c^2 (4 pi eps_0)^2)
+ * Calculates C constant given by equation:
+ *
+ * C = 2 pi N e^4 / ( m c^2 (4 pi eps_0)^2)
+ *
+ * thus:
+ *
+ * C = 2 pi N e^4 / ( m c^2 16 pi^2 eps_0^2)
+ *
+ * in simpler form:
+ *
+ * C = N e^4 / ( 8 m pi (c * eps_0)^2)
+ *
  * For water: C = 1.36662e-12 [J/m] = 8.53 [MeV/m]
  *
  * @param[in] electron_density_m3 electron density of given material [1/m^3]
  * @return constant C [J/m]
  */
-inline float AT_RDD_Katz_C_J_m( const float electron_density_m3);
+inline double AT_RDD_Katz_C_J_m( const double electron_density_m3);
 
 
 /**
@@ -223,7 +234,7 @@ inline float AT_RDD_Katz_C_J_m( const float electron_density_m3);
  * @param[in] r_max_m                  delta electron maximum range rmax [m]
  * @return coeff [Gy]                  calculated coefficient
  */
-inline float   AT_RDD_Katz_coeff_Gy(  const float C_J_m,
+inline float   AT_RDD_Katz_coeff_Gy(  const double C_J_m,
     const float Z_eff,
     const float beta,
     const float material_density_kg_m3,
@@ -241,7 +252,7 @@ inline float   AT_RDD_Katz_coeff_Gy(  const float C_J_m,
  *
  * thus:
  *
- * D(r) = coeff * 1/rmax^2 * rmax/r * (rmax/r - 1.)
+ * D(r) = coeff * rmax/r * (rmax/r - 1.)
  *
  * where:
  *
@@ -282,24 +293,6 @@ inline float   AT_RDD_Katz_PowerLawER_Dpoint_Gy(        const float r_m,
     const float r_max_m,
     const float Katz_point_coeff_Gy);
 
-
-
-/**
- * Calculates average dose kernel for "old" Katz RDD (derived from linear (on wmax) ER model).
- * Here averaging is done over a shell between radius r_1 and r_2
- *
- * kernel(x1,x2) = 2 / (x2^2 - x1^2) * \int_x1^x2 point_kernel(x) x dx
- * kernel(x1,x2) = 2 / (x2^2 - x1^2) * \int_x1^x2 (1/x^2 - 1/x) x dx =
- *               = 2 / (x2^2 - x1^2) * \int_x1^x2 (1/x - 1) dx =
- *               = 2 / (x2^2 - x1^2) * (log(x) - x) |_x1^x2 dx =
- *               = 2 (log(x2/x1) - (x2-x1)) / (x2^2 - x1^2)
- *
- * @param[in] x1                     inner radius x1 (lower integration limit)
- * @param[in] x2                     outer radius x2 (upper integration limit)
- * @return kernel                    calculated kernel
- */
-inline float   AT_RDD_Katz_LinearER_DaverageKernel(  const float x1,
-    const float x2);
 
 /**
  * Calculates average dose kernel for "new" Katz RDD (derived from power-law (on wmax) ER model).
@@ -375,17 +368,17 @@ inline float   AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const float x1,
  *
  * thus:
  *
- * D(r) = coeff * kernel(r)
+ * Dav(r1,r2) = coeff / (pi r2^2 - pi r1^2)  *  \int_r1^r2 rmax/r * (rmax/r - 1.) 2 pi r dr
+ * Dav(r1,r2) = 2 * coeff * rmax^2/ (r2^2 - r1^2)  *  \int_r1^r2 (1/r - 1/rmax) dr
+ * Dav(r1,r2) = 2 * coeff / ((r2/rmax)^2 - (r1/rmax)^2) * \int_r1^r2 (1/r - 1/rmax) dr
  *
- * Dav(r1,r2) = coeff * 2 / (r2^2 - r1^2) * \int_r1^r2 kernel(r) r dr
+ * Let us calculate integral:
  *
- * substituting x1 = r1/rmax , x2 = r2/rmax we will have:
- *
- * Dav(r1,r2) = coeff * 2 / (x2^2 - x1^2) * \int_x1^x2 kernel(x) x dx
+ * \int_r1^r2 (1/r - 1/rmax) dr = log(r) - r/rmax |_r1^r2 = log(r2/r1) - (r2 - r1)/rmax
  *
  * in other words:
  *
- * Dav(r1,r2) = coeff * kernel_av( x1, x2 )
+ * Dav(r1,r2) = 2 * coeff * ( log(r2/r1) - (r2 - r1)/rmax ) / ((r2/rmax)^2 - (r1/rmax)^2)
  *
  * @param[in] r1_m                     inner radius r1 (lower integration limit) [m]
  * @param[in] r2_m                     outer radius r2 (upper integration limit) [m]
@@ -439,7 +432,11 @@ inline float   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const float r1_m,
  * for "old" Katz RDD (derived from linear (on wmax) ER model).
  *
  * dEdx = rho \int_a0^rmax  D(r) 2 pi r dr =
- *      = 2 pi rho * (pi rmax^2 - pi a0^2) D_av(a0,rmax)
+ *      = rho * (pi rmax^2 - pi a0^2) D_av(a0,rmax)
+ *
+ * because:
+ *
+ * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 D(r) 2 pi r dr
  *
  * @param[in] a0_m                     inner radius a0 (lower integration limit) [m]
  * @param[in] r_max_m                  delta electron maximum range rmax [m]
@@ -457,7 +454,11 @@ float   AT_RDD_Katz_LinearER_dEdx_J_m(  const float a0_m,
  * for "new" Katz RDD (derived from power-law (on wmax) ER model).
  *
  * dEdx = rho \int_a0^rmax D(r) 2 pi r dr =
- *      = 2 pi rho * (pi rmax^2 - pi a0^2) D_av(a0,rmax)
+ *      = rho * (pi rmax^2 - pi a0^2) D_av(a0,rmax)
+ *
+ * because:
+ *
+ * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 D(r) 2 pi r dr
  *
  * @param[in] a0_m                     inner radius a0 (lower integration limit) [m]
  * @param[in] r_max_m                  delta electron maximum range rmax [m]
