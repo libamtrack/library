@@ -58,6 +58,7 @@ void AT_gamma_response( const long*  n,
     const float*  gamma_parameter,
     // return
     float*  S){
+
   long  i,j;
   /*
    * (0) Testmodel, response m*x + c
@@ -70,7 +71,6 @@ void AT_gamma_response( const long*  n,
     for (i = 0; i < *n; i++){
       S[i]    =  m * d_Gy[i] + c;
     }
-    return;
   }
   /*
    *  (1) General multi-hit, multi-target model
@@ -83,12 +83,12 @@ void AT_gamma_response( const long*  n,
    *             m    - number of targets for component i
    *  if 4*ith parameter (k_i == 0) -> end of parameter list
    **/
-  long  n_gamma_parameter = 0;
-  while  (gamma_parameter[n_gamma_parameter] != 0){
-    n_gamma_parameter  += 4;
-  }
-
   if(*gamma_model == GR_GeneralTarget){
+    long  n_gamma_parameter = 0;
+    while  (gamma_parameter[n_gamma_parameter] != 0){
+      n_gamma_parameter  += 4;
+    }
+
     for (i = 0; i < *n; i++){
       S[i]  = 0.0f;
     }
@@ -116,7 +116,6 @@ void AT_gamma_response( const long*  n,
         S[i]    +=  tmp;
       }
     }
-    return;
   }
   /*
    *  (2) RL ACCUMULATED COUNTS MODEL
@@ -146,7 +145,6 @@ void AT_gamma_response( const long*  n,
       else{
         S[i]    =  c0 * D1 + 0.5f * B * D1 * D1 + Smax * (d_Gy[i] - D1);}
     }
-    return;
   }
 
   /*
@@ -163,7 +161,6 @@ void AT_gamma_response( const long*  n,
     for (i = 0; i < *n; i++){
       S[i]    =  Smax * (1.0f - (float)exp(-1.0f * d_Gy[i] / D0));
     }
-    return;
   }
 
   /*
@@ -191,7 +188,6 @@ void AT_gamma_response( const long*  n,
         S[i]    =  expf(  -alpha * D0 - beta * D0 * D0 - ( alpha + 2 * beta * D0) * (d_Gy[i] - D0) );
       }
     }
-    return;
   }
 
   /*
@@ -221,9 +217,10 @@ void AT_gamma_response( const long*  n,
         S[i]    =       alpha * D0 + beta * D0 * D0 + ( alpha + 2 * beta * D0) * (d_Gy[i] - D0);
       }
     }
-    return;
   }
-  return;
+
+  printf("GR model %ld \n" ,  *gamma_model);
+
 }
 
 void AT_get_gamma_response( const long*  n,

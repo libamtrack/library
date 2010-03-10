@@ -129,7 +129,7 @@ int main(){
       printf("Error ! Provide correct number\n");
       exit(EXIT_FAILURE);
     }
-    getMaterialName(&material_no, output_dummy);
+    getMaterialName(material_no, output_dummy);
     printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
 
@@ -171,7 +171,7 @@ int main(){
   do{
     printf("\n> *** select electron-range model ***");
     for(i = 0; i < ER_DATA_N;i++){
-      printf("\n index: %ld --> %s", AT_ER_Data.ER_no[i], AT_ER_Data.ER_name[i]);
+      printf("\n index: %d --> %s", AT_ER_Data.ER_no[i], AT_ER_Data.ER_name[i]);
     }
     printf("\n> electron-range model index: ");
     retval = scanf("%ld", &ER_model);
@@ -179,7 +179,7 @@ int main(){
       printf("Error ! Provide correct number\n");
       exit(EXIT_FAILURE);
     }
-    getERName(&ER_model, output_dummy);
+    getERName(ER_model, output_dummy);
     printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
 

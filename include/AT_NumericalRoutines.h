@@ -71,12 +71,16 @@ float gammp(const float a, const float x);
 float erff(const float x);
 void nrerror(const char error_text[]);
 
+// TODO move doxygen comments from .c file to .h file
+
 /**
  * From Numerical Recipes in C, 2nd ed., 1992:
  * Using Ridders' method, return the root of a function func known to lie between x1 and x2.
  * The root, returned as zriddr, will be refined to an approximate accuracy xacc.
  */
 float zriddr(float (*func)(float,void*), void * params, const float x1, const float x2, const float xacc);
+
+void pmatchi_int(const int* elements, const int n_elements, const int* set, const int n_set, int* matches);
 
 /**
  * finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match

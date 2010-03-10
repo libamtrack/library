@@ -33,6 +33,7 @@
 #include "AT_ElectronRange.h"
 #include "AT_RDD.h"
 #include "AT_RDD_ExtendedTarget.h"
+#include "AT_GammaResponse.h"
 
 void AT_max_E_transfer_MeV_R(  const int*  n,
     const float*  E_MeV_u,
@@ -92,5 +93,10 @@ void AT_RDD_ExtendedTarget_Gy_R( const int*  n,
     const float* er_parameter,
     float*       D_RDD_Gy);
 
+void AT_gamma_response_R( const int*  n,
+    const float*  d_Gy,
+    const int*  gamma_model,
+    const float*  gamma_parameter,
+    float*  S);
 
 #endif /* AT_WRAPPER_R_H_ */

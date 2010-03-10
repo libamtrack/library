@@ -149,7 +149,7 @@ AT.gamma.response	<-	function(	d.Gy,
 											
 	n						<-	length(d.Gy)
 	S						<-	numeric(n)
-	res					<-	.C(	"AT_gamma_response",		n					= as.integer(n),
+	res					<-	.C(	"AT_gamma_response_R",		n					= as.integer(n),
 																d.Gy				= as.single(d.Gy),
 																gamma.model		= as.integer(gamma.model),
 																gamma.parameters	= as.single(gamma.parameters),

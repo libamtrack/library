@@ -39,10 +39,10 @@
  */
 enum material_no{
   Water_Liquid         = 1, /**< Liquid water */
-  Aluminum_Oxide       = 2, /**< TODO */
-  Aluminum             = 3, /**< TODO */
-  PMMA                 = 4, /**< TODO */
-  Alanine              = 5  /**< TODO */
+  Aluminum_Oxide       = 2, /**< Aluminium oxide */
+  Aluminum             = 3, /**< Aluminium */
+  PMMA                 = 4, /**< PMMA */
+  Alanine              = 5  /**< Alanine */
 };
 
 #define MATERIAL_DATA_N    5
@@ -50,39 +50,49 @@ enum material_no{
 typedef struct {
   const long    n;
   const long    material_no[MATERIAL_DATA_N];
-  const float   density_g_cm3[MATERIAL_DATA_N];
-  const float   electron_density_m3[MATERIAL_DATA_N];
-  const float   I_eV[MATERIAL_DATA_N];
-  const float   alpha_g_cm2_MeV[MATERIAL_DATA_N];
-  const float   p_MeV[MATERIAL_DATA_N];
-  const float   m_g_cm2[MATERIAL_DATA_N];
-  const float   average_A[MATERIAL_DATA_N];
-  const float   average_Z[MATERIAL_DATA_N];
+  const double  density_g_cm3[MATERIAL_DATA_N];
+  const double  electron_density_m3[MATERIAL_DATA_N];
+  const double  I_eV[MATERIAL_DATA_N];
+  const double  alpha_g_cm2_MeV[MATERIAL_DATA_N];
+  const double  p_MeV[MATERIAL_DATA_N];
+  const double  m_g_cm2[MATERIAL_DATA_N];
+  const double  average_A[MATERIAL_DATA_N];
+  const double  average_Z[MATERIAL_DATA_N];
   const char*   material_name[MATERIAL_DATA_N];
 } material_data;
 
 // TODO: replace electron density by conversion routine using A, Z
 static const material_data AT_Material_Data = {
     MATERIAL_DATA_N,
-    {  Water_Liquid,     Aluminum_Oxide,   Aluminum,      PMMA,       Alanine},
-    {  1.00f,            3.97f,            2.6989f,       1.19f,      1.42f},
-    {  3.3456e29f,       1.1719e30f,       7.8314e+29f,   3.8698e29f, 4.60571e29f},
-    {  75.0f,            145.2f,           166.0f,        74.0f,      71.9f},
-    {  0.00231f,         0.003058f,        0.003266f,     0.001988f,  0.00216381f},
-    {  1.761f,           1.748f,           1.745f,        1.762f,     1.79165987f},
-    {  0.01153f,         0.01305f,         0.01230f,      0.01338f,   -100.0f},        // No data processed for nuclear interactions in Alanine, hence set to -100
-    {  13.0f,            0.0f,             27.0f,         0.0f,       0.0f},           //TODO find average A values
-    {  7.22f,            0.0f,             13.0f,         0.0f,       0.0f},           //TODO find average Z values
+    {  Water_Liquid,    Aluminum_Oxide,  Aluminum,     PMMA,      Alanine},
+    {  1.00,            3.97,            2.6989,       1.19,      1.42},
+    {  3.3456e29,       1.1719e30,       7.8314e+29,   3.8698e29, 4.60571e29},
+    {  75.0,            145.2,           166.0,        74.0,      71.9},
+    {  0.00231,         0.003058,        0.003266,     0.001988,  0.00216381},
+    {  1.761,           1.748,           1.745,        1.762,     1.79165987},
+    {  0.01153,         0.01305,         0.01230,      0.01338,   -100.0},        // No data processed for nuclear interactions in Alanine, hence set to -100
+    {  13.0,            0.0,             27.0,         0.0,       0.0},           //TODO find average A values
+    {  7.22,            0.0,             13.0,         0.0,       0.0},           //TODO find average Z values
     {  "Water, Liquid", "Aluminum Oxide",  "Aluminum",    "PMMA",     "Alanine"     }
 };
 
-//TODO Cucinnotta calculated average A for water as 14.3, but it seems that it is 13.0 (Leszek)
+// Cucinnotta calculated average A for water as 14.3, but it seems that it is 13.0 (Leszek)
+// looks like error in his article
 
-void getMaterialName( const long* material_no,
+/**
+ * Get material name
+ * @param[in] material_no
+ * @param[out] material_name
+ */
+void getMaterialName( const long material_no,
     char* material_name);
 
-void getMaterialNo( const char* material_name,
-    long* material_no);
+/**
+ * Get material number
+ * @param[in] material_name
+ * @return material number
+ */
+long getMaterialNo( const char* material_name );
 
 
 /**
@@ -112,20 +122,22 @@ void getMaterialNo( const char* material_name,
 * for water (H20) we have: average_Z = (2/18)*1 + (16/18)*8 = 7.22
 * @see Tabata, T. (1972) Generalized semiempirical equations for the extrapolated range of electrons, Nucl. Instr and Meth. 103, 85-91.
 */
-void AT_getMaterialData( const long*  n,
+void AT_getMaterialData( const long  n,
     const long*  material_no,
-    float*  density_g_cm3,
-    float*  electron_density_m3,
-    float*  I_eV,
-    float*  alpha_g_cm2_MeV,
-    float*  p_MeV,
-    float*  m_g_cm2,
-    float*  average_A,
-    float*  average_Z
-    );
+    double*  density_g_cm3,
+    double*  electron_density_m3,
+    double*  I_eV,
+    double*  alpha_g_cm2_MeV,
+    double*  p_MeV,
+    double*  m_g_cm2,
+    double*  average_A,
+    double*  average_Z);
 
-void AT_density_g_cm3_from_material_no( const long*  n,
+/**
+ * TODO
+ */
+void AT_density_g_cm3_from_material_no( const long  n,
     const long*  material_no,
-    float*       density_g_cm3);
+    double*       density_g_cm3);
 
 #endif /* AT_DATAMATERIAL_H_ */

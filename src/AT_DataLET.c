@@ -140,9 +140,9 @@ void AT_LET_keV_um(  const long*  n,
     float*  LET_keV_um)
 {
   // Get material density
-  float material_density_g_cm3;
+  double material_density_g_cm3;
   long n_tmp = 1;
-  AT_density_g_cm3_from_material_no(&n_tmp, material_no, &material_density_g_cm3);
+  AT_density_g_cm3_from_material_no(n_tmp, material_no, &material_density_g_cm3);
 
   // Get mass-norm. LET
   AT_LET_MeV_cm2_g(  n,
@@ -193,9 +193,9 @@ void AT_CSDA_range_m(  const long*  n,
     float*  CSDA_range_m)
 {
   // Get material density
-  float material_density_g_cm3;
+  double material_density_g_cm3;
   long n_tmp = 1;
-  AT_density_g_cm3_from_material_no(&n_tmp, material_no, &material_density_g_cm3);
+  AT_density_g_cm3_from_material_no(n_tmp, material_no, &material_density_g_cm3);
 
   // Get mass-norm. CSDA range
   AT_CSDA_range_g_cm2(  n,

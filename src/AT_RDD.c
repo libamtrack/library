@@ -441,13 +441,13 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
                   &Z_eff);
 
   // Get density
-  float   density_g_cm3, density_kg_m3, electron_density_m3;
-  AT_getMaterialData(  &n_tmp,
+  double   density_g_cm3, density_kg_m3, electron_density_m3;
+  AT_getMaterialData(  n_tmp,
               material_no,
               &density_g_cm3,
               &electron_density_m3,
               NULL, NULL, NULL, NULL, NULL, NULL);
-  density_kg_m3      =  density_g_cm3 * 1000.0f;
+  density_kg_m3      =  density_g_cm3 * 1000.0;
 
   ///////////////////////////////////////////////////////////////////////////////
   // PARAMETER 0: Get the LET (same for all models)
@@ -826,13 +826,13 @@ void AT_D_RDD_Gy  ( const  long*  n,
   const float dEdx_MeV_cm2_g            =  f1_parameters[8];
 
   // Get material data
-  float   density_g_cm3, density_kg_m3, electron_density_m3;
-  AT_getMaterialData(  &n_tmp,
+  double   density_g_cm3, density_kg_m3, electron_density_m3;
+  AT_getMaterialData(  n_tmp,
               material_no,
               &density_g_cm3,
               &electron_density_m3,
               NULL, NULL, NULL, NULL, NULL, NULL);
-  density_kg_m3      =  density_g_cm3 * 1000.0f;
+  density_kg_m3      =  density_g_cm3 * 1000.0;
 
   // Get beta, Z and Zeff
   float  beta    = 0.0f;
@@ -1111,12 +1111,12 @@ void AT_r_RDD_m  ( const  long*  n,
   //const float dEdx_MeV_cm2_g            =  f1_parameters[8]; //TODO not used
 
   // Get material data
-  float     density_g_cm3;
-  AT_getMaterialData(  &n_tmp,
+  double     density_g_cm3;
+  AT_getMaterialData(  n_tmp,
       material_no,
       &density_g_cm3,
       NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-  float  density_kg_m3  =  density_g_cm3 * 1000.0f;
+  float  density_kg_m3  =  density_g_cm3 * 1000.0;
 
   if( *rdd_model == RDD_Test){
     // Loop over all doses given
