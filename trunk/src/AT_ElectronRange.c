@@ -118,13 +118,11 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
    ********* CALCULATION BEFORE PARTICLE LOOP *************
    *******************************************************/
 
-  // Get density matching to material_name (only 1 name therefore n_mat = 1)
-  const long  number_of_materials_tmp  =  1;
+  // Get density and average A/Z matching to material_no
   double material_density_g_cm3        =  0.0;
   double average_A                     =  0.0;
   double average_Z                     =  0.0;
-  long  material_number_long = (long)material_no;
-  AT_get_materials_data( number_of_materials_tmp, &material_number_long, &material_density_g_cm3,
+  AT_get_material_data( (long)material_no, &material_density_g_cm3,
       NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
   // Get beta from energy
@@ -192,13 +190,11 @@ double AT_max_electron_range_m(  const double E_MeV_u,
     const int    material_no,
     const int    er_model){
 
-  // Get density matching to material_name (only 1 name therefore n_mat = 1)
-  const long  number_of_materials_tmp  = 1;
+  // Get density and average A/Z matching to material_no
   double material_density_g_cm3        = 0.0;
   double average_A                     = 0.0;
   double average_Z                     = 0.0;
-  long  material_number_long = (long)material_no;
-  AT_get_materials_data( number_of_materials_tmp, &material_number_long, &material_density_g_cm3,
+  AT_get_material_data( (long)material_no, &material_density_g_cm3,
       NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
 

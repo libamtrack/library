@@ -94,12 +94,10 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
     const float* er_parameter,
     float*       D_RDD_Gy){
 
-  long  n_tmp    = 1;
-
   // Get material data
   double   density_g_cm3, density_kg_m3, electron_density_m3;
-  AT_get_materials_data(  n_tmp,
-              &material_no,
+  AT_get_material_data(
+              material_no,
               &density_g_cm3,
               &electron_density_m3,
               NULL, NULL, NULL, NULL, NULL, NULL);
@@ -109,6 +107,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
   float  beta   =  0.0;
   long  Z       =  0;
   float  Z_eff  =  0.0;
+  long  n_tmp    = 1;
   AT_beta_from_E(  &n_tmp,
                 &E_MeV_u,
                 &beta);

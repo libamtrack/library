@@ -189,16 +189,6 @@ void AT_get_material_data(     const long  material_no,
     double*  average_Z);
 
 
-/**
- * TODO
- * @param number_of_materials
- * @param material_no
- * @param density_g_cm3
- */
-void AT_densities_g_cm3_from_material_numbers( const long  number_of_materials,
-    const long  material_no[],
-    double      density_g_cm3[]);
-
 
 /**
 * Returns material data
