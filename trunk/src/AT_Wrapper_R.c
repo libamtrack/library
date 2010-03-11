@@ -168,3 +168,17 @@ void AT_RDD_ExtendedTarget_Gy_R( const int*  n,
   AT_RDD_ExtendedTarget_Gy(n_long,r_m,*a0_m,*E_MeV_u,particle_no_long,material_no_long,rdd_model_long,rdd_parameter,er_model_long,er_parameter,D_RDD_Gy);
 
 }
+
+void AT_gamma_response_R( const int*  n,
+    const float*  d_Gy,
+    const int*  gamma_model,
+    const float*  gamma_parameter,
+    float*  S){
+
+  const long n_long = (long)(*n);
+  const long gamma_model_long = (long)(*gamma_model);
+
+  AT_gamma_response(&n_long,d_Gy,&gamma_model_long,gamma_parameter,S);
+
+}
+
