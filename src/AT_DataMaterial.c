@@ -221,14 +221,6 @@ void AT_get_material_data(     const long  material_no,
 ///////////////////////////////////////////// MULTIPLE MATERIAL IMPLEMENTATION ///////////////////////////////////////////////////////
 
 
-void AT_densities_g_cm3_from_material_numbers( const long  number_of_materials,
-    const long   material_no[],
-    double       density_g_cm3[])
-{
-  AT_get_materials_data(number_of_materials,material_no,density_g_cm3,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-} // TODO to be removed
-
-
 void AT_get_materials_data( const long  number_of_materials,
     const long  material_no[],
     double  density_g_cm3[],

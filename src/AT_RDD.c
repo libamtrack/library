@@ -409,7 +409,6 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     /* calculated parameters */
     float * f1_parameters)
 {
-  long  n_tmp    = 1;
   float beta     = 0.0f;
   long  Z        = 0;
   float Z_eff    = 0.0f;
@@ -429,6 +428,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
    *********************** GET MODEL INDEPENDENT VARIABLES ***********************
    *******************************************************************************/
 
+  long  n_tmp    = 1;
   AT_beta_from_E(  &n_tmp,
                   E_MeV_u,
                   &beta);
@@ -442,8 +442,8 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
   // Get density
   double   density_g_cm3, density_kg_m3, electron_density_m3;
-  AT_get_materials_data(  n_tmp,
-              material_no,
+  AT_get_material_data(
+              *material_no,
               &density_g_cm3,
               &electron_density_m3,
               NULL, NULL, NULL, NULL, NULL, NULL);
@@ -826,7 +826,6 @@ void AT_D_RDD_Gy  ( const  long*  n,
    ********* CALCULATION BEFORE PARTICLE LOOP *************
    *******************************************************/
 
-  const long n_tmp           = 1;
   // Get f1 parameters
   const long n_f1_parameters = 9;
   float*   f1_parameters     = (float*)calloc(n_f1_parameters, sizeof(float));
@@ -856,8 +855,8 @@ void AT_D_RDD_Gy  ( const  long*  n,
 
   // Get material data
   double   density_g_cm3, density_kg_m3, electron_density_m3;
-  AT_get_materials_data(  n_tmp,
-              material_no,
+  AT_get_material_data(
+              *material_no,
               &density_g_cm3,
               &electron_density_m3,
               NULL, NULL, NULL, NULL, NULL, NULL);
@@ -867,6 +866,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
   float  beta    = 0.0f;
   long   Z       = 0;
   float  Z_eff   = 0.0f;
+  const long n_tmp           = 1;
   AT_beta_from_E(  &n_tmp,
                 E_MeV_u,
                 &beta);
@@ -1125,7 +1125,6 @@ void AT_r_RDD_m  ( const  long*  n,
     float*  r_RDD_m)
 {
   long     i;
-  long     n_tmp      = 1;
   // Get f1 parameters
   long     n_f1_parameters = 9;
   float*   f1_parameters   = (float*)calloc(n_f1_parameters, sizeof(float));
@@ -1152,11 +1151,7 @@ void AT_r_RDD_m  ( const  long*  n,
   //const float dEdx_MeV_cm2_g            =  f1_parameters[8]; //TODO not used
 
   // Get material data
-  double     density_g_cm3;
-  AT_get_materials_data(  n_tmp,
-      material_no,
-      &density_g_cm3,
-      NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+  double     density_g_cm3 = AT_density_g_cm3_from_material_no(*material_no);
   float  density_kg_m3  =  density_g_cm3 * 1000.0;
 
   if( *rdd_model == RDD_Test){
@@ -1179,6 +1174,7 @@ void AT_r_RDD_m  ( const  long*  n,
     }
   }// end RDD_Geiss
 
+  long     n_tmp      = 1;
   if( (*rdd_model == RDD_KatzPoint) || (*rdd_model == RDD_Site) || (*rdd_model == RDD_KatzExtTarget) || (*rdd_model == RDD_Edmund)){
 
     const float r_min_m  =  f1_parameters[1];

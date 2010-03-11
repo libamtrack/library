@@ -140,9 +140,7 @@ void AT_LET_keV_um(  const long*  n,
     float*  LET_keV_um)
 {
   // Get material density
-  double material_density_g_cm3;
-  long n_tmp = 1;
-  AT_densities_g_cm3_from_material_numbers(n_tmp, material_no, &material_density_g_cm3);
+  double material_density_g_cm3 = AT_density_g_cm3_from_material_no(*material_no);
 
   // Get mass-norm. LET
   AT_LET_MeV_cm2_g(  n,
@@ -153,7 +151,7 @@ void AT_LET_keV_um(  const long*  n,
 
   long  i;
   for (i = 0; i < *n; i++){
-    LET_keV_um[i]  *=  material_density_g_cm3 * 0.1f;
+    LET_keV_um[i]  *=  (float)material_density_g_cm3 * 0.1f;
   }
 
 }
@@ -193,9 +191,7 @@ void AT_CSDA_range_m(  const long*  n,
     float*  CSDA_range_m)
 {
   // Get material density
-  double material_density_g_cm3;
-  long n_tmp = 1;
-  AT_densities_g_cm3_from_material_numbers(n_tmp, material_no, &material_density_g_cm3);
+  double material_density_g_cm3 = AT_density_g_cm3_from_material_no(*material_no);
 
   // Get mass-norm. CSDA range
   AT_CSDA_range_g_cm2(  n,
@@ -206,7 +202,7 @@ void AT_CSDA_range_m(  const long*  n,
 
   long  i;
   for (i = 0; i < *n; i++){
-    CSDA_range_m[i]  /=  material_density_g_cm3 * 100.0f;
+    CSDA_range_m[i]  /=  (float)material_density_g_cm3 * 100.0f;
   }
 
 }

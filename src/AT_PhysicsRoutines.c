@@ -220,14 +220,13 @@ void AT_max_E_transfer_MeV(  const long*  n,
 void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
     const long*  material_no,
     float*  dsE2dz)
-{
+{ // TODO shall this function be defined for one or many materials ?
   long  i;
   double tmp;
   double  electron_density_m3;
-  long  n_dummy = 1;
   for (i = 0; i < *n; i++){
 
-    AT_get_materials_data(  n_dummy,
+    AT_get_materials_data(  *n,
         material_no,
         NULL,
         &electron_density_m3,
