@@ -1051,20 +1051,15 @@ void AT_IGK(  const long*  n,
     gsl_function F;
     F.function           = &AT_sI_int;
     F.params             = (void*)params;
-    float   lower_lim_m  = 0.0;
+    double   lower_lim_m  = 0.0;
     if(*RDD_model == RDD_KatzPoint){
-      lower_lim_m = RDD_parameters[0];
+      lower_lim_m = (float)RDD_parameters[0];
     }
-    float   upper_lim_m;
-    AT_max_electron_ranges_m(        n_tmp,
-        E_MeV_u,
-        (int)(*material_no),
-        (int)(*ER_model),
-        &upper_lim_m);
+    double   upper_lim_m = AT_max_electron_range_m( (double)(*E_MeV_u), (int)(*material_no), (int)(*ER_model));
 
     int status      = gsl_integration_qags (        &F,
-        (double)lower_lim_m,
-        (double)upper_lim_m,
+        lower_lim_m,
+        upper_lim_m,
         1e-20,
         1e-20,
         10000,
