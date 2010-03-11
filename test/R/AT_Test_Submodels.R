@@ -45,9 +45,9 @@ particle.no		<-	c(1, 5, 18)					# p, He-4, C-12
 
 material.no		<-	c(1, 2)
 
-RDD.model			<-	c(1, 2, 3, 4, 5)
-RDD.model.names	<-	c("Test", "Katz-Point", "Geiss", "Site", "Extended target")  #TODO needs to be checked
-RDD.parameters	<-	list(c(0), c(1e-11, 1e-11), c(5e-8), c(5e-8, 1e-11), c(1e-10, 5e-8, 1e-11))					
+RDD.model			<-	c(1, 2, 3, 4, 5, 6, 7)
+RDD.model.names	<-	c("Test", "Katz-Point", "Geiss", "Site", "Edmund", "Cucinotta", "KatzExtTarget")
+RDD.parameters	<-	list(c(1),c(1e-10,1e-10), c(1e-10),c(1e-8,1e-10),c(1e-8,1e-10),c(5e-11,1e-10),c(1e-10,1e-8,1e-10))					
 
 ER.model			<-	2 								# (Waligorski)
 ER.parameters		<-	1

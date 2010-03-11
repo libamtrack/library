@@ -194,7 +194,7 @@ int main(){
       printf("Error ! Provide correct number\n");
       exit(EXIT_FAILURE);
     }
-    getGammaName(&gamma_model, output_dummy);
+    getGammaName(gamma_model, output_dummy);
     printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
 
