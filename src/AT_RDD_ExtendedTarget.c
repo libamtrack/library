@@ -127,10 +127,10 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
 
   // Get LET
   float  LET_MeV_cm2_g  =  0.0f;
-  AT_LET_MeV_cm2_g(  &n_tmp,
+  AT_LET_MeV_cm2_g(  n_tmp,
             &E_MeV_u,
             &particle_no,
-            &material_no,
+            material_no,
             &LET_MeV_cm2_g);
 
   float  LET_J_m        =  LET_MeV_cm2_g * density_g_cm3; // [MeV / cm]
