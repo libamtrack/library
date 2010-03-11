@@ -40,10 +40,10 @@ void AT_max_E_transfer_MeV_R(  const int*  n,
     // results
     float*  max_E_transfer_MeV);
 
-void AT_max_electron_range_m_R(  const int*  n,
+void AT_max_electron_ranges_m_R(  const int*  number_of_particles,
     const float*  E_MeV_u,
-    const int*  material_no,
-    const int*   er_model,
+    const int*    material_no,
+    const int*    er_model,
     // results
     float*  max_electron_range_m);
 

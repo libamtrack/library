@@ -48,15 +48,15 @@ void AT_max_E_transfer_MeV_R(  const int*  n,
 
 }
 
-void AT_max_electron_range_m_R(  const int*  n,
+void AT_max_electron_ranges_m_R(  const int*  number_of_particles,
     const float*  E_MeV_u,
-    const int*  material_no,
-    const int*   er_model,
-    float*  max_electron_range_m)
+    const int*    material_no,
+    const int*    er_model,
+    float*        max_electron_range_m)
 {
-  const long n_long = (long)(*n);
+  const long number_of_particles_long = (long)(*number_of_particles);
 
-  AT_max_electron_range_m( n_long,
+  AT_max_electron_ranges_m( number_of_particles_long,
       E_MeV_u,
       *material_no,
       *er_model,

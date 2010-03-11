@@ -459,7 +459,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
   ////////////////////////////////////////////////////////////////////////////////
   // PARAMETER 2: Get the maximum electron range (same for all RDD models)
-  AT_max_electron_range_m(  n_tmp,
+  AT_max_electron_ranges_m(  n_tmp,
                 E_MeV_u,
                 (int)(*material_no),
                 (int)(*er_model),
@@ -762,7 +762,40 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
     // Save parameters to f1_parameters table
     f1_parameters[1]      =  r_min_m;
-  }// end RDD_Cucinotta
+  }// end RDD_KatzExtTarget
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RDD_CucinottaExtTarget
+  if( *rdd_model == RDD_CucinottaExtTarget){ // TODO To be removed
+
+    // 1. set minimum r_min_m (f1_parameters[1])
+    r_min_m               =  rdd_parameter[0];
+    if (max_electron_range_m <= r_min_m){
+      r_min_m             =  max_electron_range_m;
+    }                  // If r.max < r.min, r.min = r.max
+
+    // 2. calculate minimum dose d_min_Gy (f1_parameters[3])
+    d_min_Gy              =  rdd_parameter[2];
+
+    // 3. calculate maximum dose d_max_Gy (f1_parameters[4])
+    const long n_tmp      =  1;
+    const float a0_m      =  rdd_parameter[1];
+    const float rdd_basic_parameter[] = {rdd_parameter[0], rdd_parameter[2]};
+
+    AT_RDD_ExtendedTarget_Gy(n_tmp,&r_min_m,a0_m,*E_MeV_u,*particle_no,*material_no,RDD_Cucinotta,rdd_basic_parameter,*er_model,er_parameter,&d_max_Gy);
+
+    // 4. set norm_constant_Gy (f1_parameters[5])
+    norm_constant_Gy      =  0.0f;
+
+    // 5. calculate single_impact_dose_Gy (f1_parameters[7])
+    single_impact_dose_Gy =  LET_MeV_cm2_g * MeV_g_to_J_kg * single_impact_fluence_cm2;        // LET * fluence
+
+    // 6. calculate dEdx_MeV_cm2_g (f1_parameters[8])
+    dEdx_MeV_cm2_g        =  LET_MeV_cm2_g;   // TODO move norm_constant_Gy to dEdx_MeV_cm2_g
+
+    // Save parameters to f1_parameters table
+    f1_parameters[1]      =  r_min_m;
+  }// end RDD_CucinottaExtTarget
 
 
   // write data to output table (apart from f1_parameters[0] which sometimes is
@@ -1044,6 +1077,18 @@ void AT_D_RDD_Gy  ( const  long*  n,
 
     AT_RDD_ExtendedTarget_Gy(*n,r_m,a0_m,*E_MeV_u,*particle_no,*material_no,RDD_KatzPoint,rdd_basic_parameter,*er_model,er_parameter,D_RDD_Gy);
   }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // RDD_CucinottaExtTarget TODO remove this dirty fix
+  if( *rdd_model == RDD_CucinottaExtTarget){
+
+    const float a0_m   =  rdd_parameter[1];
+
+    const float rdd_basic_parameter[] = {rdd_parameter[0], rdd_parameter[2]};
+
+    AT_RDD_ExtendedTarget_Gy(*n,r_m,a0_m,*E_MeV_u,*particle_no,*material_no,RDD_Cucinotta,rdd_basic_parameter,*er_model,er_parameter,D_RDD_Gy);
+  }
+
 
   free(f1_parameters);
 }

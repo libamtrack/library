@@ -1056,7 +1056,7 @@ void AT_IGK(  const long*  n,
       lower_lim_m = RDD_parameters[0];
     }
     float   upper_lim_m;
-    AT_max_electron_range_m(        n_tmp,
+    AT_max_electron_ranges_m(        n_tmp,
         E_MeV_u,
         (int)(*material_no),
         (int)(*ER_model),
@@ -1079,6 +1079,10 @@ void AT_IGK(  const long*  n,
     sI_cm2  = (float)sI_m2 * 10000;
 
     gsl_integration_workspace_free (w1);
+
+    printf("sigma = %g\n", sI_m2);
+
+    return;
 
     // TODO: INTERCEPT Katz point RDD for m / c detectors here!
 
