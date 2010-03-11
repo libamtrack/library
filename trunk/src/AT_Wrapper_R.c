@@ -178,7 +178,7 @@ void AT_gamma_response_R( const int*  n,
   const long n_long = (long)(*n);
   const long gamma_model_long = (long)(*gamma_model);
 
-  AT_gamma_response(&n_long,d_Gy,&gamma_model_long,gamma_parameter,S);
+  AT_gamma_response(n_long,d_Gy,gamma_model_long,gamma_parameter,S);
 
 }
 
