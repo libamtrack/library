@@ -894,7 +894,6 @@ void AT_IGK(  const long*  n,
   start_t = time(NULL);
 
   long N2 = 2;
-  float fluence_factor = 1.0;
 
   ////////////////////////////////////////////////////////////////////////
   // TODO SECTION BELOW IS THE SAME FOR ALL METHODS AND SHOULD BE REPLACES
@@ -923,78 +922,60 @@ void AT_IGK(  const long*  n,
   float*  accu_fluence          =  (float*)calloc(*n, sizeof(float));
   float*  dose_contribution_Gy  =  (float*)calloc(*n, sizeof(float));
 
-  float*  f1_d_Gy               =  (float*)calloc(n_bins_f1, sizeof(float));
-  float*  f1_dd_Gy              =  (float*)calloc(n_bins_f1, sizeof(float));
-  float*  f1                    =  (float*)calloc(n_bins_f1, sizeof(float));
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // 1. normalize fluence, get total fluence and dose
+  f_parameters[1]    = 0.0f;
 
-  AT_SC_get_f1(     n,
-      E_MeV_u,
-      particle_no,
-      fluence_cm2,
-      material_no,
-      RDD_model,
-      RDD_parameters,
-      ER_model,
-      ER_parameters,
-      &N2,
-      &n_bins_f1,
-      f1_parameters,
-      // from here: return values
-      norm_fluence,
-      dose_contribution_Gy,
-      f_parameters,
-      f1_d_Gy,
-      f1_dd_Gy,
-      f1);
+  // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
+  // only the first entry will be check
+  long   i;
+  float*  fluence_cm2_local    =  (float*)calloc(*n, sizeof(float));
+  float*  dose_Gy_local        =  (float*)calloc(*n, sizeof(float));
+
+  if(fluence_cm2[0] < 0){
+    for (i = 0; i < *n; i++){
+      dose_Gy_local[i] = -1.0f * fluence_cm2[i];
+    }
+    AT_fluence_cm2(  n,
+        E_MeV_u,
+        particle_no,
+        dose_Gy_local,
+        material_no,
+        fluence_cm2_local);
+  }else{
+    for (i = 0; i < *n; i++){
+      fluence_cm2_local[i] = fluence_cm2[i];
+    }
+    AT_D_Gy(  n,
+        E_MeV_u,
+        particle_no,
+        fluence_cm2_local,
+        material_no,
+        dose_Gy_local);
+  }
+
+  for (i = 0; i < *n; i++){
+    f_parameters[2]  +=  dose_Gy_local[i];
+    f_parameters[1]  +=  fluence_cm2_local[i];
+  }
+
+  float u_single;
+
+  for (i = 0; i < *n; i++){
+    norm_fluence[i]        =  fluence_cm2_local[i] / f_parameters[1];
+    u_single                    =  fluence_cm2_local[i] / f1_parameters[i*9 + 6];
+    dose_contribution_Gy[i]    =  u_single * f1_parameters[i*9 + 7];
+  }
+
 
   // Get accumulated normalized fluence for later sampling of particle type
   accu_fluence[0]                                                 =       norm_fluence[0];
-  long i;
   if(*n > 1){
     for (i = 1; i < *n; i++){
       accu_fluence[i] += accu_fluence[i-1] + norm_fluence[i];
     }
   }
 
-  long    n_bins_f;
-  float   u_start;
-  long    n_convolutions;
-  float   u = f_parameters[0];
-
-  AT_SC_get_f_array_size(   &u,
-      &fluence_factor,
-      &N2,
-      &n_bins_f1,
-      f1_d_Gy,
-      f1_dd_Gy,
-      f1,
-      // from here: return values
-      &n_bins_f,
-      &u_start,
-      &n_convolutions);
-
-  float*  f_d_Gy          =  (float*)calloc(n_bins_f, sizeof(float));
-  float*  f_dd_Gy         =  (float*)calloc(n_bins_f, sizeof(float));
-  float*  f               =  (float*)calloc(n_bins_f, sizeof(float));
-  float*  fdd             =  (float*)calloc(n_bins_f, sizeof(float));
-  float*  dfdd            =  (float*)calloc(n_bins_f, sizeof(float));
-
-  AT_SC_get_f_start(  &u_start,
-      &n_bins_f1,
-      &N2,
-      f1_d_Gy,
-      f1_dd_Gy,
-      f1,
-      &n_bins_f,
-      // from here: return values
-      f_d_Gy,
-      f_dd_Gy,
-      f);
-
-  // We are only interested in f_d_Gy and f_dd_Gy, so clear f
-  for (i = 0; i < n_bins_f; i++){
-    f[i] = 0;
-  }
 
   ////////////////////////////////////////////////////////////////////////
   // TODO SECTION ABOVE IS THE SAME FOR ALL METHODS AND SHOULD BE REPLACES
@@ -1091,9 +1072,7 @@ void AT_IGK(  const long*  n,
         &sI_m2,
         &error);
     if (status == GSL_EROUND || status == GSL_ESING){
-#ifdef _DEBUG
-printf("r=%g, integration from %g to %g , error no == %d\n",*r_m,int_lim_m,(*r_m)+(*a0_m),status);
-#endif
+      printf("Error in integration - IGK\n");
     }
 
     sI_m2  *= 2.0 * M_PI;
@@ -1168,14 +1147,6 @@ printf("r=%g, integration from %g to %g , error no == %d\n",*r_m,int_lim_m,(*r_m
   free(norm_fluence);
   free(dose_contribution_Gy);
   free(accu_fluence);
-  free(f1_d_Gy);
-  free(f1_dd_Gy);
-  free(f1);
-  free(f_d_Gy);
-  free(f_dd_Gy);
-  free(f);
-  free(fdd);
-  free(dfdd);
 
   free(params);
 
