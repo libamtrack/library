@@ -622,20 +622,20 @@ static const pstar_data AT_PSTAR_Data = {
 
 /**
  * get LET-data for given material
- * @param n
- * @param x
- * @param material_no
- * @param x_table
- * @param y_table
- * @param y
+ * @param[in] n             number of points to interpolate
+ * @param[in] x             array of x values for which interpolation is done
+ * @param[in] material_no
+ * @param[in] x_table       x part of data table
+ * @param[in] y_table       y part of data table
+ * @param[out] y            array of interpolated y values
  */
 void getPSTARvalue(
-    const long* n,
-    const float* x,
-    const long* material_no,
-    const float* x_table,
-    const float* y_table,
-    float* y);
+    const long   n,
+    const float  x[],
+    const long   material_no,
+    const float  x_table[],
+    const float  y_table[],
+    float        y[]);
 
 /**
  * TODO
