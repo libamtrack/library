@@ -98,7 +98,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
 
   // Get material data
   double   density_g_cm3, density_kg_m3, electron_density_m3;
-  AT_getMaterialData(  n_tmp,
+  AT_get_materials_data(  n_tmp,
               &material_no,
               &density_g_cm3,
               &electron_density_m3,

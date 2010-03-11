@@ -80,12 +80,21 @@ static const material_data AT_Material_Data = {
 // looks like error in his article
 
 /**
+ * TODO
+ * @param material_no
+ * @return
+ */
+long AT_index_from_material_no( const long material_no );
+
+
+/**
  * Get material name
  * @param[in] material_no
  * @param[out] material_name
  */
 void getMaterialName( const long material_no,
     char* material_name);
+
 
 /**
  * Get material number
@@ -96,34 +105,80 @@ long getMaterialNo( const char* material_name );
 
 
 /**
-* Returns material data
-* @param  n  number of materials the routine is called for (pointer to single variable)
-* @param  material_no  material indices (pointer to long array of length n)
-* @param  density_g_cm3  material density in g/cm3 (pointer to float array of length n)
-* @param  electron_density_m3  electron density in 1/m3 (pointer to float array of length n)
-* @param  I_eV  mean ionization potential in eV (pointer to float array of length n)
-* @param  alpha_g_cm2_MeV  fit parameter for power-law representation of stp.power/range/E-dependence (pointer to float array of length n)
-* @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
-*       Here, however, we use the mass stopping power. The correct dimension is g/(cm^2 * MeV^p)
-* @param  p_MeV  fit parameter for power-law representation of stp.power/range/E-dependence (pointer to float array of length n)
-* @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
-*       p is actually dimenionless, it should be nevertheless indicated, that the energy must be given in MeV
-* @param  m_g_cm2  fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni, 1982 (pointer to float array of length n)
-* @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
-* @param  average_A  average mass number (pointer to float array of length n)
-* let f_i be fraction by weight of the constituent element with atomic number Z_i and atomic weight A_i<BR>
-* let us define average_Z/A = \sum_i f_i Z_i / A_i <BR>
-* then we have: average_A = average_Z / (average_Z/A)
-* for water (H20) we have: average_Z/A = (2/18) * (1/1) + (16/18)*(8/16) = 0.5555
-* average_A = 7.22 / 0.555 = 13
-* @param  average_Z  average atomic number (pointer to float array of length n)<BR>
-* let f_i be fraction by weight of the constituent element with atomic number Z_i and atomic weight A_i<BR>
-* average_Z = \sum_i f_i Z_i <BR>
-* for water (H20) we have: average_Z = (2/18)*1 + (16/18)*8 = 7.22
-* @see Tabata, T. (1972) Generalized semiempirical equations for the extrapolated range of electrons, Nucl. Instr and Meth. 103, 85-91.
-*/
-void AT_getMaterialData( const long  n,
-    const long*  material_no,
+ *TODO
+ * @param material_no
+ * @return
+ */
+double AT_density_g_cm3_from_material_no( const long   material_no );
+
+
+/**
+ *TODO
+ * @param material_no
+ * @return
+ */
+double AT_electron_density_m3_from_material_no( const long   material_no );
+
+
+/**
+ *TODO
+ * @param material_no
+ * @return
+ */
+double AT_I_eV_from_material_no( const long   material_no );
+
+
+/**
+ *TODO
+ * @param material_no
+ * @return
+ */
+double AT_alpha_g_cm2_MeV_from_material_no( const long   material_no );
+
+/**
+ *TODO
+ * @param material_no
+ * @return
+ */
+double AT_p_MeV_from_material_no( const long   material_no );
+
+
+/**
+ *TODO
+ * @param material_no
+ * @return
+ */
+double AT_m_g_cm2_from_material_no( const long   material_no );
+
+/**
+ *TODO
+ * @param material_no
+ * @return
+ */
+double AT_average_A_from_material_no( const long   material_no );
+
+
+/**
+ *TODO
+ * @param material_no
+ * @return
+ */
+double AT_average_Z_from_material_no( const long   material_no );
+
+
+/**
+ * TODO
+ * @param material_no
+ * @param density_g_cm3
+ * @param electron_density_m3
+ * @param I_eV
+ * @param alpha_g_cm2_MeV
+ * @param p_MeV
+ * @param m_g_cm2
+ * @param average_A
+ * @param average_Z
+ */
+void AT_get_material_data(     const long  material_no,
     double*  density_g_cm3,
     double*  electron_density_m3,
     double*  I_eV,
@@ -133,11 +188,54 @@ void AT_getMaterialData( const long  n,
     double*  average_A,
     double*  average_Z);
 
+
 /**
  * TODO
+ * @param number_of_materials
+ * @param material_no
+ * @param density_g_cm3
  */
-void AT_density_g_cm3_from_material_no( const long  n,
-    const long*  material_no,
-    double*       density_g_cm3);
+void AT_densities_g_cm3_from_material_numbers( const long  number_of_materials,
+    const long  material_no[],
+    double      density_g_cm3[]);
+
+
+/**
+* Returns material data
+* @param  number_of_materials[in]   numbers of materials the routine is called for (array of length number_of_materials)
+* @param  material_no[in]           material indices (array of length number_of_materials)
+* @param  density_g_cm3[out]        material density in g/cm3 (array of length number_of_materials)
+* @param  electron_density_m3[out]  electron density in 1/m3 (array of length number_of_materials)
+* @param  I_eV[out]                 mean ionization potential in eV (array of length number_of_materials)
+* @param  alpha_g_cm2_MeV[out]      fit parameter for power-law representation of stp.power/range/E-dependence (array of length nnumber_of_materials)
+* @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
+*       Here, however, we use the mass stopping power. The correct dimension is g/(cm^2 * MeV^p)
+* @param  p_MeV[out]                fit parameter for power-law representation of stp.power/range/E-dependence (array of length number_of_materials)
+* @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
+*       p is actually dimensionless, it should be nevertheless indicated, that the energy must be given in MeV
+* @param  m_g_cm2[out]              fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni, 1982 (array of length number_of_materials)
+* @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
+* @param  average_A[out]            average mass number (array of length number_of_materials) \n
+* let f_i be fraction by weight of the constituent element with atomic number Z_i and atomic weight A_i\n
+* let us define average_Z/A = \sum_i f_i Z_i / A_i \n
+* then we have: average_A = average_Z / (average_Z/A) \n
+* for water (H20) we have: average_Z/A = (2/18) * (1/1) + (16/18)*(8/16) = 0.5555 \n
+* average_A = 7.22 / 0.555 = 13
+* @param  average_Z[out]            average atomic number (pointer to float array of length number_of_materials)\n
+* let f_i be fraction by weight of the constituent element with atomic number Z_i and atomic weight A_i\n
+* average_Z = \sum_i f_i Z_i \n
+* for water (H20) we have: average_Z = (2/18)*1 + (16/18)*8 = 7.22
+* @see Tabata, T. (1972) Generalized semiempirical equations for the extrapolated range of electrons, Nucl. Instr and Meth. 103, 85-91.
+*/
+void AT_get_materials_data( const long  number_of_materials,
+    const long  material_no[],
+    double  density_g_cm3[],
+    double  electron_density_m3[],
+    double  I_eV[],
+    double  alpha_g_cm2_MeV[],
+    double  p_MeV[],
+    double  m_g_cm2[],
+    double  average_A[],
+    double  average_Z[]);
 
 #endif /* AT_DATAMATERIAL_H_ */

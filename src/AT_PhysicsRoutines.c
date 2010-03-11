@@ -227,7 +227,7 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
   long  n_dummy = 1;
   for (i = 0; i < *n; i++){
 
-    AT_getMaterialData(  n_dummy,
+    AT_get_materials_data(  n_dummy,
         material_no,
         NULL,
         &electron_density_m3,
