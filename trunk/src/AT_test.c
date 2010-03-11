@@ -47,7 +47,7 @@ void test_AT_SPIFF(  float* fluence_cm2)
   long          material_no             = 5;    //alanine
 
   long          RDD_model               = 3;    //geiss
-  float         RDD_parameters[]        = {5e-8};
+  float         RDD_parameters[]        = {1e-10,5e-8,1e-10};
   long          ER_model                = 2;  //ButtsKatz
   float         ER_parameters[]         = {0.0f};
   long          gamma_model             = 2; // single hit, single target
@@ -80,6 +80,40 @@ void test_AT_SPIFF(  float* fluence_cm2)
       &shrink_tails_under,
       &adjust_N2,
       &lethal_events_mode,
+      results);
+  printf("%.3e %.3e\n",-1*fluence_cm2[0],results[3]);
+}
+
+void test_AT_IGK(  float* fluence_cm2)
+{
+
+  long          n                       = 1;
+  float         E_MeV_u[]               = {400.};
+  long          particle_no[]           = {1 }; //proton
+  long          material_no             = 1;    //water
+
+  long          RDD_model               = 8;    // 7 - Katz point ext target , 8 - Cucinotta ext target
+  float         RDD_parameters[]        = {5e-11,1e-9,1e-10};
+  long          ER_model                = 7;  //7  - Tabata. 2 - ButtsKatz
+  float         ER_parameters[]         = {0.0f};
+  long          gamma_model             = 2; // single hit, single target
+  float         gamma_parameters[]      = {1, 1e6, 1 , 2, 0};
+  float         saturation_cross_section_factor[] = {1.4f};
+
+  float         results[10];
+
+  AT_IGK(     &n,
+      E_MeV_u,
+      particle_no,
+      fluence_cm2,
+      &material_no,
+      &RDD_model,
+      RDD_parameters,
+      &ER_model,
+      ER_parameters,
+      &gamma_model,
+      gamma_parameters,
+      saturation_cross_section_factor,
       results);
   printf("%.3e %.3e\n",-1*fluence_cm2[0],results[3]);
 }
@@ -220,18 +254,3 @@ void test_AT_SPIFF(  float* fluence_cm2)
 //      &grid_size_m,
 //      &lethal_events_mode,
 //      results);
-//}
-
-//int main(){
-////  test_AT_SPISS();
-////  test_AT_GSM();
-////	test_AT_SPIFF();
-//  double dose_gy = 0.001;
-//  float fluence_cm2[] = {0.001};
-//  while (dose_gy <= 1000){
-//    fluence_cm2[0] =-1.0f* dose_gy;
-//    test_AT_SPIFF(fluence_cm2);
-//    dose_gy = dose_gy *1.1;
-//    }
-//  return 0;
-//};

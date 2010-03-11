@@ -32,14 +32,15 @@
 
 #include "AT_GammaResponse.h"
 
-void getGammaName( const long* Gamma_no,
+
+void getGammaName( const long Gamma_no,
     char* Gamma_name){
 
   // find look-up index for GR number in GR data table
   long  match;
   const long n_tmp = 1;
 
-  pmatchi(  Gamma_no,
+  pmatchi(  &Gamma_no,
       &n_tmp,
       AT_GR_Data.GR_no,
       &AT_GR_Data.n,
@@ -52,12 +53,13 @@ void getGammaName( const long* Gamma_no,
   }
 }
 
-void AT_gamma_response( const long*  n,
-    const float*  d_Gy,
-    const long*  gamma_model,
-    const float*  gamma_parameter,
+
+void AT_gamma_response( const long  number_of_doses,
+    const float   d_Gy[],
+    const long    gamma_model,
+    const float   gamma_parameter[],
     // return
-    float*  S){
+    float         S[]){
 
   long  i,j;
   /*
@@ -65,10 +67,10 @@ void AT_gamma_response( const long*  n,
    * parameters:  m - gamma_parameter[0]
    *         c - gamma_parameter[1]
    */
-  if(*gamma_model == GR_Test){
+  if(gamma_model == GR_Test){
     float  m  = gamma_parameter[0];
     float  c  = gamma_parameter[1];
-    for (i = 0; i < *n; i++){
+    for (i = 0; i < number_of_doses; i++){
       S[i]    =  m * d_Gy[i] + c;
     }
   }
@@ -83,13 +85,13 @@ void AT_gamma_response( const long*  n,
    *             m    - number of targets for component i
    *  if 4*ith parameter (k_i == 0) -> end of parameter list
    **/
-  if(*gamma_model == GR_GeneralTarget){
+  if(gamma_model == GR_GeneralTarget){
     long  n_gamma_parameter = 0;
     while  (gamma_parameter[n_gamma_parameter] != 0){
       n_gamma_parameter  += 4;
     }
 
-    for (i = 0; i < *n; i++){
+    for (i = 0; i < number_of_doses; i++){
       S[i]  = 0.0f;
     }
     for (j = 0; j < n_gamma_parameter / 4; j++){            // loop over all components
@@ -100,7 +102,7 @@ void AT_gamma_response( const long*  n,
 
       float tmp    =  0.0f;
 
-      for (i = 0; i < *n; i++){
+      for (i = 0; i < number_of_doses; i++){
         if(c == 1){                    // in case of c = 1 use simplified, faster formula
           tmp      =  1.0f - exp(-1.0f * d_Gy[i] / D1);
         }else{                      // for c > 1 use incomplete gamma function
@@ -131,7 +133,7 @@ void AT_gamma_response( const long*  n,
    *         D1    - see above
    */
 
-  if(*gamma_model == GR_Radioluminescence){
+  if(gamma_model == GR_Radioluminescence){
     float Smax   =  gamma_parameter[0];
     float D1     =  gamma_parameter[1];
     float chi    =  gamma_parameter[2];
@@ -139,11 +141,12 @@ void AT_gamma_response( const long*  n,
     float c0     =  Smax / chi;
     float B      =  (Smax - c0) / D1;
 
-    for (i = 0; i < *n; i++){
+    for (i = 0; i < number_of_doses; i++){
       if(d_Gy[i]  <= D1){
-        S[i]    =  c0 * d_Gy[i] + 0.5f * B * gsl_pow_2(d_Gy[i]);}
-      else{
-        S[i]    =  c0 * D1 + 0.5f * B * gsl_pow_2(D1) + Smax * (d_Gy[i] - D1);}
+        S[i]    =  c0 * d_Gy[i] + 0.5f * B * gsl_pow_2(d_Gy[i]);
+      }else{
+        S[i]    =  c0 * D1 + 0.5f * B * gsl_pow_2(D1) + Smax * (d_Gy[i] - D1);
+      }
     }
   }
 
@@ -153,12 +156,12 @@ void AT_gamma_response( const long*  n,
    *  parameters:  Smax   - max. response signal
    *         D1    - characteristic dose at which rate signal reaches saturation
    */
-  if(*gamma_model == GR_ExpSaturation){
+  if(gamma_model == GR_ExpSaturation){
     // exp-saturation model
     float  Smax  =  gamma_parameter[0];
     float  D0    =  gamma_parameter[1];
 
-    for (i = 0; i < *n; i++){
+    for (i = 0; i < number_of_doses; i++){
       S[i]    =  Smax * (1.0f - (float)exp(-1.0f * d_Gy[i] / D0));
     }
   }
@@ -167,25 +170,25 @@ void AT_gamma_response( const long*  n,
    *  (4) LINEAR-QUADRATIC MODEL
    *
    *  parameters:  alpha   - 1st parameter in equation SF = exp( - alpha *D^2 - beta *D)
-   *         beta  - 2nd parameter in equation SF = exp( - alpha *D^2 - beta *D)
-   *         D0    - 3rd parameter - transition-dose
+   *               beta    - 2nd parameter in equation SF = exp( - alpha *D^2 - beta *D)
+   *               D0      - 3rd parameter - transition-dose
    */
-  if(*gamma_model == GR_LinQuad){
+  if(gamma_model == GR_LinQuad){
 
     float  alpha =  gamma_parameter[0];
     float  beta  =  gamma_parameter[1];
     float  D0    =  gamma_parameter[2];
 
-    if( alpha < 0 )
-      alpha = 0;
-    if( beta < 0 )
-      beta = 0;
+    if( alpha < 0.0f )
+      alpha = 0.0f;
+    if( beta < 0.0f )
+      beta = 0.0f;
 
-    for (i = 0; i < *n; i++){
+    for (i = 0; i < number_of_doses; i++){
       if( d_Gy[i] < D0 ){
         S[i]    =  expf( -alpha * d_Gy[i] - beta * gsl_pow_2(d_Gy[i]));
       } else {
-        S[i]    =  expf( -alpha * D0 - beta * gsl_pow_2(D0) - ( alpha + 2 * beta * D0) * (d_Gy[i] - D0) );
+        S[i]    =  expf( -alpha * D0 - beta * gsl_pow_2(D0) - ( alpha + 2.0f * beta * D0) * (d_Gy[i] - D0) );
       }
     }
   }
@@ -194,49 +197,49 @@ void AT_gamma_response( const long*  n,
    *  (4) LINEAR-QUADRATIC MODEL
    *
    *      parameters:     alpha   - 1st parameter in equation SF = exp( - alpha *D^2 - beta *D)
-   *                              beta    - 2nd parameter in equation SF = exp( - alpha *D^2 - beta *D)
-   *                              D0              - 3rd parameter - transition-dose
+   *                      beta    - 2nd parameter in equation SF = exp( - alpha *D^2 - beta *D)
+   *                      D0      - 3rd parameter - transition-dose
    */
 
-  if(*gamma_model == GR_LinQuad_Log){
-    // exp-saturation model
+  if(gamma_model == GR_LinQuad_Log){
 
     float   alpha   =       gamma_parameter[0];
     float   beta    =       gamma_parameter[1];
     float   D0      =       gamma_parameter[2];
 
-    if( alpha < 0 )
-      alpha = 0;
-    if( beta < 0 )
-      beta = 0;
+    if( alpha < 0.0f )
+      alpha = 0.0f;
+    if( beta < 0.0f )
+      beta = 0.0f;
 
-    for (i = 0; i < *n; i++){
+    for (i = 0; i < number_of_doses; i++){
       if( d_Gy[i] < D0 ){
         S[i]    =       alpha * d_Gy[i] + beta * d_Gy[i] * d_Gy[i];
       } else {
-        S[i]    =       alpha * D0 + beta * gsl_pow_2(D0) + ( alpha + 2 * beta * D0) * (d_Gy[i] - D0);
+        S[i]    =       alpha * D0 + beta * gsl_pow_2(D0) + ( alpha + 2.0f * beta * D0) * (d_Gy[i] - D0);
       }
     }
   }
 }
 
-void AT_get_gamma_response( const long*  n,
-    const float*  d_Gy,
-    const float*  dd_Gy,
-    const float*  f,
-    const float*  f0,
-    const long*  gamma_model,
-    const float*  gamma_parameter,
-    const bool* lethal_events_mode,
+
+void AT_get_gamma_response(  const long  number_of_bins,
+    const float   d_Gy[],
+    const float   dd_Gy[],
+    const float   f[],
+    const float   f0,
+    const long    gamma_model,
+    const float   gamma_parameter[],
+    const bool    lethal_events_mode,
     // return
-    float*  S,
+    float   S[],
     float*  S_HCP,
     float*  S_gamma,
     float*  efficiency)
 {
   long i;
 
-  AT_gamma_response(  n,
+  AT_gamma_response(  number_of_bins,
       d_Gy,
       gamma_model,
       gamma_parameter,
@@ -246,27 +249,26 @@ void AT_get_gamma_response( const long*  n,
   *S_HCP        =  0.0f;
   float D_gamma =  0.0f;
 
-  for(i = 0; i < *n; i++){
+  for(i = 0; i < number_of_bins; i++){
     D_gamma   +=  d_Gy[i] * dd_Gy[i] * f[i];
     *S_HCP    +=  S[i] * dd_Gy[i] * f[i];
   }
 
-  if( *lethal_events_mode ){
+  if( lethal_events_mode ){
     *S_HCP = expf( -(*S_HCP) );
   }
 
   i  = 1;
-  AT_gamma_response(  &i,
+  AT_gamma_response(  i,
       &D_gamma,
       gamma_model,
       gamma_parameter,
       // return
       S_gamma);
 
-  if( *lethal_events_mode ){
+  if( lethal_events_mode ){
     *S_gamma = expf( -(*S_gamma) );
   }
 
   *efficiency    =  *S_HCP / *S_gamma;
-  return;
 }

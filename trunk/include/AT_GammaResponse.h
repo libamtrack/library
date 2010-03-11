@@ -36,8 +36,11 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "gsl/gsl_pow_int.h"
+
 #include "AT_Constants.h"
 #include "AT_NumericalRoutines.h"
+
 
 /**
  * Gamma Response code numbers
@@ -83,7 +86,7 @@ static const gr_data AT_GR_Data = {
  * @param[in]  Gamma_no    gamma response model index
  * @param[out] Gamma_name  string containing gamma response model name
  */
-void getGammaName(  const long* Gamma_no,
+void getGammaName(  const long Gamma_no,
     char* Gamma_name);
 
 
@@ -97,7 +100,7 @@ void getGammaName(  const long* Gamma_no,
  * @param[in]  Method_no    response model index
  * @param[out] Method_name  string containing response model name
  */
-void getMethodName( const long* Method_no,
+void getMethodName( const long Method_no,
     char* Method_name);
 
 
@@ -107,50 +110,51 @@ void getMethodName( const long* Method_no,
  *
  * PUBLIC
  *
- * @param[in]  n                number of doses given in vector d_Gy
- * @param[in]  d_Gy             doses in Gy (vector of length n)
+ * @param[in]  number_of_doses  number of doses given in vector d_Gy
+ * @param[in]  d_Gy             doses in Gy (vector of length number_of_doses)
  * @param[in]  gamma_model      gamma response model index
  * @param[in]  gamma_parameter  vector holding necessary parameters for the chose gamma response model
- * @param[out] S                gamma responses (vector of length n)
+ * @param[out] S                gamma responses (vector of length number_of_doses)
  */
-void AT_gamma_response( const long*  n,
-    const float*  d_Gy,
-    const long*  gamma_model,
-    const float*  gamma_parameter,
+void AT_gamma_response( const long  number_of_doses,
+    const float   d_Gy[],
+    const long    gamma_model,
+    const float   gamma_parameter[],
     // return
-    float*  S);
+    float         S[]);
+
 
 /**
  * Returns the detector / cell gamma response for a local dose distribution
- * according to the chosen gamma response model, used by reponse model
+ * according to the chosen gamma response model, used by response model
  * routines in AmTrack.c
  *
  * PRIVATE
  *
- * @param[in]  n                   number of bin in given local dose distribution
- * @param[in]  d_Gy                local dose bin position in Gy (vector of length n)
- * @param[in]  dd_Gy               local dose bin width in Gy (vector of length n)
- * @param[in]  d_Gy                local dose frequency (vector of length n)
- * @param[in]  d_Gy                frequency of zero local dose (pointer to float)
+ * @param[in]  number_of_bins      number of bins in given local dose distribution
+ * @param[in]  d_Gy                local dose bin position in Gy (vector of length number_of_bins)
+ * @param[in]  dd_Gy               local dose bin width in Gy (vector of length number_of_bins)
+ * @param[in]  f                   local dose frequency (vector of length number_of_bins)
+ * @param[in]  f0                  frequency of zero local dose
  * @param[in]  gamma_model         gamma response model index
  * @param[in]  gamma_parameter     vector holding necessary parameters for the chose gamma response model
  * @param[in]  lethal_events_mode  if true, allows to do calculations for cell survival
  * @see  AmTrack.c/AT_IGK
- * @param[in]  S                   gamma responses for given bins (vector of length n)
+ * @param[in]  S                   gamma responses for given bins (vector of length number_of_bins)
  * @param[in]  S_HCP               HCP response for given local dose distribution (expectation value of S distribution)
  * @param[in]  S_gamma             gamma response for given local dose distribution (gamma response of expectation value of d distribution)
  * @param[in]  efficiency          RE = S_HCP/S_gamma for given local dose distribution
  */
-void AT_get_gamma_response(  const long*  n,
-    const float*  d_Gy,
-    const float*  dd_Gy,
-    const float*  f,
-    const float*  f0,
-    const long*  gamma_model,
-    const float*  gamma_parameter,
-    const bool* lethal_events_mode,
+void AT_get_gamma_response(  const long  number_of_bins,
+    const float   d_Gy[],
+    const float   dd_Gy[],
+    const float   f[],
+    const float   f0, // TODO parameter not used here, might be removed
+    const long    gamma_model,
+    const float   gamma_parameter[],
+    const bool    lethal_events_mode,
     // return
-    float*  S,
+    float   S[],
     float*  S_HCP,
     float*  S_gamma,
     float*  efficiency);

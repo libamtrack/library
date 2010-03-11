@@ -223,16 +223,16 @@ void AT_SPIFF(  const long*  n,
     S            =  (float*)calloc(n_bins_f_used, sizeof(float));
     float  S_HCP, S_gamma, efficiency;
 
-    AT_get_gamma_response(  &n_bins_f_used,
+    AT_get_gamma_response(  n_bins_f_used,
 
         f_d_Gy,
         f_dd_Gy,
 
         f,
-        &f0,
-        gamma_model,
+        f0,
+        *gamma_model,
         gamma_parameters,
-        lethal_events_mode,
+        *lethal_events_mode,
         // return
 
         S,
@@ -682,9 +682,9 @@ void AT_GSM(  const long*  n,
       }
     } else {
       // get gamma response for local dose
-      AT_gamma_response( &n_grid,
+      AT_gamma_response( n_grid,
           grid_d_Gy,
-          gamma_model,
+          *gamma_model,
           gamma_parameters,
           grid_S);
 
@@ -705,9 +705,9 @@ void AT_GSM(  const long*  n,
     }
 
     float S_gamma  = 0.0f;
-    AT_gamma_response(  &n_tmp,
+    AT_gamma_response(  n_tmp,
         &d_total_Gy,
-        gamma_model,
+        *gamma_model,
         gamma_parameters,
         &S_gamma);
 
@@ -1105,9 +1105,9 @@ void AT_IGK(  const long*  n,
       P_I                = exp(-1.0f * sI_cm2 * fluence_cm2); // prob of being activated by ion kill mode
       gamma_contribution = 1.0f - cross_section_ratio;
       float   gamma_D_Gy = gamma_contribution * D_Gy;
-      AT_gamma_response(  &n_tmp,
+      AT_gamma_response(  n_tmp,
           &gamma_D_Gy,
-          gamma_model,
+          *gamma_model,
           params->gamma_parameters,
           // return
           &P_g);
@@ -1122,9 +1122,9 @@ void AT_IGK(  const long*  n,
 
   }
 
-  AT_gamma_response(  &n_tmp,
+  AT_gamma_response(  n_tmp,
       &f_parameters[2],
-      gamma_model,
+      *gamma_model,
       gamma_parameters,
       // return
       &S_gamma);

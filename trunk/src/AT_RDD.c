@@ -1352,9 +1352,9 @@ double AT_P_RDD( double  r_m,
 
   long gamma_model = GR_GeneralTarget;
   float P;
-  AT_gamma_response(  &n_tmp,
+  AT_gamma_response(  n_tmp,
       &D_Gy,
-      &gamma_model,
+      gamma_model,
       par->gamma_parameters,
       // return
       &P);
