@@ -32,9 +32,9 @@
 %include "arrays_java.i"
 %apply float[] {float *};
     
-extern void AT_max_electron_range_m( const long  n,
-    const float*  E_MeV_u,
-    const long  material_no,
+extern void AT_max_electron_ranges_m( const long  number_of_particles,
+    const float  E_MeV_u[],
+    const long   material_no,
     const long   er_model,
-    float*  max_electron_range_m);
+    float  max_electron_range_m[]);
 

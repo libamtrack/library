@@ -67,28 +67,112 @@ static const er_data AT_ER_Data = {
 };
 
 /**
-* Returns name of the electron model from index
-*
-* @param[in]   ER_no    electron-range-model index
-* @param[out]  Er_name  string containing the electron-range model name
-*/
+ * Returns name of the electron model from index
+ *
+ * @param[in]   ER_no    electron-range-model index
+ * @param[out]  Er_name  string containing the electron-range model name
+ */
 void  getERName(  const int ER_no,
     char* ER_name);
 
+
 /**
-* Returns the maximum electron range (track diameter) in m
-*
-* @param[in]  n  number of particles in the incident field
-* @param[in]  E_MeV_u  kinetic energy for particles in the given field (vector of length n)
-* @param[in]  material_no  index for detector material
-* @param[in]  er_model  index for electron-range model chosen
-* @param[out] max_electron_range_m  electron range (track diameter) in m
-*/
-void AT_max_electron_range_m( const long  n,
-    const float*  E_MeV_u,
+ * 1e-5 * wmax_keV
+ * @param wmax_keV
+ * @return
+ */
+inline double AT_ER_ButtsKatz_range_g_cm2(double wmax_keV);
+
+
+/**
+ * 6e-6 * pow( wmax_keV, alpha )
+ * @param wmax_keV
+ * @return
+ */
+inline double AT_ER_Waligorski_range_g_cm2(double wmax_keV);
+
+
+/**
+ * 6.13*1e-6  * pow( wmax_keV, alpha )
+ * @param wmax_keV
+ * @return
+ */
+inline double AT_ER_Edmund_range_g_cm2(double wmax_keV);
+
+
+/**
+ * 4e-5 * pow(E_MeV_u, 1.5)
+ * @param E_MeV_u
+ * @return
+ */
+inline double AT_ER_Geiss_range_g_cm2(double E_MeV_u);
+
+
+/**
+ * 5e-5 * pow(E_MeV_u, 1.7)
+ * @param E_MeV_u
+ * @return
+ */
+inline double AT_ER_Scholz_range_g_cm2(double E_MeV_u);
+
+
+/**
+ *  tau = 2.0 * gsl_pow_2(beta) / (1.0 - gsl_pow_2(beta))
+ * (a1_g_cm2)*(((gsl_sf_log(1.0 + a2 * tau))/a2) - ((a3*tau)/(1.0 + a4*pow(tau,a5))) )
+ *
+ * @param beta
+ * @param a1_g_cm2
+ * @param a2
+ * @param a3
+ * @param a4
+ * @param a5
+ * @return
+ */
+inline double AT_ER_Tabata_range_g_cm2(double beta, double a1_g_cm2, double a2, double a3, double a4, double a5);
+
+
+/**
+ * Tabata model constants
+ * @param average_A
+ * @param average_Z
+ * @param a1_g_cm2
+ * @param a2
+ * @param a3
+ * @param a4
+ * @param a5
+ */
+inline void AT_ER_Tabata_constants(const double average_A, const double average_Z, double * a1_g_cm2, double * a2, double * a3, double * a4, double * a5);
+
+
+/**
+ * Returns the maximum electron range (track diameter) in m
+ * for vector of energies
+ *
+ * @param[in]  number_of_particles          number of particles in the incident field
+ * @param[in]  E_MeV_u                      kinetic energy for particles in the given field (vector of length n)
+ * @param[in]  material_no                  index for detector material
+ * @param[in]  er_model                     index for electron-range model chosen
+ * @param[out] max_electron_range_m         electron range (track diameter) in m
+ */
+void AT_max_electron_ranges_m( const long number_of_particles ,
+    const float  E_MeV_u[],
     const int    material_no,
     const int    er_model,
-    float*  max_electron_range_m);
+    float  max_electron_range_m[]);
+
+
+/**
+ * Returns the maximum electron range (track diameter) in m
+ * for given energy
+ *
+ * @param[in]  E_MeV_u                      kinetic energy for particles in the given field (vector of length n)
+ * @param[in]  material_no                  index for detector material
+ * @param[in]  er_model                     index for electron-range model chosen
+ * @return                                  electron range (track diameter) in m
+ */
+double AT_max_electron_range_m(  const double E_MeV_u,
+    const int    material_no,
+    const int    er_model);
 
 //TODO replace float by double
 

@@ -53,19 +53,20 @@
  * RDD code numbers
  */
 enum RDDModels {
-  RDD_Test                 = 1,      /**< no parameters */
-      RDD_KatzPoint        = 2,      /**< parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
-      RDD_Geiss            = 3,      /**< parameters: 0 - a0 [m] (core diameter) */
-      RDD_Site             = 4,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off  */
-      RDD_Edmund           = 5,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off */
-      RDD_Cucinotta        = 6,      /**< parameters: 0 - r_min [m] (lower integration limit),1 - d_min_Gy (lower dose cut-off)   */
-      RDD_KatzExtTarget    = 7       /**< TODO: This is a dummy, replace */
+  RDD_Test                   = 1,      /**< no parameters */
+      RDD_KatzPoint          = 2,      /**< parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
+      RDD_Geiss              = 3,      /**< parameters: 0 - a0 [m] (core diameter) */
+      RDD_Site               = 4,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off  */
+      RDD_Edmund             = 5,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off */
+      RDD_Cucinotta          = 6,      /**< parameters: 0 - r_min [m] (lower integration limit),1 - d_min_Gy (lower dose cut-off)   */
+      RDD_KatzExtTarget      = 7,      /**< TODO: This is a dummy, replace */
+      RDD_CucinottaExtTarget = 8,
 };
 
 /**
  * Total number of RDD models
  */
-#define RDD_DATA_N    7
+#define RDD_DATA_N    8
 
 /**
  * RDD data
@@ -84,11 +85,11 @@ typedef struct {
  */
 static const rdd_data AT_RDD_Data = {
     RDD_DATA_N,
-    {  RDD_Test,                     RDD_KatzPoint,                                      RDD_Geiss,                         RDD_Site,                                        RDD_Edmund,                      RDD_Cucinotta,                                      RDD_KatzExtTarget },
-    {  0,                            2,                                                  1,                                 2,                                               2,                               2,                                                  3},
-    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                         {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"a0_m","d_min_Gy",""},          {"r_min_m","d_min_Gy",""},                          {"r_min_m","a0_m","d_min_Gy"}},
-    {  {0,0,0},                      {1e-10, 1e-10,0},                                   {5e-8,0,0},                        {5e-8,1e-10,0},                                  {5e-8,1e-10,0},                  {5e-11,1e-10,0},                                    {1e-10,1e-8,1e-10}},
-    {  "Simple step test function",  "Katz' point target RDD",                           "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. 1997]",  "Katz Extended Target"}
+    {  RDD_Test,                     RDD_KatzPoint,                                      RDD_Geiss,                         RDD_Site,                                        RDD_Edmund,                      RDD_Cucinotta,                                      RDD_KatzExtTarget,              RDD_CucinottaExtTarget},
+    {  0,                            2,                                                  1,                                 2,                                               2,                               2,                                                  3,                              3},
+    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                         {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"a0_m","d_min_Gy",""},          {"r_min_m","d_min_Gy",""},                          {"r_min_m","a0_m","d_min_Gy"},  {"r_min_m","a0_m","d_min_Gy"}},
+    {  {0,0,0},                      {1e-10, 1e-10,0},                                   {5e-8,0,0},                        {5e-8,1e-10,0},                                  {5e-8,1e-10,0},                  {5e-11,1e-10,0},                                    {1e-10,1e-8,1e-10},             {5e-11,1e-8,1e-10}},
+    {  "Simple step test function",  "Katz' point target RDD",                           "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. 1997]",  "Katz Extended Target",         "Cucinotta Extended Target"}
 };
 
 /**
