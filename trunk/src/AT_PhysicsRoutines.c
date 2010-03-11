@@ -247,10 +247,10 @@ void AT_D_Gy(  const long*  n,
     float* D_Gy)
 {
   // Get LET (write already into D_Gy)
-  AT_LET_MeV_cm2_g(n,
+  AT_LET_MeV_cm2_g(*n,
       E_MeV_u,
       particle_no,
-      material_no,
+      *material_no,
       D_Gy);
   // Multiply by fluence, convert from MeV/g to Gy
   long  i;
@@ -267,10 +267,10 @@ void AT_fluence_cm2(  const long*  n,
     float* fluence_cm2)
 {
   // Get LET (write already into fluence_cm2)
-  AT_LET_MeV_cm2_g(n,
+  AT_LET_MeV_cm2_g(*n,
       E_MeV_u,
       particle_no,
-      material_no,
+      *material_no,
       fluence_cm2);
   // Divide by dose, convert from Gy to MeV/g
   long  i;
@@ -494,10 +494,10 @@ void AT_fluenceweighted_LET_MeV_cm2_g( const long*     n,
     total_fluence_cm2 += fluence_cm2[i];
   }
 
-  AT_LET_MeV_cm2_g(  n,
+  AT_LET_MeV_cm2_g(  *n,
       E_MeV_u,
       particle_no,
-      material_no,
+      *material_no,
       single_LETs_MeV_cm2_g);
 
   *average_LET_MeV_cm2_g      = 0.0f;
@@ -523,10 +523,10 @@ void AT_doseweighted_LET_MeV_cm2_g( const long*     n,
   float*  single_LETs_MeV_cm2_g  =  (float*)calloc(*n, sizeof(float));
   float*  single_doses_Gy        =  (float*)calloc(*n, sizeof(float));
 
-  AT_LET_MeV_cm2_g(  n,
+  AT_LET_MeV_cm2_g(  *n,
       E_MeV_u,
       particle_no,
-      material_no,
+      *material_no,
       single_LETs_MeV_cm2_g);
 
   AT_D_Gy(      n,

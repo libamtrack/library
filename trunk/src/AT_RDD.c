@@ -451,10 +451,10 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
   ///////////////////////////////////////////////////////////////////////////////
   // PARAMETER 0: Get the LET (same for all models)
-  AT_LET_MeV_cm2_g(  &n_tmp,
+  AT_LET_MeV_cm2_g(  n_tmp,
             E_MeV_u,
             particle_no,
-            material_no,
+            *material_no,
             &LET_MeV_cm2_g);
 
   ////////////////////////////////////////////////////////////////////////////////
