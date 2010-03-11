@@ -459,11 +459,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
   ////////////////////////////////////////////////////////////////////////////////
   // PARAMETER 2: Get the maximum electron range (same for all RDD models)
-  AT_max_electron_ranges_m(  n_tmp,
-                E_MeV_u,
-                (int)(*material_no),
-                (int)(*er_model),
-                &max_electron_range_m);
+  max_electron_range_m = (float)AT_max_electron_range_m( (double)(*E_MeV_u), (int)(*material_no), (int)(*er_model));
 
   ////////////////////////////////////////////////////////////////////////////////
   // PARAMETER 6: Get the single impact fluence (same for all RDD models)
