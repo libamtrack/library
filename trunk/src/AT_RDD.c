@@ -442,7 +442,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
 
   // Get density
   double   density_g_cm3, density_kg_m3, electron_density_m3;
-  AT_getMaterialData(  n_tmp,
+  AT_get_materials_data(  n_tmp,
               material_no,
               &density_g_cm3,
               &electron_density_m3,
@@ -856,7 +856,7 @@ void AT_D_RDD_Gy  ( const  long*  n,
 
   // Get material data
   double   density_g_cm3, density_kg_m3, electron_density_m3;
-  AT_getMaterialData(  n_tmp,
+  AT_get_materials_data(  n_tmp,
               material_no,
               &density_g_cm3,
               &electron_density_m3,
@@ -1153,7 +1153,7 @@ void AT_r_RDD_m  ( const  long*  n,
 
   // Get material data
   double     density_g_cm3;
-  AT_getMaterialData(  n_tmp,
+  AT_get_materials_data(  n_tmp,
       material_no,
       &density_g_cm3,
       NULL, NULL, NULL, NULL, NULL, NULL, NULL);
