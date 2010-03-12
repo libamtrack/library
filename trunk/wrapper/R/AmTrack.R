@@ -1,5 +1,5 @@
-################################################################################################
-# S/R wrapping function interfacing libamtrack.dll
+################o G################################################################################
+# S/R wrapping function interfacing libamtrack library
 ################################################################################################
 # This script replaces (together with the libamtrack.dll) the old S-Plus or mixed S-Plus/C-versions
 # v1.0 - v2.x of the AmTrack particle library (or LGC, TIM, SGParticle...)
@@ -26,6 +26,9 @@
 # If not, see <http://www.gnu.org/licenses/>
 #
 #
+# TODO shall we keep changelog in the script file, or rather rely on commit log messages ?
+# changelog does not really tells much to the user
+#
 # 2006       : Started library under S
 # 2009-Apr-27: Started this version of wrapping script, sgre
 # 2009-Jun-12: Some minor typo correction before adding to the new repository system, sgre
@@ -43,47 +46,57 @@
 # FUNCTION LIST
 #
 # :::GENERAL FUNCTIONS:::
-# AT.beta.from.mass
-# AT.beta.from.particle.no
-# AT.effective.charge.from.beta
-# AT.effective.charge.from.particle.no
-# AT.gamma.response
+# AT.beta.from.E                             wrapper needed
+# AT.effective.charge.from.beta              wrapper needed
+# AT.effective.charge.from.particle.no       wrapper needed
+# AT.gamma.response                          looks OK, to be tested
 # AT.max.E.transfer.MeV                      OK
-# AT.particle.properties						
-# AT.read.spectrum
+# AT.particle.properties                     function missing				   
 # AT.max.electron.range                      OK
-# AT.D.Gy
-# AT.convert.beam.parameters
+# AT.D.Gy                                    wrapper needed
+# AT.convert.beam.parameters                 wrapper needed
+# AT.CSDA.range.g.cm2                        wrapper needed
+# AT.Z.from.particle.no                      wrapper needed
+# AT.A.from.particle.no                      wrapper needed
+# AT.read.spectrum                           C function not implemented
+# AT.scaled.energy.from.particle.no          wrapper needed
 #
 # :::MATERIAL FUNCTIONS:::
-# AT.get.material.data
-# AT.density.g.cm3
-# AT.LET.MeV.cm2.g
-# AT.electron.density.m3
+# AT.get.material.data                       wrapper needed
+# AT.density.g.cm3                           wrapper needed
+# AT.LET.MeV.cm2.g                           wrapper needed, should LET be in "material functions" ?
+# AT.LET.keV.um                              wrapper needed, should LET be in "material functions" ?
+# AT.electron.density.m3                     wrapper needed
+# AT.E.MeV.u                                 wrapper needed, function should be renamed, should LET be in "material functions" ?
 #
 # ::: KATZ MODEL TEST FUNCTIONS:::
-# AT.RDD.Katz.point.kernel
-# AT.RDD.Katz.point.D.Gy
-# AT.RDD.Katz.dEdx.kernel
-# AT.RDD.Katz.site.D.Gy
-# AT.RDD.Katz.ext.kernel.D.Gy
+# will be implemented soon
 #
 # :::RADIAL DOSE FUNCTIONS:::
 # AT.RDD.D.Gy                                OK
 # AT.RDD.D.ext.Gy                            OK
 # AT.RDD.r.m                                 OK
-# AT.RDD.f1.parameters
+# AT.RDD.f1.parameters                       wrapper needed
 #
 # :::Successive convolution FUNCTIONS:::
-# AT.SC.get.f1
-# AT.SC.get.gamma.response
-# AT.SC.do.SC
+# AT.SC.get.f1                               wrapper needed, function needs to be refactored
+# AT.SC.get.gamma.response                   wrapper written, not used, why not use here AT.gamma.response ? 
+# AT.SC.do.SC                                wrapper needed, function needs to be refactored
 #
 # :::Compute efficiency FUNCTIONS:::
-# AT.GSM
-# AT.SPIFF
-# AT.RBE
+# AT.GSM                                     wrapper needed
+# AT.IGK                                     wrapper needed
+# AT.SPIFF                                   wrapper needed
+# AT.RBE                                     wrapper needed, function needs to be refactored
 #
+# AT.efficiency                              function needs to be refactored
+# AT.SPIFF.short                             function needs to be refactored
+# AT.fit.linquad.chi2                        needs to be implemented in C and interfaced
+# AT.fit.linquad.chi2.grad                   needs to be implemented in C and interfaced
+# AT.fit.linquad                             needs to be implemented in C and interfaced
+# AT.Edmund.Transport                        needs to be implemented in C and interfaced
+# E.delta                                    needs to be implemented in C and interfaced, is it needed ?
+# 
 ################################################################################################
 
 debug <- F
@@ -102,9 +115,10 @@ AT.beta.from.E	<-	function(	E.MeV.u ){
 
 
 ##############################
-AT.density.g.cm3		<-	function(	material.name){
+# TODO function AT_density_g_cm3_from_material_no takes only single variable
+AT.density.g.cm3		<-	function(	material.no){
 	density.g.cm3			<-	numeric(1)
-	res						<-	.C(	"AT_density_g_cm3S",			material.name		=	as.character(material.name),
+	res						<-	.C(	"AT_density_g_cm3_from_material_no",			material.no		=	as.character(material.no),
 																		density.g.cm3		=	as.single(density.g.cm3))
 	return(res$density.g.cm3)						
 }
@@ -134,10 +148,10 @@ AT.effective.charge.from.beta	<-	function(	beta					= beta,
 }
 
 ##############################
-# TODO function AT_electron_density_m3S missing in the library
+# TODO function AT_electron_density_m3_from_material_no takes only single variable
 AT.electron.density.m3	<-	function(	material.no){
 	el.dens.m3			<-	numeric(1)
-	res					<-	.C(	"AT_electron_density_m3S",			material.no		=	as.integer(material.no),
+	res					<-	.C(	"AT_electron_density_m3_from_material_no",			material.no		=	as.integer(material.no),
 																		el.dens.m3			=	as.single(el.dens.m3))
 	return(res$el.dens.m3)						
 }
@@ -158,7 +172,6 @@ AT.gamma.response	<-	function(	d.Gy,
 }
 
 ##############################
-# TODO needs to go to AT_Wrapper_R
 AT.get.material.data	<-	function(	material.no){
 	density.g.cm3		<-	numeric(1)
 	el.dens.m3			<-	numeric(1)
@@ -167,7 +180,10 @@ AT.get.material.data	<-	function(	material.no){
 	p.MeV				<-	numeric(1)
 	m.g.cm2			<-	numeric(1)
 	n					<-	1
-	res					<-	.C(	"AT_getMaterialData",				n					=	as.integer(n),
+	
+# average A and Z needs to be added
+	
+	res					<-	.C(	"AT_get_materials_data",				n					=	as.integer(n),
 																		material.no		=	as.integer(material.no),
 																		density.g.cm3		=	as.single(density.g.cm3),
 																		el.dens.m3			=	as.single(el.dens.m3),
@@ -375,115 +391,7 @@ AT.max.electron.range					<-	function(	E.MeV.u,
 
 # Katz model test functions:	
 
-############
-AT.RDD.Katz.point.kernel					<-	function(	x,
-												alpha){
-	n					<-	length(x)
-	f				<-	numeric(n)
-  
-				
-		res					<-	.C(	"AT_RDD_Katz_point_kernelS",	n						=	as.integer(n),
-															x								=	as.single(x),
-															alpha				=	as.single(alpha),
-															f								=	as.single(f))		
-
-		if(debug == T) cat("res=",res$f,"\n")
-			
-	 return(res$f)						
-}
-
-############
-AT.RDD.Katz.point.D.Gy					<-	function(	r.m,
-												alpha,
-												r.max.m,
-												poin.coef){
-	n					<-	length(r.m)
-	D.Gy		<-	numeric(n)
-  
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("alpha=",alpha,"\n")
-				
-		res					<-	.C(	"AT_RDD_Katz_point_GyS",	n						=	as.integer(n),
-															r.m						=	as.single(r.m),
-															alpha				=	as.single(alpha),
-															r.max.m		= as.single(r.max.m),
-															point.coef = as.single(point.coef),
-															D.Gy					=	as.single(D.Gy))		
-
-		if(debug == T) cat("res=",res$D.Gy,"\n")
-			
-	 return(res$D.Gy)						
-}
-
-
-
-############
-AT.RDD.Katz.site.D.Gy					<-	function(	r.m,
-												alpha,
-												r.min.m,
-												r.max.m,
-												LET,
-												density,
-												dEdx,
-												poin.coef){
-	n					<-	length(r.m)
-	D.Gy		<-	numeric(n)
-  
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("alpha=",alpha,"\n")
-				
-		res					<-	.C(	"AT_RDD_Katz_site_GyS",	n						=	as.integer(n),
-															r.m						=	as.single(r.m),
-															alpha				=	as.single(alpha),
-															r.min.m		= as.single(r.min.m),
-															r.max.m		= as.single(r.max.m),
-															LET						= as.single(LET),
-															density		= as.single(density),
-															dEdx					= as.single(dEdx),					
-															point.coef = as.single(point.coef),
-															D.Gy					=	as.single(D.Gy))		
-
-		if(debug == T) cat("res=",res$D.Gy,"\n")
-			
-	 return(res$D.Gy)						
-}
-
-############
-AT.RDD.Katz.ext.kernel.D.Gy					<-	function(	t.m,
-												r.m,
-												a0.m,
-												alpha,
-												r.min.m,
-												r.max.m,
-												poin.coef){
-	n					<-	length(t.m)
-	D.Gy		<-	numeric(n)
-  
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("t.m=",t.m,"\n")
- 	if(debug == T) cat("r.m=",r.m,"\n")
- 	if(debug == T) cat("a0.m=",a0.m,"\n")
- 	if(debug == T) cat("alpha=",alpha,"\n")
- 	if(debug == T) cat("r.min.m=",r.min.m,"\n")
- 	if(debug == T) cat("r.max.m=",r.max.m,"\n")
- 	if(debug == T) cat("poin.coef=",poin.coef,"\n")
-								
-# AT_RDD_Katz_ext_kernel_GyS(int *n, float* t_m, float *r_m, float* a0_m, float* alpha, float* r_min_m, float* r_max_m, float* Katz_point_coeff_Gy, float * D_Gy)
-								
-		res					<-	.C(	"AT_RDD_Katz_ext_kernel_GyS",	n						=	as.integer(n),
-															t.m						=	as.single(t.m),
-															r.m						=	as.single(r.m),
-															a0.m						=	as.single(a0.m),
-															alpha				=	as.single(alpha),
-															r.min.m		= as.single(r.min.m),
-															r.max.m		= as.single(r.max.m),
-															point.coef = as.single(point.coef),
-															D.Gy					=	as.single(D.Gy))		
-
-		if(debug == T) cat("res=",res$D.Gy,"\n")
-			
-	 return(res$D.Gy)						
-}
+# TODO to be implemented
 
 ################################################################################################
 # RDD functions
@@ -500,35 +408,8 @@ AT.RDD.D.Gy					<-	function(	r.m,
 												RDD.parameters){
 	n					<-	length(r.m)
 	D.Gy				<-	numeric(n)
-  
-
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("r.m=",r.m,"\n")
-
-	 if( RDD.model == 1 ){ 
-	 	if(debug == T) cat("RDD_test model\n")}
-
-	 if( RDD.model == 2 ){ 
-	 	if(debug == T) cat("RDD_KatzPoint model\n")
-	 	if(debug == T) cat("parameters r.min.m=",RDD.parameters[1],"\n")
-	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[2],"\n")}
-
-	 if( RDD.model == 3 ){ 
-	  if(debug == T) cat("RDD_Geiss model\n")
-	  if(debug == T) cat("parameters a0=",RDD.parameters[1],"\n")}
-
-	 if( RDD.model == 4 ){ 
-	  if(debug == T) cat("RDD_Site model\n")
-		if(debug == T) cat("parameters a0=",RDD.parameters[1],"\n")
-	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[2],"\n")}
-		
-		 if( RDD.model == 5 ){ 
-	  if(debug == T) cat("RDD_ExtTarget model\n")
-	 	if(debug == T) cat("parameters r.min.m=",RDD.parameters[1],"\n")
-		if(debug == T) cat("parameters a0=",RDD.parameters[2],"\n")
-	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[3],"\n")}
-			
-		res					<-	.C(	"AT_D_RDD_Gy_R",	n						=	as.integer(n),
+  		
+    res					<-	.C(	"AT_D_RDD_Gy_R",	n						=	as.integer(n),
 														r.m						=	as.single(r.m),
 														E.MeV.u				=	as.single(E.MeV.u),
 														particle.no			=	as.integer(particle.no),
@@ -538,8 +419,6 @@ AT.RDD.D.Gy					<-	function(	r.m,
 														ER.model				=	as.integer(ER.model),
 														ER.parameters			=	as.single(ER.parameters),
 														D.Gy					=	as.single(D.Gy))		
-
-			if(debug == T) cat("dose=",res$D.Gy,"\n")
 			
 	 return(res$D.Gy)						
 }
@@ -556,31 +435,6 @@ AT.RDD.r.m					<-	function(	D.Gy,
 	n					<-	length(D.Gy)
 	r.m					<-	numeric(n)
   
-  	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("r.m=",r.m,"\n")
-
-	 if( RDD.model == 1 ){ 
-	 	if(debug == T) cat("RDD_test model\n")}
-
-	 if( RDD.model == 2 ){ 
-	 	if(debug == T) cat("RDD_KatzPoint model\n")
-	 	if(debug == T) cat("parameters r.min.m=",RDD.parameters[1],"\n")
-	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[2],"\n")}
-
-	 if( RDD.model == 3 ){ 
-	  if(debug == T) cat("RDD_Geiss model\n")
-	  if(debug == T) cat("parameters a0=",RDD.parameters[1],"\n")}
-
-	 if( RDD.model == 4 ){ 
-	  if(debug == T) cat("RDD_Site model\n")
-		if(debug == T) cat("parameters a0=",RDD.parameters[1],"\n")
-	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[2],"\n")}
-
-	 if( RDD.model == 5 ){ 
-	  if(debug == T) cat("RDD_ExtTarget model\n")
-	 	if(debug == T) cat("parameters r.min.m=",RDD.parameters[1],"\n")
-		if(debug == T) cat("parameters a0=",RDD.parameters[2],"\n")
-	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[3],"\n")}
 				
 		res					<-	.C(	"AT_r_RDD_m_R",	n						=	as.integer(n),
 														D.Gy					=	as.single(D.Gy),
@@ -592,68 +446,8 @@ AT.RDD.r.m					<-	function(	D.Gy,
 														ER.model				=	as.integer(ER.model),
 														ER.parameters			=	as.single(ER.parameters),
 														r.m						=	as.single(r.m))		
-
-			if(debug == T) cat("r[m] = ",res$r.m,"\n")
 			
 	 return(res$r.m)						
-}
-
-############
-AT.RDD.D.ext.Gy					<-	function(	r.m,
-												a0.m,
-												E.MeV.u,
-												particle.no,
-												material.no,
-												ER.model,
-												ER.parameters,
-												RDD.model,
-												RDD.parameters){
-												
-	n					<-	length(r.m)
-	D.Gy				<-	numeric(n)
-  
-
- 	if(debug == T) cat("n =",n,"\n")
- 	if(debug == T) cat("r.m=",r.m,"\n")
-
-	 if( RDD.model == 1 ){ 
-	 	if(debug == T) cat("RDD_test model\n")}
-
-	 if( RDD.model == 2 ){ 
-	 	if(debug == T) cat("RDD_KatzPoint model\n")
-	 	if(debug == T) cat("parameters r.min.m=",RDD.parameters[1],"\n")
-	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[2],"\n")}
-
-	 if( RDD.model == 3 ){ 
-	  if(debug == T) cat("RDD_Geiss model\n")
-	  if(debug == T) cat("parameters a0=",RDD.parameters[1],"\n")}
-
-	 if( RDD.model == 4 ){ 
-	  if(debug == T) cat("RDD_Site model\n")
-		if(debug == T) cat("parameters a0=",RDD.parameters[1],"\n")
-	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[2],"\n")}
-		
-		 if( RDD.model == 5 ){ 
-	  if(debug == T) cat("RDD_ExtTarget model\n")
-	 	if(debug == T) cat("parameters r.min.m=",RDD.parameters[1],"\n")
-		 if(debug == T) cat("parameters a0=",RDD.parameters[2],"\n")
-	 	if(debug == T) cat("parameters D.min.Gy=",RDD.parameters[3],"\n")}
-			
-		res					<-	.C(	"AT_RDD_ExtendedTarget_Gy_R",	n						=	as.integer(n),
-														r.m						=	as.single(r.m),
-														a0.m						=	as.single(a0.m),
-														E.MeV.u				=	as.single(E.MeV.u),
-														particle.no			=	as.integer(particle.no),
-														material.no			=	as.integer(material.no),
-														RDD.model				=	as.integer(RDD.model),
-														RDD.parameters		=	as.single(RDD.parameters),
-														ER.model				=	as.integer(ER.model),
-														ER.parameters			=	as.single(ER.parameters),
-														D.Gy					=	as.single(D.Gy))		
-
-			if(debug == T) cat("dose=",res$D.Gy,"\n")
-			
-	 return(res$D.Gy)						
 }
 
 
