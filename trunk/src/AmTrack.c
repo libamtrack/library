@@ -1067,17 +1067,13 @@ void AT_IGK(  const long*  n,
         &sI_m2,
         &error);
     if (status == GSL_EROUND || status == GSL_ESING){
-      printf("Error in integration - IGK\n");
+      printf("Error in integration (cross section calculation) - IGK\n");
     }
 
     sI_m2  *= 2.0 * M_PI;
     sI_cm2  = (float)sI_m2 * 10000;
 
     gsl_integration_workspace_free (w1);
-
-    printf("sigma = %g\n", sI_m2);
-
-    return;
 
     // TODO: INTERCEPT Katz point RDD for m / c detectors here!
 
