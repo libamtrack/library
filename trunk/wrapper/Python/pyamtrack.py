@@ -580,6 +580,15 @@ class AmTrack(object):
             AT_IGK_output.append(item)
             
         return AT_IGK_output
+
+
+
+    def parameters(self):
+        '''
+        prints all parameters of the object
+        '''
+        for item in self.__dict__:
+            print item, self.__dict__[item]
    
 
 class AmSpiffRun(AmTrack):
@@ -604,7 +613,9 @@ class AmSpiffRun(AmTrack):
                   shrink_tails = True,
                   shrink_tails_under= 1e-30,
                   adjust_N2 = True,
-                  lethal_events_mode = False):
+                  lethal_events_mode = False,
+                  name= 'spiff_run'):
+        self.name = name
         self.number_particles = n
         self.E_MeV_u = E_MeV_u
         self.particle_no = particle_no
@@ -689,6 +700,7 @@ class AmSpiffRun(AmTrack):
         self.SC_data= [data_i, data_E, data_DE, data_H, data_F]
 
 
+
 class AmIgkRun(AmTrack):
     '''
     IGK RUN CLASS
@@ -705,7 +717,9 @@ class AmIgkRun(AmTrack):
                   ER_parameters=[0.0, 0.0],
                   gamma_model=2,
                   gamma_parameters=[1,10.5e4,1,1],
-                  saturation_cross_section_factor=1 ):
+                  saturation_cross_section_factor=1,
+                  name = 'igk_run'):
+        self.name  = name
         self.number_particles = n
         self.E_MeV_u = E_MeV_u
         self.particle_no = particle_no
@@ -760,7 +774,9 @@ class AmGsmRun(AmTrack):
                   write_output = True,
                   nX = 20,
                   voxel_size_m = 1e-10,
-                  lethal_events_mode = False  ):
+                  lethal_events_mode = False,
+                  name = 'gsm_run'):
+        self.name = name
         self.number_particles = n
         self.E_MeV_u = E_MeV_u
         self.particle_no = particle_no
@@ -824,7 +840,9 @@ class AmSpissRun(AmTrack):
                   n_runs =1e4, n2 =40 ,
                   fluence_factor =1.0,
                   write_output = True,
-                  importance_sampling = 0):
+                  importance_sampling = 0,
+                  name = 'spiss_run'):
+        self.name = name
         self.number_particles = n
         self.E_MeV_u = E_MeV_u
         self.particle_no = particle_no
