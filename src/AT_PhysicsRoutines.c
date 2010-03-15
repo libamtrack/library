@@ -31,28 +31,29 @@
 
 #include "AT_PhysicsRoutines.h"
 
-void AT_beta_from_E( const long*  n,
-    const float*  E_MeV_u,
-    float*  beta)
+int AT_beta_from_E( const long  n,
+    const float  E_MeV_u[],
+    float  beta[])
 {
   // loop over n to find beta for all given particles and energies
   long  i;
-  for(i = 0; i < *n; i++){
+  for(i = 0; i < n; i++){
 
     // Return relativistic speed
     // E_MeV/E0_MeV = E_MeV_u[i] / proton_mass_MeV_c2
     // beta = sqrt(1. - 1/((1 + E_MeV/E0_MeV)*(1 + E_MeV/E0_MeV)))
     beta[i]        =  (float)sqrt(1.0f - 1.0f/gsl_pow_2(1 + E_MeV_u[i]/proton_mass_MeV_c2));
   }
+  return 0;
 }
 
-void AT_E_from_beta(  const long*  n,
-    const float*  beta,
-    float*  E_MeV_u)
+int AT_E_from_beta(  const long  n,
+    const float  beta[],
+    float  E_MeV_u[])
 {
   // loop over n to find beta for all given particles and energies
   long  i;
-  for(i = 0; i < *n; i++){
+  for(i = 0; i < n; i++){
     // Get rest energy
     //float  E0_MeV    =  (float)proton_mass_MeV_c2 * mass[i];
     //E_MeV_u[i]      =  E0_MeV * (1.0f / (1 - beta[i]*beta[i]) - 1);
@@ -60,17 +61,18 @@ void AT_E_from_beta(  const long*  n,
 
     E_MeV_u[i]      =  proton_mass_MeV_c2 * (1.0f / (1.0f - gsl_pow_2(beta[i])) - 1.0f);
   }
+  return 0;
 }
 
 
-void AT_effective_charge_from_beta( const long*  n,
-    const float*  beta,
-    const long*  Z,
-    float*  effective_charge)
+int AT_effective_charge_from_beta( const long  n,
+    const float  beta[],
+    const long  Z[],
+    float  effective_charge[])
 {
   // loop over n
   long  i;
-  for (i = 0; i < *n; i++){
+  for (i = 0; i < n; i++){
     // Return effective charge according to Barkas-Bethe-approximation
     if (Z[i]!=1){
       effective_charge[i]  = (float)(Z[i]) * (1.0f - expf(-125.0f * beta[i] / (pow(Z[i], 2.0f/3.0f))));
@@ -78,22 +80,25 @@ void AT_effective_charge_from_beta( const long*  n,
       effective_charge[i]  = 1.0f - expf(-125.0f * beta[i]);
     }
   }
+  return 0;
 }
 
-void AT_effective_charge_from_particle_no( const  long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
-    float*  effective_charge)
+int AT_effective_charge_from_E_MeV_u( const  long  n,
+    const float  E_MeV_u[],
+    const long  particle_no[],
+    float  effective_charge[])
 {
   // get relativistic speeds for all given particles and energies
-  float*  beta  =  (float*)calloc(*n, sizeof(float));
-  long*  Z    =  (long*)calloc(*n, sizeof(long));
+  float*  beta  =  (float*)calloc(n, sizeof(float));
+  long*  Z    =  (long*)calloc(n, sizeof(long));
 
   AT_beta_from_E(  n,
       E_MeV_u,
       beta);
 
-  AT_Z_from_particle_no(n,particle_no,Z);
+  AT_Z_from_particle_no(        n,
+                                particle_no,
+                                Z);
 
   AT_effective_charge_from_beta(  n,
       beta,
@@ -102,74 +107,29 @@ void AT_effective_charge_from_particle_no( const  long*  n,
 
   free(beta);
   free(Z);
+  return 0;
 }
 
 
-
+/*
 void AT_scaled_energy(  const long*  n,
-    const float*  E_MeV_u,
+    const float*  E_MeV,
     const long*  particle_no,
     float*  scaled_energy)
 {
   long*  A    =  (long*)calloc(*n, sizeof(long));
-  float*  mass  =  (float*)calloc(*n, sizeof(float));
+  AT_A_from_particle_no(n, particle_no, A);
 
-  AT_Particle_Properties(n,particle_no,NULL,NULL,NULL,NULL,A,mass);
-
-  const long dummy_n = 1;
-  const long proton_particle_no = 1;
-  float proton_mass;
-
-  AT_mass_from_particle_no(&dummy_n,&proton_particle_no,&proton_mass);
-
-  // loop over n to find beta for all given particles and energies
+  // loop over n
   long  i;
-  float  E_MeV;
-  float mass_fraction;
   for(i = 0; i < *n; i++){
-    // total kinetic energy
-    E_MeV    =  E_MeV_u[i] * A[i];
-
-    mass_fraction = mass[i] / proton_mass;
-
     // Return mass-scaled energy
-    scaled_energy[i]  =  E_MeV / mass_fraction ;
+    scaled_energy[i]  =  E_MeV[i] / A[i] ;
   }
 
   free(A);
-  free(mass);
 }
-
-void AT_E_MeV_u_from_scaled_energy(  const long*  n,
-    const float*  scaled_energy,
-    const long*  particle_no,
-    float*  E_MeV_u)
-{
-  long*  A    =  (long*)calloc(*n, sizeof(long));
-  float*  mass  =  (float*)calloc(*n, sizeof(float));
-
-  AT_Particle_Properties(n,particle_no,NULL,NULL,NULL,NULL,A,mass);
-
-  const long dummy_n = 1;
-  const long proton_particle_no = 1;
-  float proton_mass;
-
-  AT_mass_from_particle_no(&dummy_n,&proton_particle_no,&proton_mass);
-
-  // loop over n to find beta for all given particles and energies
-  long  i;
-  for(i = 0; i < *n; i++){
-    float mass_fraction = mass[i] / proton_mass;
-
-    float  E_MeV  = scaled_energy[i] * mass_fraction;
-
-    // Return energy per nucleon
-    E_MeV_u[i]  =  E_MeV / A[i];
-  }
-
-  free(A);
-  free(mass);
-}
+*/
 
 
 void AT_max_E_transfer_MeV(  const long*  n,

@@ -100,9 +100,9 @@ typedef struct {
  * @param[in] E_MeV_u                  vector of energies of particle per nucleon [MeV]
  * @param[out] beta                    vector of relative particle speed beta = v/c
  */
-void AT_beta_from_E( const long*  n,
-    const float*  E_MeV_u,
-    float*  beta);
+int AT_beta_from_E( const long  n,
+    const float  E_MeV_u[],
+    float  beta[]);
 
 /**
  *  Return energy per nucleon of particle with relative speed beta
@@ -111,9 +111,9 @@ void AT_beta_from_E( const long*  n,
  * @param[in] beta                     vector of relative particle speed beta = v/c
  * @param[out] E_MeV_u                 vector of energies of particle per nucleon [MeV]
  */
-void AT_E_from_beta(  const long*  n,
-    const float*  beta,
-    float*  E_MeV_u);
+int AT_E_from_beta(  const long  n,
+    const float  beta[],
+    float  E_MeV_u[]);
 
 /**
  * Effective charge according to Barkas-Bethe-approximation:
@@ -127,10 +127,10 @@ void AT_E_from_beta(  const long*  n,
  * @param[in] Z                        atomic number Z of ion
  * @param[out] effective_charge of ion
  */
-void AT_effective_charge_from_beta(  const long*  n,
-    const float*  beta,
-    const long*  Z,
-    float*  effective_charge);
+int AT_effective_charge_from_beta(  const long  n,
+    const float  beta[],
+    const long  Z[],
+    float  effective_charge[]);
 
 /**
  * Get Bohr's energy spread (Wilson, 1947, Phys Rev 71, 385)
@@ -154,10 +154,10 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
  * @param[in] particle_no              TODO
  * @param[out] effective_charge
  */
-void AT_effective_charge_from_particle_no(  const long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
-    float*  effective_charge); // TODO maybe this could be renamed to AT_effective_charge_from_E ? or AT_effective_charge_from_E_and_particle_no ?
+int AT_effective_charge_from_E_MeV_u(  const long  n,
+    const float  E_MeV_u[],
+    const long  particle_no[],
+    float  effective_charge[]);
 
 /**
  * Scaled energy TODO
@@ -166,22 +166,10 @@ void AT_effective_charge_from_particle_no(  const long*  n,
  * @param[in] particle_no              TODO
  * @param[out] scaled_energy
  */
-void AT_scaled_energy( const long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
-    float*  scaled_energy);
-
-/**
- * Scaled energy TODO
- * @param[in] n                        number of particles
- * @param[in] scaled_energy            TODO
- * @param[in] particle_no              TODO
- * @param[out] E_MeV_u
- */
-void AT_E_MeV_u_from_scaled_energy(  const long*  n,
-    const float*  scaled_energy,
-    const long*  particle_no,
-    float*  E_MeV_u);
+//void AT_scaled_energy( const long*  n,
+//    const float*  E_MeV_u,
+//    const long*  particle_no,
+//    float*  scaled_energy);
 
 /**
  * Max energy transfer TODO

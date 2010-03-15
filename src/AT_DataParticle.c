@@ -32,37 +32,70 @@
 
 #include "AT_DataParticle.h"
 
-void AT_mass_from_particle_no( const long*  n,
-    const long*  particle_no,
-    float*  mass)
+int AT_A_from_particle_no( const long  n,
+    const long  particle_no[],
+    long  A[])
 {
-  AT_Particle_Properties(n,particle_no,NULL,NULL,NULL,NULL,NULL,mass);
+  long i;
+  for (i = 0; i < n; i++){
+    A[i]        = (long)(particle_no[i] / 1000);
+    A[i]        = (long)(particle_no[i] - A[i] * 1000);
+  }
+  return 0;
 }
 
-void AT_A_from_particle_no( const long*  n,
-    const long*  particle_no,
-    long*  A)
+int AT_Z_from_particle_no( const long  n,
+    const long  particle_no[],
+    long  Z[])
 {
-  AT_Particle_Properties(n,particle_no,NULL,NULL,NULL,NULL,A,NULL);
+  long i;
+  for (i = 0; i < n; i++){
+    Z[i]        = (long)(particle_no[i] / 1000);
+  }
+  return 0;
 }
 
-void AT_Z_from_particle_no( const long*  n,
-    const long*  particle_no,
-    long*  Z)
+int AT_atomic_weight_from_particle_no( const long  n,
+    const long  particle_no[],
+    float  atomic_weight[])
 {
-  AT_Particle_Properties(n,particle_no,NULL,NULL,NULL,Z,NULL,NULL);
+  long i;
+  long*  matches  =  (long*)calloc(n, sizeof(long));
+  long*  Z        =  (long*)calloc(n, sizeof(long));
+
+  AT_Z_from_particle_no( n,
+      particle_no,
+      Z);
+
+  long   n_particle_data = PARTICLE_DATA_N;
+
+  find_elements_int(  Z,
+      &n,
+      AT_Particle_Data.Z,
+      &n_particle_data,
+      matches);
+
+  for (i = 0; i < n; i++){
+    Z[i]                = (long)(particle_no[i] / 1000);
+    atomic_weight[i]    = AT_Particle_Data.atomic_weight[matches[i]];
+  }
+
+  free(Z);
+  free(matches);
+  return 0;
 }
 
+/*
 void AT_Particle_Properties(  const long*  n,
     const long*  particle_no,
-    /* return values*/
-    char**  particle_name,
-    char**  USRTRACK_name,
+    long*   Z,
+    long*   A,
     char**  element_name,
-    long*  Z,
-    long*  A,
-    float*  mass)
+    char**  element_acronym,
+    float** density_g_cm3,
+    float** I_eV)
 {
+
   // find look-up indices for particle numbers in particle data
   long*  matches  =  (long*)calloc(*n, sizeof(long));
 
@@ -106,5 +139,5 @@ void AT_Particle_Properties(  const long*  n,
   }
   free(matches);
 }
-
+*/
 

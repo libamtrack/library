@@ -38,7 +38,7 @@ void getERName(
   // find look-up index for ER number in ER data table
   int  match;
 
-  pmatchi_int(  &ER_no,
+  are_elements_int(  &ER_no,
       1,
       AT_ER_Data.ER_no,
       AT_ER_Data.n,

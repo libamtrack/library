@@ -719,7 +719,7 @@ float zriddr(float (*func)(float,void*), void * params, const float x1, const fl
  * @param n_set
  * @param matches
  */
-void pmatchi_int(const int* elements, const int n_elements, const int* set, const int n_set, int* matches){
+void are_elements_int(const int* elements, const int n_elements, const int* set, const int n_set, int* matches){
   long  i;
   for (i = 0; i < n_elements; i++){
     matches[i] = 0;
@@ -743,7 +743,7 @@ void pmatchi_int(const int* elements, const int n_elements, const int* set, cons
  * @param n_set
  * @param matches
  */
-void pmatchi(const long* elements, const long* n_elements, const long* set, const long* n_set, long* matches){
+void find_elements_int(const long* elements, const long* n_elements, const long* set, const long* n_set, long* matches){
   long  i;
   for (i = 0; i < *n_elements; i++){
     matches[i] = 0;
@@ -767,7 +767,7 @@ void pmatchi(const long* elements, const long* n_elements, const long* set, cons
  * @param n_set
  * @param matches
  */
-void pmatchc(const char** elements, const long* n_elements, const char* const * set, const long* n_set, long* matches){
+void find_elements_char(const char** elements, const long* n_elements, const char* const * set, const long* n_set, long* matches){
 
   long  i;
   for (i = 0; i < *n_elements; i++){
@@ -791,7 +791,7 @@ void pmatchc(const char** elements, const long* n_elements, const char* const * 
  * @param n_set
  * @param matches
  */
-void matchc(const char* element, const char* const * set, const long* n_set, bool* matches){
+void is_element_char(const char* element, const char* const * set, const long* n_set, bool* matches){
 
   long  i;
   for (i = 0; i < *n_set; i++){
@@ -811,7 +811,7 @@ void matchc(const char* element, const char* const * set, const long* n_set, boo
  * @param n_set
  * @param matches
  */
-void matchi(const long* element, const long* set, const long* n_set, bool* matches){
+void is_element_int(const long* element, const long* set, const long* n_set, bool* matches){
 
   long  i;
   for (i = 0; i < *n_set; i++){
