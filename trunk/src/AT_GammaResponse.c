@@ -40,7 +40,7 @@ void getGammaName( const long Gamma_no,
   long  match;
   const long n_tmp = 1;
 
-  pmatchi(  &Gamma_no,
+  find_elements_int(  &Gamma_no,
       &n_tmp,
       AT_GR_Data.GR_no,
       &AT_GR_Data.n,

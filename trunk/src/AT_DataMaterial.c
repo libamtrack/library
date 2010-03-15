@@ -37,7 +37,7 @@
 long AT_index_from_material_no( const long material_no ){
   long  index                =  -1;
   long  number_of_materials  =  1;
-  pmatchi(  &material_no,
+  find_elements_int(  &material_no,
       &number_of_materials,
       AT_Material_Data.material_no,
       &AT_Material_Data.n,
@@ -67,7 +67,7 @@ long getMaterialNo(
   long  match;
   const long n_tmp = 1;
 
-  pmatchc(  &material_name,
+  find_elements_char(  &material_name,
       &n_tmp,
       AT_Material_Data.material_name,
       &AT_Material_Data.n,
@@ -233,7 +233,7 @@ void AT_get_materials_data( const long  number_of_materials,
     double  average_Z[])
 {
   long*  match  =  (long*)calloc(number_of_materials, sizeof(long));
-  pmatchi(  material_no,
+  find_elements_int(  material_no,
       &number_of_materials,
       AT_Material_Data.material_no,
       &AT_Material_Data.n,

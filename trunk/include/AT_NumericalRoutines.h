@@ -80,31 +80,31 @@ void nrerror(const char error_text[]);
  */
 float zriddr(float (*func)(float,void*), void * params, const float x1, const float x2, const float xacc);
 
-void pmatchi_int(const int* elements, const int n_elements, const int* set, const int n_set, int* matches);
+void are_elements_int(const int* elements, const int n_elements, const int* set, const int n_set, int* matches);
 
 /**
  * finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
  * is reported per element a vector "matches" of length n_elements has to be provided
  */
-void pmatchi(const long* elements, const long* n_elements, const long* set, const long* n_set, long* matches);
+void find_elements_int(const long* elements, const long* n_elements, const long* set, const long* n_set, long* matches);
 
 /**
  * finds character elements in a set (n elements) and returns indices - only one (the first) match
  * is reported per element a vector "matches" of length n_elements has to be provided
  */
-void pmatchc(const char** elements, const long* n_elements, const char* const* set, const long* n_set, long* matches);
+void find_elements_char(const char** elements, const long* n_elements, const char* const* set, const long* n_set, long* matches);
 
 /**
  * finds a character element in a set and returns boolean match vector
  * a vector "matches" of length n_set has to be provided
  */
-void matchc(const char* element, const char* const * set, const long* n_set, bool* matches);
+void is_element_char(const char* element, const char* const * set, const long* n_set, bool* matches);
 
 /**
  * finds a integer element in a set and returns boolean match vector
  * a vector "matches" of length n_set has to be provided
  */
-void matchi(const long* element, const long* set, const long* n_set, bool* matches);
+void is_element_int(const long* element, const long* set, const long* n_set, bool* matches);
 
 /**
  * interpolation on a table: code (w/ adapted indices) from Numerical Recipes, 2rd ed., chapter 3.1

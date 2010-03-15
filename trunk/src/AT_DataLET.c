@@ -42,7 +42,7 @@ void getPSTARvalue(
 {
   // first: find those PSTAR entries that match the material number
   bool*    matches    =  (bool*)calloc(AT_PSTAR_Data.n, sizeof(bool));
-  matchi(    &material_no,
+  is_element_int(    &material_no,
       AT_PSTAR_Data.material_no,
       &AT_PSTAR_Data.n,
       matches);
@@ -93,44 +93,40 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
     const long   material_no,
     float        LET_MeV_cm2_g[])
 {
-
-  // TODO think if we shall use scaled energy or just energy per nucleon
-  // get scaled energies for all given particles and energies
-  float*  sE  =  (float*)calloc(number_of_particles, sizeof(float));
-  AT_scaled_energy(  &number_of_particles,
-      E_MeV_u,
-      particle_no,
-      sE);
-
-  // get effective charge for all given particles and energies
-  float*  Zeff_proton  =  (float*)calloc(number_of_particles, sizeof(float));
-  long*   particle_no_proton  =  (long*)calloc(number_of_particles, sizeof(long));
-  long   i;
-  for (i = 0; i < number_of_particles; i++){
-    particle_no_proton[i] = 1;
-  }
-  AT_effective_charge_from_particle_no(  &number_of_particles,
-      E_MeV_u,
-      particle_no_proton,
-      Zeff_proton);
+  // get LET for proton of same energy / nucleon
+  getPSTARvalue(number_of_particles, E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, LET_MeV_cm2_g);
 
   // get effective charge for all given particles and energies
   float*  Zeff_ion  =  (float*)calloc( number_of_particles, sizeof(float));
-  AT_effective_charge_from_particle_no(  &number_of_particles,
+  AT_effective_charge_from_E_MeV_u(  number_of_particles,
       E_MeV_u,
       particle_no,
       Zeff_ion);
 
-  getPSTARvalue(number_of_particles, sE, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, LET_MeV_cm2_g);
+  // get effective charge for protons of same energy
+  long   i;
+  float*  Zeff_proton           =  (float*)calloc(number_of_particles, sizeof(float));
+  long*   particle_no_proton    =  (long*)calloc(number_of_particles, sizeof(long));
+  for (i = 0; i < number_of_particles; i++){
+    particle_no_proton[i] = 1001;
+  }
+
+  AT_effective_charge_from_E_MeV_u(  number_of_particles,
+      E_MeV_u,
+      particle_no_proton,
+      Zeff_proton);
+
+  // scale proton LET by ratio of effective Z
   for (i = 0; i < number_of_particles; i++){
     if( particle_no[i] != 1){ // for particles other than proton scale LET by (Zeff_ion / Zeff_proton)^2
       LET_MeV_cm2_g[i] *=   gsl_pow_2(Zeff_ion[i] / Zeff_proton[i]);
     }
   }
 
-  free(Zeff_ion);
+  free(particle_no_proton);
   free(Zeff_proton);
-  free(sE);
+
+  free(Zeff_ion);
 }
 
 
@@ -154,7 +150,6 @@ void AT_LET_keV_um(  const long  number_of_particles,
   for (i = 0; i < number_of_particles; i++){
     LET_keV_um[i]  *=  (float)material_density_g_cm3 * 0.1f;
   }
-
 }
 
 
@@ -169,10 +164,10 @@ void AT_CSDA_range_g_cm2(  const long  number_of_particles,
   // Conversion CSDA_proton => CSDA_ion
   long*  Z  =  (long*)calloc(number_of_particles, sizeof(long));
   long*  A  =  (long*)calloc(number_of_particles, sizeof(long));
-  AT_Z_from_particle_no(        &number_of_particles,
+  AT_Z_from_particle_no(        number_of_particles,
                                 particle_no,
                                 Z);
-  AT_A_from_particle_no(        &number_of_particles,
+  AT_A_from_particle_no(        number_of_particles,
                                 particle_no,
                                 A);
   long i = 0;
@@ -222,9 +217,6 @@ void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
 
   getPSTARvalue(number_of_particles, CSDA_range_g_cm2, material_no, AT_PSTAR_Data.range_cdsa_g_cm2, AT_PSTAR_Data.kin_E_MeV, sE);
 
-  // scale energy back
-  AT_E_MeV_u_from_scaled_energy(&number_of_particles , sE, particle_no, E_MeV);
-
   free( sE );
 }
 
@@ -242,7 +234,9 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
 
   // Conversion LETion => LETproton
   long*  charge  =  (long*)calloc(number_of_particles, sizeof(long));
-  AT_Z_from_particle_no(&number_of_particles,particle_no,charge);
+  AT_Z_from_particle_no(        number_of_particles,
+      particle_no,
+      charge);
 
 
   // loop over n to find charge for all given particles and energies
@@ -254,9 +248,6 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
   }
 
   getPSTARvalue(number_of_particles, LET_MeV_cm2_g_copy, material_no, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, AT_PSTAR_Data.kin_E_MeV, scaled_E_MeV);
-
-  // scale energy back
-  AT_E_MeV_u_from_scaled_energy(&number_of_particles , scaled_E_MeV, particle_no, E_MeV);
 
   free( charge );
   free( LET_MeV_cm2_g_copy );
