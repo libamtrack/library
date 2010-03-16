@@ -118,7 +118,7 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
 
   // scale proton LET by ratio of effective Z
   for (i = 0; i < number_of_particles; i++){
-    if( particle_no[i] != 1){ // for particles other than proton scale LET by (Zeff_ion / Zeff_proton)^2
+    if( particle_no[i] != 1001){ // for particles other than proton scale LET by (Zeff_ion / Zeff_proton)^2
       LET_MeV_cm2_g[i] *=   gsl_pow_2(Zeff_ion[i] / Zeff_proton[i]);
     }
   }
