@@ -867,13 +867,13 @@ void AT_D_RDD_Gy  ( const  long*  n,
   long   Z       = 0;
   float  Z_eff   = 0.0f;
   const long n_tmp           = 1;
-  AT_beta_from_E(  &n_tmp,
+  AT_beta_from_E(  n_tmp,
                 E_MeV_u,
                 &beta);
-  AT_Z_from_particle_no(  &n_tmp,
+  AT_Z_from_particle_no(  n_tmp,
                 particle_no,
                 &Z);
-  AT_effective_charge_from_beta(  &n_tmp,
+  AT_effective_charge_from_beta(  n_tmp,
                 &beta,
                 &Z,
                 &Z_eff);
@@ -1239,13 +1239,13 @@ void AT_r_RDD_m  ( const  long*  n,
     float  beta   = 0.0f;
     long  Z       = 0;
     float  Z_eff  = 0.0f;
-    AT_beta_from_E(  &n_tmp,
+    AT_beta_from_E(  n_tmp,
                   E_MeV_u,
                   &beta);
-    AT_Z_from_particle_no(  &n_tmp,
+    AT_Z_from_particle_no(  n_tmp,
                   particle_no,
                   &Z);
-    AT_effective_charge_from_beta(  &n_tmp,
+    AT_effective_charge_from_beta(  n_tmp,
                   &beta,
                   &Z,
                   &Z_eff);

@@ -38,23 +38,24 @@
 
 #include "AmTrack.h"
 
-void test_AT_SPIFF(  float* fluence_cm2)
+
+void test_AT_SPIFF(  float* E_MeV_u)
 {
 
   long          n                       = 1;
-  float         E_MeV_u[]               = {10.};
-  long          particle_no[]           = {18 }; //carbon
+  long          particle_no[]           = {6012}; //carbon
   long          material_no             = 5;    //alanine
 
-  long          RDD_model               = 3;    //geiss
-  float         RDD_parameters[]        = {5e-8};
-  long          ER_model                = 2;  //ButtsKatz
+  float         fluence_cm2[]           = {-2.0f};
+  long          RDD_model               = 4;    //RDD_site
+  float         RDD_parameters[]        = {2.5e-9 ,1e-10, 0.0};
+  long          ER_model                = 3;  //ButtsKatz
   float         ER_parameters[]         = {0.0f};
   long          gamma_model             = 2; // single hit, single target
-  float         gamma_parameters[]      = {1, 10, 1 ,1, 0};
+  float         gamma_parameters[]      = {1, 10.5e-4, 1 ,1, 0};
   long          N2                      = 40;
   float         fluence_factor          = 1.0f;
-  bool          write_output            = false;
+  bool          write_output            = true;
   bool          shrink_tails            = true;
   float         shrink_tails_under      = 1e-30;
   bool          adjust_N2               = true;
@@ -62,7 +63,7 @@ void test_AT_SPIFF(  float* fluence_cm2)
 
   float         results[10];
 
-  AT_SPIFF(     &n,
+  AT_SPIFF(&n,
       E_MeV_u,
       particle_no,
       fluence_cm2,
@@ -81,184 +82,79 @@ void test_AT_SPIFF(  float* fluence_cm2)
       &adjust_N2,
       &lethal_events_mode,
       results);
-  printf("%.3e %.3e\n",-1*fluence_cm2[0],results[3]);
+  printf("SPIFF: %.3e %.3e\n", E_MeV_u[0],results[0]);
 }
 
-//void test_AT_SPISS(){
-//
-//  // INPUT :
-//  long          n                       = 1;
-//  float 	E_MeV_u[] 		= {10.,50};
-//  long 		particle_no[] 		= {1, 1};
-//  float 	fluence_cm2[] 		= {-3.f, -0.005f};
-//  long		material_no 		= 1;			// Water
-//
-//  long		RDD_model		= 3;			// Gei�
-//  float 	RDD_parameters[] 	= {5e-8};
-//  long		ER_model		= 3;			// Walig�rski
-//  float		ER_parameters[]		= {0.0f};
-//  long		GR_model		= 4;			// Exp-sat
-//  float		GR_parameters[]		= {1, 10};
-//
-//  long		n_runs			= 1e5;
-//  long 		N2 			= 40;
-//  float		fluence_factor		= 1.0f;
-//  int		write_output		= 1;
-//  long		importance_sampling	= 0;
-//
-//  float		results[10];
-//
-//  AT_SPISS(	&n,
-//      E_MeV_u,
-//      particle_no,
-//      fluence_cm2,
-//      &material_no,
-//      &RDD_model,
-//      RDD_parameters,
-//      &ER_model,
-//      ER_parameters,
-//      &GR_model,
-//      GR_parameters,
-//      &n_runs,
-//      &N2,
-//      &fluence_factor,
-//      &write_output,
-//      &importance_sampling,
-//      results);
-//
-//}
-//
-//void test_AT_SPIFF(){
-//
-//  // INPUT :
-//  long 		n 			= 1;
-//  float 	E_MeV_u[] 		= {10.,50};
-//  long 		particle_no[] 		= {1, 1};
-//  float 	fluence_cm2[] 		= {-3.f, -0.005f};
-//  long		material_no 		= 1;			// Water
-//
-//  long		RDD_model		= 3;			// Gei�
-//  float 	RDD_parameters[] 	= {5e-8};
-//  long		ER_model		= 3;			// Walig�rski
-//  float		ER_parameters[]		= {0.0f};
-//  long		GR_model		= 4;			// Exp-sat
-//  float		GR_parameters[]		= {1, 10};
-//
-//  long 		N2 			= 40;
-//  float		fluence_factor		= 1.0f;
-//  int		write_output		= 1;
-//  int		shrink_tails		= 1;
-//  float		shrink_tails_under	= 1e-30;
-//  int		adjust_N2		= 1;
-//
-//  float		results[10];
-//
-//  AT_SPIFF(	&n,
-//      E_MeV_u,
-//      particle_no,
-//      fluence_cm2,
-//      &material_no,
-//      &RDD_model,
-//      RDD_parameters,
-//      &ER_model,
-//      ER_parameters,
-//      &GR_model,
-//      GR_parameters,
-//      &N2,
-//      &fluence_factor,
-//      &write_output,
-//      &shrink_tails,
-//      &shrink_tails_under,
-//      &adjust_N2,
-//      results);
-//
-//}
-//
-void test_AT_GSM(){
 
-  // INPUT :
-  long 		n 			= 3;
-  float 	E_MeV_u[] 		= {10, 30, 100};
-  long 		particle_no[] 		= {1001, 1002, 6012};
-  float 	fluence_cm2[] 		= {-3.f, 1e4, 1e4};
-  long		material_no 		= 1;			// Water
+void test_AT_IGK(float* E_MeV_u)
+{
+        long   n =1 ;
+//      float  E_MeV_u[] ={100.0};
+        long   particle_no[] = {6012};
+        float  fluence_cm2[] ={-1.0};
+        long   material_no =5;
+        long   RDD_model =4;
+        float  RDD_parameters[] ={3e-9,1e-10, 0.0};
+        long   ER_model= 2;
+        float  ER_parameters[] ={0.0};
+        long   gamma_model = 2;
+        float  gamma_parameters[] = {1.0 , 10.5e4 ,1 ,1};
+        float  saturation_cross_section_factor = 1.0;
+        float  results[10];
+ AT_IGK(
+        &n,
+        E_MeV_u,
+        particle_no,
+        fluence_cm2,
+        &material_no,
+        &RDD_model,
+        RDD_parameters,
+        &ER_model,
+        ER_parameters,
+        &gamma_model,
+        gamma_parameters,
+        &saturation_cross_section_factor,
+        results);
 
-  long		RDD_model		= 3;			// Gei�
-  float 	RDD_parameters[] 	= {5e-8};
-  long		ER_model		= 3;			// Walig�rski
-  float		ER_parameters[]		= {0.0f};
-  long		GR_model		= 4;			// Exp-sat
-  float		GR_parameters[]		= {1, 10};
+ printf("IGK: %.3e %.3e %.3e %.3e\n", E_MeV_u[0],results[0], results[2], results[3]);
 
-  long		n_runs			= 1;
-  long 		N2 			= 40;
-  float		fluence_factor		= 1.0f;
-  bool		write_output		= true;
-
-  long		nX			= 10;
-  float		grid_size_m		= 5e-8;
-  bool		lethal_events_mode	= false;
-
-  float		results[10];
-
-  AT_GSM(	&n,
-      E_MeV_u,
-      particle_no,
-      fluence_cm2,
-      &material_no,
-      &RDD_model,
-      RDD_parameters,
-      &ER_model,
-      ER_parameters,
-      &GR_model,
-      GR_parameters,
-      &n_runs,
-      &N2,
-      &fluence_factor,
-      &write_output,
-      &nX,
-      &grid_size_m,
-      &lethal_events_mode,
-      results);
 }
 
 int main(){
-//  test_AT_SPISS();
- test_AT_GSM();
-//	test_AT_SPIFF();
-  long test_pn[] = {1001, 2004, 6012, 8016, 92238};
-  float test_E_MeV_u[] = {100,100,100,100,100};
-  long material_no = 1;
-  long test_A[] = {0,0,0,0,0};
-  long test_Z[] = {0,0,0,0,0};
-  float test_w[] = {0,0,0,0,0};
-  float test_LET[] = {0,0,0,0,0};
+//  long test_pn[] = {1001, 2004, 6012, 8016, 92238};
+//  float test_E_MeV_u[] = {100,100,100,100,100};
+//  long material_no = 1;
+//  long test_A[] = {0,0,0,0,0};
+//  long test_Z[] = {0,0,0,0,0};
+//  float test_w[] = {0,0,0,0,0};
+//  float test_LET[] = {0,0,0,0,0};
+//
+//  long n_tmp = 5;
+//  AT_A_from_particle_no(       n_tmp,
+//    test_pn,
+//    test_A);
+//  AT_Z_from_particle_no(       n_tmp,
+//    test_pn,
+//    test_Z);
+//  AT_atomic_weight_from_particle_no(       n_tmp,
+//    test_pn,
+//    test_w);
+//
+//  AT_LET_MeV_cm2_g(     n_tmp,
+//      test_E_MeV_u,
+//      test_pn,
+//      material_no,
+//      test_LET);
 
-  long n_tmp = 5;
-  AT_A_from_particle_no(       n_tmp,
-    test_pn,
-    test_A);
-  AT_Z_from_particle_no(       n_tmp,
-    test_pn,
-    test_Z);
-  AT_atomic_weight_from_particle_no(       n_tmp,
-    test_pn,
-    test_w);
-
-  AT_LET_MeV_cm2_g(     n_tmp,
-      test_E_MeV_u,
-      test_pn,
-      material_no,
-      test_LET);
-
-
-
-  double dose_gy = 0.001;
-  float fluence_cm2[] = {0.001};
-  while (dose_gy <= 1000){
-    fluence_cm2[0] =-1.0f* dose_gy;
-    test_AT_SPIFF(fluence_cm2);
-    dose_gy = dose_gy *1.1;
+  double energy = 100.0;
+  float E_MeV_u[] = {1.0};
+  while (energy >= 0.1){
+    E_MeV_u[0] = energy;
+    test_AT_IGK(E_MeV_u);
+    test_AT_SPIFF(E_MeV_u);
+    energy = energy *0.9;
     }
+
   return 0;
+
 };
