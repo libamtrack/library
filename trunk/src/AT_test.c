@@ -174,57 +174,57 @@ void test_AT_SPIFF(  float* fluence_cm2)
 //
 //}
 //
-//void test_AT_GSM(){
-//
-//  // INPUT :
-//  long 		n 			= 1;
-//  float 	E_MeV_u[] 		= {10};
-//  long 		particle_no[] 		= {1, 1, 1};
-//  float 	fluence_cm2[] 		= {-3.f, 1e4, 1e4};
-//  long		material_no 		= 1;			// Water
-//
-//  long		RDD_model		= 3;			// Gei�
-//  float 	RDD_parameters[] 	= {5e-8};
-//  long		ER_model		= 3;			// Walig�rski
-//  float		ER_parameters[]		= {0.0f};
-//  long		GR_model		= 4;			// Exp-sat
-//  float		GR_parameters[]		= {1, 10};
-//
-//  long		n_runs			= 1;
-//  long 		N2 			= 40;
-//  float		fluence_factor		= 1.0f;
-//  bool		write_output		= true;
-//
-//  long		nX			= 200;
-//  float		grid_size_m		= 5e-8;
-//  bool		lethal_events_mode	= false;
-//
-//  float		results[10];
-//
-//  AT_GSM(	&n,
-//      E_MeV_u,
-//      particle_no,
-//      fluence_cm2,
-//      &material_no,
-//      &RDD_model,
-//      RDD_parameters,
-//      &ER_model,
-//      ER_parameters,
-//      &GR_model,
-//      GR_parameters,
-//      &n_runs,
-//      &N2,
-//      &fluence_factor,
-//      &write_output,
-//      &nX,
-//      &grid_size_m,
-//      &lethal_events_mode,
-//      results);
-//}
+void test_AT_GSM(){
+
+  // INPUT :
+  long 		n 			= 3;
+  float 	E_MeV_u[] 		= {10, 30, 100};
+  long 		particle_no[] 		= {1001, 1002, 6012};
+  float 	fluence_cm2[] 		= {-3.f, 1e4, 1e4};
+  long		material_no 		= 1;			// Water
+
+  long		RDD_model		= 3;			// Gei�
+  float 	RDD_parameters[] 	= {5e-8};
+  long		ER_model		= 3;			// Walig�rski
+  float		ER_parameters[]		= {0.0f};
+  long		GR_model		= 4;			// Exp-sat
+  float		GR_parameters[]		= {1, 10};
+
+  long		n_runs			= 1;
+  long 		N2 			= 40;
+  float		fluence_factor		= 1.0f;
+  bool		write_output		= true;
+
+  long		nX			= 10;
+  float		grid_size_m		= 5e-8;
+  bool		lethal_events_mode	= false;
+
+  float		results[10];
+
+  AT_GSM(	&n,
+      E_MeV_u,
+      particle_no,
+      fluence_cm2,
+      &material_no,
+      &RDD_model,
+      RDD_parameters,
+      &ER_model,
+      ER_parameters,
+      &GR_model,
+      GR_parameters,
+      &n_runs,
+      &N2,
+      &fluence_factor,
+      &write_output,
+      &nX,
+      &grid_size_m,
+      &lethal_events_mode,
+      results);
+}
 
 int main(){
 //  test_AT_SPISS();
-//  test_AT_GSM();
+ test_AT_GSM();
 //	test_AT_SPIFF();
   long test_pn[] = {1001, 2004, 6012, 8016, 92238};
   float test_E_MeV_u[] = {100,100,100,100,100};

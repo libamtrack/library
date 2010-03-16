@@ -159,7 +159,7 @@ void AT_max_E_transfer_MeV(  const long*  n,
 
   // get relativistic speeds for all given particles and energies
   float*  beta  =  (float*)calloc(*n, sizeof(float));
-  AT_beta_from_E(  n,
+  AT_beta_from_E(  *n,
       E_MeV_u_copy,
       beta);
 
