@@ -37,6 +37,9 @@
 
 #define PARTICLE_DATA_N    96
 
+/**
+ * TODO
+ */
 typedef struct {
   const long     n;
   const long     Z[PARTICLE_DATA_N];
@@ -123,29 +126,62 @@ static const particle_data AT_Particle_Data = {
     }
 };
 
+/**
+ * TODO
+ * @param particle_no
+ * @return A
+ */
+inline long AT_A_from_particle_no_single(  const long  particle_no );
+
+/**
+ * TODO
+ * @param[in]  n
+ * @param[in]  particle_no
+ * @param[out] A
+ * @return
+ */
 int AT_A_from_particle_no(  const long  n,
     const long  particle_no[],
     long  A[]);
 
+/**
+ * TODO
+ * @param particle_no
+ * @return Z
+ */
+inline long AT_Z_from_particle_no_single(  const long  particle_no );
+
+/**
+ * TODO
+ * @param[in]  n
+ * @param[in]  particle_no
+ * @param[out] Z
+ * @return
+ */
 int AT_Z_from_particle_no(  const long  n,
     const long  particle_no[],
     long  Z[]);
 
+/**
+ * TODO
+ * @param[in]  n
+ * @param[in]  particle_no
+ * @param[out] atomic_weight
+ * @return
+ */
 int AT_atomic_weight_from_particle_no(  const long  n,
     const long  particle_no[],
     float  atomic_weight[]);
 
+/**
+ * TODO
+ * @param[in]  n
+ * @param[in]  particle_no
+ * @param[out] particle_name
+ * @return
+ */
 int AT_particle_name_from_particle_no(const long  n,
     const long  particle_no[],
     char* particle_name[]);
-/*
-void AT_Particle_Properties( const long*  n,
-    const long*  particle_no,
-    long*   Z,
-    long*   A,
-    char**  element_name,
-    char**  element_acronym,
-    float** density_g_cm3,
-    float** I_eV);
-*/
+
 #endif /* AT_DATAPARTICLE_H_ */

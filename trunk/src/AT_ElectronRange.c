@@ -4,30 +4,30 @@
  */
 
 /*
-*    AT_ElectronRange.c
-*    ==============
-*
-*    Created on: 08.01.2010
-*    Author: kongruencja
-*
-*    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
-*
-*    This file is part of the AmTrack program (libamtrack.sourceforge.net).
-*
-*    AmTrack is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation, either version 3 of the License, or
-*    (at your option) any later version.
-*
-*    AmTrack is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with AmTrack (file: copying.txt).
-*    If not, see <http://www.gnu.org/licenses/>
-*/
+ *    AT_ElectronRange.c
+ *    ==============
+ *
+ *    Created on: 08.01.2010
+ *    Author: kongruencja
+ *
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+ *
+ *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+ *
+ *    AmTrack is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    AmTrack is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with AmTrack (file: copying.txt).
+ *    If not, see <http://www.gnu.org/licenses/>
+ */
 
 #include "AT_ElectronRange.h"
 
@@ -130,7 +130,7 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
 
   // Get energy of delta-electron from energy of ion
   float* wmax_MeV  =  (float*)calloc(number_of_particles, sizeof(float));
-  AT_max_E_transfer_MeV(&number_of_particles,E_MeV_u,wmax_MeV);
+  AT_max_E_transfer_MeV(number_of_particles,E_MeV_u,wmax_MeV);
 
   // a1,..a5 needed in Tabata ER model
   double a1_g_cm2 = 0.0;
@@ -139,7 +139,7 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
   double a4 = 0.0;
   double a5 = 0.0;
   if( er_model == ER_Tabata ){
-    AT_beta_from_E(&number_of_particles,E_MeV_u,beta);
+    AT_beta_from_E(number_of_particles,E_MeV_u,beta);
 
     // general constants (best fit to experimental data)
     AT_ER_Tabata_constants(average_A , average_Z, &a1_g_cm2, &a2, &a3, &a4, &a5);
@@ -152,7 +152,7 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
    *******************************************************/
   long  i;
   for (i = 0; i < number_of_particles; i++){
-    float wmax_keV = wmax_MeV[i] * 1000.0f;
+    double wmax_keV = ((double)wmax_MeV[i]) * 1000.0;
 
     switch( er_model ){
       case ER_ButtsKatz :
@@ -171,10 +171,10 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
         max_electron_range_g_cm2  =  AT_ER_Scholz_range_g_cm2(E_MeV_u[i]);
         break;
       case ER_Tabata :
-        max_electron_range_g_cm2  =  AT_ER_Tabata_range_g_cm2(beta[i], a1_g_cm2, a2, a3, a4, a5);
+        max_electron_range_g_cm2  =  AT_ER_Tabata_range_g_cm2((double)beta[i], a1_g_cm2, a2, a3, a4, a5);
         break;
       default:
-        max_electron_range_g_cm2  = 0.0;
+        max_electron_range_g_cm2  =  0.0;
         break;
     }
 
@@ -197,13 +197,8 @@ double AT_max_electron_range_m(  const double E_MeV_u,
   AT_get_material_data( (long)material_no, &material_density_g_cm3,
       NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
-
   // Get energy of delta-electron from energy of ion
-  float  wmax_MeV = 0.0;
-  const long  number_of_particles_tmp  = 1;
-  const float E_MeV_u_float = (float)E_MeV_u;
-  AT_max_E_transfer_MeV(&number_of_particles_tmp,&E_MeV_u_float,&wmax_MeV);
-  double wmax_keV = (double)wmax_MeV * 1000.0;
+  double wmax_keV = AT_max_E_transfer_MeV_single(E_MeV_u) * 1000.0;
 
   // a1,..a5 needed in Tabata ER model
   double a1_g_cm2 = 0.0;
@@ -212,9 +207,9 @@ double AT_max_electron_range_m(  const double E_MeV_u,
   double a4 = 0.0;
   double a5 = 0.0;
   // Get beta from energy - needed only in Tabata model
-  float  beta  =  0.0;
+  double beta  =  0.0;
   if( er_model == ER_Tabata ){
-    AT_beta_from_E(&number_of_particles_tmp,&E_MeV_u_float,&beta);
+    beta = AT_beta_from_E_single(E_MeV_u);
 
     // general constants (best fit to experimental data)
     AT_ER_Tabata_constants(average_A , average_Z, &a1_g_cm2, &a2, &a3, &a4, &a5);

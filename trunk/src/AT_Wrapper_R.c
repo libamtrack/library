@@ -43,8 +43,7 @@ void AT_max_E_transfer_MeV_R(  const int*  n,
     float*  max_E_transfer_MeV){
 
   long  n_R           = (long)*n;
-
-  AT_max_E_transfer_MeV(  &n_R, E_MeV_u, max_E_transfer_MeV);
+  AT_max_E_transfer_MeV(  n_R, E_MeV_u, max_E_transfer_MeV);
 
 }
 

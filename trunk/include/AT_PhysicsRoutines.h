@@ -92,13 +92,21 @@ typedef struct {
   float   u;                                /** average number of track contributing to a detector voxel, needed by AT_SPIFF, AT_SPISS */
 } mixed_field_information;
 
+/**
+ *  Returns relativistic speed for single value of energy
+ *
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
+ * @return     beta                     relative particle speed beta = v/c
+ */
+inline double AT_beta_from_E_single( const double  E_MeV_u );
 
 /**
- *  Returns relativistic speed
+ *  Returns relativistic speed for many particles
  *
- * @param[in] n                        number of particles
- * @param[in] E_MeV_u                  vector of energies of particle per nucleon [MeV]
+ * @param[in]  n                        number of particles
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV]
  * @param[out] beta                    vector of relative particle speed beta = v/c
+ * @return     status code
  */
 int AT_beta_from_E( const long  n,
     const float  E_MeV_u[],
@@ -107,9 +115,18 @@ int AT_beta_from_E( const long  n,
 /**
  *  Return energy per nucleon of particle with relative speed beta
  *
- * @param[in] n                        number of particles
- * @param[in] beta                     vector of relative particle speed beta = v/c
- * @param[out] E_MeV_u                 vector of energies of particle per nucleon [MeV]
+ * @param[in]  beta                     relative particle speed beta = v/c
+ * @return                              energy of particle per nucleon [MeV]
+ */
+inline double AT_E_from_beta_single(  const double beta );
+
+/**
+ *  Return energy per nucleon of particle with relative speed beta
+ *
+ * @param[in]  n                        number of particles
+ * @param[in]  beta                     vector of relative particle speed beta = v/c
+ * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV]
+ * @return     status code
  */
 int AT_E_from_beta(  const long  n,
     const float  beta[],
@@ -122,10 +139,25 @@ int AT_E_from_beta(  const long  n,
  *
  * calculated for particle with given relative speed beta
  *
- * @param[in] n                        number of particles
- * @param[in] beta                     vector of relative particle speed beta = v/c
- * @param[in] Z                        atomic number Z of ion
+ * @param[in]  beta                     relative particle speed beta = v/c
+ * @param[in]  Z                        atomic number Z of ion
+ * @return     effective_charge of ion
+ */
+inline double AT_effective_charge_from_beta_single(  const double beta,
+    const long Z);
+
+/**
+ * Effective charge according to Barkas-Bethe-approximation:
+ *
+ * Zeff = Z * exp( -125 * beta / Z^(2/3) )
+ *
+ * calculated for particle with given relative speed beta
+ *
+ * @param[in]  n                        number of particles
+ * @param[in]  beta                     vector of relative particle speed beta = v/c
+ * @param[in]  Z                        atomic number Z of ion
  * @param[out] effective_charge of ion
+ * @return     status code
  */
 int AT_effective_charge_from_beta(  const long  n,
     const float  beta[],
@@ -134,13 +166,14 @@ int AT_effective_charge_from_beta(  const long  n,
 
 /**
  * Get Bohr's energy spread (Wilson, 1947, Phys Rev 71, 385)
- * @param[in] n                        number of particles
- * @param[in] material_no              TODO
- * @param[out] dsE2dz                  TODO
+ * @param[in]  n                        number of particles
+ * @param[in]  material_no              TODO
+ * @param[out] dsE2dz                   TODO
  */
 void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
     const long*  material_no,
     float*  dsE2dz);
+
 
 /**
  * Effective charge according to Barkas-Bethe-approximation:
@@ -149,37 +182,63 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
  *
  * calculated for particle with given energy per nucleon
  *
- * @param[in] n                        number of particles
- * @param[in] E_MeV_u                  vector of energies of particle per nucleon [MeV]
- * @param[in] particle_no              TODO
- * @param[out] effective_charge
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
+ * @param[in]  particle_no              TODO
+ * @return     effective_charge         TODO
+ */
+double AT_effective_charge_from_E_MeV_u_single(  const double E_MeV_u,
+    const long  particle_no);
+
+/**
+ * Effective charge according to Barkas-Bethe-approximation:
+ *
+ * Zeff = Z * exp( -125 * beta / Z^(2/3) )
+ *
+ * calculated for particle with given energy per nucleon
+ *
+ * @param[in]  n                        number of particles
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV]
+ * @param[in]  particle_no              TODO
+ * @param[out] effective_charge         TODO
+ * @return     status code
  */
 int AT_effective_charge_from_E_MeV_u(  const long  n,
     const float  E_MeV_u[],
-    const long  particle_no[],
-    float  effective_charge[]);
+    const long   particle_no[],
+    float        effective_charge[]);
 
 /**
- * Scaled energy TODO
- * @param[in] n                        number of particles
- * @param[in] E_MeV_u                  vector of energies of particle per nucleon [MeV]
- * @param[in] particle_no              TODO
- * @param[out] scaled_energy
+ * Max relativistic energy transfer for single particle TODO
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
+ * @return max_E_transfer_MeV
  */
-//void AT_scaled_energy( const long*  n,
-//    const float*  E_MeV_u,
-//    const long*  particle_no,
-//    float*  scaled_energy);
+inline double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u );
+
+/**
+ * Max classic energy transfer for single particle TODO
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
+ * @return max_E_transfer_MeV
+ */
+inline double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u );
+
+/**
+ * Max energy transfer for single particle TODO
+ * @param[in]  n                        number of particles
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV]
+ * @param[out] max_E_transfer_MeV
+ */
+inline double AT_max_E_transfer_MeV_single( const double E_MeV_u);
 
 /**
  * Max energy transfer TODO
- * @param[in] n                        number of particles
- * @param[in] E_MeV_u                  vector of energies of particle per nucleon [MeV]
+ * @param[in]  n                        number of particles
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV]
  * @param[out] max_E_transfer_MeV
+ * @return     status code
  */
-void AT_max_E_transfer_MeV(  const long*  n,
-    const float*  E_MeV_u,
-    float*  max_E_transfer_MeV);
+int AT_max_E_transfer_MeV(  const long  n,
+    const float  E_MeV_u[],
+    float        max_E_transfer_MeV[]);
 
 /**
  * Returns dose in Gy for each given particle

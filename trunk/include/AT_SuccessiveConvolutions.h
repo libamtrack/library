@@ -7,27 +7,27 @@
  */
 
 /*
-*    AT_SuccessiveConvolutions.h
-*    ===========================
-*
-*    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
-*
-*    This file is part of the AmTrack program (libamtrack.sourceforge.net).
-*
-*    AmTrack is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation, either version 3 of the License, or
-*    (at your option) any later version.
-*
-*    AmTrack is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with AmTrack (file: copying.txt).
-*    If not, see <http://www.gnu.org/licenses/>
-*/
+ *    AT_SuccessiveConvolutions.h
+ *    ===========================
+ *
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+ *
+ *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+ *
+ *    AmTrack is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    AmTrack is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with AmTrack (file: copying.txt).
+ *    If not, see <http://www.gnu.org/licenses/>
+ */
 
 #include "AT_Constants.h"
 #include "AT_RDD.h"
@@ -38,57 +38,74 @@
 #include <math.h>
 #include <malloc.h>
 
+
+/**
+ * TODO
+ */
 typedef struct{
 
-  long      array_size;                  /**< size of function arrays F..BI */
-  long      N2;
-  float      U;
+  long    array_size;                  /**< size of function arrays F..BI */
+  long    N2;
+  float   U;
 
-  float      X;
-  float      FINAL;
+  float   X;
+  float   FINAL;
 
+  float   CN;
+  long    N1;
 
-  float      CN;
-  long      N1;
+  float   CM1;
+  float   CM2;
+  float   CM3;
+  float   CM4;
 
+  float   D1;
+  float   D2;
+  float   D3;
+  float   D4;
 
-  float      CM1;
-  float      CM2;
-  float      CM3;
-  float      CM4;
+  float   F0;
+  float*  F;
+  long    MIF;
+  long    LEF;
 
-  float      D1;
-  float      D2;
-  float      D3;
-  float      D4;
+  float   H0;
+  float*  H;
+  long    MIH;
+  long    LEH;
 
-  float      F0;
-  float*      F;
-  long      MIF;
-  long      LEF;
+  float   E0;
+  float*  E;
+  float*  DE;
+  long    MIE;
 
-  float      H0;
-  float*      H;
-  long      MIH;
-  long      LEH;
+  float*  DI;
+  float*  A;
+  float*  BI;
 
-  float      E0;
-  float*      E;
-  float*      DE;
-  long      MIE;
+  bool    write_output;
+  FILE*   output_file;
 
-  float*      DI;
-  float*      A;
-  float*      BI;
-
-  bool      write_output;
-  FILE*      output_file;
-
-  bool      shrink_tails;
-  float      shrink_tails_under;
-  bool      adjust_N2;
+  bool    shrink_tails;
+  float   shrink_tails_under;
+  bool    adjust_N2;
 }     aKList;
 
+
+/**
+ * TODO
+ * @param[in]  n
+ * @param[in]  E_MeV_u
+ * @param[in]  particle_no
+ * @param[in]  material_no
+ * @param[in]  rdd_model
+ * @param[in]  rdd_parameter
+ * @param[in]  er_model
+ * @param[in]  er_parameter
+ * @param[in]  N2
+ * @param[out] n_bins_f1
+ * @param[out] f1_parameters
+ */
 void  AT_SC_get_f1_array_size(  /* radiation field parameters */
     const long*  n,
     const float*  E_MeV_u,
@@ -107,6 +124,27 @@ void  AT_SC_get_f1_array_size(  /* radiation field parameters */
     float*  f1_parameters);
 
 
+/**
+ * TODO
+ * @param[in]  n
+ * @param[in]  E_MeV_u
+ * @param[in]  particle_no
+ * @param[in]  fluence_cm2
+ * @param[in]  material_no
+ * @param[in]  rdd_model
+ * @param[in]  rdd_parameter
+ * @param[in]  er_model
+ * @param[in]  er_parameter
+ * @param[in]  N2
+ * @param[in]  n_bins_f1
+ * @param[in]  f1_parameters
+ * @param[out] norm_fluence
+ * @param[out] dose_contribution_Gy
+ * @param[out] f_parameters
+ * @param[out] f1_d_Gy
+ * @param[out] f1_dd_Gy
+ * @param[out] f1
+ */
 void  AT_SC_get_f1(  /* radiation field parameters */
     const long*  n,
     const float*  E_MeV_u,
@@ -140,6 +178,19 @@ void  AT_SC_get_f1(  /* radiation field parameters */
     float*  f1_dd_Gy,
     float*  f1);
 
+/**
+ * TODO
+ * @param[in]  u
+ * @param[in]  fluence_factor
+ * @param[in]  N2
+ * @param[in]  n_bins_f1
+ * @param[in]  f1_d_Gy
+ * @param[in]  f1_dd_Gy
+ * @param[in]  f1
+ * @param[out] n_bins_f
+ * @param[out] u_start
+ * @param[out] n_convolutions
+ */
 void AT_SC_get_f_array_size(  const float*  u,
     const float*  fluence_factor,
     const long*   N2,
@@ -153,6 +204,19 @@ void AT_SC_get_f_array_size(  const float*  u,
     long*  n_convolutions);
 
 
+/**
+ * TODO
+ * @param[in]  u_start
+ * @param[in]  n_bins_f1
+ * @param[in]  N2
+ * @param[in]  f1_d_Gy
+ * @param[in]  f1_dd_Gy
+ * @param[in]  f1
+ * @param[in]  n_bins_f
+ * @param[out] f_d_Gy
+ * @param[out] f_dd_Gy
+ * @param[out] f_start
+ */
 void  AT_SC_get_f_start(  const float*  u_start,
     const long*   n_bins_f1,
     const long*   N2,
@@ -165,20 +229,79 @@ void  AT_SC_get_f_start(  const float*  u_start,
     float*  f_dd_Gy,
     float*  f_start);
 
+/**
+ * TODO
+ * @param theKList
+ * @return
+ */
 aKList  AT_SC_NORMAL(aKList theKList);
 
+
+/**
+ * TODO
+ * @param theKList
+ * @return
+ */
 aKList  AT_SC_OUTPUT(aKList theKList);
 
+
+/**
+ * TODO
+ * @param theKList
+ * @return
+ */
 aKList  AT_SC_INTERP(aKList theKList);
 
+
+/**
+ * TODO
+ * @param theKList
+ * @return
+ */
 aKList  AT_SC_RESET(aKList theKList);
 
+
+/**
+ * TODO
+ * @param theKList
+ * @return
+ */
 aKList  AT_SC_ZERO(aKList theKList);
 
+
+/**
+ * TODO
+ * @param theKList
+ * @return
+ */
 aKList  AT_SC_SHRINK(aKList theKList);
 
+
+/**
+ * TODO
+ * @param theKList
+ * @return
+ */
 aKList AT_SC_FOLD(aKList theKList);
 
+/**
+ * TODO
+ * @param[in]  u
+ * @param[in]  n_bins_f
+ * @param[out] N2
+ * @param[out] n_bins_f_used
+ * @param[out] f_d_Gy
+ * @param[out] f_dd_Gy
+ * @param[out] f
+ * @param[out] f0
+ * @param[out] fdd                   frequency:          H * DE        (f * dd)
+ * @param[out] dfdd                  dose contribution:  H * E * DE    (f * d * dd)
+ * @param[out] d                     first moment:                     (<d>)
+ * @param[in]  write_output
+ * @param[in]  shrink_tails
+ * @param[in]  shrink_tails_under
+ * @param[in]  adjust_N2
+ */
 void AT_SuccessiveConvolutions( const float*  u,
     const long*  n_bins_f,
     // input + return values

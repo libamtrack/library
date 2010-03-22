@@ -27,7 +27,7 @@
 rm( list = ls() )
 
 # load libAmTrack library
-dyn.load("../../Release/libAmTrack.dll")
+dyn.load("../../AT_Release/libAmTrack.dll")
 
 # load wrapping scripts
 source("../../wrapper/R/AmTrack.R")
@@ -41,7 +41,7 @@ debug				<-	F
 # RDDs
 ################################################################################################
 E.MeV.u			<-	c(1, 10, 100)
-particle.no		<-	c(1, 5, 18)					# p, He-4, C-12
+particle.no		<-	c(1001)					# p, He-4, C-12
 
 material.no		<-	c(1, 2)
 
