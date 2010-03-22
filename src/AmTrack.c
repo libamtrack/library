@@ -4,30 +4,30 @@
  */
 
 /*
-*    AmTrack.c
-*    =========
-*
-*    Created on: 28.07.2009
-*    Author: greilich
-*
-*    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
-*
-*    This file is part of the AmTrack program (libamtrack.sourceforge.net).
-*
-*    AmTrack is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation, either version 3 of the License, or
-*    (at your option) any later version.
-*
-*    AmTrack is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with AmTrack (file: copying.txt).
-*    If not, see <http://www.gnu.org/licenses/>
-*/
+ *    AmTrack.c
+ *    =========
+ *
+ *    Created on: 28.07.2009
+ *    Author: greilich
+ *
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+ *
+ *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+ *
+ *    AmTrack is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    AmTrack is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with AmTrack (file: copying.txt).
+ *    If not, see <http://www.gnu.org/licenses/>
+ */
 
 #include "AmTrack.h"
 
@@ -104,7 +104,7 @@ void AT_SPIFF(  const long*  n,
   long i;
 
 
-  //TODO timining debuggin should be done in better way (with some switch for example)
+  //TODO timing debugging should be done in better way (with some switch for example)
 
 //  //############################
 //  //For timing debugging only
@@ -1017,13 +1017,13 @@ void AT_IGK(  const long*  n,
 
   AT_P_RDD_parameters* params;
   params                       = (AT_P_RDD_parameters*)calloc(1,sizeof(AT_P_RDD_parameters));
-  params->E_MeV_u              = E_MeV_u;
-  params->particle_no          = particle_no;
-  params->material_no          = material_no;
-  params->rdd_model            = RDD_model;
-  params->rdd_parameters       = RDD_parameters;
-  params->er_model             = ER_model;
-  params->er_parameters        = ER_parameters;
+  params->E_MeV_u              = (float*)E_MeV_u;
+  params->particle_no          = (long*)particle_no;
+  params->material_no          = (long*)material_no;
+  params->rdd_model            = (long*)RDD_model;
+  params->rdd_parameters       = (float*)RDD_parameters;
+  params->er_model             = (long*)ER_model;
+  params->er_parameters        = (float*)ER_parameters;
   params->gamma_parameters[0]  = 1; // No multiple components
   params->gamma_parameters[4]  = 0;
 

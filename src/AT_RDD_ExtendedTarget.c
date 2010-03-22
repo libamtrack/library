@@ -101,32 +101,21 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
               &density_g_cm3,
               &electron_density_m3,
               NULL, NULL, NULL, NULL, NULL, NULL);
-  density_kg_m3      =  density_g_cm3 * 1000.0f;
+  density_kg_m3      =  density_g_cm3 * 1000.0;
 
   // Get beta, Z and Zeff
-  float  beta   =  0.0;
-  long  Z       =  0;
-  float  Z_eff  =  0.0;
-  long  n_tmp    = 1;
-  AT_beta_from_E(  &n_tmp,
-                &E_MeV_u,
-                &beta);
-
-  AT_Z_from_particle_no(  &n_tmp,
-                &particle_no,
-                &Z);
-  AT_effective_charge_from_beta(  &n_tmp,
-                  &beta,
-                  &Z,
-                  &Z_eff);
+  double beta    =  AT_beta_from_E_single( (double)E_MeV_u );
+  long   Z       =  AT_Z_from_particle_no_single(particle_no);
+  double Z_eff   =  AT_effective_charge_from_beta_single(beta, Z);
 
   // Get the maximum electron range
-  float  max_electron_range_m      =  (double)AT_max_electron_range_m((double)E_MeV_u, (int)material_no, (int)er_model);
+  float  max_electron_range_m      =  (float)AT_max_electron_range_m((double)E_MeV_u, (int)material_no, (int)er_model);
 
-  const double C_J_m               =  AT_RDD_Katz_C_J_m((double)electron_density_m3);
+  const double C_J_m               =  AT_RDD_Katz_C_J_m(electron_density_m3);
 
   // Get LET
   float  LET_MeV_cm2_g  =  0.0f;
+  long   n_tmp   = 1;
   AT_LET_MeV_cm2_g(  n_tmp,
             &E_MeV_u,
             &particle_no,
@@ -137,16 +126,15 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
   LET_J_m              *=  100.0f;       // [MeV / m]
   LET_J_m              *=  MeV_to_J;     // [J/m]
 
-  double Katz_point_coeff_Gy =  AT_RDD_Katz_coeff_Gy(C_J_m,(double)Z_eff,(double)beta,(double)density_kg_m3,(double)max_electron_range_m);
+  double Katz_point_coeff_Gy =  AT_RDD_Katz_coeff_Gy(C_J_m, Z_eff, beta, density_kg_m3, (double)max_electron_range_m);
   float r_max_m = GSL_MIN((double)a0_m, max_electron_range_m);
 
-  float alpha           =  0.0f;
+  double alpha           =  0.0;
   if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
-    alpha               =  1.667f;
-    float wmax_MeV      =  0.0f;
-    AT_max_E_transfer_MeV(&n_tmp,&E_MeV_u,&wmax_MeV);
+    alpha               =  1.667;
+    double wmax_MeV     =  AT_max_E_transfer_MeV_single((double)E_MeV_u);
     if(wmax_MeV <= 1e-3){
-      alpha             =  1.079f;
+      alpha             =  1.079;
     }
   }
 
@@ -166,7 +154,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
       if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
 
         if( (r_m[i] <=  0.01 * a0_m) && (r_m[i] >=  r_min_m)){
-          D_RDD_Gy[i] = (float)AT_RDD_Katz_PowerLawER_Daverage_Gy( (double)r_min_m, (double)r_max_m, (double)max_electron_range_m, (double)alpha, Katz_point_coeff_Gy );
+          D_RDD_Gy[i] = (float)AT_RDD_Katz_PowerLawER_Daverage_Gy( (double)r_min_m, (double)r_max_m, (double)max_electron_range_m, alpha, Katz_point_coeff_Gy );
           if( max_electron_range_m < a0_m ){
             D_RDD_Gy[i] *= (gsl_pow_2(r_max_m) - gsl_pow_2(r_min_m));
             D_RDD_Gy[i] /= (gsl_pow_2(a0_m) - gsl_pow_2(r_min_m));
@@ -174,7 +162,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
         }
 
         if( (r_m[i] >=  100.0 * a0_m) && (r_m[i] <= max_electron_range_m) ){
-          D_RDD_Gy[i] = (float)AT_RDD_Katz_PowerLawER_Dpoint_Gy( (double)r_m[i], (double)alpha, (double)max_electron_range_m, Katz_point_coeff_Gy );
+          D_RDD_Gy[i] = (float)AT_RDD_Katz_PowerLawER_Dpoint_Gy( (double)r_m[i], alpha, (double)max_electron_range_m, Katz_point_coeff_Gy );
         }
 
         if( (r_m[i] <  100.0 * a0_m) && (r_m[i] >  0.01 * a0_m) ){
@@ -272,9 +260,9 @@ double AT_RDD_ExtendedTarget_integrate_Gy(  const double r_m,
   RDD_parameters.particle_no   =  particle_no;
   RDD_parameters.material_no   =  material_no;
   RDD_parameters.rdd_model     =  rdd_model;
-  RDD_parameters.rdd_parameter =  rdd_parameter;
+  RDD_parameters.rdd_parameter =  (float*)rdd_parameter;
   RDD_parameters.er_model      =  er_model;
-  RDD_parameters.er_parameter  =  er_parameter;
+  RDD_parameters.er_parameter  =  (float*)er_parameter;
 
   F.params = (void*)(&RDD_parameters);
   int status = gsl_integration_qags (&F, low_lim_m, r_m+a0_m, 0, 1e-5, 1000, w1, &ext_integral_Gy, &error);

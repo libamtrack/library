@@ -32,17 +32,30 @@
 
 #include "AT_DataParticle.h"
 
+
+inline long AT_A_from_particle_no_single(  const long  particle_no ){
+  // TODO maybe we could use modulo division here ? A = particle_no % 1000 ?
+  long A = particle_no / 1000;
+  return particle_no - A * 1000;
+}
+
+
 int AT_A_from_particle_no( const long  n,
     const long  particle_no[],
     long  A[])
 {
   long i;
   for (i = 0; i < n; i++){
-    A[i]        = (long)(particle_no[i] / 1000);
-    A[i]        = (long)(particle_no[i] - A[i] * 1000);
+    A[i]  =  AT_A_from_particle_no_single(particle_no[i]);
   }
   return 0;
 }
+
+
+inline long AT_Z_from_particle_no_single(  const long  particle_no ){
+  return particle_no / 1000;
+}
+
 
 int AT_Z_from_particle_no( const long  n,
     const long  particle_no[],
@@ -50,10 +63,11 @@ int AT_Z_from_particle_no( const long  n,
 {
   long i;
   for (i = 0; i < n; i++){
-    Z[i]        = (long)(particle_no[i] / 1000);
+    Z[i]  =  AT_Z_from_particle_no_single(particle_no[i]);
   }
   return 0;
 }
+
 
 int AT_atomic_weight_from_particle_no( const long  n,
     const long  particle_no[],
@@ -76,7 +90,6 @@ int AT_atomic_weight_from_particle_no( const long  n,
       matches);
 
   for (i = 0; i < n; i++){
-    Z[i]                = (long)(particle_no[i] / 1000);
     atomic_weight[i]    = AT_Particle_Data.atomic_weight[matches[i]];
   }
 

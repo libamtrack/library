@@ -4,30 +4,30 @@
  */
 
 /*
-*    AT_SuccessiveConvolutions.c
-*    ===========================
-*
-*    Created on: 28.07.2009
-*    Author: greilich
-*
-*    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
-*
-*    This file is part of the AmTrack program (libamtrack.sourceforge.net).
-*
-*    AmTrack is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation, either version 3 of the License, or
-*    (at your option) any later version.
-*
-*    AmTrack is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with AmTrack (file: copying.txt).
-*    If not, see <http://www.gnu.org/licenses/>
-*/
+ *    AT_SuccessiveConvolutions.c
+ *    ===========================
+ *
+ *    Created on: 28.07.2009
+ *    Author: greilich
+ *
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+ *
+ *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+ *
+ *    AmTrack is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    AmTrack is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with AmTrack (file: copying.txt).
+ *    If not, see <http://www.gnu.org/licenses/>
+ */
 
 #include "AT_SuccessiveConvolutions.h"
 
@@ -171,7 +171,7 @@ void  AT_SC_get_f1(
   f_parameters[5]        =  0.0f;
   f_parameters[6]        =  0.0f;
 
-  //Todo: Replace by explicit routines in AT_PhysicsRoutines.c
+  //TODO: Replace by explicit routines in AT_PhysicsRoutines.c
   for (i = 0; i < *n; i++){
     norm_fluence[i]        =  fluence_cm2_local[i] / f_parameters[1];
     //printf("norm_fluence[%ld] = %g\n", i, norm_fluence[i]);
@@ -398,23 +398,23 @@ void  AT_SC_get_f_start( const float*  u_start,
     float*  f_start)
 {
   // temporary arrays
-  float*  d_low        =  (float*)calloc(*n_bins_f, sizeof(float));
+  float*  d_low         =  (float*)calloc(*n_bins_f, sizeof(float));
   float*  d_high        =  (float*)calloc(*n_bins_f, sizeof(float));
 
-  float  U          =  (float)(log(2.0f) / (float)(*N2));
+  float  U              =  (float)(log(2.0f) / (float)(*N2));
 
   long   i;
   for (i = 0; i < *n_bins_f; i++){
-    d_low[i]          =   f1_d_Gy[0] * (float)exp(((float)i - 0.5f)* U);
-    d_high[i]          =   f1_d_Gy[0] * (float)exp(((float)i + 0.5f)* U);
+    d_low[i]            =   f1_d_Gy[0] * (float)exp(((float)i - 0.5f)* U);
+    d_high[i]           =   f1_d_Gy[0] * (float)exp(((float)i + 0.5f)* U);
     if (i < *n_bins_f1){
-      f_d_Gy[i]          =  f1_d_Gy[i];
-      f_dd_Gy[i]          =  f1_dd_Gy[i];
-      f_start[i]          =  f1[i];}
+      f_d_Gy[i]         =  f1_d_Gy[i];
+      f_dd_Gy[i]        =  f1_dd_Gy[i];
+      f_start[i]        =  f1[i];}
     else{
-      f_d_Gy[i]          =  (float)sqrt(d_low[i] * d_high[i]);
-      f_dd_Gy[i]          =  d_high[i] - d_low[i];
-      f_start[i]          =  0.0f;}
+      f_d_Gy[i]         =  (float)sqrt(d_low[i] * d_high[i]);
+      f_dd_Gy[i]        =  d_high[i] - d_low[i];
+      f_start[i]        =  0.0f;}
   }
 
   free(d_low);
@@ -422,13 +422,6 @@ void  AT_SC_get_f_start( const float*  u_start,
   return;
 }
 
-/*******************************************************************************
-/ Successive convolutions (Kellerer Algorithm)
-*******************************************************************************/
-
-/**
- * AT_SC_NORMAL
- */
 aKList  AT_SC_NORMAL(aKList theKList){
 
   if(theKList.write_output){
@@ -436,34 +429,34 @@ aKList  AT_SC_NORMAL(aKList theKList){
     fprintf(theKList.output_file,      "=========================\n");
   }
 
-  float  Y          = theKList.CM1 * 2;
-  float  Z          = theKList.CM2 * 2;
-  float  CM0          = theKList.H0;
-  theKList.CM1    = 0;
+  float  Y        =  theKList.CM1 * 2;
+  float  Z        =  theKList.CM2 * 2;
+  float  CM0      =  theKList.H0;
+  theKList.CM1    =  0;
 
-  long    N          = theKList.MIH - theKList.MIE;
+  long    N       =  theKList.MIH - theKList.MIE;
   long     L;
   for (L = 1; L <= theKList.LEH; L++){
-    long    LE          =    L + N;
-    float  S          =    theKList.H[L-1] * theKList.DE[LE-1];
+    long    LE    =  L + N;
+    float  S      =  theKList.H[L-1] * theKList.DE[LE-1];
 
-    CM0          =    CM0 + S;
-    theKList.CM1    =    theKList.CM1 + S * theKList.E[LE-1];
+    CM0           =  CM0 + S;
+    theKList.CM1  =  theKList.CM1 + S * theKList.E[LE-1];
   }
 
-  float  TT          =    (1.0f - theKList.H0) / (CM0 - theKList.H0);
-  theKList.CM1    =    theKList.CM1 * TT;
-  float  R          =    theKList.CM1 * theKList.CM1;
-  theKList.CM2    =    R * theKList.H0;
-  theKList.CM3    =    -1.0f * theKList.CM1 * R * theKList.H0;
-  theKList.CM4    =    R * R * theKList.H0;
+  float  TT       =  (1.0f - theKList.H0) / (CM0 - theKList.H0);
+  theKList.CM1    =  theKList.CM1 * TT;
+  float  R        =  theKList.CM1 * theKList.CM1;
+  theKList.CM2    =  R * theKList.H0;
+  theKList.CM3    =  -1.0f * theKList.CM1 * R * theKList.H0;
+  theKList.CM4    =  R * R * theKList.H0;
 
   for (L = 1; L <= theKList.LEH; L++){
-    long    LE          =    L + N;
-    float  EC          =    theKList.E[LE-1] - theKList.CM1;
-    float  E2          =    EC * EC;
-    theKList.H[L-1]    =    theKList.H[L-1] * TT;
-    float  S          =    theKList.H[L-1] * theKList.DE[LE-1] * E2;
+    long   LE       =    L + N;
+    float  EC       =    theKList.E[LE-1] - theKList.CM1;
+    float  E2       =    EC * EC;
+    theKList.H[L-1] =    theKList.H[L-1] * TT;
+    float  S        =    theKList.H[L-1] * theKList.DE[LE-1] * E2;
     theKList.CM2    =    theKList.CM2 + S;
     theKList.CM3    =    theKList.CM3 + S * EC;
     theKList.CM4    =    theKList.CM4 + S * E2;
@@ -489,9 +482,6 @@ aKList  AT_SC_NORMAL(aKList theKList){
 
 
 
-/**
- * AT_SC_OUTPUT
- */
 aKList  AT_SC_OUTPUT(aKList theKList){
 
   if(theKList.write_output){
@@ -501,9 +491,9 @@ aKList  AT_SC_OUTPUT(aKList theKList){
 
   //float*  SD            =  (float*)calloc(theKList.array_size, sizeof(float));
 
-  float  B            =  theKList.CM2 / (theKList.CM1 * theKList.CM1);
-  float  C            =  theKList.CM3 / (float)sqrt(theKList.CM2 * theKList.CM2 * theKList.CM2);
-  float  D            =  theKList.CM4 / (theKList.CM2 * theKList.CM2);
+  float  B             =  theKList.CM2 / (theKList.CM1 * theKList.CM1);
+  float  C             =  theKList.CM3 / (float)sqrt(theKList.CM2 * theKList.CM2 * theKList.CM2);
+  float  D             =  theKList.CM4 / (theKList.CM2 * theKList.CM2);
   float  S1            =  theKList.CN * theKList.D1;
   float  S2            =  theKList.CN * theKList.D2 / (S1 * S1);
   float  S3            =  theKList.D3 / (float)sqrt(theKList.CN * theKList.D2 * theKList.D2 * theKList.D2);
@@ -560,9 +550,6 @@ aKList  AT_SC_OUTPUT(aKList theKList){
 
 
 
-/**
- * AT_SC_INTERP
- */
 aKList  AT_SC_INTERP(aKList theKList){
 
   theKList.A[1-1]          =  theKList.F[2-1] - theKList.F[1-1];
@@ -585,19 +572,17 @@ aKList  AT_SC_INTERP(aKList theKList){
   return(theKList);
 }
 
-/**
- * AT_SC_RESET
- */
+
 aKList  AT_SC_RESET(aKList theKList){
 
   if (theKList.N2 <= 256){
     if(theKList.LEF <= 64){
       float S              =  (float)log(2.0f);
-      float TT            =  (float)theKList.N2;
+      float TT             =  (float)theKList.N2;
       //      theKList.N2            =  theKList.N2 * 2;
-      theKList.N2            +=  (long)(0.1 + exp((float)((long)(log(TT) / S - 0.99f)) * S));
-      TT                =  TT / (float)theKList.N2;
-      theKList.U            =  S / (float)theKList.N2;
+      theKList.N2          +=  (long)(0.1 + exp((float)((long)(log(TT) / S - 0.99f)) * S));
+      TT                   =  TT / (float)theKList.N2;
+      theKList.U           =  S / (float)theKList.N2;
 
       if(theKList.write_output){
         fprintf(theKList.output_file,      "\n\nThis is subroutine AT_SC_RESET\n");
@@ -685,10 +670,6 @@ aKList  AT_SC_RESET(aKList theKList){
 }
 
 
-
-/**
- * AT_SC_ZERO
- */
 aKList  AT_SC_ZERO(aKList theKList){
 
   if(theKList.write_output){
@@ -738,10 +719,6 @@ aKList  AT_SC_ZERO(aKList theKList){
 }
 
 
-
-/**
- * AT_SC_SHRINK
- */
 aKList  AT_SC_SHRINK(aKList theKList){
 
   float  EX            =  theKList.shrink_tails_under;
@@ -787,9 +764,6 @@ aKList  AT_SC_SHRINK(aKList theKList){
 }
 
 
-/**
- * AT_SC_FOLD
- */
 aKList AT_SC_FOLD(aKList theKList){
   float*  FDE          =  (float*)calloc(theKList.array_size, sizeof(float));
 
@@ -841,19 +815,13 @@ aKList AT_SC_FOLD(aKList theKList){
   free(FDE);
 
   if (theKList.F0 < 1e-10){
-    theKList.X            =  2.0f;
+    theKList.X          =  2.0f;
   }else{
     theKList            =  AT_SC_ZERO(theKList);
   }
   return(theKList);
 }
 
-/**
- * SuccessiveConvolutions
- * @param  fdd    frequence:          H * DE        (f * dd)
- * @param  dfdd   dose contribution:  H * E * DE    (f * d * dd)
- * @param  d      first moment:                     (<d>)
- */
 void   AT_SuccessiveConvolutions( const float*  u,
     const long*  n_bins_f,
     long*  N2,
@@ -877,12 +845,13 @@ void   AT_SuccessiveConvolutions( const float*  u,
   aKList KList;
 
   KList.array_size  = *n_bins_f;
-  KList.N2      = *N2;
-  KList.U        = (float)log(2.0f) / KList.N2;
+  KList.N2          = *N2;
+  KList.U           = (float)log(2.0f) / (float)KList.N2;
 
   //////////////////////////////////
 
   KList.write_output    =  *write_output;
+  KList.output_file     =  NULL;
   if(KList.write_output){
     KList.output_file    =  fopen("SuccessiveConvolutions.log","w");
     if (KList.output_file == NULL) return;                      // File error
@@ -894,27 +863,27 @@ void   AT_SuccessiveConvolutions( const float*  u,
 
   //////////////////////////////////
 
-  KList.shrink_tails    =  *shrink_tails;
-  KList.shrink_tails_under=  *shrink_tails_under;
-  KList.adjust_N2      =  *adjust_N2;
+  KList.shrink_tails        =  *shrink_tails;
+  KList.shrink_tails_under  =  *shrink_tails_under;
+  KList.adjust_N2           =  *adjust_N2;
 
   //////////////////////////////////
 
   KList.F        = (float*)calloc(KList.array_size, sizeof(float));
   KList.H        = (float*)calloc(KList.array_size, sizeof(float));
   KList.E        = (float*)calloc(KList.array_size, sizeof(float));
-  KList.DE      = (float*)calloc(KList.array_size, sizeof(float));
-  KList.DI      = (float*)calloc(KList.array_size, sizeof(float));
+  KList.DE       = (float*)calloc(KList.array_size, sizeof(float));
+  KList.DI       = (float*)calloc(KList.array_size, sizeof(float));
   KList.A        = (float*)calloc(KList.array_size, sizeof(float));
-  KList.BI      = (float*)calloc(KList.array_size, sizeof(float));
+  KList.BI       = (float*)calloc(KList.array_size, sizeof(float));
 
   // Some other initializations
   KList.MIH      = 0;
   KList.MIE      = 0;
-  KList.N1      = 0;
-  KList.H0      = 0;
+  KList.N1       = 0;
+  KList.H0       = 0;
   KList.X        = 1;
-  KList.CN      = 1;
+  KList.CN       = 1;
   KList.CM1      = 1;
   KList.CM2      = 1;
 
@@ -928,12 +897,12 @@ void   AT_SuccessiveConvolutions( const float*  u,
   }
 
   // Copy input data
-  KList.E0      = f_d_Gy[1-1] * (float)exp(-1.0f * KList.U);
+  KList.E0      = f_d_Gy[1-1] * expf(-1.0f * KList.U);
 
   long   L;
   for (L = 1; L <= KList.array_size; L++){
     KList.E[L -1]      = f_d_Gy[L -1];
-    KList.DE[L -1]      = f_dd_Gy[L -1];
+    KList.DE[L -1]     = f_dd_Gy[L -1];
     KList.H[L -1]      = f[L -1];
   }
 
@@ -943,7 +912,7 @@ void   AT_SuccessiveConvolutions( const float*  u,
   // Fill array for auxilary function that enables easy index operations
   for  (L = KList.N2; L <= KList.array_size; L++){
     float S        = (float)(L - KList.N2) * KList.U;
-    float tmp      = (float)(-1.0f * log(1.0f - 0.5f * exp(-S)) / KList.U);
+    float tmp      = (float)(-1.0f * logf(1.0f - 0.5f * expf(-S)) / KList.U);
     KList.DI[L -1]    = tmp - (float)KList.N2;}    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
 
   ///////////////////////////////////////
@@ -977,7 +946,7 @@ void   AT_SuccessiveConvolutions( const float*  u,
   ///////////////////////////////////////
 
   KList.D1    =    KList.CM1;
-  float  S        =    KList.D1 * KList.D1;
+  float  S    =    KList.D1 * KList.D1;
   KList.D2    =    KList.CM2 + S;
   KList.D3    =    KList.CM3 + 3.0f * KList.CM2 * KList.D1 + S * KList.D1;
   KList.D4    =    KList.CM4 + 4.0f * KList.CM3 * KList.D1 + 6.0f * S * KList.CM2 + S * S;
@@ -985,7 +954,7 @@ void   AT_SuccessiveConvolutions( const float*  u,
   float  S2        =    KList.D2 / KList.D1;
   float  S3        =    KList.D3 / KList.D1;
   float  S4        =    KList.D4 / KList.D1;
-  S        =    S3 / (float)sqrt(S2 * S2 * S2);
+  S                =    S3 / (float)sqrt(S2 * S2 * S2);
   float  TT        =    S4  / (S2 * S2);
 
   if(KList.write_output){
@@ -1029,7 +998,7 @@ void   AT_SuccessiveConvolutions( const float*  u,
   // numbers
   ///////////////////////////////////////
 
-  KList.FINAL        = *u * KList.D1;  // Final mean impact number
+  KList.FINAL        = (*u) * KList.D1;  // Final mean impact number
 
   long n_convolutions    = 0;
   KList.CN        =    KList.FINAL  / KList.D1;
@@ -1062,7 +1031,7 @@ void   AT_SuccessiveConvolutions( const float*  u,
   long   j;
   for(j = 0; j < n_convolutions; j++){
     KList.N1        =  KList.N1 + 1;
-    KList.CN        =  KList.CN * 2;
+    KList.CN        =  KList.CN * 2.0f;
 
     if(KList.write_output){
       fprintf(  KList.output_file,
@@ -1101,20 +1070,20 @@ void   AT_SuccessiveConvolutions( const float*  u,
 
   for (L = 1; L <= KList.array_size; L++){
     f_d_Gy[L -1]      =  0.0f;
-    f_dd_Gy[L -1]      =  0.0f;
-    f[L -1]          =  0.0f;
-    fdd[L -1]        =  0.0f;
+    f_dd_Gy[L -1]     =  0.0f;
+    f[L -1]           =  0.0f;
+    fdd[L -1]         =  0.0f;
     dfdd[L -1]        =  0.0f;}
 
   long  N        = KList.MIH - KList.MIE;
   for (L = 1; L <= KList.LEH; L++){
     long LE          =  L + N;
-    f_d_Gy[L -1]      =  KList.E[LE -1];
-    f_dd_Gy[L -1]      =  KList.DE[LE -1];
+    f_d_Gy[L -1]     =  KList.E[LE -1];
+    f_dd_Gy[L -1]    =  KList.DE[LE -1];
     f[L -1]          =  KList.H[L-1];
     fdd[L -1]        =  f[L -1] * f_dd_Gy[L -1];
-    dfdd[L -1]        =  fdd[L -1] * f_d_Gy[L -1];
-    *d            +=  dfdd[L -1];
+    dfdd[L -1]       =  fdd[L -1] * f_d_Gy[L -1];
+    *d              +=  dfdd[L -1];
   }
 
   *n_bins_f_used = KList.LEH;

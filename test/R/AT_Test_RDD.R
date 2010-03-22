@@ -1,8 +1,31 @@
+################################################################################################
+# R test script for imeplemented RDD models
+################################################################################################
+# Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+# 
+# This file is part of the AmTrack program (libamtrack.sourceforge.net).
+#
+# AmTrack is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# AmTrack is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# long with AmTrack (file: copying.txt).
+# If not, see <http://www.gnu.org/licenses/>
+#
+################################################################################################
+
 # clear workspace
 rm( list = ls() )
 
 # load libAmTrack library
-dyn.load("../../Release/libAmTrack.dll")
+dyn.load("../../AT_Release/libAmTrack.dll")
 
 # load wrapping scripts
 source("../../wrapper/R/AmTrack.R")
@@ -17,29 +40,13 @@ r.m <- 10^seq (-14, -3.5, length.out=100)
 #r.m <- seq( 1e-9,1.5*1e-8, length.out=10)
 #r.m <- c(1e-6, 1e-7, 1e-8, 1e-9, 1e-12)
 
-# energy range definitions:
-#E.MeV.u <- c( 1, 10, 60, 100, 250, 1000)
-E.MeV.u <- c( 100 )
-# other parameters
-nn <- length(E.MeV.u) 
-particle.no <- rep(1, 2*nn)
-material.no <- c(1)
-
 # electron range models definition
-#ER.model <- c(1,2,3,4)
 ER.model.names <- c("simple test",  "Butts & Katz' (linear)",  "Waligorski's (power-law wmax)",  "Geiss' (power-law E)", "Scholz' (power-law E)", "Edmund' (power-law wmax)","Tabata")
 ER.model <- c(2,3,4,5,6,7)
-#ER.model <- c(7)
 
 # RDD models definition
-#RDD.model <- c(1,2,3,4,5,6,7)
 RDD.model.names <- c("Simple step test function",  "Katz' point target", "Geiss'", "Site", "Edmund", "Cucinotta", "KatzExtTarget")
-#RDD.model <- c(2,3,4,5,6,7)
 RDD.model <- c(2,3,4,5,6,7)
-
-nn <- length(E.MeV.u)
-nnn <-  length(RDD.model)
-material.no <- c(1)
 
 # RDD parameters
 RDD.parameters <- list(c(1),c(1e-10,1e-10), c(1e-10),c(1e-8,1e-10),c(1e-8,1e-10),c(5e-11,1e-10),c(1e-10,1e-8,1e-10))
@@ -52,8 +59,9 @@ df1$RDD.model.name	<- as.character(RDD.model.names[df1$RDD.model])
 
 df1$D.Gy	<- numeric(nrow(df1))
 
+material.no <- c(1)
 E.MeV.u = rep( 100 , nrow(df1))
-particle.no = rep( 1, nrow(df1))
+particle.no = rep( 1001, nrow(df1))
 
 ER.parameters <- c(0)
 
