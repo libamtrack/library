@@ -87,6 +87,30 @@ void getPSTARvalue(
 }
 
 
+double AT_LET_MeV_cm2_g_single(  const double  E_MeV_u,
+    const long    particle_no,
+    const long    material_no){
+
+  // get LET for proton of same energy / nucleon
+  const long number_of_particles  =  1;
+  const float E_MeV_u_float       =  (float)E_MeV_u;
+  float LET_MeV_cm2_g_float       =  0.0f;
+  getPSTARvalue(number_of_particles, &E_MeV_u_float, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, &LET_MeV_cm2_g_float);
+  double LET_MeV_cm2_g            = (double)LET_MeV_cm2_g_float;
+
+  double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u,particle_no);
+
+  double Zeff_proton =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u,1001);
+
+  // scale proton LET by ratio of effective Z
+  if( particle_no != 1001){ // for particles other than proton scale LET by (Zeff_ion / Zeff_proton)^2
+      LET_MeV_cm2_g *=   gsl_pow_2(Zeff_ion / Zeff_proton);
+  }
+
+  return LET_MeV_cm2_g;
+}
+
+
 void AT_LET_MeV_cm2_g(  const long  number_of_particles,
     const float  E_MeV_u[],
     const long   particle_no[],

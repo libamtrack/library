@@ -114,13 +114,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
   const double C_J_m               =  AT_RDD_Katz_C_J_m(electron_density_m3);
 
   // Get LET
-  float  LET_MeV_cm2_g  =  0.0f;
-  long   n_tmp   = 1;
-  AT_LET_MeV_cm2_g(  n_tmp,
-            &E_MeV_u,
-            &particle_no,
-            material_no,
-            &LET_MeV_cm2_g);
+  float  LET_MeV_cm2_g  = (float)AT_LET_MeV_cm2_g_single((double)E_MeV_u, particle_no, material_no);
 
   float  LET_J_m        =  LET_MeV_cm2_g * density_g_cm3; // [MeV / cm]
   LET_J_m              *=  100.0f;       // [MeV / m]
@@ -220,7 +214,7 @@ double AT_RDD_Katz_ext_integrand_Gy(  double t_m,
 
   float D_Gy;
   float t_m_float = (float)t_m;
-  AT_D_RDD_Gy( &n, &t_m_float, &E_MeV_u,  &particle_no, &material_no,  &rdd_model,  rdd_parameter,  &er_model,  er_parameter,  &D_Gy);
+  AT_D_RDD_Gy( n, &t_m_float, E_MeV_u,  particle_no, material_no,  rdd_model,  rdd_parameter,  er_model,  er_parameter,  &D_Gy);
 
   return 2.0 * t_m * (double)D_Gy * geometryFunctionPhi(r_m,a0_m,t_m);
 }

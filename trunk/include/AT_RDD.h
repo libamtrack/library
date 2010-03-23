@@ -60,7 +60,7 @@ enum RDDModels {
       RDD_Edmund             = 5,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off */
       RDD_Cucinotta          = 6,      /**< parameters: 0 - r_min [m] (lower integration limit),1 - d_min_Gy (lower dose cut-off)   */
       RDD_KatzExtTarget      = 7,      /**< TODO: This is a dummy, replace */
-      RDD_CucinottaExtTarget = 8,
+      RDD_CucinottaExtTarget = 8,      /**< TODO: This is a dummy, replace */
 };
 
 /**
@@ -105,10 +105,9 @@ void getRDDName( const long* RDD_no,
  * Returns number of the radial dose distribution model from its name
  *
  * @param[in]   RDD_name  string containing radial dose distribution model name
- * @param[out]  RDD_no    radial dose distribution model index
+ * @return      RDD_no    radial dose distribution model index
  */
-void getRDDNo( const char* RDD_name,
-    long* RDD_no);
+long getRDDNo( const char* RDD_name );
 
 /**
  * Returns RDD as a function of distance r_m
@@ -124,20 +123,20 @@ void getRDDNo( const char* RDD_name,
  * @param[in]   er_parameter
  * @param[out]  D_RDD_Gy       dose [Gy]
  */
-void AT_D_RDD_Gy( const long*  n,
-    const float*  r_m,
+void AT_D_RDD_Gy( const long  n,
+    const float   r_m[],
     /* radiation field parameters */
-    const float*  E_MeV_u,
-    const long*   particle_no,
+    const float   E_MeV_u,
+    const long    particle_no,
     /* detector parameters */
-    const long*   material_no,
+    const long    material_no,
     /* radial dose distribution model */
-    const long*   rdd_model,
-    const float*  rdd_parameter,
+    const long    rdd_model,
+    const float   rdd_parameter[],
     /* electron range model */
-    const long*   er_model,
-    const float*  er_parameter,
-    float*        D_RDD_Gy);
+    const long    er_model,
+    const float   er_parameter[],
+    float         D_RDD_Gy[]);
 
 /**
  * Returns distance as a function of dose
@@ -153,29 +152,30 @@ void AT_D_RDD_Gy( const long*  n,
  * @param[in]   er_parameter
  * @param[out]  r_RDD_m             distance [m]
  */
-void AT_r_RDD_m  ( const long*  n,
-    const float*  D_RDD_Gy,
+void AT_r_RDD_m  ( const long  n,
+    const float   D_RDD_Gy[],
     /* radiation field parameters */
-    const float*  E_MeV_u,
-    const long*   particle_no,
+    const float   E_MeV_u,
+    const long    particle_no,
     /* detector parameters */
-    const long*   material_no,
+    const long    material_no,
     /* radial dose distribution model */
-    const long*   rdd_model,
-    const float*  rdd_parameter,
+    const long    rdd_model,
+    const float   rdd_parameter[],
     /* electron range model */
-    const long*   er_model,
-    const float*  er_parameter,
-    float*        r_RDD_m);
+    const long    er_model,
+    const float   er_parameter[],
+    float         r_RDD_m[]);
 
 /**
- * @param[in] E_MeV_u
- * @param[in] particle_no
- * @param[in] material_no
- * @param[in] rdd_model
- * @param[in] rdd_parameter
- * @param[in] er_model
- * @param[in] er_parameter
+ * TODO
+ * @param[in]  E_MeV_u
+ * @param[in]  particle_no
+ * @param[in]  material_no
+ * @param[in]  rdd_model
+ * @param[in]  rdd_parameter
+ * @param[in]  er_model
+ * @param[in]  er_parameter
  * @param[out] f1_parameters
  *     0 - LET_MeV_cm2_g \n
  *     1 - r_min_m \n
@@ -188,18 +188,18 @@ void AT_r_RDD_m  ( const long*  n,
  *     8 - dEdx_MeV_cm2_g
  */
 void AT_RDD_f1_parameters(  /* radiation field parameters */
-    const float* E_MeV_u,
-    const long*  particle_no,
+    const double  E_MeV_u,
+    const long    particle_no,
     /* detector parameters */
-    const long*  material_no,
+    const long    material_no,
     /* radial dose distribution model */
-    const long*  rdd_model,
-    const float* rdd_parameter,
+    const long    rdd_model,
+    const float   rdd_parameter[],
     /* electron range model */
-    const long*  er_model,
-    const float* er_parameter,
+    const long    er_model,
+    const float   er_parameter[],
     /* calculated parameters */
-    float * f1_parameters);
+    float         f1_parameters[]);
 
 
 /**
@@ -809,18 +809,18 @@ typedef struct {
  * TODO
  */
 typedef struct {
-  long*  n;
+  long    n;
   float*  r_m;
   /* radiation field parameters */
-  float*  E_MeV_u;          /**< energy per nucleon */
-  long*   particle_no;
+  float   E_MeV_u;          /**< energy per nucleon */
+  long    particle_no;
   /* detector parameters */
-  long*   material_no;
+  long    material_no;
   /* radial dose distribution model */
-  long*   rdd_model;
+  long    rdd_model;
   float*  rdd_parameter;
   /* electron range model */
-  long*   er_model;
+  long    er_model;
   float*  er_parameter;
   /* calculated parameters */
   float*  D_RDD_Gy;

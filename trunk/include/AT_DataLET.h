@@ -39,9 +39,7 @@
  */
 #define PSTAR_DATA_N    792                             // number of materials * 132
 
-// TODO implement methodfor getting LET of one particle
-
-// TODO do we operate with total energy E_MeV or E_MeV_u ?
+// TODO implement method for getting LET of one particle
 
 /**
  * TODO
@@ -755,6 +753,22 @@ void getPSTARvalue(
     const float  x_table[],
     const float  y_table[],
     float        y[]);
+
+
+/**
+ * Calculates LET for single particle with given energy
+ *
+ * @param[in]   E_MeV_u                  energy of particle
+ * @param[in]   particle_no              type of the particle
+ * @see          AT_DataParticle.h for definition
+ * @param[in]   material_no              material index
+ * @see          AT_DataMaterial.h for definition
+ * @return      LET_MeV_cm2_g
+ */
+double AT_LET_MeV_cm2_g_single(  const double  E_MeV_u,
+    const long    particle_no,
+    const long    material_no);
+
 
 /**
  * Calculates LET for set of particles with given energies

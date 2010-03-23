@@ -591,14 +591,14 @@ void AT_GSM(  const long*  n,
       float*  doses = (float*)calloc(dinstances_index_max, sizeof(float));
 
       // calculate doses at given distances
-      AT_D_RDD_Gy( &dinstances_index_max,
+      AT_D_RDD_Gy( dinstances_index_max,
           distances,
-          &E_MeV_u[particle_index[0]],
-          &particle_no[particle_index[0]],
-          material_no,
-          RDD_model,
+          E_MeV_u[particle_index[0]],
+          particle_no[particle_index[0]],
+          *material_no,
+          *RDD_model,
           RDD_parameters,
-          ER_model,
+          *ER_model,
           ER_parameters,
           doses);
 
@@ -633,14 +633,14 @@ void AT_GSM(  const long*  n,
           for (k = 0; k < n_particles; k++){  // particles
             r_m[k]        =  sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
             if(r_m[k] <= r_max_m[k]){    // does particle contribute?
-              AT_D_RDD_Gy(  &n_tmp,
+              AT_D_RDD_Gy(  n_tmp,
                   &r_m[k],
-                  &E_MeV_u[particle_index[k]],
-                  &particle_no[particle_index[k]],
-                  material_no,
-                  RDD_model,
+                  E_MeV_u[particle_index[k]],
+                  particle_no[particle_index[k]],
+                  *material_no,
+                  *RDD_model,
                   RDD_parameters,
-                  ER_model,
+                  *ER_model,
                   ER_parameters,
                   &d_tmp_Gy);
               grid_d_Gy[j * (*nX) + i]  +=  d_tmp_Gy;
@@ -1345,14 +1345,14 @@ void AT_SPISS(	const long* n,
 
       // (4) get dose d_Gy[j](r_max * F)
       r_m        = f1_parameters[k*9 + 2] * sqrt(F); // r_max for particle type k * 0..1
-      AT_D_RDD_Gy(  	&n_tmp,
+      AT_D_RDD_Gy(  	n_tmp,
           &r_m,
-          &E_MeV_u[k],
-          &particle_no[k],
-          material_no,
-          RDD_model,
+          E_MeV_u[k],
+          particle_no[k],
+          *material_no,
+          *RDD_model,
           RDD_parameters,
-          ER_model,
+          *ER_model,
           ER_parameters,
           &d_j_Gy);
 
