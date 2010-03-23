@@ -63,13 +63,13 @@ void  AT_SC_get_f1_array_size(
   long  i;
   for (i = 0; i < *n; i++){
     //    // get RDD parameters for all particles and energies
-    AT_RDD_f1_parameters(  &E_MeV_u[i],
-        &particle_no[i],
-        material_no,
-        rdd_model,
+    AT_RDD_f1_parameters(  (double)(E_MeV_u[i]),
+        particle_no[i],
+        *material_no,
+        *rdd_model,
         rdd_parameter,
         /* electron range model */
-        er_model,
+        *er_model,
         er_parameter,
         /* calculated parameters */
         &f1_parameters[i*n_f1_parameters]);
@@ -269,17 +269,17 @@ void  AT_SC_get_f1(
         dd[n_bins_df-1]        =  0.0f;
 
         // now compute r, F1, and f1, this could be any RDD if implemented
-        AT_r_RDD_m  (  &n_bins_df,
+        AT_r_RDD_m  (  n_bins_df,
             d_low,
-            &E_MeV_u[k],
-            &particle_no[k],
+            E_MeV_u[k],
+            particle_no[k],
             /* detector parameters */
-            material_no,
+            *material_no,
             /* radial dose distribution model */
-            rdd_model,
+            *rdd_model,
             rdd_parameter,
             /* electron range model */
-            er_model,
+            *er_model,
             er_parameter,
             r);
 

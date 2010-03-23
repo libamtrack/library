@@ -41,7 +41,7 @@ debug				<-	F
 # RDDs
 ################################################################################################
 E.MeV.u			<-	c(1, 10, 100)
-particle.no		<-	c(1001)					# p, He-4, C-12
+particle.no		<-	c(1001,2004)					# p, He-4, C-12
 
 material.no		<-	c(1, 2)
 
@@ -68,7 +68,7 @@ df.RDD$EPMM				<-	paste(df.RDD$E.MeV.u, df.RDD$particle.no, df.RDD$material.no, 
 for (cur.EPMM in unique(df.RDD$EPMM)){
 	#cur.EPMM<-unique(df$EPMM)[1]
 	ii					<-	cur.EPMM == df.RDD$EPMM
-	df.RDD$D.Gy[ii]	<-	AT.RDD.D.Gy(		r.m					=	df.RDD$r.m[ii],
+	df.RDD$D.Gy[ii]	<-	AT.D.RDD.Gy(		r.m					=	df.RDD$r.m[ii],
 												E.MeV.u			=	df.RDD$E.MeV.u[ii],
 												particle.no		=	df.RDD$particle.no[ii],
 												material.no		=	df.RDD$material.no[ii],

@@ -56,24 +56,19 @@ void AT_D_RDD_Gy_R( const int*  n,
   const long material_no_long = (long)(*material_no);
   const long er_model_long = (long)(*er_model);
   const long rdd_model_long = (long)(*rdd_model);
-  long i;
-  long * particle_no_long = (long*)calloc(*n,sizeof(long));
-  for(i = 0 ; i < *n ; i++){
-    particle_no_long[i] = (long)particle_no[i];
-  }
+  const long particle_no_long = (long)(*particle_no);
 
-  AT_D_RDD_Gy( &n_long,
+  AT_D_RDD_Gy( n_long,
       r_m,
-      E_MeV_u,
+      *E_MeV_u,
       particle_no_long,
-      &material_no_long,
-      &rdd_model_long,
+      material_no_long,
+      rdd_model_long,
       rdd_parameter,
-      &er_model_long,
+      er_model_long,
       er_parameter,
       D_RDD_Gy);
 
-  free(particle_no_long);
 }
 
 void AT_D_RDD_ExtendedTarget_Gy_R( const int*  n,
@@ -181,24 +176,19 @@ void AT_r_RDD_m_R  ( const int*  n,
   const long material_no_long = (long)(*material_no);
   const long er_model_long = (long)(*er_model);
   const long rdd_model_long = (long)(*rdd_model);
-  long i;
-  long * particle_no_long = (long*)calloc(*n,sizeof(long));
-  for(i = 0 ; i < *n ; i++){
-    particle_no_long[i] = (long)particle_no[i];
-  }
+  const long particle_no_long = (long)(*particle_no);
 
-  AT_r_RDD_m( &n_long,
+  AT_r_RDD_m( n_long,
       D_RDD_Gy,
-      E_MeV_u,
+      *E_MeV_u,
       particle_no_long,
-      &material_no_long,
-      &rdd_model_long,
+      material_no_long,
+      rdd_model_long,
       rdd_parameter,
-      &er_model_long,
+      er_model_long,
       er_parameter,
       r_RDD_m);
 
-  free(particle_no_long);
 }
 
 void  AT_SC_get_f1_array_size_R(  /* radiation field parameters */
