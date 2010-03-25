@@ -56,6 +56,8 @@
 # AT.RDD.D.Gy                                OK
 # AT.RDD.D.ext.Gy                            OK
 # AT.SC.get.f1.array.size					 OK
+# AT.SC.get.f1								 OK
+# AT.SC.get.f.array.size                     OK
 # 
 ################################################################################################
 
@@ -194,7 +196,7 @@ AT.r.RDD.m					<-	function(	D.Gy,
 	 return(res$r.m)						
 }
 
-#############
+#######################
 AT.SC.get.f1.array.size		<-	function(		E.MeV.u,
 												particle.no,
 												fluence.cm2,
@@ -209,22 +211,18 @@ AT.SC.get.f1.array.size		<-	function(		E.MeV.u,
 	f1.parameters	<-	numeric(9 * n)
 	n.bins.f1 <- 0
 	
-	res				<-	.C("AT_SC_get_f1_array_size", 	n					= as.integer(n),
-														E.MeV.u				= as.single(E.MeV.u),
-														particle.no			= as.integer(particle.no),
-														material.no			= as.integer(material.no),
-														RDD.model			= as.integer(RDD.model),
-														RDD.parameters		= as.single(RDD.parameters),
-														ER.model			= as.integer(ER.model),
-														ER.parameters		= as.single(ER.parameters),
-														N2					= as.integer(N2),
-														n.bins.f1			= as.integer(n.bins.f1),
-														f1.parameters		= as.single(f1.parameters))
+	res				<-	.C("AT_SC_get_f1_array_size_R", 	n					= as.integer(n),
+															E.MeV.u				= as.single(E.MeV.u),
+															particle.no			= as.integer(particle.no),
+															material.no			= as.integer(material.no),
+															RDD.model			= as.integer(RDD.model),
+															RDD.parameters		= as.single(RDD.parameters),
+															ER.model			= as.integer(ER.model),
+															ER.parameters		= as.single(ER.parameters),
+															N2					= as.integer(N2),
+															n.bins.f1			= as.integer(n.bins.f1),
+															f1.parameters		= as.single(f1.parameters))
 		
-	n.bins.f1		<- 	res$n.bins.f1
-	#idx				<-	seq(1, 9*(n-1), by = 9)
-	f1.parameters	<-	res$f1.parameters
-	
 	return(list(n.bins.f1 = res$n.bins.f1, f1.parameters = res$f1.parameters))
 }
 
@@ -252,43 +250,137 @@ AT.SC.get.f1		<-	function(		E.MeV.u,
 	f1.dd.Gy						<-	numeric(n.bins.f1)
 	f1								<-	numeric(n.bins.f1)	
 
-	res				<-	.C("AT_SC_get_f1_R", 					n					= as.integer(n),
-																E.MeV.u				= as.single(E.MeV.u),
-																particle.no			= as.integer(particle.no),
-																fluence.cm2			= as.single(fluence.cm2),
-																material.no			= as.integer(material.no),
-																RDD.model			= as.integer(RDD.model),
-																RDD.parameters		= as.single(RDD.parameters),
-																ER.model			= as.integer(ER.model),
-																ER.parameters		= as.single(ER.parameters),
-																N2					= as.integer(N2),
-																n.bins.f1			= as.integer(n.bins.f1),
-																f1.parameters		= as.single(f1.parameters),
-																norm.fluence		= as.single(norm.fluence),
+	res				<-	.C("AT_SC_get_f1_R", 					n						= as.integer(n),
+																E.MeV.u					= as.single(E.MeV.u),
+																particle.no				= as.integer(particle.no),
+																fluence.cm2				= as.single(fluence.cm2),
+																material.no				= as.integer(material.no),
+																RDD.model				= as.integer(RDD.model),
+																RDD.parameters			= as.single(RDD.parameters),
+																ER.model				= as.integer(ER.model),
+																ER.parameters			= as.single(ER.parameters),
+																N2						= as.integer(N2),
+																n.bins.f1				= as.integer(n.bins.f1),
+																f1.parameters			= as.single(f1.parameters),
+																norm.fluence			= as.single(norm.fluence),
 																dose.contribution.Gy	= as.single(dose.contribution.Gy),
-																f.parameters		= as.single(f.parameters),
-																f1.d.Gy				= as.single(f1.d.Gy),
-																f1.dd.Gy			= as.single(f1.dd.Gy),
-																f1					= as.single(f1))
+																f.parameters			= as.single(f.parameters),
+																f1.d.Gy					= as.single(f1.d.Gy),
+																f1.dd.Gy				= as.single(f1.dd.Gy),
+																f1						= as.single(f1))
 	
-	results	<-	list(	general				=	data.frame(	E.MeV.u						=	res$E.MeV.u,
-															particle.no					= 	res$particle.no,
-															fluence.cm2					= 	res$fluence.cm2,
-															fluence.cm2.set				= 	fluence.cm2,
-															norm.fluence				= 	res$norm.fluence,
-															dose.contribution.Gy		= 	res$dose.contribution.Gy,
-															material.no					=	rep(material.no, n)),
-															f1.parameters				=	f1.parameters,											
-						f.parameters		=	res$f.parameters,
-						f1					=	data.frame(	f1.d.Gy						=	res$f1.d.Gy,
-															f1.dd.Gy					=	res$f1.dd.Gy,
-															f1							=	res$f1,
-															material.no					=	rep(material.no, n.bins.f1),
-															n.bins.f1					=	rep(res$n.bins.f1, n.bins.f1),
-															N2							=	rep(N2, n.bins.f1)))
+	results	<-	list(	fluence.cm2					= 	res$fluence.cm2,
+						norm.fluence				= 	res$norm.fluence,
+						dose.contribution.Gy		= 	res$dose.contribution.Gy,
+						f.parameters				=	res$f.parameters,											
+						f1							=	data.frame(	f1.d.Gy						=	res$f1.d.Gy,
+																	f1.dd.Gy					=	res$f1.dd.Gy,
+																	f1							=	res$f1))
 	return(results)
 }
 
+
+######################
+AT.SC.get.f.array.size		<-	function(		u,
+												fluence.factor,
+												N2,
+												n.bins.f1,
+												f1.d.Gy,
+												f1.dd.Gy,
+												f1){
+											
+	n.bins.f		<-	numeric(1)
+	u.start			<-	numeric(1)
+	n.convolutions	<-	numeric(1)
+	
+	res				<-	.C("AT_SC_get_f_array_size_R", 		u					= as.single(u),
+															fluence.factor		= as.single(fluence.factor),
+															N2					= as.integer(N2),
+															n.bins.f1			= as.integer(n.bins.f1),
+															f1.d.Gy				= as.single(f1.d.Gy),
+															f1.dd.Gy			= as.single(f1.dd.Gy),
+															f1					= as.single(f1),
+															n.bins.f			= as.integer(n.bins.f),
+															u.start				= as.single(u.start),
+															n.convolutions		= as.integer(n.convolutions))
+		
+	return(list(n.bins.f = res$n.bins.f, u.start = res$u.start, n.convolutions = res$n.convolutions))
+}
+
+######################
+AT.SC.get.f.start		<-	function(		u,
+											N2,
+											n.bins.f1,
+											f1.d.Gy,
+											f1.dd.Gy,
+											f1,
+											n.bins.f){
+											
+	f.d.Gy							<-	numeric(n.bins.f)
+	f.dd.Gy							<-	numeric(n.bins.f)
+	f								<-	numeric(n.bins.f)	
+	
+	res						<-	.C("AT_SC_get_f_start_R", 		u						= as.single(u),
+																n.bins.f1				= as.integer(n.bins.f1),
+																N2						= as.integer(N2),
+																f1.d.Gy					= as.single(f1.d.Gy),
+																f1.dd.Gy				= as.single(f1.dd.Gy),
+																f1						= as.single(f1),
+																n.bins.f				= as.integer(n.bins.f),
+																f.d.Gy					= as.single(f.d.Gy),
+																f.dd.Gy					= as.single(f.dd.Gy),
+																f						= as.single(f))
+
+	return	(			data.frame(	f.start.d.Gy					=	res$f.d.Gy,
+								f.start.dd.Gy					=	res$f.dd.Gy,
+								f.start						=	res$f))
+}
+
+############################
+AT.SC.SuccessiveConvolutions		<-	function(	u,
+													n.bins.f,
+													N2,
+													n.bins.f.used,
+													f.d.Gy,
+													f.dd.Gy,
+													f,
+													write.output,
+													shrink.tails,
+													shrink.tails.under,
+													adjust.N2){
+
+	f0					<-	numeric(1)
+	fdd					<-	numeric(n.bins.f)
+	dfdd				<-	numeric(n.bins.f)
+	d					<-	numeric(1)
+	
+	res						<-	.C("AT_SuccessiveConvolutions_R", 		u						= as.single(u),
+																		n.bins.f				= as.integer(n.bins.f),
+																		N2						= as.integer(N2),
+																		n.bins.f.used			= as.integer(n.bins.f.used),
+																		f.d.Gy					= as.single(f.d.Gy),
+																		f.dd.Gy					= as.single(f.dd.Gy),
+																		f						= as.single(f),
+																		f0						= as.single(f0),
+																		fdd						= as.single(fdd),
+																		dfdd					= as.single(dfdd),
+																		d						= as.single(d),
+																		write.output			= as.integer(write.output),
+																		shrink.tails			= as.integer(shrink.tails),
+																		shrink.tails.under		= as.single(shrink.tails.under),
+																		adjust.N2				= as.integer(adjust.N2))
+
+	return(				list(	N2				=	res$N2,
+								n.bins.f.used	=	res$n.bins.f.used,
+								f0				=	res$f0,
+								d				=	res$d,
+								f				=	data.frame(	f.d.Gy						=	res$f.d.Gy,
+																f.dd.Gy						=	res$f.dd.Gy,
+																f							=	res$f,
+																fdd							=	res$fdd,
+																dfdd						=	res$dfdd)))																	
+}
+	
 ######################################################################################################################################
 
 print(AT.version)

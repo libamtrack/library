@@ -156,4 +156,47 @@ void  AT_SC_get_f1_R(  /* radiation field parameters */
     float*  f1_dd_Gy,
     float*  f1);
 
+void  AT_SC_get_f_array_size_R(
+    const float* u,
+    const float* fluence_factor,
+    const int* N2,
+    const int* n_bins_f1,
+    const float* f1_d_Gy,
+    const float* f1_dd_Gy,
+    const float* f1,
+    // from here: return values
+    int*  n_bins_f,
+    float*  u_start,
+    int* n_convolutions);
+
+void  AT_SC_get_f_start_R(  const float*  u_start,
+    const int*   n_bins_f1,
+    const int*   N2,
+    const float*  f1_d_Gy,
+    const float*  f1_dd_Gy,
+    const float*  f1,
+    const int*   n_bins_f,
+    // from here: return values
+    float*  f_d_Gy,
+    float*  f_dd_Gy,
+    float*  f_start);
+
+void AT_SuccessiveConvolutions_R( const float*  u,
+    const int*  n_bins_f,
+    // input + return values
+    int*  N2,
+    int*  n_bins_f_used,
+    float*  f_d_Gy,
+    float*  f_dd_Gy,
+    float*  f,
+    // return values
+    float*  f0,
+    float*  fdd,
+    float*  dfdd,
+    float*  d,
+    const int*  write_output,
+    const int*  shrink_tails,
+    const float*  shrink_tails_under,
+    const int*  adjust_N2);
+
 #endif /* AT_WRAPPER_R_H_ */
