@@ -1,12 +1,12 @@
 /**
- * @file
- * @brief Wrapper functions
- *
- * C functions which are called from R cannot have input
- * integer parameters of type "long". Only "int" type is
- * accepted. This file contains set of wrapper functions,
- * which are casting int arguments to long if necessary.
- */
+* @file
+* @brief Wrapper functions
+*
+* C functions which are called from R cannot have input
+* integer parameters of type "long". Only "int" type is
+* accepted. This file contains set of wrapper functions,
+* which are casting int arguments to long if necessary.
+*/
 
 /*
  *    AT_Wrapper_R.c
@@ -298,3 +298,112 @@ void  AT_SC_get_f1_R(  /* radiation field parameters */
 
   free(particle_no_long);
 }
+
+void  AT_SC_get_f_array_size_R(
+    const float* u,
+    const float* fluence_factor,
+    const int* N2,
+    const int* n_bins_f1,
+    const float* f1_d_Gy,
+    const float* f1_dd_Gy,
+    const float* f1,
+    // from here: return values
+    int*  n_bins_f,
+    float*  u_start,
+    int* n_convolutions){
+
+  const long N2_long = (long)(*N2);
+  const long n_bins_f1_long = (long)(*n_bins_f1);
+  long n_bins_f_long;
+  long n_convolutions_long;
+
+  AT_SC_get_f_array_size(  u,
+      fluence_factor,
+      &N2_long,
+      &n_bins_f1_long,
+      f1_d_Gy,
+      f1_dd_Gy,
+      f1,
+      // from here: return values
+      &n_bins_f_long,
+      u_start,
+      &n_convolutions_long);
+
+  *n_bins_f = (int)n_bins_f_long;
+  *n_convolutions = (int)n_convolutions_long;
+}
+
+void  AT_SC_get_f_start_R(  const float*  u_start,
+    const int*   n_bins_f1,
+    const int*   N2,
+    const float*  f1_d_Gy,
+    const float*  f1_dd_Gy,
+    const float*  f1,
+    const int*   n_bins_f,
+    // from here: return values
+    float*  f_d_Gy,
+    float*  f_dd_Gy,
+    float*  f_start){
+
+  const long n_bins_f1_long = (long)(*n_bins_f1);
+  const long N2_long = (long)(*N2);
+  const long n_bins_f_long = (long)(*n_bins_f);
+
+  AT_SC_get_f_start(  u_start,
+      &n_bins_f1_long,
+      &N2_long,
+      f1_d_Gy,
+      f1_dd_Gy,
+      f1,
+      &n_bins_f_long,
+      f_d_Gy,
+      f_dd_Gy,
+      f_start);
+
+}
+
+void AT_SuccessiveConvolutions_R( const float*  u,
+    const int*  n_bins_f,
+    // input + return values
+    int*  N2,
+    int*  n_bins_f_used,
+    float*  f_d_Gy,
+    float*  f_dd_Gy,
+    float*  f,
+    // return values
+    float*  f0,
+    float*  fdd,
+    float*  dfdd,
+    float*  d,
+    const int*  write_output,
+    const int*  shrink_tails,
+    const float*  shrink_tails_under,
+    const int*  adjust_N2){
+
+  const long n_bins_f_long = (long)(*n_bins_f);
+  long N2_long = (long)(*N2);
+  long n_bins_f_used_long = (long)(*n_bins_f_used);
+  const bool write_output_bool = (bool)(*write_output);
+  const bool shrink_tails_bool = (bool)(*shrink_tails);
+  const bool adjust_N2_bool = (bool)(*adjust_N2);
+
+  AT_SuccessiveConvolutions( u,
+      &n_bins_f_long,
+      &N2_long,
+      &n_bins_f_used_long,
+      f_d_Gy,
+      f_dd_Gy,
+      f,
+      f0,
+      fdd,
+      dfdd,
+      d,
+      &write_output_bool,
+      &shrink_tails_bool,
+      shrink_tails_under,
+      &adjust_N2_bool);
+
+  *N2   = (int)N2_long;
+  *n_bins_f_used = (int)n_bins_f_used_long;
+}
+
