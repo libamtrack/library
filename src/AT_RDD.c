@@ -821,7 +821,7 @@ double AT_RDD_d_max_Gy(
 
     float r_min_m_float = (float)r_min_m;
     float d_max_Gy_float;
-    AT_RDD_ExtendedTarget_Gy(n_tmp, &r_min_m_float, (float)a0_m, (float)E_MeV_u, particle_no, material_no, RDD_KatzPoint, rdd_basic_parameter, er_model, er_parameter, &d_max_Gy_float);
+    AT_RDD_ExtendedTarget_Gy(n_tmp, &r_min_m_float, a0_m, E_MeV_u, particle_no, material_no, RDD_KatzPoint, rdd_basic_parameter, er_model, er_parameter, &d_max_Gy_float);
     d_max_Gy = (double)d_max_Gy_float;
   }// end RDD_KatzExtTarget
 
@@ -833,7 +833,7 @@ double AT_RDD_d_max_Gy(
 
     const float r_min_m_float = (float)r_min_m;
     float d_max_Gy_float;
-    AT_RDD_ExtendedTarget_Gy(n_tmp, &r_min_m_float, (float)a0_m, (float)E_MeV_u, particle_no, material_no, RDD_CucinottaPoint, rdd_basic_parameter, er_model, er_parameter, &d_max_Gy_float);
+    AT_RDD_ExtendedTarget_Gy(n_tmp, &r_min_m_float, a0_m, E_MeV_u, particle_no, material_no, RDD_CucinottaPoint, rdd_basic_parameter, er_model, er_parameter, &d_max_Gy_float);
     d_max_Gy = (double)d_max_Gy_float;
   }// end RDD_CucinottaExtTarget
 
@@ -993,8 +993,8 @@ void AT_D_RDD_Gy( const long  n,
   if( rdd_model == RDD_KatzPoint){ // RDD formula will be determined by form of ER model
     // Loop over all r_m given
     for (i = 0; i < n; i++){
-      D_RDD_Gy[i]     =  (float)AT_RDD_KatzPoint_Gy((double)r_m[i],r_min_m, max_electron_range_m, er_model, alpha, Katz_point_coeff_Gy);
-      D_RDD_Gy[i]     =  fmaxf(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+      D_RDD_Gy[i]     =  (float)AT_RDD_KatzPoint_Gy((double)r_m[i], r_min_m, max_electron_range_m, er_model, alpha, Katz_point_coeff_Gy);
+      D_RDD_Gy[i]     =  fmaxf(D_RDD_Gy[i], (double)d_min_Gy);          // Cut-off low doses, necessary in SPIFF
     } // end for
   }// end RDD_KatzPoint
 
@@ -1007,7 +1007,7 @@ void AT_D_RDD_Gy( const long  n,
     // Loop over all r_m given
     for (i = 0; i < n; i++){
       D_RDD_Gy[i]     =  (float)AT_RDD_KatzSite_Gy((double)r_m[i], 0.0, max_electron_range_m, a0_m, er_model, alpha, density_kg_m3, LET_J_m, dEdx_J_m, Katz_point_coeff_Gy);
-      D_RDD_Gy[i]     =  fmaxf(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+      D_RDD_Gy[i]     =  fmaxf(D_RDD_Gy[i], (double)d_min_Gy);          // Cut-off low doses, necessary in SPIFF
     } // end for
   }// end RDD_KatzSite
 
@@ -1040,22 +1040,22 @@ void AT_D_RDD_Gy( const long  n,
     // Loop over all r_m given
     for (i = 0; i < n; i++){
       D_RDD_Gy[i]     =  (float)AT_RDD_CucinottaPoint_Gy((double)r_m[i], r_min_m, max_electron_range_m, beta, norm_constant_Gy, Katz_point_coeff_Gy);
-      D_RDD_Gy[i]     =  fmaxf(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+      D_RDD_Gy[i]     =  fmaxf(D_RDD_Gy[i], (double)d_min_Gy);          // Cut-off low doses, necessary in SPIFF
     }
   }// end RDD_CucinottaPoint
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // RDD_KatzExtTarget
   if( rdd_model == RDD_KatzExtTarget){
-    const float rdd_basic_parameter[] = {r_min_m, rdd_parameter[2]};
-    AT_RDD_ExtendedTarget_Gy(n, r_m, a0_m, E_MeV_u, particle_no, material_no, RDD_KatzPoint, rdd_basic_parameter, er_model, er_parameter, D_RDD_Gy);
+    const float rdd_basic_parameter[] = {(float)r_min_m, rdd_parameter[2]};
+    AT_RDD_ExtendedTarget_Gy(n, r_m, a0_m, (double)E_MeV_u, particle_no, material_no, RDD_KatzPoint, rdd_basic_parameter, er_model, er_parameter, D_RDD_Gy);
   }// end RDD_KatzExtTarget
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // RDD_CucinottaExtTarget
   if( rdd_model == RDD_CucinottaExtTarget){
-    const float rdd_basic_parameter[] = {r_min_m, rdd_parameter[2]};
-    AT_RDD_ExtendedTarget_Gy(n, r_m, a0_m, E_MeV_u, particle_no, material_no, RDD_CucinottaPoint, rdd_basic_parameter, er_model, er_parameter, D_RDD_Gy);
+    const float rdd_basic_parameter[] = {(double)r_min_m, rdd_parameter[2]};
+    AT_RDD_ExtendedTarget_Gy(n, r_m, a0_m, (double)E_MeV_u, particle_no, material_no, RDD_CucinottaPoint, rdd_basic_parameter, er_model, er_parameter, D_RDD_Gy);
   } // end RDD_CucinottaExtTarget
 
 }

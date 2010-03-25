@@ -52,21 +52,21 @@
  * @param[in]   er_parameter
  * @param[out]  D_RDD_Gy       dose [Gy]
  */
-void AT_RDD_Site_Gy( const long*  n,
+void AT_RDD_Site_Gy( const long  n,
     const float*  r_m,
-    const float*  a0_m,
+    const float   a0_m,
     /* radiation field parameters */
-    const float*  E_MeV_u,
-    const long*   particle_no,
+    const float   E_MeV_u,
+    const long    particle_no,
     /* detector parameters */
-    const long*   material_no,
+    const long    material_no,
     /* radial dose distribution model */
-    const long*   rdd_model,
-    const float*  rdd_parameter,
+    const long    rdd_model,
+    const float   rdd_parameter[],
     /* electron range model */
-    const long*   er_model,
-    const float*  er_parameter,
-    float*        D_RDD_Gy);
+    const long    er_model,
+    const float   er_parameter[],
+    float         D_RDD_Gy[]);
 
 ///////////////////////////////////////////// EXTENDED TARGET /////////////////////////////////////////////
 
@@ -88,6 +88,46 @@ double          geometryFunctionPhi(         const double r_m,
     const double a0_m,
     const double t_m);
 
+typedef struct {
+  double  r_m;
+  double  a0_m;
+  double  r_min_m;
+  double  r_max_m;
+  long    er_model;
+  double  alpha;
+  double  Katz_point_coeff_Gy;
+} AT_RDD_ExtendedTarget_KatzPoint_parameters;
+
+/**
+ * TODO
+ * @param t_m
+ * @param params
+ * @return
+ */
+double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy(
+    double t_m,
+    void* params);
+
+
+/**
+ * TODO
+ * @param r_m
+ * @param a0_m
+ * @param er_model
+ * @param r_min_m
+ * @param r_max_m
+ * @param alpha
+ * @param Katz_point_coeff_Gy
+ * @return
+ */
+double AT_RDD_ExtendedTarget_KatzPoint_Gy(
+    const double  r_m,
+    const double  a0_m,
+    const long    er_model,
+    const double  r_min_m,
+    const double  r_max_m,
+    const double  alpha,
+    const double  Katz_point_coeff_Gy);
 
 /**
  * Returns RDD as a function of distance r_m for target with radius a0_m
@@ -119,20 +159,20 @@ double          geometryFunctionPhi(         const double r_m,
  * @param[out]  D_RDD_Gy       dose [Gy]
  */
 void AT_RDD_ExtendedTarget_Gy( const long  n,
-    const float* r_m,
-    const float  a0_m,
+    const float  r_m[],
+    const double a0_m,
     /* radiation field parameters */
-    const float  E_MeV_u,
+    const double E_MeV_u,
     const long   particle_no,
     /* detector parameters */
     const long   material_no,
     /* radial dose distribution model */
     const long   rdd_model,
-    const float* rdd_parameter,
+    const float  rdd_parameter[],
     /* electron range model */
     const long   er_model,
-    const float* er_parameter,
-    float*       D_RDD_Gy);
+    const float  er_parameter[],
+    float        D_RDD_Gy[]);
 
 
 /**
@@ -150,12 +190,24 @@ double         AT_RDD_Katz_ext_integrand_Gy(double t_m,
  *
  * Dext( r , a0 ) = 1 / (pi a0^2) \int_low^up D(t) 2 Phi(t,a0,r) t dt
  *
+ * @param r_m
+ * @param a0_m
+ * @param r_min_m
+ * @param r_max_m
+ * @param E_MeV_u
+ * @param particle_no
+ * @param material_no
+ * @param rdd_model
+ * @param rdd_parameter
+ * @param er_model
+ * @param er_parameter
+ * @return
  */
 double AT_RDD_ExtendedTarget_integrate_Gy(  const double r_m,
     const double a0_m,
     const double r_min_m,
     const double r_max_m,
-    const float  E_MeV_u,
+    const double  E_MeV_u,
     const long   particle_no,
     /* detector parameters */
     const long   material_no,
@@ -168,7 +220,6 @@ double AT_RDD_ExtendedTarget_integrate_Gy(  const double r_m,
 
 
 //TODO implement inverse extended target RDD
-
 typedef struct {
   float   r_m;
   float   a0_m;
