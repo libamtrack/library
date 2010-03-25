@@ -287,28 +287,33 @@ void AT_inv_interparticleDistance_cm2( const long*   n,
   }
 }
 
-void AT_single_impact_fluence_cm2( const long* n,
-    const float* E_MeV_u,
-    const long* material_no,
-    const long* er_model,
-    float* single_impact_fluence_cm2)
-{
-  float* max_electron_range_m    = (float*)calloc(*n, sizeof(float));
 
-  // get max. electron ranges
-  AT_max_electron_ranges_m( *n,
-      E_MeV_u,
-      (int)(*material_no),
-      (int)(*er_model),
-      max_electron_range_m);
+inline double AT_single_impact_fluence_cm2_single( const double E_MeV_u,
+    const long material_no,
+    const long er_model){
 
-  long i;
-  for( i = 0 ; i < *n ; i++ ){
-    single_impact_fluence_cm2[i] = M_1_PI / gsl_pow_2( max_electron_range_m[i] * m_to_cm ); // pi * r_max_m^2 = Track area -> single_impact_fluence [1/cm2]
-   }
-
-  free(max_electron_range_m);
+  double max_electron_range_m = AT_max_electron_range_m(E_MeV_u,(int)material_no,(int)er_model);
+  return M_1_PI / gsl_pow_2( max_electron_range_m * m_to_cm ) ; // pi * r_max_m^2 = Track area -> single_impact_fluence [1/cm2]
 }
+
+void AT_single_impact_fluence_cm2( const long n,
+    const double  E_MeV_u[],
+    const long    material_no,
+    const long    er_model,
+    double        single_impact_fluence_cm2[])
+{
+  long i;
+  for( i = 0 ; i < n ; i++ ){
+    single_impact_fluence_cm2[i] = AT_single_impact_fluence_cm2_single(E_MeV_u[i],material_no,er_model);
+  }
+}
+
+
+inline double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
+    const double single_impact_fluence_cm2){
+  return LET_MeV_cm2_g * MeV_g_to_J_kg * single_impact_fluence_cm2;        // LET * fluence
+}
+
 
 void AT_total_D_Gy( const long* n,
     const float* E_MeV_u,
@@ -489,7 +494,3 @@ void AT_doseweighted_LET_MeV_cm2_g( const long*     n,
    free(single_LETs_MeV_cm2_g);
    free(single_doses_Gy);
  }
-
-
-
-

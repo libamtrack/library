@@ -334,6 +334,25 @@ void AT_inv_interparticleDistance_cm2( const long*   n,
     float*  results_cm2
 );
 
+
+/**
+ * Computes the fluences at which (for a given material and electron-range model) every
+ * point of the detector lies within the area ONE track only
+ *
+ * Needed by SuccessiveConvolutions
+ *
+ * @param[in]  E_MeV_u      energy of particle
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]  er_model     index of electron-range model
+ * @see          AT_ElectronRange.h for definition
+ * @return     single_impact_fluence_cm2  results (one for each entry in the parameter vectors)
+  */
+double AT_single_impact_fluence_cm2_single( const double E_MeV_u,
+    const long material_no,
+    const long er_model);
+
+
 /**
  * Computes the fluences at which (for a given material and electron-range model) every
  * point of the detector lies within the area ONE track only
@@ -348,11 +367,20 @@ void AT_inv_interparticleDistance_cm2( const long*   n,
  * @see          AT_ElectronRange.h for definition
  * @param[out] single_impact_fluence_cm2  results (one for each entry in the parameter vectors)
   */
-void AT_single_impact_fluence_cm2( const long* n,
-    const float* E_MeV_u,
-    const long* material_no,
-    const long* er_model,
-    float* single_impact_fluence_cm2);
+void AT_single_impact_fluence_cm2( const long n,
+    const double  E_MeV_u[],
+    const long    material_no,
+    const long    er_model,
+    double        single_impact_fluence_cm2[]);
+
+/**
+ * TODO
+ * @param LET_MeV_cm2_g
+ * @param single_impact_fluence_cm2
+ * @return
+ */
+inline double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
+    const double single_impact_fluence_cm2);
 
 /**
  * Computes the total dose of a particle field

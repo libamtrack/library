@@ -38,7 +38,7 @@
 
 /**
  * Returns RDD as a function of distance r_m for target with radius a0_m
- * approximated version, called RDD_Site
+ * approximated version, called RDD_KatzSite
  *
  * @param[in]   n
  * @param[in]   r_m            distance [m]
