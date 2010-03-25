@@ -49,6 +49,8 @@
 #include "AT_RDD_ExtendedTarget.h"
 
 
+//////////////////////////////////////////////////////// DATA STRUCTURES ////////////////////////////////////////////////////////
+
 /**
  * RDD code numbers
  */
@@ -56,9 +58,9 @@ enum RDDModels {
   RDD_Test                   = 1,      /**< no parameters */
       RDD_KatzPoint          = 2,      /**< parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
       RDD_Geiss              = 3,      /**< parameters: 0 - a0 [m] (core diameter) */
-      RDD_Site               = 4,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off  */
+      RDD_KatzSite           = 4,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off  */
       RDD_Edmund             = 5,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off */
-      RDD_Cucinotta          = 6,      /**< parameters: 0 - r_min [m] (lower integration limit),1 - d_min_Gy (lower dose cut-off)   */
+      RDD_CucinottaPoint     = 6,      /**< parameters: 0 - r_min [m] (lower integration limit),1 - d_min_Gy (lower dose cut-off)   */
       RDD_KatzExtTarget      = 7,      /**< TODO: This is a dummy, replace */
       RDD_CucinottaExtTarget = 8,      /**< TODO: This is a dummy, replace */
 };
@@ -76,7 +78,7 @@ typedef struct {
   long    RDD_no[RDD_DATA_N];                  /** code number of RDD model*/
   long    n_parameters[RDD_DATA_N];            /** number of model parameters */
   char*   parameter_name[RDD_DATA_N][3];       /** list of names of model parameters*/
-  float   parameter_default[RDD_DATA_N][3];    /** default values of model paramters */
+  float   parameter_default[RDD_DATA_N][3];    /** default values of model parameters */
   char*   RDD_name[RDD_DATA_N];                /** model names */
 } rdd_data;
 
@@ -85,7 +87,7 @@ typedef struct {
  */
 static const rdd_data AT_RDD_Data = {
     RDD_DATA_N,
-    {  RDD_Test,                     RDD_KatzPoint,                                      RDD_Geiss,                         RDD_Site,                                        RDD_Edmund,                      RDD_Cucinotta,                                      RDD_KatzExtTarget,              RDD_CucinottaExtTarget},
+    {  RDD_Test,                     RDD_KatzPoint,                                      RDD_Geiss,                         RDD_KatzSite,                                    RDD_Edmund,                      RDD_CucinottaPoint,                                 RDD_KatzExtTarget,              RDD_CucinottaExtTarget},
     {  0,                            2,                                                  1,                                 2,                                               2,                               2,                                                  3,                              3},
     {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                         {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"a0_m","d_min_Gy",""},          {"r_min_m","d_min_Gy",""},                          {"r_min_m","a0_m","d_min_Gy"},  {"r_min_m","a0_m","d_min_Gy"}},
     {  {0,0,0},                      {1e-10, 1e-10,0},                                   {5e-8,0,0},                        {5e-8,1e-10,0},                                  {5e-8,1e-10,0},                  {5e-11,1e-10,0},                                    {1e-10,1e-8,1e-10},             {5e-11,1e-8,1e-10}},
@@ -108,6 +110,8 @@ void getRDDName( const long* RDD_no,
  * @return      RDD_no    radial dose distribution model index
  */
 long getRDDNo( const char* RDD_name );
+
+//////////////////////////////////////////////////////// GENERAL FUNCTIONS ////////////////////////////////////////////////////////
 
 /**
  * Returns RDD as a function of distance r_m
@@ -167,6 +171,95 @@ void AT_r_RDD_m  ( const long  n,
     const float   er_parameter[],
     float         r_RDD_m[]);
 
+
+//////////////////////////////////////////////////////// HELPER FUNCTIONS ////////////////////////////////////////////////////////
+
+/**
+ * TODO
+ * @param max_electron_range_m
+ * @param rdd_model
+ * @param rdd_parameter
+ * @return
+ */
+double AT_RDD_r_min_m(
+    const double  max_electron_range_m,
+    const long    rdd_model,
+    const float   rdd_parameter[]);
+
+
+/**
+ * TODO
+ * @param max_electron_range_m
+ * @param rdd_model
+ * @param rdd_parameter
+ * @return a0
+ */
+double AT_RDD_a0_m(
+    const double  max_electron_range_m,
+    const long    rdd_model,
+    const float   rdd_parameter[]);
+
+/**
+ * TODO
+ * @param max_electron_range_m
+ * @param LET_MeV_cm2_g
+ * @param E_MeV_u
+ * @param particle_no
+ * @param material_no
+ * @param rdd_model
+ * @param rdd_parameter
+ * @param er_model
+ * @return
+ */
+double AT_RDD_norm_constant_Gy(
+    const double  max_electron_range_m,
+    const double  LET_MeV_cm2_g,
+    const double  E_MeV_u,
+    const long    particle_no,
+    const long    material_no,
+    const long    rdd_model,
+    const float   rdd_parameter[],
+    const long    er_model);
+
+/**
+ * TODO
+ * @param norm_constant_Gy
+ * @param max_electron_range_m
+ * @param rdd_model
+ * @param rdd_parameter
+ * @return
+ */
+double AT_RDD_d_min_Gy(
+    const double  norm_constant_Gy,
+    const double  max_electron_range_m,
+    const long    rdd_model,
+    const float   rdd_parameter[]);
+
+
+/**
+ * TODO
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] material_no
+ * @param[in] rdd_model
+ * @param[in] rdd_parameter
+ * @param[in] er_model
+ * @param[in] er_parameter
+ * @return    d_max_Gy
+ */
+double AT_RDD_d_max_Gy(
+    const double  E_MeV_u,
+    const long    particle_no,
+    /* detector parameters */
+    const long    material_no,
+    /* radial dose distribution model */
+    const long    rdd_model,
+    const float   rdd_parameter[],
+    /* electron range model */
+    const long    er_model,
+    const float   er_parameter[]);
+
+
 /**
  * TODO
  * @param[in]  E_MeV_u
@@ -182,10 +275,9 @@ void AT_r_RDD_m  ( const long  n,
  *     2 - r_max_m \n
  *     3 - d_min_Gy \n
  *     4 - d_max_Gy \n
- *     5 - k             (norm. constant) \n
+ *     5 - normalization constant [Gy] \n
  *     6 - single_impact_fluence_cm2 \n
  *     7 - single_impact_dose_Gy \n
- *     8 - dEdx_MeV_cm2_g
  */
 void AT_RDD_f1_parameters(  /* radiation field parameters */
     const double  E_MeV_u,
@@ -201,6 +293,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     /* calculated parameters */
     float         f1_parameters[]);
 
+//////////////////////////////////////////////////////// KATZ RDD ////////////////////////////////////////////////////////
 
 /**
  * Calculates C constant given by equation:
@@ -538,6 +631,8 @@ float          AT_RDD_Katz_PowerLawER_dEdx_directVersion_J_m(        const float
     const float Katz_dEdx_coeff_J_m);
 
 
+//////////////////////////////////////////////////////// CUCINOTTA RDD ////////////////////////////////////////////////////////
+
 /**
  * Calculates short range modification function fS(r)
  * for Cucinotta RDD
@@ -737,6 +832,108 @@ double   AT_RDD_Cucinotta_Dexc_Gy( const double r_m,
     const double C_norm,
     const double Katz_point_coeff_Gy);
 
+
+//////////////////////////////////////////////////////// RDD MODELS IMPLEMENTATION, SINGLE PARTICLE ////////////////////////////////////////////////////////
+
+/**
+ * TODO
+ * @param r_m
+ * @param r_min_m
+ * @param r_max_m
+ * @param norm_constant_Gy
+ * @return
+ */
+inline double  AT_RDD_Test_Gy( const double r_m,
+    const double r_min_m,
+    const double r_max_m,
+    const double norm_constant_Gy);
+
+/**
+ * TODO
+ * @param r_m
+ * @param r_min_m
+ * @param r_max_m
+ * @param er_model
+ * @param alpha
+ * @param Katz_point_coeff_Gy
+ * @return
+ */
+inline double  AT_RDD_KatzPoint_Gy( const double r_m,
+    const double r_min_m,
+    const double r_max_m,
+    const long er_model,
+    const double alpha,
+    const double Katz_point_coeff_Gy);
+
+
+/**
+ * TODO
+ * @param r_m
+ * @param r_min_m
+ * @param r_max_m
+ * @param a0_m
+ * @param er_model
+ * @param alpha
+ * @param density_kg_m3
+ * @param LET_J_m
+ * @param dEdx_J_m
+ * @param Katz_point_coeff_Gy
+ * @return
+ */
+inline double  AT_RDD_KatzSite_Gy( const double r_m,
+    const double r_min_m,
+    const double r_max_m,
+    const double a0_m,
+    const long er_model,
+    const double alpha,
+    const double density_kg_m3,
+    const double LET_J_m,
+    const double dEdx_J_m,
+    const double Katz_point_coeff_Gy);
+
+
+/**
+ * TODO
+ * @param r_m
+ * @param r_min_m
+ * @param r_max_m
+ * @param a0_m
+ * @param er_model
+ * @param alpha
+ * @param density_kg_m3
+ * @param LET_J_m
+ * @param dEdx_J_m
+ * @param Katz_point_coeff_Gy
+ * @return
+ */
+inline double  AT_RDD_Edmund_Gy( const double r_m,
+    const double r_min_m,
+    const double r_max_m,
+    const double a0_m,
+    const long   er_model,
+    const double alpha,
+    const double density_kg_m3,
+    const double LET_J_m,
+    const double dEdx_J_m,
+    const double Katz_point_coeff_Gy);
+
+
+/**
+ * TODO
+ * @param r_m
+ * @param r_min_m
+ * @param r_max_m
+ * @param a0_m
+ * @param norm_constant_Gy
+ * @return
+ */
+inline double  AT_RDD_Geiss_Gy( const double r_m,
+    const double r_min_m,
+    const double r_max_m,
+    const double a0_m,
+    const long   norm_constant_Gy);
+
+
 /**
  * Calculates Cucinotta point RDD
  *
@@ -747,18 +944,20 @@ double   AT_RDD_Cucinotta_Dexc_Gy( const double r_m,
  * Dexc(r) = C exp( - r / 2d ) / r^2
  *
  * @param[in] r_m                      distance [m]
+ * @param[in] r_min_m                  minimum cut-off [m]
  * @param[in] r_max_m                  delta electron maximum range rmax [m]
  * @param[in] beta                     relative ion speed beta = v/c
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy]
  */
-inline double   AT_RDD_Cucinotta_Dpoint_Gy( const double r_m,
+inline double   AT_RDD_CucinottaPoint_Gy( const double r_m,
+    const double r_min_m,
     const double r_max_m,
     const double beta,
     const double C_norm,
     const double Katz_point_coeff_Gy);
 
-
+//////////////////////////////////////////////////////// OTHERS ////////////////////////////////////////////////////////
 
 /**
  * TODO

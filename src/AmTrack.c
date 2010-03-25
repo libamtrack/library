@@ -1084,7 +1084,7 @@ void AT_IGK(  const long*  n,
       a0_m = RDD_parameters[1];
     }
     if(*RDD_model == RDD_Geiss ||
-        *RDD_model == RDD_Site ||
+        *RDD_model == RDD_KatzSite ||
         *RDD_model == RDD_Edmund){
       a0_m  =  RDD_parameters[0];
     }
