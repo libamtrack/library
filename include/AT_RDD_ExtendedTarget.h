@@ -53,10 +53,10 @@
  * @param[out]  D_RDD_Gy       dose [Gy]
  */
 void AT_RDD_Site_Gy( const long  n,
-    const float*  r_m,
-    const float   a0_m,
+    const float  r_m[],
+    const double  a0_m,
     /* radiation field parameters */
-    const float   E_MeV_u,
+    const double  E_MeV_u,
     const long    particle_no,
     /* detector parameters */
     const long    material_no,
@@ -88,6 +88,7 @@ double          geometryFunctionPhi(         const double r_m,
     const double a0_m,
     const double t_m);
 
+
 typedef struct {
   double  r_m;
   double  a0_m;
@@ -97,6 +98,7 @@ typedef struct {
   double  alpha;
   double  Katz_point_coeff_Gy;
 } AT_RDD_ExtendedTarget_KatzPoint_parameters;
+
 
 /**
  * TODO
@@ -120,13 +122,35 @@ double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy(
  * @param Katz_point_coeff_Gy
  * @return
  */
-double AT_RDD_ExtendedTarget_KatzPoint_Gy(
+double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(
     const double  r_m,
     const double  a0_m,
     const long    er_model,
     const double  r_min_m,
     const double  r_max_m,
     const double  alpha,
+    const double  Katz_point_coeff_Gy);
+
+/**
+ * TODO
+ * @param r_m
+ * @param a0_m
+ * @param er_model
+ * @param r_min_m
+ * @param max_electron_range_m
+ * @param alpha
+ * @param Katz_plateau_Gy
+ * @param Katz_point_coeff_Gy
+ * @return
+ */
+double AT_RDD_ExtendedTarget_KatzPoint_Gy(
+    const double  r_m,
+    const double  a0_m,
+    const long    er_model,
+    const double  r_min_m,
+    const double  max_electron_range_m,
+    const double  alpha,
+    const double  Katz_plateau_Gy,
     const double  Katz_point_coeff_Gy);
 
 /**
@@ -185,6 +209,7 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
 double         AT_RDD_Katz_ext_integrand_Gy(double t_m,
     void * params);
 
+
 /**
  * Calculates directly
  *
@@ -213,10 +238,10 @@ double AT_RDD_ExtendedTarget_integrate_Gy(  const double r_m,
     const long   material_no,
     /* radial dose distribution model */
     const long   rdd_model,
-    const float* rdd_parameter,
+    const float  rdd_parameter[],
     /* electron range model */
     const long   er_model,
-    const float* er_parameter);
+    const float  er_parameter[]);
 
 
 //TODO implement inverse extended target RDD

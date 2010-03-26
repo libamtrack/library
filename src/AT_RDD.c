@@ -809,28 +809,29 @@ double AT_RDD_d_max_Gy(
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // RDD_CucinottaPoint
-  if( rdd_model == RDD_CucinottaPoint){ // TODO RDD does Cucinotta RDD model work only with Tabata ER ?
+  if( rdd_model == RDD_CucinottaPoint){
     d_max_Gy              =  AT_RDD_CucinottaPoint_Gy(r_min_m, r_min_m, max_electron_range_m, beta, norm_constant_Gy, Katz_point_coeff_Gy);
   }// end RDD_CucinottaPoint
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // RDD_KatzExtTarget
   if( rdd_model == RDD_KatzExtTarget){ // TODO To be removed
-    const long   n_tmp     =  1;
-    const float  rdd_basic_parameter[] = {r_min_m, rdd_parameter[2]};
-
-    float r_min_m_float = (float)r_min_m;
-    float d_max_Gy_float;
-    AT_RDD_ExtendedTarget_Gy(n_tmp, &r_min_m_float, a0_m, E_MeV_u, particle_no, material_no, RDD_KatzPoint, rdd_basic_parameter, er_model, er_parameter, &d_max_Gy_float);
-    d_max_Gy = (double)d_max_Gy_float;
+    double Katz_plateau_Gy  =  0.0;
+    double r_max_m          =  GSL_MIN(a0_m, max_electron_range_m);
+    if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){
+      Katz_plateau_Gy  =  AT_RDD_Katz_PowerLawER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, alpha, Katz_point_coeff_Gy );
+      // end if ER_Waligorski, ER_Edmund
+    } else if (er_model == ER_ButtsKatz){ // "old" Katz RDD
+      Katz_plateau_Gy  =  AT_RDD_Katz_LinearER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, Katz_point_coeff_Gy );
+    }
+    d_max_Gy  =  AT_RDD_ExtendedTarget_KatzPoint_Gy( r_min_m, a0_m, er_model, r_min_m, max_electron_range_m, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy);
   }// end RDD_KatzExtTarget
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // RDD_CucinottaExtTarget
-  if( rdd_model == RDD_CucinottaExtTarget){ // TODO To be removed
+  if( rdd_model == RDD_CucinottaExtTarget){
     const long   n_tmp     =  1;
     const float rdd_basic_parameter[] = {r_min_m, rdd_parameter[2]};
-
     const float r_min_m_float = (float)r_min_m;
     float d_max_Gy_float;
     AT_RDD_ExtendedTarget_Gy(n_tmp, &r_min_m_float, a0_m, E_MeV_u, particle_no, material_no, RDD_CucinottaPoint, rdd_basic_parameter, er_model, er_parameter, &d_max_Gy_float);

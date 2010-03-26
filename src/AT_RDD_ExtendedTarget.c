@@ -33,10 +33,10 @@
 
 ///////////////////////////////////////////// SITE /////////////////////////////////////////////
 void AT_RDD_Site_Gy( const long  n,
-    const float*  r_m,
-    const float   a0_m,
+    const float   r_m[],
+    const double  a0_m,
     /* radiation field parameters */
-    const float   E_MeV_u,
+    const double  E_MeV_u,
     const long    particle_no,
     /* detector parameters */
     const long    material_no,
@@ -98,7 +98,7 @@ double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy(
 }
 
 
-double AT_RDD_ExtendedTarget_KatzPoint_Gy(
+double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(
     const double  r_m,
     const double  a0_m,
     const long    er_model,
@@ -142,6 +142,45 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy(
   return ext_integral_Gy;
 }
 
+double AT_RDD_ExtendedTarget_KatzPoint_Gy(
+    const double  r_m,
+    const double  a0_m,
+    const long    er_model,
+    const double  r_min_m,
+    const double  max_electron_range_m,
+    const double  alpha,
+    const double  Katz_plateau_Gy,
+    const double  Katz_point_coeff_Gy){
+
+  double D_Gy   =  0.0;
+
+  const double r_max_m = GSL_MIN(a0_m, max_electron_range_m);
+
+  // plateau region
+  if( (r_m <=  0.01 * a0_m) && (r_m >= r_min_m)){
+    D_Gy  =  Katz_plateau_Gy;
+    if( max_electron_range_m < a0_m ){
+      D_Gy *= (gsl_pow_2(r_max_m) - gsl_pow_2(r_min_m));
+      D_Gy /= (gsl_pow_2(a0_m) - gsl_pow_2(r_min_m));
+    }
+  }
+
+  // intermediate
+  if( (r_m <  100.0 * a0_m) && (r_m >  0.01 * a0_m) ){
+    D_Gy  =  AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(r_m, a0_m, er_model, r_min_m, max_electron_range_m, alpha, Katz_point_coeff_Gy);
+  }
+
+  // far 1/r^2 region
+  if( (r_m >=  100.0 * a0_m) && (r_m <= max_electron_range_m) ){
+    if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
+      D_Gy  =  AT_RDD_Katz_PowerLawER_Dpoint_Gy( r_m, alpha, max_electron_range_m, Katz_point_coeff_Gy );
+    } else if (er_model == ER_ButtsKatz){ // "old" Katz RDD
+      D_Gy  =  AT_RDD_Katz_LinearER_Dpoint_Gy( r_m, max_electron_range_m, Katz_point_coeff_Gy );
+    }
+  }
+
+  return D_Gy;
+}
 
 void AT_RDD_ExtendedTarget_Gy( const long  n,
     const float  r_m[],
@@ -176,10 +215,10 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
   // Get the maximum electron range
   const double  max_electron_range_m      =  AT_max_electron_range_m(E_MeV_u, (int)material_no, (int)er_model);
 
-  const double C_J_m                =  AT_RDD_Katz_C_J_m(electron_density_m3);
+  const double C_J_m                      =  AT_RDD_Katz_C_J_m(electron_density_m3);
 
   double Katz_point_coeff_Gy =  AT_RDD_Katz_coeff_Gy(C_J_m, Z_eff, beta, density_kg_m3, max_electron_range_m);
-  float r_max_m = GSL_MIN(a0_m, max_electron_range_m);
+  double r_max_m = GSL_MIN(a0_m, max_electron_range_m);
 
   double alpha           =  0.0;
   if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
@@ -201,59 +240,18 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
 
     if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
 
-      double Katz_PowerLawER_plateau_Gy = AT_RDD_Katz_PowerLawER_Daverage_Gy( r_min_m, (double)r_max_m, max_electron_range_m, alpha, Katz_point_coeff_Gy );
+      double Katz_PowerLawER_plateau_Gy = AT_RDD_Katz_PowerLawER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, alpha, Katz_point_coeff_Gy );
 
       for( i = 0 ; i < n ; i++){
-
-        D_RDD_Gy[i] = 0.0f;
-
-        // plateau region
-        if( (r_m[i] <=  0.01 * a0_m) && (r_m[i] >=  r_min_m)){
-          D_RDD_Gy[i] = (float)Katz_PowerLawER_plateau_Gy;
-          if( max_electron_range_m < a0_m ){
-            D_RDD_Gy[i] *= (gsl_pow_2(r_max_m) - gsl_pow_2(r_min_m));
-            D_RDD_Gy[i] /= (gsl_pow_2(a0_m) - gsl_pow_2(r_min_m));
-          }
-        }
-
-        // far 1/r^2 region
-        if( (r_m[i] >=  100.0 * a0_m) && (r_m[i] <= max_electron_range_m) ){
-          D_RDD_Gy[i] = (float)AT_RDD_Katz_PowerLawER_Dpoint_Gy( (double)r_m[i], alpha, max_electron_range_m, Katz_point_coeff_Gy );
-        }
-
-        // intermediate
-        if( (r_m[i] <  100.0 * a0_m) && (r_m[i] >  0.01 * a0_m) ){
-          //D_RDD_Gy[i]  =  AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m[i], a0_m, er_model, r_min_m, r_max_m, alpha, Katz_point_coeff_Gy); // TODO to be checked !!!
-          D_RDD_Gy[i] = AT_RDD_ExtendedTarget_integrate_Gy(r_m[i], a0_m, r_min_m, r_max_m, E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, er_parameter);
-        }
-
+          D_RDD_Gy[i]  =  (float)AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m[i], a0_m, er_model, r_min_m, max_electron_range_m, alpha, Katz_PowerLawER_plateau_Gy, Katz_point_coeff_Gy);
       }
-
       // end if ER_Waligorski, ER_Edmund
     } else if (er_model == ER_ButtsKatz){ // "old" Katz RDD
 
-      double Katz_LinearLawER_plateau_Gy = AT_RDD_Katz_LinearER_Daverage_Gy( r_min_m, (double)r_max_m, max_electron_range_m, Katz_point_coeff_Gy );
+      double Katz_LinearLawER_plateau_Gy = AT_RDD_Katz_LinearER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, Katz_point_coeff_Gy );
 
       for( i = 0 ; i < n ; i++){
-
-        D_RDD_Gy[i] = 0.0f;
-
-        if( (r_m[i] <=  0.01 * a0_m) && (r_m[i] >=  r_min_m)){
-          D_RDD_Gy[i]  =  (float)Katz_LinearLawER_plateau_Gy;
-          if( max_electron_range_m < a0_m ){
-            D_RDD_Gy[i] *= (gsl_pow_2(r_max_m) - gsl_pow_2(r_min_m));
-            D_RDD_Gy[i] /= (gsl_pow_2(a0_m) - gsl_pow_2(r_min_m));
-          }
-        }
-
-        if( (r_m[i] >=  100.0 * a0_m) && (r_m[i] <= max_electron_range_m) ){
-          D_RDD_Gy[i] = (float)AT_RDD_Katz_LinearER_Dpoint_Gy( (double)r_m[i], max_electron_range_m, Katz_point_coeff_Gy );
-        }
-
-        if( (r_m[i] <  100.0 * a0_m) && (r_m[i] >  0.01 * a0_m) ){
-          D_RDD_Gy[i] = AT_RDD_ExtendedTarget_integrate_Gy(r_m[i], a0_m, r_min_m, r_max_m, E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, er_parameter);
-        }
-
+            D_RDD_Gy[i]  =  (float)AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m[i], a0_m, er_model, r_min_m, max_electron_range_m, alpha, Katz_LinearLawER_plateau_Gy, Katz_point_coeff_Gy);
       }
 
       // end if ER_ButtsKatz
@@ -306,10 +304,10 @@ double AT_RDD_ExtendedTarget_integrate_Gy(  const double r_m,
     const long   material_no,
     /* radial dose distribution model */
     const long   rdd_model,
-    const float* rdd_parameter,
+    const float  rdd_parameter[],
     /* electron range model */
     const long   er_model,
-    const float* er_parameter){
+    const float  er_parameter[]){
 
   double low_lim_m = 0.0;
   if( r_m > a0_m ){
