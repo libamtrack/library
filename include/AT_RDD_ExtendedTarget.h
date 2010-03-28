@@ -89,13 +89,16 @@ double          geometryFunctionPhi(         const double r_m,
     const double t_m);
 
 
+/**
+ * TODO
+ */
 typedef struct {
   double  r_m;
   double  a0_m;
-  double  r_min_m;
   double  r_max_m;
   long    er_model;
   double  alpha;
+  double  KatzPoint_r_min_m;
   double  Katz_point_coeff_Gy;
 } AT_RDD_ExtendedTarget_KatzPoint_parameters;
 
@@ -116,7 +119,7 @@ double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy(
  * @param r_m
  * @param a0_m
  * @param er_model
- * @param r_min_m
+ * @param KatzPoint_r_min_m
  * @param r_max_m
  * @param alpha
  * @param Katz_point_coeff_Gy
@@ -126,17 +129,18 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(
     const double  r_m,
     const double  a0_m,
     const long    er_model,
-    const double  r_min_m,
+    const double  KatzPoint_r_min_m,
     const double  r_max_m,
     const double  alpha,
     const double  Katz_point_coeff_Gy);
+
 
 /**
  * TODO
  * @param r_m
  * @param a0_m
  * @param er_model
- * @param r_min_m
+ * @param KatzPoint_r_min_m
  * @param max_electron_range_m
  * @param alpha
  * @param Katz_plateau_Gy
@@ -147,31 +151,35 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy(
     const double  r_m,
     const double  a0_m,
     const long    er_model,
-    const double  r_min_m,
+    const double  KatzPoint_r_min_m,
     const double  max_electron_range_m,
     const double  alpha,
     const double  Katz_plateau_Gy,
     const double  Katz_point_coeff_Gy);
 
+
+/**
+ * TODO
+ */
 typedef struct {
   double  D_Gy;
   double  a0_m;
-  double  r_min_m;
   double  r_max_m;
   long    er_model;
   double  alpha;
   double  Katz_plateau_Gy;
+  double  Katz_point_r_min_m;
   double  Katz_point_coeff_Gy;
 } AT_inverse_RDD_ExtendedTarget_KatzPoint_parameters;
 
 
 /**
  * TODO
- * @param r
+ * @param r_m
  * @param params
  * @return
  */
-float AT_inverse_RDD_ExtendedTarget_KatzPoint_m_solver_function( const float r_m , void * params );
+float AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy( const float r_m , void * params );
 
 
 /**
@@ -194,6 +202,7 @@ double  AT_inverse_RDD_ExtendedTarget_KatzPoint_m( const double D_Gy,
     const double alpha,
     const double Katz_plateau_Gy,
     const double Katz_point_coeff_Gy);
+
 
 /**
  * Returns RDD as a function of distance r_m for target with radius a0_m
@@ -286,7 +295,9 @@ double AT_RDD_ExtendedTarget_integrate_Gy(  const double r_m,
     const float  er_parameter[]);
 
 
-//TODO implement inverse extended target RDD
+/**
+ * TODO
+ */
 typedef struct {
   float   r_m;
   float   a0_m;
