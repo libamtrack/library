@@ -87,7 +87,7 @@ double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy(
   const double  r_m                   =  RDD_parameters->r_m;
   const double  a0_m                  =  RDD_parameters->a0_m;
   const long    er_model              =  RDD_parameters->er_model;
-  const double  r_min_m               =  RDD_parameters->r_min_m;
+  const double  r_min_m               =  RDD_parameters->KatzPoint_r_min_m;
   const double  r_max_m               =  RDD_parameters->r_max_m;
   const double  alpha                 =  RDD_parameters->alpha;
   const double  Katz_point_coeff_Gy   =  RDD_parameters->Katz_point_coeff_Gy;
@@ -99,19 +99,18 @@ double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy(
 }
 
 
-// TODO distinguish KatzPoint r_min from ExtTarget r_min
 double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(
     const double  r_m,
     const double  a0_m,
     const long    er_model,
-    const double  r_min_m,
+    const double  KatzPoint_r_min_m,
     const double  r_max_m,
     const double  alpha,
     const double  Katz_point_coeff_Gy){
 
   double low_lim_m = 0.0;
   if( r_m > a0_m ){
-    low_lim_m = GSL_MAX(r_m - a0_m,r_min_m);
+    low_lim_m = GSL_MAX(r_m - a0_m,0.0);
   }
   gsl_set_error_handler_off();
 
@@ -126,9 +125,9 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(
   RDD_parameters.r_m                  =  r_m;
   RDD_parameters.a0_m                 =  a0_m;
   RDD_parameters.er_model             =  er_model;
-  RDD_parameters.r_min_m              =  r_min_m;
   RDD_parameters.r_max_m              =  r_max_m;
   RDD_parameters.alpha                =  alpha;
+  RDD_parameters.KatzPoint_r_min_m    =  KatzPoint_r_min_m;
   RDD_parameters.Katz_point_coeff_Gy  =  Katz_point_coeff_Gy;
 
   F.params = (void*)(&RDD_parameters);
@@ -144,11 +143,12 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(
   return ext_integral_Gy;
 }
 
+
 double AT_RDD_ExtendedTarget_KatzPoint_Gy(
     const double  r_m,
     const double  a0_m,
     const long    er_model,
-    const double  r_min_m,
+    const double  KatzPoint_r_min_m,
     const double  max_electron_range_m,
     const double  alpha,
     const double  Katz_plateau_Gy,
@@ -159,17 +159,16 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy(
   const double r_max_m = GSL_MIN(a0_m, max_electron_range_m);
 
   // plateau region
-  if( (r_m <=  0.01 * a0_m) && (r_m >= r_min_m)){
+  if( (r_m <=  0.01 * a0_m) && (r_m >= 0.0)){
     D_Gy  =  Katz_plateau_Gy;
     if( max_electron_range_m < a0_m ){
-      D_Gy *= (gsl_pow_2(r_max_m) - gsl_pow_2(r_min_m));
-      D_Gy /= (gsl_pow_2(a0_m) - gsl_pow_2(r_min_m));
+      D_Gy *= (gsl_pow_2(r_max_m / a0_m));
     }
   }
 
   // intermediate
   if( (r_m <  100.0 * a0_m) && (r_m >  0.01 * a0_m) ){
-    D_Gy  =  AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(r_m, a0_m, er_model, r_min_m, max_electron_range_m, alpha, Katz_point_coeff_Gy);
+    D_Gy  =  AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(r_m, a0_m, er_model, KatzPoint_r_min_m, max_electron_range_m, alpha, Katz_point_coeff_Gy);
   }
 
   // far 1/r^2 region
@@ -185,25 +184,24 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy(
 }
 
 
-float AT_inverse_RDD_ExtendedTarget_KatzPoint_m_solver_function( const float r_m , void * params ){
+float AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy( const float r_m , void * params ){
   AT_inverse_RDD_ExtendedTarget_KatzPoint_parameters* RDD_parameters = (AT_inverse_RDD_ExtendedTarget_KatzPoint_parameters*)(params);
 
   const double  D_Gy                  =  RDD_parameters->D_Gy;
   const double  a0_m                  =  RDD_parameters->a0_m;
   const long    er_model              =  RDD_parameters->er_model;
-  const double  r_min_m               =  RDD_parameters->r_min_m;
   const double  r_max_m               =  RDD_parameters->r_max_m;
   const double  alpha                 =  RDD_parameters->alpha;
   const double  Katz_plateau_Gy       =  RDD_parameters->Katz_plateau_Gy;
+  const double  Katz_point_r_min_m    =  RDD_parameters->Katz_point_r_min_m;
   const double  Katz_point_coeff_Gy   =  RDD_parameters->Katz_point_coeff_Gy;
 
-  float res = (float)AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m, a0_m, er_model, r_min_m, r_max_m, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy) - (float)D_Gy;
-  return res;
+  return (float)AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m, a0_m, er_model, Katz_point_r_min_m, r_max_m, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy) - (float)D_Gy;
 }
 
 
 double  AT_inverse_RDD_ExtendedTarget_KatzPoint_m( const double D_Gy,
-    const double r_min_m,
+    const double KatzPoint_r_min_m,
     const double max_electron_range_m,
     const double a0_m,
     const long   er_model,
@@ -218,16 +216,16 @@ double  AT_inverse_RDD_ExtendedTarget_KatzPoint_m( const double D_Gy,
   RDD_parameters.D_Gy                 =  D_Gy;
   RDD_parameters.a0_m                 =  a0_m;
   RDD_parameters.er_model             =  er_model;
-  RDD_parameters.r_min_m              =  r_min_m;
   RDD_parameters.r_max_m              =  max_electron_range_m;
   RDD_parameters.alpha                =  alpha;
   RDD_parameters.Katz_plateau_Gy      =  Katz_plateau_Gy;
+  RDD_parameters.Katz_point_r_min_m   =  KatzPoint_r_min_m;
   RDD_parameters.Katz_point_coeff_Gy  =  Katz_point_coeff_Gy;
 
-  double r_m =  zriddr(AT_inverse_RDD_ExtendedTarget_KatzPoint_m_solver_function,
+  double r_m =  zriddr(AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy,
           (void*)(&RDD_parameters),
-          (float)r_min_m,
-          (float)max_electron_range_m,
+          0.0f,
+          (float)max_electron_range_m+(float)a0_m,
           solver_accuracy);
 
   return r_m;
@@ -289,20 +287,22 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
 
   if( rdd_model == RDD_KatzPoint){ // TODO write comments
 
+    double KatzPoint_r_min_m = (double)rdd_parameter[0];
+
     if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
 
-      double Katz_PowerLawER_plateau_Gy = AT_RDD_Katz_PowerLawER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, alpha, Katz_point_coeff_Gy );
+      double Katz_PowerLawER_plateau_Gy = AT_RDD_Katz_PowerLawER_Daverage_Gy( KatzPoint_r_min_m, r_max_m, max_electron_range_m, alpha, Katz_point_coeff_Gy );
 
       for( i = 0 ; i < n ; i++){
-          D_RDD_Gy[i]  =  (float)AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m[i], a0_m, er_model, r_min_m, max_electron_range_m, alpha, Katz_PowerLawER_plateau_Gy, Katz_point_coeff_Gy);
+          D_RDD_Gy[i]  =  (float)AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m[i], a0_m, er_model, KatzPoint_r_min_m, max_electron_range_m, alpha, Katz_PowerLawER_plateau_Gy, Katz_point_coeff_Gy);
       }
       // end if ER_Waligorski, ER_Edmund
     } else if (er_model == ER_ButtsKatz){ // "old" Katz RDD
 
-      double Katz_LinearLawER_plateau_Gy = AT_RDD_Katz_LinearER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, Katz_point_coeff_Gy );
+      double Katz_LinearLawER_plateau_Gy = AT_RDD_Katz_LinearER_Daverage_Gy( KatzPoint_r_min_m, r_max_m, max_electron_range_m, Katz_point_coeff_Gy );
 
       for( i = 0 ; i < n ; i++){
-            D_RDD_Gy[i]  =  (float)AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m[i], a0_m, er_model, r_min_m, max_electron_range_m, alpha, Katz_LinearLawER_plateau_Gy, Katz_point_coeff_Gy);
+            D_RDD_Gy[i]  =  (float)AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m[i], a0_m, er_model, KatzPoint_r_min_m, max_electron_range_m, alpha, Katz_LinearLawER_plateau_Gy, Katz_point_coeff_Gy);
       }
 
       // end if ER_ButtsKatz

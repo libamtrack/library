@@ -87,11 +87,11 @@ typedef struct {
  */
 static const rdd_data AT_RDD_Data = {
     RDD_DATA_N,
-    {  RDD_Test,                     RDD_KatzPoint,                                      RDD_Geiss,                         RDD_KatzSite,                                    RDD_Edmund,                      RDD_CucinottaPoint,                                 RDD_KatzExtTarget,              RDD_CucinottaExtTarget},
-    {  0,                            2,                                                  1,                                 2,                                               2,                               2,                                                  3,                              3},
-    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                         {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"a0_m","d_min_Gy",""},          {"r_min_m","d_min_Gy",""},                          {"r_min_m","a0_m","d_min_Gy"},  {"r_min_m","a0_m","d_min_Gy"}},
-    {  {0,0,0},                      {1e-10, 1e-10,0},                                   {5e-8,0,0},                        {5e-8,1e-10,0},                                  {5e-8,1e-10,0},                  {5e-11,1e-10,0},                                    {1e-10,1e-8,1e-10},             {5e-11,1e-8,1e-10}},
-    {  "Simple step test function",  "Katz' point target RDD",                           "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. 1997]",  "Katz Extended Target",         "Cucinotta Extended Target"}
+    {  RDD_Test,                     RDD_KatzPoint,                                      RDD_Geiss,                         RDD_KatzSite,                                    RDD_Edmund,                      RDD_CucinottaPoint,                                 RDD_KatzExtTarget,                        RDD_CucinottaExtTarget},
+    {  0,                            2,                                                  1,                                 2,                                               2,                               2,                                                  3,                                        3},
+    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                         {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"a0_m","d_min_Gy",""},          {"r_min_m","d_min_Gy",""},                          {"KatzPoint_r_min_m","a0_m","d_min_Gy"},  {"CucinottaPoint_r_min_m","a0_m","d_min_Gy"}},
+    {  {0,0,0},                      {1e-10, 1e-10,0},                                   {5e-8,0,0},                        {5e-8,1e-10,0},                                  {5e-8,1e-10,0},                  {5e-11,1e-10,0},                                    {1e-10,1e-8,1e-10},                       {5e-11,1e-8,1e-10}},
+    {  "Simple step test function",  "Katz' point target RDD",                           "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. 1997]",  "Katz Extended Target",                   "Cucinotta Extended Target"}
 };
 
 /**
@@ -211,7 +211,7 @@ double AT_RDD_a0_m(
  * @param er_model
  * @return
  */
-double AT_RDD_norm_constant_Gy(
+double AT_RDD_precalculated_constant_Gy(
     const double  max_electron_range_m,
     const double  LET_MeV_cm2_g,
     const double  E_MeV_u,
@@ -983,7 +983,62 @@ inline double  AT_inverse_RDD_Geiss_m( const double D_Gy,
     const double d_min_Gy,
     const double d_max_Gy,
     const double a0_m,
-    const long   norm_constant_Gy);
+    const double norm_constant_Gy);
+
+
+/**
+ * TODO
+ */
+typedef struct {
+  double  D_Gy;
+  long    er_model;
+  double  r_min_m;
+  double  r_max_m;
+  double  alpha;
+  double  Katz_point_coeff_Gy;
+} AT_inverse_RDD_KatzPoint_PowerLawER_parameters;
+
+
+/**
+ * TODO
+ * @param D_Gy
+ * @param r_min_m
+ * @param r_max_m
+ * @param Katz_point_coeff_Gy
+ * @return
+ */
+double  AT_inverse_RDD_KatzPoint_LinearER_m( const double D_Gy,
+    const double r_min_m,
+    const double r_max_m,
+    const double Katz_point_coeff_Gy);
+
+
+/**
+ * TODO
+ * @param r_m
+ * @param params
+ * @return
+ */
+float AT_inverse_RDD_KatzPoint_PowerLawER_solver_function_Gy( const float r_m , void * params );
+
+
+/**
+ * TODO
+ * @param D_Gy
+ * @param r_min_m
+ * @param r_max_m
+ * @param er_model
+ * @param alpha
+ * @param Katz_point_coeff_Gy
+ * @return
+ */
+double  AT_inverse_RDD_KatzPoint_m( const double D_Gy,
+    const double r_min_m,
+    const double r_max_m,
+    const long   er_model,
+    const double alpha,
+    const double Katz_point_coeff_Gy);
+
 
 //////////////////////////////////////////////////////// OTHERS ////////////////////////////////////////////////////////
 
