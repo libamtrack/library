@@ -661,7 +661,7 @@ double AT_RDD_norm_constant_Gy(
 
     norm_constant_Gy      =  AT_RDD_Cucinotta_Cnorm(r_min_m, max_electron_range_m, beta, density_kg_m3, LET_J_m, Katz_point_coeff_Gy);
     if( norm_constant_Gy == 0){
-      printf("problem\n"); // TODO handle this situation
+      printf("problem in AT_RDD_norm_constant_Gy\n"); // TODO handle this situation
     }
   }// end RDD_CucinottaPoint
 
@@ -762,7 +762,7 @@ double AT_RDD_d_max_Gy(
 
   double C_J_m                =  0.0;
   double Katz_point_coeff_Gy  =  0.0;
-  if( (rdd_model == RDD_KatzPoint) || (rdd_model == RDD_KatzSite) || (rdd_model == RDD_Edmund) || (rdd_model == RDD_CucinottaPoint)){
+  if( (rdd_model == RDD_KatzPoint) || (rdd_model == RDD_KatzSite) || (rdd_model == RDD_Edmund) || (rdd_model == RDD_CucinottaPoint) || (rdd_model == RDD_KatzExtTarget) || (rdd_model == RDD_CucinottaExtTarget)){
     // TODO shall we move from J_m and m to more reasonable units ?
     // we have for water C_J_m = 1.22e-12 and r_m usually ~ 1e-8
     // calculations in C_J_um and r_um would be more precise
@@ -820,11 +820,11 @@ double AT_RDD_d_max_Gy(
     double r_max_m          =  GSL_MIN(a0_m, max_electron_range_m);
     if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){
       Katz_plateau_Gy  =  AT_RDD_Katz_PowerLawER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, alpha, Katz_point_coeff_Gy );
-      // end if ER_Waligorski, ER_Edmund
     } else if (er_model == ER_ButtsKatz){ // "old" Katz RDD
       Katz_plateau_Gy  =  AT_RDD_Katz_LinearER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, Katz_point_coeff_Gy );
     }
-    d_max_Gy  =  AT_RDD_ExtendedTarget_KatzPoint_Gy( r_min_m, a0_m, er_model, r_min_m, max_electron_range_m, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy);
+    // TODO clearify rmin variables
+    d_max_Gy  =  AT_RDD_ExtendedTarget_KatzPoint_Gy( 0.0, a0_m, er_model, 0.0, max_electron_range_m, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy);
   }// end RDD_KatzExtTarget
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -897,8 +897,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
   // PARAMETER 4: Get minimum dose d_min_Gy (f1_parameters[4])
   d_max_Gy = AT_RDD_d_max_Gy( E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, er_parameter);
 
-  // write data to output table (apart from f1_parameters[0] which sometimes is
-  // r_min_m and sometimes a0_m )
+  // write data to output table
   f1_parameters[0]  =  (float)LET_MeV_cm2_g;
   f1_parameters[1]  =  (float)r_min_m;
   f1_parameters[2]  =  (float)max_electron_range_m;
@@ -907,7 +906,6 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
   f1_parameters[5]  =  (float)norm_constant_Gy;
   f1_parameters[6]  =  (float)single_impact_fluence_cm2;
   f1_parameters[7]  =  (float)single_impact_dose_Gy;
-
 }
 
 void AT_D_RDD_Gy( const long  n,
@@ -1021,7 +1019,7 @@ void AT_D_RDD_Gy( const long  n,
     // Loop over all r_m given
     for (i = 0; i < n; i++){
       D_RDD_Gy[i]     =  (float)AT_RDD_Edmund_Gy((double)r_m[i], 0.0, max_electron_range_m, a0_m, er_model, alpha, density_kg_m3, LET_J_m, dEdx_J_m, Katz_point_coeff_Gy);
-      D_RDD_Gy[i]     =  fmaxf(D_RDD_Gy[i], (float)d_min_Gy);          // Cut-off low doses
+      D_RDD_Gy[i]     =  fmaxf(D_RDD_Gy[i], (float)d_min_Gy);          // Cut-off low doses, necessary in SPIFF
     } // end for
 
   }// end RDD_KatzSite
@@ -1032,6 +1030,7 @@ void AT_D_RDD_Gy( const long  n,
     // Loop over all r_m given
     for (i = 0; i < n; i++){
       D_RDD_Gy[i]     =  (float)AT_RDD_Geiss_Gy((double)r_m[i], 0., max_electron_range_m, a0_m, norm_constant_Gy);
+      // Cut-off at low doses at low doses not necessary here
     }
   }// end RDD_Geiss
 
@@ -1049,16 +1048,35 @@ void AT_D_RDD_Gy( const long  n,
   // RDD_KatzExtTarget
   if( rdd_model == RDD_KatzExtTarget){
     const float rdd_basic_parameter[] = {(float)r_min_m, rdd_parameter[2]};
-    AT_RDD_ExtendedTarget_Gy(n, r_m, a0_m, (double)E_MeV_u, particle_no, material_no, RDD_KatzPoint, rdd_basic_parameter, er_model, er_parameter, D_RDD_Gy);
+    AT_RDD_ExtendedTarget_Gy(n, r_m, a0_m, E_MeV_u, particle_no, material_no, RDD_KatzPoint, rdd_basic_parameter, er_model, er_parameter, D_RDD_Gy);
   }// end RDD_KatzExtTarget
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // RDD_CucinottaExtTarget
   if( rdd_model == RDD_CucinottaExtTarget){
     const float rdd_basic_parameter[] = {(double)r_min_m, rdd_parameter[2]};
-    AT_RDD_ExtendedTarget_Gy(n, r_m, a0_m, (double)E_MeV_u, particle_no, material_no, RDD_CucinottaPoint, rdd_basic_parameter, er_model, er_parameter, D_RDD_Gy);
+    AT_RDD_ExtendedTarget_Gy(n, r_m, a0_m, E_MeV_u, particle_no, material_no, RDD_CucinottaPoint, rdd_basic_parameter, er_model, er_parameter, D_RDD_Gy);
   } // end RDD_CucinottaExtTarget
 
+}
+
+
+inline double  AT_inverse_RDD_Test_m( const double D_Gy,
+    const double r_max_m){
+  if( D_Gy > 0)
+    return r_max_m;
+  return 0.0;
+}
+
+inline double  AT_inverse_RDD_Geiss_m( const double D_Gy,
+    const double d_min_Gy,
+    const double d_max_Gy,
+    const double a0_m,
+    const long   norm_constant_Gy){
+  if ((d_min_Gy <= D_Gy) && (D_Gy <= d_max_Gy)){
+    return a0_m * sqrt(norm_constant_Gy / D_Gy);
+  }
+  return 0.0;
 }
 
 float AT_D_RDD_Gy_solver( const float r , void * params ){
@@ -1097,29 +1115,7 @@ void AT_r_RDD_m  ( const long  n,
     float         r_RDD_m[])
 {
   long     i;
-  // Get f1 parameters
-//  long     n_f1_parameters = 9;
-//  float*   f1_parameters   = (float*)calloc(n_f1_parameters, sizeof(float));
-//  AT_RDD_f1_parameters(      /* radiation field parameters */
-//    (double)E_MeV_u,
-//    particle_no,
-//    /* detector parameters */
-//    material_no,
-//    /* radial dose distribution model */
-//    rdd_model,
-//    rdd_parameter,
-//    /* electron range model */
-//    er_model,
-//    er_parameter,
-//    /* calculated parameters */
-//    f1_parameters);
-//
-//  // f1_parameters decoded
-//  const float max_electron_range_m      =  f1_parameters[2];
-//  const float d_min_Gy                  =  f1_parameters[3];
-//  const float d_max_Gy                  =  f1_parameters[4];
-//  const float norm_constant_Gy          =  f1_parameters[5];
-//
+
   const double LET_MeV_cm2_g  = AT_LET_MeV_cm2_g_single(E_MeV_u, particle_no, material_no);
 
   const double max_electron_range_m = AT_max_electron_range_m( E_MeV_u, (int)material_no, (int)er_model);
@@ -1135,32 +1131,66 @@ void AT_r_RDD_m  ( const long  n,
   const double a0_m           =  AT_RDD_a0_m(max_electron_range_m, rdd_model, rdd_parameter);
 
   // Get material data
-//  const double density_g_cm3  =  AT_density_g_cm3_from_material_no(material_no);
-//  const double density_kg_m3  =  density_g_cm3 * 1000.0;
+  const double density_g_cm3  =  AT_density_g_cm3_from_material_no(material_no);
+  const double density_kg_m3  =  density_g_cm3 * 1000.0;
+
+  const double electron_density_m3 = AT_electron_density_m3_from_material_no(material_no);
+
+  ///////////////////////////////////////////////////////////////////////////////////
+  // Get beta, Z and Zeff
+  const double beta   =  AT_beta_from_E_single( (double)E_MeV_u );
+  const long   Z      =  AT_Z_from_particle_no_single(particle_no);
+  const double Z_eff  =  AT_effective_charge_from_beta_single(beta, Z);
+
+  const double C_J_m      =  AT_RDD_Katz_C_J_m(electron_density_m3);
+  const double Katz_point_coeff_Gy = AT_RDD_Katz_coeff_Gy(C_J_m, Z_eff, beta, density_kg_m3, max_electron_range_m);
+
+  double alpha           =  0.0;
+  if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
+    alpha               =  1.667;
+    double wmax_MeV     =  AT_max_E_transfer_MeV_single(E_MeV_u);
+    if(wmax_MeV <= 1e-3){
+      alpha             =  1.079;
+    }
+  }
+
 
   if( rdd_model == RDD_Test){
     // Loop over all doses given
     for (i = 0; i < n; i++){
-      r_RDD_m[i]    =  0.0f;
-      if (D_RDD_Gy[i] > 0.0f){
-        r_RDD_m[i]    =  (float)max_electron_range_m;
-      }
+      r_RDD_m[i]    =  (float)AT_inverse_RDD_Test_m( (double)D_RDD_Gy[i], max_electron_range_m);
     }
   }// end RDD_Test
 
   if( rdd_model == RDD_Geiss){
     // Loop over all doses given
     for (i = 0; i < n; i++){
-      // if D is outside the definition, return -1
-      r_RDD_m[i]    =  -1.0f;
-      if (((float)d_min_Gy <= D_RDD_Gy[i]) && (D_RDD_Gy[i] <= (float)d_max_Gy)){
-        r_RDD_m[i]    =  (float)a0_m * (float)sqrt(norm_constant_Gy / D_RDD_Gy[i]);
+      r_RDD_m[i]    =  (float)AT_inverse_RDD_Geiss_m( (double)D_RDD_Gy[i], d_min_Gy, d_max_Gy, a0_m, norm_constant_Gy);
+    }
+  }// end RDD_Geiss
+
+  if( rdd_model == RDD_KatzExtTarget){
+    // Loop over all doses given
+    double Katz_plateau_Gy  =  0.0;
+    double r_max_m          =  GSL_MIN(a0_m, max_electron_range_m);
+    if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){
+      Katz_plateau_Gy  =  AT_RDD_Katz_PowerLawER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, alpha, Katz_point_coeff_Gy );
+      // end if ER_Waligorski, ER_Edmund
+    } else if (er_model == ER_ButtsKatz){ // "old" Katz RDD
+      Katz_plateau_Gy  =  AT_RDD_Katz_LinearER_Daverage_Gy( r_min_m, r_max_m, max_electron_range_m, Katz_point_coeff_Gy );
+    }
+    for (i = 0; i < n; i++){
+      if( (D_RDD_Gy[i] >= d_min_Gy) && (D_RDD_Gy[i] <= d_max_Gy) ){
+        r_RDD_m[i]    =  (float)AT_inverse_RDD_ExtendedTarget_KatzPoint_m( (double)D_RDD_Gy[i], r_min_m, max_electron_range_m, a0_m, er_model, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy);
+      } else {
+        r_RDD_m[i]    =  0.0f;
       }
     }
   }// end RDD_Geiss
 
+
   long     n_tmp      = 1;
-  if( (rdd_model == RDD_KatzPoint) || (rdd_model == RDD_KatzSite) || (rdd_model == RDD_KatzExtTarget) || (rdd_model == RDD_Edmund)){
+  if( (rdd_model == RDD_KatzPoint) || (rdd_model == RDD_KatzSite) || (rdd_model == RDD_Edmund)){
 
     AT_D_RDD_Gy_parameters* params = (AT_D_RDD_Gy_parameters*)calloc(1,sizeof(AT_D_RDD_Gy_parameters));
     params->n             = 1;
@@ -1182,11 +1212,7 @@ void AT_r_RDD_m  ( const long  n,
       critical_r_m   = (float)a0_m * (1.0f + 1e-8f);
       inv2_r_m       = fmaxf((float)a0_m, (float)max_electron_range_m * dev);
     }
-    if(rdd_model == RDD_KatzExtTarget){
-      critical_r_m   = (float)a0_m;
-      inv2_r_m       = fmaxf((float)r_min_m, (float)max_electron_range_m * dev);
-    }
-    if(rdd_model == RDD_KatzSite || rdd_model == RDD_Edmund || rdd_model == RDD_KatzExtTarget){
+    if(rdd_model == RDD_KatzSite || rdd_model == RDD_Edmund){
       AT_D_RDD_Gy  (  n_tmp,                    // Use D(r) to find dose at jump of D_Site
                 &critical_r_m,
                 /* radiation field parameters */
@@ -1217,14 +1243,6 @@ void AT_r_RDD_m  ( const long  n,
                 &inv2_d_Gy);
     }
 
-///////////////////////////////////////////////////////////////////////////////////
-    // Get beta, Z and Zeff
-//    const double beta   =  AT_beta_from_E_single( (double)E_MeV_u );
-//    const long   Z      =  AT_Z_from_particle_no_single(particle_no);
-//    const double Z_eff  =  AT_effective_charge_from_beta_single(beta, Z);
-
-//    const double Katz_point_coeff_Gy = AT_RDD_Katz_coeff_Gy(norm_constant_Gy, Z_eff, beta, density_kg_m3, max_electron_range_m);
-
     for (i = 0; i < n; i++){
       params->D0 = D_RDD_Gy[i];
       // if D is outside the definition, return -1
@@ -1235,11 +1253,8 @@ void AT_r_RDD_m  ( const long  n,
           if(rdd_model == RDD_KatzSite || rdd_model == RDD_Edmund){
             r_RDD_m[i] = r_min_m;
           }
-          if(rdd_model == RDD_KatzExtTarget){
-            r_RDD_m[i] = r_min_m;
-          }
         }
-        if(rdd_model == RDD_KatzSite || rdd_model == RDD_Edmund || rdd_model == RDD_KatzExtTarget){
+          if(rdd_model == RDD_KatzSite || rdd_model == RDD_Edmund){
 //          if(D_RDD_Gy[i] < critical_d_Gy && D_RDD_Gy[i] >= inv2_d_Gy){
 //            r_RDD_m[i] = sqrt((float)Katz_point_coeff_Gy / D_RDD_Gy[i]) * (float)max_electron_range_m;}
 //          if(D_RDD_Gy[i] < inv2_d_Gy){

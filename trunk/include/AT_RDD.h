@@ -957,6 +957,34 @@ inline double   AT_RDD_CucinottaPoint_Gy( const double r_m,
     const double C_norm,
     const double Katz_point_coeff_Gy);
 
+
+//////////////////////////////////////////////////////// INVERSE RDD MODELS IMPLEMENTATION, SINGLE PARTICLE ////////////////////////////////////////////////////////
+
+/**
+ * TODO
+ * @param D_Gy
+ * @param r_max_m
+ * @return
+ */
+inline double  AT_inverse_RDD_Test_m( const double D_Gy,
+    const double r_max_m);
+
+
+/**
+ * TODO
+ * @param D_Gy
+ * @param d_min_Gy
+ * @param d_max_Gy
+ * @param a0_m
+ * @param norm_constant_Gy
+ * @return
+ */
+inline double  AT_inverse_RDD_Geiss_m( const double D_Gy,
+    const double d_min_Gy,
+    const double d_max_Gy,
+    const double a0_m,
+    const long   norm_constant_Gy);
+
 //////////////////////////////////////////////////////// OTHERS ////////////////////////////////////////////////////////
 
 /**
