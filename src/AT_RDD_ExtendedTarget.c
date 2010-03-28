@@ -92,12 +92,14 @@ double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy(
   const double  alpha                 =  RDD_parameters->alpha;
   const double  Katz_point_coeff_Gy   =  RDD_parameters->Katz_point_coeff_Gy;
 
+
   const double  D_Gy                  = AT_RDD_KatzPoint_Gy( t_m, r_min_m, r_max_m, er_model, alpha, Katz_point_coeff_Gy);
 
   return 2.0 * t_m * D_Gy * geometryFunctionPhi(r_m, a0_m, t_m);
 }
 
 
+// TODO distinguish KatzPoint r_min from ExtTarget r_min
 double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(
     const double  r_m,
     const double  a0_m,
@@ -132,7 +134,7 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(
   F.params = (void*)(&RDD_parameters);
   int status = gsl_integration_qags (&F, low_lim_m, r_m+a0_m, 0, 1e-5, 1000, w1, &ext_integral_Gy, &error);
   if (status == GSL_EROUND || status == GSL_ESING){
-    printf("Error\n");
+    printf("Error in AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration\n");
     ext_integral_Gy = -1.0;
   }
   gsl_integration_workspace_free (w1);
@@ -180,6 +182,55 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy(
   }
 
   return D_Gy;
+}
+
+
+float AT_inverse_RDD_ExtendedTarget_KatzPoint_m_solver_function( const float r_m , void * params ){
+  AT_inverse_RDD_ExtendedTarget_KatzPoint_parameters* RDD_parameters = (AT_inverse_RDD_ExtendedTarget_KatzPoint_parameters*)(params);
+
+  const double  D_Gy                  =  RDD_parameters->D_Gy;
+  const double  a0_m                  =  RDD_parameters->a0_m;
+  const long    er_model              =  RDD_parameters->er_model;
+  const double  r_min_m               =  RDD_parameters->r_min_m;
+  const double  r_max_m               =  RDD_parameters->r_max_m;
+  const double  alpha                 =  RDD_parameters->alpha;
+  const double  Katz_plateau_Gy       =  RDD_parameters->Katz_plateau_Gy;
+  const double  Katz_point_coeff_Gy   =  RDD_parameters->Katz_point_coeff_Gy;
+
+  float res = (float)AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m, a0_m, er_model, r_min_m, r_max_m, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy) - (float)D_Gy;
+  return res;
+}
+
+
+double  AT_inverse_RDD_ExtendedTarget_KatzPoint_m( const double D_Gy,
+    const double r_min_m,
+    const double max_electron_range_m,
+    const double a0_m,
+    const long   er_model,
+    const double alpha,
+    const double Katz_plateau_Gy,
+    const double Katz_point_coeff_Gy){
+
+  float  solver_accuracy  =  1e-13f;
+
+  AT_inverse_RDD_ExtendedTarget_KatzPoint_parameters RDD_parameters;
+
+  RDD_parameters.D_Gy                 =  D_Gy;
+  RDD_parameters.a0_m                 =  a0_m;
+  RDD_parameters.er_model             =  er_model;
+  RDD_parameters.r_min_m              =  r_min_m;
+  RDD_parameters.r_max_m              =  max_electron_range_m;
+  RDD_parameters.alpha                =  alpha;
+  RDD_parameters.Katz_plateau_Gy      =  Katz_plateau_Gy;
+  RDD_parameters.Katz_point_coeff_Gy  =  Katz_point_coeff_Gy;
+
+  double r_m =  zriddr(AT_inverse_RDD_ExtendedTarget_KatzPoint_m_solver_function,
+          (void*)(&RDD_parameters),
+          (float)r_min_m,
+          (float)max_electron_range_m,
+          solver_accuracy);
+
+  return r_m;
 }
 
 void AT_RDD_ExtendedTarget_Gy( const long  n,
@@ -336,7 +387,7 @@ double AT_RDD_ExtendedTarget_integrate_Gy(  const double r_m,
   F.params = (void*)(&RDD_parameters);
   int status = gsl_integration_qags (&F, low_lim_m, r_m+a0_m, 0, 1e-5, 1000, w1, &ext_integral_Gy, &error);
   if (status == GSL_EROUND || status == GSL_ESING){
-    printf("Error\n");
+    printf("Error in AT_RDD_ExtendedTarget_integrate_Gy\n");
     ext_integral_Gy = -1.0;
   }
   gsl_integration_workspace_free (w1);
