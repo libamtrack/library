@@ -32,8 +32,8 @@
 #include "AT_PhysicsRoutines.h"
 
 
-inline double AT_beta_from_E_single( const double E_MeV_u ){
-  return sqrt(1.0 - 1.0/gsl_pow_2(1.0 + E_MeV_u/proton_mass_MeV_c2));
+inline double AT_beta_from_E_single( const double E_MeV_u ){ //TODO is energy per nucleon really defined like that ?
+  return sqrt(1.0 - 1.0/gsl_pow_2(1.0 + E_MeV_u/(1.0079*proton_mass_MeV_c2)));
 }
 
 
