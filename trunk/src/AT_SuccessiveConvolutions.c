@@ -166,6 +166,7 @@ void  AT_SC_get_f1(
 
   float u_single;
   f_parameters[0]        =  0.0f;
+  f_parameters[2]        =  0.0f;
   f_parameters[3]        =  0.0f;
   f_parameters[4]        =  0.0f;
   f_parameters[5]        =  0.0f;
