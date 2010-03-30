@@ -116,6 +116,54 @@ AT.D.RDD.extended.target.Gy	<-	function(	r.m,
 	 return(res$D.Gy)						
 }
 
+##################
+AT.run.SPIFF	<-	function(	E.MeV.u,
+								particle.no,
+								fluence.cm2,
+								material.no,
+								RDD.model,
+								RDD.parameters,
+								ER.model,
+								ER.parameters,
+								gamma.model,
+								gamma.parameters,
+								N2						= 20,
+								fluence.factor 			= 1.0,
+								write.output 			= F,
+								shrink.tails 			= T,
+								shrink.tails.under		= 1e-30,
+								adjust.N2 				= T,
+								lethal.events.mode 		= F){
+	
+		results			<-	numeric(10)
+		N2.tmp			<-	numeric(1)
+		N2.tmp			<-	N2
+		res				<-	.C(	"AT_run_SPIFF_R",	n					= 	as.integer(length(E.MeV.u)),
+													E.MeV.u				=	as.single(E.MeV.u),
+													particle.no			=	as.integer(particle.no),
+													fluence.cm2			=	as.single(fluence.cm2),
+													material.no			=	as.integer(material.no),
+													RDD.model			=	as.integer(RDD.model),
+													RDD.parameters		=	as.single(RDD.parameters),
+													ER.model			=	as.integer(ER.model),
+													ER.parameters		=	as.single(ER.parameters),
+													gamma.model			=	as.integer(gamma.model),
+													gamma.parameters	=	as.single(gamma.parameters),
+													N2					=	as.integer(N2.tmp),
+													fluence.factor		=	as.single(fluence.factor),
+													write.output		=	as.integer(write.output),
+													shrink.tails		=	as.integer(shrink.tails),
+													shrink.tails.under	=	as.single(shrink.tails.under),
+													adjust.N2			=	as.integer(adjust.N2),
+													lethal.events.mode 	= 	as.integer(lethal.events.mode),
+													results				=	as.single(results))
+		results			<-	res$results
+	
+	return(results)
+}
+											
+
+
 #################
 AT.gamma.response	<-	function(	d.Gy,
 										gamma.model,
