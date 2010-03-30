@@ -328,17 +328,17 @@ inline double AT_RDD_Katz_C_J_m( const double electron_density_m3);
  *
  * coeff      =  (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1 /rmax^2
  *
- * @param[in] C_J_m                    constant C [J/m]
  * @param[in] Z_eff                    effective ion charge Zeff
  * @param[in] beta                     relative ion speed beta = v/c
  * @param[in] material_density_kg_m3   material density rho [kg/m^3]
+ * @param[in] electron_density_m3      electron density of given material [1/m^3]
  * @param[in] r_max_m                  delta electron maximum range rmax [m]
  * @return coeff [Gy]                  calculated coefficient
  */
-inline double AT_RDD_Katz_coeff_Gy(const double C_J_m,
-    const double Z_eff,
+inline double AT_RDD_Katz_coeff_Gy( const double Z_eff,
     const double beta,
     const double density_kg_m3,
+    const double electron_density_m3,
     const double r_max_m);
 
 

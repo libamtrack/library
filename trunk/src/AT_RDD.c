@@ -62,14 +62,15 @@ inline double AT_RDD_Katz_C_J_m( const double electron_density_m3){
 }
 
 
-inline double AT_RDD_Katz_coeff_Gy(const double C_J_m,
-    const double Z_eff,
+inline double AT_RDD_Katz_coeff_Gy( const double Z_eff,
     const double beta,
     const double density_kg_m3,
+    const double electron_density_m3,
     const double r_max_m){
 
+  const double C_J_m = AT_RDD_Katz_C_J_m( electron_density_m3 );
   // (C / 2 pi) * (Zeff/beta)^2 * 1/rho * 1 /rmax^2
-  return C_J_m * 0.5 * M_1_PI * gsl_pow_2(Z_eff/beta)/ (density_kg_m3 * gsl_pow_2(r_max_m));
+  return C_J_m * 0.5 * M_1_PI * gsl_pow_2(Z_eff/beta) / (density_kg_m3 * gsl_pow_2(r_max_m));
 }
 
 //////////////////////////////////////// Linear ER model calculations /////////////////////////////////////////////
@@ -575,16 +576,11 @@ double AT_RDD_precalculated_constant_Gy(
   double a0_m = AT_RDD_a0_m(max_electron_range_m, rdd_model, rdd_parameter);
 
   // get alpha for some ER models
-  double alpha               =  0.0;
+  double alpha                =  0.0;
   if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){
-    double wmax_MeV     =  AT_max_E_transfer_MeV_single(E_MeV_u);
-    alpha                   =  1.667;
-    if(wmax_MeV <= 1e-3){  // if wmax < 1keV
-      alpha                 =  1.079;
-    } // end if
+    alpha                     =  AT_ER_PowerLaw_alpha(E_MeV_u);
   }
 
-  double C_J_m                =  0.0;
   double Katz_point_coeff_Gy  =  0.0;
   if( (rdd_model == RDD_KatzPoint) || (rdd_model == RDD_KatzSite) || (rdd_model == RDD_Edmund) || (rdd_model == RDD_CucinottaPoint) || (rdd_model == RDD_KatzExtTarget)){
     // TODO shall we move from J_m and m to more reasonable units ?
@@ -592,8 +588,7 @@ double AT_RDD_precalculated_constant_Gy(
     // calculations in C_J_um and r_um would be more precise
     const long Z            =  AT_Z_from_particle_no_single(particle_no);
     const double Z_eff      =  AT_effective_charge_from_beta_single(beta, Z);
-    C_J_m                   =  AT_RDD_Katz_C_J_m(electron_density_m3);
-    Katz_point_coeff_Gy     =  AT_RDD_Katz_coeff_Gy(C_J_m, Z_eff, beta, density_kg_m3, max_electron_range_m);
+    Katz_point_coeff_Gy     =  AT_RDD_Katz_coeff_Gy(Z_eff, beta, density_kg_m3, electron_density_m3, max_electron_range_m);
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -706,21 +701,19 @@ double AT_RDD_d_min_Gy(
   // it might happen than d_min given as parameter is never reached because RDD(r_max) > d_min
   // then d_min should be equal to max(rdd_parameter[1], RDD(rmax))
   // TODO implement this also for Katz Site, Edmund and others
+
+  // TODO CHECK IF IT REALLY HAPPENS - IT SHOULD NOT BE LIKE THAT !
   if( rdd_model == RDD_KatzPoint ){
     const double r_min_m = AT_RDD_r_min_m(max_electron_range_m, rdd_model, rdd_parameter);
 
     // get alpha for some ER models
     double alpha              =  0.0;
     if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){
-      double wmax_MeV     =  AT_max_E_transfer_MeV_single(E_MeV_u);
-      alpha                   =  1.667;
-      if(wmax_MeV <= 1e-3){  // if wmax < 1keV
-        alpha                 =  1.079;
-      } // end RDD_KatzPoint
+      alpha                   =  AT_ER_PowerLaw_alpha( E_MeV_u );
     }
 
     const double Katz_point_coeff_Gy  =  precalculated_constant_Gy;
-    d_min_Gy              =  AT_RDD_KatzPoint_Gy(r_min_m, r_min_m, max_electron_range_m, er_model, alpha, Katz_point_coeff_Gy);
+    d_min_Gy              =  AT_RDD_KatzPoint_Gy(max_electron_range_m, r_min_m, max_electron_range_m, er_model, alpha, Katz_point_coeff_Gy);
     d_min_Gy              =  GSL_MAX( d_min_Gy, (double)rdd_parameter[1]);
   } // end RDD_Test
 
@@ -729,7 +722,7 @@ double AT_RDD_d_min_Gy(
   }
 
   if( rdd_model == RDD_Geiss){
-    const double a0_m           =  AT_RDD_a0_m(max_electron_range_m, rdd_model, rdd_parameter);
+    const double a0_m     =  AT_RDD_a0_m(max_electron_range_m, rdd_model, rdd_parameter);
     d_min_Gy              =  AT_RDD_Geiss_Gy( max_electron_range_m, 0., max_electron_range_m, a0_m, precalculated_constant_Gy);
   } // end RDD_Geiss
 
@@ -779,14 +772,9 @@ double AT_RDD_d_max_Gy(
   // get alpha for some ER models
   double alpha               =  0.0;
   if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){
-    double wmax_MeV     =  AT_max_E_transfer_MeV_single(E_MeV_u);
-    alpha                   =  1.667;
-    if(wmax_MeV <= 1e-3){  // if wmax < 1keV
-      alpha                 =  1.079;
-    } // end if
+    alpha                   =  AT_ER_PowerLaw_alpha( E_MeV_u );
   }
 
-  double C_J_m                =  0.0;
   double Katz_point_coeff_Gy  =  0.0;
   if( (rdd_model == RDD_KatzSite) || (rdd_model == RDD_Edmund) || (rdd_model == RDD_CucinottaPoint) || (rdd_model == RDD_KatzExtTarget) || (rdd_model == RDD_CucinottaExtTarget)){
     // TODO shall we move from J_m and m to more reasonable units ?
@@ -794,8 +782,7 @@ double AT_RDD_d_max_Gy(
     // calculations in C_J_um and r_um would be more precise
     const long Z            =  AT_Z_from_particle_no_single(particle_no);
     const double Z_eff      =  AT_effective_charge_from_beta_single(beta, Z);
-    C_J_m                   =  AT_RDD_Katz_C_J_m(electron_density_m3);
-    Katz_point_coeff_Gy     =  AT_RDD_Katz_coeff_Gy(C_J_m, Z_eff, beta, density_kg_m3, max_electron_range_m);
+    Katz_point_coeff_Gy     =  AT_RDD_Katz_coeff_Gy(Z_eff, beta, density_kg_m3, electron_density_m3, max_electron_range_m);
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -974,22 +961,17 @@ void AT_D_RDD_Gy( const long  n,
   // get alpha for some ER models
   double alpha               =  0.0;
   if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){
-    double wmax_MeV     =  AT_max_E_transfer_MeV_single((double)E_MeV_u);
-    alpha                   =  1.667;
-    if(wmax_MeV <= 1e-3){  // if wmax < 1keV
-      alpha                 =  1.079;
-    } // end if
+    alpha                   =  AT_ER_PowerLaw_alpha( (double)E_MeV_u );
   }
 
   double Katz_point_coeff_Gy  =  0.0;
-  if( (rdd_model == RDD_KatzPoint) || (rdd_model == RDD_KatzSite) || (rdd_model == RDD_Edmund) || (rdd_model == RDD_CucinottaPoint)){
+  if( (rdd_model == RDD_KatzSite) || (rdd_model == RDD_Edmund) || (rdd_model == RDD_CucinottaPoint)){
     // TODO shall we move from J_m and m to more reasonable units ?
     // we have for water C_J_m = 1.22e-12 and r_m usually ~ 1e-8
     // calculations in C_J_um and r_um would be more precise
     const long  Z           =  AT_Z_from_particle_no_single(particle_no);
     const double Z_eff      =  AT_effective_charge_from_beta_single(beta, Z);
-    const double C_J_m      =  AT_RDD_Katz_C_J_m(electron_density_m3);
-    Katz_point_coeff_Gy     =  AT_RDD_Katz_coeff_Gy(C_J_m, Z_eff, beta, density_kg_m3, max_electron_range_m);
+    Katz_point_coeff_Gy     =  AT_RDD_Katz_coeff_Gy(Z_eff, beta, density_kg_m3, electron_density_m3, max_electron_range_m);
   }
 
 
@@ -1011,6 +993,7 @@ void AT_D_RDD_Gy( const long  n,
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // RDD_KatzPoint
   if( rdd_model == RDD_KatzPoint){ // RDD formula will be determined by form of ER model
+    double Katz_point_coeff_Gy  =  precalculated_constant_Gy;
     // Loop over all r_m given
     for (i = 0; i < n; i++){
       D_RDD_Gy[i]     =  (float)AT_RDD_KatzPoint_Gy((double)r_m[i], r_min_m, max_electron_range_m, er_model, alpha, Katz_point_coeff_Gy);
@@ -1223,16 +1206,11 @@ void AT_r_RDD_m  ( const long  n,
   const long   Z      =  AT_Z_from_particle_no_single(particle_no);
   const double Z_eff  =  AT_effective_charge_from_beta_single(beta, Z);
 
-  const double C_J_m      =  AT_RDD_Katz_C_J_m(electron_density_m3);
-  const double Katz_point_coeff_Gy = AT_RDD_Katz_coeff_Gy(C_J_m, Z_eff, beta, density_kg_m3, max_electron_range_m);
+  const double Katz_point_coeff_Gy = AT_RDD_Katz_coeff_Gy(Z_eff, beta, density_kg_m3, electron_density_m3, max_electron_range_m);
 
   double alpha           =  0.0;
   if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
-    alpha               =  1.667;
-    double wmax_MeV     =  AT_max_E_transfer_MeV_single(E_MeV_u);
-    if(wmax_MeV <= 1e-3){
-      alpha             =  1.079;
-    }
+    alpha               =  AT_ER_PowerLaw_alpha( (double)E_MeV_u );
   }
 
 

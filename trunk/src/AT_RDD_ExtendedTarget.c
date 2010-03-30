@@ -264,18 +264,12 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
   // Get the maximum electron range
   const double  max_electron_range_m      =  AT_max_electron_range_m(E_MeV_u, (int)material_no, (int)er_model);
 
-  const double C_J_m                      =  AT_RDD_Katz_C_J_m(electron_density_m3);
-
-  double Katz_point_coeff_Gy =  AT_RDD_Katz_coeff_Gy(C_J_m, Z_eff, beta, density_kg_m3, max_electron_range_m);
+  double Katz_point_coeff_Gy =  AT_RDD_Katz_coeff_Gy(Z_eff, beta, density_kg_m3, electron_density_m3, max_electron_range_m);
   double r_max_m = GSL_MIN(a0_m, max_electron_range_m);
 
-  double alpha           =  0.0;
+  double alpha          =  0.0;
   if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
-    alpha               =  1.667;
-    double wmax_MeV     =  AT_max_E_transfer_MeV_single(E_MeV_u);
-    if(wmax_MeV <= 1e-3){
-      alpha             =  1.079;
-    }
+    alpha               =  AT_ER_PowerLaw_alpha(E_MeV_u);
   }
 
   /********************************************************
