@@ -479,7 +479,7 @@ inline double  AT_RDD_Geiss_Gy( const double r_m,
     const double r_min_m,
     const double r_max_m,
     const double a0_m,
-    const long   norm_constant_Gy){
+    const double norm_constant_Gy){
 
   if ( (r_min_m <= r_m) && (r_m <= a0_m)){
     return norm_constant_Gy;

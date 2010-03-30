@@ -56,8 +56,8 @@ void  AT_SC_get_f1_array_size(
     float*  f1_parameters)
 {
   // get lowest and highest dose
-  float  d_max_Gy    =  0.0f;
-  float  d_min_Gy    =  0.0f;
+  double d_max_Gy    =  0.0;
+  double d_min_Gy    =  0.0;
 
   long  n_f1_parameters  =  9;
   long  i;
@@ -74,18 +74,18 @@ void  AT_SC_get_f1_array_size(
         /* calculated parameters */
         &f1_parameters[i*n_f1_parameters]);
     if(i == 0){
-      d_min_Gy      =  f1_parameters[i*n_f1_parameters + 3];
-      d_max_Gy      =  f1_parameters[i*n_f1_parameters + 4];
+      d_min_Gy      =  (double)f1_parameters[i*n_f1_parameters + 3];
+      d_max_Gy      =  (double)f1_parameters[i*n_f1_parameters + 4];
     }
     else{
-      d_min_Gy      =  fminf(d_min_Gy, f1_parameters[i*n_f1_parameters + 3]);
-      d_max_Gy      =  fmaxf(d_max_Gy, f1_parameters[i*n_f1_parameters + 4]);
+      d_min_Gy      =  GSL_MIN(d_min_Gy, (double)f1_parameters[i*n_f1_parameters + 3]);
+      d_max_Gy      =  GSL_MAX(d_max_Gy, (double)f1_parameters[i*n_f1_parameters + 4]);
     }
   }
 
   // get number of bins needed to span that dose range
-  float tmp = (log10f(d_max_Gy/d_min_Gy) / log10f(2.0f) * ((float)*N2));
-  *n_bins_f1        =  (long)(floorf(tmp) + 1.0f);
+  double tmp = (log10(d_max_Gy/d_min_Gy) / log10(2.0) * ((double)*N2));
+  *n_bins_f1        =  (long)(floor(tmp) + 1.0);
 
   return;
 }
