@@ -87,6 +87,15 @@ inline double AT_ER_Tabata_range_g_cm2(double beta, double a1_g_cm2, double a2, 
 }
 
 
+inline double AT_ER_PowerLaw_alpha( const double E_MeV_u){
+  double wmax_MeV     =  AT_max_E_transfer_MeV_single(E_MeV_u);
+  double alpha        =  1.667;
+  if(wmax_MeV <= 1e-3)  // if wmax < 1keV
+      alpha           =  1.079;
+  return alpha;
+}
+
+
 inline void AT_ER_Tabata_constants(const double average_A, const double average_Z, double * a1_g_cm2, double * a2, double * a3, double * a4, double * a5){
   const double b1_g_cm2 = 0.2335;
   const double b2 = 1.209;

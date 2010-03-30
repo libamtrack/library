@@ -130,6 +130,13 @@ inline double AT_ER_Scholz_range_g_cm2(double E_MeV_u);
  */
 inline double AT_ER_Tabata_range_g_cm2(double beta, double a1_g_cm2, double a2, double a3, double a4, double a5);
 
+/**
+ * TODO
+ * @param E_MeV_u
+ * @return
+ */
+inline double AT_ER_PowerLaw_alpha( const double E_MeV_u);
+
 
 /**
  * Tabata model constants
