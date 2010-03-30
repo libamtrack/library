@@ -589,7 +589,29 @@ class AmTrack(object):
         '''
         for item in self.__dict__:
             print item, self.__dict__[item]
-   
+
+    def csda_range_g_cm2 (self, n , E_MeV_u, particle_no , material_no):
+        '''
+        Returns CSDA range (in g/cm2) from pstar tables for given energy.
+        In case of ions a simple scaling procedure (A/Z^2) will be used
+        (even effective charge will be neglected)
+        '''
+        n_ctype =                  ctypes.byref(ctypes.c_int(n))
+        tmp_array =         ctypes.c_float * len(E_MeV_u)
+        E_MeV_u_ctype =     ctypes.byref(tmp_array(*E_MeV_u))
+        tmp_array =         ctypes.c_long * len(particle_no)
+        particle_no_ctype = ctypes.byref(tmp_array(*particle_no))
+        material_no_ctype =        ctypes.byref(ctypes.c_int(material_no))
+        c_csda_range = libamtrack.AT_CSDA_range_g_cm2
+        c_csda_range.restyoe = ctypes.c_float*n
+        nfloats = ctypes.c_float * n
+        csda_range_ctype = nfloats()
+        
+        c_csda_range_out = c_csda_range(n_ctype, E_MeV_u_ctype, particle_no_ctype, material_no_ctype, csda_range_ctype)
+        csda_return = []
+        for item in  c_csda_range_out:
+            csda_return.append(item)
+        return csda_return
 
 class AmSpiffRun(AmTrack):
     '''
