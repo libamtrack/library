@@ -221,19 +221,26 @@ double AT_RDD_precalculated_constant_Gy(
     const float   rdd_parameter[],
     const long    er_model);
 
+
 /**
  * TODO
- * @param norm_constant_Gy
- * @param max_electron_range_m
+ * @param E_MeV_u
+ * @param particle_no
+ * @param material_no
  * @param rdd_model
  * @param rdd_parameter
+ * @param er_model
+ * @param precalculated_constant_Gy
  * @return
  */
 double AT_RDD_d_min_Gy(
-    const double  norm_constant_Gy,
-    const double  max_electron_range_m,
+    const double  E_MeV_u,
+    const long    particle_no,
+    const long    material_no,
     const long    rdd_model,
-    const float   rdd_parameter[]);
+    const float   rdd_parameter[],
+    const long    er_model,
+    const double  precalculated_constant_Gy);
 
 
 /**
