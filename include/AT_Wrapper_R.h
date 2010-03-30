@@ -29,6 +29,7 @@
 *    If not, see <http://www.gnu.org/licenses/>
 */
 
+#include "AmTrack.h"
 #include "AT_PhysicsRoutines.h"
 #include "AT_ElectronRange.h"
 #include "AT_RDD.h"
@@ -67,17 +68,37 @@ void AT_D_RDD_ExtendedTarget_Gy_R( const int*  n,
     const float* er_parameter,
     float*       D_RDD_Gy);
 
-void AT_LET_MeV_cm2_g_R(  const int*  n,
+void AT_run_SPIFF_R(  const int*  n,
     const float*  E_MeV_u,
-    const int*   particle_no,
-    const int*   material_no,
-    float*       LET_MeV_cm2_g);
+    const int*  particle_no,
+    const float*  fluence_cm2,
+    const int*  material_no,
+    const int*  RDD_model,
+    const float*  RDD_parameters,
+    const int*  ER_model,
+    const float*  ER_parameters,
+    const int*  gamma_model,
+    const float*  gamma_parameters,
+    long*  N2, // TODO investigate if this can be changed inside
+    const float*  fluence_factor,
+    const int*  write_output,
+    const int*  shrink_tails,
+    const float*  shrink_tails_under,
+    const int*  adjust_N2,
+    const int*   lethal_events_mode,
+    float*  results);
 
 void AT_gamma_response_R( const int*  n,
     const float*  d_Gy,
     const int*  gamma_model,
     const float*  gamma_parameter,
     float*  S);
+
+void AT_LET_MeV_cm2_g_R(  const int*  n,
+    const float*  E_MeV_u,
+    const int*   particle_no,
+    const int*   material_no,
+    float*       LET_MeV_cm2_g);
 
 void AT_max_E_transfer_MeV_R(  const int*  n,
     const float*  E_MeV_u,
