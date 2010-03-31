@@ -57,12 +57,12 @@
 enum RDDModels {
   RDD_Test                   = 1,      /**< no parameters */
       RDD_KatzPoint          = 2,      /**< parameters: 0 - r_min [m] (lower integration limit), 1 - d_min_Gy (lower dose cut-off) */
-      RDD_Geiss              = 3,      /**< parameters: 0 - a0 [m] (core diameter) */
-      RDD_KatzSite           = 4,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off  */
-      RDD_Edmund             = 5,      /**< parameters: 0 - a0 [m] (core diameter), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off */
+      RDD_Geiss              = 3,      /**< parameters: 0 - a0 [m] (core diameter/target size) */
+      RDD_KatzSite           = 4,      /**< parameters: 0 - a0 [m] (core diameter/target size), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off  */
+      RDD_Edmund             = 5,      /**< parameters: 0 - a0 [m] (core diameter/target size), 1 - d_min_Gy (lower dose cut-off) \n after Edmund et al., 2007, but modified with dose-cut off */
       RDD_CucinottaPoint     = 6,      /**< parameters: 0 - r_min [m] (lower integration limit),1 - d_min_Gy (lower dose cut-off)   */
-      RDD_KatzExtTarget      = 7,      /**< TODO: This is a dummy, replace */
-      RDD_CucinottaExtTarget = 8,      /**< TODO: This is a dummy, replace */
+      RDD_KatzExtTarget      = 7,      /**< parameters: 0 - KatzPoint_r_min [m] (lower integration limit in KatzPoint RDD), 1 - a0 [m] (core diameter/target size), 2 - d_min_Gy (lower dose cut-off) */
+      RDD_CucinottaExtTarget = 8,      /**< parameters: 0 - CucinottaPoint_r_min [m] (lower integration limit in CucinottaPoint RDD), 1 - a0 [m] (core diameter/target size), 2 - d_min_Gy (lower dose cut-off) */
 };
 
 /**
@@ -75,9 +75,9 @@ enum RDDModels {
  */
 typedef struct {
   long    n;                                   /** total number of RDD models */
-  long    RDD_no[RDD_DATA_N];                  /** code number of RDD model*/
+  long    RDD_no[RDD_DATA_N];                  /** code number of RDD model */
   long    n_parameters[RDD_DATA_N];            /** number of model parameters */
-  char*   parameter_name[RDD_DATA_N][3];       /** list of names of model parameters*/
+  char*   parameter_name[RDD_DATA_N][3];       /** list of names of model parameters */
   float   parameter_default[RDD_DATA_N][3];    /** default values of model parameters */
   char*   RDD_name[RDD_DATA_N];                /** model names */
 } rdd_data;
@@ -116,15 +116,15 @@ long getRDDNo( const char* RDD_name );
 /**
  * Returns RDD as a function of distance r_m
  *
- * @param[in]   n
+ * @param[in]   n              number of particles (length of r_m vector)
  * @param[in]   r_m            distance [m]
- * @param[in]   E_MeV_u
- * @param[in]   particle_no
- * @param[in]   material_no
- * @param[in]   rdd_model
- * @param[in]   rdd_parameter
- * @param[in]   er_model
- * @param[in]   er_parameter
+ * @param[in]   E_MeV_u        particle (ion) energy per nucleon [MeV/u]
+ * @param[in]   particle_no    particle code number
+ * @param[in]   material_no    material code number
+ * @param[in]   rdd_model      Radial Dose Distribution model code number
+ * @param[in]   rdd_parameter  Radial Dose Distribution model parameters vector
+ * @param[in]   er_model       delta electron range model code number
+ * @param[in]   er_parameter   TODO to be removed
  * @param[out]  D_RDD_Gy       dose [Gy]
  */
 void AT_D_RDD_Gy( const long  n,
@@ -145,15 +145,15 @@ void AT_D_RDD_Gy( const long  n,
 /**
  * Returns distance as a function of dose
  *
- * @param[in]   n
+ * @param[in]   n                   number of particles (length of D_RDD_Gy vector)
  * @param[in]   D_RDD_Gy            dose [Gy]
- * @param[in]   E_MeV_u
- * @param[in]   particle_no
- * @param[in]   material_no
- * @param[in]   rdd_model
- * @param[in]   rdd_parameter
- * @param[in]   er_model
- * @param[in]   er_parameter
+ * @param[in]   E_MeV_u             particle (ion) energy per nucleon [MeV/u]
+ * @param[in]   particle_no         particle code number
+ * @param[in]   material_no         material code number
+ * @param[in]   rdd_model           Radial Dose Distribution model code number
+ * @param[in]   rdd_parameter       Radial Dose Distribution model parameters vector
+ * @param[in]   er_model            delta electron range model code number
+ * @param[in]   er_parameter        TODO to be removed
  * @param[out]  r_RDD_m             distance [m]
  */
 void AT_r_RDD_m  ( const long  n,
@@ -175,11 +175,11 @@ void AT_r_RDD_m  ( const long  n,
 //////////////////////////////////////////////////////// HELPER FUNCTIONS ////////////////////////////////////////////////////////
 
 /**
- * TODO
- * @param max_electron_range_m
- * @param rdd_model
- * @param rdd_parameter
- * @return
+ * Returns lower integration limit for given RDD (or 0.0 if not used).
+ * @param max_electron_range_m           delta electron maximum range [m]
+ * @param rdd_model                      Radial Dose Distribution model code number
+ * @param rdd_parameter                  Radial Dose Distribution model parameters vector
+ * @return rmin - lower integration limit for given RDD [m]
  */
 double AT_RDD_r_min_m(
     const double  max_electron_range_m,
@@ -188,11 +188,11 @@ double AT_RDD_r_min_m(
 
 
 /**
- * TODO
- * @param max_electron_range_m
- * @param rdd_model
- * @param rdd_parameter
- * @return a0
+ * Returns target size (core size) for given RDD (or 0.0 if not used).
+ * @param max_electron_range_m           delta electron maximum range [m]
+ * @param rdd_model                      Radial Dose Distribution model code number
+ * @param rdd_parameter                  Radial Dose Distribution model parameters vector
+ * @return a0 - target size (core size) for given RDD [m]
  */
 double AT_RDD_a0_m(
     const double  max_electron_range_m,
@@ -200,16 +200,16 @@ double AT_RDD_a0_m(
     const float   rdd_parameter[]);
 
 /**
- * TODO
- * @param max_electron_range_m
+ * Returns precalculated constant for given RDD: normalization factor or some coefficient
+ * @param max_electron_range_m           delta electron maximum range [m]
  * @param LET_MeV_cm2_g
- * @param E_MeV_u
- * @param particle_no
- * @param material_no
- * @param rdd_model
- * @param rdd_parameter
- * @param er_model
- * @return
+ * @param E_MeV_u                        particle (ion) energy per nucleon [MeV/u]
+ * @param particle_no                    particle code number
+ * @param material_no                    material code number
+ * @param rdd_model                      Radial Dose Distribution model code number
+ * @param rdd_parameter                  Radial Dose Distribution model parameters vector
+ * @param er_model                       delta electron range model code number
+ * @return precalculated constant for given RDD [Gy]
  */
 double AT_RDD_precalculated_constant_Gy(
     const double  max_electron_range_m,
@@ -223,15 +223,18 @@ double AT_RDD_precalculated_constant_Gy(
 
 
 /**
- * TODO
- * @param E_MeV_u
- * @param particle_no
- * @param material_no
- * @param rdd_model
- * @param rdd_parameter
- * @param er_model
+ * Returns minimal dose for given RDD: either value given by user is taken
+ * (in case of RDDs which gives zero-dose at maximum range (rmax))
+ * or value of RDD is calculated at rmax and it is taken as Dmax (if higher than user
+ * provided value).
+ * @param E_MeV_u                         particle (ion) energy per nucleon [MeV/u]
+ * @param particle_no                     particle code number
+ * @param material_no                     material code number
+ * @param rdd_model                       Radial Dose Distribution model code number
+ * @param rdd_parameter                   Radial Dose Distribution model parameters vector
+ * @param er_model                        delta electron range model code number
  * @param precalculated_constant_Gy
- * @return
+ * @return miminal dose for given RDD [Gy]
  */
 double AT_RDD_d_min_Gy(
     const double  E_MeV_u,
@@ -244,15 +247,16 @@ double AT_RDD_d_min_Gy(
 
 
 /**
- * TODO
- * @param[in] E_MeV_u
- * @param[in] particle_no
- * @param[in] material_no
- * @param[in] rdd_model
- * @param[in] rdd_parameter
- * @param[in] er_model
- * @param[in] er_parameter
- * @return    d_max_Gy
+ * Returns maximum value of the dose that it is possible to obtain with given RDD.
+ * It is calculated at r = r_min, as most of the RDDs explode to infinity at r = 0
+ * @param[in] E_MeV_u                    particle (ion) energy per nucleon [MeV/u]
+ * @param[in] particle_no                particle code number
+ * @param[in] material_no                material code number
+ * @param[in] rdd_model                  Radial Dose Distribution model code number
+ * @param[in] rdd_parameter              Radial Dose Distribution model parameters vector
+ * @param[in] er_model                   delta electron range model code number
+ * @param[in] er_parameter               TODO to be removed
+ * @return  Maximum dose [Gy]
  */
 double AT_RDD_d_max_Gy(
     const double  E_MeV_u,
@@ -268,14 +272,14 @@ double AT_RDD_d_max_Gy(
 
 
 /**
- * TODO
- * @param[in]  E_MeV_u
- * @param[in]  particle_no
- * @param[in]  material_no
- * @param[in]  rdd_model
- * @param[in]  rdd_parameter
- * @param[in]  er_model
- * @param[in]  er_parameter
+ * Pre-calculated many useful parameters characterising RDD.
+ * @param[in]  E_MeV_u               particle (ion) energy per nucleon [MeV/u]
+ * @param[in]  particle_no           particle code number
+ * @param[in]  material_no           material code number
+ * @param[in]  rdd_model             Radial Dose Distribution model code number
+ * @param[in]  rdd_parameter         Radial Dose Distribution model parameters vector
+ * @param[in]  er_model              delta electron range model code number
+ * @param[in]  er_parameter          TODO to be removed
  * @param[out] f1_parameters
  *     0 - LET_MeV_cm2_g \n
  *     1 - r_min_m \n
@@ -623,14 +627,14 @@ double   AT_RDD_Katz_PowerLawER_DSite_Gy( const double r_m,
     const double Katz_point_coeff_Gy);
 
 /**
- * TODO
+ * TODO to be replaced by newer methods, it in only used in Edmund RDD
  */
 inline float   AT_RDD_Katz_dEdx_coeff_J_m(  const float r_max_m,
     const float material_density_kg_m3,
     const float Katz_point_coeff_Gy);
 
 /**
- * TODO
+ * TODO to be replaced by newer methods, it in only used in Edmund RDD
  */
 float          AT_RDD_Katz_PowerLawER_dEdx_directVersion_J_m(        const float alpha,
     const float r_min_m,
@@ -843,9 +847,9 @@ double   AT_RDD_Cucinotta_Dexc_Gy( const double r_m,
 //////////////////////////////////////////////////////// RDD MODELS IMPLEMENTATION, SINGLE PARTICLE ////////////////////////////////////////////////////////
 
 /**
- * TODO
+ * Test RDD, flat for given range of r.
  * @param r_m
- * @param r_min_m
+ * @param r_min_m                  minimum radius cut-off distance [m]
  * @param r_max_m
  * @param norm_constant_Gy
  * @return
@@ -858,9 +862,9 @@ inline double  AT_RDD_Test_Gy( const double r_m,
 /**
  * TODO
  * @param r_m
- * @param r_min_m
+ * @param r_min_m                  minimum radius cut-off distance [m]
  * @param r_max_m
- * @param er_model
+ * @param er_model                 delta electron range model code number
  * @param alpha
  * @param Katz_point_coeff_Gy
  * @return
@@ -876,10 +880,10 @@ inline double  AT_RDD_KatzPoint_Gy( const double r_m,
 /**
  * TODO
  * @param r_m
- * @param r_min_m
+ * @param r_min_m                  minimum radius cut-off distance [m]
  * @param r_max_m
  * @param a0_m
- * @param er_model
+ * @param er_model                 delta electron range model code number
  * @param alpha
  * @param density_kg_m3
  * @param LET_J_m
@@ -902,10 +906,10 @@ inline double  AT_RDD_KatzSite_Gy( const double r_m,
 /**
  * TODO
  * @param r_m
- * @param r_min_m
+ * @param r_min_m                  minimum radius cut-off distance [m]
  * @param r_max_m
  * @param a0_m
- * @param er_model
+ * @param er_model                 delta electron range model code number
  * @param alpha
  * @param density_kg_m3
  * @param LET_J_m
@@ -928,7 +932,7 @@ inline double  AT_RDD_Edmund_Gy( const double r_m,
 /**
  * TODO
  * @param r_m
- * @param r_min_m
+ * @param r_min_m                  minimum radius cut-off distance [m]
  * @param r_max_m
  * @param a0_m
  * @param norm_constant_Gy
@@ -970,7 +974,7 @@ inline double   AT_RDD_CucinottaPoint_Gy( const double r_m,
 /**
  * TODO
  * @param D_Gy
- * @param r_max_m
+ * @param r_max_m                  delta electron maximum range rmax [m]
  * @return
  */
 inline double  AT_inverse_RDD_Test_m( const double D_Gy,
@@ -1009,8 +1013,8 @@ typedef struct {
 /**
  * TODO
  * @param D_Gy
- * @param r_min_m
- * @param r_max_m
+ * @param r_min_m                  minimum radius cut-off distance [m]
+ * @param r_max_m                  delta electron maximum range rmax [m]
  * @param Katz_point_coeff_Gy
  * @return
  */
@@ -1032,9 +1036,9 @@ float AT_inverse_RDD_KatzPoint_PowerLawER_solver_function_Gy( const float r_m , 
 /**
  * TODO
  * @param D_Gy
- * @param r_min_m
- * @param r_max_m
- * @param er_model
+ * @param r_min_m                  minimum radius cut-off distance [m]
+ * @param r_max_m                  delta electron maximum range rmax [m]
+ * @param er_model                 delta electron range model code number
  * @param alpha
  * @param Katz_point_coeff_Gy
  * @return
