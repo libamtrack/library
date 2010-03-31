@@ -288,13 +288,8 @@ int pbdv_(double *v,
   return 0;
 } /* pbdv_ */
 
-/**
- * Compute parabolic cylinder function Dv(x) for small argument
- * routines called: GAMMA
- * @param x argument
- * @param va order
- * @param pd output Dv(x)
- */
+
+
 int dvsa_(double *va,
     double *x,
     double *pd)
@@ -308,7 +303,7 @@ int dvsa_(double *va,
   eps;
 
   eps = 1e-15;
-  pi = 3.141592653589793;
+  pi = M_PI;
   sq2 = sqrt(2.);
   ep = exp(*x * -.25 * *x);
   va0 = (1. - *va) * .5;
@@ -350,15 +345,7 @@ int dvsa_(double *va,
   return 0;
 } /* dvsa_ */
 
-/**
- * Compute parabolic cylinder function Dv(x) for large argument
- * Routines called:
- *             (1) VVLA for computing Vv(x) for large |x|
- *             (2) GAMMA for computing �(x)
- * @param x argument
- * @param va order
- * @param pd output Dv(x)
- */
+
 int dvla_(double *va, double *x, double *pd)
 {
   /* System generated locals */
@@ -368,7 +355,7 @@ int dvla_(double *va, double *x, double *pd)
   static int k;
   static double r__, a0, x1, gl, ep, pi, vl, eps;
 
-  pi = 3.141592653589793;
+  pi = M_PI;
   eps = 1e-12;
   ep = exp(*x * -.25f * *x);
   d__1 = fabs(*x);
@@ -396,15 +383,7 @@ int dvla_(double *va, double *x, double *pd)
   return 0;
 } /* dvla_ */
 
-/**
- * Compute parabolic cylinder function Vv(x) for large argument
- * Routines called:
- *             (1) DVLA for computing Dv(x) for large |x|
- *             (2) GAMMA for computing �(x)
- * @param x argument
- * @param va order
- * @param pv output Vv(x)
- */
+
 int vvla_(double *va, double *x, double *pv)
 {
   /* System generated locals */
@@ -413,7 +392,7 @@ int vvla_(double *va, double *x, double *pv)
   /* Local variables */
   static int k;
   static double r__, a0, x1, gl, qe, pi, pdl, dsl, eps;
-  pi = 3.141592653589793;
+  pi = M_PI;
   eps = 1e-12;
   qe = exp(*x * .25f * *x);
   d__1 = fabs(*x);
@@ -443,11 +422,7 @@ int vvla_(double *va, double *x, double *pv)
   return 0;
 } /* vvla_ */
 
-/**
- * Compute parabolic gamma function
- * @param x argument (x is not equal to 0,-1,-2,...)
- * @param ga output
- */
+
 int gamma_(const double *x, double *ga)
 {
   /* Initialized data */
@@ -468,7 +443,7 @@ int gamma_(const double *x, double *ga)
   static int m1;
   static double pi, gr;
 
-  pi = 3.141592653589793;
+  pi = M_PI;
   if (*x == (double) ((int) (*x))) {
     if (*x > 0.) {
       *ga = 1.;
@@ -512,7 +487,6 @@ int gamma_(const double *x, double *ga)
 } /* gamma_ */
 
 
-
 void AT_Funs(  const float*  fz,
     const float*  fR0,
     const float*  fsigma,
@@ -548,6 +522,7 @@ void AT_Funs(  const float*  fz,
   }
 }
 
+
 float gammln(const float xx)
 {
   double x,y,tmp,ser;
@@ -562,6 +537,7 @@ float gammln(const float xx)
   for (j=0;j<=5;j++) ser += cof[j]/++y;
   return (float)(-tmp+log(2.5066282746310005*ser/x));
 }
+
 
 #define ITMAX 100
 #define EPS 3.0e-7
@@ -592,6 +568,7 @@ void gcf(float *gammcf, const float a, const float x, float *gln)
   *gammcf=exp(-x+a*log(x)-(*gln))*h;
 }
 
+
 void gser(float *gamser, const float a, const float x, float *gln)
 {
   int n;
@@ -618,6 +595,7 @@ void gser(float *gamser, const float a, const float x, float *gln)
   }
 }
 
+
 float gammp(const float a, const float x)
 {
   float gamser, gammcf, gln;
@@ -638,10 +616,7 @@ float erff(const float x)
   return x < 0.0f ? -gammp(0.5f, x*x) : gammp(0.5f, x*x);
 }
 
-/**
- * Numerical Recipes standard error handler
- * @param error_text
- */
+
 void nrerror(const char error_text[])
 {
   fprintf(stderr,"Numerical Recipes run-time error...\n");
@@ -655,17 +630,7 @@ void nrerror(const char error_text[])
 #define MAXIT 60
 #define UNUSED (-1.11e30)
 
-/**
- * From Numerical Recipes in C, 2nd ed., 1992:
- * Using Ridders' method, return the root of a function func known to lie between x1 and x2.
- * The root, returned as zriddr, will be refined to an approximate accuracy xacc.
- * @param func
- * @param params
- * @param x1
- * @param x2
- * @param xacc
- * @return
- */
+
 float zriddr(float (*func)(float,void*), void * params, const float x1, const float x2, const float xacc)
 {
   int j;
@@ -710,15 +675,7 @@ float zriddr(float (*func)(float,void*), void * params, const float x1, const fl
   return 0.0;                         // Never get here.
 }
 
-/**
- * finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
- * is reported per element a vector "matches" of length n_elements has to be provided
- * @param elements
- * @param n_elements
- * @param set
- * @param n_set
- * @param matches
- */
+
 void are_elements_int(const int* elements, const int n_elements, const int* set, const int n_set, int* matches){
   long  i;
   for (i = 0; i < n_elements; i++){
@@ -734,15 +691,7 @@ void are_elements_int(const int* elements, const int n_elements, const int* set,
   }
 }
 
-/**
- * finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
- * is reported per element a vector "matches" of length n_elements has to be provided
- * @param elements
- * @param n_elements
- * @param set
- * @param n_set
- * @param matches
- */
+
 void find_elements_int(const long* elements, const long* n_elements, const long* set, const long* n_set, long* matches){
   long  i;
   for (i = 0; i < *n_elements; i++){
@@ -758,15 +707,7 @@ void find_elements_int(const long* elements, const long* n_elements, const long*
   }
 }
 
-/**
- * finds character elements in a set (n elements) and returns indices - only one (the first) match
- * is reported per element a vector "matches" of length n_elements has to be provided
- * @param elements
- * @param n_elements
- * @param set
- * @param n_set
- * @param matches
- */
+
 void find_elements_char(const char** elements, const long* n_elements, const char* const * set, const long* n_set, long* matches){
 
   long  i;
@@ -783,14 +724,7 @@ void find_elements_char(const char** elements, const long* n_elements, const cha
   }
 }
 
-/**
- * finds a character element in a set and returns boolean match vector
- * a vector "matches" of length n_set has to be provided
- * @param element
- * @param set
- * @param n_set
- * @param matches
- */
+
 void is_element_char(const char* element, const char* const * set, const long* n_set, bool* matches){
 
   long  i;
@@ -803,14 +737,7 @@ void is_element_char(const char* element, const char* const * set, const long* n
   }
 }
 
-/**
- * finds a integer element in a set and returns boolean match vector
- * a vector "matches" of length n_set has to be provided
- * @param element
- * @param set
- * @param n_set
- * @param matches
- */
+
 void is_element_int(const long* element, const long* set, const long* n_set, bool* matches){
 
   long  i;
@@ -824,15 +751,6 @@ void is_element_int(const long* element, const long* set, const long* n_set, boo
 }
 
 
-/**
- * interpolation on a table: code (w/ adapted indices) from Numerical Recipes, 2rd ed., chapter 3.1
- * added wrapping function interp which allows to chose degree of interpolation polynomial
- * (1 = linear, 2 = quadratic, etc.)
- * @param xx
- * @param n
- * @param x
- * @param j
- */
 void locate(const float* xx, const long* n, const float* x, long* j)
 {
   long  ju, jm, jl;
@@ -853,6 +771,7 @@ void locate(const float* xx, const long* n, const float* x, long* j)
   else *j  =  jl;
   return;
 }
+
 
 void polint(const float* xa, const float* ya, const long* n, const float* x, float *y, float *dy)
 {
@@ -891,6 +810,8 @@ void polint(const float* xa, const float* ya, const long* n, const float* x, flo
   free(c);
 }
 
+
+//TODO change pointer to single variable where necessary: n_pol for example
 void interp(const float* xa, const float* ya, const long* n, const long* n_pol, const float* x, float *y, float *dy)
 {
   long  j;
