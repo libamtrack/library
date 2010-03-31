@@ -103,7 +103,7 @@ int AT_GetNumber(void);
 *    results[9]    not used        (algorithm specific)
 * @return  none
 */
-void AT_SPIFF(  const long*  n,
+void AT_run_SPIFF_method(  const long*  n,
     const float*  E_MeV_u,
     const long*  particle_no,
     const float*  fluence_cm2,
@@ -167,7 +167,7 @@ void AT_SPIFF(  const long*  n,
 * @return  none
 */
 
-void AT_GSM(  const long*  n,
+void AT_run_GSM_method(  const long*  n,
     const float*  E_MeV_u,
     const long*  particle_no,
     const float*  fluence_cm2,
@@ -222,7 +222,7 @@ void AT_GSM(  const long*  n,
 *    results[9]    not used        (algorithm specific)\n
 * @return  none
 */
-void AT_IGK(  const long*  n,
+void AT_run_IGK_method(  const long*  n,
     const float*  E_MeV_u,
     const long*  particle_no,
     const float*  fluence_cm2,
@@ -273,7 +273,7 @@ void AT_IGK(  const long*  n,
 *    results[8]    not used        (algorithm specific)\n
 *    results[9]    not used        (algorithm specific)\n
 */
-void AT_SPISS(  const long* n,
+void AT_run_SPISS_method(  const long* n,
     const float* E_MeV_u,
     const long*  particle_no,
     const float* fluence_cm2,

@@ -97,6 +97,19 @@ void AT_D_RDD_ExtendedTarget_Gy_R( const int*  n,
 
 }
 
+void AT_gamma_response_R( const int*  n,
+    const float*  d_Gy,
+    const int*  gamma_model,
+    const float*  gamma_parameter,
+    float*  S){
+
+  const long n_long = (long)(*n);
+  const long gamma_model_long = (long)(*gamma_model);
+
+  AT_gamma_response(n_long,d_Gy,gamma_model_long,gamma_parameter,S);
+
+}
+
 void AT_LET_MeV_cm2_g_R(  const int*  n,
     const float*  E_MeV_u,
     const int*   particle_no,
@@ -116,19 +129,6 @@ void AT_LET_MeV_cm2_g_R(  const int*  n,
       particle_no_long,
       material_no_long,
       LET_MeV_cm2_g);
-}
-
-void AT_gamma_response_R( const int*  n,
-    const float*  d_Gy,
-    const int*  gamma_model,
-    const float*  gamma_parameter,
-    float*  S){
-
-  const long n_long = (long)(*n);
-  const long gamma_model_long = (long)(*gamma_model);
-
-  AT_gamma_response(n_long,d_Gy,gamma_model_long,gamma_parameter,S);
-
 }
 
 void AT_max_E_transfer_MeV_R(  const int*  n,
@@ -189,6 +189,130 @@ void AT_r_RDD_m_R  ( const int*  n,
       er_parameter,
       r_RDD_m);
 
+}
+
+void AT_run_GSM_method_R(  const int*  n,
+    const float*  E_MeV_u,
+    const int*  particle_no,
+    const float*  fluence_cm2,
+    const int*  material_no,
+    const int*  rdd_model,
+    const float*  rdd_parameters,
+    const int*  er_model,
+    const float*  er_parameters,
+    const int*  gamma_model,
+    const float*  gamma_parameters,
+    const int*  N_runs,
+    const int*   N2,
+    const float*  fluence_factor,
+    const int*   write_output,
+    const int*   nX,
+    const float*  voxel_size_m,
+    const int*   lethal_events_mode,
+    float*  results){
+
+  const long n_long = (long)(*n);
+  const long rdd_model_long = (long)(*rdd_model);
+  const long er_model_long = (long)(*er_model);
+  const long gamma_model_long = (long)(*gamma_model);
+  const long material_no_long = (long)(*material_no);
+
+  long i;
+  long * particle_no_long = (long*)calloc(*n,sizeof(long));
+  for(i = 0 ; i < *n ; i++){
+    particle_no_long[i] = (long)particle_no[i];
+  }
+
+  const long N_runs_long = (long)(*N_runs);
+  const long N2_long = (long)(*N2);
+  const bool write_output_bool = (bool)(*write_output);
+  const long nX_long = (long)(*nX);
+  const bool lethal_events_mode_bool = (bool)(*lethal_events_mode);
+
+  AT_run_GSM_method(&n_long,
+      E_MeV_u,
+      particle_no_long,
+      fluence_cm2,
+      &material_no_long,
+      &rdd_model_long,
+      rdd_parameters,
+      &er_model_long,
+      er_parameters,
+      &gamma_model_long,
+      gamma_parameters,
+      &N_runs_long,
+      &N2_long,
+      fluence_factor,
+      &write_output_bool,
+      &nX_long,
+      voxel_size_m,
+      &lethal_events_mode_bool,
+      results);
+
+   free(particle_no_long);
+}
+
+void AT_run_SPIFF_method_R(  const int*  n,
+    const float*  E_MeV_u,
+    const int*  particle_no,
+    const float*  fluence_cm2,
+    const int*  material_no,
+    const int*  rdd_model,
+    const float*  rdd_parameters,
+    const int*  er_model,
+    const float*  er_parameters,
+    const int*  gamma_model,
+    const float*  gamma_parameters,
+    long*  N2, // TODO investigate if this can be changed inside
+    const float*  fluence_factor,
+    const int*  write_output,
+    const int*  shrink_tails,
+    const float*  shrink_tails_under,
+    const int*  adjust_N2,
+    const int*   lethal_events_mode,
+    float*  results){
+
+  const long n_long = (long)(*n);
+  const long rdd_model_long = (long)(*rdd_model);
+  const long er_model_long = (long)(*er_model);
+  const long gamma_model_long = (long)(*gamma_model);
+  const long material_no_long = (long)(*material_no);
+
+  long i;
+  long * particle_no_long = (long*)calloc(*n,sizeof(long));
+  for(i = 0 ; i < *n ; i++){
+    particle_no_long[i] = (long)particle_no[i];
+  }
+
+  long N2_long = (long)(*N2);
+  const bool write_output_bool = (bool)(*write_output);
+  const bool shrink_tails_bool = (bool)(*shrink_tails);
+  const bool adjust_N2_bool = (bool)(*adjust_N2);
+  const bool lethal_events_mode_bool = (bool)(*lethal_events_mode);
+
+  AT_run_SPIFF_method(  &n_long,
+      E_MeV_u,
+      particle_no_long,
+      fluence_cm2,
+      &material_no_long,
+      &rdd_model_long,
+      rdd_parameters,
+      &er_model_long,
+      er_parameters,
+      &gamma_model_long,
+      gamma_parameters,
+      &N2_long,
+      fluence_factor,
+      &write_output_bool,
+      &shrink_tails_bool,
+      shrink_tails_under,
+      &adjust_N2_bool,
+      &lethal_events_mode_bool,
+      results);
+
+   *N2 = (int)N2_long;
+
+   free(particle_no_long);
 }
 
 void  AT_SC_get_f1_array_size_R(  /* radiation field parameters */
@@ -407,65 +531,3 @@ void AT_SuccessiveConvolutions_R( const float*  u,
   *n_bins_f_used = (int)n_bins_f_used_long;
 }
 
-void AT_run_SPIFF_R(  const int*  n,
-    const float*  E_MeV_u,
-    const int*  particle_no,
-    const float*  fluence_cm2,
-    const int*  material_no,
-    const int*  rdd_model,
-    const float*  rdd_parameters,
-    const int*  er_model,
-    const float*  er_parameters,
-    const int*  gamma_model,
-    const float*  gamma_parameters,
-    long*  N2, // TODO investigate if this can be changed inside
-    const float*  fluence_factor,
-    const int*  write_output,
-    const int*  shrink_tails,
-    const float*  shrink_tails_under,
-    const int*  adjust_N2,
-    const int*   lethal_events_mode,
-    float*  results){
-
-  const long n_long = (long)(*n);
-  const long rdd_model_long = (long)(*rdd_model);
-  const long er_model_long = (long)(*er_model);
-  const long gamma_model_long = (long)(*gamma_model);
-  const long material_no_long = (long)(*material_no);
-
-  long i;
-  long * particle_no_long = (long*)calloc(*n,sizeof(long));
-  for(i = 0 ; i < *n ; i++){
-    particle_no_long[i] = (long)particle_no[i];
-  }
-
-  long N2_long = (long)(*N2);
-  const bool write_output_bool = (bool)(*write_output);
-  const bool shrink_tails_bool = (bool)(*shrink_tails);
-  const bool adjust_N2_bool = (bool)(*adjust_N2);
-  const bool lethal_events_mode_bool = (bool)(*lethal_events_mode);
-
-  AT_SPIFF(  &n_long,
-      E_MeV_u,
-      particle_no_long,
-      fluence_cm2,
-      &material_no_long,
-      &rdd_model_long,
-      rdd_parameters,
-      &er_model_long,
-      er_parameters,
-      &gamma_model_long,
-      gamma_parameters,
-      &N2_long,
-      fluence_factor,
-      &write_output_bool,
-      &shrink_tails_bool,
-      shrink_tails_under,
-      &adjust_N2_bool,
-      &lethal_events_mode_bool,
-      results);
-
-   *N2 = (int)N2_long;
-
-   free(particle_no_long);
-}
