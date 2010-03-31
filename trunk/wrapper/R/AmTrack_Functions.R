@@ -98,7 +98,7 @@ if(verbose){
 					f0 = results.5$f0,
 					f = results.5$f))
 	}else{
-		return(AT.efficiency.SPIFF(	E.MeV.u 		= E.MeV.u,
+		return(AT.run.SPIFF(	E.MeV.u 		= E.MeV.u,
 							particle.no 	= particle.no,
 							fluence.cm2 	= fluence.cm2,
 							material.no 	= material.no,
