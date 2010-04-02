@@ -138,7 +138,7 @@ void AT_run_SPIFF_method_R(  const int*  n,
     const float*  ER_parameters,
     const int*  gamma_model,
     const float*  gamma_parameters,
-    long*  N2, // TODO investigate if this can be changed inside
+    int*  N2, // TODO investigate if this can be changed inside
     const float*  fluence_factor,
     const int*  write_output,
     const int*  shrink_tails,

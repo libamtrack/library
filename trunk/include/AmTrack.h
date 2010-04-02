@@ -67,30 +67,30 @@ int AT_GetNumber(void);
 * Computes HCP response and RE/RBE using compound Poison process and
 * successive convolutions (CPP_SC, the 'SPIFF' algorithm)
 *
-* @param[in]  n      number of particle types in the mixed particle field (pointer to single variable)
-* @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
-* @param[in]  particle_no    type of the particles in the mixed particle field (pointer to array of size n)
+* @param[in]  n                   number of particle types in the mixed particle field
+* @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
+* @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
 * @see          AT_DataParticle.h for definition
-* @param[in]  fluence_cm2    fluences for the given particles, doses in Gy if negative (pointer to array of size n)
-* @param[in]  material_no    index number for detector material (pointer to single variable)
+* @param[in]  fluence_cm2         fluences for the given particles, doses in Gy if negative (array of size n)
+* @param[in]  material_no         index number for detector material
 * @see          AT_DataMaterial.h for definition
-* @param[in]  RDD_model    index number for chosen radial dose distribution (pointer to single variable)
-* @param[in]  RDD_parameters    parameters for chosen radial dose distribution (pointer to array of size depending on chosen model)
+* @param[in]  rdd_model           index number for chosen radial dose distribution
+* @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
 * @see          AT_RDD.h for definition
-* @param[in]  ER_model    index number for chosen electron-range model (pointer to single variable)
-* @param[in]  ER_parameters    parameters for chosen electron-range model (pointer to array of size depending on chosen model)
+* @param[in]  er_model            index number for chosen electron-range model
+* @param[in]  er_parameters       parameters for chosen electron-range model (array of size depending on chosen model)
 * @see          AT_ElectronRange.h for definition
-* @param[in]  gamma_model    index number for chosen gamma response (pointer to single variable)
-* @param[in]  gamma_parameters  parameters for chosen gamma response (pointer to array of size depending on chosen model)
+* @param[in]  gamma_model         index number for chosen gamma response
+* @param[in]  gamma_parameters    parameters for chosen gamma response (array of size depending on chosen model)
 * @see          AT_GammaResponse.h for definition
-* @param[in,out]  N2      (algorithm specific) number of bins per factor of two in local dose array (pointer to single variable)
-* @param[in]  fluence_factor    factor to scale the fluences given as "fluence_cm2" with (pointer to single variable)
-* @param[in]  write_output    if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory (pointer to single variable)
-* @param[in]  shrink_tails    (algorithm specific) if true, tails of the local dose distribution, contributing less than "shrink_tails_under" are cut (pointer to single variable)
-* @param[in]  shrink_tails_under  (algorithm specific) limit for tail cutting in local dose distribution (pointer to single variable)
-* @param[in]  adjust_N2    (algorithm specific) if true, "N2" will be increase if necessary at high fluence to ensure sufficient binning resolution
-* @param[in]  lethal_events_mode (algorithm specific) if true, allows to do calculations for cell survival
-* @param[out]  results      pointer to array of size 10 to be allocated by the user which will be used to return the results
+* @param[in,out]  N2      (algorithm specific) number of bins per factor of two in local dose array
+* @param[in]  fluence_factor      factor to scale the fluences given as "fluence_cm2" with
+* @param[in]  write_output        if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory
+* @param[in]  shrink_tails        (algorithm specific) if true, tails of the local dose distribution, contributing less than "shrink_tails_under" are cut
+* @param[in]  shrink_tails_under  (algorithm specific) limit for tail cutting in local dose distribution
+* @param[in]  adjust_N2           (algorithm specific) if true, "N2" will be increase if necessary at high fluence to ensure sufficient binning resolution
+* @param[in]  lethal_events_mode  (algorithm specific) if true, allows to do calculations for cell survival
+* @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results
 *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
 *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm\n
 *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -103,25 +103,25 @@ int AT_GetNumber(void);
 *    results[9]    not used        (algorithm specific)
 * @return  none
 */
-void AT_run_SPIFF_method(  const long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
-    const float*  fluence_cm2,
-    const long*  material_no,
-    const long*  rdd_model,
-    const float*  rdd_parameters,
-    const long*  er_model,
-    const float*  er_parameters,
-    const long*  gamma_model,
-    const float*  gamma_parameters,
-    long*  N2, // TODO investigate if this can be changed inside
-    const float*  fluence_factor,
-    const bool*  write_output,
-    const bool*  shrink_tails,
-    const float*  shrink_tails_under,
-    const bool*  adjust_N2,
-    const bool*   lethal_events_mode,
-    float*  results);
+void AT_run_SPIFF_method(  const long  n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
+    const float  fluence_cm2[],
+    const long   material_no,
+    const long   rdd_model,
+    const float  rdd_parameters[],
+    const long   er_model,
+    const float  er_parameters[],
+    const long   gamma_model,
+    const float  gamma_parameters[],
+    long         N2, // TODO investigate if this can be changed inside
+    const float  fluence_factor,
+    const bool   write_output,
+    const bool   shrink_tails,
+    const float  shrink_tails_under,
+    const bool   adjust_N2,
+    const bool   lethal_events_mode,
+    float        results[]);
 
 /**
 * Computes HCP response and RE/RBE using summation of tracks

@@ -40,29 +40,29 @@ int AT_GetNumber(void){ // TODO to be removed
   return 137;
 }
 
-void AT_run_SPIFF_method(  const long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
-    const float*  fluence_cm2,
-    const long*  material_no,
-    const long*  RDD_model,
-    const float*  RDD_parameters,
-    const long*  ER_model,
-    const float*  ER_parameters,
-    const long*  gamma_model,
-    const float*  gamma_parameters,
-    long*  N2,
-    const float*  fluence_factor,
-    const bool*  write_output,
-    const bool*  shrink_tails,
-    const float*  shrink_tails_under,
-    const bool*  adjust_N2,
-    const bool*   lethal_events_mode,
-    float*  results)
+void AT_run_SPIFF_method(  const long  n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
+    const float  fluence_cm2[],
+    const long   material_no,
+    const long   rdd_model,
+    const float  rdd_parameters[],
+    const long   er_model,
+    const float  er_parameters[],
+    const long   gamma_model,
+    const float  gamma_parameters[],
+    long         N2, // TODO investigate if this can be changed inside
+    const float  fluence_factor,
+    const bool   write_output,
+    const bool   shrink_tails,
+    const float  shrink_tails_under,
+    const bool   adjust_N2,
+    const bool   lethal_events_mode,
+    float        results[])
 {
   FILE* output_file = NULL;
 
-  if(*write_output){
+  if(write_output){
     output_file    =  fopen("SuccessiveConvolutions.log","w");
     if (output_file == NULL) return;                      // File error
 
@@ -113,44 +113,44 @@ void AT_run_SPIFF_method(  const long*  n,
 //  for (i = 0; i < n_runs; i++){
 //    //############################
 
-    f1_parameters      =  (float*)calloc(9 * (*n), sizeof(float));
+    f1_parameters      =  (float*)calloc(9 * n, sizeof(float));
 
-    AT_SC_get_f1_array_size(  n,
+    AT_SC_get_f1_array_size(  &n,
 
         E_MeV_u,
         particle_no,
-        material_no,
-        RDD_model,
-        RDD_parameters,
-        ER_model,
-        ER_parameters,
+        &material_no,
+        &rdd_model,
+        rdd_parameters,
+        &er_model,
+        er_parameters,
 
-        N2,
+        &N2,
         &n_bins_f1,
         f1_parameters);
 
     f_parameters      =  (float*)calloc(7, sizeof(float));
 
-    norm_fluence      =  (float*)calloc(*n, sizeof(float));
-    dose_contribution_Gy  =  (float*)calloc(*n, sizeof(float));
+    norm_fluence      =  (float*)calloc(n, sizeof(float));
+    dose_contribution_Gy  =  (float*)calloc(n, sizeof(float));
 
     f1_d_Gy          =  (float*)calloc(n_bins_f1, sizeof(float));
     f1_dd_Gy        =  (float*)calloc(n_bins_f1, sizeof(float));
     f1            =  (float*)calloc(n_bins_f1, sizeof(float));
 
-    AT_SC_get_f1(  n,
+    AT_SC_get_f1(  &n,
         E_MeV_u,
         particle_no,
         fluence_cm2,
         /* detector parameters */
-        material_no,
-        RDD_model,
-        RDD_parameters,
+        &material_no,
+        &rdd_model,
+        rdd_parameters,
         /* electron range model */
-        ER_model,
-        ER_parameters,
+        &er_model,
+        er_parameters,
         /* algorithm parameters*/
-        N2,
+        &N2,
         &n_bins_f1,
         /* f1 parameters*/
         f1_parameters,
@@ -169,8 +169,8 @@ void AT_run_SPIFF_method(  const long*  n,
 
 
     AT_SC_get_f_array_size(  &f_parameters[0],      // = u
-        fluence_factor,
-        N2,
+        &fluence_factor,
+        &N2,
         &n_bins_f1,
         f1_d_Gy,
         f1_dd_Gy,
@@ -190,7 +190,7 @@ void AT_run_SPIFF_method(  const long*  n,
 
     AT_SC_get_f_start(  &u_start,
         &n_bins_f1,
-        N2,
+        &N2,
         f1_d_Gy,
         f1_dd_Gy,
         f1,
@@ -202,7 +202,7 @@ void AT_run_SPIFF_method(  const long*  n,
 
     AT_SuccessiveConvolutions(  &f_parameters[0],    // u
         &n_bins_f,
-        N2,
+        &N2,
         // input + return values
         &n_bins_f1,
         f_d_Gy,
@@ -213,10 +213,10 @@ void AT_run_SPIFF_method(  const long*  n,
         fdd,
         dfdd,
         &d_check,
-        write_output,
-        shrink_tails,
-        shrink_tails_under,
-        adjust_N2);
+        &write_output,
+        &shrink_tails,
+        &shrink_tails_under,
+        &adjust_N2);
 
     n_bins_f_used  = n_bins_f1;
 
@@ -230,9 +230,9 @@ void AT_run_SPIFF_method(  const long*  n,
 
         f,
         f0,
-        *gamma_model,
+        gamma_model,
         gamma_parameters,
-        *lethal_events_mode,
+        lethal_events_mode,
         // return
 
         S,
@@ -261,7 +261,7 @@ void AT_run_SPIFF_method(  const long*  n,
   //////////////////////////////////////////
   // Output results
   //////////////////////////////////////////
-  if(*write_output){
+  if(write_output){
     fprintf(output_file, "\n\nResults:\n");
     fprintf(output_file, "\ndose check / Gy:         %4.3e Gy", results[1]);
     fprintf(output_file, "\nmean impact number u:    %4.3e Gy", results[5]);
@@ -299,10 +299,10 @@ void AT_run_GSM_method(  const long*  n,
     const long*  particle_no,
     const float*  fluence_cm2,
     const long*  material_no,
-    const long*  RDD_model,
-    const float*  RDD_parameters,
-    const long*  ER_model,
-    const float*  ER_parameters,
+    const long*  rdd_model,
+    const float*  rdd_parameters,
+    const long*  er_model,
+    const float*  er_parameters,
     const long*  gamma_model,
     const float*  gamma_parameters,
     const long*  N_runs,
@@ -357,10 +357,10 @@ void AT_run_GSM_method(  const long*  n,
       E_MeV_u,
       particle_no,
       material_no,
-      RDD_model,
-      RDD_parameters,
-      ER_model,
-      ER_parameters,
+      rdd_model,
+      rdd_parameters,
+      er_model,
+      er_parameters,
       N2,
       &n_bins_f1,
       f1_parameters);
@@ -393,10 +393,10 @@ void AT_run_GSM_method(  const long*  n,
       particle_no,
       fluence_cm2,
       material_no,
-      RDD_model,
-      RDD_parameters,
-      ER_model,
-      ER_parameters,
+      rdd_model,
+      rdd_parameters,
+      er_model,
+      er_parameters,
 
       N2,
       &n_bins_f1,
@@ -596,10 +596,10 @@ void AT_run_GSM_method(  const long*  n,
           E_MeV_u[particle_index[0]],
           particle_no[particle_index[0]],
           *material_no,
-          *RDD_model,
-          RDD_parameters,
-          *ER_model,
-          ER_parameters,
+          *rdd_model,
+          rdd_parameters,
+          *er_model,
+          er_parameters,
           doses);
 
       free(distances);
@@ -638,10 +638,10 @@ void AT_run_GSM_method(  const long*  n,
                   E_MeV_u[particle_index[k]],
                   particle_no[particle_index[k]],
                   *material_no,
-                  *RDD_model,
-                  RDD_parameters,
-                  *ER_model,
-                  ER_parameters,
+                  *rdd_model,
+                  rdd_parameters,
+                  *er_model,
+                  er_parameters,
                   &d_tmp_Gy);
               grid_d_Gy[j * (*nX) + i]  +=  d_tmp_Gy;
             } // particle contribution
@@ -878,10 +878,10 @@ void AT_run_IGK_method(  const long*  n,
     const long*  particle_no,
     const float*  fluence_cm2,
     const long*  material_no,
-    const long*  RDD_model,
-    const float*  RDD_parameters,
-    const long*  ER_model,
-    const float*  ER_parameters,
+    const long*  rdd_model,
+    const float*  rdd_parameters,
+    const long*  er_model,
+    const float*  er_parameters,
     const long*  gamma_model,
     const float*  gamma_parameters,
     const float*  saturation_cross_section_factor,
@@ -909,10 +909,10 @@ void AT_run_IGK_method(  const long*  n,
       E_MeV_u,
       particle_no,
       material_no,
-      RDD_model,
-      RDD_parameters,
-      ER_model,
-      ER_parameters,
+      rdd_model,
+      rdd_parameters,
+      er_model,
+      er_parameters,
       &N2,
       &n_bins_f1,
       f1_parameters);
@@ -996,7 +996,7 @@ void AT_run_IGK_method(  const long*  n,
   fprintf(output_file, "Start time and date: %s\n", asctime(start_tm));
 
   if (*gamma_model != GR_GeneralTarget ||
-      *RDD_model   == RDD_Test){
+      *rdd_model   == RDD_Test){
     fprintf(output_file, "##############################################################\n");
     fprintf(output_file, "Sorry, no IGK with other than the general hit-target model\n");
     fprintf(output_file, "or with test RDD\n");
@@ -1020,10 +1020,10 @@ void AT_run_IGK_method(  const long*  n,
   params->E_MeV_u              = (float*)E_MeV_u;
   params->particle_no          = (long*)particle_no;
   params->material_no          = (long*)material_no;
-  params->rdd_model            = (long*)RDD_model;
-  params->rdd_parameters       = (float*)RDD_parameters;
-  params->er_model             = (long*)ER_model;
-  params->er_parameters        = (float*)ER_parameters;
+  params->rdd_model            = (long*)rdd_model;
+  params->rdd_parameters       = (float*)rdd_parameters;
+  params->er_model             = (long*)er_model;
+  params->er_parameters        = (float*)er_parameters;
   params->gamma_parameters[0]  = 1; // No multiple components
   params->gamma_parameters[4]  = 0;
 
@@ -1052,10 +1052,10 @@ void AT_run_IGK_method(  const long*  n,
     F.function           = &AT_sI_int;
     F.params             = (void*)params;
     double   lower_lim_m  = 0.0;
-    if(*RDD_model == RDD_KatzPoint){
-      lower_lim_m = (float)RDD_parameters[0];
+    if(*rdd_model == RDD_KatzPoint){
+      lower_lim_m = (float)rdd_parameters[0];
     }
-    double   upper_lim_m = AT_max_electron_range_m( (double)(*E_MeV_u), (int)(*material_no), (int)(*ER_model));
+    double   upper_lim_m = AT_max_electron_range_m( (double)(*E_MeV_u), (int)(*material_no), (int)(*er_model));
 
     int status      = gsl_integration_qags (        &F,
         lower_lim_m,
@@ -1080,13 +1080,13 @@ void AT_run_IGK_method(  const long*  n,
     // Get saturation cross-section
     float   s0_m2 = 0.0f;
     float   a0_m  = 0.0f;
-    if(*RDD_model == RDD_KatzExtTarget){
-      a0_m = RDD_parameters[1];
+    if(*rdd_model == RDD_KatzExtTarget){
+      a0_m = rdd_parameters[1];
     }
-    if(*RDD_model == RDD_Geiss ||
-        *RDD_model == RDD_KatzSite ||
-        *RDD_model == RDD_Edmund){
-      a0_m  =  RDD_parameters[0];
+    if(*rdd_model == RDD_Geiss ||
+        *rdd_model == RDD_KatzSite ||
+        *rdd_model == RDD_Edmund){
+      a0_m  =  rdd_parameters[0];
     }
     s0_m2   = (*saturation_cross_section_factor) * M_PI * gsl_pow_2(a0_m);
 
@@ -1166,10 +1166,10 @@ void AT_run_SPISS_method(	const long* n,
     const long*  particle_no,
     const float* fluence_cm2,
     const long*  material_no,
-    const long*  RDD_model,
-    const float* RDD_parameters,
-    const long*  ER_model,
-    const float* ER_parameters,
+    const long*  rdd_model,
+    const float* rdd_parameters,
+    const long*  er_model,
+    const float* er_parameters,
     const long*  gamma_model,
     const float* gamma_parameters,
     const long*  n_runs,
@@ -1205,10 +1205,10 @@ void AT_run_SPISS_method(	const long* n,
       E_MeV_u,
       particle_no,
       material_no,
-      RDD_model,
-      RDD_parameters,
-      ER_model,
-      ER_parameters,
+      rdd_model,
+      rdd_parameters,
+      er_model,
+      er_parameters,
       N2,
       &n_bins_f1,
       f1_parameters);
@@ -1228,10 +1228,10 @@ void AT_run_SPISS_method(	const long* n,
       particle_no,
       fluence_cm2,
       material_no,
-      RDD_model,
-      RDD_parameters,
-      ER_model,
-      ER_parameters,
+      rdd_model,
+      rdd_parameters,
+      er_model,
+      er_parameters,
       N2,
       &n_bins_f1,
       f1_parameters,
@@ -1350,10 +1350,10 @@ void AT_run_SPISS_method(	const long* n,
           E_MeV_u[k],
           particle_no[k],
           *material_no,
-          *RDD_model,
-          RDD_parameters,
-          *ER_model,
-          ER_parameters,
+          *rdd_model,
+          rdd_parameters,
+          *er_model,
+          er_parameters,
           &d_j_Gy);
 
       // (5) Add dose
