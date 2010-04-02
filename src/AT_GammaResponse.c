@@ -41,9 +41,9 @@ void getGammaName( const long Gamma_no,
   const long n_tmp = 1;
 
   find_elements_int(  &Gamma_no,
-      &n_tmp,
+      n_tmp,
       AT_GR_Data.GR_no,
-      &AT_GR_Data.n,
+      AT_GR_Data.n,
       &match);
 
   if( match != -1){

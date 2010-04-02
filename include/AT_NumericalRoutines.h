@@ -62,13 +62,6 @@ long int lmaxl(const long int x, const long int y);
 
 /**
  * TODO
- * @param n
- */
-void trim_long_to_int(long * n);
-
-
-/**
- * TODO
  * @param fz
  * @param fR0
  * @param fsigma
@@ -244,7 +237,7 @@ void are_elements_int(const int* elements, const int n_elements, const int* set,
  * @param n_set
  * @param matches
  */
-void find_elements_int(const long* elements, const long* n_elements, const long* set, const long* n_set, long* matches);
+void find_elements_int(const long elements[], const long n_elements, const long set[], const long n_set, long matches[]);
 
 
 /**

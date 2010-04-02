@@ -689,16 +689,16 @@ void are_elements_int(const int* elements, const int n_elements, const int* set,
 }
 
 
-void find_elements_int(const long* elements, const long* n_elements, const long* set, const long* n_set, long* matches){
+void find_elements_int(const long elements[], const long n_elements, const long set[], const long n_set, long matches[]){
   long  i;
-  for (i = 0; i < *n_elements; i++){
+  for (i = 0; i < n_elements; i++){
     matches[i] = 0;
 
-    while ((set[matches[i]] != elements[i]) && (matches[i] < *n_set)){
+    while ((set[matches[i]] != elements[i]) && (matches[i] < n_set)){
       matches[i]++;
     }
 
-    if (matches[i] == *n_set) {
+    if (matches[i] == n_set) {
       matches[i] = -1;
     }
   }

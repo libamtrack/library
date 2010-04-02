@@ -38,9 +38,9 @@ long AT_index_from_material_no( const long material_no ){
   long  index                =  -1;
   long  number_of_materials  =  1;
   find_elements_int(  &material_no,
-      &number_of_materials,
+      number_of_materials,
       AT_Material_Data.material_no,
-      &AT_Material_Data.n,
+      AT_Material_Data.n,
       &index);   // TODO replace call to pmatchi by call to simpler function which will find the index
   return index;
 }
@@ -234,9 +234,9 @@ void AT_get_materials_data( const long  number_of_materials,
 {
   long*  match  =  (long*)calloc(number_of_materials, sizeof(long));
   find_elements_int(  material_no,
-      &number_of_materials,
+      number_of_materials,
       AT_Material_Data.material_no,
-      &AT_Material_Data.n,
+      AT_Material_Data.n,
       match);
 
   long i;
