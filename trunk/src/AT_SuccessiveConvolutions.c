@@ -37,23 +37,22 @@
 #define DEBUG_SIGMA                          1.0f
 
 
-void  AT_SC_get_f1_array_size(
-    /* radiation field parameters */
-    const long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
+void  AT_SC_get_f1_array_size(  /* radiation field parameters */
+    const long   n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
     /* detector parameters */
-    const long*  material_no,
-    const long*  rdd_model,
-    const float*  rdd_parameter,
+    const long   material_no,
+    const long   rdd_model,
+    const float  rdd_parameter[],
     /* electron range model */
-    const long*  er_model,
-    const float*  er_parameter,
-    /* Algorithm parameters*/
-    const long*  N2,
+    const long   er_model,
+    const float  er_parameter[],
+    /* algorithm parameters*/
+    const long   N2,
     // from here: return values
-    long*  n_bins_f1,
-    float*  f1_parameters)
+    long *       n_bins_f1,
+    float        f1_parameters[])
 {
   // get lowest and highest dose
   double d_max_Gy    =  0.0;
@@ -61,15 +60,15 @@ void  AT_SC_get_f1_array_size(
 
   long  n_f1_parameters  =  9;
   long  i;
-  for (i = 0; i < *n; i++){
+  for (i = 0; i < n; i++){
     //    // get RDD parameters for all particles and energies
     AT_RDD_f1_parameters(  (double)(E_MeV_u[i]),
         particle_no[i],
-        *material_no,
-        *rdd_model,
+        material_no,
+        rdd_model,
         rdd_parameter,
         /* electron range model */
-        *er_model,
+        er_model,
         er_parameter,
         /* calculated parameters */
         &f1_parameters[i*n_f1_parameters]);
@@ -84,35 +83,34 @@ void  AT_SC_get_f1_array_size(
   }
 
   // get number of bins needed to span that dose range
-  double tmp = (log10(d_max_Gy/d_min_Gy) / log10(2.0) * ((double)*N2));
+  double tmp = (log10(d_max_Gy/d_min_Gy) / log10(2.0) * ((double)N2));
   *n_bins_f1        =  (long)(floor(tmp) + 1.0);
 
   return;
 }
 
 
-void  AT_SC_get_f1(
-    /* radiation field parameters */
-    const long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
-    const float*  fluence_cm2,
+void  AT_SC_get_f1(  /* radiation field parameters */
+    const long   n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
+    const float  fluence_cm2[],
     /* detector parameters */
-    const long*  material_no,
-    const long*  rdd_model,
-    const float*  rdd_parameter,
+    const long   material_no,
+    const long   rdd_model,
+    const float  rdd_parameter[],
     /* electron range model */
-    const long*  er_model,
-    const float*  er_parameter,
+    const long   er_model,
+    const float  er_parameter[],
     /* algorithm parameters*/
-    const long*  N2,
-    const long*  n_bins_f1,
+    const long   N2,
+    const long   n_bins_f1,
     /* f1 parameters*/
-    const float*  f1_parameters,
+    const float  f1_parameters[],
     // from here: return values
-    float*  norm_fluence,
-    float*  dose_contribution_Gy,
-    float*  f_parameters,
+    float        norm_fluence[],
+    float        dose_contribution_Gy[],
+    float        f_parameters[],
     /*  1 - total fluence_cm2
      *  2 - total_dose_Gy
      *  3 - ave_E_MeV
@@ -121,9 +119,9 @@ void  AT_SC_get_f1(
      *  6 - dw_LET_MeV_cm2_g
      *  0 - u
      */
-    float*  f1_d_Gy,
-    float*  f1_dd_Gy,
-    float*  f1)
+    float  f1_d_Gy[],
+    float  f1_dd_Gy[],
+    float  f1[])
 {
 
   //TODO replace f_parameters and f1_parameters with human-readable variables
@@ -134,32 +132,32 @@ void  AT_SC_get_f1(
   // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
   // only the first entry will be check
   long   i;
-  float*  fluence_cm2_local    =  (float*)calloc(*n, sizeof(float));
-  float*  dose_Gy_local        =  (float*)calloc(*n, sizeof(float));
+  float*  fluence_cm2_local    =  (float*)calloc(n, sizeof(float));
+  float*  dose_Gy_local        =  (float*)calloc(n, sizeof(float));
 
   if(fluence_cm2[0] < 0){
-    for (i = 0; i < *n; i++){
+    for (i = 0; i < n; i++){
       dose_Gy_local[i] = -1.0f * fluence_cm2[i];
     }
-    AT_fluence_cm2(  n,
+    AT_fluence_cm2(  &n,
         E_MeV_u,
         particle_no,
         dose_Gy_local,
-        material_no,
+        &material_no,
         fluence_cm2_local);
   }else{
-    for (i = 0; i < *n; i++){
+    for (i = 0; i < n; i++){
       fluence_cm2_local[i] = fluence_cm2[i];
     }
-    AT_D_Gy(  n,
+    AT_D_Gy(  &n,
         E_MeV_u,
         particle_no,
         fluence_cm2_local,
-        material_no,
+        &material_no,
         dose_Gy_local);
   }
 
-  for (i = 0; i < *n; i++){
+  for (i = 0; i < n; i++){
     f_parameters[2]  +=  dose_Gy_local[i];
     f_parameters[1]  +=  fluence_cm2_local[i];
   }
@@ -173,7 +171,7 @@ void  AT_SC_get_f1(
   f_parameters[6]        =  0.0f;
 
   //TODO: Replace by explicit routines in AT_PhysicsRoutines.c
-  for (i = 0; i < *n; i++){
+  for (i = 0; i < n; i++){
     norm_fluence[i]        =  fluence_cm2_local[i] / f_parameters[1];
     //printf("norm_fluence[%ld] = %g\n", i, norm_fluence[i]);
     u_single                    =  fluence_cm2_local[i] / f1_parameters[i*9 + 6];
@@ -193,30 +191,30 @@ void  AT_SC_get_f1(
 
   ////////////////////////////////////////////////////////////////////////////////////////////
   //  2. create all-over f1-data-frame, if f_d_Gy array passed (i.e. n_bins_f1 == 0)
-  if(*n_bins_f1 > 0){
+  if(n_bins_f1 > 0){
     float  d_min      =  f1_parameters[0*9 + 3];
     float  d_max      =  f1_parameters[0*9 + 4];
 
-    for (i = 1; i < *n; i++){
+    for (i = 1; i < n; i++){
       d_min          =  fminf(f1_parameters[i*9 + 3], d_min);
       d_max          =  fmaxf(f1_parameters[i*9 + 4], d_max);
     }
 
-    float  U        =  (float)(log(2.0f) / (float)(*N2));
+    float  U        =  (float)(log(2.0f) / (float)N2);
 
 
-    float*  d_df_low      =  (float*)calloc(*n_bins_f1, sizeof(float));
-    float*  d_df_mid      =  (float*)calloc(*n_bins_f1, sizeof(float));
-    float*  d_df_high      =  (float*)calloc(*n_bins_f1, sizeof(float));
-    float*  dd_df        =  (float*)calloc(*n_bins_f1, sizeof(float));
+    float*  d_df_low      =  (float*)calloc(n_bins_f1, sizeof(float));
+    float*  d_df_mid      =  (float*)calloc(n_bins_f1, sizeof(float));
+    float*  d_df_high     =  (float*)calloc(n_bins_f1, sizeof(float));
+    float*  dd_df         =  (float*)calloc(n_bins_f1, sizeof(float));
 
-    for (i = 0; i < *n_bins_f1; i++){
+    for (i = 0; i < n_bins_f1; i++){
       // TODO: check if n.bins sufficient
 
       d_df_low[i]          =   d_min * (float)exp((float)i * U);
-      d_df_high[i]        =   d_min * (float)exp(((float)i + 1) * U);
+      d_df_high[i]         =   d_min * (float)exp(((float)i + 1) * U);
       d_df_mid[i]          =  d_min * (float)exp(((float)i + 0.5f) * U);
-      dd_df[i]          =  d_df_high[i] - d_df_low[i];              // OBS: using Kellerer's bin-width = mid.point * U is not entirely correct
+      dd_df[i]             =  d_df_high[i] - d_df_low[i];              // OBS: using Kellerer's bin-width = mid.point * U is not entirely correct
 
       f1[i]            =  0.0f;
     }
@@ -225,15 +223,15 @@ void  AT_SC_get_f1(
 
     // loop over all particles and energies, compute contribution to f1
     long   k;
-    for (k = 0; k < *n; k++){
+    for (k = 0; k < n; k++){
 
       float  d_min_k        =  f1_parameters[k*9 + 3];
       float  d_max_k        =  f1_parameters[k*9 + 4];
 
       // find first and last bin to fit this particle's contribution into the all-over f1-frame
       long  i_low, i_high;
-      locate(d_df_low, n_bins_f1, &d_min_k, &i_low);
-      locate(d_df_low, n_bins_f1, &d_max_k, &i_high);
+      locate(d_df_low, &n_bins_f1, &d_min_k, &i_low);
+      locate(d_df_low, &n_bins_f1, &d_max_k, &i_high);
       i_low            -=  1;
       i_high            -=  1;
 
@@ -275,12 +273,12 @@ void  AT_SC_get_f1(
             E_MeV_u[k],
             particle_no[k],
             /* detector parameters */
-            *material_no,
+            material_no,
             /* radial dose distribution model */
-            *rdd_model,
+            rdd_model,
             rdd_parameter,
             /* electron range model */
-            *er_model,
+            er_model,
             er_parameter,
             r);
 
@@ -319,7 +317,7 @@ void  AT_SC_get_f1(
     }
 
     // copy back for the dose axis
-    for (i = 0; i < *n_bins_f1; i++){
+    for (i = 0; i < n_bins_f1; i++){
       f1_d_Gy[i]    =  d_df_mid[i];
       f1_dd_Gy[i]    =  dd_df[i];
     }
@@ -330,10 +328,10 @@ void  AT_SC_get_f1(
     free(dd_df);
     // normalize f1 (should be ok anyway but there could be small round-off errors)
     float  f1_norm    =  0.0f;
-    for (i = 0; i < *n_bins_f1; i++){
+    for (i = 0; i < n_bins_f1; i++){
       f1_norm    +=    f1[i] * f1_dd_Gy[i];
     }
-    for (i = 0; i < *n_bins_f1; i++){
+    for (i = 0; i < n_bins_f1; i++){
       f1[i]    /=    f1_norm;
     }
 
@@ -344,28 +342,28 @@ void  AT_SC_get_f1(
 }
 
 
-void  AT_SC_get_f_array_size( const float*  u,
-    const float*  fluence_factor,
-    const long*   N2,
-    const long*   n_bins_f1,
-    const float*  f1_d_Gy,
-    const float*  f1_dd_Gy,
-    const float*  f1,
+void  AT_SC_get_f_array_size( const float  u,
+    const float   fluence_factor,
+    const long    N2,
+    const long    n_bins_f1,
+    const float   f1_d_Gy[],
+    const float   f1_dd_Gy[],
+    const float   f1[],
     // from here: return values
-    long*  n_bins_f,
-    float*  u_start,
-    long*  n_convolutions)
+    long*         n_bins_f,
+    float*        u_start,
+    long*         n_convolutions)
 {
   // Get expectation value of dose from f1
   float  d_f1_Gy    =  0.0f;
 
   long   i;
-  for (i = 0; i < *n_bins_f1; i++){
+  for (i = 0; i < n_bins_f1; i++){
     d_f1_Gy    +=  f1_d_Gy[i] * f1_dd_Gy[i] * f1[i];
   }
 
   // The dose set by the input data is therefore
-  float  d_f_Gy    = (*u) * (*fluence_factor) * d_f1_Gy;
+  float  d_f_Gy    = u * fluence_factor * d_f1_Gy;
 
   // How many convolution are necessary starting from a small mean
   // impact number that allows linear approximation (e.g. 0.002)
@@ -379,36 +377,37 @@ void  AT_SC_get_f_array_size( const float*  u,
 
   // Every convolution will add a factor of two, so the array for f has to
   // be expanded from f1 by N2 * n_convolutions
-  *n_bins_f      =  (*n_convolutions + 1) * (*N2);
-  *n_bins_f      +=  *n_bins_f1;
+  *n_bins_f      =  (*n_convolutions + 1) * N2;
+  *n_bins_f      +=  n_bins_f1;
 
   return;
 }
 
 
-void  AT_SC_get_f_start( const float*  u_start,
-    const long*  n_bins_f1,
-    const long*  N2,
-    const float*  f1_d_Gy,
-    const float*  f1_dd_Gy,
-    const float*  f1,
-    const long*  n_bins_f,
+// TODO it seems that u_start is unused in function body
+void  AT_SC_get_f_start( const float  u_start,
+    const long    n_bins_f1,
+    const long    N2,
+    const float   f1_d_Gy[],
+    const float   f1_dd_Gy[],
+    const float   f1[],
+    const long    n_bins_f,
     // from here: return values
-    float*  f_d_Gy,
-    float*  f_dd_Gy,
-    float*  f_start)
+    float   f_d_Gy[],
+    float   f_dd_Gy[],
+    float   f_start[])
 {
   // temporary arrays
-  float*  d_low         =  (float*)calloc(*n_bins_f, sizeof(float));
-  float*  d_high        =  (float*)calloc(*n_bins_f, sizeof(float));
+  float*  d_low         =  (float*)calloc(n_bins_f, sizeof(float));
+  float*  d_high        =  (float*)calloc(n_bins_f, sizeof(float));
 
-  float  U              =  (float)(log(2.0f) / (float)(*N2));
+  float  U              =  (float)(log(2.0f) / (float)N2);
 
   long   i;
-  for (i = 0; i < *n_bins_f; i++){
+  for (i = 0; i < n_bins_f; i++){
     d_low[i]            =   f1_d_Gy[0] * (float)exp(((float)i - 0.5f)* U);
     d_high[i]           =   f1_d_Gy[0] * (float)exp(((float)i + 0.5f)* U);
-    if (i < *n_bins_f1){
+    if (i < n_bins_f1){
       f_d_Gy[i]         =  f1_d_Gy[i];
       f_dd_Gy[i]        =  f1_dd_Gy[i];
       f_start[i]        =  f1[i];}
@@ -823,21 +822,21 @@ aKList AT_SC_FOLD(aKList theKList){
   return(theKList);
 }
 
-void   AT_SuccessiveConvolutions( const float*  u,
-    const long*  n_bins_f,
-    long*  N2,
-    long*  n_bins_f_used,
-    float*  f_d_Gy,
-    float*  f_dd_Gy,
-    float*  f,
-    float*  f0,
-    float*  fdd,
-    float*  dfdd,
-    float*  d,
-    const bool*  write_output,
-    const bool*  shrink_tails,
-    const float*  shrink_tails_under,
-    const bool*  adjust_N2)
+void   AT_SuccessiveConvolutions( const float  u,
+    const long   n_bins_f,
+    long*        N2,
+    long*        n_bins_f_used,
+    float        f_d_Gy[],
+    float        f_dd_Gy[],
+    float        f[],
+    float*       f0,
+    float        fdd[],
+    float        dfdd[],
+    float*       d,
+    const bool   write_output,
+    const bool   shrink_tails,
+    const float  shrink_tails_under,
+    const bool   adjust_N2)
 {
   //////////////////////////////////////////
   // Init KList structure
@@ -845,13 +844,13 @@ void   AT_SuccessiveConvolutions( const float*  u,
   //////////////////////////////////////////
   aKList KList;
 
-  KList.array_size  = *n_bins_f;
+  KList.array_size  = n_bins_f;
   KList.N2          = *N2;
   KList.U           = (float)log(2.0f) / (float)KList.N2;
 
   //////////////////////////////////
 
-  KList.write_output    =  *write_output;
+  KList.write_output    =  write_output;
   KList.output_file     =  NULL;
   if(KList.write_output){
     KList.output_file    =  fopen("SuccessiveConvolutions.log","w");
@@ -864,9 +863,9 @@ void   AT_SuccessiveConvolutions( const float*  u,
 
   //////////////////////////////////
 
-  KList.shrink_tails        =  *shrink_tails;
-  KList.shrink_tails_under  =  *shrink_tails_under;
-  KList.adjust_N2           =  *adjust_N2;
+  KList.shrink_tails        =  shrink_tails;
+  KList.shrink_tails_under  =  shrink_tails_under;
+  KList.adjust_N2           =  adjust_N2;
 
   //////////////////////////////////
 
@@ -912,9 +911,10 @@ void   AT_SuccessiveConvolutions( const float*  u,
   ///////////////////////////////////////
   // Fill array for auxilary function that enables easy index operations
   for  (L = KList.N2; L <= KList.array_size; L++){
-    float S        = (float)(L - KList.N2) * KList.U;
-    float tmp      = (float)(-1.0f * logf(1.0f - 0.5f * expf(-S)) / KList.U);
-    KList.DI[L -1]    = tmp - (float)KList.N2;}    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
+    float S           = (float)(L - KList.N2) * KList.U;
+    float tmp         = (float)(-1.0f * logf(1.0f - 0.5f * expf(-S)) / KList.U);
+    KList.DI[L -1]    = tmp - (float)KList.N2;
+  }    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
 
   ///////////////////////////////////////
   // Normalize distribution
@@ -955,8 +955,8 @@ void   AT_SuccessiveConvolutions( const float*  u,
   float  S2        =    KList.D2 / KList.D1;
   float  S3        =    KList.D3 / KList.D1;
   float  S4        =    KList.D4 / KList.D1;
-  S                =    S3 / (float)sqrt(S2 * S2 * S2);
-  float  TT        =    S4  / (S2 * S2);
+  S                =    S3 / (float)sqrt(gsl_pow_3(S2));
+  float  TT        =    S4  / gsl_pow_2(S2);
 
   if(KList.write_output){
     fprintf(  KList.output_file,
@@ -999,7 +999,7 @@ void   AT_SuccessiveConvolutions( const float*  u,
   // numbers
   ///////////////////////////////////////
 
-  KList.FINAL        = (*u) * KList.D1;  // Final mean impact number
+  KList.FINAL        = u * KList.D1;  // Final mean impact number
 
   long n_convolutions    = 0;
   KList.CN        =    KList.FINAL  / KList.D1;
@@ -1015,7 +1015,7 @@ void   AT_SuccessiveConvolutions( const float*  u,
     fprintf(  KList.output_file,  "\nSmall hit number approximation:\n");
     fprintf(  KList.output_file,
         "\nTarget hit value:\t%4.3e\t\tStart hit value:\t%4.3e\t\tNumber of convolutions:\t%ld\n",
-        *u,
+        u,
         KList.CN,
         n_convolutions);
   }

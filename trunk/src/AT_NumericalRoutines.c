@@ -41,11 +41,6 @@ long int lmaxl(const long int x, const long int y)
   return (x > y) ? x : y;
 }
 
-void trim_long_to_int(long * n){
-  int n_int = (int)(*n);
-  *n = (long)n_int;
-}
-
 
 /*       ========================================================= */
 /*       Purpose: This program computes the parabolic cylinder */
@@ -105,6 +100,7 @@ void AT_Dyx(  double*  y,  double*  x,  double*  Dyx)
   *Dyx  =  pdf;
 }
 
+// TODO this is not used !
 void AT_fDyx(  const float*  fy,
     const float* fx,
     float* fDyx)
@@ -487,6 +483,7 @@ int gamma_(const double *x, double *ga)
 } /* gamma_ */
 
 
+//TODO this is not used anywhere
 void AT_Funs(  const float*  fz,
     const float*  fR0,
     const float*  fsigma,
