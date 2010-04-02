@@ -229,24 +229,24 @@ void AT_run_GSM_method_R(  const int*  n,
   const long nX_long = (long)(*nX);
   const bool lethal_events_mode_bool = (bool)(*lethal_events_mode);
 
-  AT_run_GSM_method(&n_long,
+  AT_run_GSM_method(n_long,
       E_MeV_u,
       particle_no_long,
       fluence_cm2,
-      &material_no_long,
-      &rdd_model_long,
+      material_no_long,
+      rdd_model_long,
       rdd_parameters,
-      &er_model_long,
+      er_model_long,
       er_parameters,
-      &gamma_model_long,
+      gamma_model_long,
       gamma_parameters,
-      &N_runs_long,
-      &N2_long,
-      fluence_factor,
-      &write_output_bool,
-      &nX_long,
-      voxel_size_m,
-      &lethal_events_mode_bool,
+      N_runs_long,
+      N2_long,
+      *fluence_factor,
+      write_output_bool,
+      nX_long,
+      *voxel_size_m,
+      lethal_events_mode_bool,
       results);
 
    free(particle_no_long);
@@ -346,15 +346,15 @@ void  AT_SC_get_f1_array_size_R(  /* radiation field parameters */
 
   long n_bins_f1_long;
 
-  AT_SC_get_f1_array_size( &n_long,
+  AT_SC_get_f1_array_size( n_long,
       E_MeV_u,
       particle_no_long,
-      &material_no_long,
-      &rdd_model_long,
+      material_no_long,
+      rdd_model_long,
       rdd_parameter,
-      &er_model_long,
+      er_model_long,
       er_parameter,
-      &N2_long,
+      N2_long,
       &n_bins_f1_long,
       f1_parameters);
 
@@ -401,17 +401,17 @@ void  AT_SC_get_f1_R(  /* radiation field parameters */
     particle_no_long[i] = (long)particle_no[i];
   }
 
-  AT_SC_get_f1( &n_long,
+  AT_SC_get_f1( n_long,
       E_MeV_u,
       particle_no_long,
       fluence_cm2,
-      &material_no_long,
-      &rdd_model_long,
+      material_no_long,
+      rdd_model_long,
       rdd_parameter,
-      &er_model_long,
+      er_model_long,
       er_parameter,
-      &N2_long,
-      &n_bins_f1_long,
+      N2_long,
+      n_bins_f1_long,
       f1_parameters,
       norm_fluence,
       dose_contribution_Gy,
@@ -441,10 +441,10 @@ void  AT_SC_get_f_array_size_R(
   long n_bins_f_long;
   long n_convolutions_long;
 
-  AT_SC_get_f_array_size(  u,
-      fluence_factor,
-      &N2_long,
-      &n_bins_f1_long,
+  AT_SC_get_f_array_size(  *u,
+      *fluence_factor,
+      N2_long,
+      n_bins_f1_long,
       f1_d_Gy,
       f1_dd_Gy,
       f1,
@@ -473,13 +473,13 @@ void  AT_SC_get_f_start_R(  const float*  u_start,
   const long N2_long = (long)(*N2);
   const long n_bins_f_long = (long)(*n_bins_f);
 
-  AT_SC_get_f_start(  u_start,
-      &n_bins_f1_long,
-      &N2_long,
+  AT_SC_get_f_start(  *u_start,
+      n_bins_f1_long,
+      N2_long,
       f1_d_Gy,
       f1_dd_Gy,
       f1,
-      &n_bins_f_long,
+      n_bins_f_long,
       f_d_Gy,
       f_dd_Gy,
       f_start);
@@ -511,8 +511,8 @@ void AT_SuccessiveConvolutions_R( const float*  u,
   const bool shrink_tails_bool = (bool)(*shrink_tails);
   const bool adjust_N2_bool = (bool)(*adjust_N2);
 
-  AT_SuccessiveConvolutions( u,
-      &n_bins_f_long,
+  AT_SuccessiveConvolutions( *u,
+      n_bins_f_long,
       &N2_long,
       &n_bins_f_used_long,
       f_d_Gy,
@@ -522,10 +522,10 @@ void AT_SuccessiveConvolutions_R( const float*  u,
       fdd,
       dfdd,
       d,
-      &write_output_bool,
-      &shrink_tails_bool,
-      shrink_tails_under,
-      &adjust_N2_bool);
+      write_output_bool,
+      shrink_tails_bool,
+      *shrink_tails_under,
+      adjust_N2_bool);
 
   *N2   = (int)N2_long;
   *n_bins_f_used = (int)n_bins_f_used_long;

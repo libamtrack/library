@@ -94,78 +94,77 @@ typedef struct{
 
 /**
  * TODO
- * @param[in]  n
- * @param[in]  E_MeV_u
- * @param[in]  particle_no
- * @param[in]  material_no
- * @param[in]  rdd_model
- * @param[in]  rdd_parameter
- * @param[in]  er_model
- * @param[in]  er_parameter
- * @param[in]  N2
+ * @param[in]  n                   number of particle types in the mixed particle field
+ * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
+ * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
+ * @param[in]  material_no         index number for detector material
+ * @param[in]  rdd_model           index number for chosen radial dose distribution
+ * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  er_model            index number for chosen electron-range model
+ * @param[in]  er_parameters       parameters for chosen electron-range model (array of size depending on chosen model)
+ * @param[in]  N2                  number of bins per factor of two in local dose array
  * @param[out] n_bins_f1
  * @param[out] f1_parameters
  */
 void  AT_SC_get_f1_array_size(  /* radiation field parameters */
-    const long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
+    const long   n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
     /* detector parameters */
-    const long*  material_no,
-    const long*  rdd_model,
-    const float*  rdd_parameter,
+    const long   material_no,
+    const long   rdd_model,
+    const float  rdd_parameter[],
     /* electron range model */
-    const long*  er_model,
-    const float*  er_parameter,
+    const long   er_model,
+    const float  er_parameter[],
     /* algorithm parameters*/
-    const long*  N2,
+    const long   N2,
     // from here: return values
-    long*  n_bins_f1,
-    float*  f1_parameters);
+    long *       n_bins_f1,
+    float        f1_parameters[]);
 
 
 /**
  * TODO
- * @param[in]  n
- * @param[in]  E_MeV_u
- * @param[in]  particle_no
- * @param[in]  fluence_cm2
- * @param[in]  material_no
- * @param[in]  rdd_model
- * @param[in]  rdd_parameter
- * @param[in]  er_model
- * @param[in]  er_parameter
- * @param[in]  N2
- * @param[in]  n_bins_f1
- * @param[in]  f1_parameters
- * @param[out] norm_fluence
- * @param[out] dose_contribution_Gy
- * @param[out] f_parameters
- * @param[out] f1_d_Gy
- * @param[out] f1_dd_Gy
- * @param[out] f1
+ * @param[in]  n                     number of particle types in the mixed particle field
+ * @param[in]  E_MeV_u               energy of particles in the mixed particle field (array of size n)
+ * @param[in]  particle_no           type of the particles in the mixed particle field (array of size n)
+ * @param[in]  fluence_cm2           fluences for the given particles, doses in Gy if negative (array of size n)
+ * @param[in]  material_no           index number for detector material
+ * @param[in]  rdd_model             index number for chosen radial dose distribution
+ * @param[in]  rdd_parameters        parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  er_model              index number for chosen electron-range model
+ * @param[in]  er_parameters         parameters for chosen electron-range model (array of size depending on chosen model)
+ * @param[in]  N2                    number of bins per factor of two in local dose array
+ * @param[in]  f1_parameters         TODO
+ * @param[out] norm_fluence          TODO
+ * @param[out] dose_contribution_Gy  TODO
+ * @param[out] f_parameters          TODO
+ * @param[out] f1_d_Gy               TODO
+ * @param[out] f1_dd_Gy              TODO
+ * @param[out] f1                    TODO
  */
 void  AT_SC_get_f1(  /* radiation field parameters */
-    const long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
-    const float*  fluence_cm2,
+    const long   n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
+    const float  fluence_cm2[],
     /* detector parameters */
-    const long*  material_no,
-    const long*  rdd_model,
-    const float*  rdd_parameter,
+    const long   material_no,
+    const long   rdd_model,
+    const float  rdd_parameter[],
     /* electron range model */
-    const long*  er_model,
-    const float*  er_parameter,
+    const long   er_model,
+    const float  er_parameter[],
     /* algorithm parameters*/
-    const long*  N2,
-    const long*  n_bins_f1,
+    const long   N2,
+    const long   n_bins_f1,
     /* f1 parameters*/
-    const float*  f1_parameters,
+    const float  f1_parameters[],
     // from here: return values
-    float*  norm_fluence,
-    float*  dose_contribution_Gy,
-    float*  f_parameters,
+    float        norm_fluence[],
+    float        dose_contribution_Gy[],
+    float        f_parameters[],
     /*  1 - total fluence_cm2
      *  2 - total_dose_Gy
      *  3 - ave_E_MeV
@@ -174,15 +173,15 @@ void  AT_SC_get_f1(  /* radiation field parameters */
      *  6 - dw_LET_MeV_cm2_g
      *  0 - u
      */
-    float*  f1_d_Gy,
-    float*  f1_dd_Gy,
-    float*  f1);
+    float  f1_d_Gy[],
+    float  f1_dd_Gy[],
+    float  f1[]);
 
 /**
  * TODO
  * @param[in]  u
  * @param[in]  fluence_factor
- * @param[in]  N2
+ * @param[in]  N2                  number of bins per factor of two in local dose array
  * @param[in]  n_bins_f1
  * @param[in]  f1_d_Gy
  * @param[in]  f1_dd_Gy
@@ -191,24 +190,24 @@ void  AT_SC_get_f1(  /* radiation field parameters */
  * @param[out] u_start
  * @param[out] n_convolutions
  */
-void AT_SC_get_f_array_size(  const float*  u,
-    const float*  fluence_factor,
-    const long*   N2,
-    const long*   n_bins_f1,
-    const float*  f1_d_Gy,
-    const float*  f1_dd_Gy,
-    const float*  f1,
+void AT_SC_get_f_array_size(  const float   u,
+    const float   fluence_factor,
+    const long    N2,
+    const long    n_bins_f1,
+    const float   f1_d_Gy[],
+    const float   f1_dd_Gy[],
+    const float   f1[],
     // from here: return values
-    long*  n_bins_f,
-    float*  u_start,
-    long*  n_convolutions);
+    long*         n_bins_f,
+    float*        u_start,
+    long*         n_convolutions);
 
 
 /**
  * TODO
- * @param[in]  u_start
+ * @param[in]  u_start             TODO it seems that it is unused in function body
  * @param[in]  n_bins_f1
- * @param[in]  N2
+ * @param[in]  N2                  number of bins per factor of two in local dose array
  * @param[in]  f1_d_Gy
  * @param[in]  f1_dd_Gy
  * @param[in]  f1
@@ -217,17 +216,17 @@ void AT_SC_get_f_array_size(  const float*  u,
  * @param[out] f_dd_Gy
  * @param[out] f_start
  */
-void  AT_SC_get_f_start(  const float*  u_start,
-    const long*   n_bins_f1,
-    const long*   N2,
-    const float*  f1_d_Gy,
-    const float*  f1_dd_Gy,
-    const float*  f1,
-    const long*   n_bins_f,
+void  AT_SC_get_f_start( const float  u_start,
+    const long    n_bins_f1,
+    const long    N2,
+    const float   f1_d_Gy[],
+    const float   f1_dd_Gy[],
+    const float   f1[],
+    const long    n_bins_f,
     // from here: return values
-    float*  f_d_Gy,
-    float*  f_dd_Gy,
-    float*  f_start);
+    float   f_d_Gy[],
+    float   f_dd_Gy[],
+    float   f_start[]);
 
 /**
  * TODO
@@ -286,38 +285,37 @@ aKList AT_SC_FOLD(aKList theKList);
 
 /**
  * TODO
- * @param[in]  u
- * @param[in]  n_bins_f
- * @param[out] N2
- * @param[out] n_bins_f_used
- * @param[out] f_d_Gy
- * @param[out] f_dd_Gy
- * @param[out] f
- * @param[out] f0
- * @param[out] fdd                   frequency:          H * DE        (f * dd)
- * @param[out] dfdd                  dose contribution:  H * E * DE    (f * d * dd)
- * @param[out] d                     first moment:                     (<d>)
- * @param[in]  write_output
- * @param[in]  shrink_tails
- * @param[in]  shrink_tails_under
- * @param[in]  adjust_N2
+ * @param[in]      u
+ * @param[in]      n_bins_f
+ * @param[in,out]  N2                    number of bins per factor of two in local dose array
+ * @param[in,out]  n_bins_f_used
+ * @param[in,out]  f_d_Gy
+ * @param[in,out]  f_dd_Gy
+ * @param[in,out]  f
+ * @param[out]     f0
+ * @param[out]     fdd                   frequency:          H * DE        (f * dd)
+ * @param[out]     dfdd                  dose contribution:  H * E * DE    (f * d * dd)
+ * @param[out]     d                     first moment:                     (<d>)
+ * @param[in]      write_output
+ * @param[in]      shrink_tails
+ * @param[in]      shrink_tails_under
+ * @param[in]      adjust_N2
  */
-void AT_SuccessiveConvolutions( const float*  u,
-    const long*  n_bins_f,
-    // input + return values
-    long*  N2,
-    long*  n_bins_f_used,
-    float*  f_d_Gy,
-    float*  f_dd_Gy,
-    float*  f,
-    // return values
-    float*  f0,
-    float*  fdd,
-    float*  dfdd,
-    float*  d,
-    const bool*  write_output,
-    const bool*  shrink_tails,
-    const float*  shrink_tails_under,
-    const bool*  adjust_N2);
+void   AT_SuccessiveConvolutions( const float  u,
+    const long   n_bins_f,
+    long*        N2,
+    long*        n_bins_f_used,
+    float        f_d_Gy[],
+    float        f_dd_Gy[],
+    float        f[],
+    float*       f0,
+    float        fdd[],
+    float        dfdd[],
+    float*       d,
+    const bool   write_output,
+    const bool   shrink_tails,
+    const float  shrink_tails_under,
+    const bool   adjust_N2);
+
 
 #endif // AT_SUCCESSIVECONVOLUTIONS_H_

@@ -115,17 +115,17 @@ void AT_run_SPIFF_method(  const long  n,
 
     f1_parameters      =  (float*)calloc(9 * n, sizeof(float));
 
-    AT_SC_get_f1_array_size(  &n,
+    AT_SC_get_f1_array_size(  n,
 
         E_MeV_u,
         particle_no,
-        &material_no,
-        &rdd_model,
+        material_no,
+        rdd_model,
         rdd_parameters,
-        &er_model,
+        er_model,
         er_parameters,
 
-        &N2,
+        N2,
         &n_bins_f1,
         f1_parameters);
 
@@ -138,20 +138,20 @@ void AT_run_SPIFF_method(  const long  n,
     f1_dd_Gy        =  (float*)calloc(n_bins_f1, sizeof(float));
     f1            =  (float*)calloc(n_bins_f1, sizeof(float));
 
-    AT_SC_get_f1(  &n,
+    AT_SC_get_f1(  n,
         E_MeV_u,
         particle_no,
         fluence_cm2,
         /* detector parameters */
-        &material_no,
-        &rdd_model,
+        material_no,
+        rdd_model,
         rdd_parameters,
         /* electron range model */
-        &er_model,
+        er_model,
         er_parameters,
         /* algorithm parameters*/
-        &N2,
-        &n_bins_f1,
+        N2,
+        n_bins_f1,
         /* f1 parameters*/
         f1_parameters,
         // from here: return values
@@ -168,10 +168,10 @@ void AT_run_SPIFF_method(  const long  n,
     long      n_convolutions;
 
 
-    AT_SC_get_f_array_size(  &f_parameters[0],      // = u
-        &fluence_factor,
-        &N2,
-        &n_bins_f1,
+    AT_SC_get_f_array_size(  f_parameters[0],      // = u
+        fluence_factor,
+        N2,
+        n_bins_f1,
         f1_d_Gy,
         f1_dd_Gy,
         f1,
@@ -188,20 +188,20 @@ void AT_run_SPIFF_method(  const long  n,
     f0            =  0.0f;
     d_check          =  0.0f;
 
-    AT_SC_get_f_start(  &u_start,
-        &n_bins_f1,
-        &N2,
+    AT_SC_get_f_start(  u_start,
+        n_bins_f1,
+        N2,
         f1_d_Gy,
         f1_dd_Gy,
         f1,
-        &n_bins_f,
+        n_bins_f,
         // from here: return values
         f_d_Gy,
         f_dd_Gy,
         f);
 
-    AT_SuccessiveConvolutions(  &f_parameters[0],    // u
-        &n_bins_f,
+    AT_SuccessiveConvolutions(  f_parameters[0],    // u
+        n_bins_f,
         &N2,
         // input + return values
         &n_bins_f1,
@@ -213,10 +213,10 @@ void AT_run_SPIFF_method(  const long  n,
         fdd,
         dfdd,
         &d_check,
-        &write_output,
-        &shrink_tails,
-        &shrink_tails_under,
-        &adjust_N2);
+        write_output,
+        shrink_tails,
+        shrink_tails_under,
+        adjust_N2);
 
     n_bins_f_used  = n_bins_f1;
 
@@ -277,8 +277,6 @@ void AT_run_SPIFF_method(  const long  n,
     fclose(output_file);
   }
 
-
-
   free(f1_parameters);
   free(f_parameters);
   free(norm_fluence);
@@ -294,35 +292,36 @@ void AT_run_SPIFF_method(  const long  n,
   free(S);
 }
 
-void AT_run_GSM_method(  const long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
-    const float*  fluence_cm2,
-    const long*  material_no,
-    const long*  rdd_model,
-    const float*  rdd_parameters,
-    const long*  er_model,
-    const float*  er_parameters,
-    const long*  gamma_model,
-    const float*  gamma_parameters,
-    const long*  N_runs,
-    const long*   N2,
-    const float*  fluence_factor,
-    const bool*   write_output,
-    const long*   nX,
-    const float*  voxel_size_m,
-    const bool*   lethal_events_mode,
-    float*  results)
-{
-  FILE*    output_file;
-  struct tm  *start_tm, *end_tm;
-  time_t     start_t, end_t;
-  start_t    = time(NULL);
 
-  long     i, j, k, m;
-  long    n_grid          = (*nX) * (*nX);
-  float    calc_grid_size_m    = (*voxel_size_m) * (*nX);
-  float    calc_grid_area_cm2    = calc_grid_size_m * calc_grid_size_m * 10000;
+void AT_run_GSM_method(  const long  n,
+    const float   E_MeV_u[],
+    const long    particle_no[],
+    const float   fluence_cm2[],
+    const long    material_no,
+    const long    rdd_model,
+    const float   rdd_parameters[],
+    const long    er_model,
+    const float   er_parameters[],
+    const long    gamma_model,
+    const float   gamma_parameters[],
+    const long    N_runs,
+    const long    N2,
+    const float   fluence_factor,
+    const bool    write_output,
+    const long    nX,
+    const float   voxel_size_m,
+    const bool    lethal_events_mode,
+    float         results[])
+{
+  FILE*     output_file;
+  struct tm *start_tm, *end_tm;
+  time_t    start_t, end_t;
+  start_t  = time(NULL);
+
+  long   i, j, k, m;
+  long   n_grid                =  gsl_pow_2(nX);
+  float  calc_grid_size_m      =  voxel_size_m * nX;
+  float  calc_grid_area_cm2    =  gsl_pow_2(calc_grid_size_m) * 10000;
 
   output_file    =  fopen("GridSummation.log","w");
   if (output_file == NULL) return;                      // File error
@@ -334,13 +333,13 @@ void AT_run_GSM_method(  const long*  n,
   fprintf(output_file, "\n\n\n");
   start_tm     = localtime(&start_t);
   fprintf(output_file, "Start time and date: %s\n", asctime(start_tm));
-  fprintf(output_file, "calc grid:      %ld*%ld = %ld pixels\n", *nX, *nX, n_grid);
+  fprintf(output_file, "calc grid:      %ld*%ld = %ld pixels\n", nX, nX, n_grid);
   fprintf(output_file, "calc grid size/m:     %e\n", calc_grid_size_m);
   fprintf(output_file, "calc grid area/cm2:  %e\n", calc_grid_area_cm2);
 
   // Alloc checkerboard arrays
-  float*  grid_d_Gy = (float*)calloc(n_grid, sizeof(float));
-  float*  grid_S    = (float*)calloc(n_grid, sizeof(float));
+  float*  grid_d_Gy  =  (float*)calloc(n_grid, sizeof(float));
+  float*  grid_S     =  (float*)calloc(n_grid, sizeof(float));
 
   // Clear results
   for (i = 0; i < 10; i++){
@@ -348,12 +347,12 @@ void AT_run_GSM_method(  const long*  n,
   }
 
   // Get f1, f parameters
-  float* f1_parameters        = (float*)calloc((*n)*9, sizeof(float));
+  float* f1_parameters        = (float*)calloc(9*n, sizeof(float));
   float  max_r_max_m          = 0.0f;
-  long   n_bins_f1			= 0;
+  long   n_bins_f1            = 0;
 
 
-  AT_SC_get_f1_array_size(  	n,
+  AT_SC_get_f1_array_size( n,
       E_MeV_u,
       particle_no,
       material_no,
@@ -365,8 +364,8 @@ void AT_run_GSM_method(  const long*  n,
       &n_bins_f1,
       f1_parameters);
 
-  fprintf(output_file, "f1 parameters for %ld particles\n", *n);
-  for (i = 0; i < *n; i++){
+  fprintf(output_file, "f1 parameters for %ld particles\n", n);
+  for (i = 0; i < n; i++){
     fprintf(output_file, "%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\t%e\n",   f1_parameters[i*9 + 0],
         f1_parameters[i*9 + 1],
         f1_parameters[i*9 + 2],
@@ -376,17 +375,17 @@ void AT_run_GSM_method(  const long*  n,
         f1_parameters[i*9 + 6],
         f1_parameters[i*9 + 7],
         f1_parameters[i*9 + 8]);
-    max_r_max_m        =   fmaxf(max_r_max_m, f1_parameters[i*9 + 2]);
+    max_r_max_m    =   fmaxf(max_r_max_m, f1_parameters[i*9 + 2]);
   }
 
   fprintf(output_file, "\nOverall r.max/m = %e\n\n",   max_r_max_m);
 
-  float* f_parameters         = (float*)calloc(7, sizeof(float));
-  float* f1_d_Gy          	=  (float*)calloc(n_bins_f1, sizeof(float));
-  float* f1_dd_Gy        	    =  (float*)calloc(n_bins_f1, sizeof(float));
-  float* f1            	  	=  (float*)calloc(n_bins_f1, sizeof(float));
-  float* norm_fluence         = (float*)calloc(*n, sizeof(float));
-  float* dose_contribution_Gy = (float*)calloc(*n, sizeof(float));
+  float* f_parameters         =  (float*)calloc(7, sizeof(float));
+  float* f1_d_Gy              =  (float*)calloc(n_bins_f1, sizeof(float));
+  float* f1_dd_Gy             =  (float*)calloc(n_bins_f1, sizeof(float));
+  float* f1                   =  (float*)calloc(n_bins_f1, sizeof(float));
+  float* norm_fluence         =  (float*)calloc(n, sizeof(float));
+  float* dose_contribution_Gy =  (float*)calloc(n, sizeof(float));
 
   AT_SC_get_f1(  n,            // for f parameters only
       E_MeV_u,
@@ -399,7 +398,7 @@ void AT_run_GSM_method(  const long*  n,
       er_parameters,
 
       N2,
-      &n_bins_f1,
+      n_bins_f1,
       f1_parameters,
       norm_fluence,
       dose_contribution_Gy,
@@ -408,19 +407,19 @@ void AT_run_GSM_method(  const long*  n,
       f1_dd_Gy,
       f1);
 
-  for (i = 0; i < *n; i++){
+  for (i = 0; i < n; i++){
           fprintf(output_file, "Particle %ld: relative fluence: %4.2e, dose contribution %4.2e Gy\n", i+1, norm_fluence[i], dose_contribution_Gy[i]);
   }
 
-  long	n_bins_f;
-  float   u_start;
-  long    n_convolutions;
-  float	u				= f_parameters[0];
+  long	 n_bins_f;
+  float  u_start;
+  long   n_convolutions;
+  float	 u   = f_parameters[0];
 
-  AT_SC_get_f_array_size(   &u,
+  AT_SC_get_f_array_size(   u,
       fluence_factor,
       N2,
-      &n_bins_f1,
+      n_bins_f1,
       f1_d_Gy,
       f1_dd_Gy,
       f1,
@@ -429,20 +428,18 @@ void AT_run_GSM_method(  const long*  n,
       &u_start,
       &n_convolutions);
 
-  float*  f_d_Gy         	=  (float*)calloc(n_bins_f, sizeof(float));
-  float*  f_dd_Gy        	=  (float*)calloc(n_bins_f, sizeof(float));
+  float*  f_d_Gy        =  (float*)calloc(n_bins_f, sizeof(float));
+  float*  f_dd_Gy       =  (float*)calloc(n_bins_f, sizeof(float));
   float*  f            	=  (float*)calloc(n_bins_f, sizeof(float));
-//  float*  fdd            	=  (float*)calloc(n_bins_f, sizeof(float)); // UNUSED
-//  float*  dfdd          	=  (float*)calloc(n_bins_f, sizeof(float)); // UNUSED
-  float   f0            	=  0.0f;
+  float   f0            =  0.0f;
 
-  AT_SC_get_f_start(  &u_start,
-      &n_bins_f1,
+  AT_SC_get_f_start(  u_start,
+      n_bins_f1,
       N2,
       f1_d_Gy,
       f1_dd_Gy,
       f1,
-      &n_bins_f,
+      n_bins_f,
       // from here: return values
       f_d_Gy,
       f_dd_Gy,
@@ -473,35 +470,35 @@ void AT_run_GSM_method(  const long*  n,
   fprintf(output_file, "sample grid area/cm2 = %e\n", sample_grid_area_cm2);
 
   // mean and actual number of particles on sample_area
-  float* mean_number_particles = (float*)calloc(*n, sizeof(float));
-  long*  act_number_particles  =  (long*)calloc(*n, sizeof(float));
-  for (i = 0; i < *n; i++){
+  float* mean_number_particles = (float*)calloc(n, sizeof(float));
+  long*  act_number_particles  =  (long*)calloc(n, sizeof(float));
+  for (i = 0; i < n; i++){
     mean_number_particles[i] = sample_grid_area_cm2 * f_parameters[1] * norm_fluence[i];        // Area * Total_fluence (particle i)
   }
 
   // create and initialize RNGs
-  gsl_rng * rng1 = gsl_rng_alloc(gsl_rng_taus);
-  gsl_rng * rng2 = gsl_rng_alloc(gsl_rng_taus);
+  gsl_rng * rng1  =  gsl_rng_alloc(gsl_rng_taus);
+  gsl_rng * rng2  =  gsl_rng_alloc(gsl_rng_taus);
   gsl_rng_set(rng1, 12345678);
   gsl_rng_set(rng2, 2345678);
 
 
   // run loop
   long n_particles;
-  for (m = 0; m < *N_runs; m++){
+  for (m = 0; m < N_runs; m++){
     float* run_results = (float*)calloc(10, sizeof(float));
 
     // sample particles numbers
     n_particles = 0;
-    for (i = 0; i < *n; i++){
+    for (i = 0; i < n; i++){
       act_number_particles[i] =  (long)gsl_ran_poisson(rng1, mean_number_particles[i]);
       n_particles             += act_number_particles[i];
     }
 
-    if(*N_runs <= 20){
+    if(N_runs <= 20){
       fprintf(output_file, "\n\nRun %ld:\n", m + 1);
       fprintf(output_file, "Actual number of particles (mean)\n");
-      for (i = 0; i < *n; i++){
+      for (i = 0; i < n; i++){
         fprintf(output_file, "particle %ld: %ld (%e)\n", i, act_number_particles[i], mean_number_particles[i]);
       }
       fprintf(output_file, "\nIn total: %ld\n", n_particles);
@@ -549,10 +546,10 @@ void AT_run_GSM_method(  const long*  n,
       long no_contr_part = 0;
       float cur_x_pos = 0;
       float cur_y_pos = 0;
-      for (j = 0; j < *nX; j++){                                      // y
-        cur_y_pos    = max_r_max_m + ((float)j + 0.5f)*(*voxel_size_m);
-        for (i = 0; i < *nX; i++){                              // x
-          cur_x_pos  = max_r_max_m + ((float)i + 0.5f)*(*voxel_size_m);
+      for (j = 0; j < nX; j++){                                      // y
+        cur_y_pos    = max_r_max_m + ((float)j + 0.5f)*voxel_size_m;
+        for (i = 0; i < nX; i++){                              // x
+          cur_x_pos  = max_r_max_m + ((float)i + 0.5f)*voxel_size_m;
           for (k = 0; k < n_particles; k++){      // particles
             r_m[k]   = sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
             if(r_m[k] <= r_max_m[k]){               // does particle contribute?
@@ -568,11 +565,11 @@ void AT_run_GSM_method(  const long*  n,
 
       // calculate distances between track cores and all grid points and save them into allocated table
       long distances_index = 0;
-      for (j = 0; j < *nX; j++){                                      // y
-        float cur_y_pos       = max_r_max_m + ((float)j + 0.5f)*(*voxel_size_m);
-        for (i = 0; i < *nX; i++){                              // x
-          float cur_x_pos     = max_r_max_m + ((float)i + 0.5f)*(*voxel_size_m);
-          grid_d_Gy[j * (*nX) + i] = 0.0f;
+      for (j = 0; j < nX; j++){                                      // y
+        float cur_y_pos       = max_r_max_m + ((float)j + 0.5f)*voxel_size_m;
+        for (i = 0; i < nX; i++){                              // x
+          float cur_x_pos     = max_r_max_m + ((float)i + 0.5f)*voxel_size_m;
+          grid_d_Gy[j * nX + i] = 0.0f;
           for (k = 0; k < n_particles; k++){      // particles
             r_m[k]            = sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
 
@@ -595,10 +592,10 @@ void AT_run_GSM_method(  const long*  n,
           distances,
           E_MeV_u[particle_index[0]],
           particle_no[particle_index[0]],
-          *material_no,
-          *rdd_model,
+          material_no,
+          rdd_model,
           rdd_parameters,
-          *er_model,
+          er_model,
           er_parameters,
           doses);
 
@@ -606,14 +603,14 @@ void AT_run_GSM_method(  const long*  n,
 
       // fill grid using doses values stored in doses table
       distances_index = 0;
-      for (j = 0; j < *nX; j++){                                      // y
-        float cur_y_pos   = max_r_max_m + ((float)j + 0.5f)*(*voxel_size_m);
-        for (i = 0; i < *nX; i++){                              // x
-          float cur_x_pos = max_r_max_m + ((float)i + 0.5f)*(*voxel_size_m);
+      for (j = 0; j < nX; j++){                                      // y
+        float cur_y_pos   = max_r_max_m + ((float)j + 0.5f)*voxel_size_m;
+        for (i = 0; i < nX; i++){                              // x
+          float cur_x_pos = max_r_max_m + ((float)i + 0.5f)*voxel_size_m;
           for (k = 0; k < n_particles; k++){      // particles
             r_m[k]        = sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
             if(r_m[k] <= r_max_m[k]){               // does particle contribute?
-              grid_d_Gy[j * (*nX) + i] += doses[distances_index];
+              grid_d_Gy[j * nX + i] += doses[distances_index];
               distances_index++;
             } // particle contribution
           }// particle loop
@@ -625,11 +622,11 @@ void AT_run_GSM_method(  const long*  n,
 
     } else {
       // grid loop
-      for (j = 0; j < *nX; j++){          // y
-        float cur_y_pos   =  max_r_max_m + ((float)j + 0.5f)*(*voxel_size_m);
-        for (i = 0; i < *nX; i++){        // x
-          float cur_x_pos =  max_r_max_m + ((float)i + 0.5f)*(*voxel_size_m);
-          grid_d_Gy[j * (*nX) + i]=  0.0f;
+      for (j = 0; j < nX; j++){          // y
+        float cur_y_pos   =  max_r_max_m + ((float)j + 0.5f)*voxel_size_m;
+        for (i = 0; i < nX; i++){        // x
+          float cur_x_pos =  max_r_max_m + ((float)i + 0.5f)*voxel_size_m;
+          grid_d_Gy[j * nX + i]=  0.0f;
           for (k = 0; k < n_particles; k++){  // particles
             r_m[k]        =  sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
             if(r_m[k] <= r_max_m[k]){    // does particle contribute?
@@ -637,13 +634,13 @@ void AT_run_GSM_method(  const long*  n,
                   &r_m[k],
                   E_MeV_u[particle_index[k]],
                   particle_no[particle_index[k]],
-                  *material_no,
-                  *rdd_model,
+                  material_no,
+                  rdd_model,
                   rdd_parameters,
-                  *er_model,
+                  er_model,
                   er_parameters,
                   &d_tmp_Gy);
-              grid_d_Gy[j * (*nX) + i]  +=  d_tmp_Gy;
+              grid_d_Gy[j * nX + i]  +=  d_tmp_Gy;
             } // particle contribution
           }// particle loop
         } // x loop
@@ -656,8 +653,8 @@ void AT_run_GSM_method(  const long*  n,
     float d_total_Gy = 0.0f;
     float S_HCP      = 0.0f;
 
-    if( *lethal_events_mode ){
-      if (*gamma_model != GR_LinQuad){
+    if( lethal_events_mode ){
+      if (gamma_model != GR_LinQuad){
         printf("##############################################################################\n");
         printf("Sorry, no Grid Summation model with other than Linear Quadratic gamma response\n");
         printf("Please choose gamma_model = %d. Exiting now...\n", GR_LinQuad);
@@ -665,9 +662,9 @@ void AT_run_GSM_method(  const long*  n,
         return;
       }
 
-      float alpha = gamma_parameters[0];
-      float beta = gamma_parameters[1];
-      float D0 = gamma_parameters[2];
+      float alpha  =  gamma_parameters[0];
+      float beta   =  gamma_parameters[1];
+      float D0     =  gamma_parameters[2];
 
       // averaging over number of lethal events
       for (i = 0; i < n_grid; i++){
@@ -684,7 +681,7 @@ void AT_run_GSM_method(  const long*  n,
       // get gamma response for local dose
       AT_gamma_response( n_grid,
           grid_d_Gy,
-          *gamma_model,
+          gamma_model,
           gamma_parameters,
           grid_S);
 
@@ -700,14 +697,14 @@ void AT_run_GSM_method(  const long*  n,
     S_HCP       /=  n_grid;
     d_total_Gy  /= n_grid;
 
-    if( *lethal_events_mode ){
+    if( lethal_events_mode ){
       S_HCP  = expf( - S_HCP );
     }
 
     float S_gamma  = 0.0f;
     AT_gamma_response(  n_tmp,
         &d_total_Gy,
-        *gamma_model,
+        gamma_model,
         gamma_parameters,
         &S_gamma);
 
@@ -738,12 +735,12 @@ void AT_run_GSM_method(  const long*  n,
 
       fprintf(graph_file, "x.m; y.m; d.Gy; S\n");
 
-      for (j = 0; j < *nX; j++){
-        for (i = 0; i < *nX; i++){
-          fprintf(graph_file, "%e; %e; %e; %e\n",  max_r_max_m + ((float)i + 0.5f)*(*voxel_size_m),
-              max_r_max_m + ((float)j + 0.5f)*(*voxel_size_m),
-              grid_d_Gy[j * (*nX) + i],
-              grid_S[j * (*nX) + i]);
+      for (j = 0; j < nX; j++){
+        for (i = 0; i < nX; i++){
+          fprintf(graph_file, "%e; %e; %e; %e\n",  max_r_max_m + ((float)i + 0.5f)*voxel_size_m,
+              max_r_max_m + ((float)j + 0.5f)*voxel_size_m,
+              grid_d_Gy[j * nX + i],
+              grid_S[j * nX + i]);
         }
       }
     }
@@ -767,7 +764,7 @@ void AT_run_GSM_method(  const long*  n,
     results[8]      += run_results[3]*run_results[3];
     results[9]      += n_particles * n_particles;
 
-    if (*N_runs <= 20){
+    if (N_runs <= 20){
       fprintf(output_file, "\n\nRun %ld results\n", m + 1);
       fprintf(output_file, "efficiency     = %e\n", run_results[0]);
       fprintf(output_file, "d.check.Gy     = %e\n", run_results[1]);
@@ -782,17 +779,17 @@ void AT_run_GSM_method(  const long*  n,
     free(r_max_m);
   }// end run loop
 
-  results[0]  /= *N_runs;
-  results[1]  /= *N_runs;
-  results[2]  /= *N_runs;
-  results[3]  /= *N_runs;
-  results[4]  /= *N_runs;
+  results[0]  /= N_runs;
+  results[1]  /= N_runs;
+  results[2]  /= N_runs;
+  results[3]  /= N_runs;
+  results[4]  /= N_runs;
 
-  results[5]  /= *N_runs;
-  results[6]  /= *N_runs;
-  results[7]  /= *N_runs;
-  results[8]  /= *N_runs;
-  results[9]  /= *N_runs;
+  results[5]  /= N_runs;
+  results[6]  /= N_runs;
+  results[7]  /= N_runs;
+  results[8]  /= N_runs;
+  results[9]  /= N_runs;
 
   results[5]  -= results[0]*results[0];
   results[6]  -= results[1]*results[1];
@@ -806,11 +803,11 @@ void AT_run_GSM_method(  const long*  n,
   results[8]  = fmaxf(0, results[8]);
   results[9]  = fmaxf(0, results[9]);
 
-  results[5]  = sqrt(results[5] / (*N_runs - 1));
-  results[6]  = sqrt(results[6] / (*N_runs - 1));
-  results[7]  = sqrt(results[7] / (*N_runs - 1));
-  results[8]  = sqrt(results[8] / (*N_runs - 1));
-  results[9]  = sqrt(results[9] / (*N_runs - 1));
+  results[5]  = sqrt(results[5] / (N_runs - 1.));
+  results[6]  = sqrt(results[6] / (N_runs - 1.));
+  results[7]  = sqrt(results[7] / (N_runs - 1.));
+  results[8]  = sqrt(results[8] / (N_runs - 1.));
+  results[9]  = sqrt(results[9] / (N_runs - 1.));
 
   fprintf(output_file, "\n###############################################\nResults\n");
   fprintf(output_file, "efficiency     = %e +/- %e\n", results[0], results[5]);
@@ -823,8 +820,8 @@ void AT_run_GSM_method(  const long*  n,
   end_tm = localtime(&end_t);
   float timespan_s  = difftime(end_t, start_t);
   fprintf(output_file, "\nEnd time and date: %s\n", asctime(end_tm));
-  fprintf(output_file, "\nTime per run [s]:      %4.2e\n", timespan_s / *N_runs);
-  fprintf(output_file, "\nTime per pixel [s]:    %4.2e\n", timespan_s / (*N_runs * n_grid));
+  fprintf(output_file, "\nTime per run [s]:      %4.2e\n", timespan_s / N_runs);
+  fprintf(output_file, "\nTime per pixel [s]:    %4.2e\n", timespan_s / (N_runs * n_grid));
   fprintf(output_file, "###############################################\n");
   fprintf(output_file, "###############################################\n");
 
@@ -873,19 +870,19 @@ void AT_run_GSM_method(  const long*  n,
 }
 
 
-void AT_run_IGK_method(  const long*  n,
-    const float*  E_MeV_u,
-    const long*  particle_no,
-    const float*  fluence_cm2,
-    const long*  material_no,
-    const long*  rdd_model,
-    const float*  rdd_parameters,
-    const long*  er_model,
-    const float*  er_parameters,
-    const long*  gamma_model,
-    const float*  gamma_parameters,
-    const float*  saturation_cross_section_factor,
-    float*  results)
+void AT_run_IGK_method(  const long  n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
+    const float  fluence_cm2[],
+    const long   material_no,
+    const long   rdd_model,
+    const float  rdd_parameters[],
+    const long   er_model,
+    const float  er_parameters[],
+    const long   gamma_model,
+    const float  gamma_parameters[],
+    const float  saturation_cross_section_factor,
+    float  results[])
 {
   FILE*    output_file;
   struct tm  *start_tm, *end_tm;
@@ -903,7 +900,7 @@ void AT_run_IGK_method(  const long*  n,
   // The histogram initialization and handling has been adapted to SPIFF
   // although some features are not used here
   long   n_bins_f1;
-  float* f1_parameters = (float*)calloc(9 * (*n), sizeof(float));
+  float* f1_parameters = (float*)calloc(9 * n, sizeof(float));
 
   AT_SC_get_f1_array_size( n,
       E_MeV_u,
@@ -913,14 +910,14 @@ void AT_run_IGK_method(  const long*  n,
       rdd_parameters,
       er_model,
       er_parameters,
-      &N2,
+      N2,
       &n_bins_f1,
       f1_parameters);
 
   float*  f_parameters          =  (float*)calloc(7, sizeof(float));
-  float*  norm_fluence          =  (float*)calloc(*n, sizeof(float));
-  float*  accu_fluence          =  (float*)calloc(*n, sizeof(float));
-  float*  dose_contribution_Gy  =  (float*)calloc(*n, sizeof(float));
+  float*  norm_fluence          =  (float*)calloc(n, sizeof(float));
+  float*  accu_fluence          =  (float*)calloc(n, sizeof(float));
+  float*  dose_contribution_Gy  =  (float*)calloc(n, sizeof(float));
 
   ////////////////////////////////////////////////////////////////////////////////////////////
   // 1. normalize fluence, get total fluence and dose
@@ -929,39 +926,39 @@ void AT_run_IGK_method(  const long*  n,
   // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
   // only the first entry will be check
   long   i;
-  float*  fluence_cm2_local    =  (float*)calloc(*n, sizeof(float));
-  float*  dose_Gy_local        =  (float*)calloc(*n, sizeof(float));
+  float*  fluence_cm2_local    =  (float*)calloc(n, sizeof(float));
+  float*  dose_Gy_local        =  (float*)calloc(n, sizeof(float));
 
   if(fluence_cm2[0] < 0){
-    for (i = 0; i < *n; i++){
+    for (i = 0; i < n; i++){
       dose_Gy_local[i] = -1.0f * fluence_cm2[i];
     }
-    AT_fluence_cm2(  n,
+    AT_fluence_cm2(  &n,
         E_MeV_u,
         particle_no,
         dose_Gy_local,
-        material_no,
+        &material_no,
         fluence_cm2_local);
   }else{
-    for (i = 0; i < *n; i++){
+    for (i = 0; i < n; i++){
       fluence_cm2_local[i] = fluence_cm2[i];
     }
-    AT_D_Gy(  n,
+    AT_D_Gy(  &n,
         E_MeV_u,
         particle_no,
         fluence_cm2_local,
-        material_no,
+        &material_no,
         dose_Gy_local);
   }
 
-  for (i = 0; i < *n; i++){
+  for (i = 0; i < n; i++){
     f_parameters[2]  +=  dose_Gy_local[i];
     f_parameters[1]  +=  fluence_cm2_local[i];
   }
 
   float u_single;
 
-  for (i = 0; i < *n; i++){
+  for (i = 0; i < n; i++){
     norm_fluence[i]        =  fluence_cm2_local[i] / f_parameters[1];
     u_single                    =  fluence_cm2_local[i] / f1_parameters[i*9 + 6];
     dose_contribution_Gy[i]    =  u_single * f1_parameters[i*9 + 7];
@@ -970,8 +967,8 @@ void AT_run_IGK_method(  const long*  n,
 
   // Get accumulated normalized fluence for later sampling of particle type
   accu_fluence[0]                                                 =       norm_fluence[0];
-  if(*n > 1){
-    for (i = 1; i < *n; i++){
+  if(n > 1){
+    for (i = 1; i < n; i++){
       accu_fluence[i] += accu_fluence[i-1] + norm_fluence[i];
     }
   }
@@ -995,8 +992,8 @@ void AT_run_IGK_method(  const long*  n,
   start_tm     = localtime(&start_t);
   fprintf(output_file, "Start time and date: %s\n", asctime(start_tm));
 
-  if (*gamma_model != GR_GeneralTarget ||
-      *rdd_model   == RDD_Test){
+  if (gamma_model != GR_GeneralTarget ||
+      rdd_model   == RDD_Test){
     fprintf(output_file, "##############################################################\n");
     fprintf(output_file, "Sorry, no IGK with other than the general hit-target model\n");
     fprintf(output_file, "or with test RDD\n");
@@ -1019,10 +1016,10 @@ void AT_run_IGK_method(  const long*  n,
   params                       = (AT_P_RDD_parameters*)calloc(1,sizeof(AT_P_RDD_parameters));
   params->E_MeV_u              = (float*)E_MeV_u;
   params->particle_no          = (long*)particle_no;
-  params->material_no          = (long*)material_no;
-  params->rdd_model            = (long*)rdd_model;
+  params->material_no          = (long*)(&material_no);
+  params->rdd_model            = (long*)(&rdd_model);
   params->rdd_parameters       = (float*)rdd_parameters;
-  params->er_model             = (long*)er_model;
+  params->er_model             = (long*)(&er_model);
   params->er_parameters        = (float*)er_parameters;
   params->gamma_parameters[0]  = 1; // No multiple components
   params->gamma_parameters[4]  = 0;
@@ -1052,10 +1049,11 @@ void AT_run_IGK_method(  const long*  n,
     F.function           = &AT_sI_int;
     F.params             = (void*)params;
     double   lower_lim_m  = 0.0;
-    if(*rdd_model == RDD_KatzPoint){
+    if(rdd_model == RDD_KatzPoint){
       lower_lim_m = (float)rdd_parameters[0];
     }
-    double   upper_lim_m = AT_max_electron_range_m( (double)(*E_MeV_u), (int)(*material_no), (int)(*er_model));
+    double   upper_lim_m = AT_max_electron_range_m( (double)(*E_MeV_u), (int)material_no, (int)er_model);
+    // TODO energy is an array of size n, why do we calculate upper_lim_m only from one energy value ?
 
     int status      = gsl_integration_qags (        &F,
         lower_lim_m,
@@ -1080,15 +1078,15 @@ void AT_run_IGK_method(  const long*  n,
     // Get saturation cross-section
     float   s0_m2 = 0.0f;
     float   a0_m  = 0.0f;
-    if(*rdd_model == RDD_KatzExtTarget){
+    if(rdd_model == RDD_KatzExtTarget){
       a0_m = rdd_parameters[1];
     }
-    if(*rdd_model == RDD_Geiss ||
-        *rdd_model == RDD_KatzSite ||
-        *rdd_model == RDD_Edmund){
+    if(rdd_model == RDD_Geiss ||
+        rdd_model == RDD_KatzSite ||
+        rdd_model == RDD_Edmund){
       a0_m  =  rdd_parameters[0];
     }
-    s0_m2   = (*saturation_cross_section_factor) * M_PI * gsl_pow_2(a0_m);
+    s0_m2   = saturation_cross_section_factor * M_PI * gsl_pow_2(a0_m);
 
     // Ion-kill probability
     float   fluence_cm2  = norm_fluence[0] * f_parameters[1];      // norm. fluence for particle i * total_fluence
@@ -1103,7 +1101,7 @@ void AT_run_IGK_method(  const long*  n,
       float   gamma_D_Gy = gamma_contribution * D_Gy;
       AT_gamma_response(  n_tmp,
           &gamma_D_Gy,
-          *gamma_model,
+          gamma_model,
           params->gamma_parameters,
           // return
           &P_g);
@@ -1120,7 +1118,7 @@ void AT_run_IGK_method(  const long*  n,
 
   AT_gamma_response(  n_tmp,
       &f_parameters[2],
-      *gamma_model,
+      gamma_model,
       gamma_parameters,
       // return
       &S_gamma);
@@ -1161,23 +1159,23 @@ void AT_run_IGK_method(  const long*  n,
 * See SPIFF pamphlet 27.2./29.2.2008
 * This was routine "LGC_full_simulation_C" in LGC 2.1
 */
-void AT_run_SPISS_method(	const long* n,
-    const float* E_MeV_u,
-    const long*  particle_no,
-    const float* fluence_cm2,
-    const long*  material_no,
-    const long*  rdd_model,
-    const float* rdd_parameters,
-    const long*  er_model,
-    const float* er_parameters,
-    const long*  gamma_model,
-    const float* gamma_parameters,
-    const long*  n_runs,
-    const long*  N2,
-    const float* fluence_factor,
-    const int*   write_output,
-    const long*  importance_sampling,
-    float*  results)
+void AT_run_SPISS_method(  const long  n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
+    const float  fluence_cm2[],
+    const long   material_no,
+    const long   rdd_model,
+    const float  rdd_parameters[],
+    const long   er_model,
+    const float  er_parameters[],
+    const long   gamma_model,            // TODO do we really use gamma response here ?
+    const float  gamma_parameters[],
+    const long   n_runs,
+    const long   N2,
+    const float  fluence_factor,
+    const int    write_output,
+    const long   importance_sampling,
+    float        results[])
 {
   // Welcome screen
   printf("\n############################################################\n");
@@ -1199,7 +1197,7 @@ void AT_run_SPISS_method(	const long* n,
   // The histogram initialization and handling has been adapted to SPIFF
   // although some features are not used here
   long    n_bins_f1;
-  float*  f1_parameters      =  (float*)calloc(9 * (*n), sizeof(float));
+  float*  f1_parameters      =  (float*)calloc(9 * n, sizeof(float));
 
   AT_SC_get_f1_array_size(  	n,
       E_MeV_u,
@@ -1215,9 +1213,9 @@ void AT_run_SPISS_method(	const long* n,
 
   float*  f_parameters      				=  (float*)calloc(7, sizeof(float));
 
-  float*  norm_fluence      				=  (float*)calloc(*n, sizeof(float));
-  float*  accu_fluence      				=  (float*)calloc(*n, sizeof(float));
-  float*  dose_contribution_Gy  			=  (float*)calloc(*n, sizeof(float));
+  float*  norm_fluence      				=  (float*)calloc(n, sizeof(float));
+  float*  accu_fluence      				=  (float*)calloc(n, sizeof(float));
+  float*  dose_contribution_Gy  			=  (float*)calloc(n, sizeof(float));
 
   float*  f1_d_Gy          				=  (float*)calloc(n_bins_f1, sizeof(float));
   float*  f1_dd_Gy        				=  (float*)calloc(n_bins_f1, sizeof(float));
@@ -1233,7 +1231,7 @@ void AT_run_SPISS_method(	const long* n,
       er_model,
       er_parameters,
       N2,
-      &n_bins_f1,
+      n_bins_f1,
       f1_parameters,
       // from here: return values
       norm_fluence,
@@ -1246,8 +1244,8 @@ void AT_run_SPISS_method(	const long* n,
   // Get accumulated normalized fluence for later sampling of particle type
   accu_fluence[0]   =	norm_fluence[0];
   long i;
-  if(*n > 1){
-    for (i = 1; i < *n; i++){
+  if(n > 1){
+    for (i = 1; i < n; i++){
       accu_fluence[i] +=  accu_fluence[i-1] + norm_fluence[i];
     }
   }
@@ -1257,10 +1255,10 @@ void AT_run_SPISS_method(	const long* n,
   long    n_convolutions;
   float	u = f_parameters[0];
 
-  AT_SC_get_f_array_size(   &u,
+  AT_SC_get_f_array_size(   u,
       fluence_factor,
       N2,
-      &n_bins_f1,
+      n_bins_f1,
       f1_d_Gy,
       f1_dd_Gy,
       f1,
@@ -1274,13 +1272,13 @@ void AT_run_SPISS_method(	const long* n,
   float*  f            	=  (float*)calloc(n_bins_f, sizeof(float));
   float   f0            	=  0.0f;
 
-  AT_SC_get_f_start(  &u_start,
-      &n_bins_f1,
+  AT_SC_get_f_start(  u_start,
+      n_bins_f1,
       N2,
       f1_d_Gy,
       f1_dd_Gy,
       f1,
-      &n_bins_f,
+      n_bins_f,
       // from here: return values
       f_d_Gy,
       f_dd_Gy,
@@ -1291,12 +1289,13 @@ void AT_run_SPISS_method(	const long* n,
     f[i] = 0;
   }
 
-  if(*importance_sampling){
+  if(importance_sampling){
     printf("\n");
-    printf("Importance sampling chosen. Biasing function G(r)=r^%ld\n", *importance_sampling);}
-  else{
+    printf("Importance sampling chosen. Biasing function G(r)=r^%ld\n", importance_sampling);
+  }else{
     printf("\n");
-    printf("No importance sampling chosen.\n");}
+    printf("No importance sampling chosen.\n");
+  }
 
   // init RNG
   gsl_rng * rng1   = gsl_rng_alloc (gsl_rng_taus);
@@ -1315,7 +1314,7 @@ void AT_run_SPISS_method(	const long* n,
   float	dd_bin_Gy	= (max_bin_Gy - min_bin_Gy) / n_bins_f;
 
   // Do n_runs runs
-  for (i = 0; i < *n_runs; i++){
+  for (i = 0; i < n_runs; i++){
     // Get actual number particles for this run from Poisson generator
     act_number_particles	  =   (long)gsl_ran_poisson(rng1, u);
     // Reset local dose for run i
@@ -1328,7 +1327,7 @@ void AT_run_SPISS_method(	const long* n,
       // (1) draw random number 0..1 and sample particle type
       F 		= (float)gsl_rng_uniform (rng1);
       long k;
-      for (k = 0; k < *n; k++){
+      for (k = 0; k < n; k++){
         if (accu_fluence[k] >= F){
           break;
         }
@@ -1338,9 +1337,9 @@ void AT_run_SPISS_method(	const long* n,
       F = (float)gsl_rng_uniform (rng1);
 
       // (3) Apply importance sampling / weighting
-      if (*importance_sampling){
-        weight  *= (*importance_sampling) * pow(F, (*importance_sampling)-1.0f);
-        F        = pow(F, (*importance_sampling));
+      if (importance_sampling){
+        weight  *= importance_sampling * pow(F, importance_sampling-1.0f);
+        F        = pow(F, importance_sampling);
       }
 
       // (4) get dose d_Gy[j](r_max * F)
@@ -1349,10 +1348,10 @@ void AT_run_SPISS_method(	const long* n,
           &r_m,
           E_MeV_u[k],
           particle_no[k],
-          *material_no,
-          *rdd_model,
+          material_no,
+          rdd_model,
           rdd_parameters,
-          *er_model,
+          er_model,
           er_parameters,
           &d_j_Gy);
 
@@ -1387,7 +1386,7 @@ void AT_run_SPISS_method(	const long* n,
   }
 
   fprintf(output_file, "SPISS\n");
-  fprintf(output_file, "number of runs: %ld\n",    *n_runs);
+  fprintf(output_file, "number of runs: %ld\n",   n_runs);
   fprintf(output_file, "check D / Gy:   %4.3e\n", d_check);
   fprintf(output_file, "norm:           %4.3e\n", norm);
   fprintf(output_file, "f_n (%ld bins)\n", n_bins_f);
@@ -1416,7 +1415,7 @@ void AT_run_SPISS_method(	const long* n,
   end_tm = localtime(&end_t);
   float timespan_s  = difftime(end_t, start_t);
   fprintf(output_file, "End time and date: %s\n", asctime(end_tm));
-  fprintf(output_file, "\nTime per sample [s]:    %4.2e\n", timespan_s / *n_runs);
+  fprintf(output_file, "\nTime per sample [s]:    %4.2e\n", timespan_s / n_runs);
 
   fprintf(output_file, "\n");
   fprintf(output_file, "AmTrack SPISS run finished.\n");
