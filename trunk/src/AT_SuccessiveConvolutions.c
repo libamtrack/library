@@ -139,21 +139,21 @@ void  AT_SC_get_f1(  /* radiation field parameters */
     for (i = 0; i < n; i++){
       dose_Gy_local[i] = -1.0f * fluence_cm2[i];
     }
-    AT_fluence_cm2(  &n,
+    AT_fluence_cm2(  n,
         E_MeV_u,
         particle_no,
         dose_Gy_local,
-        &material_no,
+        material_no,
         fluence_cm2_local);
   }else{
     for (i = 0; i < n; i++){
       fluence_cm2_local[i] = fluence_cm2[i];
     }
-    AT_D_Gy(  &n,
+    AT_D_Gy(  n,
         E_MeV_u,
         particle_no,
         fluence_cm2_local,
-        &material_no,
+        material_no,
         dose_Gy_local);
   }
 

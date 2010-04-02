@@ -84,9 +84,9 @@ int AT_atomic_weight_from_particle_no( const long  n,
   long   n_particle_data = PARTICLE_DATA_N;
 
   find_elements_int(  Z,
-      &n,
+      n,
       AT_Particle_Data.Z,
-      &n_particle_data,
+      n_particle_data,
       matches);
 
   for (i = 0; i < n; i++){

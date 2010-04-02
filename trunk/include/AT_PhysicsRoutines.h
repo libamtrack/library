@@ -42,6 +42,7 @@
 #include "AT_ElectronRange.h"
 #include "AT_NumericalRoutines.h"
 
+
 /**
  * Structure to carry essential single, monoenergetic particle field information
  */
@@ -51,12 +52,14 @@ typedef struct {
   float   fluence_cm2;            /** fluence_cm2 */
 } single_field_data;
 
+
 /**
  * Structure to carry essential detector information
  */
 typedef struct {
   float   material_no;            /** material index */
 } detector_data;
+
 
 /**
  * Structure to carry derived single, monoenergetic particle field information, e.g. needed for array building
@@ -76,6 +79,7 @@ typedef struct {
   float   normalization;                /** normalization constant for RDD (e.g. to meet LET) */
 } single_field_information;
 
+
 /**
  * Structure to carry derived mixed particle field information, e.g. needed for array building
  * in AT_GSM, AT_SPIFF, ...
@@ -92,6 +96,7 @@ typedef struct {
   float   u;                                /** average number of track contributing to a detector voxel, needed by AT_SPIFF, AT_SPISS */
 } mixed_field_information;
 
+
 /**
  *  Returns relativistic speed for single value of energy
  *
@@ -100,17 +105,19 @@ typedef struct {
  */
 inline double AT_beta_from_E_single( const double  E_MeV_u );
 
+
 /**
  *  Returns relativistic speed for many particles
  *
  * @param[in]  n                        number of particles
  * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV]
- * @param[out] beta                    vector of relative particle speed beta = v/c
+ * @param[out] beta                     vector of relative particle speed beta = v/c
  * @return     status code
  */
 int AT_beta_from_E( const long  n,
     const float  E_MeV_u[],
     float  beta[]);
+
 
 /**
  *  Return energy per nucleon of particle with relative speed beta
@@ -119,6 +126,7 @@ int AT_beta_from_E( const long  n,
  * @return                              energy of particle per nucleon [MeV]
  */
 inline double AT_E_from_beta_single(  const double beta );
+
 
 /**
  *  Return energy per nucleon of particle with relative speed beta
@@ -131,6 +139,7 @@ inline double AT_E_from_beta_single(  const double beta );
 int AT_E_from_beta(  const long  n,
     const float  beta[],
     float  E_MeV_u[]);
+
 
 /**
  * Effective charge according to Barkas-Bethe-approximation:
@@ -145,6 +154,7 @@ int AT_E_from_beta(  const long  n,
  */
 inline double AT_effective_charge_from_beta_single(  const double beta,
     const long Z);
+
 
 /**
  * Effective charge according to Barkas-Bethe-approximation:
@@ -164,10 +174,11 @@ int AT_effective_charge_from_beta(  const long  n,
     const long  Z[],
     float  effective_charge[]);
 
+
 /**
  * Get Bohr's energy spread (Wilson, 1947, Phys Rev 71, 385)
  * @param[in]  n                        number of particles
- * @param[in]  material_no              TODO
+ * @param[in]  material_no              index number for detector material
  * @param[out] dsE2dz                   TODO
  */
 void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
@@ -183,11 +194,12 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
  * calculated for particle with given energy per nucleon
  *
  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
- * @param[in]  particle_no              TODO
- * @return     effective_charge         TODO
+ * @param[in]  particle_no              type of the particles in the mixed particle field
+ * @return     effective_charge         Effective charge according to Barkas-Bethe-approximation
  */
 double AT_effective_charge_from_E_MeV_u_single(  const double E_MeV_u,
     const long  particle_no);
+
 
 /**
  * Effective charge according to Barkas-Bethe-approximation:
@@ -198,14 +210,15 @@ double AT_effective_charge_from_E_MeV_u_single(  const double E_MeV_u,
  *
  * @param[in]  n                        number of particles
  * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV]
- * @param[in]  particle_no              TODO
- * @param[out] effective_charge         TODO
+ * @param[in]  particle_no              type of the particles in the mixed particle field (array of size n)
+ * @param[out] effective_charge         Effective charge according to Barkas-Bethe-approximation
  * @return     status code
  */
 int AT_effective_charge_from_E_MeV_u(  const long  n,
     const float  E_MeV_u[],
     const long   particle_no[],
     float        effective_charge[]);
+
 
 /**
  * Max relativistic energy transfer for single particle TODO
@@ -214,12 +227,14 @@ int AT_effective_charge_from_E_MeV_u(  const long  n,
  */
 inline double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u );
 
+
 /**
  * Max classic energy transfer for single particle TODO
  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
  * @return max_E_transfer_MeV
  */
 inline double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u );
+
 
 /**
  * Max energy transfer for single particle TODO
@@ -228,6 +243,7 @@ inline double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u );
  * @param[out] max_E_transfer_MeV
  */
 inline double AT_max_E_transfer_MeV_single( const double E_MeV_u);
+
 
 /**
  * Max energy transfer TODO
@@ -240,41 +256,44 @@ int AT_max_E_transfer_MeV(  const long  n,
     const float  E_MeV_u[],
     float        max_E_transfer_MeV[]);
 
+
 /**
  * Returns dose in Gy for each given particle
- * @param[in]  n            number of particle types in the mixed particle field (pointer to single variable)
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
- * @param[in]  fluence_cm2  fluence for each particle type (pointer to array of size n)
- * @param[in]  particle_no  type of the particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  n            number of particle types in the mixed particle field
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  fluence_cm2  fluence for each particle type (array of size n)
+ * @param[in]  particle_no  type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[out] D_Gy         pointer to vector of size n to be allocated by the user which will be used to return the results
+ * @param[out] D_Gy         vector of size n to be allocated by the user which will be used to return the results
  */
-void AT_D_Gy(  const long*  n,
-    const float*  E_MeV_u,
-    const long* particle_no,
-    const float* fluence_cm2,
-    const long* material_no,
-    float* D_Gy);
+void AT_D_Gy(  const long  n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
+    const float  fluence_cm2[],
+    const long   material_no,
+    float        D_Gy[]);
+
 
 /**
  * Returns fluence in 1/cm2 for each given particle
- * @param[in]  n            number of particle types in the mixed particle field (pointer to single variable)
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
- * @param[in]  D_Gy         dose / Gy for each particle type (pointer to array of size n)
- * @param[in]  particle_no  type of the particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  n            number of particle types in the mixed particle field
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  D_Gy         dose / Gy for each particle type (array of size n)
+ * @param[in]  particle_no  type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[out] fluence_cm2         pointer to vector of size n to be allocated by the user which will be used to return the results
+ * @param[out] fluence_cm2         vector of size n to be allocated by the user which will be used to return the results
  */
-void AT_fluence_cm2(  const long*  n,
-    const float*  E_MeV_u,
-    const long* particle_no,
-    const float* D_Gy,
-    const long* material_no,
-    float* fluence_cm2);
+void AT_fluence_cm2(  const long  n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
+    const float  D_Gy[],
+    const long   material_no,
+    float        fluence_cm2[]);
+
 
 /**
  * Converts pair-wise physical beam parameters of a symmetric, double Gaussian shape beam (lateral), i.e.
@@ -285,53 +304,44 @@ void AT_fluence_cm2(  const long*  n,
  * The routine completes the missing data, e.g. FWHM if sigma given, fluence_cm2 (if set 0) if N given etc.
  * If both sigma_cm and FWHM or fluence_cm2 and N are given the physical parameters are taken and the acc. reevaluated
  *
- * @param[in]      n             length of vectors for parameters (pointer to single variable)
- * @param[in,out]  fluence_cm2   fluence in beam center (pointer to array of size n)
- * @param[in,out]  sigma_cm      beam width stdev (pointer to array of size n)
- * @param[in,out]  N             pointer to vector of size n to be allocated by the user which will be used to return the results (absolute particle number)
- * @param[in,out]  FWHM_mm       pointer to vector of size n to be allocated by the user which will be used to return the results (in mm)
+ * @param[in]      n             length of vectors for parameters
+ * @param[in,out]  fluence_cm2   fluence in beam center (array of size n)
+ * @param[in,out]  sigma_cm      beam width stdev (array of size n)
+ * @param[in,out]  N             vector of size n to be allocated by the user which will be used to return the results (absolute particle number)
+ * @param[in,out]  FWHM_mm       vector of size n to be allocated by the user which will be used to return the results (in mm)
  */
-void AT_convert_beam_parameters(  const long*  n,
-    float* fluence_cm2,
-    float* sigma_cm,
-    float* N,
-    float* FWHM_mm);
+void AT_convert_beam_parameters(  const long  n,
+    float fluence_cm2[],
+    float sigma_cm[],
+    float N[],
+    float FWHM_mm[]);
+
 
 /**
  * Interparticle distance TODO
- * @param[in]      n               length of vectors for parameters (pointer to single variable)
- * @param[in]      LET_MeV_cm2_g   TODO
- * @param[in]      fluence_cm2     TODO
- * @param[out]     results_m       TODo
+ * @param[in]      n               length of vectors for parameters
+ * @param[in]      LET_MeV_cm2_g   LET for each particle type (array of size n)
+ * @param[in]      fluence_cm2     fluence for each particle type (array of size n)
+ * @param[out]     results_m       interparticle distance for each particle type (array of size n)
  */
-void AT_interparticleDistance_m(       const long*   n,
-    const float*  LET_MeV_cm2_g,
-    const float*  fluence_cm2,
-    float*  results_m
+void AT_interparticleDistance_m(       const long   n,
+    const float  LET_MeV_cm2_g[],
+    const float  fluence_cm2[],
+    float        results_m[]
 );
 
+
 /**
- * Interparticle distance TODO
- * @param[in]      n               length of vectors for parameters (pointer to single variable)
- * @param[in]      LET_MeV_cm2_g   TODO
- * @param[in]      distance_m      TODO
+ * Inverse interparticle distance TODO
+ * @param[in]      n               length of vectors for parameters
+ * @param[in]      LET_MeV_cm2_g   LET for each particle type (array of size n)
+ * @param[in]      distance_m      interparticle distance for each particle type (array of size n)
  * @param[out]     results_Gy      TODO
  */
-void AT_inv_interparticleDistance_Gy(  const long*   n,
-    const float*  LET_MeV_cm2_g,
-    const float*  distance_m,
-    float*  results_Gy
-);
-
-/**
- * Interparticle distance TODO
- * @param[in]      n               length of vectors for parameters (pointer to single variable)
- * @param[in]      distance_m      TODO
- * @param[out]     results_cm2     TODO
- */
-void AT_inv_interparticleDistance_cm2( const long*   n,
-    const float*  distance_m,
-    float*  results_cm2
+void AT_inv_interparticleDistance_Gy(  const long   n,
+    const float   LET_MeV_cm2_g[],
+    const float   distance_m[],
+    float         results_Gy[]
 );
 
 
@@ -359,8 +369,8 @@ double AT_single_impact_fluence_cm2_single( const double E_MeV_u,
  *
  * Needed by SuccessiveConvolutions
  *
- * @param[in]  n            length of vectors for parameters (pointer to single variable)
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  n            length of vectors for parameters
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[in]  er_model     index of electron-range model
@@ -373,6 +383,7 @@ void AT_single_impact_fluence_cm2( const long n,
     const long    er_model,
     double        single_impact_fluence_cm2[]);
 
+
 /**
  * TODO
  * @param LET_MeV_cm2_g
@@ -382,125 +393,122 @@ void AT_single_impact_fluence_cm2( const long n,
 inline double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
     const double single_impact_fluence_cm2);
 
+
 /**
  * Computes the total dose of a particle field
  *
  * Needed by SuccessiveConvolutions
  *
- * @param[in]  n            length of vectors for parameters (pointer to single variable)
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
- * @param[in]  particle_no  particle index (pointer to array of size n)
+ * @param[in]  n            length of vectors for parameters
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  particle_no  particle index (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[out] total_dose_Gy  result (pointer to float)
+ * @return     total_dose_Gy  result
   */
-void AT_total_D_Gy( const long* n,
-    const float* E_MeV_u,
-    const long* particle_no,
-    const float* fluence_cm2,
-    const long* material_no,
-    float* total_dose_Gy);
+float  AT_total_D_Gy( const long  n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
+    const float  fluence_cm2[],
+    const long   material_no);
+
 
 /**
  * Computes the total fluence of a particle field
  *
  * Needed by SuccessiveConvolutions
  *
- * @param[in]  n            length of vectors for parameters (pointer to single variable)
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
- * @param[in]  particle_no  particle index (pointer to array of size n)
+ * @param[in]  n            length of vectors for parameters
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  particle_no  particle index (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param[in]  D_Gy  doses of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  D_Gy  doses of particles in the mixed particle field (array of size n)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[out] total_fluence_cm  result (pointer to float)
+ * @return       total_fluence_cm  result
   */
-void AT_total_fluence_cm2( const long* n,
-    const float* E_MeV_u,
-    const long* particle_no,
-    const float* D_Gy,
-    const long* material_no,
-    float* total_fluence_cm2);
+float AT_total_fluence_cm2( const long n,
+    const float   E_MeV_u[],
+    const long    particle_no[],
+    const float   D_Gy[],
+    const long    material_no);
+
 
 /**
  * Computes the fluence-weighted average energy of a particle field
  *
  * Needed by SuccessiveConvolutions
  *
- * @param[in]  n            length of vectors for parameters (pointer to single variable)
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (pointer to array of size n)
- * @param[out] average_E_MeV_u  result (pointer to float)
+ * @param[in]  n            length of vectors for parameters
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
+ * @return     average_E_MeV_u  result
  */
-void AT_fluenceweighted_E_MeV_u( const long*     n,
-    const float* E_MeV_u,
-    const float* fluence_cm2,
-    float* average_E_MeV_u);
+float AT_fluenceweighted_E_MeV_u( const long    n,
+    const float E_MeV_u[],
+    const float fluence_cm2[]);
 
 /**
  * Computes the dose-weighted average energy of a particle field
  *
  * Needed by SuccessiveConvolutions
  *
- * @param[in]  n            length of vectors for parameters (pointer to single variable)
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
- * @param[in]  particle_no  particle index (pointer to array of size n)
+ * @param[in]  n            length of vectors for parameters
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  particle_no  particle index (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[out] doseweighted_E_MeV_u  result (pointer to float)
+ * @return     doseweighted_E_MeV_u  result
  */
-void AT_doseweighted_E_MeV_u( const long*     n,
-    const float* E_MeV_u,
-    const long* particle_no,
-    const float* fluence_cm2,
-    const long* material_no,
-    float* doseweighted_E_MeV_u);
+float AT_doseweighted_E_MeV_u( const long   n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
+    const float  fluence_cm2[],
+    const long   material_no);
 
 /**
  * Computes the fluence-weighted average LET of a particle field
  *
  * Needed by SuccessiveConvolutions
  *
- * @param[in]  n            length of vectors for parameters (pointer to single variable)
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
- * @param[in]  particle_no  particle index (pointer to array of size n)
+ * @param[in]  n            length of vectors for parameters
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  particle_no  particle index (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[out] fluenceweighted_LET_MeV_cm2_g  result (pointer to float)
+ * @return     fluenceweighted_LET_MeV_cm2_g  result
  */
-void AT_fluenceweighted_LET_MeV_cm2_g( const long*     n,
-    const float* E_MeV_u,
-    const long* particle_no,
-    const float* fluence_cm2,
-    const long* material_no,
-    float* fluenceweighted_LET_MeV_cm2_g);
+float AT_fluenceweighted_LET_MeV_cm2_g( const long     n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
+    const float  fluence_cm2[],
+    const long   material_no);
 
 /**
  * Computes the dose-weighted average LET of a particle field
  *
  * Needed by SuccessiveConvolutions
  *
- * @param[in]  n            length of vectors for parameters (pointer to single variable)
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (pointer to array of size n)
- * @param[in]  particle_no  particle index (pointer to array of size n)
+ * @param[in]  n            length of vectors for parameters
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  particle_no  particle index (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (pointer to array of size n)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (pointer to array of size n)
- * @param[out] doseweighted_LET_MeV_cm2_g  result (pointer to float)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
+ * @return     doseweighted_LET_MeV_cm2_g  result
  */
-void AT_doseweighted_LET_MeV_cm2_g( const long*     n,
-    const float* E_MeV_u,
-    const long* particle_no,
-    const float* fluence_cm2,
-    const long* material_no,
-    float* doseweighted_LET_MeV_cm2_g);
+float AT_doseweighted_LET_MeV_cm2_g( const long  n,
+    const float  E_MeV_u[],
+    const long   particle_no[],
+    const float  fluence_cm2[],
+    const long   material_no);
 
 #endif /* AT_PHYSICSROUTINES_H_ */
