@@ -172,10 +172,10 @@ inline void AT_ER_Tabata_constants(const double average_A, const double average_
  * @param[out] max_electron_range_m         electron range (track diameter) in m
  */
 void AT_max_electron_ranges_m( const long number_of_particles ,
-    const float  E_MeV_u[],
-    const int    material_no,
-    const int    er_model,
-    float  max_electron_range_m[]);
+    const double  E_MeV_u[],
+    const int     material_no,
+    const int     er_model,
+    double        max_electron_range_m[]);
 
 
 /**

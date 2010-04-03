@@ -62,12 +62,12 @@ enum GammaResponseModels{
  * TODO
  */
 typedef struct {
-  long    n;
-  long    GR_no[GR_DATA_N];
-  long    n_parameters[GR_DATA_N];
-  char*   parameter_name[GR_DATA_N][4];
-  float   parameter_default[GR_DATA_N][4];
-  char*   GR_name[GR_DATA_N];
+  const long     n;
+  const long     GR_no[GR_DATA_N];
+  const long     n_parameters[GR_DATA_N];
+  const char*    parameter_name[GR_DATA_N][4];
+  const double   parameter_default[GR_DATA_N][4];
+  const char*    GR_name[GR_DATA_N];
 } gr_data;
 
 
@@ -77,7 +77,7 @@ typedef struct {
 static const gr_data AT_GR_Data = {
     GR_DATA_N,
     {  GR_Test,          GR_GeneralTarget,          GR_Radioluminescence,        GR_ExpSaturation, GR_LinQuad, GR_LinQuad_Log},
-    {  0, 4, 3, 2, 3, 3},
+    {  2, 4, 3, 2, 3, 3},
     {  {"","","",""},{"S_max", "D0_Gy", "c", "m"},{"S_max","D0_Gy","dyn",""},{"S_max","D0_Gy","",""},{"alpha","beta","D0_Gy",""},{"alpha","beta","D0_Gy",""}},
     {  {0,0,0,0}, {1, 10, 1, 1}, {1,10,5,0}, {1,10,0,0}, {1, 1, 10, 0}, {1, 1, 10, 0}},
     {  "simple test gamma response",  "generalized multi-target/multi-hit gamma response",  "radioluminescence gamma response",    "exp.-sat. gamma response (obsolete, use gen. target/hit instead)", "linear-quadratic gamma response","lethal events number response"}
@@ -85,36 +85,37 @@ static const gr_data AT_GR_Data = {
 
 
 /**
- * Returns name of the gamma response model from index
+ * Get index of gamma response model in AT_GR_Data for given Gamma_no
+ * (currently for example gamma response model with number 2 has index 1)
  *
- * PUBLIC
+ * @param Gamma_no  gamma response model number
+ * @return          gamma response model index in AT_GR_Data table
+ */
+long AT_Gamma_index_from_material_number( const long Gamma_no );
+
+
+/**
+ * Returns name of the gamma response model from model number
  *
- * @param[in]  Gamma_no    gamma response model index
+ * @param[in]  Gamma_no    gamma response model number
  * @param[out] Gamma_name  string containing gamma response model name
  */
-void getGammaName(  const long Gamma_no,
+void AT_Gamma_name_from_number(  const long Gamma_no,
     char* Gamma_name);
 
 
 /**
- * Returns name of the response model from index
+ * Returns number of parameters of the gamma response model from model number
  *
- * PUBLIC
- *
- * TODO this method is not implemented yet !
- *
- * @param[in]  Method_no    response model index
- * @param[out] Method_name  string containing response model name
+ * @param[in]   Gamma_no   gamma response model number
+ * return                  number of GR parameters
  */
-void getMethodName( const long Method_no,
-    char* Method_name);
+long AT_Gamma_number_of_parameters( const long Gamma_no);
 
 
 /**
  * Returns the detector / cell gamma response for a vector of given doses
  * according to the chosen gamma response model
- *
- * PUBLIC
  *
  * @param[in]  number_of_doses  number of doses given in vector d_Gy
  * @param[in]  d_Gy             doses in Gy (vector of length number_of_doses)
@@ -123,19 +124,16 @@ void getMethodName( const long Method_no,
  * @param[out] S                gamma responses (vector of length number_of_doses)
  */
 void AT_gamma_response( const long  number_of_doses,
-    const float   d_Gy[],
-    const long    gamma_model,
-    const float   gamma_parameter[],
-    // return
-    float         S[]);
+    const double   d_Gy[],
+    const long     gamma_model,
+    const double   gamma_parameter[],
+    double         S[]);
 
 
 /**
  * Returns the detector / cell gamma response for a local dose distribution
  * according to the chosen gamma response model, used by response model
  * routines in AmTrack.c
- *
- * PRIVATE
  *
  * @param[in]  number_of_bins      number of bins in given local dose distribution
  * @param[in]  d_Gy                local dose bin position in Gy (vector of length number_of_bins)
@@ -152,17 +150,16 @@ void AT_gamma_response( const long  number_of_doses,
  * @param[in]  efficiency          RE = S_HCP/S_gamma for given local dose distribution
  */
 void AT_get_gamma_response(  const long  number_of_bins,
-    const float   d_Gy[],
-    const float   dd_Gy[],
-    const float   f[],
-    const float   f0, // TODO parameter not used here, might be removed
-    const long    gamma_model,
-    const float   gamma_parameter[],
-    const bool    lethal_events_mode,
-    // return
-    float   S[],
-    float*  S_HCP,
-    float*  S_gamma,
-    float*  efficiency);
+    const double   d_Gy[],
+    const double   dd_Gy[],
+    const double   f[],
+    const double   f0, // TODO parameter not used here, might be removed
+    const long     gamma_model,
+    const double   gamma_parameter[],
+    const bool     lethal_events_mode,
+    double         S[],
+    double*        S_HCP,
+    double*        S_gamma,
+    double*        efficiency);
 
 #endif // AT_GAMMARESPONSE_H_

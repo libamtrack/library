@@ -33,26 +33,22 @@
 
 #define MEAN_HIT_NUMBER_LINEAR_APPROX_LIMIT  0.002
 #define DEBUG_INTERVALS                      8
-#define DEBUG_MEAN                           10.0f
-#define DEBUG_SIGMA                          1.0f
+#define DEBUG_MEAN                           10.0
+#define DEBUG_SIGMA                          1.0
 
 
-void  AT_SC_get_f1_array_size(  /* radiation field parameters */
-    const long   n,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    /* detector parameters */
-    const long   material_no,
-    const long   rdd_model,
-    const float  rdd_parameter[],
-    /* electron range model */
-    const long   er_model,
-    const float  er_parameter[],
-    /* algorithm parameters*/
-    const long   N2,
-    // from here: return values
-    long *       n_bins_f1,
-    float        f1_parameters[])
+void  AT_SC_get_f1_array_size(
+    const long    n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const long    material_no,
+    const long    rdd_model,
+    const double  rdd_parameter[],
+    const long    er_model,
+    const double  er_parameter[],
+    const long    N2,
+    long *        n_bins_f1,
+    double        f1_parameters[])
 {
   // get lowest and highest dose
   double d_max_Gy    =  0.0;
@@ -62,7 +58,7 @@ void  AT_SC_get_f1_array_size(  /* radiation field parameters */
   long  i;
   for (i = 0; i < n; i++){
     //    // get RDD parameters for all particles and energies
-    AT_RDD_f1_parameters(  (double)(E_MeV_u[i]),
+    AT_RDD_f1_parameters(  E_MeV_u[i],
         particle_no[i],
         material_no,
         rdd_model,
@@ -73,44 +69,39 @@ void  AT_SC_get_f1_array_size(  /* radiation field parameters */
         /* calculated parameters */
         &f1_parameters[i*n_f1_parameters]);
     if(i == 0){
-      d_min_Gy      =  (double)f1_parameters[i*n_f1_parameters + 3];
-      d_max_Gy      =  (double)f1_parameters[i*n_f1_parameters + 4];
+      d_min_Gy      =  f1_parameters[i*n_f1_parameters + 3];
+      d_max_Gy      =  f1_parameters[i*n_f1_parameters + 4];
     }
     else{
-      d_min_Gy      =  GSL_MIN(d_min_Gy, (double)f1_parameters[i*n_f1_parameters + 3]);
-      d_max_Gy      =  GSL_MAX(d_max_Gy, (double)f1_parameters[i*n_f1_parameters + 4]);
+      d_min_Gy      =  GSL_MIN(d_min_Gy, f1_parameters[i*n_f1_parameters + 3]);
+      d_max_Gy      =  GSL_MAX(d_max_Gy, f1_parameters[i*n_f1_parameters + 4]);
     }
   }
 
   // get number of bins needed to span that dose range
-  double tmp = (log10(d_max_Gy/d_min_Gy) / log10(2.0) * ((double)N2));
+  double tmp        =  log10(d_max_Gy/d_min_Gy) / log10(2.0) * ((double)N2);
   *n_bins_f1        =  (long)(floor(tmp) + 1.0);
 
   return;
 }
 
 
-void  AT_SC_get_f1(  /* radiation field parameters */
-    const long   n,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    const float  fluence_cm2[],
-    /* detector parameters */
-    const long   material_no,
-    const long   rdd_model,
-    const float  rdd_parameter[],
-    /* electron range model */
-    const long   er_model,
-    const float  er_parameter[],
-    /* algorithm parameters*/
-    const long   N2,
-    const long   n_bins_f1,
-    /* f1 parameters*/
-    const float  f1_parameters[],
-    // from here: return values
-    float        norm_fluence[],
-    float        dose_contribution_Gy[],
-    float        f_parameters[],
+void  AT_SC_get_f1(
+    const long    n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  fluence_cm2[],
+    const long    material_no,
+    const long    rdd_model,
+    const double  rdd_parameter[],
+    const long    er_model,
+    const double  er_parameter[],
+    const long    N2,
+    const long    n_bins_f1,
+    const double  f1_parameters[],
+    double        norm_fluence[],
+    double        dose_contribution_Gy[],
+    double        f_parameters[],
     /*  1 - total fluence_cm2
      *  2 - total_dose_Gy
      *  3 - ave_E_MeV
@@ -119,25 +110,25 @@ void  AT_SC_get_f1(  /* radiation field parameters */
      *  6 - dw_LET_MeV_cm2_g
      *  0 - u
      */
-    float  f1_d_Gy[],
-    float  f1_dd_Gy[],
-    float  f1[])
+    double        f1_d_Gy[],
+    double        f1_dd_Gy[],
+    double        f1[])
 {
 
   //TODO replace f_parameters and f1_parameters with human-readable variables
   ////////////////////////////////////////////////////////////////////////////////////////////
   // 1. normalize fluence, get total fluence and dose, eff. LET and mean impact parameter u,
-  f_parameters[1]    = 0.0f;
+  f_parameters[1]    = 0.0;
 
   // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
   // only the first entry will be check
   long   i;
-  float*  fluence_cm2_local    =  (float*)calloc(n, sizeof(float));
-  float*  dose_Gy_local        =  (float*)calloc(n, sizeof(float));
+  double*  fluence_cm2_local    =  (double*)calloc(n, sizeof(double));
+  double*  dose_Gy_local        =  (double*)calloc(n, sizeof(double));
 
   if(fluence_cm2[0] < 0){
     for (i = 0; i < n; i++){
-      dose_Gy_local[i] = -1.0f * fluence_cm2[i];
+      dose_Gy_local[i] = -1.0 * fluence_cm2[i];
     }
     AT_fluence_cm2(  n,
         E_MeV_u,
@@ -162,19 +153,19 @@ void  AT_SC_get_f1(  /* radiation field parameters */
     f_parameters[1]  +=  fluence_cm2_local[i];
   }
 
-  float u_single;
-  f_parameters[0]        =  0.0f;
-  f_parameters[2]        =  0.0f;
-  f_parameters[3]        =  0.0f;
-  f_parameters[4]        =  0.0f;
-  f_parameters[5]        =  0.0f;
-  f_parameters[6]        =  0.0f;
+  double u_single;
+  f_parameters[0]        =  0.0;
+  f_parameters[2]        =  0.0;
+  f_parameters[3]        =  0.0;
+  f_parameters[4]        =  0.0;
+  f_parameters[5]        =  0.0;
+  f_parameters[6]        =  0.0;
 
   //TODO: Replace by explicit routines in AT_PhysicsRoutines.c
   for (i = 0; i < n; i++){
     norm_fluence[i]        =  fluence_cm2_local[i] / f_parameters[1];
     //printf("norm_fluence[%ld] = %g\n", i, norm_fluence[i]);
-    u_single                    =  fluence_cm2_local[i] / f1_parameters[i*9 + 6];
+    u_single                   =  fluence_cm2_local[i] / f1_parameters[i*9 + 6];
     dose_contribution_Gy[i]    =  u_single * f1_parameters[i*9 + 7];
     //printf("dose_contribution_Gy[%ld] = %g\n", i, dose_contribution_Gy[i]);
     f_parameters[2]        +=  dose_contribution_Gy[i];
@@ -187,36 +178,36 @@ void  AT_SC_get_f1(  /* radiation field parameters */
 
   f_parameters[4]        /= f_parameters[2];
   f_parameters[6]        /= f_parameters[2];
-  f_parameters[0]        = f_parameters[2] / f_parameters[0];
+  f_parameters[0]         = f_parameters[2] / f_parameters[0];
 
   ////////////////////////////////////////////////////////////////////////////////////////////
   //  2. create all-over f1-data-frame, if f_d_Gy array passed (i.e. n_bins_f1 == 0)
   if(n_bins_f1 > 0){
-    float  d_min      =  f1_parameters[0*9 + 3];
-    float  d_max      =  f1_parameters[0*9 + 4];
+    double  d_min      =  f1_parameters[0*9 + 3];
+    double  d_max      =  f1_parameters[0*9 + 4];
 
     for (i = 1; i < n; i++){
-      d_min          =  fminf(f1_parameters[i*9 + 3], d_min);
-      d_max          =  fmaxf(f1_parameters[i*9 + 4], d_max);
+      d_min          =  GSL_MIN(f1_parameters[i*9 + 3], d_min);
+      d_max          =  GSL_MAX(f1_parameters[i*9 + 4], d_max);
     }
 
-    float  U        =  (float)(log(2.0f) / (float)N2);
+    double  U        =  (log(2.0) / (double)N2);
 
 
-    float*  d_df_low      =  (float*)calloc(n_bins_f1, sizeof(float));
-    float*  d_df_mid      =  (float*)calloc(n_bins_f1, sizeof(float));
-    float*  d_df_high     =  (float*)calloc(n_bins_f1, sizeof(float));
-    float*  dd_df         =  (float*)calloc(n_bins_f1, sizeof(float));
+    double*  d_df_low      =  (double*)calloc(n_bins_f1, sizeof(double));
+    double*  d_df_mid      =  (double*)calloc(n_bins_f1, sizeof(double));
+    double*  d_df_high     =  (double*)calloc(n_bins_f1, sizeof(double));
+    double*  dd_df         =  (double*)calloc(n_bins_f1, sizeof(double));
 
     for (i = 0; i < n_bins_f1; i++){
       // TODO: check if n.bins sufficient
 
-      d_df_low[i]          =   d_min * (float)exp((float)i * U);
-      d_df_high[i]         =   d_min * (float)exp(((float)i + 1) * U);
-      d_df_mid[i]          =  d_min * (float)exp(((float)i + 0.5f) * U);
-      dd_df[i]             =  d_df_high[i] - d_df_low[i];              // OBS: using Kellerer's bin-width = mid.point * U is not entirely correct
+      d_df_low[i]          =   d_min * exp((double)i * U);
+      d_df_high[i]         =   d_min * exp(((double)i + 1.0) * U);
+      d_df_mid[i]          =   d_min * exp(((double)i + 0.5) * U);
+      dd_df[i]             =   d_df_high[i] - d_df_low[i];              // OBS: using Kellerer's bin-width = mid.point * U is not entirely correct
 
-      f1[i]            =  0.0f;
+      f1[i]            =  0.0;
     }
 
     long n_bins_used = 1;
@@ -225,8 +216,8 @@ void  AT_SC_get_f1(  /* radiation field parameters */
     long   k;
     for (k = 0; k < n; k++){
 
-      float  d_min_k        =  f1_parameters[k*9 + 3];
-      float  d_max_k        =  f1_parameters[k*9 + 4];
+      double  d_min_k        =  f1_parameters[k*9 + 3];
+      double  d_max_k        =  f1_parameters[k*9 + 4];
 
       // find first and last bin to fit this particle's contribution into the all-over f1-frame
       long  i_low, i_high;
@@ -238,34 +229,34 @@ void  AT_SC_get_f1(  /* radiation field parameters */
       long  n_bins_df      =  i_high - i_low + 1;  // changed from + 2
 
       if (n_bins_df > 1){
-        float*  d_low       =  (float*)calloc(n_bins_df, sizeof(float));
-        float*  d_mid       =  (float*)calloc(n_bins_df, sizeof(float));
-        float*  d_high      =  (float*)calloc(n_bins_df, sizeof(float));
-        float*  dd          =  (float*)calloc(n_bins_df, sizeof(float));
-        float*  r           =  (float*)calloc(n_bins_df, sizeof(float));
-        float*  F1_1        =  (float*)calloc(n_bins_df, sizeof(float));
-        float*  f1_k        =  (float*)calloc(n_bins_df - 1, sizeof(float));
+        double*  d_low       =  (double*)calloc(n_bins_df, sizeof(double));
+        double*  d_mid       =  (double*)calloc(n_bins_df, sizeof(double));
+        double*  d_high      =  (double*)calloc(n_bins_df, sizeof(double));
+        double*  dd          =  (double*)calloc(n_bins_df, sizeof(double));
+        double*  r           =  (double*)calloc(n_bins_df, sizeof(double));
+        double*  F1_1        =  (double*)calloc(n_bins_df, sizeof(double));
+        double*  f1_k        =  (double*)calloc(n_bins_df - 1, sizeof(double));
 
         // extract the corresponding part from the all-over frame
         for (i = 0; i < n_bins_df; i++){
-          d_low[i]          =   d_df_low[i_low + i];
+          d_low[i]           =   d_df_low[i_low + i];
           d_high[i]          =   d_df_high[i_low + i];
-          d_mid[i]          =  d_df_mid[i_low + i];
-          dd[i]            =  d_high[i] - d_low[i];
+          d_mid[i]           =  d_df_mid[i_low + i];
+          dd[i]              =  d_high[i] - d_low[i];
         };
 
         // and adjust the edges
-        d_low[1-1]          =  d_min_k;
+        d_low[0]                =  d_min_k;
         d_low[n_bins_df-1]      =  d_max_k;
 
-        d_mid[1-1]          =  (float)sqrt(d_low[1 - 1] * d_high[1 - 1]);
-        d_mid[n_bins_df-1-1]    =  (float)sqrt(d_low[n_bins_df - 1] * d_high[n_bins_df - 1]);
-        d_mid[n_bins_df-1]      =  0;
+        d_mid[0]                =  sqrt(d_low[1 - 1] * d_high[1 - 1]);
+        d_mid[n_bins_df-1-1]    =  sqrt(d_low[n_bins_df - 1] * d_high[n_bins_df - 1]);
+        d_mid[n_bins_df-1]      =  0.0;
 
-        d_high[n_bins_df-1-1]    =  d_max_k;
-        d_high[n_bins_df-1]      =  0.0f;  //TODO ??
+        d_high[n_bins_df-1-1]   =  d_max_k;
+        d_high[n_bins_df-1]     =  0.0;  //TODO ??
 
-        dd[n_bins_df-1]        =  0.0f;
+        dd[n_bins_df-1]         =  0.0;
 
         // now compute r, F1, and f1, this could be any RDD if implemented
         AT_r_RDD_m  (  n_bins_df,
@@ -283,13 +274,15 @@ void  AT_SC_get_f1(  /* radiation field parameters */
             r);
 
         for (i = 0; i < n_bins_df; i++){
-          F1_1[i]            = (r[i] / f1_parameters[k*9 + 2]) * (r[i] / f1_parameters[k*9 + 2]);}        // F1 - 1 instead of F1 to avoid numeric cut-off problems
+          F1_1[i]            = (r[i] / f1_parameters[k*9 + 2]) * (r[i] / f1_parameters[k*9 + 2]);        // F1 - 1 instead of F1 to avoid numeric cut-off problems
+        }
 
-        F1_1[n_bins_df-1]    =  0.0f;
+        F1_1[n_bins_df-1]    =  0.0;
 
         // now compute f1 as the derivative of F1
         for (i = 0; i < (n_bins_df - 1); i++){
-          f1_k[i]          =  -1.0f * (F1_1[i + 1] - F1_1[i]) / dd[i];}
+          f1_k[i]          =  -1.0 * (F1_1[i + 1] - F1_1[i]) / dd[i];
+        }
 
         // adjust the density in first and last bin, because upper limit is not d.max.Gy and lower not d.min.Gy
         f1_k[1-1]        =  f1_k[1-1] * dd[1-1] / dd_df[i_low];
@@ -297,8 +290,8 @@ void  AT_SC_get_f1(  /* radiation field parameters */
 
         // and paste f1 for this energy /particle into the over all data frame according to rel. fluence
         for (i = 0; i < (n_bins_df - 1); i++){
-          f1[i_low + i]      +=  norm_fluence[k] * f1_k[i];}
-
+          f1[i_low + i]      +=  norm_fluence[k] * f1_k[i];
+        }
 
         free(d_low);
         free(d_mid);
@@ -309,7 +302,7 @@ void  AT_SC_get_f1(  /* radiation field parameters */
         free(f1_k);
       }
       else{ // n_bins_df == 1
-        f1[i_low ]        +=  norm_fluence[k] * 1.0f / dd_df[i_low];
+        f1[i_low ]        +=  norm_fluence[k] * 1.0 / dd_df[i_low];
       }
 
       // remember highest bin used
@@ -319,7 +312,7 @@ void  AT_SC_get_f1(  /* radiation field parameters */
     // copy back for the dose axis
     for (i = 0; i < n_bins_f1; i++){
       f1_d_Gy[i]    =  d_df_mid[i];
-      f1_dd_Gy[i]    =  dd_df[i];
+      f1_dd_Gy[i]   =  dd_df[i];
     }
 
     free(d_df_low);
@@ -327,7 +320,7 @@ void  AT_SC_get_f1(  /* radiation field parameters */
     free(d_df_high);
     free(dd_df);
     // normalize f1 (should be ok anyway but there could be small round-off errors)
-    float  f1_norm    =  0.0f;
+    double  f1_norm    =  0.0;
     for (i = 0; i < n_bins_f1; i++){
       f1_norm    +=    f1[i] * f1_dd_Gy[i];
     }
@@ -342,20 +335,19 @@ void  AT_SC_get_f1(  /* radiation field parameters */
 }
 
 
-void  AT_SC_get_f_array_size( const float  u,
-    const float   fluence_factor,
-    const long    N2,
-    const long    n_bins_f1,
-    const float   f1_d_Gy[],
-    const float   f1_dd_Gy[],
-    const float   f1[],
-    // from here: return values
-    long*         n_bins_f,
-    float*        u_start,
-    long*         n_convolutions)
+void  AT_SC_get_f_array_size( const double  u,
+    const double   fluence_factor,
+    const long     N2,
+    const long     n_bins_f1,
+    const double   f1_d_Gy[],
+    const double   f1_dd_Gy[],
+    const double   f1[],
+    long*          n_bins_f,
+    double*        u_start,
+    long*          n_convolutions)
 {
   // Get expectation value of dose from f1
-  float  d_f1_Gy    =  0.0f;
+  double  d_f1_Gy    =  0.0;
 
   long   i;
   for (i = 0; i < n_bins_f1; i++){
@@ -363,7 +355,7 @@ void  AT_SC_get_f_array_size( const float  u,
   }
 
   // The dose set by the input data is therefore
-  float  d_f_Gy    = u * fluence_factor * d_f1_Gy;
+  double  d_f_Gy    = u * fluence_factor * d_f1_Gy;
 
   // How many convolution are necessary starting from a small mean
   // impact number that allows linear approximation (e.g. 0.002)
@@ -371,7 +363,7 @@ void  AT_SC_get_f_array_size( const float  u,
 
   *u_start      =    d_f_Gy  / d_f1_Gy;
   while(*u_start  > MEAN_HIT_NUMBER_LINEAR_APPROX_LIMIT){
-    *u_start      =    0.5f * (*u_start);
+    *u_start      =    0.5 * (*u_start);
     (*n_convolutions)++;
   }
 
@@ -385,42 +377,43 @@ void  AT_SC_get_f_array_size( const float  u,
 
 
 // TODO it seems that u_start is unused in function body
-void  AT_SC_get_f_start( const float  u_start,
-    const long    n_bins_f1,
-    const long    N2,
-    const float   f1_d_Gy[],
-    const float   f1_dd_Gy[],
-    const float   f1[],
-    const long    n_bins_f,
-    // from here: return values
-    float   f_d_Gy[],
-    float   f_dd_Gy[],
-    float   f_start[])
+void  AT_SC_get_f_start( const double  u_start,
+    const long     n_bins_f1,
+    const long     N2,
+    const double   f1_d_Gy[],
+    const double   f1_dd_Gy[],
+    const double   f1[],
+    const long     n_bins_f,
+    double         f_d_Gy[],
+    double         f_dd_Gy[],
+    double         f_start[])
 {
   // temporary arrays
-  float*  d_low         =  (float*)calloc(n_bins_f, sizeof(float));
-  float*  d_high        =  (float*)calloc(n_bins_f, sizeof(float));
+  double*  d_low         =  (double*)calloc(n_bins_f, sizeof(double));
+  double*  d_high        =  (double*)calloc(n_bins_f, sizeof(double));
 
-  float  U              =  (float)(log(2.0f) / (float)N2);
+  double  U              =  log(2.0) / (double)N2;
 
   long   i;
   for (i = 0; i < n_bins_f; i++){
-    d_low[i]            =   f1_d_Gy[0] * (float)exp(((float)i - 0.5f)* U);
-    d_high[i]           =   f1_d_Gy[0] * (float)exp(((float)i + 0.5f)* U);
+    d_low[i]            =   f1_d_Gy[0] * exp(((double)i - 0.5)* U);
+    d_high[i]           =   f1_d_Gy[0] * exp(((double)i + 0.5)* U);
     if (i < n_bins_f1){
       f_d_Gy[i]         =  f1_d_Gy[i];
       f_dd_Gy[i]        =  f1_dd_Gy[i];
-      f_start[i]        =  f1[i];}
-    else{
-      f_d_Gy[i]         =  (float)sqrt(d_low[i] * d_high[i]);
+      f_start[i]        =  f1[i];
+    }else{
+      f_d_Gy[i]         =  sqrt(d_low[i] * d_high[i]);
       f_dd_Gy[i]        =  d_high[i] - d_low[i];
-      f_start[i]        =  0.0f;}
+      f_start[i]        =  0.0;
+    }
   }
 
   free(d_low);
   free(d_high);
   return;
 }
+
 
 aKList  AT_SC_NORMAL(aKList theKList){
 
@@ -429,37 +422,37 @@ aKList  AT_SC_NORMAL(aKList theKList){
     fprintf(theKList.output_file,      "=========================\n");
   }
 
-  float  Y        =  theKList.CM1 * 2;
-  float  Z        =  theKList.CM2 * 2;
-  float  CM0      =  theKList.H0;
-  theKList.CM1    =  0;
+  double  Y        =  theKList.CM1 * 2;
+  double  Z        =  theKList.CM2 * 2;
+  double  CM0      =  theKList.H0;
+  theKList.CM1     =  0;
 
-  long    N       =  theKList.MIH - theKList.MIE;
+  long    N        =  theKList.MIH - theKList.MIE;
   long     L;
   for (L = 1; L <= theKList.LEH; L++){
-    long    LE    =  L + N;
-    float  S      =  theKList.H[L-1] * theKList.DE[LE-1];
+    long    LE     =  L + N;
+    double  S      =  theKList.H[L-1] * theKList.DE[LE-1];
 
     CM0           =  CM0 + S;
     theKList.CM1  =  theKList.CM1 + S * theKList.E[LE-1];
   }
 
-  float  TT       =  (1.0f - theKList.H0) / (CM0 - theKList.H0);
-  theKList.CM1    =  theKList.CM1 * TT;
-  float  R        =  theKList.CM1 * theKList.CM1;
-  theKList.CM2    =  R * theKList.H0;
-  theKList.CM3    =  -1.0f * theKList.CM1 * R * theKList.H0;
-  theKList.CM4    =  R * R * theKList.H0;
+  double  TT       =  (1.0 - theKList.H0) / (CM0 - theKList.H0);
+  theKList.CM1     =  theKList.CM1 * TT;
+  double  R        =  theKList.CM1 * theKList.CM1;
+  theKList.CM2     =  R * theKList.H0;
+  theKList.CM3     =  -1.0 * theKList.CM1 * R * theKList.H0;
+  theKList.CM4     =  R * R * theKList.H0;
 
   for (L = 1; L <= theKList.LEH; L++){
-    long   LE       =    L + N;
-    float  EC       =    theKList.E[LE-1] - theKList.CM1;
-    float  E2       =    EC * EC;
-    theKList.H[L-1] =    theKList.H[L-1] * TT;
-    float  S        =    theKList.H[L-1] * theKList.DE[LE-1] * E2;
-    theKList.CM2    =    theKList.CM2 + S;
-    theKList.CM3    =    theKList.CM3 + S * EC;
-    theKList.CM4    =    theKList.CM4 + S * E2;
+    long   LE        =    L + N;
+    double  EC       =    theKList.E[LE-1] - theKList.CM1;
+    double  E2       =    EC * EC;
+    theKList.H[L-1]  =    theKList.H[L-1] * TT;
+    double  S        =    theKList.H[L-1] * theKList.DE[LE-1] * E2;
+    theKList.CM2     =    theKList.CM2 + S;
+    theKList.CM3     =    theKList.CM3 + S * EC;
+    theKList.CM4     =    theKList.CM4 + S * E2;
   }
 
   theKList.X      =  theKList.X * CM0;
@@ -481,7 +474,6 @@ aKList  AT_SC_NORMAL(aKList theKList){
 }
 
 
-
 aKList  AT_SC_OUTPUT(aKList theKList){
 
   if(theKList.write_output){
@@ -489,20 +481,21 @@ aKList  AT_SC_OUTPUT(aKList theKList){
     fprintf(theKList.output_file,      "=========================\n");
   }
 
-  //float*  SD            =  (float*)calloc(theKList.array_size, sizeof(float));
+  //double*  SD            =  (double*)calloc(theKList.array_size, sizeof(double));
 
-  float  B             =  theKList.CM2 / (theKList.CM1 * theKList.CM1);
-  float  C             =  theKList.CM3 / (float)sqrt(theKList.CM2 * theKList.CM2 * theKList.CM2);
-  float  D             =  theKList.CM4 / (theKList.CM2 * theKList.CM2);
-  float  S1            =  theKList.CN * theKList.D1;
-  float  S2            =  theKList.CN * theKList.D2 / (S1 * S1);
-  float  S3            =  theKList.D3 / (float)sqrt(theKList.CN * theKList.D2 * theKList.D2 * theKList.D2);
-  float  S4            =  theKList.D4 / (theKList.D2 * theKList.D2 * theKList.CN) + 3;
+  double  B             =  theKList.CM2 / (theKList.CM1 * theKList.CM1);
+  double  C             =  theKList.CM3 / sqrt(theKList.CM2 * theKList.CM2 * theKList.CM2);
+  double  D             =  theKList.CM4 / (theKList.CM2 * theKList.CM2);
+  double  S1            =  theKList.CN * theKList.D1;
+  double  S2            =  theKList.CN * theKList.D2 / (S1 * S1);
+  double  S3            =  theKList.D3 / sqrt(theKList.CN * theKList.D2 * theKList.D2 * theKList.D2);
+  double  S4            =  theKList.D4 / (theKList.D2 * theKList.D2 * theKList.CN) + 3;
 
   if(theKList.N1 <= 0){
     S2                =  B;
     S3                =  C;
-    S4                =  D;}
+    S4                =  D;
+  }
 
   if(theKList.write_output){
     fprintf(  theKList.output_file,
@@ -549,24 +542,23 @@ aKList  AT_SC_OUTPUT(aKList theKList){
 }
 
 
-
 aKList  AT_SC_INTERP(aKList theKList){
 
-  theKList.A[1-1]          =  theKList.F[2-1] - theKList.F[1-1];
-  theKList.BI[1-1]        =  0.0f;
-  theKList.F[theKList.LEF + 1 - 1]=  0.0f;
+  theKList.A[0]             =  theKList.F[1] - theKList.F[0];
+  theKList.BI[0]            =  0.0;
+  theKList.F[theKList.LEF]  =  0.0;
 
   long   K;
   for (K = 1; K <= theKList.N2; K++){
-    long L          =  theKList.LEF + K;
-    theKList.A[L-1]      =  0.0f;
-    theKList.BI[L-1]    =  0.0f;
+    long L           =  theKList.LEF + K;
+    theKList.A[L-1]  =  0.0;
+    theKList.BI[L-1] =  0.0;
   }
 
   long   L;
   for (L = 2; L <= theKList.LEF; L++){
-    theKList.A[L -1]    =  0.5f * (theKList.F[L + 1 -1] - theKList.F[L - 1 -1]);
-    theKList.BI[L -1]    =  theKList.A[L-1] + theKList.F[L - 1 -1] - theKList.F[L -1];
+    theKList.A[L -1]    =  0.5 * (theKList.F[L] - theKList.F[L - 1 -1]);
+    theKList.BI[L -1]   =  theKList.A[L-1] + theKList.F[L - 1 -1] - theKList.F[L -1];
   }
 
   return(theKList);
@@ -577,12 +569,12 @@ aKList  AT_SC_RESET(aKList theKList){
 
   if (theKList.N2 <= 256){
     if(theKList.LEF <= 64){
-      float S              =  (float)log(2.0f);
-      float TT             =  (float)theKList.N2;
+      double S              =  log(2.0);
+      double TT             =  (double)theKList.N2;
       //      theKList.N2            =  theKList.N2 * 2;
-      theKList.N2          +=  (long)(0.1 + exp((float)((long)(log(TT) / S - 0.99f)) * S));
-      TT                   =  TT / (float)theKList.N2;
-      theKList.U           =  S / (float)theKList.N2;
+      theKList.N2          +=  (long)(0.1 + exp((double)((long)(log(TT) / S - 0.99)) * S));
+      TT                   =  TT / (double)theKList.N2;
+      theKList.U           =  S / (double)theKList.N2;
 
       if(theKList.write_output){
         fprintf(theKList.output_file,      "\n\nThis is subroutine AT_SC_RESET\n");
@@ -591,17 +583,17 @@ aKList  AT_SC_RESET(aKList theKList){
       }
 
       theKList            =  AT_SC_INTERP(theKList);
-      theKList.F[theKList.LEF + 1 -1]  =  0;
+      theKList.F[theKList.LEF]  =  0;
       long N              =  theKList.MIF;
-      theKList.MIF          =  (long)((float)theKList.MIF / TT) + 1;    /////////////////////
-      theKList.LEF          =  (long)((float)theKList.LEF / TT) - 1;    // added (SG) : -1 //
+      theKList.MIF          =  (long)((double)theKList.MIF / TT) + 1;    /////////////////////
+      theKList.LEF          =  (long)((double)theKList.LEF / TT) - 1;    // added (SG) : -1 //
       /////////////////////
       long   K;
       for (K = 1; K <= theKList.LEF; K++){
-        long   L            =  theKList.LEF - K + 1;
-        float  FLF            =  (float)(L + theKList.MIF) * TT - (float)N;
-        long   LFF            =  (long)(FLF + 0.5f);
-        float S              =  FLF - (float)LFF;
+        long   L              =  theKList.LEF - K + 1;
+        double  FLF           =  (double)(L + theKList.MIF) * TT - (double)N;
+        long   LFF            =  (long)(FLF + 0.5);
+        double S              =  FLF - (double)LFF;
 
         ////////////////////////////////////////////////////////////////////////////////
         // Replaced Kellerer's original quadratic interpolation by a slower           //
@@ -614,34 +606,34 @@ aKList  AT_SC_RESET(aKList theKList){
 
         theKList.F[L -1]        =  theKList.F[LFF -1];
         if((S < 0 ) && (LFF >= 2)){
-          theKList.F[L -1]      =  (float)(pow(theKList.F[LFF - 1 -1], -1.0f * S) * pow(theKList.F[LFF -1], 1.0f + S));
+          theKList.F[L -1]      =  pow(theKList.F[LFF - 1 -1], -1.0 * S) * pow(theKList.F[LFF -1], 1.0 + S);
         }
         if((S > 0 ) && (LFF <= theKList.LEF - 1)){
-          theKList.F[L -1]      =  (float)(pow(theKList.F[LFF -1], 1.0f - S) * pow(theKList.F[LFF + 1 -1], S));
+          theKList.F[L -1]      =  pow(theKList.F[LFF -1], 1.0 - S) * pow(theKList.F[LFF], S);
         }
       }
 
       long   L;
       for (L = theKList.N2; L <= theKList.array_size; L++){;
-      float S          = (float)(L - theKList.N2) * theKList.U;
-      float tmp        = (float)(-1.0f * log(1.0f - 0.5f * exp(-S)) / theKList.U);
-      theKList.DI[L -1]    = tmp - (float)theKList.N2;    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
+      double S           =  (double)(L - theKList.N2) * theKList.U;
+      double tmp         =  -1.0 * log(1.0 - 0.5 * exp(-S)) / theKList.U;
+      theKList.DI[L -1]  =  tmp - (double)theKList.N2;    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
       }
 
       theKList.MIE          =  theKList.MIF;
 
       long   J;
       for (J = 1; J <= theKList.array_size; J++){
-        float S            =  (float)(J + theKList.MIE);
-        theKList.E[J -1]      =  (float)exp(S * theKList.U) * theKList.E0;
+        double S            =  (double)(J + theKList.MIE);
+        theKList.E[J -1]    =  exp(S * theKList.U) * theKList.E0;
         ///////////////////////////////////////////////////////////////////////////
         // addition SG: not to use Kellerer's formula for new DE's, as it is     //
         // not exact (but deviation are small)                                   //
         ///////////////////////////////////////////////////////////////////////////
-        float* high_E        =  (float*)calloc(theKList.array_size, sizeof(float));
-        S              =  (float)(J + theKList.MIE + 1);
-        high_E[J - 1]        =  (float)exp(S * theKList.U) * theKList.E0;
-        theKList.DE[J -1]      =  high_E[J -1] - theKList.E[J -1];
+        double* high_E      =  (double*)calloc(theKList.array_size, sizeof(double));
+        S                   =  (double)(J + theKList.MIE + 1);
+        high_E[J - 1]       =  exp(S * theKList.U) * theKList.E0;
+        theKList.DE[J -1]   =  high_E[J -1] - theKList.E[J -1];
         free(high_E);
       }
     }else{
@@ -652,16 +644,16 @@ aKList  AT_SC_RESET(aKList theKList){
 
     long   J;
     for (J = 1; J <= theKList.array_size; J++){
-      float S            =  (float)(J + theKList.MIE);
-      theKList.E[J -1]      =  (float)exp(S * theKList.U) * theKList.E0;
+      double S             =  (double)(J + theKList.MIE);
+      theKList.E[J -1]     =  exp(S * theKList.U) * theKList.E0;
       ///////////////////////////////////////////////////////////////////////////
       // addition SG: not to use Kellerer's formula for new DE's, as it is     //
       // not exact (but deviation are small)                                   //
       ///////////////////////////////////////////////////////////////////////////
-      float* high_E        =  (float*)calloc(theKList.array_size, sizeof(float));
-      S              =  (float)(J + theKList.MIE + 1);
-      high_E[J - 1]        =  (float)exp(S * theKList.U) * theKList.E0;
-      theKList.DE[J -1]      =  high_E[J -1] - theKList.E[J -1];
+      double* high_E       =  (double*)calloc(theKList.array_size, sizeof(double));
+      S                    =  (double)(J + theKList.MIE + 1);
+      high_E[J - 1]        =  exp(S * theKList.U) * theKList.E0;
+      theKList.DE[J -1]    =  high_E[J -1] - theKList.E[J -1];
       free(high_E);
     }
   }
@@ -678,22 +670,22 @@ aKList  AT_SC_ZERO(aKList theKList){
   }
 
   theKList.X          =  0;
-  long N            =  theKList.MIH - theKList.MIE;
+  long N              =  theKList.MIH - theKList.MIE;
 
   long   L;
   for (L = 1; L <= theKList.LEH; L++){
-    long K          =  L + N;
+    long K            =  L + N;
     theKList.X        =  theKList.X + theKList.H[L -1] * theKList.DE[K -1];
   }
 
-  float S          =  (1.0f - theKList.F0) * (1.0f - theKList.F0) / theKList.X;
-  theKList.X        =  2.0f / S;
+  double S            =  (1.0 - theKList.F0) * (1.0 - theKList.F0) / theKList.X;
+  theKList.X          =  2.0 / S;
 
   for (L = 1; L <= theKList.LEH; L++){;
   theKList.H[L -1]    =  theKList.H[L -1] * S;
   }
 
-  N              =  theKList.MIH - theKList.MIF;
+  N                   =  theKList.MIH - theKList.MIF;
   theKList.MIH        =  theKList.MIF;
   theKList.LEH        =  theKList.LEH + N;
 
@@ -701,62 +693,61 @@ aKList  AT_SC_ZERO(aKList theKList){
   for (LL = 1; LL <= theKList.LEH; LL++){
     long L            =  theKList.LEH + 1 - LL;
     long K            =  L + N;
-    theKList.H[K -1]      =  theKList.H[L -1];
+    theKList.H[K -1]  =  theKList.H[L -1];
   }
 
   for (L = 1; L <= N; L++){
-    theKList.H[L -1]      =  0.0f;
+    theKList.H[L -1]  =  0.0;
   }
 
-  S              =  theKList.F0 * 2.0f;
+  S                   =  theKList.F0 * 2.0;
 
   for (L = 1; L <= theKList.LEF; L++){
-    theKList.H[L -1]      =  theKList.H[L -1] + theKList.F[L -1] * S;
+    theKList.H[L -1]  =  theKList.H[L -1] + theKList.F[L -1] * S;
   }
 
   return(theKList);
-
 }
 
 
 aKList  AT_SC_SHRINK(aKList theKList){
 
-  float  EX            =  theKList.shrink_tails_under;
-  float  S            =  0.0;
-  long  N            =  theKList.MIH - theKList.MIE;
+  double  EX          =  theKList.shrink_tails_under;
+  double  S           =  0.0;
+  long  N             =  theKList.MIH - theKList.MIE;
 
   long   L;
   for (L = 1; L <= theKList.LEH; L++){
-    long K              =  L + N;
-    S                =  S + theKList.H[L -1] * theKList.DE[K -1];
+    long K            =  L + N;
+    S                 =  S + theKList.H[L -1] * theKList.DE[K -1];
     if(S > 1000.0 * EX){
-      theKList.MIH         =  theKList.MIH + L - 1;
+      theKList.MIH    =  theKList.MIH + L - 1;
       break;}
   }
 
-  long    M            =  L - 1;
-  S                =  0;
+  long    M           =  L - 1;
+  S                   =  0;
 
   long   K;
   for (K = 1; K <= theKList.LEH; K++){
-    L                =  theKList.LEH + 1 - K;
-    long KK              =  L + N;
-    S                =  S + theKList.H[L - 1] * theKList.DE[KK - 1];
+    L                 =  theKList.LEH + 1 - K;
+    long KK           =  L + N;
+    S                 =  S + theKList.H[L - 1] * theKList.DE[KK - 1];
     if(S > EX){
       break;
     }
   }
 
-  theKList.LEH          =  L - M;
+  theKList.LEH        =  L - M;
   for (L = 1; L <= theKList.LEH; L++){
-    K                =  L + M;
-    theKList.H[L -1]        =  theKList.H[K -1];
+    K                 =  L + M;
+    theKList.H[L -1]  =  theKList.H[K -1];
   }
 
-  K                =  theKList.LEH + 1;
-  long  KK              =  theKList.LEH + M;
+  K                   =  theKList.LEH + 1;
+  long  KK            =  theKList.LEH + M;
   for (L = K; L <= KK; L++){
-    theKList.H[L -1]        =  0;
+    theKList.H[L -1]  =  0;
   }
 
   return(theKList);
@@ -765,78 +756,79 @@ aKList  AT_SC_SHRINK(aKList theKList){
 
 
 aKList AT_SC_FOLD(aKList theKList){
-  float*  FDE          =  (float*)calloc(theKList.array_size, sizeof(float));
+  double*  FDE        =  (double*)calloc(theKList.array_size, sizeof(double));
 
   if((theKList.CN >= 10.0) && (theKList.adjust_N2 == true)){
     theKList          =  AT_SC_RESET(theKList);
   }
 
-  theKList.H0          =  theKList.F0 * theKList.F0;
+  theKList.H0         =  theKList.F0 * theKList.F0;
   theKList.MIH        =  theKList.MIF + theKList.N2;
   theKList.LEH        =  theKList.LEF;
-  long  K          =  theKList.LEF + 1;
-  long KK            =  K + theKList.N2;
+  long  K             =  theKList.LEF + 1;
+  long KK             =  K + theKList.N2;
 
   long   L;
   for (L = K; L <= KK; L++){
-    theKList.F[L -1]      =  0;
+    theKList.F[L -1]  =  0;
   }
 
-  theKList          =  AT_SC_INTERP(theKList);
-  long N            =  theKList.MIF - theKList.MIE;
+  theKList            =  AT_SC_INTERP(theKList);
+  long N              =  theKList.MIF - theKList.MIE;
 
   for (L = 1; L <= theKList.LEH; L++){
-    K              =  L + N;
-    FDE[L -1]          =  theKList.F[L -1] * theKList.DE[K -1];
+    K                 =  L + N;
+    FDE[L -1]         =  theKList.F[L -1] * theKList.DE[K -1];
   }
 
   long   LH;
   for (LH = 1; LH <= theKList.LEH; LH++){
-    float   HLH          =  0;
-    long   LL          =  LH + theKList.N2;
+    double   HLH      =  0;
+    long   LL         =  LH + theKList.N2;
     long   LF;
     for (LF = 1; LF <= LH; LF++){
-      K              =  LL - LF;
-      float FLF          =  (float)LH - theKList.DI[K -1];
-      long LFF          =  (long)(FLF + 0.5f);
-      float S            =  FLF - (float)LFF;
+      K               =  LL - LF;
+      double FLF      =  (double)LH - theKList.DI[K -1];
+      long LFF        =  (long)(FLF + 0.5);
+      double S        =  FLF - (double)LFF;
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Modification SG: if Kellerer's quadratic interpolation fails, use simple estimate
-      float tmp          =  theKList.F[LFF -1] + S * (theKList.A[LFF -1] + S * theKList.BI[LFF -1]);
+      double tmp      =  theKList.F[LFF -1] + S * (theKList.A[LFF -1] + S * theKList.BI[LFF -1]);
       if (tmp <0){
-        tmp = 0.0f;        // Very crude - better to replace by interpolation as done in RESET
-      }              // which is time-consuming, however.
+        tmp = 0.0;        // Very crude - better to replace by interpolation as done in RESET
+      }                   // which is time-consuming, however.
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-      HLH              =  HLH + FDE[LF -1] * tmp;
+      HLH             =  HLH + FDE[LF -1] * tmp;
     }
-    theKList.H[LH -1]      =  HLH - FDE[LH -1] * theKList.F[LH -1] * 0.5f;
+    theKList.H[LH -1] =  HLH - FDE[LH -1] * theKList.F[LH -1] * 0.5;
   }
 
   free(FDE);
 
   if (theKList.F0 < 1e-10){
-    theKList.X          =  2.0f;
+    theKList.X        =  2.0;
   }else{
-    theKList            =  AT_SC_ZERO(theKList);
+    theKList          =  AT_SC_ZERO(theKList);
   }
   return(theKList);
 }
 
-void   AT_SuccessiveConvolutions( const float  u,
-    const long   n_bins_f,
-    long*        N2,
-    long*        n_bins_f_used,
-    float        f_d_Gy[],
-    float        f_dd_Gy[],
-    float        f[],
-    float*       f0,
-    float        fdd[],
-    float        dfdd[],
-    float*       d,
-    const bool   write_output,
-    const bool   shrink_tails,
-    const float  shrink_tails_under,
-    const bool   adjust_N2)
+
+void   AT_SuccessiveConvolutions( const double  u,
+    const long    n_bins_f,
+    long*         N2,
+    long*         n_bins_f_used,
+    double        f_d_Gy[],
+    double        f_dd_Gy[],
+    double        f[],
+    double*       f0,
+    double        fdd[],
+    double        dfdd[],
+    double*       d,
+    const bool    write_output,
+    const bool    shrink_tails,
+    const double  shrink_tails_under,
+    const bool    adjust_N2)
 {
   //////////////////////////////////////////
   // Init KList structure
@@ -846,7 +838,7 @@ void   AT_SuccessiveConvolutions( const float  u,
 
   KList.array_size  = n_bins_f;
   KList.N2          = *N2;
-  KList.U           = (float)log(2.0f) / (float)KList.N2;
+  KList.U           = log(2.0) / (double)KList.N2;
 
   //////////////////////////////////
 
@@ -869,13 +861,13 @@ void   AT_SuccessiveConvolutions( const float  u,
 
   //////////////////////////////////
 
-  KList.F        = (float*)calloc(KList.array_size, sizeof(float));
-  KList.H        = (float*)calloc(KList.array_size, sizeof(float));
-  KList.E        = (float*)calloc(KList.array_size, sizeof(float));
-  KList.DE       = (float*)calloc(KList.array_size, sizeof(float));
-  KList.DI       = (float*)calloc(KList.array_size, sizeof(float));
-  KList.A        = (float*)calloc(KList.array_size, sizeof(float));
-  KList.BI       = (float*)calloc(KList.array_size, sizeof(float));
+  KList.F        = (double*)calloc(KList.array_size, sizeof(double));
+  KList.H        = (double*)calloc(KList.array_size, sizeof(double));
+  KList.E        = (double*)calloc(KList.array_size, sizeof(double));
+  KList.DE       = (double*)calloc(KList.array_size, sizeof(double));
+  KList.DI       = (double*)calloc(KList.array_size, sizeof(double));
+  KList.A        = (double*)calloc(KList.array_size, sizeof(double));
+  KList.BI       = (double*)calloc(KList.array_size, sizeof(double));
 
   // Some other initializations
   KList.MIH      = 0;
@@ -897,7 +889,7 @@ void   AT_SuccessiveConvolutions( const float  u,
   }
 
   // Copy input data
-  KList.E0      = f_d_Gy[1-1] * expf(-1.0f * KList.U);
+  KList.E0      = f_d_Gy[0] * exp(-1.0 * KList.U);
 
   long   L;
   for (L = 1; L <= KList.array_size; L++){
@@ -906,14 +898,14 @@ void   AT_SuccessiveConvolutions( const float  u,
     KList.H[L -1]      = f[L -1];
   }
 
-  KList.LEH        = *n_bins_f_used;
+  KList.LEH            = *n_bins_f_used;
 
   ///////////////////////////////////////
   // Fill array for auxilary function that enables easy index operations
   for  (L = KList.N2; L <= KList.array_size; L++){
-    float S           = (float)(L - KList.N2) * KList.U;
-    float tmp         = (float)(-1.0f * logf(1.0f - 0.5f * expf(-S)) / KList.U);
-    KList.DI[L -1]    = tmp - (float)KList.N2;
+    double S          =  (double)(L - KList.N2) * KList.U;
+    double tmp        =  -1.0 * log(1.0 - 0.5 * exp(-S)) / KList.U;
+    KList.DI[L -1]    =  tmp - (double)KList.N2;
   }    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
 
   ///////////////////////////////////////
@@ -947,16 +939,16 @@ void   AT_SuccessiveConvolutions( const float  u,
   ///////////////////////////////////////
 
   KList.D1    =    KList.CM1;
-  float  S    =    KList.D1 * KList.D1;
+  double  S   =    KList.D1 * KList.D1;
   KList.D2    =    KList.CM2 + S;
-  KList.D3    =    KList.CM3 + 3.0f * KList.CM2 * KList.D1 + S * KList.D1;
-  KList.D4    =    KList.CM4 + 4.0f * KList.CM3 * KList.D1 + 6.0f * S * KList.CM2 + S * S;
+  KList.D3    =    KList.CM3 + 3.0 * KList.CM2 * KList.D1 + S * KList.D1;
+  KList.D4    =    KList.CM4 + 4.0 * KList.CM3 * KList.D1 + 6.0 * S * KList.CM2 + S * S;
 
-  float  S2        =    KList.D2 / KList.D1;
-  float  S3        =    KList.D3 / KList.D1;
-  float  S4        =    KList.D4 / KList.D1;
-  S                =    S3 / (float)sqrt(gsl_pow_3(S2));
-  float  TT        =    S4  / gsl_pow_2(S2);
+  double  S2        =    KList.D2 / KList.D1;
+  double  S3        =    KList.D3 / KList.D1;
+  double  S4        =    KList.D4 / KList.D1;
+  S                 =    S3 / sqrt(gsl_pow_3(S2));
+  double  TT        =    S4  / gsl_pow_2(S2);
 
   if(KList.write_output){
     fprintf(  KList.output_file,
@@ -1002,9 +994,9 @@ void   AT_SuccessiveConvolutions( const float  u,
   KList.FINAL        = u * KList.D1;  // Final mean impact number
 
   long n_convolutions    = 0;
-  KList.CN        =    KList.FINAL  / KList.D1;
+  KList.CN               =    KList.FINAL  / KList.D1;
   while(KList.CN > MEAN_HIT_NUMBER_LINEAR_APPROX_LIMIT){
-    KList.CN        =    0.5f * KList.CN;
+    KList.CN             =    0.5 * KList.CN;
     n_convolutions++;
   }
 
@@ -1020,10 +1012,10 @@ void   AT_SuccessiveConvolutions( const float  u,
         n_convolutions);
   }
 
-  KList.H0        =    1.0f - KList.CN;
+  KList.H0         =    1.0 - KList.CN;
 
   for (L = 1; L <= KList.LEH; L++){
-    KList.H[L -1]      =  KList.H[L -1] * KList.CN;
+    KList.H[L -1]  =  KList.H[L -1] * KList.CN;
   }
 
   ///////////////////////////////////////
@@ -1032,7 +1024,7 @@ void   AT_SuccessiveConvolutions( const float  u,
   long   j;
   for(j = 0; j < n_convolutions; j++){
     KList.N1        =  KList.N1 + 1;
-    KList.CN        =  KList.CN * 2.0f;
+    KList.CN        =  KList.CN * 2.0;
 
     if(KList.write_output){
       fprintf(  KList.output_file,
@@ -1050,15 +1042,15 @@ void   AT_SuccessiveConvolutions( const float  u,
       KList.F[L -1]      =  KList.H[L -1];
     }
 
-    KList.F0        =  KList.H0;
+    KList.F0         =  KList.H0;
     KList.LEF        =  KList.LEH;
     KList.MIF        =  KList.MIH;
-    KList          =  AT_SC_FOLD(KList);
+    KList            =  AT_SC_FOLD(KList);
     if(KList.shrink_tails){
       KList          =  AT_SC_SHRINK(KList);
     }
-    KList          =  AT_SC_NORMAL(KList);
-    KList          =  AT_SC_OUTPUT(KList);
+    KList            =  AT_SC_NORMAL(KList);
+    KList            =  AT_SC_OUTPUT(KList);
   }
 
 
@@ -1067,14 +1059,15 @@ void   AT_SuccessiveConvolutions( const float  u,
   // and adjust according to MIH, MIE
   //////////////////////////////////////////
 
-  *d    = 0.0f;
+  *d    = 0.0;
 
   for (L = 1; L <= KList.array_size; L++){
-    f_d_Gy[L -1]      =  0.0f;
-    f_dd_Gy[L -1]     =  0.0f;
-    f[L -1]           =  0.0f;
-    fdd[L -1]         =  0.0f;
-    dfdd[L -1]        =  0.0f;}
+    f_d_Gy[L -1]      =  0.0;
+    f_dd_Gy[L -1]     =  0.0;
+    f[L -1]           =  0.0;
+    fdd[L -1]         =  0.0;
+    dfdd[L -1]        =  0.0;
+  }
 
   long  N        = KList.MIH - KList.MIE;
   for (L = 1; L <= KList.LEH; L++){

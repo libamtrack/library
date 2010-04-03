@@ -33,7 +33,7 @@
 
 ///////////////////////////////////////////// SITE /////////////////////////////////////////////
 void AT_RDD_Site_Gy( const long  n,
-    const float   r_m[],
+    const double   r_m[],
     const double  a0_m,
     /* radiation field parameters */
     const double  E_MeV_u,
@@ -42,11 +42,11 @@ void AT_RDD_Site_Gy( const long  n,
     const long    material_no,
     /* radial dose distribution model */
     const long    rdd_model,
-    const float   rdd_parameter[],
+    const double   rdd_parameter[],
     /* electron range model */
     const long    er_model,
-    const float   er_parameter[],
-    float         D_RDD_Gy[]){
+    const double   er_parameter[],
+    double         D_RDD_Gy[]){
 
   D_RDD_Gy[0] = 0.0;
 }
@@ -184,7 +184,7 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy(
 }
 
 
-float AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy( const float r_m , void * params ){
+double AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy( const double r_m , void * params ){
   AT_inverse_RDD_ExtendedTarget_KatzPoint_parameters* RDD_parameters = (AT_inverse_RDD_ExtendedTarget_KatzPoint_parameters*)(params);
 
   const double  D_Gy                  =  RDD_parameters->D_Gy;
@@ -196,7 +196,7 @@ float AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy( const float r_
   const double  Katz_point_r_min_m    =  RDD_parameters->Katz_point_r_min_m;
   const double  Katz_point_coeff_Gy   =  RDD_parameters->Katz_point_coeff_Gy;
 
-  return (float)AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m, a0_m, er_model, Katz_point_r_min_m, r_max_m, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy) - (float)D_Gy;
+  return AT_RDD_ExtendedTarget_KatzPoint_Gy(r_m, a0_m, er_model, Katz_point_r_min_m, r_max_m, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy) - D_Gy;
 }
 
 
@@ -209,7 +209,7 @@ double  AT_inverse_RDD_ExtendedTarget_KatzPoint_m( const double D_Gy,
     const double Katz_plateau_Gy,
     const double Katz_point_coeff_Gy){
 
-  float  solver_accuracy  =  1e-13f;
+  double  solver_accuracy  =  1e-13f;
 
   AT_inverse_RDD_ExtendedTarget_KatzPoint_parameters RDD_parameters;
 
@@ -224,15 +224,15 @@ double  AT_inverse_RDD_ExtendedTarget_KatzPoint_m( const double D_Gy,
 
   double r_m =  zriddr(AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy,
           (void*)(&RDD_parameters),
-          0.0f,
-          (float)max_electron_range_m+(float)a0_m,
+          0.0,
+          max_electron_range_m+a0_m,
           solver_accuracy);
 
   return r_m;
 }
 
 void AT_RDD_ExtendedTarget_Gy( const long  n,
-    const float  r_m[],
+    const double  r_m[],
     const double a0_m,
     /* radiation field parameters */
     const double E_MeV_u,
@@ -241,11 +241,11 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
     const long   material_no,
     /* radial dose distribution model */
     const long   rdd_model,
-    const float  rdd_parameter[],
+    const double  rdd_parameter[],
     /* electron range model */
     const long   er_model,
-    const float  er_parameter[],
-    float        D_RDD_Gy[]){
+    const double  er_parameter[],
+    double        D_RDD_Gy[]){
 
   // Get material data
   double   density_g_cm3, density_kg_m3, electron_density_m3;
@@ -277,18 +277,18 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
   *******************************************************/
   long     i;
 
-  double r_min_m = (double)rdd_parameter[0];
+  double r_min_m = rdd_parameter[0];
 
   if( rdd_model == RDD_KatzPoint){ // TODO write comments
 
-    double KatzPoint_r_min_m = (double)rdd_parameter[0];
+    double KatzPoint_r_min_m = rdd_parameter[0];
 
     if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
 
       double Katz_PowerLawER_plateau_Gy = AT_RDD_Katz_PowerLawER_Daverage_Gy( KatzPoint_r_min_m, r_max_m, max_electron_range_m, alpha, Katz_point_coeff_Gy );
 
       for( i = 0 ; i < n ; i++){
-          D_RDD_Gy[i]  =  (float)AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m[i], a0_m, er_model, KatzPoint_r_min_m, max_electron_range_m, alpha, Katz_PowerLawER_plateau_Gy, Katz_point_coeff_Gy);
+          D_RDD_Gy[i]  =  AT_RDD_ExtendedTarget_KatzPoint_Gy(r_m[i], a0_m, er_model, KatzPoint_r_min_m, max_electron_range_m, alpha, Katz_PowerLawER_plateau_Gy, Katz_point_coeff_Gy);
       }
       // end if ER_Waligorski, ER_Edmund
     } else if (er_model == ER_ButtsKatz){ // "old" Katz RDD
@@ -296,13 +296,13 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
       double Katz_LinearLawER_plateau_Gy = AT_RDD_Katz_LinearER_Daverage_Gy( KatzPoint_r_min_m, r_max_m, max_electron_range_m, Katz_point_coeff_Gy );
 
       for( i = 0 ; i < n ; i++){
-            D_RDD_Gy[i]  =  (float)AT_RDD_ExtendedTarget_KatzPoint_Gy((double)r_m[i], a0_m, er_model, KatzPoint_r_min_m, max_electron_range_m, alpha, Katz_LinearLawER_plateau_Gy, Katz_point_coeff_Gy);
+            D_RDD_Gy[i]  =  AT_RDD_ExtendedTarget_KatzPoint_Gy(r_m[i], a0_m, er_model, KatzPoint_r_min_m, max_electron_range_m, alpha, Katz_LinearLawER_plateau_Gy, Katz_point_coeff_Gy);
       }
 
       // end if ER_ButtsKatz
     } else {
       for( i = 0 ; i < n ; i++){
-        D_RDD_Gy[i] = 0.0f;
+        D_RDD_Gy[i] = 0.0;
       }
     }
 
@@ -321,38 +321,37 @@ double AT_RDD_Katz_ext_integrand_Gy(  double t_m,
 
   AT_RDD_ExtendedTarget_parameters* RDD_parameters = (AT_RDD_ExtendedTarget_parameters*)params;
 
-  const long   n              =  1;
-  const float  r_m            =  RDD_parameters->r_m;
-  const float  a0_m           =  RDD_parameters->a0_m;
-  const float  E_MeV_u        =  RDD_parameters->E_MeV_u;
-  const long   particle_no    =  RDD_parameters->particle_no;
-  const long   material_no    =  RDD_parameters->material_no;
-  const long   rdd_model      =  RDD_parameters->rdd_model;
-  const float* rdd_parameter  =  RDD_parameters->rdd_parameter;
-  const long   er_model       =  RDD_parameters->er_model;
-  const float* er_parameter   =  RDD_parameters->er_parameter;
+  const long    n              =  1;
+  const double  r_m            =  RDD_parameters->r_m;
+  const double  a0_m           =  RDD_parameters->a0_m;
+  const double  E_MeV_u        =  RDD_parameters->E_MeV_u;
+  const long    particle_no    =  RDD_parameters->particle_no;
+  const long    material_no    =  RDD_parameters->material_no;
+  const long    rdd_model      =  RDD_parameters->rdd_model;
+  const double* rdd_parameter  =  RDD_parameters->rdd_parameter;
+  const long    er_model       =  RDD_parameters->er_model;
+  const double* er_parameter   =  RDD_parameters->er_parameter;
 
-  float D_Gy;
-  float t_m_float = (float)t_m;
-  AT_D_RDD_Gy( n, &t_m_float, E_MeV_u,  particle_no, material_no,  rdd_model,  rdd_parameter,  er_model,  er_parameter,  &D_Gy);
+  double D_Gy;
+  AT_D_RDD_Gy( n, &t_m, E_MeV_u,  particle_no, material_no,  rdd_model,  rdd_parameter,  er_model,  er_parameter,  &D_Gy);
 
-  return 2.0 * t_m * (double)D_Gy * geometryFunctionPhi(r_m, a0_m, t_m);
+  return 2.0 * t_m * D_Gy * geometryFunctionPhi(r_m, a0_m, t_m);
 }
 
 double AT_RDD_ExtendedTarget_integrate_Gy(  const double r_m,
-    const double a0_m,
-    const double r_min_m,
-    const double r_max_m,
-    const double E_MeV_u,
-    const long   particle_no,
+    const double  a0_m,
+    const double  r_min_m,
+    const double  r_max_m,
+    const double  E_MeV_u,
+    const long    particle_no,
     /* detector parameters */
-    const long   material_no,
+    const long    material_no,
     /* radial dose distribution model */
-    const long   rdd_model,
-    const float  rdd_parameter[],
+    const long    rdd_model,
+    const double  rdd_parameter[],
     /* electron range model */
-    const long   er_model,
-    const float  er_parameter[]){
+    const long    er_model,
+    const double  er_parameter[]){
 
   double low_lim_m = 0.0;
   if( r_m > a0_m ){
@@ -370,13 +369,13 @@ double AT_RDD_ExtendedTarget_integrate_Gy(  const double r_m,
 
   RDD_parameters.r_m           =  r_m;
   RDD_parameters.a0_m          =  a0_m;
-  RDD_parameters.E_MeV_u       =  (float)E_MeV_u;
+  RDD_parameters.E_MeV_u       =  E_MeV_u;
   RDD_parameters.particle_no   =  particle_no;
   RDD_parameters.material_no   =  material_no;
   RDD_parameters.rdd_model     =  rdd_model;
-  RDD_parameters.rdd_parameter =  (float*)rdd_parameter;
+  RDD_parameters.rdd_parameter =  (double*)rdd_parameter;
   RDD_parameters.er_model      =  er_model;
-  RDD_parameters.er_parameter  =  (float*)er_parameter;
+  RDD_parameters.er_parameter  =  (double*)er_parameter;
 
   F.params = (void*)(&RDD_parameters);
   int status = gsl_integration_qags (&F, low_lim_m, r_m+a0_m, 0, 1e-5, 1000, w1, &ext_integral_Gy, &error);

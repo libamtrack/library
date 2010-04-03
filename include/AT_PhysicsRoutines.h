@@ -47,9 +47,9 @@
  * Structure to carry essential single, monoenergetic particle field information
  */
 typedef struct {
-  float   E_MeV_u;                /** energy of the particles in MeV/u */
-  float   particle_no;            /** particle index */
-  float   fluence_cm2;            /** fluence_cm2 */
+  double   E_MeV_u;                /** energy of the particles in MeV/u */
+  double   particle_no;            /** particle index */
+  double   fluence_cm2;            /** fluence_cm2 */
 } single_field_data;
 
 
@@ -57,7 +57,7 @@ typedef struct {
  * Structure to carry essential detector information
  */
 typedef struct {
-  float   material_no;            /** material index */
+  double   material_no;            /** material index */
 } detector_data;
 
 
@@ -68,15 +68,15 @@ typedef struct {
  * This structure replaces the f1_parameter array
  */
 typedef struct {
-  float   LET_MeV_cm2_g;                /** LET (in MeV*cm2/g) of the particle field */
-  float   dEdx_MeV_cm2_g;               /** Energy loss dE/dx (in MeV*cm2/g) of the particle field, depending on the chosen RDD, this does not have to meet the LET (!) */
-  float   d_min_Gy;                     /** lowest local dose found in the field (in Gy) */
-  float   d_max_Gy;                     /** highest local dose found in the field (not considering track overlap which can cause core overlap and thus even higher doses, in Gy) */
-  float   r_min_m;                      /** radius closest to the track center in the field (in m) */
-  float   r_max_m;                      /** widest radius from track center in the field (in m) */
-  float   single_impact_fluence_cm2;    /** fluences at which every point of the detector lies within the area ONE track only */
-  float   single_impact_dose_Gy;        /** corresponding dose */
-  float   normalization;                /** normalization constant for RDD (e.g. to meet LET) */
+  double   LET_MeV_cm2_g;                /** LET (in MeV*cm2/g) of the particle field */
+  double   dEdx_MeV_cm2_g;               /** Energy loss dE/dx (in MeV*cm2/g) of the particle field, depending on the chosen RDD, this does not have to meet the LET (!) */
+  double   d_min_Gy;                     /** lowest local dose found in the field (in Gy) */
+  double   d_max_Gy;                     /** highest local dose found in the field (not considering track overlap which can cause core overlap and thus even higher doses, in Gy) */
+  double   r_min_m;                      /** radius closest to the track center in the field (in m) */
+  double   r_max_m;                      /** widest radius from track center in the field (in m) */
+  double   single_impact_fluence_cm2;    /** fluences at which every point of the detector lies within the area ONE track only */
+  double   single_impact_dose_Gy;        /** corresponding dose */
+  double   normalization;                /** normalization constant for RDD (e.g. to meet LET) */
 } single_field_information;
 
 
@@ -87,13 +87,13 @@ typedef struct {
  * This structure replaces the f_parameter array
  */
 typedef struct {
-  float   total_fluence_cm2;                /** total fluence of all particles the field */
-  float   total_dose_Gy;                    /** total dose delivered by the field */
-  float   fluenceweighted_E_MeV_u;          /** fluence-weighted average energy (in MeV/u) */
-  float   doseweighted_E_MeV_u;             /** dose-weighted average energy (in MeV/u) */
-  float   fluenceweighted_LET_MeV_cm2_g;    /** fluence-weighted average LET (in MeV*cm2/g) */
-  float   doseweighted_LET_MeV_cm2_g;       /** dose-weighted average LET (in MeV*cm2/g) */
-  float   u;                                /** average number of track contributing to a detector voxel, needed by AT_SPIFF, AT_SPISS */
+  double   total_fluence_cm2;                /** total fluence of all particles the field */
+  double   total_dose_Gy;                    /** total dose delivered by the field */
+  double   fluenceweighted_E_MeV_u;          /** fluence-weighted average energy (in MeV/u) */
+  double   doseweighted_E_MeV_u;             /** dose-weighted average energy (in MeV/u) */
+  double   fluenceweighted_LET_MeV_cm2_g;    /** fluence-weighted average LET (in MeV*cm2/g) */
+  double   doseweighted_LET_MeV_cm2_g;       /** dose-weighted average LET (in MeV*cm2/g) */
+  double   u;                                /** average number of track contributing to a detector voxel, needed by AT_SPIFF, AT_SPISS */
 } mixed_field_information;
 
 
@@ -115,8 +115,8 @@ inline double AT_beta_from_E_single( const double  E_MeV_u );
  * @return     status code
  */
 int AT_beta_from_E( const long  n,
-    const float  E_MeV_u[],
-    float  beta[]);
+    const double  E_MeV_u[],
+    double  beta[]);
 
 
 /**
@@ -137,8 +137,8 @@ inline double AT_E_from_beta_single(  const double beta );
  * @return     status code
  */
 int AT_E_from_beta(  const long  n,
-    const float  beta[],
-    float  E_MeV_u[]);
+    const double  beta[],
+    double  E_MeV_u[]);
 
 
 /**
@@ -170,9 +170,9 @@ inline double AT_effective_charge_from_beta_single(  const double beta,
  * @return     status code
  */
 int AT_effective_charge_from_beta(  const long  n,
-    const float  beta[],
-    const long  Z[],
-    float  effective_charge[]);
+    const double  beta[],
+    const long    Z[],
+    double        effective_charge[]);
 
 
 /**
@@ -183,7 +183,7 @@ int AT_effective_charge_from_beta(  const long  n,
  */
 void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
     const long*  material_no,
-    float*  dsE2dz);
+    double*  dsE2dz);
 
 
 /**
@@ -215,9 +215,9 @@ double AT_effective_charge_from_E_MeV_u_single(  const double E_MeV_u,
  * @return     status code
  */
 int AT_effective_charge_from_E_MeV_u(  const long  n,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    float        effective_charge[]);
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    double        effective_charge[]);
 
 
 /**
@@ -253,8 +253,8 @@ inline double AT_max_E_transfer_MeV_single( const double E_MeV_u);
  * @return     status code
  */
 int AT_max_E_transfer_MeV(  const long  n,
-    const float  E_MeV_u[],
-    float        max_E_transfer_MeV[]);
+    const double  E_MeV_u[],
+    double        max_E_transfer_MeV[]);
 
 
 /**
@@ -269,11 +269,11 @@ int AT_max_E_transfer_MeV(  const long  n,
  * @param[out] D_Gy         vector of size n to be allocated by the user which will be used to return the results
  */
 void AT_D_Gy(  const long  n,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    const float  fluence_cm2[],
-    const long   material_no,
-    float        D_Gy[]);
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  fluence_cm2[],
+    const long    material_no,
+    double        D_Gy[]);
 
 
 /**
@@ -288,11 +288,11 @@ void AT_D_Gy(  const long  n,
  * @param[out] fluence_cm2         vector of size n to be allocated by the user which will be used to return the results
  */
 void AT_fluence_cm2(  const long  n,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    const float  D_Gy[],
-    const long   material_no,
-    float        fluence_cm2[]);
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  D_Gy[],
+    const long    material_no,
+    double        fluence_cm2[]);
 
 
 /**
@@ -311,10 +311,10 @@ void AT_fluence_cm2(  const long  n,
  * @param[in,out]  FWHM_mm       vector of size n to be allocated by the user which will be used to return the results (in mm)
  */
 void AT_convert_beam_parameters(  const long  n,
-    float fluence_cm2[],
-    float sigma_cm[],
-    float N[],
-    float FWHM_mm[]);
+    double fluence_cm2[],
+    double sigma_cm[],
+    double N[],
+    double FWHM_mm[]);
 
 
 /**
@@ -325,9 +325,9 @@ void AT_convert_beam_parameters(  const long  n,
  * @param[out]     results_m       interparticle distance for each particle type (array of size n)
  */
 void AT_interparticleDistance_m(       const long   n,
-    const float  LET_MeV_cm2_g[],
-    const float  fluence_cm2[],
-    float        results_m[]
+    const double  LET_MeV_cm2_g[],
+    const double  fluence_cm2[],
+    double        results_m[]
 );
 
 
@@ -339,9 +339,9 @@ void AT_interparticleDistance_m(       const long   n,
  * @param[out]     results_Gy      TODO
  */
 void AT_inv_interparticleDistance_Gy(  const long   n,
-    const float   LET_MeV_cm2_g[],
-    const float   distance_m[],
-    float         results_Gy[]
+    const double   LET_MeV_cm2_g[],
+    const double   distance_m[],
+    double         results_Gy[]
 );
 
 
@@ -408,11 +408,11 @@ inline double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
  * @see          AT_DataMaterial.h for definition
  * @return     total_dose_Gy  result
   */
-float  AT_total_D_Gy( const long  n,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    const float  fluence_cm2[],
-    const long   material_no);
+double  AT_total_D_Gy( const long  n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  fluence_cm2[],
+    const long    material_no);
 
 
 /**
@@ -429,11 +429,11 @@ float  AT_total_D_Gy( const long  n,
  * @see          AT_DataMaterial.h for definition
  * @return       total_fluence_cm  result
   */
-float AT_total_fluence_cm2( const long n,
-    const float   E_MeV_u[],
-    const long    particle_no[],
-    const float   D_Gy[],
-    const long    material_no);
+double AT_total_fluence_cm2( const long n,
+    const double   E_MeV_u[],
+    const long     particle_no[],
+    const double   D_Gy[],
+    const long     material_no);
 
 
 /**
@@ -446,9 +446,9 @@ float AT_total_fluence_cm2( const long n,
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @return     average_E_MeV_u  result
  */
-float AT_fluenceweighted_E_MeV_u( const long    n,
-    const float E_MeV_u[],
-    const float fluence_cm2[]);
+double AT_fluenceweighted_E_MeV_u( const long    n,
+    const double E_MeV_u[],
+    const double fluence_cm2[]);
 
 
 /**
@@ -465,11 +465,11 @@ float AT_fluenceweighted_E_MeV_u( const long    n,
  * @see          AT_DataMaterial.h for definition
  * @return     doseweighted_E_MeV_u  result
  */
-float AT_doseweighted_E_MeV_u( const long   n,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    const float  fluence_cm2[],
-    const long   material_no);
+double AT_doseweighted_E_MeV_u( const long   n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  fluence_cm2[],
+    const long    material_no);
 
 
 /**
@@ -486,11 +486,11 @@ float AT_doseweighted_E_MeV_u( const long   n,
  * @see          AT_DataMaterial.h for definition
  * @return     fluenceweighted_LET_MeV_cm2_g  result
  */
-float AT_fluenceweighted_LET_MeV_cm2_g( const long     n,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    const float  fluence_cm2[],
-    const long   material_no);
+double AT_fluenceweighted_LET_MeV_cm2_g( const long     n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  fluence_cm2[],
+    const long    material_no);
 
 
 /**
@@ -508,10 +508,10 @@ float AT_fluenceweighted_LET_MeV_cm2_g( const long     n,
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @return     doseweighted_LET_MeV_cm2_g  result
  */
-float AT_doseweighted_LET_MeV_cm2_g( const long  n,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    const float  fluence_cm2[],
-    const long   material_no);
+double AT_doseweighted_LET_MeV_cm2_g( const long  n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  fluence_cm2[],
+    const long    material_no);
 
 #endif /* AT_PHYSICSROUTINES_H_ */

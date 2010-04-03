@@ -103,24 +103,24 @@ int AT_GetNumber(void);
  * @return  none
  */
 void AT_run_SPIFF_method(  const long  n,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    const float  fluence_cm2[],
-    const long   material_no,
-    const long   rdd_model,
-    const float  rdd_parameters[],
-    const long   er_model,
-    const float  er_parameters[],
-    const long   gamma_model,
-    const float  gamma_parameters[],
-    long         N2, // TODO investigate if this can be changed inside
-    const float  fluence_factor,
-    const bool   write_output,
-    const bool   shrink_tails,
-    const float  shrink_tails_under,
-    const bool   adjust_N2,
-    const bool   lethal_events_mode,
-    float        results[]);
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  fluence_cm2[],
+    const long    material_no,
+    const long    rdd_model,
+    const double  rdd_parameters[],
+    const long    er_model,
+    const double  er_parameters[],
+    const long    gamma_model,
+    const double  gamma_parameters[],
+    long          N2, // TODO investigate if this can be changed inside
+    const double  fluence_factor,
+    const bool    write_output,
+    const bool    shrink_tails,
+    const double  shrink_tails_under,
+    const bool    adjust_N2,
+    const bool    lethal_events_mode,
+    double        results[]);
 
 
 /**
@@ -169,24 +169,24 @@ void AT_run_SPIFF_method(  const long  n,
 
 
 void AT_run_GSM_method(  const long  n,
-    const float   E_MeV_u[],
-    const long    particle_no[],
-    const float   fluence_cm2[],
-    const long    material_no,
-    const long    RDD_model,
-    const float   RDD_parameters[],
-    const long    ER_model,
-    const float   ER_parameters[],
-    const long    gamma_model,
-    const float   gamma_parameters[],
-    const long    N_runs,
-    const long    N2,
-    const float   fluence_factor,
-    const bool    write_output,
-    const long    nX,
-    const float   voxel_size_m,
-    const bool    lethal_events_mode,
-    float  results[]);
+    const double   E_MeV_u[],
+    const long     particle_no[],
+    const double   fluence_cm2[],
+    const long     material_no,
+    const long     RDD_model,
+    const double   RDD_parameters[],
+    const long     ER_model,
+    const double   ER_parameters[],
+    const long     gamma_model,
+    const double   gamma_parameters[],
+    const long     N_runs,
+    const long     N2,
+    const double   fluence_factor,
+    const bool     write_output,
+    const long     nX,
+    const double   voxel_size_m,
+    const bool     lethal_events_mode,
+    double  results[]);
 
 
 /**
@@ -225,18 +225,18 @@ void AT_run_GSM_method(  const long  n,
  * @return  none
  */
 void AT_run_IGK_method(  const long  n,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    const float  fluence_cm2[],
-    const long   material_no,
-    const long   RDD_model,
-    const float  RDD_parameters[],
-    const long   ER_model,
-    const float  ER_parameters[],
-    const long   gamma_model,
-    const float  gamma_parameters[],
-    const float  saturation_cross_section_factor,
-    float  results[]);
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  fluence_cm2[],
+    const long    material_no,
+    const long    RDD_model,
+    const double  RDD_parameters[],
+    const long    ER_model,
+    const double  ER_parameters[],
+    const long    gamma_model,
+    const double  gamma_parameters[],
+    const double  saturation_cross_section_factor,
+    double  results[]);
 
 
 /**
@@ -277,22 +277,22 @@ void AT_run_IGK_method(  const long  n,
  *    results[9]    not used        (algorithm specific)\n
  */
 void AT_run_SPISS_method(  const long  n,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    const float  fluence_cm2[],
-    const long   material_no,
-    const long   RDD_model,
-    const float  RDD_parameters[],
-    const long   ER_model,
-    const float  ER_parameters[],
-    const long   gamma_model,
-    const float  gamma_parameters[],
-    const long   n_runs,
-    const long   N2,
-    const float  fluence_factor,
-    const int    write_output,
-    const long   importance_sampling,
-    float        results[]);
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  fluence_cm2[],
+    const long    material_no,
+    const long    RDD_model,
+    const double  RDD_parameters[],
+    const long    ER_model,
+    const double  ER_parameters[],
+    const long    gamma_model,
+    const double  gamma_parameters[],
+    const long    n_runs,
+    const long    N2,
+    const double  fluence_factor,
+    const int     write_output,
+    const long    importance_sampling,
+    double        results[]);
 
 
 /**

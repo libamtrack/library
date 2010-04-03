@@ -4,31 +4,31 @@
  */
 
 /*
-*    AT_UI.c
-*    ==============
-*
-*    A simple user interface to libamtrack
-*    Created on: 20.09.2009
-*    Author: greilich
-*
-*    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
-*
-*    This file is part of the AmTrack program (libamtrack.sourceforge.net).
-*
-*    AmTrack is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation, either version 3 of the License, or
-*    (at your option) any later version.
-*
-*    AmTrack is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with AmTrack (file: copying.txt).
-*    If not, see <http://www.gnu.org/licenses/>
-*/
+ *    AT_UI.c
+ *    ==============
+ *
+ *    A simple user interface to libamtrack
+ *    Created on: 20.09.2009
+ *    Author: greilich
+ *
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+ *
+ *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+ *
+ *    AmTrack is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    AmTrack is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with AmTrack (file: copying.txt).
+ *    If not, see <http://www.gnu.org/licenses/>
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,15 +44,15 @@
 
 int main(){
 
-  long    i;
-  long*   particle_no     = NULL;
-  long    cur_particle_no = 1;
-  float*  E_MeV_u         = NULL;
-  float   cur_E_MeV_u;
-  float*  fluence_cm2     = NULL;
-  float   cur_fluence_cm2;
-  long    n_particles     = 0;
-  int     retval;
+  long     i;
+  long*    particle_no     = NULL;
+  long     cur_particle_no = 1;
+  double*  E_MeV_u         = NULL;
+  double   cur_E_MeV_u;
+  double*  fluence_cm2     = NULL;
+  double   cur_fluence_cm2;
+  long     n_particles     = 0;
+  int      retval;
 
   printf("############################################################\n");
   printf("This is AmTrack & AmTrack user interface, version 2009/09/24\n");
@@ -72,29 +72,29 @@ int main(){
       if(cur_particle_no != 999){
         printf("> %ld. particle energy (MeV/u): ", n_particles + 1);
 
-        retval = scanf("%f", &cur_E_MeV_u);
+        retval = scanf("%lf", &cur_E_MeV_u);
         if( retval != 1 ){
           printf("Error ! Provide correct number\n");
           exit(EXIT_FAILURE);
         }
 
         printf("> %ld. particle fluence (1/cm2) or dose (Gy; enter negative number): ", n_particles + 1);
-        retval = scanf("%f", &cur_fluence_cm2);
+        retval = scanf("%lf", &cur_fluence_cm2);
         if( retval != 1 ){
           printf("Error ! Provide correct number\n");
           exit(EXIT_FAILURE);
         }
         n_particles += 1;
 
-        particle_no          =   (long*)realloc(particle_no,  n_particles * sizeof(long));
-        E_MeV_u              =  (float*)realloc(E_MeV_u,      n_particles * sizeof(float));
-        fluence_cm2          =  (float*)realloc(fluence_cm2,  n_particles * sizeof(float));
+        particle_no          =  (long*)realloc(particle_no,    n_particles * sizeof(long));
+        E_MeV_u              =  (double*)realloc(E_MeV_u,      n_particles * sizeof(double));
+        fluence_cm2          =  (double*)realloc(fluence_cm2,  n_particles * sizeof(double));
         particle_no[n_particles-1]  =  cur_particle_no;
         E_MeV_u[n_particles-1]      =  cur_E_MeV_u;
         fluence_cm2[n_particles-1]  =  cur_fluence_cm2;
       }else{
         for (i = 0; i < PARTICLE_DATA_N; i++){
-          printf("\nparticle index: %2ld --> %s", AT_Particle_Data.particle_no[i],AT_Particle_Data.particle_name[i]);
+          printf("\nparticle name: %s", AT_Particle_Data.element_name[i]);
         }
       }
     }
@@ -108,14 +108,14 @@ int main(){
 
   long   material_no;
   long   RDD_model;
-  float  RDD_parameters[10];
+  double RDD_parameters[10];
   long   ER_model;
-  float  ER_parameters[10];
+  double ER_parameters[10];
   long   gamma_model;
-  float  gamma_parameters[10];
+  double gamma_parameters[10];
 
   char   output_dummy[100];
-  float  float_dummy;
+  double double_dummy;
 
   do{
     printf("\n> ** Select material **");
@@ -129,7 +129,7 @@ int main(){
       printf("Error ! Provide correct number\n");
       exit(EXIT_FAILURE);
     }
-    getMaterialName(material_no, output_dummy);
+    AT_material_name_from_number(material_no, output_dummy);
     printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
 
@@ -145,7 +145,7 @@ int main(){
       printf("Error ! Provide correct number\n");
       exit(EXIT_FAILURE);
     }
-    getRDDName(&RDD_model, output_dummy);
+    AT_RDD_name_from_number(RDD_model, output_dummy);
     printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
 
@@ -157,14 +157,14 @@ int main(){
     for(i = 0; i < AT_RDD_Data.n_parameters[index];i++){
       printf("\n %s [0 for default: %g]: ", AT_RDD_Data.parameter_name[index][i],
           AT_RDD_Data.parameter_default[index][i]);
-      retval = scanf("%g", &float_dummy);
+      retval = scanf("%lg", &double_dummy);
       if( retval != 1 ){
         printf("Error ! Provide correct number\n");
         exit(EXIT_FAILURE);
       }
-      if (float_dummy == 0.0f){float_dummy = AT_RDD_Data.parameter_default[index][i];}
-      printf("%g understood.\n", float_dummy);
-      RDD_parameters[i] = float_dummy;
+      if (double_dummy == 0.0f){double_dummy = AT_RDD_Data.parameter_default[index][i];}
+      printf("%g understood.\n", double_dummy);
+      RDD_parameters[i] = double_dummy;
     }
   }
 
@@ -194,7 +194,7 @@ int main(){
       printf("Error ! Provide correct number\n");
       exit(EXIT_FAILURE);
     }
-    getGammaName(gamma_model, output_dummy);
+    AT_Gamma_name_from_number(gamma_model, output_dummy);
     printf("%s selected.\n", output_dummy);
   }while(strcmp(output_dummy, "*** invalid choice ***") == 0);
 
@@ -203,45 +203,45 @@ int main(){
     index = gamma_model-1; //TODO
     for(i = 0; i < AT_GR_Data.n_parameters[index];i++){
       printf("\n %s [0 for default: %g]: ", AT_GR_Data.parameter_name[index][i], AT_GR_Data.parameter_default[index][i]);
-      retval = scanf("%g", &float_dummy);
+      retval = scanf("%lg", &double_dummy);
       if( retval != 1 ){
         printf("Error ! Provide correct number\n");
         exit(EXIT_FAILURE);
       }
-      if (float_dummy == 0.0f){float_dummy = AT_GR_Data.parameter_default[index][i];}
-      printf("%g understood.\n", float_dummy);
-      gamma_parameters[i] = float_dummy;
+      if (double_dummy == 0.0f){double_dummy = AT_GR_Data.parameter_default[index][i];}
+      printf("%g understood.\n", double_dummy);
+      gamma_parameters[i] = double_dummy;
     }
   }
 
   printf("\n\n >>> Computing efficiency now, using SPIFF algorithm with default settings.");
-  float results[10];
-  long  N2 = 10;
-  float fluence_factor     = 1.0f;
-  bool   write_output      = true;
-  bool   shrink_tails      = true;
-  bool   adjust_N2         = true;
-  float shrink_tails_under = 1e-30f;
-  bool  lethal_events_mode = false;
+  double results[10];
+  long   N2 = 10;
+  double fluence_factor     = 1.0f;
+  bool   write_output       = true;
+  bool   shrink_tails       = true;
+  bool   adjust_N2          = true;
+  double shrink_tails_under = 1e-30f;
+  bool   lethal_events_mode = false;
 
-  AT_SPIFF(  &n_particles,
+  AT_run_SPIFF_method(  n_particles,
       E_MeV_u,
       particle_no,
       fluence_cm2,
-      &material_no,
-      &RDD_model,
+      material_no,
+      RDD_model,
       RDD_parameters,
-      &ER_model,
+      ER_model,
       ER_parameters,
-      &gamma_model,
+      gamma_model,
       gamma_parameters,
-      &N2,
-      &fluence_factor,
-      &write_output,
-      &shrink_tails,
-      &shrink_tails_under,
-      &adjust_N2,
-      &lethal_events_mode,
+      N2,
+      fluence_factor,
+      write_output,
+      shrink_tails,
+      shrink_tails_under,
+      adjust_N2,
+      lethal_events_mode,
       results);
 
   printf("\n\n >>> Done.");
@@ -249,7 +249,7 @@ int main(){
   printf("\nEfficiency:          %g", results[0]);
   printf("\nDose check / Gy:     %g", results[1]);
   printf("\nParticle response:   %g", results[2]);
-  printf("\nGamma response:       %g", results[3]);
+  printf("\nGamma response:      %g", results[3]);
   printf("\n");
   printf("\nMean impact number:  %g", results[5]);
   printf("\nStart impact number: %g", results[6]);

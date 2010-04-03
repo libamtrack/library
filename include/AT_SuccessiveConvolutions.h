@@ -44,51 +44,51 @@
  */
 typedef struct{
 
-  long    array_size;                  /**< size of function arrays F..BI */
-  long    N2;
-  float   U;
+  long     array_size;                  /**< size of function arrays F..BI */
+  long     N2;
+  double   U;
 
-  float   X;
-  float   FINAL;
+  double   X;
+  double   FINAL;
 
-  float   CN;
-  long    N1;
+  double   CN;
+  long     N1;
 
-  float   CM1;
-  float   CM2;
-  float   CM3;
-  float   CM4;
+  double   CM1;
+  double   CM2;
+  double   CM3;
+  double   CM4;
 
-  float   D1;
-  float   D2;
-  float   D3;
-  float   D4;
+  double   D1;
+  double   D2;
+  double   D3;
+  double   D4;
 
-  float   F0;
-  float*  F;
-  long    MIF;
-  long    LEF;
+  double   F0;
+  double*  F;
+  long     MIF;
+  long     LEF;
 
-  float   H0;
-  float*  H;
-  long    MIH;
-  long    LEH;
+  double   H0;
+  double*  H;
+  long     MIH;
+  long     LEH;
 
-  float   E0;
-  float*  E;
-  float*  DE;
-  long    MIE;
+  double   E0;
+  double*  E;
+  double*  DE;
+  long     MIE;
 
-  float*  DI;
-  float*  A;
-  float*  BI;
+  double*  DI;
+  double*  A;
+  double*  BI;
 
-  bool    write_output;
-  FILE*   output_file;
+  bool     write_output;
+  FILE*    output_file;
 
-  bool    shrink_tails;
-  float   shrink_tails_under;
-  bool    adjust_N2;
+  bool     shrink_tails;
+  double   shrink_tails_under;
+  bool     adjust_N2;
 }     aKList;
 
 
@@ -106,22 +106,18 @@ typedef struct{
  * @param[out] n_bins_f1
  * @param[out] f1_parameters
  */
-void  AT_SC_get_f1_array_size(  /* radiation field parameters */
+void  AT_SC_get_f1_array_size(
     const long   n,
-    const float  E_MeV_u[],
+    const double E_MeV_u[],
     const long   particle_no[],
-    /* detector parameters */
     const long   material_no,
     const long   rdd_model,
-    const float  rdd_parameter[],
-    /* electron range model */
+    const double rdd_parameter[],
     const long   er_model,
-    const float  er_parameter[],
-    /* algorithm parameters*/
+    const double er_parameter[],
     const long   N2,
-    // from here: return values
     long *       n_bins_f1,
-    float        f1_parameters[]);
+    double       f1_parameters[]);
 
 
 /**
@@ -144,27 +140,22 @@ void  AT_SC_get_f1_array_size(  /* radiation field parameters */
  * @param[out] f1_dd_Gy              TODO
  * @param[out] f1                    TODO
  */
-void  AT_SC_get_f1(  /* radiation field parameters */
+void  AT_SC_get_f1(
     const long   n,
-    const float  E_MeV_u[],
+    const double E_MeV_u[],
     const long   particle_no[],
-    const float  fluence_cm2[],
-    /* detector parameters */
+    const double fluence_cm2[],
     const long   material_no,
     const long   rdd_model,
-    const float  rdd_parameter[],
-    /* electron range model */
+    const double rdd_parameter[],
     const long   er_model,
-    const float  er_parameter[],
-    /* algorithm parameters*/
+    const double er_parameter[],
     const long   N2,
     const long   n_bins_f1,
-    /* f1 parameters*/
-    const float  f1_parameters[],
-    // from here: return values
-    float        norm_fluence[],
-    float        dose_contribution_Gy[],
-    float        f_parameters[],
+    const double f1_parameters[],
+    double       norm_fluence[],
+    double       dose_contribution_Gy[],
+    double       f_parameters[],
     /*  1 - total fluence_cm2
      *  2 - total_dose_Gy
      *  3 - ave_E_MeV
@@ -173,9 +164,9 @@ void  AT_SC_get_f1(  /* radiation field parameters */
      *  6 - dw_LET_MeV_cm2_g
      *  0 - u
      */
-    float  f1_d_Gy[],
-    float  f1_dd_Gy[],
-    float  f1[]);
+    double        f1_d_Gy[],
+    double        f1_dd_Gy[],
+    double        f1[]);
 
 
 /**
@@ -191,16 +182,15 @@ void  AT_SC_get_f1(  /* radiation field parameters */
  * @param[out] u_start
  * @param[out] n_convolutions
  */
-void AT_SC_get_f_array_size(  const float   u,
-    const float   fluence_factor,
+void AT_SC_get_f_array_size(  const double   u,
+    const double  fluence_factor,
     const long    N2,
     const long    n_bins_f1,
-    const float   f1_d_Gy[],
-    const float   f1_dd_Gy[],
-    const float   f1[],
-    // from here: return values
+    const double  f1_d_Gy[],
+    const double  f1_dd_Gy[],
+    const double  f1[],
     long*         n_bins_f,
-    float*        u_start,
+    double*       u_start,
     long*         n_convolutions);
 
 
@@ -217,17 +207,16 @@ void AT_SC_get_f_array_size(  const float   u,
  * @param[out] f_dd_Gy
  * @param[out] f_start
  */
-void  AT_SC_get_f_start( const float  u_start,
+void  AT_SC_get_f_start( const double  u_start,
     const long    n_bins_f1,
     const long    N2,
-    const float   f1_d_Gy[],
-    const float   f1_dd_Gy[],
-    const float   f1[],
+    const double  f1_d_Gy[],
+    const double  f1_dd_Gy[],
+    const double  f1[],
     const long    n_bins_f,
-    // from here: return values
-    float   f_d_Gy[],
-    float   f_dd_Gy[],
-    float   f_start[]);
+    double        f_d_Gy[],
+    double        f_dd_Gy[],
+    double        f_start[]);
 
 
 /**
@@ -304,20 +293,20 @@ aKList AT_SC_FOLD(aKList theKList);
  * @param[in]      shrink_tails_under
  * @param[in]      adjust_N2
  */
-void   AT_SuccessiveConvolutions( const float  u,
+void   AT_SuccessiveConvolutions( const double  u,
     const long   n_bins_f,
     long*        N2,
     long*        n_bins_f_used,
-    float        f_d_Gy[],
-    float        f_dd_Gy[],
-    float        f[],
-    float*       f0,
-    float        fdd[],
-    float        dfdd[],
-    float*       d,
+    double       f_d_Gy[],
+    double       f_dd_Gy[],
+    double       f[],
+    double*      f0,
+    double       fdd[],
+    double       dfdd[],
+    double*      d,
     const bool   write_output,
     const bool   shrink_tails,
-    const float  shrink_tails_under,
+    const double shrink_tails_under,
     const bool   adjust_N2);
 
 

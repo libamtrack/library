@@ -45,15 +45,15 @@
  * TODO
  */
 typedef struct {
-  const long    n;                                     /** TODO */
-  const float   kin_E_MeV[PSTAR_DATA_N];               /** TODO */
-  const float   stp_pow_el_MeV_cm2_g[PSTAR_DATA_N];    /** TODO */
-  const float   stp_pow_nuc_MeV_cm2_g[PSTAR_DATA_N];   /** TODO */
-  const float   stp_pow_tot_MeV_cm2_g[PSTAR_DATA_N];   /** TODO */
-  const float   range_cdsa_g_cm2[PSTAR_DATA_N];        /** TODO */
-  const float   range_proj_g_cm2[PSTAR_DATA_N];        /** TODO */
-  const float   detour_factor[PSTAR_DATA_N];           /** TODO */
-  const long    material_no[PSTAR_DATA_N];             /** TODO */
+  const long     n;                                     /** TODO */
+  const double   kin_E_MeV[PSTAR_DATA_N];               /** TODO */
+  const double   stp_pow_el_MeV_cm2_g[PSTAR_DATA_N];    /** TODO */
+  const double   stp_pow_nuc_MeV_cm2_g[PSTAR_DATA_N];   /** TODO */
+  const double   stp_pow_tot_MeV_cm2_g[PSTAR_DATA_N];   /** TODO */
+  const double   range_cdsa_g_cm2[PSTAR_DATA_N];        /** TODO */
+  const double   range_proj_g_cm2[PSTAR_DATA_N];        /** TODO */
+  const double   detour_factor[PSTAR_DATA_N];           /** TODO */
+  const long     material_no[PSTAR_DATA_N];             /** TODO */
 } pstar_data;
 
 
@@ -747,12 +747,12 @@ static const pstar_data AT_PSTAR_Data = {
  * @param[out] y             array of interpolated y values
  */
 void getPSTARvalue(
-    const long   n,
-    const float  x[],
-    const long   material_no,
-    const float  x_table[],
-    const float  y_table[],
-    float        y[]);
+    const long    n,
+    const double  x[],
+    const long    material_no,
+    const double  x_table[],
+    const double  y_table[],
+    double        y[]);
 
 
 /**
@@ -782,10 +782,10 @@ double AT_LET_MeV_cm2_g_single(  const double  E_MeV_u,
  * @param[out] LET_MeV_cm2_g
  */
 void AT_LET_MeV_cm2_g(  const long  number_of_particles,
-    const float   E_MeV_u[],
-    const long    particle_no[],
-    const long    material_no,
-    float         LET_MeV_cm2_g[]);
+    const double   E_MeV_u[],
+    const long     particle_no[],
+    const long     material_no,
+    double         LET_MeV_cm2_g[]);
 
 
 /**
@@ -800,10 +800,10 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
  * @param[out] LET_keV_um
  */
 void AT_LET_keV_um(  const long  number_of_particles,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    const long   material_no,
-    float        LET_keV_um[]);
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const long    material_no,
+    double        LET_keV_um[]);
 
 /**
  * Returns CSDA range (in g/cm2) from pstar tables for given energy.
@@ -817,10 +817,10 @@ void AT_LET_keV_um(  const long  number_of_particles,
  * @param[out]  CSDA_range_g_cm2         vector of size number_of_particles to be allocated by the user which will be used to return the results
  */
 void AT_CSDA_range_g_cm2(  const long  number_of_particles,
-    const float   E_MeV_u[],
-    const long    particle_no[],
-    const long    material_no,
-    float         CSDA_range_g_cm2[]);
+    const double   E_MeV_u[],
+    const long     particle_no[],
+    const long     material_no,
+    double         CSDA_range_g_cm2[]);
 
 /**
  * Returns CSDA range (in m) from pstar tables for given energy.
@@ -835,10 +835,10 @@ void AT_CSDA_range_g_cm2(  const long  number_of_particles,
  * @return  none
  */
 void AT_CSDA_range_m(  const long  number_of_particles,
-    const float  E_MeV_u[],
-    const long   particle_no[],
-    const long   material_no,
-    float        CSDA_range_m[]);
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const long    material_no,
+    double        CSDA_range_m[]);
 
 
 /**
@@ -853,10 +853,10 @@ void AT_CSDA_range_m(  const long  number_of_particles,
  * @param[out]  E_MeV
  */
 void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
-    const float  CSDA_range_g_cm2[],
-    const long   particle_no[],
-    const long   material_no,
-    float        E_MeV[]);
+    const double  CSDA_range_g_cm2[],
+    const long    particle_no[],
+    const long    material_no,
+    double        E_MeV[]);
 
 /**
  * TODO correct implementation - Zeff correction
@@ -868,9 +868,9 @@ void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
  * @param E_MeV
  */
 void AT_E_MeV_from_LET(  const long  number_of_particles,
-    const float  LET_MeV_cm2_g[],
-    const long   particle_no[],
-    const long   material_no,
-    float        E_MeV[]);
+    const double  LET_MeV_cm2_g[],
+    const long    particle_no[],
+    const long    material_no,
+    double        E_MeV[]);
 
 #endif /* AT_DATALET_H_ */
