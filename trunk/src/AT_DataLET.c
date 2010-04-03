@@ -34,11 +34,11 @@
 
 void getPSTARvalue(
     const long   n,
-    const float  x[],
+    const double  x[],
     const long   material_no,
-    const float  x_table[],
-    const float  y_table[],
-    float        y[])
+    const double  x_table[],
+    const double  y_table[],
+    double        y[])
 {
   // first: find those PSTAR entries that match the material number
   bool*    matches    =  (bool*)calloc(AT_PSTAR_Data.n, sizeof(bool));
@@ -56,8 +56,8 @@ void getPSTARvalue(
   }
 
   // allocate vectors for extracted LET entries
-  float*  x_c  =  (float*)calloc(n_matches, sizeof(float));
-  float*  y_c  =  (float*)calloc(n_matches, sizeof(float));
+  double*  x_c  =  (double*)calloc(n_matches, sizeof(double));
+  double*  y_c  =  (double*)calloc(n_matches, sizeof(double));
 
   // and get the values
   long     j  = 0;
@@ -71,7 +71,7 @@ void getPSTARvalue(
   long  n_pol      = 4 + 1;
   for (i = 0; i < n; i++){
     // Get proton-LET for scaled energy from table E, L using 4th degree polynomial (n_pol - 1 = 2) interpolation
-    float  err_y_tmp  = 0.0f;    // dummy
+    double  err_y_tmp  = 0.0;    // dummy
     interp(    x_c,
         y_c,
         n_matches,
@@ -93,10 +93,8 @@ double AT_LET_MeV_cm2_g_single(  const double  E_MeV_u,
 
   // get LET for proton of same energy / nucleon
   const long number_of_particles  =  1;
-  const float E_MeV_u_float       =  (float)E_MeV_u;
-  float LET_MeV_cm2_g_float       =  0.0f;
-  getPSTARvalue(number_of_particles, &E_MeV_u_float, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, &LET_MeV_cm2_g_float);
-  double LET_MeV_cm2_g            = (double)LET_MeV_cm2_g_float;
+  double LET_MeV_cm2_g            =  0.0;
+  getPSTARvalue(number_of_particles, &E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, &LET_MeV_cm2_g);
 
   double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u,particle_no);
 
@@ -112,16 +110,16 @@ double AT_LET_MeV_cm2_g_single(  const double  E_MeV_u,
 
 
 void AT_LET_MeV_cm2_g(  const long  number_of_particles,
-    const float  E_MeV_u[],
+    const double  E_MeV_u[],
     const long   particle_no[],
     const long   material_no,
-    float        LET_MeV_cm2_g[])
+    double        LET_MeV_cm2_g[])
 {
   // get LET for proton of same energy / nucleon
   getPSTARvalue(number_of_particles, E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, LET_MeV_cm2_g);
 
   // get effective charge for all given particles and energies
-  float*  Zeff_ion  =  (float*)calloc( number_of_particles, sizeof(float));
+  double*  Zeff_ion  =  (double*)calloc( number_of_particles, sizeof(double));
   AT_effective_charge_from_E_MeV_u(  number_of_particles,
       E_MeV_u,
       particle_no,
@@ -129,8 +127,8 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
 
   // get effective charge for protons of same energy
   long   i;
-  float*  Zeff_proton           =  (float*)calloc(number_of_particles, sizeof(float));
-  long*   particle_no_proton    =  (long*)calloc(number_of_particles, sizeof(long));
+  double*  Zeff_proton           =  (double*)calloc(number_of_particles, sizeof(double));
+  long*    particle_no_proton    =  (long*)calloc(number_of_particles, sizeof(long));
   for (i = 0; i < number_of_particles; i++){
     particle_no_proton[i] = 1001;
   }
@@ -155,10 +153,10 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
 
 
 void AT_LET_keV_um(  const long  number_of_particles,
-    const float  E_MeV_u[],
+    const double  E_MeV_u[],
     const long   particle_no[],
     const long   material_no,
-    float        LET_keV_um[])
+    double        LET_keV_um[])
 {
   // Get material density
   double material_density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
@@ -172,16 +170,16 @@ void AT_LET_keV_um(  const long  number_of_particles,
 
   long  i;
   for (i = 0; i < number_of_particles; i++){
-    LET_keV_um[i]  *=  (float)material_density_g_cm3 * 0.1f;
+    LET_keV_um[i]  *=  material_density_g_cm3 * 0.1;
   }
 }
 
 
 void AT_CSDA_range_g_cm2(  const long  number_of_particles,
-    const float   E_MeV_u[],
+    const double   E_MeV_u[],
     const long    particle_no[],
     const long    material_no,
-    float         CSDA_range_g_cm2[])
+    double         CSDA_range_g_cm2[])
 {
   getPSTARvalue(number_of_particles, E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.range_cdsa_g_cm2, CSDA_range_g_cm2);
 
@@ -197,7 +195,7 @@ void AT_CSDA_range_g_cm2(  const long  number_of_particles,
   long i = 0;
   for (i = 0; i < number_of_particles; i++){
     if (particle_no[i] != 1){
-      CSDA_range_g_cm2[i]  *=   (float)(A[i])/(float)((Z[i])*(Z[i]));
+      CSDA_range_g_cm2[i]  *=   (double)(A[i])/(double)((Z[i])*(Z[i]));
     }
   }
 
@@ -207,10 +205,10 @@ void AT_CSDA_range_g_cm2(  const long  number_of_particles,
 
 
 void AT_CSDA_range_m(  const long  number_of_particles,
-    const float  E_MeV_u[],
+    const double  E_MeV_u[],
     const long   particle_no[],
     const long   material_no,
-    float        CSDA_range_m[])
+    double        CSDA_range_m[])
 {
   // Get material density
   double material_density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
@@ -224,20 +222,20 @@ void AT_CSDA_range_m(  const long  number_of_particles,
 
   long  i;
   for (i = 0; i < number_of_particles; i++){
-    CSDA_range_m[i]  /=  (float)material_density_g_cm3 * 100.0f;
+    CSDA_range_m[i]  /=  material_density_g_cm3 * 100.0;
   }
 
 }
 
 
 void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
-    const float  CSDA_range_g_cm2[],
+    const double  CSDA_range_g_cm2[],
     const long   particle_no[],
     const long   material_no,
-    float        E_MeV[])
+    double        E_MeV[])
 {
   // scaled energies
-  float*  sE  =  (float*)calloc(number_of_particles, sizeof(float));
+  double*  sE  =  (double*)calloc(number_of_particles, sizeof(double));
 
   getPSTARvalue(number_of_particles, CSDA_range_g_cm2, material_no, AT_PSTAR_Data.range_cdsa_g_cm2, AT_PSTAR_Data.kin_E_MeV, sE);
 
@@ -246,13 +244,13 @@ void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
 
 
 void AT_E_MeV_from_LET(  const long  number_of_particles,
-    const float  LET_MeV_cm2_g[],
+    const double  LET_MeV_cm2_g[],
     const long   particle_no[],
     const long   material_no,
-    float        E_MeV[])
+    double        E_MeV[])
 {
   // scaled energies
-  float*  scaled_E_MeV  =  (float*)calloc(number_of_particles, sizeof(float));
+  double*  scaled_E_MeV  =  (double*)calloc(number_of_particles, sizeof(double));
 
   //TODO add effective charge correction !!
 
@@ -264,11 +262,11 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
 
 
   // loop over n to find charge for all given particles and energies
-  float*  LET_MeV_cm2_g_copy = (float*)calloc(number_of_particles,sizeof(float));
+  double*  LET_MeV_cm2_g_copy = (double*)calloc(number_of_particles,sizeof(double));
   memcpy(LET_MeV_cm2_g_copy,LET_MeV_cm2_g,number_of_particles);
   long  i;
   for(i = 0; i < number_of_particles; i++){
-    LET_MeV_cm2_g_copy[i] /= gsl_pow_2( (float)charge[i] );;
+    LET_MeV_cm2_g_copy[i] /= gsl_pow_2( (double)charge[i] );;
   }
 
   getPSTARvalue(number_of_particles, LET_MeV_cm2_g_copy, material_no, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, AT_PSTAR_Data.kin_E_MeV, scaled_E_MeV);

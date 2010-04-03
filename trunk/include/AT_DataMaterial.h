@@ -91,10 +91,10 @@ static const material_data AT_Material_Data = {
  * Get index of material in AT_Material_Data for given material_no
  * (currently for example material with number 2 has index 1)
  *
- * @param material_no  material number
- * @return             material index in AT_Material_Data table
+ * @param material_number  material number
+ * @return                 material index in AT_Material_Data table
  */
-long AT_index_from_material_no( const long material_no );
+long AT_material_index_from_material_number( const long material_number );
 
 
 /**
@@ -102,7 +102,7 @@ long AT_index_from_material_no( const long material_no );
  * @param[in]  material_no
  * @param[out] material_name
  */
-void getMaterialName( const long material_no,
+void AT_material_name_from_number( const long material_no,
     char* material_name);
 
 
@@ -111,7 +111,7 @@ void getMaterialName( const long material_no,
  * @param[in] material_name
  * @return    material number
  */
-long getMaterialNo( const char* material_name );
+long AT_material_number_from_name( const char* material_name );
 
 
 /**

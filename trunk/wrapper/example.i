@@ -30,11 +30,11 @@
 /* Single value passed by value is supported for any type */ 
 
 %include "arrays_java.i"
-%apply float[] {float *};
+%apply double[] {double *};
     
-extern void AT_max_electron_ranges_m( const long  number_of_particles,
-    const float  E_MeV_u[],
+extern void AT_max_electron_ranges_m( const long number_of_particles,
+    const double E_MeV_u[],
     const long   material_no,
     const long   er_model,
-    float  max_electron_range_m[]);
+    double  max_electron_range_m[]);
 

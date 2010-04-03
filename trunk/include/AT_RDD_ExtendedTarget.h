@@ -53,7 +53,7 @@
  * @param[out]  D_RDD_Gy       dose [Gy]
  */
 void AT_RDD_Site_Gy( const long  n,
-    const float  r_m[],
+    const double  r_m[],
     const double  a0_m,
     /* radiation field parameters */
     const double  E_MeV_u,
@@ -62,11 +62,11 @@ void AT_RDD_Site_Gy( const long  n,
     const long    material_no,
     /* radial dose distribution model */
     const long    rdd_model,
-    const float   rdd_parameter[],
+    const double  rdd_parameter[],
     /* electron range model */
     const long    er_model,
-    const float   er_parameter[],
-    float         D_RDD_Gy[]);
+    const double  er_parameter[],
+    double        D_RDD_Gy[]);
 
 
 ///////////////////////////////////////////// EXTENDED TARGET /////////////////////////////////////////////
@@ -180,7 +180,7 @@ typedef struct {
  * @param params
  * @return
  */
-float AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy( const float r_m , void * params );
+double AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy( const double r_m , void * params );
 
 
 /**
@@ -235,7 +235,7 @@ double  AT_inverse_RDD_ExtendedTarget_KatzPoint_m( const double D_Gy,
  * @param[out]  D_RDD_Gy       dose [Gy]
  */
 void AT_RDD_ExtendedTarget_Gy( const long  n,
-    const float  r_m[],
+    const double r_m[],
     const double a0_m,
     /* radiation field parameters */
     const double E_MeV_u,
@@ -244,11 +244,11 @@ void AT_RDD_ExtendedTarget_Gy( const long  n,
     const long   material_no,
     /* radial dose distribution model */
     const long   rdd_model,
-    const float  rdd_parameter[],
+    const double rdd_parameter[],
     /* electron range model */
     const long   er_model,
-    const float  er_parameter[],
-    float        D_RDD_Gy[]);
+    const double er_parameter[],
+    double       D_RDD_Gy[]);
 
 
 /**
@@ -284,35 +284,35 @@ double AT_RDD_ExtendedTarget_integrate_Gy(  const double r_m,
     const double a0_m,
     const double r_min_m,
     const double r_max_m,
-    const double  E_MeV_u,
+    const double E_MeV_u,
     const long   particle_no,
     /* detector parameters */
     const long   material_no,
     /* radial dose distribution model */
     const long   rdd_model,
-    const float  rdd_parameter[],
+    const double rdd_parameter[],
     /* electron range model */
     const long   er_model,
-    const float  er_parameter[]);
+    const double er_parameter[]);
 
 
 /**
  * TODO
  */
 typedef struct {
-  float   r_m;
-  float   a0_m;
+  double  r_m;
+  double  a0_m;
   /* radiation field parameters */
-  float   E_MeV_u;          /**< energy per nucleon */
+  double  E_MeV_u;          /**< energy per nucleon */
   long    particle_no;
   /* detector parameters */
   long    material_no;
   /* radial dose distribution model */
   long    rdd_model;
-  float*  rdd_parameter;
+  double* rdd_parameter;
   /* electron range model */
   long    er_model;
-  float*   er_parameter;
+  double*  er_parameter;
 } AT_RDD_ExtendedTarget_parameters;
 
 #endif /* AT_RDD_EXTENDEDTARGET_H_ */

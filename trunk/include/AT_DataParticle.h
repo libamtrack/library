@@ -41,13 +41,13 @@
  * TODO
  */
 typedef struct {
-  const long     n;
-  const long     Z[PARTICLE_DATA_N];
-  const float    atomic_weight[PARTICLE_DATA_N];
-  const char*    element_name[PARTICLE_DATA_N];
-  const char*    element_acronym[PARTICLE_DATA_N];
-  const float    density_g_cm3[PARTICLE_DATA_N];
-  const float    I_eV[PARTICLE_DATA_N];
+  const long      n;
+  const long      Z[PARTICLE_DATA_N];
+  const double    atomic_weight[PARTICLE_DATA_N];
+  const char*     element_name[PARTICLE_DATA_N];
+  const char*     element_acronym[PARTICLE_DATA_N];
+  const double    density_g_cm3[PARTICLE_DATA_N];
+  const double    I_eV[PARTICLE_DATA_N];
 } particle_data;
 
 /**
@@ -179,7 +179,7 @@ int AT_Z_from_particle_no(  const long  n,
  */
 int AT_atomic_weight_from_particle_no(  const long  n,
     const long  particle_no[],
-    float  atomic_weight[]);
+    double  atomic_weight[]);
 
 
 /**

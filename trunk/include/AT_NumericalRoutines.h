@@ -37,7 +37,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <float.h>
 #include <malloc.h>
 #include <string.h>
 
@@ -51,11 +50,11 @@
  * @param fni
  * @param funs
  */
-void AT_Funs(  const float*  fz,
-    const float*  fR0,
-    const float*  fsigma,
-    const float* fni,
-    float* funs);
+void AT_Funs(  const double*  fz,
+    const double*  fR0,
+    const double*  fsigma,
+    const double* fni,
+    double* funs);
 
 
 /**
@@ -64,9 +63,9 @@ void AT_Funs(  const float*  fz,
  * @param fx
  * @param fDyx
  */
-void AT_fDyx(  const float*  fy,
-    const float* fx,
-    float* fDyx);
+void AT_fDyx(  const double*  fy,
+    const double* fx,
+    double* fDyx);
 
 
 /**
@@ -138,7 +137,7 @@ int gamma_( const double *x, double *ga);
  * @param xx
  * @return
  */
-float gammln(const float xx);
+double gammln(const double xx);
 
 
 /**
@@ -148,7 +147,7 @@ float gammln(const float xx);
  * @param x
  * @param gln
  */
-void gcf(float *gammcf, const float a, const float x, float *gln);
+void gcf(double *gammcf, const double a, const double x, double *gln);
 
 
 /**
@@ -158,7 +157,7 @@ void gcf(float *gammcf, const float a, const float x, float *gln);
  * @param x
  * @param gln
  */
-void gser(float *gamser, const float a, float const x, float *gln);
+void gser(double *gamser, const double a, double const x, double *gln);
 
 
 /**
@@ -167,7 +166,7 @@ void gser(float *gamser, const float a, float const x, float *gln);
  * @param x
  * @return
  */
-float gammp(const float a, const float x);
+double gammp(const double a, const double x);
 
 
 /**
@@ -175,7 +174,7 @@ float gammp(const float a, const float x);
  * @param x
  * @return
  */
-float erff(const float x);
+double erff_custom(const double x);
 
 
 /**
@@ -196,7 +195,7 @@ void nrerror(const char error_text[]);
  * @param xacc
  * @return
  */
-float zriddr(float (*func)(float,void*), void * params, const float x1, const float x2, const float xacc);
+double zriddr(double (*func)(double,void*), void * params, const double x1, const double x2, const double xacc);
 
 
 /**
@@ -266,7 +265,7 @@ void is_element_int(const long element, const long set[], const long n_set, bool
  * @param x   TODO
  * return j   result
  */
-long locate(const float xx[], const long n, const float x);
+long locate(const double xx[], const long n, const double x);
 
 
 /**
@@ -278,7 +277,7 @@ long locate(const float xx[], const long n, const float x);
  * @param y
  * @param dy
  */
-void polint(const float xa[], const float ya[], const long n, const float x, float *y, float *dy);
+void polint(const double xa[], const double ya[], const long n, const double x, double *y, double *dy);
 
 
 /**
@@ -291,7 +290,7 @@ void polint(const float xa[], const float ya[], const long n, const float x, flo
  * @param y
  * @param dy
  */
-void interp(const float xa[], const float ya[], const long n, const long n_pol, const float x, float y[], float dy[]);
+void interp(const double xa[], const double ya[], const long n, const long n_pol, const double x, double y[], double dy[]);
 
 
 #endif /* AT_NUMERICALROUTINES_H_ */

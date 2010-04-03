@@ -193,11 +193,11 @@ public class NewSwingApp extends javax.swing.JFrame {
 		int ER_Model = 2;
 		int material_no = 1;
 		
-		float E_MeV_u_table[] = {(float)E_MeV_u};
-		float rest[] = {0.0f};
+		double E_MeV_u_table[] = {E_MeV_u};
+		double rest[] = {0.0};
 		example.AT_max_electron_ranges_m(n, E_MeV_u_table, material_no, ER_Model, rest);
 		
-		double res = (double)rest[0];
+		double res = rest[0];
 		NumberFormat formatter = new DecimalFormat("0.000E0"); 		
 		String s = formatter.format(res);
 		jTextField3.setText(s);

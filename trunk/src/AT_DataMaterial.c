@@ -34,10 +34,10 @@
 ///////////////////////////////////////////// SINGLE MATERIAL IMPLEMENTATION ///////////////////////////////////////////////////////
 
 
-long AT_index_from_material_no( const long material_no ){
+long AT_material_index_from_material_number( const long material_number ){
   long  index                =  -1;
   long  number_of_materials  =  1;
-  find_elements_int(  &material_no,
+  find_elements_int(  &material_number,
       number_of_materials,
       AT_Material_Data.material_no,
       AT_Material_Data.n,
@@ -46,11 +46,11 @@ long AT_index_from_material_no( const long material_no ){
 }
 
 
-void getMaterialName(
+void AT_material_name_from_number(
     const long material_no,
     char* material_name){
 
-  long  index = AT_index_from_material_no( material_no );
+  long  index = AT_material_index_from_material_number( material_no );
 
   if( index != -1){
     strcpy(material_name, AT_Material_Data.material_name[index]);
@@ -60,7 +60,7 @@ void getMaterialName(
 }
 
 
-long getMaterialNo(
+long AT_material_number_from_name(
     const char* material_name){
 
   // find look-up index for material name in material data table
@@ -84,7 +84,7 @@ long getMaterialNo(
 
 double AT_density_g_cm3_from_material_no( const long   material_no )
 {
-  long  index = AT_index_from_material_no( material_no );
+  long  index = AT_material_index_from_material_number( material_no );
   if( index == -1){
     printf("Material no %ld not found\n", material_no);
     return 0.0;
@@ -95,7 +95,7 @@ double AT_density_g_cm3_from_material_no( const long   material_no )
 
 double AT_electron_density_m3_from_material_no( const long   material_no )
 {
-  long  index = AT_index_from_material_no( material_no );
+  long  index = AT_material_index_from_material_number( material_no );
   if( index == -1){
     printf("Material no %ld not found\n", material_no);
     return 0.0;
@@ -106,7 +106,7 @@ double AT_electron_density_m3_from_material_no( const long   material_no )
 
 double AT_I_eV_from_material_no( const long   material_no )
 {
-  long  index = AT_index_from_material_no( material_no );
+  long  index = AT_material_index_from_material_number( material_no );
   if( index == -1){
     printf("Material no %ld not found\n", material_no);
     return 0.0;
@@ -117,7 +117,7 @@ double AT_I_eV_from_material_no( const long   material_no )
 
 double AT_alpha_g_cm2_MeV_from_material_no( const long   material_no )
 {
-  long  index = AT_index_from_material_no( material_no );
+  long  index = AT_material_index_from_material_number( material_no );
   if( index == -1){
     printf("Material no %ld not found\n", material_no);
     return 0.0;
@@ -127,7 +127,7 @@ double AT_alpha_g_cm2_MeV_from_material_no( const long   material_no )
 
 double AT_p_MeV_from_material_no( const long   material_no )
 {
-  long  index = AT_index_from_material_no( material_no );
+  long  index = AT_material_index_from_material_number( material_no );
   if( index == -1){
     printf("Material no %ld not found\n", material_no);
     return 0.0;
@@ -138,7 +138,7 @@ double AT_p_MeV_from_material_no( const long   material_no )
 
 double AT_m_g_cm2_from_material_no( const long   material_no )
 {
-  long  index = AT_index_from_material_no( material_no );
+  long  index = AT_material_index_from_material_number( material_no );
   if( index == -1){
     printf("Material no %ld not found\n", material_no);
     return 0.0;
@@ -148,7 +148,7 @@ double AT_m_g_cm2_from_material_no( const long   material_no )
 
 double AT_average_A_from_material_no( const long   material_no )
 {
-  long  index = AT_index_from_material_no( material_no );
+  long  index = AT_material_index_from_material_number( material_no );
   if( index == -1){
     printf("Material no %ld not found\n", material_no);
     return 0.0;
@@ -159,7 +159,7 @@ double AT_average_A_from_material_no( const long   material_no )
 
 double AT_average_Z_from_material_no( const long   material_no )
 {
-  long  index = AT_index_from_material_no( material_no );
+  long  index = AT_material_index_from_material_number( material_no );
   if( index == -1){
     printf("Material no %ld not found\n", material_no);
     return 0.0;
@@ -178,7 +178,7 @@ void AT_get_material_data(     const long  material_no,
     double*  average_A,
     double*  average_Z){
 
-  long  index = AT_index_from_material_no( material_no );
+  long  index = AT_material_index_from_material_number( material_no );
   if( index == -1){
     printf("Material no %ld not found\n", material_no);
     *density_g_cm3        =  0.0;

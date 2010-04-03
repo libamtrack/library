@@ -115,12 +115,11 @@ inline void AT_ER_Tabata_constants(const double average_A, const double average_
 }
 
 
-//TODO replace float by double
 void AT_max_electron_ranges_m( const long  number_of_particles,
-    const float  E_MeV_u[],
-    const int    material_no,
-    const int    er_model,
-    float  max_electron_range_m[])
+    const double  E_MeV_u[],
+    const int     material_no,
+    const int     er_model,
+    double        max_electron_range_m[])
 {
 
   /********************************************************
@@ -135,10 +134,10 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
       NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
   // Get beta from energy
-  float* beta     =  (float*)calloc(number_of_particles, sizeof(float));
+  double* beta     =  (double*)calloc(number_of_particles, sizeof(double));
 
   // Get energy of delta-electron from energy of ion
-  float* wmax_MeV  =  (float*)calloc(number_of_particles, sizeof(float));
+  double* wmax_MeV  =  (double*)calloc(number_of_particles, sizeof(double));
   AT_max_E_transfer_MeV(number_of_particles,E_MeV_u,wmax_MeV);
 
   // a1,..a5 needed in Tabata ER model
@@ -154,14 +153,14 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
     AT_ER_Tabata_constants(average_A , average_Z, &a1_g_cm2, &a2, &a3, &a4, &a5);
   }
 
-  float max_electron_range_g_cm2 = 0.0f;
+  double max_electron_range_g_cm2 = 0.0;
 
   /********************************************************
    *********************  PARTICLE LOOP *******************
    *******************************************************/
   long  i;
   for (i = 0; i < number_of_particles; i++){
-    double wmax_keV = ((double)wmax_MeV[i]) * 1000.0;
+    double wmax_keV = wmax_MeV[i] * 1000.0;
 
     switch( er_model ){
       case ER_ButtsKatz :
@@ -180,7 +179,7 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
         max_electron_range_g_cm2  =  AT_ER_Scholz_range_g_cm2(E_MeV_u[i]);
         break;
       case ER_Tabata :
-        max_electron_range_g_cm2  =  AT_ER_Tabata_range_g_cm2((double)beta[i], a1_g_cm2, a2, a3, a4, a5);
+        max_electron_range_g_cm2  =  AT_ER_Tabata_range_g_cm2(beta[i], a1_g_cm2, a2, a3, a4, a5);
         break;
       default:
         max_electron_range_g_cm2  =  0.0;
@@ -188,7 +187,7 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
     }
 
     // Scale maximum el. ranges with material density relative to water (1/rho) and convert cm to m
-    max_electron_range_m[i]      =  1e-2 * max_electron_range_g_cm2 / (float)material_density_g_cm3;
+    max_electron_range_m[i]      =  1e-2 * max_electron_range_g_cm2 / material_density_g_cm3;
 
   }
   free(beta);

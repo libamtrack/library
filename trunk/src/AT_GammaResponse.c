@@ -5,61 +5,75 @@
 
 
 /*
-*    AT_GammaResponse.c
-*    ==================
-*
-*    Created on: 28.07.2009
-*    Author: greilich
-*
-*    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
-*
-*    This file is part of the AmTrack program (libamtrack.sourceforge.net).
-*
-*    AmTrack is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation, either version 3 of the License, or
-*    (at your option) any later version.
-*
-*    AmTrack is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with AmTrack (file: copying.txt).
-*    If not, see <http://www.gnu.org/licenses/>
-*/
+ *    AT_GammaResponse.c
+ *    ==================
+ *
+ *    Created on: 28.07.2009
+ *    Author: greilich
+ *
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+ *
+ *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+ *
+ *    AmTrack is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    AmTrack is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with AmTrack (file: copying.txt).
+ *    If not, see <http://www.gnu.org/licenses/>
+ */
 
 #include "AT_GammaResponse.h"
 
 
-void getGammaName( const long Gamma_no,
-    char* Gamma_name){
-
-  // find look-up index for GR number in GR data table
-  long  match;
-  const long n_tmp = 1;
-
+long AT_Gamma_index_from_material_number( const long Gamma_no ){
+  long  index          =  -1;
+  long  number_of_GRs  =  1;
   find_elements_int(  &Gamma_no,
-      n_tmp,
+      number_of_GRs,
       AT_GR_Data.GR_no,
       AT_GR_Data.n,
-      &match);
+      &index);   // TODO replace call to find_elements_int by call to simpler function which will find the index just for one argument
+  return index;
+}
 
-  if( match != -1){
-    strcpy(Gamma_name, AT_GR_Data.GR_name[match]);
+
+void AT_Gamma_name_from_number( const long Gamma_no,
+    char* Gamma_name){
+
+  long  index = AT_Gamma_index_from_material_number( Gamma_no );
+
+  if( index != -1){
+    strcpy(Gamma_name, AT_GR_Data.GR_name[index]);
   } else {
     strcpy(Gamma_name,"*** invalid choice ***");
   }
 }
 
 
+long AT_Gamma_number_of_parameters( const long Gamma_no){
+    long  index = AT_Gamma_index_from_material_number( Gamma_no );
+    if( index == -1){
+      printf("gamma model no %ld not found\n", Gamma_no);
+      return 0;
+    }
+    return AT_GR_Data.n_parameters[index];
+}
+
+
 void AT_gamma_response( const long  number_of_doses,
-    const float   d_Gy[],
-    const long    gamma_model,
-    const float   gamma_parameter[],
+    const double   d_Gy[],
+    const long     gamma_model,
+    const double   gamma_parameter[],
     // return
-    float         S[]){
+    double         S[]){
 
   long  i,j;
   /*
@@ -68,8 +82,8 @@ void AT_gamma_response( const long  number_of_doses,
    *         c - gamma_parameter[1]
    */
   if(gamma_model == GR_Test){
-    float  m  = gamma_parameter[0];
-    float  c  = gamma_parameter[1];
+    double  m  = gamma_parameter[0];
+    double  c  = gamma_parameter[1];
     for (i = 0; i < number_of_doses; i++){
       S[i]    =  m * d_Gy[i] + c;
     }
@@ -92,19 +106,19 @@ void AT_gamma_response( const long  number_of_doses,
     }
 
     for (i = 0; i < number_of_doses; i++){
-      S[i]  = 0.0f;
+      S[i]  = 0.0;
     }
     for (j = 0; j < n_gamma_parameter / 4; j++){            // loop over all components
-      float k      =  gamma_parameter[j * 4];
-      float D1     =  gamma_parameter[j * 4 + 1];
-      float c      =  gamma_parameter[j * 4 + 2];
-      float m      =  gamma_parameter[j * 4 + 3];
+      double k      =  gamma_parameter[j * 4];
+      double D1     =  gamma_parameter[j * 4 + 1];
+      double c      =  gamma_parameter[j * 4 + 2];
+      double m      =  gamma_parameter[j * 4 + 3];
 
-      float tmp    =  0.0f;
+      double tmp    =  0.0;
 
       for (i = 0; i < number_of_doses; i++){
         if(c == 1){                    // in case of c = 1 use simplified, faster formula
-          tmp      =  1.0f - exp(-1.0f * d_Gy[i] / D1);
+          tmp      =  1.0 - exp(-1.0 * d_Gy[i] / D1);
         }else{                      // for c > 1 use incomplete gamma function
           tmp      =  gammp(c, d_Gy[i] / D1);
         }
@@ -134,12 +148,12 @@ void AT_gamma_response( const long  number_of_doses,
    */
 
   if(gamma_model == GR_Radioluminescence){
-    float Smax   =  gamma_parameter[0];
-    float D1     =  gamma_parameter[1];
-    float chi    =  gamma_parameter[2];
+    double Smax   =  gamma_parameter[0];
+    double D1     =  gamma_parameter[1];
+    double chi    =  gamma_parameter[2];
     // transform parameters
-    float c0     =  Smax / chi;
-    float B      =  (Smax - c0) / D1;
+    double c0     =  Smax / chi;
+    double B      =  (Smax - c0) / D1;
 
     for (i = 0; i < number_of_doses; i++){
       if(d_Gy[i]  <= D1){
@@ -158,11 +172,11 @@ void AT_gamma_response( const long  number_of_doses,
    */
   if(gamma_model == GR_ExpSaturation){
     // exp-saturation model
-    float  Smax  =  gamma_parameter[0];
-    float  D0    =  gamma_parameter[1];
+    double  Smax  =  gamma_parameter[0];
+    double  D0    =  gamma_parameter[1];
 
     for (i = 0; i < number_of_doses; i++){
-      S[i]    =  Smax * (1.0f - (float)exp(-1.0f * d_Gy[i] / D0));
+      S[i]    =  Smax * (1.0 - exp(-1.0 * d_Gy[i] / D0));
     }
   }
 
@@ -175,20 +189,20 @@ void AT_gamma_response( const long  number_of_doses,
    */
   if(gamma_model == GR_LinQuad){
 
-    float  alpha =  gamma_parameter[0];
-    float  beta  =  gamma_parameter[1];
-    float  D0    =  gamma_parameter[2];
+    double  alpha =  gamma_parameter[0];
+    double  beta  =  gamma_parameter[1];
+    double  D0    =  gamma_parameter[2];
 
-    if( alpha < 0.0f )
-      alpha = 0.0f;
-    if( beta < 0.0f )
-      beta = 0.0f;
+    if( alpha < 0.0 )
+      alpha = 0.0;
+    if( beta < 0.0 )
+      beta = 0.0;
 
     for (i = 0; i < number_of_doses; i++){
       if( d_Gy[i] < D0 ){
-        S[i]    =  expf( -alpha * d_Gy[i] - beta * gsl_pow_2(d_Gy[i]));
+        S[i]    =  exp( -alpha * d_Gy[i] - beta * gsl_pow_2(d_Gy[i]));
       } else {
-        S[i]    =  expf( -alpha * D0 - beta * gsl_pow_2(D0) - ( alpha + 2.0f * beta * D0) * (d_Gy[i] - D0) );
+        S[i]    =  exp( -alpha * D0 - beta * gsl_pow_2(D0) - ( alpha + 2.0 * beta * D0) * (d_Gy[i] - D0) );
       }
     }
   }
@@ -203,20 +217,20 @@ void AT_gamma_response( const long  number_of_doses,
 
   if(gamma_model == GR_LinQuad_Log){
 
-    float   alpha   =       gamma_parameter[0];
-    float   beta    =       gamma_parameter[1];
-    float   D0      =       gamma_parameter[2];
+    double   alpha   =       gamma_parameter[0];
+    double   beta    =       gamma_parameter[1];
+    double   D0      =       gamma_parameter[2];
 
-    if( alpha < 0.0f )
-      alpha = 0.0f;
-    if( beta < 0.0f )
-      beta = 0.0f;
+    if( alpha < 0.0 )
+      alpha = 0.0;
+    if( beta < 0.0 )
+      beta = 0.0;
 
     for (i = 0; i < number_of_doses; i++){
       if( d_Gy[i] < D0 ){
-        S[i]    =       alpha * d_Gy[i] + beta * d_Gy[i] * d_Gy[i];
+        S[i]    =       alpha * d_Gy[i] + beta * gsl_pow_2(d_Gy[i]);
       } else {
-        S[i]    =       alpha * D0 + beta * gsl_pow_2(D0) + ( alpha + 2.0f * beta * D0) * (d_Gy[i] - D0);
+        S[i]    =       alpha * D0 + beta * gsl_pow_2(D0) + ( alpha + 2.0 * beta * D0) * (d_Gy[i] - D0);
       }
     }
   }
@@ -224,18 +238,18 @@ void AT_gamma_response( const long  number_of_doses,
 
 
 void AT_get_gamma_response(  const long  number_of_bins,
-    const float   d_Gy[],
-    const float   dd_Gy[],
-    const float   f[],
-    const float   f0,
+    const double   d_Gy[],
+    const double   dd_Gy[],
+    const double   f[],
+    const double   f0,
     const long    gamma_model,
-    const float   gamma_parameter[],
+    const double   gamma_parameter[],
     const bool    lethal_events_mode,
     // return
-    float   S[],
-    float*  S_HCP,
-    float*  S_gamma,
-    float*  efficiency)
+    double   S[],
+    double*  S_HCP,
+    double*  S_gamma,
+    double*  efficiency)
 {
   long i;
 
@@ -246,8 +260,8 @@ void AT_get_gamma_response(  const long  number_of_bins,
       // return
       S);
 
-  *S_HCP        =  0.0f;
-  float D_gamma =  0.0f;
+  *S_HCP         =  0.0;
+  double D_gamma =  0.0;
 
   for(i = 0; i < number_of_bins; i++){
     D_gamma   +=  d_Gy[i] * dd_Gy[i] * f[i];
@@ -255,7 +269,7 @@ void AT_get_gamma_response(  const long  number_of_bins,
   }
 
   if( lethal_events_mode ){
-    *S_HCP = expf( -(*S_HCP) );
+    *S_HCP = exp( -(*S_HCP) );
   }
 
   i  = 1;
@@ -267,7 +281,7 @@ void AT_get_gamma_response(  const long  number_of_bins,
       S_gamma);
 
   if( lethal_events_mode ){
-    *S_gamma = expf( -(*S_gamma) );
+    *S_gamma = exp( -(*S_gamma) );
   }
 
   *efficiency    =  *S_HCP / *S_gamma;

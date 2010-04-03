@@ -71,7 +71,7 @@ int AT_Z_from_particle_no( const long  n,
 
 int AT_atomic_weight_from_particle_no( const long  n,
     const long  particle_no[],
-    float  atomic_weight[])
+    double  atomic_weight[])
 {
   long i;
   long*  matches  =  (long*)calloc(n, sizeof(long));
@@ -105,8 +105,8 @@ void AT_Particle_Properties(  const long*  n,
     long*   A,
     char**  element_name,
     char**  element_acronym,
-    float** density_g_cm3,
-    float** I_eV)
+    double** density_g_cm3,
+    double** I_eV)
 {
 
   // find look-up indices for particle numbers in particle data

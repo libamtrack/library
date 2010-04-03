@@ -93,13 +93,13 @@ void AT_Dyx(  double*  y,  double*  x,  double*  Dyx)
 
 
 // TODO this is not used !
-void AT_fDyx(  const float*  fy,
-    const float* fx,
-    float* fDyx)
+void AT_fDyx(  const double*  fy,
+    const double* fx,
+    double* fDyx)
 {
   double  y, x, Dyx;
-  y  = (double)*fy;
-  x  = (double)*fx;
+  y  = *fy;
+  x  = *fx;
   AT_Dyx(  &y, &x, &Dyx);
   *fDyx  = Dyx;
 }
@@ -476,21 +476,21 @@ int gamma_(const double *x, double *ga)
 
 
 //TODO this is not used anywhere
-void AT_Funs(  const float*  fz,
-    const float*  fR0,
-    const float*  fsigma,
-    const float* fni,
-    float* funs)
+void AT_Funs(  const double*  fz,
+    const double*  fR0,
+    const double*  fsigma,
+    const double* fni,
+    double* funs)
 {
-  double  z    =  (double)*fz;
-  double  R0    =  (double)*fR0;
-  double  sigma  =  (double)*fsigma;
-  double  ni    =  (double)*fni + 1.0;
+  double  z    =  *fz;
+  double  R0    =  *fR0;
+  double  sigma  = *fsigma;
+  double  ni    =  (*fni) + 1.0;
 
   double  u    =  R0 - z;
   double  zeta  =  u / sigma;
 
-  *funs = 0.0f;
+  *funs = 0.0;
 
   if(zeta > -5.0 && zeta < 10){
     double  tmp1  =  1.0 / (sqrt(2.0 * M_PI) * sigma);
@@ -503,7 +503,7 @@ void AT_Funs(  const float*  fz,
     AT_Dyx(&y, &x, &tmp4);
 
     double  result  =  tmp1 * tmp2 * tmp3 * tmp4;
-    *funs      =  (float)result;
+    *funs      =  result;
   }
 
   if(zeta >= 10.0){
@@ -512,7 +512,7 @@ void AT_Funs(  const float*  fz,
 }
 
 
-float gammln(const float xx)
+double gammln(const double xx)
 {
   double x,y,tmp,ser;
   static double cof[6]=  {  76.18009172947146,-86.50532032941677,
@@ -524,7 +524,7 @@ float gammln(const float xx)
   tmp -= (x+0.5)*log(tmp);
   ser=1.000000000190015;
   for (j=0;j<=5;j++) ser += cof[j]/++y;
-  return (float)(-tmp+log(2.5066282746310005*ser/x));
+  return (-tmp+log(2.5066282746310005*ser/x));
 }
 
 
@@ -532,10 +532,10 @@ float gammln(const float xx)
 #define EPS 3.0e-7
 #define FPMIN 1.0e-30
 
-void gcf(float *gammcf, const float a, const float x, float *gln)
+void gcf(double *gammcf, const double a, const double x, double *gln)
 {
   int i;
-  float an,b,c,d,del,h;
+  double an,b,c,d,del,h;
   *gln=gammln(a);
   b=x+1.0-a;
   c=1.0/FPMIN;
@@ -558,10 +558,10 @@ void gcf(float *gammcf, const float a, const float x, float *gln)
 }
 
 
-void gser(float *gamser, const float a, const float x, float *gln)
+void gser(double *gamser, const double a, const double x, double *gln)
 {
   int n;
-  float sum,del,ap;
+  double sum,del,ap;
   *gln=gammln(a);
   if (x <= 0.0) {
     if (x < 0.0) return;
@@ -585,24 +585,24 @@ void gser(float *gamser, const float a, const float x, float *gln)
 }
 
 
-float gammp(const float a, const float x)
+double gammp(const double a, const double x)
 {
-  float gamser, gammcf, gln;
+  double gamser, gammcf, gln;
 
-  if (x < 0.0f || a <= 0.0f) return 0;
-  if (x < (a + 1.0f)) {
+  if (x < 0.0 || a <= 0.0) return 0;
+  if (x < (a + 1.0)) {
     gser(&gamser, a, x, &gln);
     return gamser;
   } else {
     gcf(&gammcf, a, x, &gln);
-    return 1.0f - gammcf;
+    return 1.0 - gammcf;
   }
 }
 
-
-float erff(const float x)
+// TODO in the standard math.h there is already implemented function erff which calculates error function
+double erff_custom(const double x)
 {
-  return x < 0.0f ? -gammp(0.5f, x*x) : gammp(0.5f, x*x);
+  return x < 0.0 ? -gammp(0.5, x*x) : gammp(0.5, x*x);
 }
 
 
@@ -620,10 +620,10 @@ void nrerror(const char error_text[])
 #define UNUSED (-1.11e30)
 
 
-float zriddr(float (*func)(float,void*), void * params, const float x1, const float x2, const float xacc)
+double zriddr(double (*func)(double,void*), void * params, const double x1, const double x2, const double xacc)
 {
   int j;
-  float ans,fh,fl,fm,fnew,s,xh,xl,xm,xnew;
+  double ans,fh,fl,fm,fnew,s,xh,xl,xm,xnew;
   fl=(*func)(x1,params);
   fh=(*func)(x2,params);
   if ((fl > 0.0 && fh < 0.0) || (fl < 0.0 && fh > 0.0)) {
@@ -740,7 +740,7 @@ void is_element_int(const long element, const long set[], const long n_set, bool
 }
 
 
-long locate(const float xx[], const long n, const float x)
+long locate(const double xx[], const long n, const double x)
 {
   long  ju, jm, jl, j;
   int    ascnd;
@@ -762,17 +762,17 @@ long locate(const float xx[], const long n, const float x)
 }
 
 
-void polint(const float xa[], const float ya[], const long n, const float x, float *y, float *dy)
+void polint(const double xa[], const double ya[], const long n, const double x, double *y, double *dy)
 {
   long  i, m, ns=1;
-  float  den, dif, dift, ho, hp, w;
-  float  *c,*d;
+  double  den, dif, dift, ho, hp, w;
+  double  *c,*d;
 
-  dif  =  (float)fabs(x-xa[0]);
-  c    =  (float*)calloc(n, sizeof(float));
-  d    =  (float*)calloc(n, sizeof(float));
+  dif  =  fabs(x-xa[0]);
+  c    =  (double*)calloc(n, sizeof(double));
+  d    =  (double*)calloc(n, sizeof(double));
   for (i = 1; i <= n; i++) {
-    if ( (dift = (float)fabs(x - xa[i-1])) < dif) {
+    if ( (dift = fabs(x - xa[i-1])) < dif) {
       ns    =  i;
       dif    =  dift;
     }
@@ -802,7 +802,7 @@ void polint(const float xa[], const float ya[], const long n, const float x, flo
 }
 
 
-void interp(const float xa[], const float ya[], const long n, const long n_pol, const float x, float y[], float dy[])
+void interp(const double xa[], const double ya[], const long n, const long n_pol, const double x, double y[], double dy[])
 {
   long  j = locate(  xa,          // find index nearest to x
       n,

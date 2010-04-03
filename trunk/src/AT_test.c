@@ -38,32 +38,32 @@
 
 #include "AmTrack.h"
 
-void test_AT_GSM(  float E_MeV_u[])
+void test_AT_GSM(  double E_MeV_u[])
 {
 
   long          n                       = 1;
   long          particle_no[]           = {1001}; //carbon
   long          material_no             = 1;    //alanine
 
-  float         fluence_cm2[]           = {-3.0f};
+  double        fluence_cm2[]           = {-3.0};
   long          RDD_model               = 4;    //RDD_site
-  float         RDD_parameters[]        = {2.5e-8 ,1e-10, 0.0};
+  double        RDD_parameters[]        = {2.5e-8 ,1e-10, 0.0};
   long          ER_model                = 2;  //ButtsKatz
-  float         ER_parameters[]         = {0.0f};
+  double        ER_parameters[]         = {0.0};
   long          gamma_model             = 1; // single hit, single target
-  float         gamma_parameters[]      = {1, 10.5e-2, 1 ,1, 0};
+  double        gamma_parameters[]      = {1, 10.5e-2, 1 ,1, 0};
   long          N2                      = 20;
   long          N_runs                  = 1;
   long          nX                      = 100;
-  float         voxel_size_m            = 1e-9;
-  float         fluence_factor          = 1.0f;
+  double        voxel_size_m            = 1e-9;
+  double        fluence_factor          = 1.0;
   bool          write_output            = false;
   bool          lethal_events_mode      = false;
 
-  float         results[10];
+  double        results[10];
 
 //      const long*  N_runs,
-//      const float*  voxel_size_m,
+//      const double*  voxel_size_m,
 
   AT_run_GSM_method(n,
       E_MeV_u,
@@ -88,29 +88,29 @@ void test_AT_GSM(  float E_MeV_u[])
   printf("Dose = %g, dose check = %g\n", fluence_cm2[0], results[1]);
 }
 
-void test_AT_SPIFF(  float E_MeV_u[])
+void test_AT_SPIFF(  double E_MeV_u[])
 {
 
   long          n                       = 1;
   long          particle_no[]           = {1001}; //carbon
   long          material_no             = 1;    //alanine
 
-  float         fluence_cm2[]           = {-3.0f};
+  double        fluence_cm2[]           = {-3.0};
   long          RDD_model               = 3;    //RDD_site
-  float         RDD_parameters[]        = {5e-8 ,1e-10, 0.0};
+  double        RDD_parameters[]        = {5e-8 ,1e-10, 0.0};
   long          ER_model                = 3;  //ButtsKatz
-  float         ER_parameters[]         = {0.0f};
+  double        ER_parameters[]         = {0.0};
   long          gamma_model             = 2; // single hit, single target
-  float         gamma_parameters[]      = {1, 10.0, 1 ,1, 0};
+  double        gamma_parameters[]      = {1, 10.0, 1 ,1, 0};
   long          N2                      = 10;
-  float         fluence_factor          = 1.0f;
+  double        fluence_factor          = 1.0;
   bool          write_output            = false;
   bool          shrink_tails            = true;
-  float         shrink_tails_under      = 1e-30;
+  double        shrink_tails_under      = 1e-30;
   bool          adjust_N2               = true;
   bool          lethal_events_mode      = false;
 
-  float         results[10];
+  double        results[10];
 
   AT_run_SPIFF_method(n,
       E_MeV_u,
@@ -136,21 +136,21 @@ void test_AT_SPIFF(  float E_MeV_u[])
 }
 
 
-void test_AT_IGK(float E_MeV_u[])
+void test_AT_IGK(double E_MeV_u[])
 {
-        long   n =1 ;
-//      float  E_MeV_u[] ={100.0};
-        long   particle_no[] = {1001};
-        float  fluence_cm2[] = {-10.0};
-        long   material_no = 1;
-        long   RDD_model = 3;
-        float  RDD_parameters[] = {5e-8,1e-10, 0.0};
-        long   ER_model = 3;
-        float  ER_parameters[] = {0.0};
-        long   gamma_model = 2;
-        float  gamma_parameters[] = {1.0 , 1.0,1 ,1};
-        float  saturation_cross_section_factor = 1.0;
-        float  results[10];
+        long    n =1 ;
+//      double  E_MeV_u[] ={100.0};
+        long    particle_no[] = {1001};
+        double  fluence_cm2[] = {-10.0};
+        long    material_no = 1;
+        long    RDD_model = 3;
+        double  RDD_parameters[] = {5e-8,1e-10, 0.0};
+        long    ER_model = 3;
+        double  ER_parameters[] = {0.0};
+        long    gamma_model = 2;
+        double  gamma_parameters[] = {1.0 , 1.0,1 ,1};
+        double  saturation_cross_section_factor = 1.0;
+        double  results[10];
  AT_run_IGK_method(
         n,
         E_MeV_u,
@@ -170,44 +170,44 @@ void test_AT_IGK(float E_MeV_u[])
 
 }
 
-int main(){
-//  long test_pn[] = {1001, 2004, 6012, 8016, 92238};
-//  float test_E_MeV_u[] = {100,100,100,100,100};
-//  long material_no = 1;
-//  long test_A[] = {0,0,0,0,0};
-//  long test_Z[] = {0,0,0,0,0};
-//  float test_w[] = {0,0,0,0,0};
-//  float test_LET[] = {0,0,0,0,0};
+//int main(){
+////  long test_pn[] = {1001, 2004, 6012, 8016, 92238};
+////  double test_E_MeV_u[] = {100,100,100,100,100};
+////  long material_no = 1;
+////  long test_A[] = {0,0,0,0,0};
+////  long test_Z[] = {0,0,0,0,0};
+////  double test_w[] = {0,0,0,0,0};
+////  double test_LET[] = {0,0,0,0,0};
+////
+////  long n_tmp = 5;
+////  AT_A_from_particle_no(       n_tmp,
+////    test_pn,
+////    test_A);
+////  AT_Z_from_particle_no(       n_tmp,
+////    test_pn,
+////    test_Z);
+////  AT_atomic_weight_from_particle_no(       n_tmp,
+////    test_pn,
+////    test_w);
+////
+////  AT_LET_MeV_cm2_g(     n_tmp,
+////      test_E_MeV_u,
+////      test_pn,
+////      material_no,
+////      test_LET);
 //
-//  long n_tmp = 5;
-//  AT_A_from_particle_no(       n_tmp,
-//    test_pn,
-//    test_A);
-//  AT_Z_from_particle_no(       n_tmp,
-//    test_pn,
-//    test_Z);
-//  AT_atomic_weight_from_particle_no(       n_tmp,
-//    test_pn,
-//    test_w);
+//  double energy = 10.0;
+//  double E_MeV_u[] = {energy};
+////  test_AT_IGK(E_MeV_u);
+//  test_AT_SPIFF(E_MeV_u);
+////  test_AT_GSM(E_MeV_u);
+////  while (energy >= 0.1){
+////    E_MeV_u[0] = energy;
+////    //test_AT_IGK(E_MeV_u);
+////    test_AT_SPIFF(E_MeV_u);
+////    energy = energy *0.9;
+////    }
 //
-//  AT_LET_MeV_cm2_g(     n_tmp,
-//      test_E_MeV_u,
-//      test_pn,
-//      material_no,
-//      test_LET);
-
-  double energy = 10.0;
-  float E_MeV_u[] = {energy};
-//  test_AT_IGK(E_MeV_u);
-  test_AT_SPIFF(E_MeV_u);
-//  test_AT_GSM(E_MeV_u);
-//  while (energy >= 0.1){
-//    E_MeV_u[0] = energy;
-//    //test_AT_IGK(E_MeV_u);
-//    test_AT_SPIFF(E_MeV_u);
-//    energy = energy *0.9;
-//    }
-
-  return 0;
-
-};
+//  return 0;
+//
+//};
