@@ -50,6 +50,9 @@ typedef struct {
   const float    I_eV[PARTICLE_DATA_N];
 } particle_data;
 
+/**
+ * TODO
+ */
 static const particle_data AT_Particle_Data = {
     PARTICLE_DATA_N,
     {
@@ -126,12 +129,14 @@ static const particle_data AT_Particle_Data = {
     }
 };
 
+
 /**
  * TODO
  * @param particle_no
  * @return A
  */
 inline long AT_A_from_particle_no_single(  const long  particle_no );
+
 
 /**
  * TODO
@@ -144,12 +149,14 @@ int AT_A_from_particle_no(  const long  n,
     const long  particle_no[],
     long  A[]);
 
+
 /**
  * TODO
  * @param particle_no
  * @return Z
  */
 inline long AT_Z_from_particle_no_single(  const long  particle_no );
+
 
 /**
  * TODO
@@ -162,6 +169,7 @@ int AT_Z_from_particle_no(  const long  n,
     const long  particle_no[],
     long  Z[]);
 
+
 /**
  * TODO
  * @param[in]  n
@@ -172,6 +180,7 @@ int AT_Z_from_particle_no(  const long  n,
 int AT_atomic_weight_from_particle_no(  const long  n,
     const long  particle_no[],
     float  atomic_weight[]);
+
 
 /**
  * TODO

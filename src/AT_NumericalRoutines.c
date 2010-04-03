@@ -31,16 +31,6 @@
 
 #include "AT_NumericalRoutines.h"
 
-long int lminl(const long int x, const long int y)
-{
-  return (x < y) ? x : y;
-}
-
-long int lmaxl(const long int x, const long int y)
-{
-  return (x > y) ? x : y;
-}
-
 
 /*       ========================================================= */
 /*       Purpose: This program computes the parabolic cylinder */
@@ -86,6 +76,7 @@ long int lmaxl(const long int x, const long int y)
 static double c_b31 = 1.;
 static double c_b40 = 2.;
 
+
 void AT_Dyx(  double*  y,  double*  x,  double*  Dyx)
 {
   /* Local variables */
@@ -99,6 +90,7 @@ void AT_Dyx(  double*  y,  double*  x,  double*  Dyx)
 
   *Dyx  =  pdf;
 }
+
 
 // TODO this is not used !
 void AT_fDyx(  const float*  fy,
@@ -673,7 +665,7 @@ float zriddr(float (*func)(float,void*), void * params, const float x1, const fl
 }
 
 
-void are_elements_int(const int* elements, const int n_elements, const int* set, const int n_set, int* matches){
+void are_elements_int(const int elements[], const int n_elements, const int set[], const int n_set, int matches[]){
   long  i;
   for (i = 0; i < n_elements; i++){
     matches[i] = 0;
@@ -705,27 +697,27 @@ void find_elements_int(const long elements[], const long n_elements, const long 
 }
 
 
-void find_elements_char(const char** elements, const long* n_elements, const char* const * set, const long* n_set, long* matches){
+void find_elements_char(const char** elements, const long n_elements, const char* const * set, const long n_set, long matches[]){
 
   long  i;
-  for (i = 0; i < *n_elements; i++){
+  for (i = 0; i < n_elements; i++){
     matches[i] = 0;
 
-    while ((strcmp( set[matches[i]], elements[i]) != 0) && (matches[i] < *n_set)){
+    while ((strcmp( set[matches[i]], elements[i]) != 0) && (matches[i] < n_set)){
       matches[i]++;
     }
 
-    if (matches[i] == *n_set) {
+    if (matches[i] == n_set) {
       matches[i] = -1;
     }
   }
 }
 
 
-void is_element_char(const char* element, const char* const * set, const long* n_set, bool* matches){
+void is_element_char(const char element[], const char* const * set, const long n_set, bool matches[]){
 
   long  i;
-  for (i = 0; i < *n_set; i++){
+  for (i = 0; i < n_set; i++){
     if(strcmp(element, set[i])==0){
       matches[i]  = true;
     }else{
@@ -735,11 +727,11 @@ void is_element_char(const char* element, const char* const * set, const long* n
 }
 
 
-void is_element_int(const long* element, const long* set, const long* n_set, bool* matches){
+void is_element_int(const long element, const long set[], const long n_set, bool matches[]){
 
   long  i;
-  for (i = 0; i < *n_set; i++){
-    if(*element == set[i]){
+  for (i = 0; i < n_set; i++){
+    if(element == set[i]){
       matches[i]  = true;
     } else{
       matches[i]  = false;
@@ -748,39 +740,39 @@ void is_element_int(const long* element, const long* set, const long* n_set, boo
 }
 
 
-void locate(const float* xx, const long* n, const float* x, long* j)
+long locate(const float xx[], const long n, const float x)
 {
-  long  ju, jm, jl;
+  long  ju, jm, jl, j;
   int    ascnd;
 
   jl    =  0;
-  ju    =  *n + 1;
-  ascnd  =  (xx[*n-1] >= xx[1-1]);
+  ju    =  n + 1;
+  ascnd  =  (xx[n-1] >= xx[1-1]);
   while (ju - jl > 1){
     jm    =  (ju + jl) >> 1;
-    if (*x >= xx[jm-1] == ascnd)
+    if (x >= xx[jm-1] == ascnd)
       jl  =  jm;
     else
       ju  =  jm;
   }
-  if ( *x == xx[1 - 1]) *j = 1;
-  else if (*x == xx[*n - 1]) *j = *n - 1;
-  else *j  =  jl;
-  return;
+  if ( x == xx[1 - 1]) j = 1;
+  else if (x == xx[n - 1]) j = n - 1;
+  else j  =  jl;
+  return j;
 }
 
 
-void polint(const float* xa, const float* ya, const long* n, const float* x, float *y, float *dy)
+void polint(const float xa[], const float ya[], const long n, const float x, float *y, float *dy)
 {
   long  i, m, ns=1;
   float  den, dif, dift, ho, hp, w;
   float  *c,*d;
 
-  dif    =  (float)fabs(*x-xa[1-1]);
-  c    =  (float*)calloc(*n, sizeof(float));
-  d    =  (float*)calloc(*n, sizeof(float));
-  for (i = 1; i <= *n; i++) {
-    if ( (dift = (float)fabs(*x - xa[i-1])) < dif) {
+  dif  =  (float)fabs(x-xa[0]);
+  c    =  (float*)calloc(n, sizeof(float));
+  d    =  (float*)calloc(n, sizeof(float));
+  for (i = 1; i <= n; i++) {
+    if ( (dift = (float)fabs(x - xa[i-1])) < dif) {
       ns    =  i;
       dif    =  dift;
     }
@@ -789,10 +781,10 @@ void polint(const float* xa, const float* ya, const long* n, const float* x, flo
   }
 
   *y  =  ya[(ns--)-1];
-  for (m = 1; m < *n; m++) {
-    for (i = 1; i <= *n - m; i++) {
-      ho  =  xa[i-1] - *x;
-      hp  =  xa[i+m-1] - *x;
+  for (m = 1; m < n; m++) {
+    for (i = 1; i <= n - m; i++) {
+      ho  =  xa[i-1] - x;
+      hp  =  xa[i+m-1] - x;
       w  =  c[i+1-1] - d[i-1];
       den  =  ho - hp;
       if ( den == 0.0) return;
@@ -801,27 +793,25 @@ void polint(const float* xa, const float* ya, const long* n, const float* x, flo
       c[i-1]=  ho * den;
 
     }
-    *y += (*dy=(2*ns < (*n-m) ? c[ns+1-1] : d[(ns--)-1]));
+    // TODO do we really have "=" inside ?
+    // underline code looks really magically
+    *y += (*dy=(2*ns < (n-m) ? c[ns] : d[(ns--)-1]));
   }
   free(d);
   free(c);
 }
 
 
-//TODO change pointer to single variable where necessary: n_pol for example
-void interp(const float* xa, const float* ya, const long* n, const long* n_pol, const float* x, float *y, float *dy)
+void interp(const float xa[], const float ya[], const long n, const long n_pol, const float x, float y[], float dy[])
 {
-  long  j;
-  locate(  xa,          // find index nearest to x
+  long  j = locate(  xa,          // find index nearest to x
       n,
-      x,
-      &j);
-  long  k  =  lminl(lmaxl(j - (*n_pol-1) / 2, 1), *n + 1 - *n_pol);
+      x);
+  long  k  =  GSL_MIN(GSL_MAX(j - (n_pol-1) / 2, 1), n + 1 - n_pol);
   polint(  &xa[k-1 -1],
       &ya[k-1 -1],
       n_pol,
       x,
       y,
       dy);
-  return;
 }

@@ -58,6 +58,9 @@ enum GammaResponseModels{
 #define GR_DATA_N    6
 
 
+/**
+ * TODO
+ */
 typedef struct {
   long    n;
   long    GR_no[GR_DATA_N];
@@ -68,6 +71,9 @@ typedef struct {
 } gr_data;
 
 
+/**
+ * TODO
+ */
 static const gr_data AT_GR_Data = {
     GR_DATA_N,
     {  GR_Test,          GR_GeneralTarget,          GR_Radioluminescence,        GR_ExpSaturation, GR_LinQuad, GR_LinQuad_Log},

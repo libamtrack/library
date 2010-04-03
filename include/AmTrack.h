@@ -55,6 +55,7 @@
 */
 void AT_PrintName(  void);
 
+
 /**
 * Dummy method, needs to be removed TODO
 */
@@ -121,6 +122,7 @@ void AT_run_SPIFF_method(  const long  n,
     const bool   lethal_events_mode,
     float        results[]);
 
+
 /**
  * Computes HCP response and RE/RBE using summation of tracks
  * an a Cartesian grid (the 'GSM' algorithm)
@@ -165,6 +167,7 @@ void AT_run_SPIFF_method(  const long  n,
  * @return  none
  */
 
+
 void AT_run_GSM_method(  const long  n,
     const float   E_MeV_u[],
     const long    particle_no[],
@@ -184,6 +187,7 @@ void AT_run_GSM_method(  const long  n,
     const float   voxel_size_m,
     const bool    lethal_events_mode,
     float  results[]);
+
 
 /**
  * Computes HCP response and RE/RBE using Katz' Ion-Gamma-Kill approach
@@ -233,6 +237,7 @@ void AT_run_IGK_method(  const long  n,
     const float  gamma_parameters[],
     const float  saturation_cross_section_factor,
     float  results[]);
+
 
 /**
  * Computes HCP response and RE/RBE using compound Poison process and
@@ -288,6 +293,7 @@ void AT_run_SPISS_method(  const long  n,
     const int    write_output,
     const long   importance_sampling,
     float        results[]);
+
 
 /**
  * Algorithms code numbers

@@ -47,7 +47,9 @@ enum material_no{
   LiF                  = 6  /**< Lithium Fluoride */
 };
 
+
 #define MATERIAL_DATA_N    7
+
 
 typedef struct {
   const long    n;
@@ -64,6 +66,7 @@ typedef struct {
   const double  average_Z[MATERIAL_DATA_N];
   const char*   material_name[MATERIAL_DATA_N];
 } material_data;
+
 
 static const material_data AT_Material_Data = {
     MATERIAL_DATA_N,
@@ -142,6 +145,7 @@ double AT_I_eV_from_material_no( const long   material_no );
  */
 double AT_alpha_g_cm2_MeV_from_material_no( const long   material_no );
 
+
 /**
  * Get fit parameter for power-law representation of stp.power/range/E-dependence for single material with number material_no
  * @param[in] material_no
@@ -156,6 +160,7 @@ double AT_p_MeV_from_material_no( const long   material_no );
  * @return    fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni
  */
 double AT_m_g_cm2_from_material_no( const long   material_no );
+
 
 /**
  * Get average mass number for single material with number material_no
@@ -194,7 +199,6 @@ void AT_get_material_data(     const long  material_no,
     double*  m_g_cm2,
     double*  average_A,
     double*  average_Z);
-
 
 
 /**

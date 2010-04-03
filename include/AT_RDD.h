@@ -65,10 +65,12 @@ enum RDDModels {
       RDD_CucinottaExtTarget = 8,      /**< parameters: 0 - CucinottaPoint_r_min [m] (lower integration limit in CucinottaPoint RDD), 1 - a0 [m] (core diameter/target size), 2 - d_min_Gy (lower dose cut-off) */
 };
 
+
 /**
  * Total number of RDD models
  */
 #define RDD_DATA_N    8
+
 
 /**
  * RDD data
@@ -82,6 +84,7 @@ typedef struct {
   char*   RDD_name[RDD_DATA_N];                /** model names */
 } rdd_data;
 
+
 /**
  * Default model parameters and names
  */
@@ -94,6 +97,7 @@ static const rdd_data AT_RDD_Data = {
     {  "Simple step test function",  "Katz' point target RDD",                           "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Edmund, as defined in [TODO]", "Cucinotta, as defined in [Cucinotta et al. 1997]",  "Katz Extended Target",                   "Cucinotta Extended Target"}
 };
 
+
 /**
  * Returns name of the radial dose distribution model from index
  *
@@ -103,6 +107,7 @@ static const rdd_data AT_RDD_Data = {
 void getRDDName( const long* RDD_no,
     char* RDD_name);
 
+
 /**
  * Returns number of the radial dose distribution model from its name
  *
@@ -110,6 +115,7 @@ void getRDDName( const long* RDD_no,
  * @return      RDD_no    radial dose distribution model index
  */
 long getRDDNo( const char* RDD_name );
+
 
 //////////////////////////////////////////////////////// GENERAL FUNCTIONS ////////////////////////////////////////////////////////
 
@@ -141,6 +147,7 @@ void AT_D_RDD_Gy( const long  n,
     const long    er_model,
     const float   er_parameter[],
     float         D_RDD_Gy[]);
+
 
 /**
  * Returns distance as a function of dose
@@ -198,6 +205,7 @@ double AT_RDD_a0_m(
     const double  max_electron_range_m,
     const long    rdd_model,
     const float   rdd_parameter[]);
+
 
 /**
  * Returns precalculated constant for given RDD: normalization factor or some coefficient
@@ -304,6 +312,7 @@ void AT_RDD_f1_parameters(  /* radiation field parameters */
     /* calculated parameters */
     float         f1_parameters[]);
 
+
 //////////////////////////////////////////////////////// KATZ RDD ////////////////////////////////////////////////////////
 
 /**
@@ -371,7 +380,6 @@ inline double AT_RDD_Katz_coeff_Gy( const double Z_eff,
 inline double   AT_RDD_Katz_LinearER_Dpoint_Gy(        const double r_m,
     const double r_max_m,
     const double Katz_point_coeff_Gy);
-
 
 
 /**
@@ -531,7 +539,6 @@ double   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const double r1_m,
     const double Katz_point_coeff_Gy);
 
 
-
 /**
  * Calculates energy delivered to shell between radius a_0 and r_max
  * for "old" Katz RDD (derived from linear (on wmax) ER model).
@@ -553,6 +560,7 @@ double   AT_RDD_Katz_LinearER_dEdx_J_m(  const double a0_m,
     const double r_max_m,
     const double material_density_kg_m3,
     const double Katz_point_coeff_Gy);
+
 
 /**
  * Calculates energy delivered to shell between radius a_0 and r_max
@@ -578,6 +586,7 @@ double   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const double a0_m,
     const double alpha,
     const double Katz_point_coeff_Gy);
 
+
 /**
  * Calculates Site RDD, which is LET-normalized
  * for "old" Katz RDD (derived from linear (on wmax) ER model).
@@ -600,6 +609,7 @@ double   AT_RDD_Katz_LinearER_DSite_Gy( const double r_m,
     const double LET_J_m,
     const double dEdx_J_m,
     const double Katz_point_coeff_Gy);
+
 
 /**
  * Calculates Site RDD, which is LET-normalized
@@ -626,12 +636,14 @@ double   AT_RDD_Katz_PowerLawER_DSite_Gy( const double r_m,
     const double dEdx_J_m,
     const double Katz_point_coeff_Gy);
 
+
 /**
  * TODO to be replaced by newer methods, it in only used in Edmund RDD
  */
 inline float   AT_RDD_Katz_dEdx_coeff_J_m(  const float r_max_m,
     const float material_density_kg_m3,
     const float Katz_point_coeff_Gy);
+
 
 /**
  * TODO to be replaced by newer methods, it in only used in Edmund RDD
@@ -656,6 +668,7 @@ float          AT_RDD_Katz_PowerLawER_dEdx_directVersion_J_m(        const float
  */
 inline double   AT_RDD_Cucinotta_f_shortRange( const double r_m,
     const double beta);
+
 
 /**
  * Calculates long range modification function fL(r)
@@ -696,6 +709,7 @@ inline double   AT_RDD_Cucinotta_Ddelta_Gy( const double r_m,
     const double beta,
     const double Katz_point_coeff_Gy);
 
+
 /**
  * Integrand in Cucinotta Ddelta calculation:
  *
@@ -706,6 +720,7 @@ inline double   AT_RDD_Cucinotta_Ddelta_Gy( const double r_m,
  */
 double AT_RDD_Cucinotta_Ddelta_average_integrand_m(  double r_m,
     void * params);
+
 
 /**
  * Calculates average dose for Cucinotta delta RDD.
@@ -815,6 +830,7 @@ double   AT_RDD_Cucinotta_Cnorm( const double r_min_m,
     const double LET_J_m,
     const double Katz_point_coeff_Gy);
 
+
 /**
  * Calculates excitation component D_exc
  * for Cucinotta RDD
@@ -858,6 +874,7 @@ inline double  AT_RDD_Test_Gy( const double r_m,
     const double r_min_m,
     const double r_max_m,
     const double norm_constant_Gy);
+
 
 /**
  * TODO
@@ -1059,17 +1076,20 @@ double  AT_inverse_RDD_KatzPoint_m( const double D_Gy,
 float          AT_D_RDD_Gy_solver(          const float r ,
     void * params );
 
+
 /**
  * TODO
  */
 double         AT_P_RDD(                    double  r_m,
     void* params);
 
+
 /**
  * TODO
  */
 double         AT_sI_int(                   double  r_m,
     void* params);
+
 
 /**
  * TODO

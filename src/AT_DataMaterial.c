@@ -68,9 +68,9 @@ long getMaterialNo(
   const long n_tmp = 1;
 
   find_elements_char(  &material_name,
-      &n_tmp,
+      n_tmp,
       AT_Material_Data.material_name,
-      &AT_Material_Data.n,
+      AT_Material_Data.n,
       &match);
 
   if( match != -1){

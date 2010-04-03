@@ -54,17 +54,26 @@ enum ERModels{
 
 #define ER_DATA_N    7
 
+
+/**
+ * TODO
+ */
 typedef struct {
   int     n;
   int     ER_no[ER_DATA_N];
   char*   ER_name[ER_DATA_N];
 } er_data;
 
+
+/**
+ * TODO
+ */
 static const er_data AT_ER_Data = {
     ER_DATA_N,
     {  ER_Test,                 ER_ButtsKatz,                       ER_Waligorski,                             ER_Geiss,                         ER_Scholz,                       ER_Edmund,                          ER_Tabata },
     {  "simple test ER model",  "Butts & Katz' ER model (linear)",  "Waligorski's ER model (power-law wmax)",  "Geiss' ER model (power-law E)", "Scholz' ER model (power-law E)", "Edmund' ER model (power-law wmax)","Tabata  ER model"}
 };
+
 
 /**
  * Returns name of the electron model from index
@@ -130,6 +139,7 @@ inline double AT_ER_Scholz_range_g_cm2(double E_MeV_u);
  */
 inline double AT_ER_Tabata_range_g_cm2(double beta, double a1_g_cm2, double a2, double a3, double a4, double a5);
 
+
 /**
  * TODO
  * @param E_MeV_u
@@ -181,6 +191,5 @@ double AT_max_electron_range_m(  const double E_MeV_u,
     const int    material_no,
     const int    er_model);
 
-//TODO replace float by double
 
 #endif /* AT_ELECTRONRANGE_H_ */

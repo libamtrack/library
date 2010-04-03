@@ -230,8 +230,8 @@ void  AT_SC_get_f1(  /* radiation field parameters */
 
       // find first and last bin to fit this particle's contribution into the all-over f1-frame
       long  i_low, i_high;
-      locate(d_df_low, &n_bins_f1, &d_min_k, &i_low);
-      locate(d_df_low, &n_bins_f1, &d_max_k, &i_high);
+      i_low  = locate(d_df_low, n_bins_f1, d_min_k);
+      i_high = locate(d_df_low, n_bins_f1, d_max_k);
       i_low            -=  1;
       i_high            -=  1;
 
@@ -313,7 +313,7 @@ void  AT_SC_get_f1(  /* radiation field parameters */
       }
 
       // remember highest bin used
-      n_bins_used        =  lmaxl(n_bins_used, i_high);
+      n_bins_used        =  GSL_MAX(n_bins_used, i_high);
     }
 
     // copy back for the dose axis

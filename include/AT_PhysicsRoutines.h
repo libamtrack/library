@@ -450,6 +450,7 @@ float AT_fluenceweighted_E_MeV_u( const long    n,
     const float E_MeV_u[],
     const float fluence_cm2[]);
 
+
 /**
  * Computes the dose-weighted average energy of a particle field
  *
@@ -470,6 +471,7 @@ float AT_doseweighted_E_MeV_u( const long   n,
     const float  fluence_cm2[],
     const long   material_no);
 
+
 /**
  * Computes the fluence-weighted average LET of a particle field
  *
@@ -489,6 +491,7 @@ float AT_fluenceweighted_LET_MeV_cm2_g( const long     n,
     const long   particle_no[],
     const float  fluence_cm2[],
     const long   material_no);
+
 
 /**
  * Computes the dose-weighted average LET of a particle field
