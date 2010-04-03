@@ -42,9 +42,9 @@ void getPSTARvalue(
 {
   // first: find those PSTAR entries that match the material number
   bool*    matches    =  (bool*)calloc(AT_PSTAR_Data.n, sizeof(bool));
-  is_element_int(    &material_no,
+  is_element_int(    material_no,
       AT_PSTAR_Data.material_no,
-      &AT_PSTAR_Data.n,
+      AT_PSTAR_Data.n,
       matches);
 
   long    n_matches  = 0;
@@ -74,9 +74,9 @@ void getPSTARvalue(
     float  err_y_tmp  = 0.0f;    // dummy
     interp(    x_c,
         y_c,
-        &n_matches,
-        &n_pol,
-        &x[i],
+        n_matches,
+        n_pol,
+        x[i],
         &y[i],
         &err_y_tmp);
   }

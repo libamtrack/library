@@ -68,6 +68,7 @@ void AT_RDD_Site_Gy( const long  n,
     const float   er_parameter[],
     float         D_RDD_Gy[]);
 
+
 ///////////////////////////////////////////// EXTENDED TARGET /////////////////////////////////////////////
 
 /**

@@ -177,6 +177,7 @@ void  AT_SC_get_f1(  /* radiation field parameters */
     float  f1_dd_Gy[],
     float  f1[]);
 
+
 /**
  * TODO
  * @param[in]  u
@@ -227,6 +228,7 @@ void  AT_SC_get_f_start( const float  u_start,
     float   f_d_Gy[],
     float   f_dd_Gy[],
     float   f_start[]);
+
 
 /**
  * TODO
@@ -282,6 +284,7 @@ aKList  AT_SC_SHRINK(aKList theKList);
  * @return
  */
 aKList AT_SC_FOLD(aKList theKList);
+
 
 /**
  * TODO

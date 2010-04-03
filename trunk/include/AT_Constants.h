@@ -46,5 +46,4 @@ static const double  m_to_cm               =  100.0;
 static const double  cm_to_mm              =  10.0;
 
 
-
 #endif /* AT_CONSTANTS_H_ */

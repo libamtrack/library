@@ -41,24 +41,7 @@
 #include <malloc.h>
 #include <string.h>
 
-
-/**
- * TODO
- * @param x
- * @param y
- * @return
- */
-long int lminl(const long int x, const long int y);
-
-
-/**
- * TODO
- * @param x
- * @param y
- * @return
- */
-long int lmaxl(const long int x, const long int y);
-
+#include "gsl/gsl_math.h"
 
 /**
  * TODO
@@ -225,7 +208,7 @@ float zriddr(float (*func)(float,void*), void * params, const float x1, const fl
  * @param n_set
  * @param matches
  */
-void are_elements_int(const int* elements, const int n_elements, const int* set, const int n_set, int* matches);
+void are_elements_int(const int elements[], const int n_elements, const int set[], const int n_set, int matches[]);
 
 
 /**
@@ -249,7 +232,7 @@ void find_elements_int(const long elements[], const long n_elements, const long 
  * @param n_set
  * @param matches
  */
-void find_elements_char(const char** elements, const long* n_elements, const char* const* set, const long* n_set, long* matches);
+void find_elements_char(const char** elements, const long n_elements, const char* const * set, const long n_set, long matches[]);
 
 
 /**
@@ -260,7 +243,7 @@ void find_elements_char(const char** elements, const long* n_elements, const cha
  * @param n_set
  * @param matches
  */
-void is_element_char(const char* element, const char* const * set, const long* n_set, bool* matches);
+void is_element_char(const char element[], const char* const * set, const long n_set, bool matches[]);
 
 
 /**
@@ -271,19 +254,19 @@ void is_element_char(const char* element, const char* const * set, const long* n
  * @param n_set
  * @param matches
  */
-void is_element_int(const long* element, const long* set, const long* n_set, bool* matches);
+void is_element_int(const long element, const long set[], const long n_set, bool matches[]);
 
 
 /**
  * interpolation on a table: code (w/ adapted indices) from Numerical Recipes, 2rd ed., chapter 3.1
  * added wrapping function interp which allows to chose degree of interpolation polynomial
  * (1 = linear, 2 = quadratic, etc.)
- * @param xx
- * @param n
- * @param x
- * @param j
+ * @param xx  TODO
+ * @param n   TODO
+ * @param x   TODO
+ * return j   result
  */
-void locate(const float* xx, const long* n, const float* x, long* j);
+long locate(const float xx[], const long n, const float x);
 
 
 /**
@@ -295,7 +278,7 @@ void locate(const float* xx, const long* n, const float* x, long* j);
  * @param y
  * @param dy
  */
-void polint(const float* xa, const float* ya, const long* n, const float* x, float *y, float *dy);
+void polint(const float xa[], const float ya[], const long n, const float x, float *y, float *dy);
 
 
 /**
@@ -308,7 +291,7 @@ void polint(const float* xa, const float* ya, const long* n, const float* x, flo
  * @param y
  * @param dy
  */
-void interp(const float* xa, const float* ya, const long* n, const long* n_pol, const float* x, float *y, float *dy);
+void interp(const float xa[], const float ya[], const long n, const long n_pol, const float x, float y[], float dy[]);
 
 
 #endif /* AT_NUMERICALROUTINES_H_ */
