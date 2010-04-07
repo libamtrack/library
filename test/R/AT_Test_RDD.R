@@ -45,11 +45,11 @@ ER.model.names <- c("simple test",  "Butts & Katz' (linear)",  "Waligorski's (po
 ER.model <- c(2,3,4,5,6,7)
 
 # RDD models definition
-RDD.model.names <- c("Simple step test function",  "Katz' point target", "Geiss'", "Site", "Edmund", "Cucinotta", "KatzExtTarget")
-RDD.model <- c(2,3,4,5,6,7)
+RDD.model.names <- c("Simple step test function",  "Katz' point target", "Geiss'", "Site", "Cucinotta", "KatzExtTarget", "CucinottaExtTarget")
+RDD.model <- c(1,2,3,4,5,6,7)
 
 # RDD parameters
-RDD.parameters <- list(c(1),c(1e-10,1e-10), c(1e-10),c(1e-8,1e-10),c(1e-8,1e-10),c(5e-11,1e-10),c(1e-10,1e-8,1e-10))
+RDD.parameters <- list(c(1),c(1e-10,1e-10), c(1e-8),c(1e-8,1e-10),c(5e-11,1e-10),c(1e-10,1e-8,1e-10),c(5e-11,1e-8,1e-10))
 
 # data frame setup
 df1 <- expand.grid( r.m = r.m, ER.model = ER.model, RDD.model = RDD.model )
@@ -87,8 +87,8 @@ p2 <- xyplot( D.Gy ~ r.m | RDD.model.name, groups = ER.model.name, ref = TRUE, d
 p1
 p2
 
-p1.check <- xyplot( r.m.check ~ r.m | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Dose [Gy]", auto.key = list(title = "Protons in liquid water, RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
-p2.check <- xyplot( r.m.check ~ r.m | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Dose [Gy]", auto.key = list(title = "Protons in liquid water, RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
+p1.check <- xyplot( r.m.check ~ r.m | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Distance [m]", auto.key = list(title = "Protons in liquid water, test RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
+p2.check <- xyplot( r.m.check ~ r.m | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Distance [m]", auto.key = list(title = "Protons in liquid water, test RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
 
 
 ####################### DISTANCE(DOSE) function test #########################################
@@ -99,13 +99,6 @@ p2.check <- xyplot( r.m.check ~ r.m | RDD.model.name, groups = ER.model.name, re
 #D.expn <- seq (-2, 7, by=0.1)
 D.Gy <- 10^seq(-10,6,length.out=50)
 
-# electron range models definition
-ER.model.names <- c("simple test",  "Butts & Katz' (linear)",  "Waligorski's (power-law wmax)",  "Geiss' (power-law E)", "Scholz' (power-law E)", "Edmund' (power-law wmax)","Tabata")
-ER.model <- c(2,3,4,5,6,7)
-
-# RDD models definition
-RDD.model.names <- c("Simple step test function",  "Katz' point target", "Geiss'", "Site", "Edmund", "Cucinotta", "KatzExtTarget")
-RDD.model <- c(2,3,4,5,6,7)
 
 df2 <- expand.grid( D.Gy = D.Gy , ER.model = ER.model, RDD.model = RDD.model )
 
@@ -124,7 +117,7 @@ for( i in ER.model) {
  ii 			<- df2$ER.model == i
  for( j in RDD.model) {
  	jj 			<- ((df2$RDD.model == j) & (df2$ER.model == i)) 
-		df2$r.m[jj] <- AT.r.RDD.m(D.Gy = df2$D.Gy[jj], E.MeV.u, particle.no, material.no, ER.model = i, ER.parameters = ER.parameters, RDD.model = j, RDD.parameters=RDD.parameters[[j]] ) 	
+  		df2$r.m[jj] <- AT.r.RDD.m(D.Gy = df2$D.Gy[jj], E.MeV.u, particle.no, material.no, ER.model = i, ER.parameters = ER.parameters, RDD.model = j, RDD.parameters=RDD.parameters[[j]] ) 	
 		}
 }
 

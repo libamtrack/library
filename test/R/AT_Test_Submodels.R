@@ -46,8 +46,8 @@ particle.no		<-	c(1001,2004)					# p, He-4, C-12
 material.no		<-	c(1, 2)
 
 RDD.model			<-	c(1, 2, 3, 4, 5, 6, 7)
-RDD.model.names	<-	c("Test", "Katz-Point", "Geiss", "Site", "Edmund", "Cucinotta", "KatzExtTarget")
-RDD.parameters	<-	list(c(1),c(1e-10,1e-10), c(1e-10),c(1e-8,1e-10),c(1e-8,1e-10),c(5e-11,1e-10),c(1e-10,1e-8,1e-10))					
+RDD.model.names	<-	c("Test", "Katz-Point", "Geiss", "Site", "Cucinotta", "KatzExtTarget")
+RDD.parameters	<-	list(c(1),c(1e-10,1e-10), c(1e-10),c(1e-8,1e-10),c(5e-11,1e-10),c(1e-10,1e-8,1e-10))					
 
 ER.model			<-	2 								# (Waligorski)
 ER.parameters		<-	1
