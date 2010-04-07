@@ -80,13 +80,13 @@
  *
  * @param[in] r1_m                     inner radius r1 (lower integration limit) [m]
  * @param[in] r2_m                     outer radius r2 (upper integration limit) [m]
- * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] average radial dose distribution between r1 and r2
  */
 inline double   AT_RDD_Katz_LinearER_Daverage_Gy(  const double r1_m,
     const double r2_m,
-    const double r_max_m,
+    const double max_electron_range_m,
     const double Katz_point_coeff_Gy);
 
 
@@ -178,14 +178,14 @@ double   AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const double x1,
  *
  * @param[in] r1_m                     inner radius r1 (lower integration limit) [m]
  * @param[in] r2_m                     outer radius r2 (upper integration limit) [m]
- * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
  * @param[in] alpha                    parameter of ER model
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] average radial dose distribution between r1 and r2
  */
 double   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const double r1_m,
     const double r2_m,
-    const double r_max_m,
+    const double max_electron_range_m,
     const double alpha,
     const double Katz_point_coeff_Gy);
 
@@ -205,13 +205,13 @@ double   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const double r1_m,
  * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 D(r) 2 pi r dr
  *
  * @param[in] a0_m                     inner radius a0 (lower integration limit) [m]
- * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
  * @param[in] material_density_kg_m3   material density rho [kg/m^3]
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return dEdx [J/m] energy delivered to shell between radius a_0 and r_max
  */
 double   AT_RDD_Katz_LinearER_dEdx_J_m(  const double a0_m,
-    const double r_max_m,
+    const double max_electron_range_m,
     const double material_density_kg_m3,
     const double Katz_point_coeff_Gy);
 
@@ -228,14 +228,14 @@ double   AT_RDD_Katz_LinearER_dEdx_J_m(  const double a0_m,
  * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 D(r) 2 pi r dr
  *
  * @param[in] a0_m                     inner radius a0 (lower integration limit) [m]
- * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
  * @param[in] material_density_kg_m3   material density rho [kg/m^3]
  * @param[in] alpha                    parameter of ER model
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return dEdx [J/m] energy delivered to shell between radius a_0 and r_max
  */
 double   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const double a0_m,
-    const double r_max_m,
+    const double max_electron_range_m,
     const double material_density_kg_m3,
     const double alpha,
     const double Katz_point_coeff_Gy);
@@ -252,7 +252,7 @@ double   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const double a0_m,
  * Dsite(r) = D(r)                               for r >= a0
  *
  * @param[in] a0_m                     inner radius a0 (lower integration limit) [m]
- * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
  * @param[in] material_density_kg_m3   material density rho [kg/m^3]
  * @param[in] LET_J_m                  LET [J/m]
  * @param[in] dEdx_J_m                 dEdx [J/m]
@@ -261,7 +261,7 @@ double   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const double a0_m,
  */
 double   AT_RDD_Katz_LinearER_DSite_Gy( const double r_m,
     const double a0_m,
-    const double r_max_m,
+    const double max_electron_range_m,
     const double material_density_kg_m3,
     const double LET_J_m,
     const double dEdx_J_m,
@@ -276,7 +276,7 @@ double   AT_RDD_Katz_LinearER_DSite_Gy( const double r_m,
  * Dsite(r) = D(r)                               for r >= a0
  *
  * @param[in] a0_m                     inner radius a0 (lower integration limit) [m]
- * @param[in] r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
  * @param[in] material_density_kg_m3   material density rho [kg/m^3]
  * @param[in] alpha                    parameter of ER model
  * @param[in] LET_J_m                  LET [J/m]
@@ -286,7 +286,7 @@ double   AT_RDD_Katz_LinearER_DSite_Gy( const double r_m,
  */
 double   AT_RDD_Katz_PowerLawER_DSite_Gy( const double r_m,
     const double a0_m,
-    const double r_max_m,
+    const double max_electron_range_m,
     const double material_density_kg_m3,
     const double alpha,
     const double LET_J_m,
@@ -297,19 +297,19 @@ double   AT_RDD_Katz_PowerLawER_DSite_Gy( const double r_m,
  * TODO
  * @param r_m
  * @param r_min_m                  minimum radius cut-off distance [m]
- * @param r_max_m
- * @param a0_m
+ * @param max_electron_range_m     delta electron maximum range rmax [m]
+ * @param a0_m                     inner radius a0 (lower integration limit) [m]
  * @param er_model                 delta electron range model code number
- * @param alpha
- * @param density_kg_m3
- * @param LET_J_m
- * @param dEdx_J_m
- * @param Katz_point_coeff_Gy
+ * @param alpha                    parameter of ER model
+ * @param density_kg_m3            material density rho [kg/m^3]
+ * @param LET_J_m                  LET [J/m]
+ * @param dEdx_J_m                 dEdx [J/m]
+ * @param Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return
  */
 inline double  AT_RDD_KatzSite_Gy( const double r_m,
     const double r_min_m,
-    const double r_max_m,
+    const double max_electron_range_m,
     const double a0_m,
     const long   er_model,
     const double alpha,
@@ -323,16 +323,16 @@ inline double  AT_RDD_KatzSite_Gy( const double r_m,
  * TODO
  * @param D_Gy
  * @param r_min_m                  minimum radius cut-off distance [m]
- * @param r_max_m                  delta electron maximum range rmax [m]
+ * @param max_electron_range_m     delta electron maximum range rmax [m]
  * @param a0_m                     radius target [m]
  * @param er_model                 delta electron range model code number
- * @param alpha
- * @param Katz_point_coeff_Gy
+ * @param alpha                    parameter of ER model
+ * @param Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return
  */
 double  AT_inverse_RDD_KatzSite_m( const double D_Gy,
     const double r_min_m,
-    const double r_max_m,
+    const double max_electron_range_m,
     const double a0_m,
     const long   er_model,
     const double alpha,

@@ -38,7 +38,7 @@
 #define PARTICLE_DATA_N    96
 
 
-#define PARICLE_PROTON_NUMBER   1001
+#define PARTICLE_PROTON_NUMBER   1001
 
 
 /**

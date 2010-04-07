@@ -35,7 +35,7 @@
 
 inline long AT_A_from_particle_no_single(  const long  particle_no ){
   long A = particle_no % 1000;
-  if( 1 < A < 300){
+  if( (1 <= A) && (A <= 300)){
     return A;
   } else {
     printf( "Wrong particle number %ld, please provide it in correct format (XXXYYY, where XXX is Z and YYY is A)\n", particle_no);
@@ -58,7 +58,7 @@ int AT_A_from_particle_no( const long  n,
 
 inline long AT_Z_from_particle_no_single(  const long  particle_no ){
   long Z = particle_no / 1000;
-  if( 1 < Z < 118){
+  if( (1 <= Z) && (Z <= 118) ){
     return Z;
   } else {
     printf( "Wrong particle number %ld, please provide it in correct format (XXXYYY, where XXX is Z and YYY is A)\n", particle_no);

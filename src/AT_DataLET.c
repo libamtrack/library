@@ -33,9 +33,9 @@
 
 
 void getPSTARvalue(
-    const long   n,
+    const long    n,
     const double  x[],
-    const long   material_no,
+    const long    material_no,
     const double  x_table[],
     const double  y_table[],
     double        y[])
@@ -98,10 +98,10 @@ double AT_LET_MeV_cm2_g_single(  const double  E_MeV_u,
 
   double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
 
-  double Zeff_proton =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u, PARICLE_PROTON_NUMBER);
+  double Zeff_proton =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u, PARTICLE_PROTON_NUMBER);
 
   // scale proton LET by ratio of effective Z
-  if( particle_no != PARICLE_PROTON_NUMBER){ // for particles other than proton scale LET by (Zeff_ion / Zeff_proton)^2
+  if( particle_no != PARTICLE_PROTON_NUMBER){ // for particles other than proton scale LET by (Zeff_ion / Zeff_proton)^2
       LET_MeV_cm2_g *=   gsl_pow_2(Zeff_ion / Zeff_proton);
   }
 
@@ -130,7 +130,7 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
   double*  Zeff_proton           =  (double*)calloc(number_of_particles, sizeof(double));
   long*    particle_no_proton    =  (long*)calloc(number_of_particles, sizeof(long));
   for (i = 0; i < number_of_particles; i++){
-    particle_no_proton[i] = PARICLE_PROTON_NUMBER;
+    particle_no_proton[i] = PARTICLE_PROTON_NUMBER;
   }
 
   AT_effective_charge_from_E_MeV_u(  number_of_particles,
@@ -140,7 +140,7 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
 
   // scale proton LET by ratio of effective Z
   for (i = 0; i < number_of_particles; i++){
-    if( particle_no[i] != PARICLE_PROTON_NUMBER){ // for particles other than proton scale LET by (Zeff_ion / Zeff_proton)^2
+    if( particle_no[i] != PARTICLE_PROTON_NUMBER){ // for particles other than proton scale LET by (Zeff_ion / Zeff_proton)^2
       LET_MeV_cm2_g[i] *=   gsl_pow_2(Zeff_ion[i] / Zeff_proton[i]);
     }
   }
