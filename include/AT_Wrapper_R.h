@@ -51,19 +51,6 @@ void AT_D_RDD_Gy_R( const int*  n,
     float*        D_RDD_Gy);
 
 
-void AT_D_RDD_ExtendedTarget_Gy_R( const int*  n,
-    const float*  r_m,
-    const float*  a0_m,
-    const float*  E_MeV_u,
-    const int*    particle_no,
-    const int*    material_no,
-    const int*    rdd_model,
-    const float*  rdd_parameter,
-    const int*    er_model,
-    const float*  er_parameter,
-    float*        D_RDD_Gy);
-
-
 void AT_gamma_response_R( const int*  n,
     const float*  d_Gy,
     const int*    gamma_model,

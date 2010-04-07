@@ -44,6 +44,7 @@
 #include "AT_GammaResponse.h"
 #include "AT_PhysicsRoutines.h"
 #include "AT_NumericalRoutines.h"
+#include "AT_KatzModel.h"
 
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_integration.h>
