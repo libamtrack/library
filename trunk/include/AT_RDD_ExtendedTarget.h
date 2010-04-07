@@ -66,7 +66,7 @@ double          geometryFunctionPhi(         const double r_m,
 typedef struct {
   double  r_m;
   double  a0_m;
-  double  r_max_m;
+  double  max_electron_range_m;
   long    er_model;
   double  alpha;
   double  KatzPoint_r_min_m;
@@ -91,7 +91,7 @@ double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy(
  * @param a0_m
  * @param er_model
  * @param KatzPoint_r_min_m
- * @param r_max_m
+ * @param max_electron_range_m
  * @param alpha
  * @param Katz_point_coeff_Gy
  * @return
@@ -101,7 +101,7 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(
     const double  a0_m,
     const long    er_model,
     const double  KatzPoint_r_min_m,
-    const double  r_max_m,
+    const double  max_electron_range_m,
     const double  alpha,
     const double  Katz_point_coeff_Gy);
 
@@ -135,7 +135,7 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy(
 typedef struct {
   double  D_Gy;
   double  a0_m;
-  double  r_max_m;
+  double  max_electron_range_m;
   long    er_model;
   double  alpha;
   double  Katz_plateau_Gy;
@@ -183,7 +183,7 @@ typedef struct {
   double  r_m;
   double  a0_m;
   double  KatzPoint_r_min_m;
-  double  r_max_m;
+  double  max_electron_range_m;
   double  beta;
   double  Katz_point_coeff_Gy;
   double  C_norm;
@@ -206,7 +206,7 @@ double AT_RDD_ExtendedTarget_CucinottaPoint_integrand_Gy(
  * @param r_m
  * @param a0_m
  * @param KatzPoint_r_min_m
- * @param r_max_m
+ * @param max_electron_range_m
  * @param beta
  * @param Katz_point_coeff_Gy
  * @param C_norm
@@ -216,7 +216,7 @@ double AT_RDD_ExtendedTarget_CucinottaPoint_Gy_by_integration(
     const double  r_m,
     const double  a0_m,
     const double  KatzPoint_r_min_m,
-    const double  r_max_m,
+    const double  max_electron_range_m,
     const double  beta,
     const double  Katz_point_coeff_Gy,
     const double  C_norm);
@@ -227,7 +227,7 @@ double AT_RDD_ExtendedTarget_CucinottaPoint_Gy_by_integration(
  * @param r_m
  * @param a0_m
  * @param KatzPoint_r_min_m
- * @param r_max_m
+ * @param max_electron_range_m
  * @param beta
  * @param Katz_point_coeff_Gy
  * @param C_norm
@@ -252,7 +252,7 @@ typedef struct {
   double  D_Gy;
   double  a0_m;
   double  KatzPoint_r_min_m;
-  double  r_max_m;
+  double  max_electron_range_m;
   double  beta;
   double  Katz_point_coeff_Gy;
   double  C_norm;
