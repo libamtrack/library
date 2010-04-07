@@ -1,5 +1,5 @@
 ################################################################################################
-# R test script for imeplemented electron range models
+# R test script for implemented electron range models
 ################################################################################################
 # Copyright 2006, 2009 Steffen Greilich / the libamtrack team
 # 
