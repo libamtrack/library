@@ -34,9 +34,13 @@
 
 
 inline long AT_A_from_particle_no_single(  const long  particle_no ){
-  // TODO maybe we could use modulo division here ? A = particle_no % 1000 ?
-  long A = particle_no / 1000;
-  return particle_no - A * 1000;
+  long A = particle_no % 1000;
+  if( 1 < A < 300){
+    return A;
+  } else {
+    printf( "Wrong particle number %ld, please provide it in correct format (XXXYYY, where XXX is Z and YYY is A)\n", particle_no);
+    return 1;
+  }
 }
 
 
@@ -53,7 +57,13 @@ int AT_A_from_particle_no( const long  n,
 
 
 inline long AT_Z_from_particle_no_single(  const long  particle_no ){
-  return particle_no / 1000;
+  long Z = particle_no / 1000;
+  if( 1 < Z < 118){
+    return Z;
+  } else {
+    printf( "Wrong particle number %ld, please provide it in correct format (XXXYYY, where XXX is Z and YYY is A)\n", particle_no);
+    return 1;
+  }
 }
 
 
@@ -81,12 +91,10 @@ int AT_atomic_weight_from_particle_no( const long  n,
       particle_no,
       Z);
 
-  long   n_particle_data = PARTICLE_DATA_N;
-
   find_elements_int(  Z,
       n,
       AT_Particle_Data.Z,
-      n_particle_data,
+      AT_Particle_Data.n,
       matches);
 
   for (i = 0; i < n; i++){
@@ -97,60 +105,3 @@ int AT_atomic_weight_from_particle_no( const long  n,
   free(matches);
   return 0;
 }
-
-/*
-void AT_Particle_Properties(  const long*  n,
-    const long*  particle_no,
-    long*   Z,
-    long*   A,
-    char**  element_name,
-    char**  element_acronym,
-    double** density_g_cm3,
-    double** I_eV)
-{
-
-  // find look-up indices for particle numbers in particle data
-  long*  matches  =  (long*)calloc(*n, sizeof(long));
-
-  pmatchi(  particle_no,
-      n,
-      AT_Particle_Data.particle_no,
-      &AT_Particle_Data.n,
-      matches);
-
-  // loop over n to find data for all given particles
-  long  i;
-  if( particle_name != NULL ){
-    for(i = 0; i < *n; i++){
-      strcpy(particle_name[i], AT_Particle_Data.particle_name[matches[i]]);
-    }
-  }
-  if( USRTRACK_name != NULL ){
-    for(i = 0; i < *n; i++){
-      strcpy(USRTRACK_name[i], AT_Particle_Data.USRTRACK_name[matches[i]]);
-    }
-  }
-  if( element_name != NULL ){
-    for(i = 0; i < *n; i++){
-      strcpy(element_name[i], AT_Particle_Data.element_name[matches[i]]);
-    }
-  }
-  if( mass != NULL ){
-    for(i = 0; i < *n; i++){
-      mass[i] = AT_Particle_Data.mass[matches[i]];
-    }
-  }
-  if( A != NULL ){
-    for(i = 0; i < *n; i++){
-      A[i] = AT_Particle_Data.A[matches[i]];
-    }
-  }
-  if( Z != NULL ){
-    for(i = 0; i < *n; i++){
-      Z[i] = AT_Particle_Data.Z[matches[i]];
-    }
-  }
-  free(matches);
-}
-*/
-
