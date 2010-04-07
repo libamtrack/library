@@ -156,8 +156,9 @@ int AT_RDD_number_of_parameters( const long RDD_model);
  * @param[in]   er_model       delta electron range model code number
  * @param[in]   er_parameter   TODO to be removed
  * @param[out]  D_RDD_Gy       dose [Gy]
+ * @return status code
  */
-void AT_D_RDD_Gy( const long  n,
+int AT_D_RDD_Gy( const long  n,
     const double  r_m[],
     const double  E_MeV_u,
     const long    particle_no,
@@ -182,8 +183,9 @@ void AT_D_RDD_Gy( const long  n,
  * @param[in]   er_model            delta electron range model code number
  * @param[in]   er_parameter        TODO to be removed
  * @param[out]  r_RDD_m             distance [m]
+ * @return status code
  */
-void AT_r_RDD_m  ( const long  n,
+int AT_r_RDD_m  ( const long  n,
     const double  D_RDD_Gy[],
     const double  E_MeV_u,
     const long    particle_no,

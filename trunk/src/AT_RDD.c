@@ -32,7 +32,7 @@
 #include "AT_RDD.h"
 
 long AT_RDD_index_from_material_number( const long RDD_number ){
-  long  index                =  -1;
+  long  index           =  -1;
   long  number_of_RDDs  =  1;
   find_elements_int(  &RDD_number,
       number_of_RDDs,
@@ -48,7 +48,7 @@ void AT_RDD_name_from_number(const long RDD_no, char* RDD_name){
   if( index != -1){
     strcpy(RDD_name, AT_RDD_Data.RDD_name[index]);
   } else {
-    strcpy(RDD_name,"*** invalid choice ***");
+    strcpy(RDD_name,"*** invalid choice of RDD ***");
   }
 }
 
@@ -86,7 +86,6 @@ int AT_RDD_number_of_parameters( const long RDD_model){
 
 double AT_RDD_r_min_m(
     const double   max_electron_range_m,
-    /* radial dose distribution model */
     const long     rdd_model,
     const double   rdd_parameter[]){
 
@@ -111,6 +110,8 @@ double AT_RDD_a0_m(
     a0_m = rdd_parameter[0];
   } else if ( rdd_model == RDD_KatzExtTarget || rdd_model == RDD_CucinottaExtTarget ) {
     a0_m = rdd_parameter[1];
+  } else {
+    a0_m = 0.0;
   }
   if (max_electron_range_m <= a0_m){
     a0_m             =  max_electron_range_m;
@@ -168,7 +169,7 @@ double AT_RDD_precalculated_constant_Gy(
   // RDD_Test
   if( rdd_model == RDD_Test){
     const double single_impact_fluence_cm2 = AT_single_impact_fluence_cm2_single(E_MeV_u, material_no, er_model);
-    precalculated_constant_Gy = LET_MeV_cm2_g * single_impact_fluence_cm2 * MeV_to_J * 1000.0;          // LET  / track area = Norm.constant k , TODO check units
+    precalculated_constant_Gy = LET_MeV_cm2_g * single_impact_fluence_cm2 * MeV_to_J * 1000.0;          // LET  / track area = Norm.constant k
   } // end RDD_Test
 
 
@@ -284,6 +285,8 @@ double AT_RDD_d_max_Gy(
     const double  rdd_parameter[],
     const long    er_model,
     const double  er_parameter[]){
+
+  // implement handling of non-compatible er and rdd
 
   double d_max_Gy  = 0.0;
 
@@ -440,7 +443,8 @@ void AT_RDD_f1_parameters(
   f1_parameters[7]  =  single_impact_dose_Gy;
 }
 
-void AT_D_RDD_Gy( const long  n,
+
+int AT_D_RDD_Gy( const long  n,
     const double  r_m[],
     const double  E_MeV_u,
     const long    particle_no,
@@ -514,24 +518,43 @@ void AT_D_RDD_Gy( const long  n,
   // RDD_KatzPoint
   if( rdd_model == RDD_KatzPoint){ // RDD formula will be determined by form of ER model
     double Katz_point_coeff_Gy  =  precalculated_constant_Gy;
-    // Loop over all r_m given
-    for (i = 0; i < n; i++){
-      D_RDD_Gy[i]     =  AT_RDD_KatzPoint_Gy(r_m[i], r_min_m, max_electron_range_m, er_model, alpha, Katz_point_coeff_Gy);
-      D_RDD_Gy[i]     =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
-    } // end for
+    // Compatible ER models
+    if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) || (er_model == ER_ButtsKatz) ){
+      // Loop over all r_m given
+      for (i = 0; i < n; i++){
+        D_RDD_Gy[i]     =  AT_RDD_KatzPoint_Gy(r_m[i], r_min_m, max_electron_range_m, er_model, alpha, Katz_point_coeff_Gy);
+        if( D_RDD_Gy[i] > 0.0)
+          D_RDD_Gy[i]     =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+        // TODO maybe this cutoff can be moved to SPIFF implementation, in a place where it is needed
+      } // end for
+    } else {
+      for (i = 0; i < n; i++){
+        D_RDD_Gy[i]     =  0.0;
+      } // end for
+      return 1;
+    }
   }// end RDD_KatzPoint
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // RDD_KatzSite
   if( rdd_model == RDD_KatzSite){
-    const double LET_J_m   =  LET_MeV_cm2_g * density_g_cm3 * 100.0 * MeV_to_J;     // convert LET_MeV_cm2_g to LET_J_m
-    const double dEdx_J_m  =  precalculated_constant_Gy;                            // take dEdx averaged on outer shell from norm_constant
+    // Compatible ER models
+    if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) || (er_model == ER_ButtsKatz) ){
+      const double LET_J_m   =  LET_MeV_cm2_g * density_g_cm3 * 100.0 * MeV_to_J;     // convert LET_MeV_cm2_g to LET_J_m
+      const double dEdx_J_m  =  precalculated_constant_Gy;                            // take dEdx averaged on outer shell from norm_constant
 
-    // Loop over all r_m given
-    for (i = 0; i < n; i++){
-      D_RDD_Gy[i]     =  AT_RDD_KatzSite_Gy(r_m[i], 0.0, max_electron_range_m, a0_m, er_model, alpha, density_kg_m3, LET_J_m, dEdx_J_m, Katz_point_coeff_Gy);
-      D_RDD_Gy[i]     =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
-    } // end for
+      // Loop over all r_m given
+      for (i = 0; i < n; i++){
+        D_RDD_Gy[i]     =  AT_RDD_KatzSite_Gy(r_m[i], 0.0, max_electron_range_m, a0_m, er_model, alpha, density_kg_m3, LET_J_m, dEdx_J_m, Katz_point_coeff_Gy);
+        if( D_RDD_Gy[i] > 0.0)
+          D_RDD_Gy[i]     =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+      } // end for
+    } else {
+      for (i = 0; i < n; i++){
+        D_RDD_Gy[i]     =  0.0;
+      } // end for
+      return 1;
+    }
   }// end RDD_KatzSite
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -550,18 +573,28 @@ void AT_D_RDD_Gy( const long  n,
     // Loop over all r_m given
     for (i = 0; i < n; i++){
       D_RDD_Gy[i]     =  AT_RDD_CucinottaPoint_Gy(r_m[i], r_min_m, max_electron_range_m, beta, precalculated_constant_Gy, Katz_point_coeff_Gy);
-      D_RDD_Gy[i]     =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+      if( D_RDD_Gy[i] > 0.0)
+        D_RDD_Gy[i]     =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
     }
   }// end RDD_CucinottaPoint
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // RDD_KatzExtTarget
   if( rdd_model == RDD_KatzExtTarget){
-    double Katz_plateau_Gy     =  precalculated_constant_Gy;
-    double Katz_point_r_min_m  =  r_min_m;
-    for (i = 0; i < n; i++){
-      D_RDD_Gy[i]     =  AT_RDD_ExtendedTarget_KatzPoint_Gy(r_m[i], a0_m, er_model, Katz_point_r_min_m, max_electron_range_m, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy);
-      D_RDD_Gy[i]     =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+    // Compatible ER models
+    if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) || (er_model == ER_ButtsKatz) ){
+      double Katz_plateau_Gy     =  precalculated_constant_Gy;
+      double Katz_point_r_min_m  =  r_min_m;
+      for (i = 0; i < n; i++){
+        D_RDD_Gy[i]     =  AT_RDD_ExtendedTarget_KatzPoint_Gy(r_m[i], a0_m, er_model, Katz_point_r_min_m, max_electron_range_m, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy);
+        if( D_RDD_Gy[i] > 0.0)
+          D_RDD_Gy[i]     =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+      }
+    } else {
+      for (i = 0; i < n; i++){
+        D_RDD_Gy[i]     =  0.0;
+      } // end for
+      return 1;
     }
   }// end RDD_KatzExtTarget
 
@@ -573,14 +606,16 @@ void AT_D_RDD_Gy( const long  n,
     double Cucinotta_plateau_Gy  =  0.0; // FIXME to be implemented
     for (i = 0; i < n; i++){
       D_RDD_Gy[i]     =  AT_RDD_ExtendedTarget_CucinottaPoint_Gy( r_m[i], a0_m, Katz_point_r_min_m, max_electron_range_m, beta, Katz_point_coeff_Gy, C_norm, Cucinotta_plateau_Gy);
-      D_RDD_Gy[i]     =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+      if( D_RDD_Gy[i] > 0.0)
+        D_RDD_Gy[i]     =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
     }
   } // end RDD_CucinottaExtTarget
 
+  return 0;
 }
 
 
-void AT_r_RDD_m  ( const long  n,
+int AT_r_RDD_m  ( const long  n,
     const double  D_RDD_Gy[],
     const double  E_MeV_u,
     const long    particle_no,
@@ -633,14 +668,22 @@ void AT_r_RDD_m  ( const long  n,
   }// end RDD_Test
 
   if( rdd_model == RDD_KatzPoint){
-    // Loop over all doses given
-    const double Katz_point_coeff_Gy = precalculated_constant_Gy;
-    for (i = 0; i < n; i++){
-      if( (D_RDD_Gy[i] >= d_min_Gy) && (D_RDD_Gy[i] <= d_max_Gy) ){
-        r_RDD_m[i]    =  AT_inverse_RDD_KatzPoint_m( D_RDD_Gy[i], r_min_m, max_electron_range_m, er_model, alpha, Katz_point_coeff_Gy);
-      } else {
-        r_RDD_m[i]    =  0.0;
+    // Compatible ER models
+    if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) || (er_model == ER_ButtsKatz) ){
+      // Loop over all doses given
+      const double Katz_point_coeff_Gy = precalculated_constant_Gy;
+      for (i = 0; i < n; i++){
+        if( (D_RDD_Gy[i] >= d_min_Gy) && (D_RDD_Gy[i] <= d_max_Gy) ){
+          r_RDD_m[i]    =  AT_inverse_RDD_KatzPoint_m( D_RDD_Gy[i], r_min_m, max_electron_range_m, er_model, alpha, Katz_point_coeff_Gy);
+        } else {
+          r_RDD_m[i]    =  0.0;
+        }
       }
+    } else {
+      for (i = 0; i < n; i++){
+          r_RDD_m[i]    =  0.0;
+      }
+      return 1;
     }
   }// end RDD_KatzPoint
 
@@ -652,13 +695,24 @@ void AT_r_RDD_m  ( const long  n,
   }// end RDD_Geiss
 
   if( rdd_model == RDD_KatzSite){
-    // Loop over all doses given
-    for (i = 0; i < n; i++){
-      if( (D_RDD_Gy[i] >= d_min_Gy) && (D_RDD_Gy[i] <= d_max_Gy) ){
-        r_RDD_m[i]    =  AT_inverse_RDD_KatzSite_m( D_RDD_Gy[i], r_min_m, max_electron_range_m, a0_m, er_model, alpha, d_max_Gy, Katz_point_coeff_Gy);
-      } else {
+    // Compatible ER models
+    if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) || (er_model == ER_ButtsKatz) ){
+      // TODO it is not good to use r = 0.0 for doses outside the range [dmin,dmax]
+      // in the case of RDD_KatzSite RDD is well defined for r = 0.0 : D(r) = dmax
+
+      // Loop over all doses given
+      for (i = 0; i < n; i++){
+        if( (D_RDD_Gy[i] >= d_min_Gy) && (D_RDD_Gy[i] <= d_max_Gy) ){
+          r_RDD_m[i]    =  AT_inverse_RDD_KatzSite_m( D_RDD_Gy[i], r_min_m, max_electron_range_m, a0_m, er_model, alpha, d_max_Gy, Katz_point_coeff_Gy);
+        } else {
+          r_RDD_m[i]    =  0.0;
+        }
+      }
+    } else {
+      for (i = 0; i < n; i++){
         r_RDD_m[i]    =  0.0;
       }
+      return 1;
     }
   }// end RDD_KatzSite
 
@@ -675,14 +729,22 @@ void AT_r_RDD_m  ( const long  n,
   }// end RDD_CucinottaPoint
 
   if( rdd_model == RDD_KatzExtTarget){
-    // Loop over all doses given
-    double Katz_plateau_Gy  =  precalculated_constant_Gy;
-    for (i = 0; i < n; i++){
-      if( (D_RDD_Gy[i] >= d_min_Gy) && (D_RDD_Gy[i] <= d_max_Gy) ){
-        r_RDD_m[i]    =  AT_inverse_RDD_ExtendedTarget_KatzPoint_m( D_RDD_Gy[i], r_min_m, max_electron_range_m, a0_m, er_model, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy);
-      } else {
+    // Compatible ER models
+    if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) || (er_model == ER_ButtsKatz) ){
+      // Loop over all doses given
+      double Katz_plateau_Gy  =  precalculated_constant_Gy;
+      for (i = 0; i < n; i++){
+        if( (D_RDD_Gy[i] >= d_min_Gy) && (D_RDD_Gy[i] <= d_max_Gy) ){
+          r_RDD_m[i]    =  AT_inverse_RDD_ExtendedTarget_KatzPoint_m( D_RDD_Gy[i], r_min_m, max_electron_range_m, a0_m, er_model, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy);
+        } else {
+          r_RDD_m[i]    =  0.0;
+        }
+      }
+    } else {
+      for (i = 0; i < n; i++){
         r_RDD_m[i]    =  0.0;
       }
+      return 1;
     }
   }// end RDD_KatzExtTarget
 
@@ -690,8 +752,11 @@ void AT_r_RDD_m  ( const long  n,
     // Loop over all doses given
     double C_norm  =  precalculated_constant_Gy;
     double Cucinotta_plateau_Gy  =  0.0; //FIXME to be implemented
+
+    // TODO around d_max it is hard to find using ziddler algorithm inverse RDD =>
+    // calculation in that case should be done manually
     for (i = 0; i < n; i++){
-      if( (D_RDD_Gy[i] >= d_min_Gy) && (D_RDD_Gy[i] <= d_max_Gy) ){
+      if( (D_RDD_Gy[i] >= d_min_Gy) && (D_RDD_Gy[i] < (1.0-1e-5)*d_max_Gy) ){
         r_RDD_m[i]    =  AT_inverse_RDD_ExtendedTarget_CucinottaPoint_m( D_RDD_Gy[i], a0_m, r_min_m, max_electron_range_m, beta, Katz_point_coeff_Gy, C_norm, Cucinotta_plateau_Gy);
       } else {
         r_RDD_m[i]    =  0.0;
@@ -699,4 +764,5 @@ void AT_r_RDD_m  ( const long  n,
     }
   }// end RDD_CucinottaExtTarget
 
+  return 0;
 }
