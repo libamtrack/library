@@ -4,6 +4,9 @@
 /**
  * @file
  * @brief Extended Target RDDs
+ * File contains implementation of RDD
+ * averaged over finite size, circular target of radius a0.
+ * Here also inverse RDD (radius as function of dose) are implemented.
  */
 
 /*
@@ -29,47 +32,11 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "AT_RDD.h"
+#include "AT_RDD_Simple.h"
 
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
 
-///////////////////////////////////////////// SITE /////////////////////////////////////////////
-
-/**
- * Returns RDD as a function of distance r_m for target with radius a0_m
- * approximated version, called RDD_KatzSite
- *
- * @param[in]   n
- * @param[in]   r_m            distance [m]
- * @param[in]   a0_m           target radius
- * @param[in]   E_MeV_u
- * @param[in]   particle_no
- * @param[in]   material_no
- * @param[in]   rdd_model
- * @param[in]   rdd_parameter
- * @param[in]   er_model
- * @param[in]   er_parameter
- * @param[out]  D_RDD_Gy       dose [Gy]
- */
-void AT_RDD_Site_Gy( const long  n,
-    const double  r_m[],
-    const double  a0_m,
-    /* radiation field parameters */
-    const double  E_MeV_u,
-    const long    particle_no,
-    /* detector parameters */
-    const long    material_no,
-    /* radial dose distribution model */
-    const long    rdd_model,
-    const double  rdd_parameter[],
-    /* electron range model */
-    const long    er_model,
-    const double  er_parameter[],
-    double        D_RDD_Gy[]);
-
-
-///////////////////////////////////////////// EXTENDED TARGET /////////////////////////////////////////////
 
 /**
  * Geometry function Phi \n
@@ -88,6 +55,9 @@ void AT_RDD_Site_Gy( const long  n,
 double          geometryFunctionPhi(         const double r_m,
     const double a0_m,
     const double t_m);
+
+
+/* --------------------------------------------------- KATZ EXT TARGET RDD ---------------------------------------------------*/
 
 
 /**
@@ -204,97 +174,7 @@ double  AT_inverse_RDD_ExtendedTarget_KatzPoint_m( const double D_Gy,
     const double Katz_plateau_Gy,
     const double Katz_point_coeff_Gy);
 
-
-/**
- * Returns RDD as a function of distance r_m for target with radius a0_m
- *
- * Extended target RDD is defined as:
- *
- * Dext( r , a0 ) = 1 / (pi a0^2) \int_low^up D(t) 2 Phi(t,a0,r) t dt
- *
- * where
- * low = r-a0   for r > a0
- * low = 0      for r <= a0
- *
- * up = r + a0
- *
- * For low values of r (r << a0) we have Dext(r,a0) ~= Dext(0,a0) =  1 / (pi a0^2) \int_0^a0 D(t) 2 pi t dt
- *
- * For large values of r (r >> a0) we have Dext(r,a0) ~= D(r)
- *
- * @param[in]   n
- * @param[in]   r_m            distance [m]
- * @param[in]   a0_m           target radius
- * @param[in]   E_MeV_u
- * @param[in]   particle_no
- * @param[in]   material_no
- * @param[in]   rdd_model
- * @param[in]   rdd_parameter
- * @param[in]   er_model
- * @param[in]   er_parameter
- * @param[out]  D_RDD_Gy       dose [Gy]
- */
-void AT_RDD_ExtendedTarget_Gy( const long  n,
-    const double r_m[],
-    const double a0_m,
-    /* radiation field parameters */
-    const double E_MeV_u,
-    const long   particle_no,
-    /* detector parameters */
-    const long   material_no,
-    /* radial dose distribution model */
-    const long   rdd_model,
-    const double rdd_parameter[],
-    /* electron range model */
-    const long   er_model,
-    const double er_parameter[],
-    double       D_RDD_Gy[]);
-
-
-/**
- * Katz extended target integrand
- * D(t) 2 Phi(t,a0,r) t
- *
- * @param[in]   t_m
- * @param[in]   params  structure AT_RDD_ExtendedTarget_parameters
- */
-double         AT_RDD_Katz_ext_integrand_Gy(double t_m,
-    void * params);
-
-
-/**
- * Calculates directly
- *
- * Dext( r , a0 ) = 1 / (pi a0^2) \int_low^up D(t) 2 Phi(t,a0,r) t dt
- *
- * @param r_m
- * @param a0_m
- * @param r_min_m
- * @param r_max_m
- * @param E_MeV_u
- * @param particle_no
- * @param material_no
- * @param rdd_model
- * @param rdd_parameter
- * @param er_model
- * @param er_parameter
- * @return
- */
-double AT_RDD_ExtendedTarget_integrate_Gy(  const double r_m,
-    const double a0_m,
-    const double r_min_m,
-    const double r_max_m,
-    const double E_MeV_u,
-    const long   particle_no,
-    /* detector parameters */
-    const long   material_no,
-    /* radial dose distribution model */
-    const long   rdd_model,
-    const double rdd_parameter[],
-    /* electron range model */
-    const long   er_model,
-    const double er_parameter[]);
-
+/* --------------------------------------------------- CUCINOTTA EXT TARGET RDD ---------------------------------------------------*/
 
 /**
  * TODO
@@ -302,17 +182,113 @@ double AT_RDD_ExtendedTarget_integrate_Gy(  const double r_m,
 typedef struct {
   double  r_m;
   double  a0_m;
-  /* radiation field parameters */
-  double  E_MeV_u;          /**< energy per nucleon */
-  long    particle_no;
-  /* detector parameters */
-  long    material_no;
-  /* radial dose distribution model */
-  long    rdd_model;
-  double* rdd_parameter;
-  /* electron range model */
-  long    er_model;
-  double*  er_parameter;
-} AT_RDD_ExtendedTarget_parameters;
+  double  KatzPoint_r_min_m;
+  double  r_max_m;
+  double  beta;
+  double  Katz_point_coeff_Gy;
+  double  C_norm;
+} AT_RDD_ExtendedTarget_CucinottPoint_parameters;
+
+
+/**
+ * TODO
+ * @param t_m
+ * @param params
+ * @return
+ */
+double AT_RDD_ExtendedTarget_CucinottaPoint_integrand_Gy(
+    double t_m,
+    void* params);
+
+
+/**
+ * TODO
+ * @param r_m
+ * @param a0_m
+ * @param KatzPoint_r_min_m
+ * @param r_max_m
+ * @param beta
+ * @param Katz_point_coeff_Gy
+ * @param C_norm
+ * @return
+ */
+double AT_RDD_ExtendedTarget_CucinottaPoint_Gy_by_integration(
+    const double  r_m,
+    const double  a0_m,
+    const double  KatzPoint_r_min_m,
+    const double  r_max_m,
+    const double  beta,
+    const double  Katz_point_coeff_Gy,
+    const double  C_norm);
+
+
+/**
+ * TODO
+ * @param r_m
+ * @param a0_m
+ * @param KatzPoint_r_min_m
+ * @param r_max_m
+ * @param beta
+ * @param Katz_point_coeff_Gy
+ * @param C_norm
+ * @param Cucinotta_plateau_Gy
+ * @return
+ */
+double AT_RDD_ExtendedTarget_CucinottaPoint_Gy(
+    const double  r_m,
+    const double  a0_m,
+    const double  KatzPoint_r_min_m,
+    const double  max_electron_range_m,
+    const double  beta,
+    const double  Katz_point_coeff_Gy,
+    const double  C_norm,
+    const double  Cucinotta_plateau_Gy);
+
+
+/**
+ * TODO
+ */
+typedef struct {
+  double  D_Gy;
+  double  a0_m;
+  double  KatzPoint_r_min_m;
+  double  r_max_m;
+  double  beta;
+  double  Katz_point_coeff_Gy;
+  double  C_norm;
+  double  Cucinotta_plateau_Gy;
+} AT_inverse_RDD_ExtendedTarget_CucinottaPoint_parameters;
+
+
+/**
+ * TODO
+ * @param r_m
+ * @param params
+ * @return
+ */
+double AT_inverse_RDD_ExtendedTarget_CucinottaPoint_solver_function_Gy( const double r_m , void * params );
+
+
+/**
+ * TODO
+ * @param D_Gy
+ * @param a0_m
+ * @param KatzPoint_r_min_m
+ * @param max_electron_range_m
+ * @param beta
+ * @param Katz_point_coeff_Gy
+ * @param C_norm
+ * @param Cucinotta_plateau_Gy
+ * @return
+ */
+double  AT_inverse_RDD_ExtendedTarget_CucinottaPoint_m( const double D_Gy,
+    const double  a0_m,
+    const double  KatzPoint_r_min_m,
+    const double  max_electron_range_m,
+    const double  beta,
+    const double  Katz_point_coeff_Gy,
+    const double  C_norm,
+    const double  Cucinotta_plateau_Gy);
+
 
 #endif /* AT_RDD_EXTENDEDTARGET_H_ */

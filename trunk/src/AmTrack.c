@@ -1076,8 +1076,7 @@ void AT_run_IGK_method(  const long  n,
       a0_m = rdd_parameters[1];
     }
     if(rdd_model == RDD_Geiss ||
-        rdd_model == RDD_KatzSite ||
-        rdd_model == RDD_Edmund){
+        rdd_model == RDD_KatzSite){
       a0_m  =  rdd_parameters[0];
     }
     s0_m2   = saturation_cross_section_factor * M_PI * gsl_pow_2(a0_m);

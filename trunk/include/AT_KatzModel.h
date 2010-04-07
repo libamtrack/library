@@ -29,7 +29,49 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
+#include "AT_RDD.h"
+#include "AT_GammaResponse.h"
 
+
+/**
+ * TODO
+ */
+double         AT_P_RDD(                    double  r_m,
+    void* params);
+
+
+/**
+ * TODO
+ */
+double         AT_sI_int(                   double  r_m,
+    void* params);
+
+
+/**
+ * TODO
+ */
+double         AT_D_RDD_Gy_int(             double  r_m,
+    void* params);
+
+
+/**
+ * TODO
+ */
+typedef struct {
+  /* radiation field parameters */
+  double*  E_MeV_u;
+  long*    particle_no;
+  /* detector parameters */
+  long*    material_no;
+  /* radial dose distribution model */
+  long*    rdd_model;
+  double*  rdd_parameters;
+  /* electron range model */
+  long*    er_model;
+  double*  er_parameters;
+  /* gamma response parameter*/
+  double   gamma_parameters[5];
+} AT_P_RDD_parameters;
 
 
 #endif /* AT_KATZMODEL_H_ */

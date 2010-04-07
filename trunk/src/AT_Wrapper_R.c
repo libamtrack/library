@@ -96,64 +96,6 @@ void AT_D_RDD_Gy_R( const int*  n,
 }
 
 
-void AT_D_RDD_ExtendedTarget_Gy_R( const int*  n,
-    const float*  r_m,
-    const float*  a0_m,
-    const float*  E_MeV_u,
-    const int*    particle_no,
-    const int*    material_no,
-    const int*    rdd_model,
-    const float*  rdd_parameter,
-    const int*    er_model,
-    const float*  er_parameter,
-    float*        D_RDD_Gy){
-
-  /* int -> long conversion */
-  const long n_long = (long)(*n);
-  const long material_no_long = (long)(*material_no);
-  const long er_model_long = (long)(*er_model);
-  const long rdd_model_long = (long)(*rdd_model);
-  const long particle_no_long = (long)(*particle_no);
-
-  /* float -> double conversion */
-  double * r_m_double = (double*)calloc(*n,sizeof(double));
-  long i;
-  for(i = 0 ; i < *n ; i++){
-    r_m_double[i] = (double)r_m[i];
-  }
-  double a0_m_double = (double)(*a0_m);
-  double E_MeV_u_double = (double)(*E_MeV_u);
-  double rdd_parameter_double[3];    // define 3 as a number
-  for(i = 0 ; i < 3 ; i++){
-    rdd_parameter_double[i] = (double)rdd_parameter[i];
-  }
-  double er_parameter_double = 0.0;
-
-  /* place for results */
-  double * D_RDD_Gy_double = (double*)calloc(*n,sizeof(double));
-
-  AT_RDD_ExtendedTarget_Gy(n_long,
-      r_m_double,
-      a0_m_double,
-      E_MeV_u_double,
-      particle_no_long,
-      material_no_long,
-      rdd_model_long,
-      rdd_parameter_double,
-      er_model_long,
-      &er_parameter_double,
-      D_RDD_Gy_double);
-
-  /* double -> float conversion (results) */
-  for(i = 0 ; i < *n ; i++){
-    D_RDD_Gy[i] = (float)D_RDD_Gy_double[i];
-  }
-
-  free(r_m_double);
-  free(D_RDD_Gy_double);
-}
-
-
 void AT_gamma_response_R( const int*  n,
     const float*  d_Gy,
     const int*    gamma_model,

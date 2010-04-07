@@ -241,8 +241,8 @@ void  AT_SC_get_f1(
         for (i = 0; i < n_bins_df; i++){
           d_low[i]           =   d_df_low[i_low + i];
           d_high[i]          =   d_df_high[i_low + i];
-          d_mid[i]           =  d_df_mid[i_low + i];
-          dd[i]              =  d_high[i] - d_low[i];
+          d_mid[i]           =   d_df_mid[i_low + i];
+          dd[i]              =   d_high[i] - d_low[i];
         };
 
         // and adjust the edges
