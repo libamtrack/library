@@ -37,6 +37,10 @@
 
 #define PARTICLE_DATA_N    96
 
+
+#define PARICLE_PROTON_NUMBER   1001
+
+
 /**
  * TODO
  */
@@ -49,6 +53,7 @@ typedef struct {
   const double    density_g_cm3[PARTICLE_DATA_N];
   const double    I_eV[PARTICLE_DATA_N];
 } particle_data;
+
 
 /**
  * TODO
@@ -131,7 +136,7 @@ static const particle_data AT_Particle_Data = {
 
 
 /**
- * TODO
+ * Calculates mass number A for particle with given code number
  * @param particle_no
  * @return A
  */
@@ -151,7 +156,7 @@ int AT_A_from_particle_no(  const long  n,
 
 
 /**
- * TODO
+ * Calculates atomic number Z for particle with given code number
  * @param particle_no
  * @return Z
  */
