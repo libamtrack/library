@@ -79,10 +79,13 @@ void  AT_SC_get_f1_array_size(
   }
 
   // get number of bins needed to span that dose range
-  double tmp        =  log10(d_max_Gy/d_min_Gy) / log10(2.0) * ((double)N2);
-  *n_bins_f1        =  (long)(floor(tmp) + 1.0);
-
-  return;
+  if( (d_min_Gy > 0) && (d_max_Gy >0) ){
+    double tmp        =  log10(d_max_Gy/d_min_Gy) / log10(2.0) * ((double)N2);
+    *n_bins_f1        =  (long)(floor(tmp) + 1.0);
+  } else {
+    printf("AT_SC_get_f1_array_size: problem in evaluating n_bins_f1: d_min = %g [Gy], d_max = %g [Gy] \n", d_min_Gy, d_max_Gy);
+    exit(1);
+  }
 }
 
 
@@ -259,7 +262,7 @@ void  AT_SC_get_f1(
         dd[n_bins_df-1]         =  0.0;
 
         // now compute r, F1, and f1, this could be any RDD if implemented
-        AT_r_RDD_m  (  n_bins_df,
+        int inverse_RDD_status_code = AT_r_RDD_m  (  n_bins_df,
             d_low,
             E_MeV_u[k],
             particle_no[k],
@@ -272,6 +275,16 @@ void  AT_SC_get_f1(
             er_model,
             er_parameter,
             r);
+
+        if( inverse_RDD_status_code != 0 ){
+          printf("Problem in evaluating inverse RDD in AT_SC_get_f1, probably wrong combination of ER and RDD used\n");
+          char rdd_model_name[100];
+          AT_RDD_name_from_number(rdd_model, rdd_model_name);
+          char er_model_name[100];
+          getERName( er_model, er_model_name);
+          printf("rdd_model: %ld (%s), er_model: %ld (%s)\n", rdd_model, rdd_model_name, er_model, er_model_name);
+          exit(1);
+        }
 
         for (i = 0; i < n_bins_df; i++){
           F1_1[i]            = (r[i] / f1_parameters[k*9 + 2]) * (r[i] / f1_parameters[k*9 + 2]);        // F1 - 1 instead of F1 to avoid numeric cut-off problems
