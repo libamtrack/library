@@ -151,6 +151,20 @@ inline double AT_RDD_Katz_coeff_Gy( const double Z_eff,
 
 
 /**
+ * TODO
+ * @param E_MeV_u
+ * @param particle_no
+ * @param material_no
+ * @param er_model
+ * @return
+ */
+inline double AT_RDD_Katz_coeff_Gy_general(     const double  E_MeV_u,
+    const long    particle_no,
+    const long    material_no,
+    const long    er_model);
+
+
+/**
  * Calculates "old" Katz RDD (derived from linear (on wmax) ER model):
  *
  * D(r) = (C / 2 pi) * (Zeff/beta)^2 * 1/rho *  1/r * (1/r - 1/rmax)

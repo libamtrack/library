@@ -81,20 +81,13 @@ double gammp(const double a, const double x);
 
 
 /**
- * TODO
- * @param x
- * @return
- */
-double erff_custom(const double x);
-
-
-/**
  * Numerical Recipes standard error handler
  * @param error_text
  */
 void nrerror(const char error_text[]);
 
 
+// TODO equation solvers implemented in GSL should be tested and should possibly replace numerical recipes algorithms
 /**
  * From Numerical Recipes in C, 2nd ed., 1992:
  * Using Ridders' method, return the root of a function func known to lie between x1 and x2.

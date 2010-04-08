@@ -98,6 +98,32 @@ inline double AT_RDD_Katz_coeff_Gy( const double Z_eff,
 }
 
 
+inline double AT_RDD_Katz_coeff_Gy_general(     const double  E_MeV_u,
+    const long    particle_no,
+    const long    material_no,
+    const long    er_model){
+
+  double beta   =  AT_beta_from_E_single( E_MeV_u );
+
+  // Get densities
+  double   density_g_cm3, electron_density_m3;
+  AT_get_material_data(
+      material_no,
+      &density_g_cm3,
+      &electron_density_m3,
+      NULL, NULL, NULL, NULL, NULL, NULL);
+  double density_kg_m3      =  density_g_cm3 * 1000.0;
+
+  const double max_electron_range_m  =  AT_max_electron_range_m( E_MeV_u, (int)material_no, (int)er_model);
+
+  const long   Z                     =  AT_Z_from_particle_no_single(particle_no);
+  const double Z_eff                 =  AT_effective_charge_from_beta_single(beta, Z);
+  const double Katz_point_coeff_Gy   =  AT_RDD_Katz_coeff_Gy(Z_eff, beta, density_kg_m3, electron_density_m3, max_electron_range_m);
+
+  return Katz_point_coeff_Gy;
+}
+
+
 inline double   AT_RDD_Katz_LinearER_Dpoint_Gy(        const double r_m,
     const double max_electron_range_m,
     const double Katz_point_coeff_Gy){
