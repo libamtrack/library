@@ -42,7 +42,7 @@ void test_AT_GSM(  double E_MeV_u[])
 {
 
   long          n                       = 1;
-  long          particle_no[]           = {1001}; //carbon
+  long          particle_no[]           = {PARTICLE_PROTON_NUMBER}; //proton
   long          material_no             = 1;    //alanine
 
   double        fluence_cm2[]           = {-3.0};
@@ -92,13 +92,13 @@ void test_AT_SPIFF(  double E_MeV_u[])
 {
 
   long          n                       = 1;
-  long          particle_no[]           = {1001}; //carbon
+  long          particle_no[]           = {PARTICLE_PROTON_NUMBER}; //proton
   long          material_no             = 1;    //alanine
 
   double        fluence_cm2[]           = {-10.0};
   long          RDD_model               = RDD_KatzSite;    //RDD_site
   double        RDD_parameters[]        = {5e-8 ,1e-10, 0};
-  long          ER_model                = ER_ButtsKatz;  //ButtsKatz
+  long          ER_model                = ER_Geiss;  //ButtsKatz
   double        ER_parameters[]         = {0.0};
   long          gamma_model             = 2; // single hit, single target
   double        gamma_parameters[]      = {1, 10.0, 1 ,1, 0};
@@ -140,7 +140,7 @@ void test_AT_IGK(double E_MeV_u[])
 {
         long    n =1 ;
 //      double  E_MeV_u[] ={100.0};
-        long    particle_no[] = {1001};
+        long    particle_no[] = {PARTICLE_PROTON_NUMBER};
         double  fluence_cm2[] = {-10.0};
         long    material_no = 1;
         long    RDD_model = 3;
@@ -196,6 +196,7 @@ int main(){
 ////      material_no,
 ////      test_LET);
 //
+
   double energy = 200.0;
   double E_MeV_u[] = {energy};
 //  test_AT_IGK(E_MeV_u);

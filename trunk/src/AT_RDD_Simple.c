@@ -150,16 +150,13 @@ double  AT_inverse_RDD_KatzPoint_LinearER_m( const double D_Gy,
 double AT_inverse_RDD_KatzPoint_PowerLawER_solver_function_Gy( const double r_m , void * params ){
   AT_inverse_RDD_KatzPoint_PowerLawER_parameters* RDD_parameters = (AT_inverse_RDD_KatzPoint_PowerLawER_parameters*)(params);
 
-  const double  D_Gy                  =  RDD_parameters->D_Gy;
-  const double  r_min_m               =  RDD_parameters->r_min_m;
-  const double  max_electron_range_m  =  RDD_parameters->max_electron_range_m;
-  const double  alpha                 =  RDD_parameters->alpha;
-  const double  Katz_point_coeff_Gy   =  RDD_parameters->Katz_point_coeff_Gy;
-
-  if( r_m < r_min_m){
-    return -D_Gy;
+  if( r_m < (RDD_parameters->r_min_m)){
+    return -(RDD_parameters->D_Gy);
   } else {
-    return AT_RDD_Katz_PowerLawER_Dpoint_Gy(r_m, alpha, max_electron_range_m, Katz_point_coeff_Gy) - D_Gy;
+    return AT_RDD_Katz_PowerLawER_Dpoint_Gy(r_m,
+        RDD_parameters->alpha,
+        RDD_parameters->max_electron_range_m,
+        RDD_parameters->Katz_point_coeff_Gy) - (RDD_parameters->D_Gy);
   }
 }
 
@@ -354,17 +351,15 @@ inline double   AT_RDD_CucinottaPoint_Gy( const double r_m,
 double AT_inverse_RDD_Cucinotta_solver_function_Gy( const double r_m , void * params ){
   AT_inverse_RDD_Cucinotta_parameters* RDD_parameters = (AT_inverse_RDD_Cucinotta_parameters*)(params);
 
-  const double  D_Gy                  =  RDD_parameters->D_Gy;
-  const double  r_min_m               =  RDD_parameters->r_min_m;
-  const double  max_electron_range_m  =  RDD_parameters->max_electron_range_m;
-  const double  beta                  =  RDD_parameters->beta;
-  const double  C_norm                =  RDD_parameters->C_norm;
-  const double  Katz_point_coeff_Gy   =  RDD_parameters->Katz_point_coeff_Gy;
-
-  if( r_m < r_min_m){
-    return -D_Gy;
+  if( r_m < (RDD_parameters->r_min_m)){
+    return -(RDD_parameters->D_Gy);
   } else {
-    return AT_RDD_CucinottaPoint_Gy(r_m, r_min_m, max_electron_range_m, beta, C_norm, Katz_point_coeff_Gy) - D_Gy;
+    return AT_RDD_CucinottaPoint_Gy(r_m,
+        RDD_parameters->r_min_m,
+        RDD_parameters->max_electron_range_m,
+        RDD_parameters->beta,
+        RDD_parameters->C_norm,
+        RDD_parameters->Katz_point_coeff_Gy) - (RDD_parameters->D_Gy);
   }
 }
 

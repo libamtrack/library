@@ -89,6 +89,18 @@ void AT_r_RDD_m_R  ( const int*  n,
     float*        r_RDD_m);
 
 
+void AT_KatzModel_inactivation_probability_R( const int* n,
+    const float*   r_m,
+    const float*   E_MeV_u,
+    const int*     particle_no,
+    const int*     material_no,
+    const int*     rdd_model,
+    const float*   rdd_parameters,
+    const int*     er_model,
+    const float*   gamma_parameters,
+    float*         inactivation_probability);
+
+
 void AT_run_GSM_method_R(  const int*  n,
     const float*  E_MeV_u,
     const int*    particle_no,
