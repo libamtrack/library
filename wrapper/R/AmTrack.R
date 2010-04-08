@@ -55,9 +55,10 @@
 # AT.max.electron.range                      OK
 # AT.RDD.D.Gy                                OK
 # AT.RDD.D.ext.Gy                            OK
-# AT.SC.get.f1.array.size					 OK
-# AT.SC.get.f1								 OK
+# AT.SC.get.f1.array.size				              	 OK
+# AT.SC.get.f1								 				                  OK
 # AT.SC.get.f.array.size                     OK
+# AT.Katz.inactivation.probability           to be tested TODO
 # 
 ################################################################################################
 
@@ -471,6 +472,34 @@ AT.SC.SuccessiveConvolutions		<-	function(	u,
 																fdd							=	res$fdd,
 																dfdd						=	res$dfdd)))																	
 }
+	
+############################
+AT.Katz.inactivation.probability		<-	function(	r.m,
+													E.MeV.u,
+													particle.no,
+													material.no,
+													rdd.model,
+													rdd.parameters,
+													er.model,
+													gamma.parameters){
+
+	n					<-	length(r.m)
+	inactivation.probability					<-	numeric(n)
+
+	res						<-	.C("AT_KatzModel_inactivation_probability_R", 		n						= as.integer(n),
+																		r.m					               			= as.single(r.m),
+																		E.MeV.u								         		= as.single(E.MeV.u),
+																		particle.no			 				       = as.integer(particle.no),
+																		material.no								      	= as.integer(material.no),
+																		rdd.model				        					= as.integer(rdd.model),
+																		rdd.parameters						      = as.single(rdd.parameters),
+																		er.model	            					= as.integer(er.model),
+																		gamma.parameters					    	= as.single(gamma.parameters),
+																		inactivation.probability	 = as.single(inactivation.probability))
+
+	 return(res$inactivation.probability)
+}
+	
 	
 ######################################################################################################################################
 

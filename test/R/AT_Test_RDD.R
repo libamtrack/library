@@ -25,7 +25,7 @@
 rm( list = ls() )
 
 # load libAmTrack library
-dyn.load("../../AT_Release/libAmTrack.dll")
+dyn.load("../../Release/libAmTrack.dll")
 
 # load wrapping scripts
 source("../../wrapper/R/AmTrack.R")
@@ -36,7 +36,7 @@ library("lattice")
 ####################### DOSE(DISTANCE) function test #########################################
 
 # radius definitions:
-r.m <- 10^seq (-14, -3.5, length.out=100)
+r.m <- 10^seq (-14, -3, length.out=100)
 #r.m <- seq( 1e-9,1.5*1e-8, length.out=10)
 #r.m <- c(1e-6, 1e-7, 1e-8, 1e-9, 1e-12)
 

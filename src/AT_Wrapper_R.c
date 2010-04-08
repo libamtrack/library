@@ -306,6 +306,63 @@ void AT_r_RDD_m_R  ( const int*  n,
 }
 
 
+void AT_KatzModel_inactivation_probability_R( const int* n,
+    const float*   r_m,
+    const float*   E_MeV_u,
+    const int*     particle_no,
+    const int*     material_no,
+    const int*     rdd_model,
+    const float*   rdd_parameters,
+    const int*     er_model,
+    const float*   gamma_parameters,
+    float*         inactivation_probability){
+
+  /* int -> long conversion */
+  const long n_long = (long)(*n);
+  const long rdd_model_long = (long)(*rdd_model);
+  const long er_model_long = (long)(*er_model);
+  const long material_no_long = (long)(*material_no);
+  const long particle_no_long = (long)(*particle_no);
+
+  /* float -> double conversion */
+  double * r_m_double = (double*)calloc(*n,sizeof(double));
+  long i;
+  for(i = 0 ; i < *n ; i++){
+    r_m_double[i] = (double)r_m[i];
+  }
+  double E_MeV_u_double = (double)(*E_MeV_u);
+  double rdd_parameter_double[RDD_MAX_NUMBER_OF_PARAMETERS];
+  for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
+    rdd_parameter_double[i] = (double)rdd_parameters[i];
+  }
+  double gamma_parameter_double[5];
+  for(i = 0 ; i < 5 ; i++){
+    gamma_parameter_double[i] = (double)gamma_parameters[i];
+  }
+
+  /* place for results */
+  double * inactivation_probability_double = (double*)calloc(*n,sizeof(double));
+
+  AT_KatzModel_inactivation_probability( n_long,
+      r_m_double,
+      E_MeV_u_double,
+      particle_no_long,
+      material_no_long,
+      rdd_model_long,
+      rdd_parameter_double,
+      er_model_long,
+      gamma_parameter_double,
+      inactivation_probability_double);
+
+  /* double -> float conversion (results) */
+  for(i = 0 ; i < *n ; i++){
+    inactivation_probability[i] = (float)inactivation_probability_double[i];
+  }
+
+  free( r_m_double );
+}
+
+
 void AT_run_GSM_method_R(  const int*  n,
     const float*  E_MeV_u,
     const int*    particle_no,
