@@ -120,12 +120,6 @@ double gammp(const double a, const double x)
   }
 }
 
-// TODO in the standard math.h there is already implemented function erff which calculates error function
-double erff_custom(const double x)
-{
-  return x < 0.0 ? -gammp(0.5, x*x) : gammp(0.5, x*x);
-}
-
 
 void nrerror(const char error_text[])
 {

@@ -67,7 +67,7 @@ E.MeV.u      <-  c(100.0)
 particle.no  <-  c(1001)
 
 # 1, D0, c, m, 0
-GR.parameters <- c(1, 2.0, 1.5, 3, 0)
+GR.parameters <- c(1, 3.0, 1, 2, 0)
 
 for( i in ER.model) {
  ii 			<- df1$ER.model == i

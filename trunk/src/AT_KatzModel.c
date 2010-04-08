@@ -77,36 +77,20 @@ int AT_KatzModel_inactivation_probability(
     const double  gamma_parameters[5],
     double        inactivation_probability[]){
 
-
-  double beta   =  AT_beta_from_E_single( E_MeV_u );
-
-  // Get density
-  double   density_g_cm3, electron_density_m3;
-  AT_get_material_data(
-      material_no,
-      &density_g_cm3,
-      &electron_density_m3,
-      NULL, NULL, NULL, NULL, NULL, NULL);
-  double density_kg_m3      =  density_g_cm3 * 1000.0;
-
   const double max_electron_range_m  =  AT_max_electron_range_m( E_MeV_u, (int)material_no, (int)er_model);
 
   const double a0_m                  =  AT_RDD_a0_m( max_electron_range_m, rdd_model, rdd_parameters );
 
   const double KatzPoint_r_min_m     =  AT_RDD_r_min_m( max_electron_range_m, rdd_model, rdd_parameters );
 
-  double alpha                       =  0.0;
-  if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){
-    alpha                            =  AT_ER_PowerLaw_alpha(E_MeV_u);
-  }
+  const double Katz_point_coeff_Gy   =  AT_RDD_Katz_coeff_Gy_general( E_MeV_u, particle_no, material_no, er_model);
 
-  const long   Z                     =  AT_Z_from_particle_no_single(particle_no);
-  const double Z_eff                 =  AT_effective_charge_from_beta_single(beta, Z);
-  const double Katz_point_coeff_Gy   =  AT_RDD_Katz_coeff_Gy(Z_eff, beta, density_kg_m3, electron_density_m3, max_electron_range_m);
+  const double r_max_m               =  GSL_MIN(a0_m, max_electron_range_m);
 
   double Katz_plateau_Gy  =  0.0;
-  double r_max_m          =  GSL_MIN(a0_m, max_electron_range_m);
+  double alpha                       =  0.0;
   if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
+    alpha            =  AT_ER_PowerLaw_alpha(E_MeV_u);
     Katz_plateau_Gy  =  AT_RDD_Katz_PowerLawER_Daverage_Gy( KatzPoint_r_min_m, r_max_m, max_electron_range_m, alpha, Katz_point_coeff_Gy );
   } else if (er_model == ER_ButtsKatz){ // "old" Katz RDD
     Katz_plateau_Gy  =  AT_RDD_Katz_LinearER_Daverage_Gy( KatzPoint_r_min_m, r_max_m, max_electron_range_m, Katz_point_coeff_Gy );
