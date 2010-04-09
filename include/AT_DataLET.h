@@ -37,23 +37,25 @@
 /**
  * Total number of elements in data table
  */
-#define PSTAR_DATA_N    792                             // number of materials * 132
+#define PSTAR_DATA_N    792                             /* number of materials * 132 */
 
 // TODO implement method for getting LET of one particle
 
 /**
- * TODO
+ * PSTAR data, based on ICRU Report 49
+ * Tabulated data for protons with energies between 1keV and 10GeV (132 kinetic energies)
+ * See http://physics.nist.gov/PhysRefData/Star/Text/intro.html
  */
 typedef struct {
-  const long     n;                                     /** TODO */
-  const double   kin_E_MeV[PSTAR_DATA_N];               /** TODO */
-  const double   stp_pow_el_MeV_cm2_g[PSTAR_DATA_N];    /** TODO */
-  const double   stp_pow_nuc_MeV_cm2_g[PSTAR_DATA_N];   /** TODO */
-  const double   stp_pow_tot_MeV_cm2_g[PSTAR_DATA_N];   /** TODO */
-  const double   range_cdsa_g_cm2[PSTAR_DATA_N];        /** TODO */
-  const double   range_proj_g_cm2[PSTAR_DATA_N];        /** TODO */
-  const double   detour_factor[PSTAR_DATA_N];           /** TODO */
-  const long     material_no[PSTAR_DATA_N];             /** TODO */
+  const long     n;                                     /** number of items in local PSTAR data table */
+  const double   kin_E_MeV[PSTAR_DATA_N];               /** vector of kinetic energies (of length 132) */
+  const double   stp_pow_el_MeV_cm2_g[PSTAR_DATA_N];    /** Electronic (Collision) Stopping Power */
+  const double   stp_pow_nuc_MeV_cm2_g[PSTAR_DATA_N];   /** Nuclear Stopping Power */
+  const double   stp_pow_tot_MeV_cm2_g[PSTAR_DATA_N];   /** Total Stopping Power */
+  const double   range_cdsa_g_cm2[PSTAR_DATA_N];        /** CSDA (continuous-slowing-down approximation) range */
+  const double   range_proj_g_cm2[PSTAR_DATA_N];        /** Projected range */
+  const double   detour_factor[PSTAR_DATA_N];           /** Detour factor (ratio of projected range to CSDA range) */
+  const long     material_no[PSTAR_DATA_N];             /** Material number (see AT_DataMaterial.h) */
 } pstar_data;
 
 
@@ -771,7 +773,7 @@ double AT_LET_MeV_cm2_g_single(  const double  E_MeV_u,
 
 
 /**
- * Calculates LET for set of particles with given energies
+ * Calculates LET [MeV cm2 g] (not scaled by density) for set of particles with given energies
  *
  * @param[in]   number_of_particles      number of particle types in the mixed particle field
  * @param[in]   E_MeV_u                  energy of particles in the mixed particle field (array of size number_of_particles)
@@ -789,7 +791,7 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
 
 
 /**
- * TODO
+ * Calculates LET [keV/um] scaled by density for set of particles with given energies
  *
  * @param[in]   number_of_particles      number of particle types in the mixed particle field
  * @param[in]   E_MeV_u                  energy of particles in the mixed particle field (array of size number_of_particles)
@@ -842,15 +844,15 @@ void AT_CSDA_range_m(  const long  number_of_particles,
 
 
 /**
- * TODO
+ * Inverse function to CSDA range. Calculates energy for given CSDA range.
  *
  * @param[in]   number_of_particles      number of particle types in the mixed particle field
- * @param[in]   CSDA_range_g_cm2
+ * @param[in]   CSDA_range_g_cm2         CSDA range
  * @param[in]   particle_no              type of the particles in the mixed particle field (array of size number_of_particles)
  * @see          AT_DataParticle.h for definition
  * @param[in]   material_no              material index
  * @see          AT_DataMaterial.h for definition
- * @param[out]  E_MeV
+ * @param[out]  E_MeV energy (array of size number_of_particles)
  */
 void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
     const double  CSDA_range_g_cm2[],
