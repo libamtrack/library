@@ -137,11 +137,18 @@ inline double AT_ER_Scholz_range_g_cm2(double E_MeV_u);
  * @param a5
  * @return
  */
-inline double AT_ER_Tabata_range_g_cm2(double beta, double a1_g_cm2, double a2, double a3, double a4, double a5);
+inline double AT_ER_Tabata_range_g_cm2(double beta,
+    double a1_g_cm2,
+    double a2,
+    double a3,
+    double a4,
+    double a5);
 
 
 /**
- * TODO
+ * Alpha exponent in power law ER models. It is defined as follows:\n
+ * alpha = 1.667   when energy of ejected delta electron wmax is higher than 1keV
+ * alpha = 1.079   when energy of ejected delta electron wmax is less or equal than 1keV
  * @param E_MeV_u
  * @return
  */
@@ -158,7 +165,13 @@ inline double AT_ER_PowerLaw_alpha( const double E_MeV_u);
  * @param a4
  * @param a5
  */
-inline void AT_ER_Tabata_constants(const double average_A, const double average_Z, double * a1_g_cm2, double * a2, double * a3, double * a4, double * a5);
+inline void AT_ER_Tabata_constants(const double average_A,
+    const double average_Z,
+    double * a1_g_cm2,
+    double * a2,
+    double * a3,
+    double * a4,
+    double * a5);
 
 
 /**

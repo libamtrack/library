@@ -110,7 +110,6 @@ int main(){
   long   RDD_model;
   double RDD_parameters[10];
   long   ER_model;
-  double ER_parameters[10];
   long   gamma_model;
   double gamma_parameters[10];
 
@@ -232,7 +231,6 @@ int main(){
       RDD_model,
       RDD_parameters,
       ER_model,
-      ER_parameters,
       gamma_model,
       gamma_parameters,
       N2,

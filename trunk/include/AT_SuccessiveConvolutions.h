@@ -102,7 +102,6 @@ typedef struct{
  * @param[in]  rdd_model           index number for chosen radial dose distribution
  * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @param[in]  er_model            index number for chosen electron-range model
- * @param[in]  er_parameters       parameters for chosen electron-range model (array of size depending on chosen model)
  * @param[in]  N2                  number of bins per factor of two in local dose array
  * @param[out] n_bins_f1           number of bins to hold the f1 distribution
  * @param[out] f1_parameters       array with numbers describing characteristics of the single particle components composing the mixed field
@@ -124,7 +123,6 @@ void  AT_SC_get_f1_array_size(
     const long   rdd_model,
     const double rdd_parameter[],
     const long   er_model,
-    const double er_parameter[],
     const long   N2,
     long *       n_bins_f1,
     double       f1_parameters[]);
@@ -142,7 +140,6 @@ void  AT_SC_get_f1_array_size(
  * @param[in]  rdd_model             index number for chosen radial dose distribution
  * @param[in]  rdd_parameters        parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @param[in]  er_model              index number for chosen electron-range model
- * @param[in]  er_parameters         parameters for chosen electron-range model (array of size depending on chosen model)
  * @param[in]  N2                    number of bins per factor of two in local dose array
  * @param[in]  f1_parameters         array of size n * 8 with n field component characteristics (from AT_SC_get_f1_array_size)
  * @param[in]  n_bins_f1             number of bins holding the f1 distribution (from AT_SC_get_f1_array_size)
@@ -169,7 +166,6 @@ void  AT_SC_get_f1(
     const long   rdd_model,
     const double rdd_parameter[],
     const long   er_model,
-    const double er_parameter[],
     const long   N2,
     const long   n_bins_f1,
     const double f1_parameters[],

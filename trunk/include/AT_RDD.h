@@ -154,7 +154,6 @@ int AT_RDD_number_of_parameters( const long RDD_model);
  * @param[in]   rdd_model      Radial Dose Distribution model code number
  * @param[in]   rdd_parameter  Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @param[in]   er_model       delta electron range model code number
- * @param[in]   er_parameter   TODO to be removed
  * @param[out]  D_RDD_Gy       dose [Gy] (array of size n)
  * @return status code
  */
@@ -166,7 +165,6 @@ int AT_D_RDD_Gy( const long  n,
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
-    const double  er_parameter[],
     double        D_RDD_Gy[]);
 
 
@@ -181,7 +179,6 @@ int AT_D_RDD_Gy( const long  n,
  * @param[in]   rdd_model           Radial Dose Distribution model code number
  * @param[in]   rdd_parameter       Radial Dose Distribution model parameters vector (array of size depending on chosen model, maximum length 3)
  * @param[in]   er_model            delta electron range model code number
- * @param[in]   er_parameter        TODO to be removed
  * @param[out]  r_RDD_m             distance [m] (array of size n)
  * @return status code
  */
@@ -193,7 +190,6 @@ int AT_r_RDD_m  ( const long  n,
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
-    const double  er_parameter[],
     double        r_RDD_m[]);
 
 
@@ -281,7 +277,6 @@ double AT_RDD_d_min_Gy(
  * @param[in] rdd_model                  Radial Dose Distribution model code number
  * @param[in] rdd_parameter              Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @param[in] er_model                   delta electron range model code number
- * @param[in] er_parameter               TODO to be removed
  * @return  Maximum dose [Gy]
  */
 double AT_RDD_d_max_Gy(
@@ -290,8 +285,7 @@ double AT_RDD_d_max_Gy(
     const long    material_no,
     const long    rdd_model,
     const double  rdd_parameter[],
-    const long    er_model,
-    const double  er_parameter[]);
+    const long    er_model);
 
 
 /**
@@ -302,8 +296,7 @@ double AT_RDD_d_max_Gy(
  * @param[in]  rdd_model             Radial Dose Distribution model code number
  * @param[in]  rdd_parameter         Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @param[in]  er_model              delta electron range model code number
- * @param[in]  er_parameter          TODO to be removed
- * @param[out] f1_parameters
+ * @param[out] f1_parameters\n
  *     0 - LET_MeV_cm2_g \n
  *     1 - r_min_m \n
  *     2 - r_max_m \n
@@ -320,7 +313,6 @@ void AT_RDD_f1_parameters(
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
-    const double  er_parameter[],
     double        f1_parameters[]);
 
 

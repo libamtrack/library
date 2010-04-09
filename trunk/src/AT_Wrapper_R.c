@@ -49,7 +49,6 @@ void AT_D_RDD_Gy_R( const int*  n,
     const int*    rdd_model,
     const float*  rdd_parameter,
     const int*    er_model,
-    const float*  er_parameter,
     float*        D_RDD_Gy){
 
   /* int -> long conversion */
@@ -70,7 +69,6 @@ void AT_D_RDD_Gy_R( const int*  n,
   for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
     rdd_parameter_double[i] = (double)rdd_parameter[i];
   }
-  double er_parameter_double = 0.0;
 
   /* place for results */
   double * D_RDD_Gy_double = (double*)calloc(n_long,sizeof(double));
@@ -83,7 +81,6 @@ void AT_D_RDD_Gy_R( const int*  n,
       rdd_model_long,
       rdd_parameter_double,
       er_model_long,
-      &er_parameter_double,
       D_RDD_Gy_double);
 
   /* double -> float conversion (results) */
@@ -259,7 +256,6 @@ void AT_r_RDD_m_R  ( const int*  n,
     const int*    rdd_model,
     const float*  rdd_parameter,
     const int*    er_model,
-    const float*  er_parameter,
     float*        r_RDD_m){
 
   /* int -> long conversion */
@@ -280,7 +276,6 @@ void AT_r_RDD_m_R  ( const int*  n,
   for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
     rdd_parameter_double[i] = (double)rdd_parameter[i];
   }
-  double er_parameter_double = 0.0;
 
   /* place for results */
   double * r_RDD_m_double = (double*)calloc(n_long,sizeof(double));
@@ -293,7 +288,6 @@ void AT_r_RDD_m_R  ( const int*  n,
       rdd_model_long,
       rdd_parameter_double,
       er_model_long,
-      &er_parameter_double,
       r_RDD_m_double);
 
   /* double -> float conversion (results) */
@@ -425,7 +419,6 @@ void AT_run_GSM_method_R(  const int*  n,
     const int*    rdd_model,
     const float*  rdd_parameters,
     const int*    er_model,
-    const float*  er_parameters,
     const int*    gamma_model,
     const float*  gamma_parameters,
     const int*    N_runs,
@@ -467,7 +460,6 @@ void AT_run_GSM_method_R(  const int*  n,
   for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
     rdd_parameter_double[i] = (double)rdd_parameters[i];
   }
-  double er_parameter_double = 0.0;
   long number_of_gamma_parameters = 0;
   if ( gamma_model_long == GR_GeneralTarget ){
     while  (gamma_parameters[number_of_gamma_parameters] != 0){
@@ -495,7 +487,6 @@ void AT_run_GSM_method_R(  const int*  n,
       rdd_model_long,
       rdd_parameter_double,
       er_model_long,
-      &er_parameter_double,
       gamma_model_long,
       gamma_parameter_double,
       N_runs_long,
@@ -525,7 +516,6 @@ void AT_run_SPIFF_method_R(  const int*  n,
     const int*    rdd_model,
     const float*  rdd_parameters,
     const int*    er_model,
-    const float*  er_parameters,
     const int*    gamma_model,
     const float*  gamma_parameters,
     int*          N2,
@@ -567,7 +557,6 @@ void AT_run_SPIFF_method_R(  const int*  n,
   for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
     rdd_parameter_double[i] = (double)rdd_parameters[i];
   }
-  double er_parameter_double = 0.0;
   long number_of_gamma_parameters = 0;
   if ( gamma_model_long == GR_GeneralTarget ){
     while  (gamma_parameters[number_of_gamma_parameters] != 0){
@@ -595,7 +584,6 @@ void AT_run_SPIFF_method_R(  const int*  n,
       rdd_model_long,
       rdd_parameter_double,
       er_model_long,
-      &er_parameter_double,
       gamma_model_long,
       gamma_parameter_double,
       N2_long,
@@ -628,7 +616,6 @@ void  AT_SC_get_f1_array_size_R(
     const int*    rdd_model,
     const float*  rdd_parameter,
     const int*    er_model,
-    const float*  er_parameter,
     const int*    N2,
     int*          n_bins_f1,
     float*        f1_parameters){
@@ -655,7 +642,6 @@ void  AT_SC_get_f1_array_size_R(
   for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
     rdd_parameter_double[i] = (double)rdd_parameter[i];
   }
-  double er_parameter_double = 0.0;
 
   /* place for results */
   double * f1_parameters_double = (double*)calloc( n_long * 8, sizeof(double));
@@ -667,7 +653,6 @@ void  AT_SC_get_f1_array_size_R(
       rdd_model_long,
       rdd_parameter_double,
       er_model_long,
-      &er_parameter_double,
       N2_long,
       &n_bins_f1_long,
       f1_parameters_double);
@@ -694,7 +679,6 @@ void  AT_SC_get_f1_R(
     const int*    rdd_model,
     const float*  rdd_parameter,
     const int*    er_model,
-    const float*  er_parameter,
     const int*    N2,
     const int*    n_bins_f1,
     const float*  f1_parameters,
@@ -729,7 +713,6 @@ void  AT_SC_get_f1_R(
   for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
     rdd_parameter_double[i] = (double)rdd_parameter[i];
   }
-  double er_parameter_double = 0.0;
   double * f1_parameters_double = (double*)calloc(n_long * 8,sizeof(double));
   for(i = 0 ; i < n_long * 8 ; i++){
     f1_parameters_double[i] = (double)f1_parameters[i];
@@ -751,7 +734,6 @@ void  AT_SC_get_f1_R(
       rdd_model_long,
       rdd_parameter_double,
       er_model_long,
-      &er_parameter_double,
       N2_long,
       n_bins_f1_long,
       f1_parameters_double,

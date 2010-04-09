@@ -193,18 +193,12 @@ double         AT_D_RDD_Gy_int(             double  r_m,
  * TODO
  */
 typedef struct {
-  /* radiation field parameters */
   double*  E_MeV_u;
   long*    particle_no;
-  /* detector parameters */
   long*    material_no;
-  /* radial dose distribution model */
   long*    rdd_model;
   double*  rdd_parameters;
-  /* electron range model */
   long*    er_model;
-  double*  er_parameters;
-  /* gamma response parameter*/
   double   gamma_parameters[5];
 } AT_P_RDD_parameters;
 

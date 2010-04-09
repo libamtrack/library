@@ -33,12 +33,13 @@
 
 #include <stdio.h>
 
-//#define _DEBUG // debugging printouts
+/* debugging printouts */
+/* #define _DEBUG */
 
-static const double  proton_mass_MeV_c2    =  938.272029;                           // proton mass
-static const double  electron_mass_MeV_c2  =  0.510998918;                          // electron mass
-static const double  e_C                   =  1.60217653e-19;                       // elementary charge
-static const double  e0_F_m                =  8.8541878176e-12;                     // electrical permittivity of the vacuum
+static const double  proton_mass_MeV_c2    =  938.272029;                           /* proton mass */
+static const double  electron_mass_MeV_c2  =  0.510998918;                          /* electron mass */
+static const double  e_C                   =  1.60217653e-19;                       /* elementary charge */
+static const double  e0_F_m                =  8.8541878176e-12;                     /* electrical permittivity of the vacuum */
 
 static const double  MeV_to_J              =  1.60217646e-13;
 static const double  MeV_g_to_J_kg         =  1.60217646e-10;

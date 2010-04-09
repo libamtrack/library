@@ -72,7 +72,6 @@ AT.D.RDD.Gy					<-	function(	r.m,
 											particle.no,
 											material.no,
 											ER.model,
-											ER.parameters,
 											RDD.model,
 											RDD.parameters){
 	n					<-	length(r.m)
@@ -86,34 +85,7 @@ AT.D.RDD.Gy					<-	function(	r.m,
 													RDD.model				=	as.integer(RDD.model),
 													RDD.parameters			=	as.single(RDD.parameters),
 													ER.model				=	as.integer(ER.model),
-													ER.parameters			=	as.single(ER.parameters),
 													D.Gy					=	as.single(D.Gy))		
-			
-	 return(res$D.Gy)						
-}
-
-###########
-AT.D.RDD.extended.target.Gy	<-	function(	r.m,
-											E.MeV.u,
-											particle.no,
-											material.no,
-											ER.model,
-											ER.parameters,
-											RDD.model,
-											RDD.parameters){
-	n					<-	length(r.m)
-	D.Gy				<-	numeric(n)
-  		
-    res					<-	.C(	"AT_D_RDD_extended_target_Gy_R",	n						=	as.integer(n),
-																	r.m						=	as.single(r.m),
-																	E.MeV.u					=	as.single(E.MeV.u),
-																	particle.no				=	as.integer(particle.no),
-																	material.no				=	as.integer(material.no),
-																	RDD.model				=	as.integer(RDD.model),
-																	RDD.parameters			=	as.single(RDD.parameters),
-																	ER.model				=	as.integer(ER.model),
-																	ER.parameters			=	as.single(ER.parameters),
-																	D.Gy					=	as.single(D.Gy))		
 			
 	 return(res$D.Gy)						
 }
@@ -126,7 +98,6 @@ AT.run.GSM.method	<-	function(	E.MeV.u,
 									RDD.model,
 									RDD.parameters,
 									ER.model,
-									ER.parameters,
 									gamma.model,
 									gamma.parameters,
 									N.runs,
@@ -145,7 +116,6 @@ AT.run.GSM.method	<-	function(	E.MeV.u,
 														RDD.model			=	as.integer(RDD.model),
 														RDD.parameters		=	as.single(RDD.parameters),
 														ER.model			=	as.integer(ER.model),
-														ER.parameters		=	as.single(ER.parameters),
 														gamma.model			=	as.integer(gamma.model),
 														gamma.parameters	=	as.single(gamma.parameters),
 														N.runs				=	as.single(N.runs),
@@ -169,7 +139,6 @@ AT.run.SPIFF.method	<-	function(	E.MeV.u,
 									RDD.model,
 									RDD.parameters,
 									ER.model,
-									ER.parameters,
 									gamma.model,
 									gamma.parameters,
 									N2,
@@ -191,7 +160,6 @@ AT.run.SPIFF.method	<-	function(	E.MeV.u,
 															RDD.model			=	as.integer(RDD.model),
 															RDD.parameters		=	as.single(RDD.parameters),
 															ER.model			=	as.integer(ER.model),
-															ER.parameters		=	as.single(ER.parameters),
 															gamma.model			=	as.integer(gamma.model),
 															gamma.parameters	=	as.single(gamma.parameters),
 															N2					=	as.integer(N2.tmp),
@@ -268,7 +236,6 @@ AT.r.RDD.m					<-	function(	D.Gy,
 											particle.no,
 											material.no,
 											ER.model,
-											ER.parameters,
 											RDD.model,
 											RDD.parameters){
 	n					<-	length(D.Gy)
@@ -283,7 +250,6 @@ AT.r.RDD.m					<-	function(	D.Gy,
 														RDD.model				=	as.integer(RDD.model),
 														RDD.parameters		=	as.single(RDD.parameters),
 														ER.model				=	as.integer(ER.model),
-														ER.parameters			=	as.single(ER.parameters),
 														r.m						=	as.single(r.m))		
 			
 	 return(res$r.m)						
@@ -297,11 +263,10 @@ AT.SC.get.f1.array.size		<-	function(		E.MeV.u,
 												RDD.model,
 												RDD.parameters,
 												ER.model,
-												ER.parameters,
 												N2){
 											
 	n				<-	length(E.MeV.u)
-	f1.parameters	<-	numeric(9 * n)
+	f1.parameters	<-	numeric(8 * n)
 	n.bins.f1 <- 0
 	
 	res				<-	.C("AT_SC_get_f1_array_size_R", 	n					= as.integer(n),
@@ -311,7 +276,6 @@ AT.SC.get.f1.array.size		<-	function(		E.MeV.u,
 															RDD.model			= as.integer(RDD.model),
 															RDD.parameters		= as.single(RDD.parameters),
 															ER.model			= as.integer(ER.model),
-															ER.parameters		= as.single(ER.parameters),
 															N2					= as.integer(N2),
 															n.bins.f1			= as.integer(n.bins.f1),
 															f1.parameters		= as.single(f1.parameters))
@@ -327,7 +291,6 @@ AT.SC.get.f1		<-	function(		E.MeV.u,
 										RDD.model,
 										RDD.parameters,
 										ER.model,
-										ER.parameters,
 										N2,
 										n.bins.f1,
 										f1.parameters){
@@ -351,7 +314,6 @@ AT.SC.get.f1		<-	function(		E.MeV.u,
 																RDD.model				= as.integer(RDD.model),
 																RDD.parameters			= as.single(RDD.parameters),
 																ER.model				= as.integer(ER.model),
-																ER.parameters			= as.single(ER.parameters),
 																N2						= as.integer(N2),
 																n.bins.f1				= as.integer(n.bins.f1),
 																f1.parameters			= as.single(f1.parameters),

@@ -45,7 +45,6 @@ void  AT_SC_get_f1_array_size(
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
-    const double  er_parameter[],
     const long    N2,
     long *        n_bins_f1,
     double        f1_parameters[])
@@ -63,10 +62,7 @@ void  AT_SC_get_f1_array_size(
         material_no,
         rdd_model,
         rdd_parameter,
-        /* electron range model */
         er_model,
-        er_parameter,
-        /* calculated parameters */
         &f1_parameters[i*n_f1_parameters]);
     if(i == 0){
       d_min_Gy      =  f1_parameters[i*n_f1_parameters + 3];
@@ -98,7 +94,6 @@ void  AT_SC_get_f1(
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
-    const double  er_parameter[],
     const long    N2,
     const long    n_bins_f1,
     const double  f1_parameters[],
@@ -262,7 +257,6 @@ void  AT_SC_get_f1(
             rdd_model,
             rdd_parameter,
             er_model,
-            er_parameter,
             r);
 
         if( inverse_RDD_status_code != 0 ){

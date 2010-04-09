@@ -48,7 +48,6 @@ void AT_run_SPIFF_method(  const long  n,
     const long    rdd_model,
     const double  rdd_parameters[],
     const long    er_model,
-    const double  er_parameters[],
     const long    gamma_model,
     const double  gamma_parameters[],
     long          N2, // TODO investigate if this can be changed inside
@@ -123,8 +122,6 @@ void AT_run_SPIFF_method(  const long  n,
         rdd_model,
         rdd_parameters,
         er_model,
-        er_parameters,
-
         N2,
         &n_bins_f1,
         f1_parameters);
@@ -146,7 +143,6 @@ void AT_run_SPIFF_method(  const long  n,
         rdd_model,
         rdd_parameters,
         er_model,
-        er_parameters,
         N2,
         n_bins_f1,
         f1_parameters,
@@ -296,7 +292,6 @@ void AT_run_GSM_method(  const long  n,
     const long     rdd_model,
     const double   rdd_parameters[],
     const long     er_model,
-    const double   er_parameters[],
     const long     gamma_model,
     const double   gamma_parameters[],
     const long     N_runs,
@@ -354,7 +349,6 @@ void AT_run_GSM_method(  const long  n,
       rdd_model,
       rdd_parameters,
       er_model,
-      er_parameters,
       N2,
       &n_bins_f1,
       f1_parameters);
@@ -390,8 +384,6 @@ void AT_run_GSM_method(  const long  n,
       rdd_model,
       rdd_parameters,
       er_model,
-      er_parameters,
-
       N2,
       n_bins_f1,
       f1_parameters,
@@ -591,7 +583,6 @@ void AT_run_GSM_method(  const long  n,
           rdd_model,
           rdd_parameters,
           er_model,
-          er_parameters,
           doses);
 
       free(distances);
@@ -633,7 +624,6 @@ void AT_run_GSM_method(  const long  n,
                   rdd_model,
                   rdd_parameters,
                   er_model,
-                  er_parameters,
                   &d_tmp_Gy);
               grid_d_Gy[j * nX + i]  +=  d_tmp_Gy;
             } // particle contribution
@@ -872,7 +862,6 @@ void AT_run_IGK_method(  const long  n,
     const long    rdd_model,
     const double  rdd_parameters[],
     const long    er_model,
-    const double  er_parameters[],
     const long    gamma_model,
     const double  gamma_parameters[],
     const double  saturation_cross_section_factor,
@@ -903,7 +892,6 @@ void AT_run_IGK_method(  const long  n,
       rdd_model,
       rdd_parameters,
       er_model,
-      er_parameters,
       N2,
       &n_bins_f1,
       f1_parameters);
@@ -1014,7 +1002,6 @@ void AT_run_IGK_method(  const long  n,
   params->rdd_model            = (long*)(&rdd_model);
   params->rdd_parameters       = (double*)rdd_parameters;
   params->er_model             = (long*)(&er_model);
-  params->er_parameters        = (double*)er_parameters;
   params->gamma_parameters[0]  = 1; // No multiple components
   params->gamma_parameters[4]  = 0;
 
@@ -1160,7 +1147,6 @@ void AT_run_SPISS_method(  const long  n,
     const long    rdd_model,
     const double  rdd_parameters[],
     const long    er_model,
-    const double  er_parameters[],
     const long    gamma_model,            // TODO do we really use gamma response here ?
     const double  gamma_parameters[],
     const long    n_runs,
@@ -1199,7 +1185,6 @@ void AT_run_SPISS_method(  const long  n,
       rdd_model,
       rdd_parameters,
       er_model,
-      er_parameters,
       N2,
       &n_bins_f1,
       f1_parameters);
@@ -1222,7 +1207,6 @@ void AT_run_SPISS_method(  const long  n,
       rdd_model,
       rdd_parameters,
       er_model,
-      er_parameters,
       N2,
       n_bins_f1,
       f1_parameters,
@@ -1345,7 +1329,6 @@ void AT_run_SPISS_method(  const long  n,
           rdd_model,
           rdd_parameters,
           er_model,
-          er_parameters,
           &d_j_Gy);
 
       // (5) Add dose
