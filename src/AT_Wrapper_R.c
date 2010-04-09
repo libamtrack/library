@@ -675,8 +675,8 @@ void  AT_SC_get_f1_R(
     rdd_parameter_double[i] = (double)rdd_parameter[i];
   }
   double er_parameter_double = 0.0;
-  double f1_parameters_double[8];
-  for(i = 0 ; i < 3 ; i++){
+  double * f1_parameters_double = (double*)calloc((*n) * 9,sizeof(double));
+  for(i = 0 ; i < (*n) * 9 ; i++){
     f1_parameters_double[i] = (double)f1_parameters[i];
   }
 
@@ -724,6 +724,7 @@ void  AT_SC_get_f1_R(
   free(E_MeV_u_double);
   free(fluence_cm2_double);
   free(norm_fluence_double);
+  free(f1_parameters_double);
   free(f1_d_Gy_double);
   free(f1_dd_Gy_double);
   free(f1_double);
