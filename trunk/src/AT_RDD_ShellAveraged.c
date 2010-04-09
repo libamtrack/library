@@ -87,6 +87,105 @@ double   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const double r1_m,
 }
 
 
+double AT_RDD_Cucinotta_Ddelta_average_integrand_m(  double r_m,
+    void * params){
+
+  AT_RDD_Cucinotta_Ddelta_average_integrand_m_parameters * RDD_parameters = (AT_RDD_Cucinotta_Ddelta_average_integrand_m_parameters*)(params);
+  double max_electron_range_m  =  RDD_parameters->max_electron_range_m;
+  double beta                  =  RDD_parameters->beta;
+  double res                   =  1.0/r_m;
+  res                         *=  AT_RDD_Cucinotta_f_shortRange( r_m, beta);
+  res                         *=  AT_RDD_Cucinotta_f_longRange( r_m, max_electron_range_m);
+  return res;
+}
+
+
+double   AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
+    const double r2_m,
+    const double max_electron_range_m,
+    const double beta,
+    const double Katz_point_coeff_Gy){
+
+  // fL(r) = exp( -(r/(0.37rmax))^2 )
+  // fS(r) = 1.0/( r0/r + 0.6 + 1.7 beta + 1.1 beta^2)           [here r0 = 10^(-9) [m]]
+  // Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 Ddelta(r) 2 pi r dr
+  //  thus: ...
+  // Dav(r1,r2) = 2 * coeff/ ((r2/rmax)^2 - (r1/rmax)^2) * \int_r1^r2 fS(r) * fL(r) * 1/r dr
+
+  if( (r2_m > max_electron_range_m) || (r1_m > max_electron_range_m) || (r1_m > r2_m)){
+    printf("wrong parameters given to AT_RDD_Cucinotta_Ddelta_average_Gy\n");
+    return 0.0;
+  }
+
+  gsl_set_error_handler_off(); // TODO improve error handling
+
+  double delta_average_integral;
+  double error;
+  gsl_integration_workspace *w1 = gsl_integration_workspace_alloc (10000);
+  gsl_function F;
+  F.function = &AT_RDD_Cucinotta_Ddelta_average_integrand_m;
+  AT_RDD_Cucinotta_Ddelta_average_integrand_m_parameters RDD_parameters;
+  RDD_parameters.max_electron_range_m = max_electron_range_m;
+  RDD_parameters.beta = beta;
+  F.params = (void*)(&RDD_parameters);
+  int status = gsl_integration_qags (&F, r1_m, r2_m, 1e-11, 1e-7, 10000, w1, &delta_average_integral, &error);
+  //printf("integral = %g , error = %g, status = %d\n", delta_average_integral, error, status);
+  if (status > 0){
+    printf("integration error %d in AT_RDD_Cucinotta_Ddelta_average_Gy\n", status);
+    delta_average_integral = -1.0;
+  }
+  gsl_integration_workspace_free (w1);
+
+  return (2.0 * Katz_point_coeff_Gy / (gsl_pow_2(r2_m/max_electron_range_m) - gsl_pow_2(r1_m/max_electron_range_m))) * delta_average_integral ;
+}
+
+
+double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
+    const double r2_m,
+    const double max_electron_range_m,
+    const double beta,
+    const double Katz_point_coeff_Gy){
+
+  if( (r2_m > max_electron_range_m) || (r1_m > max_electron_range_m) || (r1_m > r2_m) || (r1_m <= 0.0) ){
+    printf("wrong parameters given to AT_RDD_Cucinotta_Dexc_average_Gy\n");
+    return 0.0;
+  }
+
+  //  Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 Dexc(r) 2 pi r dr
+  //  Dav(r1,r2) = 2 coeff/ ((r2/rmax)^2 - (r1/rmax)^2) * \int_r1^r2 exp( - r / 2d ) * 1/r dr
+  //
+  // here:
+  // integral = \int_r1^r2 exp( - r / 2d ) * 1/r * dr = Ei( -r2 / 2d ) - Ei( -r1 / 2d )
+  // Ei is the exponential integral function
+  const double d_m = beta * AT_RDD_Cucinotta_C_dm_wr;
+  double FA = gsl_sf_expint_Ei( -0.5 * r1_m / d_m );
+  double FB = 0;
+  if( r2_m / d_m < 100.0 ){ // if x < -50 then Ei(x) < 1e-24, so we can assume than FB = 0
+    FB = gsl_sf_expint_Ei( -0.5 * r2_m / d_m );
+  }
+  return (2.0 * Katz_point_coeff_Gy / (gsl_pow_2(r2_m/max_electron_range_m) - gsl_pow_2(r1_m/max_electron_range_m))) * (FB - FA) ;
+}
+
+
+double   AT_RDD_Cucinotta_Cnorm( const double r_min_m,
+    const double max_electron_range_m,
+    const double beta,
+    const double material_density_kg_m3,
+    const double LET_J_m,
+    const double Katz_point_coeff_Gy){
+
+  const double LETfactor_Gy = LET_J_m * M_1_PI / (material_density_kg_m3 * (gsl_pow_2(max_electron_range_m) - gsl_pow_2(r_min_m)));
+  const double Ddelta_average_Gy = AT_RDD_Cucinotta_Ddelta_average_Gy(r_min_m, max_electron_range_m, max_electron_range_m, beta, Katz_point_coeff_Gy);
+  const double Dexc_average_Gy = AT_RDD_Cucinotta_Dexc_average_Gy(r_min_m, max_electron_range_m, max_electron_range_m, beta, Katz_point_coeff_Gy);
+  if( (LETfactor_Gy > 0.0) && (Ddelta_average_Gy > 0.0) && (Dexc_average_Gy > 0.0)){
+    return (LETfactor_Gy - Ddelta_average_Gy) / Dexc_average_Gy;
+  } else {
+    printf("problem in AT_RDD_Cucinotta_Cnorm\n");
+    return 0.0;
+  }
+}
+
+
 /* --------------------------------------------------- dEdx IN OUTER SHELL ---------------------------------------------------*/
 
 
