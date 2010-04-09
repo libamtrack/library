@@ -35,18 +35,18 @@ source("../../wrapper/R/AmTrack.R")
 # necessary library for plotting
 library("lattice")
 
-####################### DOSE(DISTANCE) function test #########################################
+####################### INACTIVATION PROBABILITY function test #########################################
 
 # radius definitions:
 r.m <- 10^seq (-14, -3, length.out=100)
 
 # electron range models definition
 ER.model.names <- c("simple test",  "Butts & Katz' (linear)",  "Waligorski's (power-law wmax)",  "Geiss' (power-law E)", "Scholz' (power-law E)", "Edmund' (power-law wmax)","Tabata")
-ER.model <- c(2,3,4,5,6,7)
+ER.model <- c(2,3)
 
 # RDD models definition
 RDD.model.names <- c("Simple step test function",  "Katz' point target", "Geiss'", "Site", "Cucinotta", "KatzExtTarget", "CucinottaExtTarget")
-RDD.model <- c(1,2,3,4,5,6,7)
+RDD.model <- c(6)
 
 # RDD parameters
 RDD.parameters <- list(c(1),c(1e-10,1e-10), c(1e-8),c(1e-8,1e-10),c(5e-11,1e-10),c(1e-10,1e-8,1e-10),c(5e-11,1e-8,1e-10))
@@ -58,9 +58,6 @@ df1$ER.model.name	<- as.character(ER.model.names[df1$ER.model])
 df1$RDD.model.name	<- as.character(RDD.model.names[df1$RDD.model])
 
 df1$inact.prob	<- numeric(nrow(df1))
-
-df1$r.m.check	<- numeric(nrow(df1))
-
 
 material.no  <-  c(1)
 E.MeV.u      <-  c(100.0)
@@ -87,6 +84,38 @@ p2 <- xyplot( inact.prob ~ r.m | RDD.model.name, groups = ER.model.name, ref = T
 p1logx <- xyplot( inact.prob ~ r.m | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Inactivation prob.", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list( x = list(log = 10)))
 p2logx <- xyplot( inact.prob ~ r.m | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Inactivation prob.", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list( x = list(log = 10)))
 
+####################### INACTIVATION CROSS SECTION function test #########################################
+
+E.MeV.u <- 10^seq (1, 4, length.out=100)
+
+# data frame setup
+df1 <- expand.grid( E.MeV.u = E.MeV.u, ER.model = ER.model, RDD.model = RDD.model )
+
+df1$ER.model.name	<- as.character(ER.model.names[df1$ER.model])
+df1$RDD.model.name	<- as.character(RDD.model.names[df1$RDD.model])
+
+df1$inact.cross.sect.m2	<- numeric(nrow(df1))
+
+material.no  <-  c(1)
+particle.no  <-  c(1001)
+
+# 1, D0, c, m, 0
+GR.parameters <- c(1, 3.0, 1, 2, 0)
+
+for( i in ER.model) {
+ ii 			<- df1$ER.model == i
+	for( j in RDD.model) {
+ 	jj 			<- ((df1$RDD.model == j) & (df1$ER.model == i)) 
+			df1$inact.cross.sect.m2[jj] <- AT.Katz.inactivation.cross.section.m2(E.MeV.u = df1$E.MeV.u[jj], particle.no, material.no, rdd.model = j, rdd.parameters = RDD.parameters[[j]], er.model = i, GR.parameters)
+		}
+}
+
+p3 <- xyplot( inact.cross.sect.m2 ~ E.MeV.u | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV/u]", ylab = "Inactivation cross section [m2]", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list(log = 10))
+p4 <- xyplot( inact.cross.sect.m2 ~ E.MeV.u | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV/u]", ylab = "Inactivation cross section [m2]", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list(log = 10))
+
+p3logx <- xyplot( inact.cross.sect.m2 ~ E.MeV.u | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV/u]", ylab = "Inactivation cross section [m2]", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list( x = list(log = 10)))
+p4logx <- xyplot( inact.cross.sect.m2 ~ E.MeV.u | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV/u]", ylab = "Inactivation cross section [m2]", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list( x = list(log = 10)))
+
 
 pdf("Katz.pdf")
 
@@ -94,5 +123,10 @@ p1
 p2
 p1logx
 p2logx
+
+p3
+p4
+p3logx
+p4logx
 
 dev.off()
