@@ -50,14 +50,14 @@ void  AT_SC_get_f1_array_size(
     long *        n_bins_f1,
     double        f1_parameters[])
 {
-  // get lowest and highest dose
+  /* get lowest and highest dose */
   double d_max_Gy    =  0.0;
   double d_min_Gy    =  0.0;
 
   long  n_f1_parameters  =  9;
   long  i;
   for (i = 0; i < n; i++){
-    //    // get RDD parameters for all particles and energies
+    /* get RDD parameters for all particles and energies */
     AT_RDD_f1_parameters(  E_MeV_u[i],
         particle_no[i],
         material_no,
@@ -105,14 +105,6 @@ void  AT_SC_get_f1(
     double        norm_fluence[],
     double        dose_contribution_Gy[],
     double        f_parameters[],
-    /*  1 - total fluence_cm2
-     *  2 - total_dose_Gy
-     *  3 - ave_E_MeV
-     *  4 - dw_E_MeV
-     *  5 - ave_LET_MeV_cm2_g
-     *  6 - dw_LET_MeV_cm2_g
-     *  0 - u
-     */
     double        f1_d_Gy[],
     double        f1_dd_Gy[],
     double        f1[])

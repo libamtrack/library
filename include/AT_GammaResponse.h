@@ -120,7 +120,7 @@ long AT_Gamma_number_of_parameters( const long Gamma_no);
  * @param[in]  number_of_doses  number of doses given in vector d_Gy
  * @param[in]  d_Gy             doses in Gy (vector of length number_of_doses)
  * @param[in]  gamma_model      gamma response model index
- * @param[in]  gamma_parameter  vector holding necessary parameters for the chose gamma response model
+ * @param[in]  gamma_parameter  vector holding necessary parameters for the chose gamma response model (array of size depending on chosen model)
  * @param[out] S                gamma responses (vector of length number_of_doses)
  */
 void AT_gamma_response( const long  number_of_doses,

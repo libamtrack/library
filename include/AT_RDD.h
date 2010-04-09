@@ -147,15 +147,15 @@ int AT_RDD_number_of_parameters( const long RDD_model);
  * Returns RDD as a function of distance r_m
  *
  * @param[in]   n              number of particles (length of r_m vector)
- * @param[in]   r_m            distance [m]
+ * @param[in]   r_m            distance [m] (array of size n)
  * @param[in]   E_MeV_u        particle (ion) energy per nucleon [MeV/u]
  * @param[in]   particle_no    particle code number
  * @param[in]   material_no    material code number
  * @param[in]   rdd_model      Radial Dose Distribution model code number
- * @param[in]   rdd_parameter  Radial Dose Distribution model parameters vector
+ * @param[in]   rdd_parameter  Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @param[in]   er_model       delta electron range model code number
  * @param[in]   er_parameter   TODO to be removed
- * @param[out]  D_RDD_Gy       dose [Gy]
+ * @param[out]  D_RDD_Gy       dose [Gy] (array of size n)
  * @return status code
  */
 int AT_D_RDD_Gy( const long  n,
@@ -174,15 +174,15 @@ int AT_D_RDD_Gy( const long  n,
  * Returns distance as a function of dose
  *
  * @param[in]   n                   number of particles (length of D_RDD_Gy vector)
- * @param[in]   D_RDD_Gy            dose [Gy]
+ * @param[in]   D_RDD_Gy            dose [Gy] (array of size n)
  * @param[in]   E_MeV_u             particle (ion) energy per nucleon [MeV/u]
  * @param[in]   particle_no         particle code number
  * @param[in]   material_no         material code number
  * @param[in]   rdd_model           Radial Dose Distribution model code number
- * @param[in]   rdd_parameter       Radial Dose Distribution model parameters vector
+ * @param[in]   rdd_parameter       Radial Dose Distribution model parameters vector (array of size depending on chosen model, maximum length 3)
  * @param[in]   er_model            delta electron range model code number
  * @param[in]   er_parameter        TODO to be removed
- * @param[out]  r_RDD_m             distance [m]
+ * @param[out]  r_RDD_m             distance [m] (array of size n)
  * @return status code
  */
 int AT_r_RDD_m  ( const long  n,
@@ -203,7 +203,7 @@ int AT_r_RDD_m  ( const long  n,
  * Returns lower integration limit for given RDD (or 0.0 if not used).
  * @param max_electron_range_m           delta electron maximum range [m]
  * @param rdd_model                      Radial Dose Distribution model code number
- * @param rdd_parameter                  Radial Dose Distribution model parameters vector
+ * @param rdd_parameter                  Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @return rmin - lower integration limit for given RDD [m]
  */
 double AT_RDD_r_min_m(
@@ -216,7 +216,7 @@ double AT_RDD_r_min_m(
  * Returns target size (core size) for given RDD (or 0.0 if not used).
  * @param max_electron_range_m           delta electron maximum range [m]
  * @param rdd_model                      Radial Dose Distribution model code number
- * @param rdd_parameter                  Radial Dose Distribution model parameters vector
+ * @param rdd_parameter                  Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @return a0 - target size (core size) for given RDD [m]
  */
 double AT_RDD_a0_m(
@@ -233,7 +233,7 @@ double AT_RDD_a0_m(
  * @param particle_no                    particle code number
  * @param material_no                    material code number
  * @param rdd_model                      Radial Dose Distribution model code number
- * @param rdd_parameter                  Radial Dose Distribution model parameters vector
+ * @param rdd_parameter                  Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @param er_model                       delta electron range model code number
  * @return precalculated constant for given RDD [Gy]
  */
@@ -257,7 +257,7 @@ double AT_RDD_precalculated_constant_Gy(
  * @param particle_no                     particle code number
  * @param material_no                     material code number
  * @param rdd_model                       Radial Dose Distribution model code number
- * @param rdd_parameter                   Radial Dose Distribution model parameters vector
+ * @param rdd_parameter                   Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @param er_model                        delta electron range model code number
  * @param precalculated_constant_Gy
  * @return miminal dose for given RDD [Gy]
@@ -279,7 +279,7 @@ double AT_RDD_d_min_Gy(
  * @param[in] particle_no                particle code number
  * @param[in] material_no                material code number
  * @param[in] rdd_model                  Radial Dose Distribution model code number
- * @param[in] rdd_parameter              Radial Dose Distribution model parameters vector
+ * @param[in] rdd_parameter              Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @param[in] er_model                   delta electron range model code number
  * @param[in] er_parameter               TODO to be removed
  * @return  Maximum dose [Gy]
@@ -300,7 +300,7 @@ double AT_RDD_d_max_Gy(
  * @param[in]  particle_no           particle code number
  * @param[in]  material_no           material code number
  * @param[in]  rdd_model             Radial Dose Distribution model code number
- * @param[in]  rdd_parameter         Radial Dose Distribution model parameters vector
+ * @param[in]  rdd_parameter         Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @param[in]  er_model              delta electron range model code number
  * @param[in]  er_parameter          TODO to be removed
  * @param[out] f1_parameters

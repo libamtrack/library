@@ -248,8 +248,8 @@ inline double AT_max_E_transfer_MeV_single( const double E_MeV_u);
 /**
  * Max energy transfer TODO
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV]
- * @param[out] max_E_transfer_MeV
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[out] max_E_transfer_MeV       (array of size n)
  * @return     status code
  */
 int AT_max_E_transfer_MeV(  const long  n,

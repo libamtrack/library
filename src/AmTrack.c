@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief ...
+ * @brief libamtrack main file holding the amorphous track routines for RE/RBE calculation
  */
 
 /*
@@ -129,7 +129,7 @@ void AT_run_SPIFF_method(  const long  n,
         &n_bins_f1,
         f1_parameters);
 
-    f_parameters  =  (double*)calloc(7, sizeof(double));
+    f_parameters  =  (double*)calloc(AT_SC_F_PARAMETERS_LENGTH, sizeof(double));
 
     norm_fluence  =  (double*)calloc(n, sizeof(double));
     dose_contribution_Gy  =  (double*)calloc(n, sizeof(double));
