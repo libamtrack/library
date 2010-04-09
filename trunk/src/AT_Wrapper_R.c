@@ -60,9 +60,9 @@ void AT_D_RDD_Gy_R( const int*  n,
   const long particle_no_long = (long)(*particle_no);
 
   /* float -> double conversion */
-  double * r_m_double = (double*)calloc(*n,sizeof(double));
+  double * r_m_double = (double*)calloc(n_long,sizeof(double));
   long i;
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     r_m_double[i] = (double)r_m[i];
   }
   double E_MeV_u_double = (double)(*E_MeV_u);
@@ -73,7 +73,7 @@ void AT_D_RDD_Gy_R( const int*  n,
   double er_parameter_double = 0.0;
 
   /* place for results */
-  double * D_RDD_Gy_double = (double*)calloc(*n,sizeof(double));
+  double * D_RDD_Gy_double = (double*)calloc(n_long,sizeof(double));
 
   AT_D_RDD_Gy( n_long,
       r_m_double,
@@ -87,7 +87,7 @@ void AT_D_RDD_Gy_R( const int*  n,
       D_RDD_Gy_double);
 
   /* double -> float conversion (results) */
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     D_RDD_Gy[i] = (float)D_RDD_Gy_double[i];
   }
 
@@ -107,9 +107,9 @@ void AT_gamma_response_R( const int*  n,
   const long gamma_model_long = (long)(*gamma_model);
 
   /* float -> double conversion */
-  double * d_Gy_double = (double*)calloc(*n,sizeof(double));
+  double * d_Gy_double = (double*)calloc(n_long,sizeof(double));
   long i;
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     d_Gy_double[i] = (double)d_Gy[i];
   }
   long number_of_gamma_parameters = 0;
@@ -127,7 +127,7 @@ void AT_gamma_response_R( const int*  n,
   }
 
   /* place for results */
-  double * S_double = (double*)calloc(*n,sizeof(double));
+  double * S_double = (double*)calloc(n_long,sizeof(double));
 
   AT_gamma_response(n_long,
       d_Gy_double,
@@ -136,7 +136,7 @@ void AT_gamma_response_R( const int*  n,
       S_double);
 
   /* double -> float conversion (results) */
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     S[i] = (float)S_double[i];
   }
 
@@ -154,20 +154,20 @@ void AT_LET_MeV_cm2_g_R(  const int*  n,
   /* int -> long conversion */
   const long n_long = (long)(*n);
   const long material_no_long = (long)(*material_no);
-  long * particle_no_long = (long*)calloc(*n,sizeof(long));
+  long * particle_no_long = (long*)calloc(n_long,sizeof(long));
   long i;
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     particle_no_long[i] = (long)particle_no[i];
   }
 
   /* float -> double conversion */
-  double * E_MeV_u_double = (double*)calloc(*n,sizeof(double));
-  for(i = 0 ; i < *n ; i++){
+  double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
     E_MeV_u_double[i] = (double)E_MeV_u[i];
   }
 
   /* place for results */
-  double * LET_MeV_cm2_g_double = (double*)calloc(*n,sizeof(double));
+  double * LET_MeV_cm2_g_double = (double*)calloc(n_long,sizeof(double));
 
   AT_LET_MeV_cm2_g(  n_long,
       E_MeV_u_double,
@@ -176,7 +176,7 @@ void AT_LET_MeV_cm2_g_R(  const int*  n,
       LET_MeV_cm2_g_double);
 
   /* double -> float conversion (results) */
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     LET_MeV_cm2_g[i] = (float)LET_MeV_cm2_g_double[i];
   }
 
@@ -193,21 +193,21 @@ void AT_max_E_transfer_MeV_R(  const int*  n,
   long  n_long           = (long)*n;
 
   /* float -> double conversion */
-  double * E_MeV_u_double = (double*)calloc(*n,sizeof(double));
+  double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
   long i;
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     E_MeV_u_double[i] = (double)E_MeV_u[i];
   }
 
   /* place for results */
-  double * max_E_transfer_MeV_double = (double*)calloc(*n,sizeof(double));
+  double * max_E_transfer_MeV_double = (double*)calloc(n_long,sizeof(double));
 
   AT_max_E_transfer_MeV(  n_long,
       E_MeV_u_double,
       max_E_transfer_MeV_double);
 
   /* double -> float conversion (results) */
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     max_E_transfer_MeV[i] = (float)max_E_transfer_MeV_double[i];
   }
 
@@ -270,9 +270,9 @@ void AT_r_RDD_m_R  ( const int*  n,
   const long particle_no_long = (long)(*particle_no);
 
   /* float -> double conversion */
-  double * D_RDD_Gy_double = (double*)calloc(*n,sizeof(double));
+  double * D_RDD_Gy_double = (double*)calloc(n_long,sizeof(double));
   long i;
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     D_RDD_Gy_double[i] = (double)D_RDD_Gy[i];
   }
   double E_MeV_u_double = (double)(*E_MeV_u);
@@ -283,7 +283,7 @@ void AT_r_RDD_m_R  ( const int*  n,
   double er_parameter_double = 0.0;
 
   /* place for results */
-  double * r_RDD_m_double = (double*)calloc(*n,sizeof(double));
+  double * r_RDD_m_double = (double*)calloc(n_long,sizeof(double));
 
   AT_r_RDD_m( n_long,
       D_RDD_Gy_double,
@@ -297,7 +297,7 @@ void AT_r_RDD_m_R  ( const int*  n,
       r_RDD_m_double);
 
   /* double -> float conversion (results) */
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     r_RDD_m[i] = (float)r_RDD_m_double[i];
   }
 
@@ -325,9 +325,9 @@ void AT_KatzModel_inactivation_probability_R( const int* n,
   const long particle_no_long = (long)(*particle_no);
 
   /* float -> double conversion */
-  double * r_m_double = (double*)calloc(*n,sizeof(double));
+  double * r_m_double = (double*)calloc(n_long,sizeof(double));
   long i;
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     r_m_double[i] = (double)r_m[i];
   }
   double E_MeV_u_double = (double)(*E_MeV_u);
@@ -341,7 +341,7 @@ void AT_KatzModel_inactivation_probability_R( const int* n,
   }
 
   /* place for results */
-  double * inactivation_probability_double = (double*)calloc(*n,sizeof(double));
+  double * inactivation_probability_double = (double*)calloc(n_long,sizeof(double));
 
   AT_KatzModel_inactivation_probability( n_long,
       r_m_double,
@@ -355,11 +355,65 @@ void AT_KatzModel_inactivation_probability_R( const int* n,
       inactivation_probability_double);
 
   /* double -> float conversion (results) */
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     inactivation_probability[i] = (float)inactivation_probability_double[i];
   }
 
   free( r_m_double );
+}
+
+
+void AT_KatzModel_inactivation_cross_section_m2_R( const int* n,
+    const float*   E_MeV_u,
+    const int*     particle_no,
+    const int*     material_no,
+    const int*     rdd_model,
+    const float*   rdd_parameters,
+    const int*     er_model,
+    const float*   gamma_parameters,
+    float*         inactivation_cross_section_m2){
+
+  /* int -> long conversion */
+  const long n_long = (long)(*n);
+  const long rdd_model_long = (long)(*rdd_model);
+  const long er_model_long = (long)(*er_model);
+  const long material_no_long = (long)(*material_no);
+  const long particle_no_long = (long)(*particle_no);
+
+  /* float -> double conversion */
+  double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
+  long i;
+  for(i = 0 ; i < n_long ; i++){
+    E_MeV_u_double[i] = (double)E_MeV_u[i];
+  }
+  double rdd_parameter_double[RDD_MAX_NUMBER_OF_PARAMETERS];
+  for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
+    rdd_parameter_double[i] = (double)rdd_parameters[i];
+  }
+  double gamma_parameter_double[5];
+  for(i = 0 ; i < 5 ; i++){
+    gamma_parameter_double[i] = (double)gamma_parameters[i];
+  }
+
+  /* place for results */
+  double * inactivation_cross_section_m2_double = (double*)calloc(n_long,sizeof(double));
+
+  AT_KatzModel_inactivation_cross_section_m2( n_long,
+      E_MeV_u_double,
+      particle_no_long,
+      material_no_long,
+      rdd_model_long,
+      rdd_parameter_double,
+      er_model_long,
+      gamma_parameter_double,
+      inactivation_cross_section_m2_double);
+
+  /* double -> float conversion (results) */
+  for(i = 0 ; i < n_long ; i++){
+    inactivation_cross_section_m2[i] = (float)inactivation_cross_section_m2_double[i];
+  }
+
+  free( E_MeV_u_double );
 }
 
 
@@ -389,9 +443,9 @@ void AT_run_GSM_method_R(  const int*  n,
   const long er_model_long = (long)(*er_model);
   const long gamma_model_long = (long)(*gamma_model);
   const long material_no_long = (long)(*material_no);
-  long * particle_no_long = (long*)calloc(*n,sizeof(long));
+  long * particle_no_long = (long*)calloc(n_long,sizeof(long));
   long i;
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     particle_no_long[i] = (long)particle_no[i];
   }
   const long N_runs_long = (long)(*N_runs);
@@ -403,9 +457,9 @@ void AT_run_GSM_method_R(  const int*  n,
   const bool lethal_events_mode_bool = (bool)(*lethal_events_mode);
 
   /* float -> double conversion */
-  double * E_MeV_u_double = (double*)calloc(*n,sizeof(double));
-  double * fluence_cm2_double = (double*)calloc(*n,sizeof(double));
-  for(i = 0 ; i < *n ; i++){
+  double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_double = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
     E_MeV_u_double[i] = (double)E_MeV_u[i];
     fluence_cm2_double[i] = (double)fluence_cm2[i];
   }
@@ -489,9 +543,9 @@ void AT_run_SPIFF_method_R(  const int*  n,
   const long er_model_long = (long)(*er_model);
   const long gamma_model_long = (long)(*gamma_model);
   const long material_no_long = (long)(*material_no);
-  long * particle_no_long = (long*)calloc(*n,sizeof(long));
+  long * particle_no_long = (long*)calloc(n_long,sizeof(long));
   long i;
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     particle_no_long[i] = (long)particle_no[i];
   }
   long N2_long = (long)(*N2);
@@ -503,9 +557,9 @@ void AT_run_SPIFF_method_R(  const int*  n,
   const bool lethal_events_mode_bool = (bool)(*lethal_events_mode);
 
   /* float -> double conversion */
-  double * E_MeV_u_double = (double*)calloc(*n,sizeof(double));
-  double * fluence_cm2_double = (double*)calloc(*n,sizeof(double));
-  for(i = 0 ; i < *n ; i++){
+  double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_double = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
     E_MeV_u_double[i] = (double)E_MeV_u[i];
     fluence_cm2_double[i] = (double)fluence_cm2[i];
   }
@@ -585,16 +639,16 @@ void  AT_SC_get_f1_array_size_R(
   const long er_model_long = (long)(*er_model);
   const long material_no_long = (long)(*material_no);
   const long N2_long = (long)(*N2);
-  long * particle_no_long = (long*)calloc(*n,sizeof(long));
+  long * particle_no_long = (long*)calloc(n_long,sizeof(long));
   long i;
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     particle_no_long[i] = (long)particle_no[i];
   }
   long n_bins_f1_long;
 
   /* float -> double conversion */
-  double * E_MeV_u_double = (double*)calloc(*n,sizeof(double));
-  for(i = 0 ; i < *n ; i++){
+  double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
     E_MeV_u_double[i] = (double)E_MeV_u[i];
   }
   double rdd_parameter_double[RDD_MAX_NUMBER_OF_PARAMETERS];
@@ -604,7 +658,7 @@ void  AT_SC_get_f1_array_size_R(
   double er_parameter_double = 0.0;
 
   /* place for results */
-  double f1_parameters_double[8];
+  double f1_parameters_double[8]; // TODO size of this array should be checked
 
   AT_SC_get_f1_array_size( n_long,
       E_MeV_u_double,
@@ -657,16 +711,16 @@ void  AT_SC_get_f1_R(
   const long material_no_long = (long)(*material_no);
   const long N2_long = (long)(*N2);
   const long n_bins_f1_long = (long)(*n_bins_f1);
-  long * particle_no_long = (long*)calloc(*n,sizeof(long));
+  long * particle_no_long = (long*)calloc(n_long,sizeof(long));
   long i;
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     particle_no_long[i] = (long)particle_no[i];
   }
 
   /* float -> double conversion */
-  double * E_MeV_u_double = (double*)calloc(*n,sizeof(double));
-  double * fluence_cm2_double = (double*)calloc(*n,sizeof(double));
-  for(i = 0 ; i < *n ; i++){
+  double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_double = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
     E_MeV_u_double[i] = (double)E_MeV_u[i];
     fluence_cm2_double[i] = (double)fluence_cm2[i];
   }
@@ -675,18 +729,18 @@ void  AT_SC_get_f1_R(
     rdd_parameter_double[i] = (double)rdd_parameter[i];
   }
   double er_parameter_double = 0.0;
-  double * f1_parameters_double = (double*)calloc((*n) * 9,sizeof(double));
-  for(i = 0 ; i < (*n) * 9 ; i++){
+  double * f1_parameters_double = (double*)calloc(n_long * 9,sizeof(double));
+  for(i = 0 ; i < n_long * 9 ; i++){
     f1_parameters_double[i] = (double)f1_parameters[i];
   }
 
   /* place for results */
-  double * norm_fluence_double = (double*)calloc(*n,sizeof(double));
-  double * dose_contribution_Gy_double = (double*)calloc(*n,sizeof(double));
+  double * norm_fluence_double = (double*)calloc(n_long,sizeof(double));
+  double * dose_contribution_Gy_double = (double*)calloc(n_long,sizeof(double));
   double f_parameters_double[7];
-  double * f1_d_Gy_double = (double*)calloc(*n_bins_f1,sizeof(double));
-  double * f1_dd_Gy_double = (double*)calloc(*n_bins_f1,sizeof(double));
-  double * f1_double = (double*)calloc(*n_bins_f1,sizeof(double));
+  double * f1_d_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
+  double * f1_dd_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
+  double * f1_double = (double*)calloc(n_bins_f1_long,sizeof(double));
 
   AT_SC_get_f1( n_long,
       E_MeV_u_double,
@@ -708,14 +762,14 @@ void  AT_SC_get_f1_R(
       f1_double);
 
   /* double -> float conversion (results) */
-  for(i = 0 ; i < *n ; i++){
+  for(i = 0 ; i < n_long ; i++){
     norm_fluence[i] = (float)norm_fluence_double[i];
     dose_contribution_Gy[i] = (float)dose_contribution_Gy_double[i];
   }
   for(i = 0 ; i < 7 ; i++){
     f_parameters[i] = (float)f_parameters_double[i];
   }
-  for(i = 0 ; i < *n_bins_f1 ; i++){
+  for(i = 0 ; i < n_bins_f1_long ; i++){
     f1_d_Gy[i] = (float)f1_d_Gy_double[i];
     f1_dd_Gy[i] = (float)f1_dd_Gy_double[i];
     f1[i] = (float)f1_double[i];
@@ -750,11 +804,11 @@ void  AT_SC_get_f_array_size_R(
   /* float -> double conversion */
   double u_double = (double)(*u);
   double fluence_factor_double = (double)(*fluence_factor);
-  double * f1_d_Gy_double = (double*)calloc(*n_bins_f1,sizeof(double));
-  double * f1_dd_Gy_double = (double*)calloc(*n_bins_f1,sizeof(double));
-  double * f1_double = (double*)calloc(*n_bins_f1,sizeof(double));
+  double * f1_d_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
+  double * f1_dd_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
+  double * f1_double = (double*)calloc(n_bins_f1_long,sizeof(double));
   long i;
-  for(i = 0 ; i < *n_bins_f1 ; i++){
+  for(i = 0 ; i < n_bins_f1_long ; i++){
     f1_d_Gy_double[i]   =  (double)f1_d_Gy[i];
     f1_dd_Gy_double[i]  =  (double)f1_dd_Gy[i];
     f1_double[i]        =  (double)f1[i];
@@ -807,20 +861,20 @@ void  AT_SC_get_f_start_R(  const float*  u_start,
 
   /* float -> double conversion */
   double u_start_double = (double)(*u_start);
-  double * f1_d_Gy_double = (double*)calloc(*n_bins_f1,sizeof(double));
-  double * f1_dd_Gy_double = (double*)calloc(*n_bins_f1,sizeof(double));
-  double * f1_double = (double*)calloc(*n_bins_f1,sizeof(double));
+  double * f1_d_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
+  double * f1_dd_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
+  double * f1_double = (double*)calloc(n_bins_f1_long,sizeof(double));
   long i;
-  for(i = 0 ; i < *n_bins_f1 ; i++){
+  for(i = 0 ; i < n_bins_f1_long ; i++){
     f1_d_Gy_double[i]   =  (double)f1_d_Gy[i];
     f1_dd_Gy_double[i]  =  (double)f1_dd_Gy[i];
     f1_double[i]        =  (double)f1[i];
   }
 
   /* place for results */
-  double * f_d_Gy_double = (double*)calloc(*n_bins_f,sizeof(double));
-  double * f_dd_Gy_double = (double*)calloc(*n_bins_f,sizeof(double));
-  double * f_start_double = (double*)calloc(*n_bins_f,sizeof(double));
+  double * f_d_Gy_double = (double*)calloc(n_bins_f_long,sizeof(double));
+  double * f_dd_Gy_double = (double*)calloc(n_bins_f_long,sizeof(double));
+  double * f_start_double = (double*)calloc(n_bins_f_long,sizeof(double));
 
   AT_SC_get_f_start(  u_start_double,
       n_bins_f1_long,
@@ -879,18 +933,18 @@ void AT_SuccessiveConvolutions_R( const float*  u,
   double shrink_tails_under_double = (double)(*shrink_tails_under);
 
   /* place for results */
-  double * f_d_Gy_double = (double*)calloc(*n_bins_f,sizeof(double));
-  double * f_dd_Gy_double = (double*)calloc(*n_bins_f,sizeof(double));
-  double * f_double = (double*)calloc(*n_bins_f,sizeof(double));
+  double * f_d_Gy_double = (double*)calloc(n_bins_f_long,sizeof(double));
+  double * f_dd_Gy_double = (double*)calloc(n_bins_f_long,sizeof(double));
+  double * f_double = (double*)calloc(n_bins_f_long,sizeof(double));
   long i;
-  for(i = 0 ; i < *n_bins_f ; i++){
+  for(i = 0 ; i < n_bins_f_long ; i++){
     f_d_Gy_double[i]   =  (double)f_d_Gy[i];
     f_dd_Gy_double[i]  =  (double)f_dd_Gy[i];
     f_double[i]        =  (double)f[i];
   }
   double f0_double;
-  double * fdd_double = (double*)calloc(*n_bins_f,sizeof(double));
-  double * dfdd_double = (double*)calloc(*n_bins_f,sizeof(double));
+  double * fdd_double = (double*)calloc(n_bins_f_long,sizeof(double));
+  double * dfdd_double = (double*)calloc(n_bins_f_long,sizeof(double));
   double d_double;
 
   AT_SuccessiveConvolutions( u_double,
@@ -914,7 +968,7 @@ void AT_SuccessiveConvolutions_R( const float*  u,
   *n_bins_f_used = (int)n_bins_f_used_long;
 
   /* double -> float conversion (results) */
-  for(i = 0 ; i < *n_bins_f ; i++){
+  for(i = 0 ; i < n_bins_f_long ; i++){
     f_d_Gy[i] = (float)f_d_Gy_double[i];
     f_dd_Gy[i] = (float)f_dd_Gy_double[i];
     f[i] = (float)f_double[i];

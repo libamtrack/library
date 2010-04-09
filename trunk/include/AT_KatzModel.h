@@ -146,6 +146,7 @@ double AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2(
 
 /**
  * TODO
+ * @param n
  * @param E_MeV_u
  * @param particle_no
  * @param material_no
@@ -153,16 +154,19 @@ double AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2(
  * @param rdd_parameters
  * @param er_model
  * @param gamma_parameters
- * @return
+ * @param inactivation_cross_section_m2
+ * @return status code
  */
-double AT_KatzModel_inactivation_cross_section_m2(
-    const double E_MeV_u,
+int AT_KatzModel_inactivation_cross_section_m2(
+    const long   n,
+    const double E_MeV_u[],
     const long   particle_no,
     const long   material_no,
     const long   rdd_model,
     const double rdd_parameters[],
     const long   er_model,
-    const double gamma_parameters[5]);
+    const double gamma_parameters[5],
+    double inactivation_cross_section_m2[]);
 
 /**
  * TODO

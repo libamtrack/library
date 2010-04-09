@@ -101,6 +101,17 @@ void AT_KatzModel_inactivation_probability_R( const int* n,
     float*         inactivation_probability);
 
 
+void AT_KatzModel_inactivation_cross_section_m2_R( const int* n,
+    const float*   E_MeV_u,
+    const int*     particle_no,
+    const int*     material_no,
+    const int*     rdd_model,
+    const float*   rdd_parameters,
+    const int*     er_model,
+    const float*   gamma_parameters,
+    float*         inactivation_cross_section_m2);
+
+
 void AT_run_GSM_method_R(  const int*  n,
     const float*  E_MeV_u,
     const int*    particle_no,

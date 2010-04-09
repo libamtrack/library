@@ -59,6 +59,7 @@
 # AT.SC.get.f1								 				                  OK
 # AT.SC.get.f.array.size                     OK
 # AT.Katz.inactivation.probability           to be tested TODO
+# AT.Katz.inactivation.cross.section.m2      to be tested
 # 
 ################################################################################################
 
@@ -500,6 +501,30 @@ AT.Katz.inactivation.probability		<-	function(	r.m,
 	 return(res$inactivation.probability)
 }
 	
+	###########################
+AT.Katz.inactivation.cross.section.m2		<-	function(		E.MeV.u,
+													particle.no,
+													material.no,
+													rdd.model,
+													rdd.parameters,
+													er.model,
+													gamma.parameters){
+
+	n					<-	length(E.MeV.u)
+	inactivation.cross.section.m2					<-	numeric(n)
+
+	res						<-	.C("AT_KatzModel_inactivation_cross_section_m2_R", 		n						= as.integer(n),
+																		E.MeV.u								         		= as.single(E.MeV.u),
+																		particle.no			 				       = as.integer(particle.no),
+																		material.no								      	= as.integer(material.no),
+																		rdd.model				        					= as.integer(rdd.model),
+																		rdd.parameters						      = as.single(rdd.parameters),
+																		er.model	            					= as.integer(er.model),
+																		gamma.parameters					    	= as.single(gamma.parameters),
+																		inactivation.cross.section.m2	 = as.single(inactivation.cross.section.m2))
+
+	 return(res$inactivation.cross.section.m2)
+}
 	
 ######################################################################################################################################
 
