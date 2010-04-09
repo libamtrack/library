@@ -658,7 +658,7 @@ void  AT_SC_get_f1_array_size_R(
   double er_parameter_double = 0.0;
 
   /* place for results */
-  double f1_parameters_double[8]; // TODO size of this array should be checked
+  double * f1_parameters_double = (double*)calloc( n_long * 8, sizeof(double));
 
   AT_SC_get_f1_array_size( n_long,
       E_MeV_u_double,
@@ -676,9 +676,10 @@ void  AT_SC_get_f1_array_size_R(
   *n_bins_f1 = (int)n_bins_f1_long;
 
   /* double -> float conversion (results) */
-  for(i = 0 ; i < 10 ; i++){
+  for(i = 0 ; i < n_long * 8 ; i++){
     f1_parameters[i] = (float)f1_parameters_double[i];
   }
+  free(f1_parameters_double);
   free(particle_no_long);
   free(E_MeV_u_double);
 }
@@ -729,15 +730,15 @@ void  AT_SC_get_f1_R(
     rdd_parameter_double[i] = (double)rdd_parameter[i];
   }
   double er_parameter_double = 0.0;
-  double * f1_parameters_double = (double*)calloc(n_long * 9,sizeof(double));
-  for(i = 0 ; i < n_long * 9 ; i++){
+  double * f1_parameters_double = (double*)calloc(n_long * 8,sizeof(double));
+  for(i = 0 ; i < n_long * 8 ; i++){
     f1_parameters_double[i] = (double)f1_parameters[i];
   }
 
   /* place for results */
   double * norm_fluence_double = (double*)calloc(n_long,sizeof(double));
   double * dose_contribution_Gy_double = (double*)calloc(n_long,sizeof(double));
-  double f_parameters_double[7];
+  double f_parameters_double[AT_SC_F_PARAMETERS_LENGTH];
   double * f1_d_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
   double * f1_dd_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
   double * f1_double = (double*)calloc(n_bins_f1_long,sizeof(double));
@@ -766,7 +767,7 @@ void  AT_SC_get_f1_R(
     norm_fluence[i] = (float)norm_fluence_double[i];
     dose_contribution_Gy[i] = (float)dose_contribution_Gy_double[i];
   }
-  for(i = 0 ; i < 7 ; i++){
+  for(i = 0 ; i < AT_SC_F_PARAMETERS_LENGTH ; i++){
     f_parameters[i] = (float)f_parameters_double[i];
   }
   for(i = 0 ; i < n_bins_f1_long ; i++){
@@ -888,7 +889,7 @@ void  AT_SC_get_f_start_R(  const float*  u_start,
       f_start_double);
 
   /* double -> float conversion (results) */
-  for(i = 0 ; i < *n_bins_f ; i++){
+  for(i = 0 ; i < n_bins_f_long ; i++){
     f_d_Gy[i] = (float)f_d_Gy_double[i];
     f_dd_Gy[i] = (float)f_dd_Gy_double[i];
     f_start[i] = (float)f_start_double[i];

@@ -129,6 +129,7 @@ void  AT_SC_get_f1_array_size(
     long *       n_bins_f1,
     double       f1_parameters[]);
 
+#define AT_SC_F_PARAMETERS_LENGTH 7
 
 /**
  * Computes the f1 (single impact) local dose distribution for a given field, rdd, er
@@ -147,7 +148,7 @@ void  AT_SC_get_f1_array_size(
  * @param[in]  n_bins_f1             number of bins holding the f1 distribution (from AT_SC_get_f1_array_size)
  * @param[out] norm_fluence          relative fluences for field components (array of size n)
  * @param[out] dose_contribution_Gy  absolute dose contribution from each field component (array of size n)
- * @param[out] f_parameters          array of size 7 holding numbers describing the characteristics of the composed fields:\n
+ * @param[out] f_parameters          array of size 7 (AT_SC_F_PARAMETERS_LENGTH) holding numbers describing the characteristics of the composed fields:\n
  *                                      0 - u (mean number of tracks contributing)\n
  *                                      1 - total fluence_cm2\n
  *                                      2 - total_dose_Gy\n
@@ -175,10 +176,9 @@ void  AT_SC_get_f1(
     double       norm_fluence[],
     double       dose_contribution_Gy[],
     double       f_parameters[],
-
-    double        f1_d_Gy[],
-    double        f1_dd_Gy[],
-    double        f1[]);
+    double       f1_d_Gy[],
+    double       f1_dd_Gy[],
+    double       f1[]);
 
 
 /**
