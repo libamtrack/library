@@ -146,7 +146,7 @@ double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
     const double beta,
     const double Katz_point_coeff_Gy){
 
-  if( (r2_m > max_electron_range_m) || (r1_m > max_electron_range_m) || (r1_m > r2_m) || (r1_m <= 0.0) ){
+  if( (r2_m > max_electron_range_m) || (r1_m > max_electron_range_m) || (r1_m > r2_m) || (r1_m < 0.0) ){
     printf("wrong parameters given to AT_RDD_Cucinotta_Dexc_average_Gy\n");
     return 0.0;
   }

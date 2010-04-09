@@ -174,7 +174,7 @@ double zriddr(double (*func)(double,void*), void * params, const double x1, cons
   else {
     if (fl == 0.0) return x1;
     if (fh == 0.0) return x2;
-    nrerror("root must be bracketed in zriddr.");
+    nrerror("root must be bracketed in zriddr");
   }
   return 0.0;                         // Never get here.
 }

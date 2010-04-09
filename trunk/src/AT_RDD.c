@@ -343,7 +343,10 @@ double AT_RDD_d_max_Gy(
     const double a0_m                  =  AT_RDD_a0_m(max_electron_range_m, rdd_model, rdd_parameter);
     const double C_norm                =  precalculated_constant_Gy;
     const double Katz_point_r_min_m    =  AT_RDD_r_min_m(max_electron_range_m, rdd_model, rdd_parameter);
-    const double Cucinotta_plateau_Gy  =  0.0; // FIXME to be implemented
+
+    const double r_max_m               =  GSL_MIN(a0_m, max_electron_range_m);
+    double Cucinotta_plateau_Gy        =  AT_RDD_Cucinotta_Ddelta_average_Gy( Katz_point_r_min_m, r_max_m, max_electron_range_m, beta, Katz_point_coeff_Gy);
+    Cucinotta_plateau_Gy              +=  C_norm * AT_RDD_Cucinotta_Dexc_average_Gy( Katz_point_r_min_m, r_max_m, max_electron_range_m, beta, Katz_point_coeff_Gy);
     d_max_Gy   =  AT_RDD_ExtendedTarget_CucinottaPoint_Gy( 0.0, a0_m, Katz_point_r_min_m, max_electron_range_m, beta, Katz_point_coeff_Gy, C_norm, Cucinotta_plateau_Gy);
   }// end RDD_CucinottaExtTarget
 
@@ -556,7 +559,11 @@ int AT_D_RDD_Gy( const long  n,
     const double beta                  =  AT_beta_from_E_single( E_MeV_u );
     const double C_norm                =  precalculated_constant_Gy;
     const double Katz_point_r_min_m    =  AT_RDD_r_min_m(max_electron_range_m, rdd_model, rdd_parameter);
-    const double Cucinotta_plateau_Gy  =  0.0; // FIXME to be implemented
+
+    const double r_max_m               =  GSL_MIN(a0_m, max_electron_range_m);
+    double Cucinotta_plateau_Gy        =  AT_RDD_Cucinotta_Ddelta_average_Gy( Katz_point_r_min_m, r_max_m, max_electron_range_m, beta, Katz_point_coeff_Gy);
+    Cucinotta_plateau_Gy              +=  C_norm * AT_RDD_Cucinotta_Dexc_average_Gy( Katz_point_r_min_m, r_max_m, max_electron_range_m, beta, Katz_point_coeff_Gy);
+
     for (i = 0; i < n; i++){
       D_RDD_Gy[i]     =  AT_RDD_ExtendedTarget_CucinottaPoint_Gy( r_m[i], a0_m, Katz_point_r_min_m, max_electron_range_m, beta, Katz_point_coeff_Gy, C_norm, Cucinotta_plateau_Gy);
       if( D_RDD_Gy[i] > 0.0)
@@ -698,7 +705,10 @@ int AT_r_RDD_m  ( const long  n,
     const double beta    =  AT_beta_from_E_single( E_MeV_u );
     const double C_norm  =  precalculated_constant_Gy;
     const double a0_m    =  AT_RDD_a0_m(max_electron_range_m, rdd_model, rdd_parameter);
-    const double Cucinotta_plateau_Gy  =  0.0; //FIXME to be implemented
+
+    const double r_max_m               =  GSL_MIN(a0_m, max_electron_range_m);
+    double Cucinotta_plateau_Gy        =  AT_RDD_Cucinotta_Ddelta_average_Gy( r_min_m, r_max_m, max_electron_range_m, beta, Katz_point_coeff_Gy);
+    Cucinotta_plateau_Gy              +=  C_norm * AT_RDD_Cucinotta_Dexc_average_Gy( r_min_m, r_max_m, max_electron_range_m, beta, Katz_point_coeff_Gy);
 
     // TODO around d_max it is hard to find using ziddler algorithm inverse RDD =>
     // calculation in that case should be done manually

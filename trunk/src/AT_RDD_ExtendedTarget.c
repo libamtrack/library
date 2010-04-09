@@ -286,18 +286,16 @@ double AT_RDD_ExtendedTarget_CucinottaPoint_Gy(
 
   double D_Gy   =  0.0;
 
-  // plateau region FIXME implement function which calculates Cucinotta_plateau
-//  const double r_max_m = GSL_MIN(a0_m, max_electron_range_m);
-//  if( (r_m <=  0.01 * a0_m) && (r_m >= 0.0)){
-//    D_Gy  =  Cucinotta_plateau_Gy;
-//    if( max_electron_range_m < a0_m ){
-//      D_Gy *= (gsl_pow_2(r_max_m / a0_m));
-//    }
-//  }
+  const double r_max_m = GSL_MIN(a0_m, max_electron_range_m);
+  if( (r_m <=  0.01 * a0_m) && (r_m >= 0.0)){
+    D_Gy  =  Cucinotta_plateau_Gy;
+    if( max_electron_range_m < a0_m ){
+      D_Gy *= (gsl_pow_2(r_max_m / a0_m));
+    }
+  }
 
   /* intermediate */
-//  if( (r_m <  100.0 * a0_m) && (r_m >  0.01 * a0_m) ){
-  if( (r_m <  100.0 * a0_m) && (r_m >=  0.0) ){
+  if( (r_m <  100.0 * a0_m) && (r_m >  0.01 * a0_m) ){
     D_Gy  =  AT_RDD_ExtendedTarget_CucinottaPoint_Gy_by_integration( r_m, a0_m, KatzPoint_r_min_m, max_electron_range_m, beta, Katz_point_coeff_Gy, C_norm);
   }
 
