@@ -5,7 +5,6 @@ run.SPIFF		<-	function(	E.MeV.u,
 					RDD.model,
 					RDD.parameters,
 					ER.model,
-					ER.parameters,
 					gamma.model,
 					gamma.parameters,
 					N2,
@@ -25,7 +24,6 @@ if(verbose){
 								RDD.model = RDD.model,
 								RDD.parameters = RDD.parameters,
 								ER.model = ER.model,
-								ER.parameters = ER.parameters,
 								N2 = N2)
 
 	results.2	<-	AT.SC.get.f1(	E.MeV.u = E.MeV.u,
@@ -35,11 +33,10 @@ if(verbose){
 							RDD.model = RDD.model,
 							RDD.parameters = RDD.parameters,
 							ER.model = ER.model,
-							ER.parameters = ER.parameters,
 							N2 = N2,
 							n.bins.f1 = results.1$n.bins.f1,
 							f1.parameters = results.1$f1.parameters)
-
+							
 	results.3	<-	AT.SC.get.f.array.size(	u = results.2$f.parameters[1],
 								fluence.factor = fluence.factor,
 								N2 = N2,
@@ -77,7 +74,6 @@ if(verbose){
 					RDD.model = RDD.model,
 					RDD.parameters = RDD.parameters,
 					ER.model = ER.model,
-					ER.parameters = ER.parameters,
 					N2.set = N2,
 					N2 = results.5$N2,
 					f1.parameters = results.1$f1.parameters,
@@ -105,7 +101,6 @@ if(verbose){
 							RDD.model 		= RDD.model,
 							RDD.parameters 	= RDD.parameters,
 							ER.model 		= ER.model,
-							ER.parameters 	= ER.parameters,
 							gamma.model		= gamma.model,
 							gamma.parameters	= gamma.parameters,
 							N2 			= N2,

@@ -41,7 +41,7 @@ debug				<-	F
 # RDDs
 ################################################################################################
 E.MeV.u			<-	c(1, 10, 100)
-particle.no		<-	c(1001,2004)					# p, He-4, C-12
+particle.no		<-	c(1001, 2004, 6012)					# p, He-4, C-12
 
 material.no		<-	c(1, 2)
 
@@ -50,7 +50,6 @@ RDD.model.names <- c("Simple step test function",  "Katz' point target", "Geiss'
 RDD.parameters <- list(c(1),c(1e-10,1e-10), c(1e-10),c(1e-8,1e-10),c(5e-11,1e-10),c(1e-10,1e-8,1e-10),c(5e-11,1e-8,1e-10))
 
 ER.model			<-	2 								# (Waligorski)
-ER.parameters		<-	1
 
 df.RDD				<-	expand.grid(	r.m				=	10^seq(-12, 0, by = 0.02),
 										E.MeV.u		=	E.MeV.u,
@@ -73,7 +72,6 @@ for (cur.EPMM in unique(df.RDD$EPMM)){
 												particle.no		=	df.RDD$particle.no[ii],
 												material.no		=	df.RDD$material.no[ii],
 												ER.model			=	ER.model,
-												ER.parameters		=	ER.parameters,
 												RDD.model			=	unique(df.RDD$RDD.model[ii]),
 												RDD.parameters	=	RDD.parameters[[unique(df.RDD$RDD.model[ii])]])			
 }

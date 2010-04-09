@@ -84,8 +84,8 @@ static const material_data AT_Material_Data = {
     {  "User defined",  "Water, Liquid", "Aluminum Oxide", "Aluminum",   "PMMA",    "Alanine",   "Lithium Fluoride" }
 };
 
-// Cucinnotta calculated average A for water as 14.3, but it seems that it is 13.0 (Leszek)
-// looks like error in his article
+/* Cucinnotta calculated average A for water as 14.3, but it seems that it is 13.0 (Leszek) *
+ * looks like error in his article */
 
 /**
  * Get index of material in AT_Material_Data for given material_no
@@ -180,7 +180,7 @@ double AT_average_Z_from_material_no( const long   material_no );
 
 /**
  * Returns material data for single material
- * @param[in] material_no
+ * @param[in]  material_no
  * @param[out] density_g_cm3
  * @param[out] electron_density_m3
  * @param[out] I_eV

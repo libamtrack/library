@@ -268,8 +268,7 @@ double AT_RDD_d_max_Gy(
     const long    material_no,
     const long    rdd_model,
     const double  rdd_parameter[],
-    const long    er_model,
-    const double  er_parameter[]){
+    const long    er_model){
 
   // TODO implement handling of non-compatible er and rdd
 
@@ -359,7 +358,6 @@ void AT_RDD_f1_parameters(
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
-    const double  er_parameter[],
     double        f1_parameters[])
 {
   double LET_MeV_cm2_g              =  0.0;
@@ -401,7 +399,7 @@ void AT_RDD_f1_parameters(
 
   ////////////////////////////////////////////////////////////////////////////////
   // PARAMETER 4: Get minimum dose d_min_Gy (f1_parameters[4])
-  d_max_Gy = AT_RDD_d_max_Gy( E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, er_parameter);
+  d_max_Gy = AT_RDD_d_max_Gy( E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model);
 
   // write data to output table
   f1_parameters[0]  =  LET_MeV_cm2_g;
@@ -423,7 +421,6 @@ int AT_D_RDD_Gy( const long  n,
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
-    const double  er_parameter[],
     double        D_RDD_Gy[])
 {
   /********************************************************
@@ -579,7 +576,6 @@ int AT_r_RDD_m  ( const long  n,
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
-    const double  er_parameter[],
     double        r_RDD_m[])
 {
   long     i;
@@ -594,7 +590,7 @@ int AT_r_RDD_m  ( const long  n,
 
   const double d_min_Gy                   =  AT_RDD_d_min_Gy(E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, precalculated_constant_Gy );
 
-  const double d_max_Gy                   =  AT_RDD_d_max_Gy(E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, er_parameter);
+  const double d_max_Gy                   =  AT_RDD_d_max_Gy(E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model);
 
   if( rdd_model == RDD_Test){
     // Loop over all doses given

@@ -78,7 +78,6 @@ int AT_GetNumber(void);
  * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @see          AT_RDD.h for definition
  * @param[in]  er_model            index number for chosen electron-range model
- * @param[in]  er_parameters       parameters for chosen electron-range model (array of size depending on chosen model)
  * @see          AT_ElectronRange.h for definition
  * @param[in]  gamma_model         index number for chosen gamma response
  * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size depending on chosen model)
@@ -90,7 +89,7 @@ int AT_GetNumber(void);
  * @param[in]  shrink_tails_under  (algorithm specific) limit for tail cutting in local dose distribution
  * @param[in]  adjust_N2           (algorithm specific) if true, "N2" will be increase if necessary at high fluence to ensure sufficient binning resolution
  * @param[in]  lethal_events_mode  (algorithm specific) if true, allows to do calculations for cell survival
- * @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results
+ * @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results\n
  *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
  *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm\n
  *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -111,7 +110,6 @@ void AT_run_SPIFF_method(  const long  n,
     const long    rdd_model,
     const double  rdd_parameters[],
     const long    er_model,
-    const double  er_parameters[],
     const long    gamma_model,
     const double  gamma_parameters[],
     long          N2, // TODO investigate if this can be changed inside
@@ -139,7 +137,6 @@ void AT_run_SPIFF_method(  const long  n,
  * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @see          AT_RDD.h for definition
  * @param[in]  ER_model            index number for chosen electron-range model
- * @param[in]  ER_parameters       parameters for chosen electron-range model (array of size depending on chosen model)
  * @see          AT_ElectronRange.h for definition
  * @param[in]  gamma_model         index number for chosen gamma response
  * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size depending on chosen model)
@@ -154,7 +151,7 @@ void AT_run_SPIFF_method(  const long  n,
  * @param[in]  lethal_events_mode  (algorithm specific) if true, allows to do calculations for cell survival
  * @param[in]  nX                  (algorithm specific) number of voxels of the grid in x (and y as the grid is quadratic)
  * @param[in]  voxel_size_m        side length of a voxel in m
- * @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results
+ * @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results\n
  *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
  *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm\n
  *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -177,7 +174,6 @@ void AT_run_GSM_method(  const long  n,
     const long     RDD_model,
     const double   RDD_parameters[],
     const long     ER_model,
-    const double   ER_parameters[],
     const long     gamma_model,
     const double   gamma_parameters[],
     const long     N_runs,
@@ -205,14 +201,13 @@ void AT_run_GSM_method(  const long  n,
  * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @see          AT_RDD.h for definition
  * @param[in]  ER_model            index number for chosen electron-range model
- * @param[in]  ER_parameters       parameters for chosen electron-range model
  * @see          AT_ElectronRange.h for definition
  * @param[in]  gamma_model         index number for chosen gamma response
  * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size depending on chosen model)
  * @see          AT_GammaResponse.h for definition
  * @param[in]  saturation_cross_section_factor  (algorithm specific)  scaling factor for the saturation cross section
  * @see          Waligorski, 1988
- * @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results
+ * @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results\n
  *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
  *    results[1]    d_check         (algorithm independent)  not available with IGK\n
  *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -233,7 +228,6 @@ void AT_run_IGK_method(  const long  n,
     const long    RDD_model,
     const double  RDD_parameters[],
     const long    ER_model,
-    const double  ER_parameters[],
     const long    gamma_model,
     const double  gamma_parameters[],
     const double  saturation_cross_section_factor,
@@ -255,7 +249,6 @@ void AT_run_IGK_method(  const long  n,
  * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @see          AT_RDD.h for definition
  * @param[in]  ER_model            index number for chosen electron-range model
- * @param[in]  ER_parameters       parameters for chosen electron-range model (array of size depending on chosen model)
  * @see          AT_ElectronRange.h for definition
  * @param[in]  gamma_model         index number for chosen gamma response
  * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size depending on chosen model)
@@ -265,7 +258,7 @@ void AT_run_IGK_method(  const long  n,
  * @param[in]  fluence_factor      factor to scale the fluences given as "fluence_cm2" with
  * @param[in]  write_output        if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory
  * @param[in]  importance_sampling if unequal zero importance sampling will be applied to the single impact local dose distribution
- * @param[in]  results             array of size 10 to be allocated by the user which will be used to return the results
+ * @param[in]  results             array of size 10 to be allocated by the user which will be used to return the results\n
  *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
  *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm\n
  *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -285,7 +278,6 @@ void AT_run_SPISS_method(  const long  n,
     const long    RDD_model,
     const double  RDD_parameters[],
     const long    ER_model,
-    const double  ER_parameters[],
     const long    gamma_model,
     const double  gamma_parameters[],
     const long    n_runs,
@@ -295,14 +287,5 @@ void AT_run_SPISS_method(  const long  n,
     const long    importance_sampling,
     double        results[]);
 
-
-/**
- * Algorithms code numbers
- */
-enum Method{ //TODO is it used anywhere ?
-  ME_Grid      = 1,     /**< Grid summation method */
-      ME_SPIFF = 2,     /**< Spiff algorithm */
-      ME_Katz  = 3      /**< Katz model */
-};
 
 #endif /* AmTrack_H_ */

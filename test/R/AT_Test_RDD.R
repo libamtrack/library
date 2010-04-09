@@ -25,7 +25,7 @@
 rm( list = ls() )
 
 # load libAmTrack library
-dyn.load("../../Release/libAmTrack.dll")
+dyn.load("../../AT_Release/libAmTrack.dll")
 
 # load wrapping scripts
 source("../../wrapper/R/AmTrack.R")
@@ -66,14 +66,13 @@ material.no <- c(1)
 E.MeV.u = rep( 100 , nrow(df1))
 particle.no = rep( 1001, nrow(df1))
 
-ER.parameters <- c(0)
 
 for( i in ER.model) {
  ii 			<- df1$ER.model == i
 	for( j in RDD.model) {
  	jj 			<- ((df1$RDD.model == j) & (df1$ER.model == i)) 
-			df1$D.Gy[jj] <- AT.D.RDD.Gy(r.m = df1$r.m[jj], E.MeV.u, particle.no, material.no, ER.model = i, ER.parameters = ER.parameters, RDD.model = j, RDD.parameters=RDD.parameters[[j]] )
- 		df1$r.m.check[jj] <- AT.r.RDD.m(D.Gy = df1$D.Gy[jj], E.MeV.u, particle.no, material.no, ER.model = i, ER.parameters = ER.parameters, RDD.model = j, RDD.parameters=RDD.parameters[[j]] ) 	
+			df1$D.Gy[jj] <- AT.D.RDD.Gy(r.m = df1$r.m[jj], E.MeV.u, particle.no, material.no, ER.model = i, RDD.model = j, RDD.parameters=RDD.parameters[[j]] )
+ 		df1$r.m.check[jj] <- AT.r.RDD.m(D.Gy = df1$D.Gy[jj], E.MeV.u, particle.no, material.no, ER.model = i, RDD.model = j, RDD.parameters=RDD.parameters[[j]] ) 	
 		}
 }
 
@@ -100,7 +99,7 @@ p2.check <- xyplot( r.m.check ~ r.m | RDD.model.name, groups = ER.model.name, re
 D.Gy <- 10^seq(-10,6,length.out=50)
 
 
-df2 <- expand.grid( D.Gy = D.Gy , ER.model = ER.model, RDD.model = RDD.model )
+df2 <- expand.grid( D.Gy = D.Gy, ER.model = ER.model, RDD.model = RDD.model )
 
 df2$ER.model.name	<- as.character(ER.model.names[df2$ER.model])
 df2$RDD.model.name	<- as.character(RDD.model.names[df2$RDD.model])
@@ -117,7 +116,7 @@ for( i in ER.model) {
  ii 			<- df2$ER.model == i
  for( j in RDD.model) {
  	jj 			<- ((df2$RDD.model == j) & (df2$ER.model == i)) 
-  		df2$r.m[jj] <- AT.r.RDD.m(D.Gy = df2$D.Gy[jj], E.MeV.u, particle.no, material.no, ER.model = i, ER.parameters = ER.parameters, RDD.model = j, RDD.parameters=RDD.parameters[[j]] ) 	
+  		df2$r.m[jj] <- AT.r.RDD.m(D.Gy = df2$D.Gy[jj], E.MeV.u, particle.no, material.no, ER.model = i, RDD.model = j, RDD.parameters=RDD.parameters[[j]] ) 	
 		}
 }
 

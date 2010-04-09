@@ -49,7 +49,6 @@ void test_AT_GSM(  double E_MeV_u[])
   long          RDD_model               = 3;    //RDD_site
   double        RDD_parameters[]        = {1e-9 ,1e-10, 0.0};
   long          ER_model                = 4;  //ButtsKatz
-  double        ER_parameters[]         = {0.0};
   long          gamma_model             = 1; // single hit, single target
   double        gamma_parameters[]      = {1, 10.5e-2, 1 ,1, 0};
   long          N2                      = 20;
@@ -73,7 +72,6 @@ void test_AT_GSM(  double E_MeV_u[])
       RDD_model,
       RDD_parameters,
       ER_model,
-      ER_parameters,
       gamma_model,
       gamma_parameters,
       N_runs,
@@ -99,7 +97,6 @@ void test_AT_SPIFF(  double E_MeV_u[])
   long          RDD_model               = RDD_KatzSite;    //RDD_site
   double        RDD_parameters[]        = {5e-8 ,1e-10, 0};
   long          ER_model                = ER_Geiss;  //ButtsKatz
-  double        ER_parameters[]         = {0.0};
   long          gamma_model             = 2; // single hit, single target
   double        gamma_parameters[]      = {1, 10.0, 1 ,1, 0};
   long          N2                      = 30;
@@ -120,7 +117,6 @@ void test_AT_SPIFF(  double E_MeV_u[])
       RDD_model,
       RDD_parameters,
       ER_model,
-      ER_parameters,
       gamma_model,
       gamma_parameters,
       N2,
@@ -146,7 +142,6 @@ void test_AT_IGK(double E_MeV_u[])
         long    RDD_model = 3;
         double  RDD_parameters[] = {5e-8,1e-10, 0.0};
         long    ER_model = 3;
-        double  ER_parameters[] = {0.0};
         long    gamma_model = 2;
         double  gamma_parameters[] = {1.0 , 1.0,1 ,1};
         double  saturation_cross_section_factor = 1.0;
@@ -160,7 +155,6 @@ void test_AT_IGK(double E_MeV_u[])
         RDD_model,
         RDD_parameters,
         ER_model,
-        ER_parameters,
         gamma_model,
         gamma_parameters,
         saturation_cross_section_factor,

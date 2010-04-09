@@ -47,7 +47,6 @@ void AT_D_RDD_Gy_R( const int*  n,
     const int*    rdd_model,
     const float*  rdd_parameter,
     const int*    er_model,
-    const float*  er_parameter,
     float*        D_RDD_Gy);
 
 
@@ -85,7 +84,6 @@ void AT_r_RDD_m_R  ( const int*  n,
     const int*    rdd_model,
     const float*  rdd_parameter,
     const int*    er_model,
-    const float*  er_parameter,
     float*        r_RDD_m);
 
 
@@ -120,7 +118,6 @@ void AT_run_GSM_method_R(  const int*  n,
     const int*    RDD_model,
     const float*  RDD_parameters,
     const int*    ER_model,
-    const float*  ER_parameters,
     const int*    gamma_model,
     const float*  gamma_parameters,
     const int*    N_runs,
@@ -141,7 +138,6 @@ void AT_run_SPIFF_method_R(  const int*  n,
     const int*    RDD_model,
     const float*  RDD_parameters,
     const int*    ER_model,
-    const float*  ER_parameters,
     const int*    gamma_model,
     const float*  gamma_parameters,
     int*          N2,
@@ -162,7 +158,6 @@ void  AT_SC_get_f1_array_size_R(
     const int*    rdd_model,
     const float*  rdd_parameter,
     const int*    er_model,
-    const float*  er_parameter,
     const int*    N2,
     int*          n_bins_f1,
     float*        f1_parameters);
@@ -177,7 +172,6 @@ void  AT_SC_get_f1_R(
     const int*    rdd_model,
     const float*  rdd_parameter,
     const int*    er_model,
-    const float*  er_parameter,
     const int*    N2,
     const int*    n_bins_f1,
     const float*  f1_parameters,
