@@ -196,8 +196,7 @@ void  AT_SC_get_f_array_size_R(
     int*          n_convolutions);
 
 
-void  AT_SC_get_f_start_R(  const float*  u_start,
-    const int*    n_bins_f1,
+void  AT_SC_get_f_start_R(  const int*    n_bins_f1,
     const int*    N2,
     const float*  f1_d_Gy,
     const float*  f1_dd_Gy,

@@ -179,14 +179,12 @@ void AT_run_SPIFF_method(  const long  n,
     f0           =  0.0;
     d_check      =  0.0;
 
-    AT_SC_get_f_start(  u_start,
-        n_bins_f1,
+    AT_SC_get_f_start(  n_bins_f1,
         N2,
         f1_d_Gy,
         f1_dd_Gy,
         f1,
         n_bins_f,
-        // from here: return values
         f_d_Gy,
         f_dd_Gy,
         f);
@@ -420,14 +418,12 @@ void AT_run_GSM_method(  const long  n,
   double*  f             =  (double*)calloc(n_bins_f, sizeof(double));
   double   f0            =  0.0;
 
-  AT_SC_get_f_start(  u_start,
-      n_bins_f1,
+  AT_SC_get_f_start(  n_bins_f1,
       N2,
       f1_d_Gy,
       f1_dd_Gy,
       f1,
       n_bins_f,
-      // from here: return values
       f_d_Gy,
       f_dd_Gy,
       f);
@@ -1249,14 +1245,12 @@ void AT_run_SPISS_method(  const long  n,
   double*  f            	=  (double*)calloc(n_bins_f, sizeof(double));
   double   f0            	=  0.0;
 
-  AT_SC_get_f_start(  u_start,
-      n_bins_f1,
+  AT_SC_get_f_start(  n_bins_f1,
       N2,
       f1_d_Gy,
       f1_dd_Gy,
       f1,
       n_bins_f,
-      // from here: return values
       f_d_Gy,
       f_dd_Gy,
       f);
