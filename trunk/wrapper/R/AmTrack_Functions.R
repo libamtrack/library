@@ -36,7 +36,7 @@ if(verbose){
 							N2 = N2,
 							n.bins.f1 = results.1$n.bins.f1,
 							f1.parameters = results.1$f1.parameters)
-							
+
 	results.3	<-	AT.SC.get.f.array.size(	u = results.2$f.parameters[1],
 								fluence.factor = fluence.factor,
 								N2 = N2,
