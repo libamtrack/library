@@ -59,15 +59,22 @@ UI:AT_UI.o $(LIBOBJS)
 		$(GCCDIR)gcc -L$(GSLPATH)$(DSEP)lib $(LIBOBJS) AT_UI.o -o $(NAMEEXE) $(LFLAGS) 
 		$(RMCMD) *.o
 
+test:AT_test.o $(LIBOBJS)
+		$(GCCDIR)gcc -L$(GSLPATH)$(DSEP)lib $(LIBOBJS) AT_test.o -o AT_test.exe $(LFLAGS) 
+		$(RMCMD) *.o
+
 clean:
 		- $(RMCMD) *.o
 		- $(RMCMD) $(NAMELIB)
 		- $(RMCMD) $(NAMEEXE)
+		- $(RMCMD) AT_test.exe
 
 $(LIBOBJS):$(LIBCOBJS) $(LIBHOBJS)
 		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) $(LIBCOBJS)
 
+AT_UI.o:test$(DSEP)C$(DSEP)AT_UI.c 
+		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) test$(DSEP)C$(DSEP)AT_UI.c
 
-AT_UI.o:$(SRCDIR)$(DSEP)AT_UI.c 
-		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) $(SRCDIR)$(DSEP)AT_UI.c
+AT_test.o:test$(DSEP)C$(DSEP)AT_test.c 
+		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) test$(DSEP)C$(DSEP)AT_test.c
 

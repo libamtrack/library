@@ -37,6 +37,7 @@
 #include <string.h>
 
 #include "AmTrack.h"
+#include "AT_Wrapper_R.h"
 
 void test_AT_GSM(  double E_MeV_u[])
 {
@@ -209,7 +210,6 @@ int main(){
   const int rdd_model           =       3;
   const float rdd_parameters[]  =       {5e-8f};
   const int er_model            =       3;
-  const float er_parameters[]   =       {0.0f};
   const int N2                  =       20;
   int n_bins_f1                 =       0;
   float f1_parameters[9];
@@ -222,7 +222,6 @@ int main(){
       &rdd_model,
       rdd_parameters,
       &er_model,
-      er_parameters,
       &N2,
       &n_bins_f1,
       f1_parameters);
@@ -238,12 +237,11 @@ int main(){
       &n,
       E_MeV_u,
       particle_no,
-      &fluence_cm2,
+      fluence_cm2,
       &material_no,
       &rdd_model,
       rdd_parameters,
       &er_model,
-      er_parameters,
       &N2,
       &n_bins_f1,
       f1_parameters,
@@ -257,7 +255,6 @@ int main(){
   free(f1_d_Gy);
   free(f1_dd_Gy);
   free(f1);
-
 
   return 0;
 
