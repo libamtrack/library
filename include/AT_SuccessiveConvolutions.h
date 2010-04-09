@@ -106,7 +106,7 @@ typedef struct{
  * @param[in]  N2                  number of bins per factor of two in local dose array
  * @param[out] n_bins_f1           number of bins to hold the f1 distribution
  * @param[out] f1_parameters       array with numbers describing characteristics of the single particle components composing the mixed field
- *                                 the array is of size n * 8, the characteristics being:
+ *                                 the array is of size n * 8, the characteristics being:\n
  *                                      0 - LET_MeV_cm2_g \n
  *                                      1 - r_min_m \n
  *                                      2 - r_max_m \n
@@ -147,13 +147,13 @@ void  AT_SC_get_f1_array_size(
  * @param[in]  n_bins_f1             number of bins holding the f1 distribution (from AT_SC_get_f1_array_size)
  * @param[out] norm_fluence          relative fluences for field components (array of size n)
  * @param[out] dose_contribution_Gy  absolute dose contribution from each field component (array of size n)
- * @param[out] f_parameters          array of size 7 holding numbers describing the characteristics of the composed fields:
- *                                      0 - u (mean number of tracks contributing)
- *                                      1 - total fluence_cm2
- *                                      2 - total_dose_Gy
- *                                      3 - ave_E_MeV
- *                                      4 - dw_E_MeV
- *                                      5 - ave_LET_MeV_cm2_g
+ * @param[out] f_parameters          array of size 7 holding numbers describing the characteristics of the composed fields:\n
+ *                                      0 - u (mean number of tracks contributing)\n
+ *                                      1 - total fluence_cm2\n
+ *                                      2 - total_dose_Gy\n
+ *                                      3 - ave_E_MeV\n
+ *                                      4 - dw_E_MeV\n
+ *                                      5 - ave_LET_MeV_cm2_g\n
  *                                      6 - dw_LET_MeV_cm2_g
  * @param[out] f1_d_Gy               bin midpoints for f1, array of size n_bins_f1
  * @param[out] f1_dd_Gy              bin widths for f1, array of size n_bins_f1
@@ -210,13 +210,13 @@ void AT_SC_get_f_array_size(  const double   u,
 /**
  * Computes the (linearized) local dose distrubution to start convolutions with, i.e. f at u_start
  * Usually step 4 of the CPP-SC method
- * @param[in]  u_start             value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from
- * @param[in]  n_bins_f1           number of bins holding the f1 distribution (from AT_SC_get_f_array_size)
+ * @param[in]  u_start             value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from AT_SC_get_f_array_size)
+ * @param[in]  n_bins_f1           number of bins holding the f1 distribution (from AT_SC_get_f1_array_size)
  * @param[in]  N2                  number of bins per factor of two in local dose array
  * @param[in]  f1_d_Gy             bin midpoints for f1, array of size n_bins_f1 (from AT_SC_get_f1)
  * @param[in]  f1_dd_Gy            bin width for f1, array of size n_bins_f1 (from AT_SC_get_f1)
  * @param[in]  f1                  f1 values, array of size n_bins_f1 (from AT_SC_get_f1)
- * @param[out] n_bins_f            number of bins holding the resulting f local dose distribution (from AT_SC_get_f_array_size)
+ * @param[in]  n_bins_f            number of bins holding the resulting f local dose distribution (from AT_SC_get_f_array_size)
  * @param[out] f_d_Gy              bin midpoints for f, array of size n_bins_f
  * @param[out] f_dd_Gy             bin widths for f, array of size n_bins_f
  * @param[out] f_start             f values to start with, array of size n_bins_f
@@ -235,12 +235,13 @@ void  AT_SC_get_f_start( const double  u_start,
 
 /**
  * Routine to perform the convolutions from initial linearized local dose distribution f_start to resulting f
- * as described by Kellerer, 1969. This is a to most extend a reimplementation of Kellerer's original FORTRABN IV code.
+ * as described by Kellerer, 1969. This is a to most extend a reimplementation of Kellerer's original FORTRAN IV code.
  * Usually step 5 of the CPP-SC method
- * @param[in]      u_start             value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from
- * @param[int]     n_bins_f            number of bins holding the resulting f local dose distribution (from AT_SC_get_f_array_size)
+ * @param[in]      u_start             value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from AT_SC_get_f_array_size)
+ * @param[in]      n_bins_f            number of bins holding the resulting f local dose distribution (from AT_SC_get_f_array_size)
  * @param[in,out]  N2                  number of bins per factor of two in local dose array f_start, will return new value in case it was adjusted by the routine (higher resolution in case of high fluences)
- * @param[in,out]  n_bins_f_used       in: number of bins used for f_start, out: number of bins used for resulting. As tails can be cut and N2 adjusted this is usually not the array size for f_d_Gy, f_dd_Gy, f but smaller (so entries 0..n_bins_f_used-1 are used)
+ * @param[in,out]  n_bins_f_used       in: number of bins used for f_start, \n
+ *                                     out: number of bins used for resulting. As tails can be cut and N2 adjusted this is usually not the array size for f_d_Gy, f_dd_Gy, f but smaller (so entries 0..n_bins_f_used-1 are used)
  * @param[in,out]  n_bins_f            number of bins holding the resulting f local dose distribution (from AT_SC_get_f_array_size)
  * @param[in,out]  f_d_Gy              bin midpoints for f, array of size n_bins_f (from AT_SC_get_f_start)
  * @param[in,out]  f_dd_Gy             bin widths for f, array of size n_bins_f (from AT_SC_get_f_start)
@@ -272,7 +273,9 @@ void   AT_SuccessiveConvolutions( const double  u,
     const bool   adjust_N2);
 
 /* All following are SUBROUTINES TO AT_SuccessiveConvolutions (from FORTRAN IV code) */
-// Todo: Replace by more c-like, readable function only implemented where necessary
+
+/* TODO: Replace by more c-like, readable function only implemented where necessary */
+
 /**
  * Normalized the distribution resulting from last convolution
  * @param theKList
