@@ -171,36 +171,33 @@ void test_AT_IGK(double E_MeV_u[])
 }
 
 int main(){
-////  long test_pn[] = {1001, 2004, 6012, 8016, 92238};
-////  double test_E_MeV_u[] = {100,100,100,100,100};
-////  long material_no = 1;
-////  long test_A[] = {0,0,0,0,0};
-////  long test_Z[] = {0,0,0,0,0};
-////  double test_w[] = {0,0,0,0,0};
-////  double test_LET[] = {0,0,0,0,0};
-////
-////  long n_tmp = 5;
-////  AT_A_from_particle_no(       n_tmp,
-////    test_pn,
-////    test_A);
-////  AT_Z_from_particle_no(       n_tmp,
-////    test_pn,
-////    test_Z);
-////  AT_atomic_weight_from_particle_no(       n_tmp,
-////    test_pn,
-////    test_w);
-////
-////  AT_LET_MeV_cm2_g(     n_tmp,
-////      test_E_MeV_u,
-////      test_pn,
-////      material_no,
-////      test_LET);
+//  long test_pn[] = {1001, 2004, 6012, 8016, 92238};
+//  double test_E_MeV_u[] = {100,100,100,100,100};
+//  long material_no = 1;
+//  long test_A[] = {0,0,0,0,0};
+//  long test_Z[] = {0,0,0,0,0};
+//  double test_w[] = {0,0,0,0,0};
+//  double test_LET[] = {0,0,0,0,0};
 //
-
-  double energy = 200.0;
-  double E_MeV_u[] = {energy};
+//  long n_tmp = 5;
+//  AT_A_from_particle_no(       n_tmp,
+//    test_pn,
+//    test_A);
+//  AT_Z_from_particle_no(       n_tmp,
+//    test_pn,
+//    test_Z);
+//  AT_atomic_weight_from_particle_no(       n_tmp,
+//    test_pn,
+//    test_w);
+//
+//  AT_LET_MeV_cm2_g(     n_tmp,
+//      test_E_MeV_u,
+//      test_pn,
+//      material_no,
+//      test_LET);
+//  double E_MeV_u[] = {energy};
 //  test_AT_IGK(E_MeV_u);
-  test_AT_SPIFF(E_MeV_u);
+//  test_AT_SPIFF(E_MeV_u);
 //  test_AT_GSM(E_MeV_u);
 //  while (energy >= 0.1){
 //    E_MeV_u[0] = energy;
@@ -208,6 +205,65 @@ int main(){
 //    test_AT_SPIFF(E_MeV_u);
 //    energy = energy *0.9;
 //    }
+
+
+  const int n                   =       1;
+  const float E_MeV_u[]         =       {3};
+  const int particle_no[]       =       {1001};
+  const float fluence_cm2[]     =       {-0.01f};
+  const int material_no         =       1;
+  const int rdd_model           =       3;
+  const float rdd_parameters[]  =       {5e-8f};
+  const int er_model            =       3;
+  const float er_parameters[]   =       {0.0f};
+  const int N2                  =       20;
+  int n_bins_f1                 =       0;
+  float f1_parameters[9];
+
+  AT_SC_get_f1_array_size_R(
+      &n,
+      E_MeV_u,
+      particle_no,
+      &material_no,
+      &rdd_model,
+      rdd_parameters,
+      &er_model,
+      er_parameters,
+      &N2,
+      &n_bins_f1,
+      f1_parameters);
+
+  float norm_fluence[]           =      {0};
+  float dose_contribution_Gy[]   =      {0};
+  float f_parameters[7];
+  float* f1_d_Gy                  =      (float*)malloc(n_bins_f1*sizeof(float));
+  float* f1_dd_Gy                 =      (float*)malloc(n_bins_f1*sizeof(float));
+  float* f1                       =      (float*)malloc(n_bins_f1*sizeof(float));
+
+  AT_SC_get_f1_R(
+      &n,
+      E_MeV_u,
+      particle_no,
+      &fluence_cm2,
+      &material_no,
+      &rdd_model,
+      rdd_parameters,
+      &er_model,
+      er_parameters,
+      &N2,
+      &n_bins_f1,
+      f1_parameters,
+      norm_fluence,
+      dose_contribution_Gy,
+      f_parameters,
+      f1_d_Gy,
+      f1_dd_Gy,
+      f1);
+
+  free(f1_d_Gy);
+  free(f1_dd_Gy);
+  free(f1);
+
 
   return 0;
 
