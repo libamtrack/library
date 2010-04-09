@@ -79,6 +79,8 @@ inline double  AT_inverse_RDD_Geiss_m( const double D_Gy,
     const double norm_constant_Gy){
   if ((d_min_Gy <= D_Gy) && (D_Gy <= d_max_Gy)){
     return a0_m * sqrt(norm_constant_Gy / D_Gy);
+  } else if ( D_Gy < d_min_Gy ){
+    return a0_m * sqrt(norm_constant_Gy / d_min_Gy);
   }
   return 0.0;
 }

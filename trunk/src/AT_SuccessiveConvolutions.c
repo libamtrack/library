@@ -219,7 +219,7 @@ void  AT_SC_get_f1(
       i_low  = locate(d_df_low, n_bins_f1, d_min_k);
       i_high = locate(d_df_low, n_bins_f1, d_max_k);
       i_low            -=  1;
-      i_high            -=  1;
+      i_high           -=  1;
 
       long  n_bins_df      =  i_high - i_low + 1;  // changed from + 2
 
@@ -244,7 +244,7 @@ void  AT_SC_get_f1(
         d_low[0]                =  d_min_k;
         d_low[n_bins_df-1]      =  d_max_k;
 
-        d_mid[0]                =  sqrt(d_low[1 - 1] * d_high[1 - 1]);
+        d_mid[0]                =  sqrt(d_low[0] * d_high[0]);
         d_mid[n_bins_df-1-1]    =  sqrt(d_low[n_bins_df - 1] * d_high[n_bins_df - 1]);
         d_mid[n_bins_df-1]      =  0.0;
 
@@ -258,12 +258,9 @@ void  AT_SC_get_f1(
             d_low,
             E_MeV_u[k],
             particle_no[k],
-            /* detector parameters */
             material_no,
-            /* radial dose distribution model */
             rdd_model,
             rdd_parameter,
-            /* electron range model */
             er_model,
             er_parameter,
             r);
@@ -279,7 +276,7 @@ void  AT_SC_get_f1(
         }
 
         for (i = 0; i < n_bins_df; i++){
-          F1_1[i]            = (r[i] / f1_parameters[k*9 + 2]) * (r[i] / f1_parameters[k*9 + 2]);        // F1 - 1 instead of F1 to avoid numeric cut-off problems
+          F1_1[i]            = gsl_pow_2(r[i] / f1_parameters[k*9 + 2]);        // F1 - 1 instead of F1 to avoid numeric cut-off problems
         }
 
         F1_1[n_bins_df-1]    =  0.0;
@@ -290,8 +287,8 @@ void  AT_SC_get_f1(
         }
 
         // adjust the density in first and last bin, because upper limit is not d.max.Gy and lower not d.min.Gy
-        f1_k[1-1]        =  f1_k[1-1] * dd[1-1] / dd_df[i_low];
-        f1_k[n_bins_df-1-1]    =  f1_k[n_bins_df-1-1] * dd[n_bins_df-1-1] / dd_df[i_high - 1];
+        f1_k[0]              *=  dd[0] / dd_df[i_low];
+        f1_k[n_bins_df-2]    *=  dd[n_bins_df - 2] / dd_df[i_high - 1];
 
         // and paste f1 for this energy /particle into the over all data frame according to rel. fluence
         for (i = 0; i < (n_bins_df - 1); i++){
@@ -311,7 +308,7 @@ void  AT_SC_get_f1(
       }
 
       // remember highest bin used
-      n_bins_used        =  GSL_MAX(n_bins_used, i_high);
+      n_bins_used          =  GSL_MAX(n_bins_used, i_high);
     }
 
     // copy back for the dose axis
@@ -324,6 +321,7 @@ void  AT_SC_get_f1(
     free(d_df_mid);
     free(d_df_high);
     free(dd_df);
+
     // normalize f1 (should be ok anyway but there could be small round-off errors)
     double  f1_norm    =  0.0;
     for (i = 0; i < n_bins_f1; i++){
@@ -336,7 +334,7 @@ void  AT_SC_get_f1(
   } // if(f1_d_Gy != NULL)
 
   free(fluence_cm2_local);
-  return;
+
 }
 
 
