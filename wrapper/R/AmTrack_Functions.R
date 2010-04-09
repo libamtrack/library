@@ -45,8 +45,7 @@ if(verbose){
 								f1.dd.Gy = results.2$f1$f1.dd.Gy,
 								f1 = results.2$f1$f1)
 
-	results.4	<-	AT.SC.get.f.start(	u = results.2$f.parameters[1],
-								N2 = N2,
+	results.4	<-	AT.SC.get.f.start(	N2 = N2,
 								n.bins.f1 = results.1$n.bins.f1,
 								f1.d.Gy = results.2$f1$f1.d.Gy,
 								f1.dd.Gy = results.2$f1$f1.dd.Gy,

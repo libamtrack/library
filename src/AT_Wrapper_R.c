@@ -826,8 +826,7 @@ void  AT_SC_get_f_array_size_R(
 }
 
 
-void  AT_SC_get_f_start_R(  const float*  u_start,
-    const int*    n_bins_f1,
+void  AT_SC_get_f_start_R( const int*    n_bins_f1,
     const int*    N2,
     const float*  f1_d_Gy,
     const float*  f1_dd_Gy,
@@ -843,7 +842,6 @@ void  AT_SC_get_f_start_R(  const float*  u_start,
   const long n_bins_f_long = (long)(*n_bins_f);
 
   /* float -> double conversion */
-  double u_start_double = (double)(*u_start);
   double * f1_d_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
   double * f1_dd_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
   double * f1_double = (double*)calloc(n_bins_f1_long,sizeof(double));
@@ -859,8 +857,7 @@ void  AT_SC_get_f_start_R(  const float*  u_start,
   double * f_dd_Gy_double = (double*)calloc(n_bins_f_long,sizeof(double));
   double * f_start_double = (double*)calloc(n_bins_f_long,sizeof(double));
 
-  AT_SC_get_f_start(  u_start_double,
-      n_bins_f1_long,
+  AT_SC_get_f_start( n_bins_f1_long,
       N2_long,
       f1_d_Gy_double,
       f1_dd_Gy_double,

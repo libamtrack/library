@@ -363,8 +363,7 @@ AT.SC.get.f.array.size		<-	function(		u,
 }
 
 ######################
-AT.SC.get.f.start		<-	function(		u,
-											N2,
+AT.SC.get.f.start		<-	function(		N2,
 											n.bins.f1,
 											f1.d.Gy,
 											f1.dd.Gy,
@@ -375,8 +374,7 @@ AT.SC.get.f.start		<-	function(		u,
 	f.dd.Gy							<-	numeric(n.bins.f)
 	f								<-	numeric(n.bins.f)	
 	
-	res						<-	.C("AT_SC_get_f_start_R", 		u						= as.single(u),
-																n.bins.f1				= as.integer(n.bins.f1),
+	res						<-	.C("AT_SC_get_f_start_R", n.bins.f1				= as.integer(n.bins.f1),
 																N2						= as.integer(N2),
 																f1.d.Gy					= as.single(f1.d.Gy),
 																f1.dd.Gy				= as.single(f1.dd.Gy),

@@ -204,9 +204,9 @@ void AT_SC_get_f_array_size(  const double   u,
 
 
 /**
- * Computes the (linearized) local dose distrubution to start convolutions with, i.e. f at u_start
+ * Computes the (linearized) local dose distribution to start convolutions with, i.e. f at u_start
+ * TODO why is it f at u_start ? u_start is not used in function body
  * Usually step 4 of the CPP-SC method
- * @param[in]  u_start             value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from AT_SC_get_f_array_size)
  * @param[in]  n_bins_f1           number of bins holding the f1 distribution (from AT_SC_get_f1_array_size)
  * @param[in]  N2                  number of bins per factor of two in local dose array
  * @param[in]  f1_d_Gy             bin midpoints for f1, array of size n_bins_f1 (from AT_SC_get_f1)
@@ -217,8 +217,7 @@ void AT_SC_get_f_array_size(  const double   u,
  * @param[out] f_dd_Gy             bin widths for f, array of size n_bins_f
  * @param[out] f_start             f values to start with, array of size n_bins_f
  */
-void  AT_SC_get_f_start( const double  u_start,
-    const long    n_bins_f1,
+void  AT_SC_get_f_start(  const long    n_bins_f1,
     const long    N2,
     const double  f1_d_Gy[],
     const double  f1_dd_Gy[],

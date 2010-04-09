@@ -266,7 +266,7 @@ void  AT_SC_get_f1(
           char er_model_name[100];
           getERName( er_model, er_model_name);
           printf("rdd_model: %ld (%s), er_model: %ld (%s)\n", rdd_model, rdd_model_name, er_model, er_model_name);
-          exit(1);
+          exit(EXIT_FAILURE);
         }
 
         for (i = 0; i < n_bins_df; i++){
@@ -368,14 +368,10 @@ void  AT_SC_get_f_array_size( const double  u,
   // be expanded from f1 by N2 * n_convolutions
   *n_bins_f      =  (*n_convolutions + 1) * N2;
   *n_bins_f      +=  n_bins_f1;
-
-  return;
 }
 
 
-// TODO it seems that u_start is unused in function body
-void  AT_SC_get_f_start( const double  u_start,
-    const long     n_bins_f1,
+void  AT_SC_get_f_start(  const long     n_bins_f1,
     const long     N2,
     const double   f1_d_Gy[],
     const double   f1_dd_Gy[],
@@ -408,7 +404,6 @@ void  AT_SC_get_f_start( const double  u_start,
 
   free(d_low);
   free(d_high);
-  return;
 }
 
 
@@ -430,8 +425,8 @@ aKList  AT_SC_NORMAL(aKList theKList){
     long    LE     =  L + N;
     double  S      =  theKList.H[L-1] * theKList.DE[LE-1];
 
-    CM0           =  CM0 + S;
-    theKList.CM1  =  theKList.CM1 + S * theKList.E[LE-1];
+    CM0            =  CM0 + S;
+    theKList.CM1   =  theKList.CM1 + S * theKList.E[LE-1];
   }
 
   double  TT       =  (1.0 - theKList.H0) / (CM0 - theKList.H0);
