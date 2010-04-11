@@ -202,59 +202,67 @@ int main(){
 //    }
 
 
-  const int n                   =       1;
-  const float E_MeV_u[]         =       {3};
-  const int particle_no[]       =       {1001};
-  const float fluence_cm2[]     =       {-0.01f};
-  const int material_no         =       1;
-  const int rdd_model           =       3;
-  const float rdd_parameters[]  =       {5e-8f};
-  const int er_model            =       3;
-  const int N2                  =       20;
-  int n_bins_f1                 =       0;
-  float f1_parameters[9];
+//  const int n                   =       1;
+//  const float E_MeV_u[]         =       {3};
+//  const int particle_no[]       =       {1001};
+//  const float fluence_cm2[]     =       {-0.01f};
+//  const int material_no         =       1;
+//  const int rdd_model           =       3;
+//  const float rdd_parameters[]  =       {5e-8f};
+//  const int er_model            =       3;
+//  const int N2                  =       20;
+//  int n_bins_f1                 =       0;
+//  float f1_parameters[9];
+//
+//  AT_SC_get_f1_array_size_R(
+//      &n,
+//      E_MeV_u,
+//      particle_no,
+//      &material_no,
+//      &rdd_model,
+//      rdd_parameters,
+//      &er_model,
+//      &N2,
+//      &n_bins_f1,
+//      f1_parameters);
+//
+//  float norm_fluence[]           =      {0};
+//  float dose_contribution_Gy[]   =      {0};
+//  float f_parameters[7];
+//  float* f1_d_Gy                  =      (float*)malloc(n_bins_f1*sizeof(float));
+//  float* f1_dd_Gy                 =      (float*)malloc(n_bins_f1*sizeof(float));
+//  float* f1                       =      (float*)malloc(n_bins_f1*sizeof(float));
+//
+//  AT_SC_get_f1_R(
+//      &n,
+//      E_MeV_u,
+//      particle_no,
+//      fluence_cm2,
+//      &material_no,
+//      &rdd_model,
+//      rdd_parameters,
+//      &er_model,
+//      &N2,
+//      &n_bins_f1,
+//      f1_parameters,
+//      norm_fluence,
+//      dose_contribution_Gy,
+//      f_parameters,
+//      f1_d_Gy,
+//      f1_dd_Gy,
+//      f1);
+//
+//  free(f1_d_Gy);
+//  free(f1_dd_Gy);
+//  free(f1);
 
-  AT_SC_get_f1_array_size_R(
-      &n,
-      E_MeV_u,
+  const long n = 7;
+  const long particle_no[] = {1001,2003,2004,3005,6012,8016,92238};
+  char particle_name[7][PARTICLE_NAME_NCHAR];
+
+  AT_particle_name_from_particle_no( n,
       particle_no,
-      &material_no,
-      &rdd_model,
-      rdd_parameters,
-      &er_model,
-      &N2,
-      &n_bins_f1,
-      f1_parameters);
-
-  float norm_fluence[]           =      {0};
-  float dose_contribution_Gy[]   =      {0};
-  float f_parameters[7];
-  float* f1_d_Gy                  =      (float*)malloc(n_bins_f1*sizeof(float));
-  float* f1_dd_Gy                 =      (float*)malloc(n_bins_f1*sizeof(float));
-  float* f1                       =      (float*)malloc(n_bins_f1*sizeof(float));
-
-  AT_SC_get_f1_R(
-      &n,
-      E_MeV_u,
-      particle_no,
-      fluence_cm2,
-      &material_no,
-      &rdd_model,
-      rdd_parameters,
-      &er_model,
-      &N2,
-      &n_bins_f1,
-      f1_parameters,
-      norm_fluence,
-      dose_contribution_Gy,
-      f_parameters,
-      f1_d_Gy,
-      f1_dd_Gy,
-      f1);
-
-  free(f1_d_Gy);
-  free(f1_dd_Gy);
-  free(f1);
+      particle_name);
 
   return 0;
 

@@ -105,3 +105,41 @@ int AT_atomic_weight_from_particle_no( const long  n,
   free(matches);
   return 0;
 }
+
+
+
+int AT_particle_name_from_particle_no( const long  n,
+    const long  particle_no[],
+    char  particle_name[][PARTICLE_NAME_NCHAR])
+{
+  long i;
+  long*  matches  =  (long*)calloc(n, sizeof(long));
+  long*  Z        =  (long*)calloc(n, sizeof(long));
+  long*  A        =  (long*)calloc(n, sizeof(long));
+
+  AT_Z_from_particle_no( n,
+      particle_no,
+      Z);
+
+  AT_A_from_particle_no( n,
+      particle_no,
+      A);
+
+  find_elements_int(  Z,
+      n,
+      AT_Particle_Data.Z,
+      AT_Particle_Data.n,
+      matches);
+
+  for (i = 0; i < n; i++){
+    ltoa(A[i], particle_name[i], 10);
+    strcat(particle_name[i], AT_Particle_Data.element_acronym[matches[i]]);
+  }
+
+
+
+  free(A);
+  free(Z);
+  free(matches);
+  return 0;
+}

@@ -410,6 +410,22 @@ void AT_KatzModel_inactivation_cross_section_m2_R( const int* n,
   free( E_MeV_u_double );
 }
 
+void AT_particle_name_from_particle_no_R(const int* particle_no,
+    char** particle_name){
+
+  const long n = 1;
+  const long particle_no_long = (long)(*particle_no);
+  char particle_name_str[1][6];
+
+  strcpy(particle_name_str[0], *particle_name);
+
+  AT_particle_name_from_particle_no( n,
+      &particle_no_long,
+      particle_name_str);
+
+  strcpy(*particle_name, particle_name_str[0]);
+}
+
 
 void AT_run_GSM_method_R(  const int*  n,
     const float*  E_MeV_u,

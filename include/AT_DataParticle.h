@@ -32,6 +32,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "AT_NumericalRoutines.h"
 
@@ -187,6 +188,8 @@ int AT_atomic_weight_from_particle_no(  const long  n,
     double  atomic_weight[]);
 
 
+#define PARTICLE_NAME_NCHAR 6
+
 /**
  * TODO
  * @param[in]  n
@@ -196,6 +199,6 @@ int AT_atomic_weight_from_particle_no(  const long  n,
  */
 int AT_particle_name_from_particle_no(const long  n,
     const long  particle_no[],
-    char* particle_name[]);
+    char particle_name[][PARTICLE_NAME_NCHAR]);
 
 #endif /* AT_DATAPARTICLE_H_ */
