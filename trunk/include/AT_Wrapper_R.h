@@ -109,6 +109,8 @@ void AT_KatzModel_inactivation_cross_section_m2_R( const int* n,
     const float*   gamma_parameters,
     float*         inactivation_cross_section_m2);
 
+void AT_particle_name_from_particle_no_R(const int* particle_no,
+    char** particle_name);
 
 void AT_run_GSM_method_R(  const int*  n,
     const float*  E_MeV_u,
