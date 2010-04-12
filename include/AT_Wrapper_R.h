@@ -114,8 +114,8 @@ void AT_particle_name_from_particle_no_R(const int* particle_no,
     char** particle_name);
 
 
-void AT_particle_no_from_particle_name_R(const int* particle_no,
-    char** particle_name);
+void AT_particle_no_from_particle_name_R(const char** particle_name,
+    int* particle_no);
 
 
 void AT_run_GSM_method_R(  const int*  n,
