@@ -486,6 +486,19 @@ AT.Katz.inactivation.cross.section.m2		<-	function(		E.MeV.u,
 	 return(res$inactivation.cross.section.m2)
 }
 
+AT.particle.no.from.particle.name		<-	function(		particle.name ){
+
+	n					<-	length(particle.name)
+	particle.no		<-	numeric(n)
+	
+	for (i in 1:n){
+		cur.particle.no	<-	numeric(1)
+		res					<-	.C("AT_particle_no_from_particle_name_R", 		particle.name				= as.character(particle.name[i]),  
+																	 particle.no			= as.integer(cur.particle.no))
+		particle.no[i]	<-	res$particle.no
+	}		
+	return(particle.no)
+}
 
 AT.particle.name.from.particle.no		<-	function(		particle.no){
 

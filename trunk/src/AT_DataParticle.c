@@ -32,6 +32,22 @@
 
 #include "AT_DataParticle.h"
 
+inline long AT_particle_no_from_Z_and_A_single(  const long  Z,
+    const long  A){
+  return 1000 * Z + A;
+}
+
+int AT_particle_no_from_Z_and_A( const long  n,
+    const long  Z[],
+    const long  A[],
+    long  particle_no[])
+{
+  long i;
+  for (i = 0; i < n; i++){
+    particle_no[i]  =  AT_particle_no_from_Z_and_A_single(Z[i], A[i]);
+  }
+  return 0;
+}
 
 inline long AT_A_from_particle_no_single(  const long  particle_no ){
   long A = particle_no % 1000;
@@ -143,5 +159,44 @@ int AT_particle_name_from_particle_no( const long  n,
   free(A);
   free(Z);
   free(matches);
+  return 0;
+}
+
+
+// TODO single particle method needed
+// TODO some comments needed
+int AT_particle_no_from_particle_name( const long  n,
+    char * particle_name[],
+    long particle_no[]){
+
+  long i;
+  char   any_character[30] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for (i = 0; i < n; i++){
+    long split_pos = strcspn(particle_name[i], any_character);
+
+    char A_str[4] = "\0\0\0\0";
+    strncpy(A_str, particle_name[i], split_pos);
+    long A        = atol(A_str);
+
+    char element_acronym_str[1][PARTICLE_NAME_NCHAR];
+    strncpy(element_acronym_str[0], &particle_name[i][split_pos], PARTICLE_NAME_NCHAR - split_pos);
+    long  match = 0;
+    char** test = (char**)malloc(sizeof(char*));
+    *test = (char*)element_acronym_str[0];
+
+    find_elements_char( (const char**)test,
+        1,
+        AT_Particle_Data.element_acronym,
+        PARTICLE_DATA_N,
+        &match);
+
+    // TODO check if match != -1 !
+
+    long Z = AT_Particle_Data.Z[match];
+
+    particle_no[i] = AT_particle_no_from_Z_and_A_single(Z, A);
+
+    free(test);
+  }
   return 0;
 }
