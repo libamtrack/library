@@ -129,8 +129,9 @@ void  AT_SC_get_f1_array_size(
     long *       n_bins_f1,
     double       f1_parameters[]);
 
-#define AT_SC_F_PARAMETERS_LENGTH 7
-#define AT_SC_F1_PARAMETERS_LENGTH 8
+#define AT_SC_F_PARAMETERS_LENGTH 7             /**< Length of the mixed-energy field characteristics */
+#define AT_SC_F1_PARAMETERS_SINGLE_LENGTH 8     /**< Length of the single particle component characteristics, length of f1_parameters array is AT_SC_F1_PARAMETERS_SINGLE_LENGTH * number of particle components in the field */
+
 /**
  * Computes the f1 (single impact) local dose distribution for a given field, rdd, er
  * Usually step 2 of the CPP-SC method
