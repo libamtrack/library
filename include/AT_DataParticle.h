@@ -137,6 +137,21 @@ static const particle_data AT_Particle_Data = {
 
 
 /**
+ */
+inline long AT_particle_no_from_Z_and_A_single(  const long  Z,
+    const long  A);
+
+/**
+ * TODO
+ * @return
+ */
+int AT_particle_no_from_Z_and_A( const long  n,
+    const long  Z[],
+    const long  A[],
+    long  particle_no[]);
+
+
+/**
  * Calculates mass number A for particle with given code number
  * @param particle_no
  * @return A
@@ -205,5 +220,9 @@ int AT_particle_name_from_particle_no(const long  n,
     const long  particle_no[],
     char particle_name[][PARTICLE_NAME_NCHAR]);
 
+
+int AT_particle_no_from_particle_name( const long  n,
+    char * particle_name[],
+    long particle_no[]);
 
 #endif /* AT_DATAPARTICLE_H_ */
