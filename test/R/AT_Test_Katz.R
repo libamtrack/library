@@ -38,15 +38,15 @@ library("lattice")
 ####################### INACTIVATION PROBABILITY function test #########################################
 
 # radius definitions:
-r.m <- 10^seq (-14, -3, length.out=100)
+r.m <- 10^seq (-10, -3, length.out=100)
 
 # electron range models definition
 ER.model.names <- c("simple test",  "Butts & Katz' (linear)",  "Waligorski's (power-law wmax)",  "Geiss' (power-law E)", "Scholz' (power-law E)", "Edmund' (power-law wmax)","Tabata")
-ER.model <- c(2,3)
+ER.model <- c(2,3,7)
 
 # RDD models definition
 RDD.model.names <- c("Simple step test function",  "Katz' point target", "Geiss'", "Site", "Cucinotta", "KatzExtTarget", "CucinottaExtTarget")
-RDD.model <- c(6)
+RDD.model <- c(6,7)
 
 # RDD parameters
 RDD.parameters <- list(c(1),c(1e-10,1e-10), c(1e-8),c(1e-8,1e-10),c(5e-11,1e-10),c(1e-10,1e-8,1e-10),c(5e-11,1e-8,1e-10))
@@ -86,7 +86,7 @@ p2logx <- xyplot( inact.prob ~ r.m | RDD.model.name, groups = ER.model.name, ref
 
 ####################### INACTIVATION CROSS SECTION function test #########################################
 
-E.MeV.u <- 10^seq (1, 4, length.out=100)
+E.MeV.u <- 10^seq (0, 3, length.out=100)
 
 # data frame setup
 df1 <- expand.grid( E.MeV.u = E.MeV.u, ER.model = ER.model, RDD.model = RDD.model )
