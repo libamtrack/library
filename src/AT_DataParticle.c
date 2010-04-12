@@ -38,8 +38,8 @@ inline long AT_A_from_particle_no_single(  const long  particle_no ){
   if( (1 <= A) && (A <= 300)){
     return A;
   } else {
-    printf( "Wrong particle number %ld, please provide it in correct format (XXXYYY, where XXX is Z and YYY is A)\n", particle_no);
-    return 1;
+    printf( "Wrong particle number %ld, please provide it in correct format \n(XXXYYY, where XXX is Z (from 1 to 118) and YYY is A (from 1 to 300)\n", particle_no);
+    return -1;
   }
 }
 
@@ -61,8 +61,7 @@ inline long AT_Z_from_particle_no_single(  const long  particle_no ){
   if( (1 <= Z) && (Z <= 118) ){
     return Z;
   } else {
-    printf( "Wrong particle number %ld, please provide it in correct format (XXXYYY, where XXX is Z and YYY is A)\n", particle_no);
-    return 1;
+    printf( "Wrong particle number %ld, please provide it in correct format \n(XXXYYY, where XXX is Z (from 1 to 118) and YYY is A (from 1 to 300)\n", particle_no);    return -1;
   }
 }
 
@@ -110,7 +109,7 @@ int AT_atomic_weight_from_particle_no( const long  n,
 
 int AT_particle_name_from_particle_no( const long  n,
     const long  particle_no[],
-    char  particle_name[][PARTICLE_NAME_NCHAR])
+    char        particle_name[][PARTICLE_NAME_NCHAR])
 {
   long i;
   long*  matches  =  (long*)calloc(n, sizeof(long));
@@ -132,11 +131,14 @@ int AT_particle_name_from_particle_no( const long  n,
       matches);
 
   for (i = 0; i < n; i++){
-    ltoa(A[i], particle_name[i], 10);
-    strcat(particle_name[i], AT_Particle_Data.element_acronym[matches[i]]);
+    sprintf(particle_name[i], "%ld", A[i]);
+    if( matches[i] >= 0 ){
+      strcat(particle_name[i], AT_Particle_Data.element_acronym[matches[i]]);
+    } else {
+      const char * unknown_acronym = "??";
+      strcat(particle_name[i], unknown_acronym);
+    }
   }
-
-
 
   free(A);
   free(Z);
