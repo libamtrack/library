@@ -179,7 +179,7 @@ int AT_effective_charge_from_beta(  const long  n,
  * Get Bohr's energy spread (Wilson, 1947, Phys Rev 71, 385)
  * @param[in]  n                        number of particles
  * @param[in]  material_no              index number for detector material
- * @param[out] dsE2dz                   TODO
+ * @param[out] dsE2dz                   Increase of energy spread (variance s_E^2) with thickness of material: d(s_E^2)/dz
  */
 void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
     const long*  material_no,

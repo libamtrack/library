@@ -44,15 +44,15 @@
 
 
 /**
- * TODO
- * @param xx
+ * Numerical Recipes: Logarithm of gamma function
+ * @param xx argument for gamma function
  * @return
  */
 double gammln(const double xx);
 
 
 /**
- * TODO
+ * Numerical Recipes: Continued fraction used by gammp and gammq
  * @param gammcf
  * @param a
  * @param x
@@ -62,7 +62,7 @@ void gcf(double *gammcf, const double a, const double x, double *gln);
 
 
 /**
- * TODO
+ * Numerical Recipes: Series used by gammp and gammq
  * @param gamser
  * @param a
  * @param x
@@ -72,7 +72,7 @@ void gser(double *gamser, const double a, double const x, double *gln);
 
 
 /**
- * TODO
+ * Numerical Recipes: Incomplete gamma function
  * @param a
  * @param x
  * @return
@@ -81,7 +81,7 @@ double gammp(const double a, const double x);
 
 
 /**
- * Numerical Recipes standard error handler
+ * Numerical Recipes: standard error handler
  * @param error_text
  */
 void nrerror(const char error_text[]);
@@ -173,7 +173,7 @@ long locate(const double xx[], const long n, const double x);
 
 
 /**
- * TODO
+ * Numerical Recipes: Polynomial interpolation
  * @param xa
  * @param ya
  * @param n
@@ -185,7 +185,7 @@ void polint(const double xa[], const double ya[], const long n, const double x, 
 
 
 /**
- * TODO
+ * TODO: ???
  * @param xa
  * @param ya
  * @param n

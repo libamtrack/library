@@ -986,7 +986,7 @@ void   AT_SuccessiveConvolutions( const double  u,
   KList.FINAL        = u * KList.D1;  // Final mean impact number
 
   long n_convolutions    = 0;
-  KList.CN               =    KList.FINAL  / KList.D1;
+  KList.CN               =    KList.FINAL  / KList.D1; // i.e. CN = u , TODO remove FINAL
   while(KList.CN > MEAN_HIT_NUMBER_LINEAR_APPROX_LIMIT){
     KList.CN             =    0.5 * KList.CN;
     n_convolutions++;
