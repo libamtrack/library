@@ -677,7 +677,7 @@ void  AT_SC_get_f1_array_size_R(
   }
 
   /* place for results */
-  double * f1_parameters_double = (double*)calloc( n_long * 8, sizeof(double));
+  double * f1_parameters_double = (double*)calloc( n_long * AT_SC_F1_PARAMETERS_LENGTH, sizeof(double));
 
   AT_SC_get_f1_array_size( n_long,
       E_MeV_u_double,
@@ -694,7 +694,7 @@ void  AT_SC_get_f1_array_size_R(
   *n_bins_f1 = (int)n_bins_f1_long;
 
   /* double -> float conversion (results) */
-  for(i = 0 ; i < n_long * 8 ; i++){
+  for(i = 0 ; i < n_long * AT_SC_F1_PARAMETERS_LENGTH ; i++){
     f1_parameters[i] = (float)f1_parameters_double[i];
   }
   free(f1_parameters_double);
@@ -746,8 +746,8 @@ void  AT_SC_get_f1_R(
   for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
     rdd_parameter_double[i] = (double)rdd_parameter[i];
   }
-  double * f1_parameters_double = (double*)calloc(n_long * 8,sizeof(double));
-  for(i = 0 ; i < n_long * 8 ; i++){
+  double * f1_parameters_double = (double*)calloc(n_long * AT_SC_F1_PARAMETERS_LENGTH,sizeof(double));
+  for(i = 0 ; i < n_long * AT_SC_F1_PARAMETERS_LENGTH ; i++){
     f1_parameters_double[i] = (double)f1_parameters[i];
   }
 

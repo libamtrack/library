@@ -130,7 +130,7 @@ void  AT_SC_get_f1_array_size(
     double       f1_parameters[]);
 
 #define AT_SC_F_PARAMETERS_LENGTH 7
-
+#define AT_SC_F1_PARAMETERS_LENGTH 8
 /**
  * Computes the f1 (single impact) local dose distribution for a given field, rdd, er
  * Usually step 2 of the CPP-SC method

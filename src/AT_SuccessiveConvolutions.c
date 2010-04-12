@@ -53,7 +53,6 @@ void  AT_SC_get_f1_array_size(
   double d_max_Gy    =  0.0;
   double d_min_Gy    =  0.0;
 
-  long  n_f1_parameters  =  9;
   long  i;
   for (i = 0; i < n; i++){
     /* get RDD parameters for all particles and energies */
@@ -63,14 +62,14 @@ void  AT_SC_get_f1_array_size(
         rdd_model,
         rdd_parameter,
         er_model,
-        &f1_parameters[i*n_f1_parameters]);
+        &f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH]);
     if(i == 0){
-      d_min_Gy      =  f1_parameters[i*n_f1_parameters + 3];
-      d_max_Gy      =  f1_parameters[i*n_f1_parameters + 4];
+      d_min_Gy      =  f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH + 3];
+      d_max_Gy      =  f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH + 4];
     }
     else{
-      d_min_Gy      =  GSL_MIN(d_min_Gy, f1_parameters[i*n_f1_parameters + 3]);
-      d_max_Gy      =  GSL_MAX(d_max_Gy, f1_parameters[i*n_f1_parameters + 4]);
+      d_min_Gy      =  GSL_MIN(d_min_Gy, f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH + 3]);
+      d_max_Gy      =  GSL_MAX(d_max_Gy, f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH + 4]);
     }
   }
 
@@ -173,12 +172,12 @@ void  AT_SC_get_f1(
   ////////////////////////////////////////////////////////////////////////////////////////////
   //  2. create all-over f1-data-frame, if f_d_Gy array passed (i.e. n_bins_f1 == 0)
   if(n_bins_f1 > 0){
-    double  d_min      =  f1_parameters[0*9 + 3];
-    double  d_max      =  f1_parameters[0*9 + 4];
+    double  d_min      =  f1_parameters[0*AT_SC_F1_PARAMETERS_LENGTH + 3];
+    double  d_max      =  f1_parameters[0*AT_SC_F1_PARAMETERS_LENGTH + 4];
 
     for (i = 1; i < n; i++){
-      d_min          =  GSL_MIN(f1_parameters[i*9 + 3], d_min);
-      d_max          =  GSL_MAX(f1_parameters[i*9 + 4], d_max);
+      d_min          =  GSL_MIN(f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH + 3], d_min);
+      d_max          =  GSL_MAX(f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH + 4], d_max);
     }
 
     double  U        =  (log(2.0) / (double)N2);
