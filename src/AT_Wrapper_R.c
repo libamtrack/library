@@ -430,14 +430,16 @@ void AT_particle_name_from_particle_no_R(const int* particle_no,
 void AT_particle_no_from_particle_name_R(const char** particle_name,
     int* particle_no){
   const long n = 1;
-  char particle_name_str[1][PARTICLE_NAME_NCHAR];
-  strcpy(particle_name_str[0], *particle_name);
+  char * particle_name_str = (char*)calloc(PARTICLE_NAME_NCHAR, sizeof(char));
+  strcpy(particle_name_str, *particle_name);
 
   long particle_no_long = 0;
 
   AT_particle_no_from_particle_name( n,
-      particle_name,
+      &particle_name_str,
       &particle_no_long);
+
+  free( particle_name_str);
 
   *particle_no = (int)particle_no_long;
 }
