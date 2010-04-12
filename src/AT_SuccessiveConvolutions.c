@@ -62,14 +62,14 @@ void  AT_SC_get_f1_array_size(
         rdd_model,
         rdd_parameter,
         er_model,
-        &f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH]);
+        &f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH]);
     if(i == 0){
-      d_min_Gy      =  f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH + 3];
-      d_max_Gy      =  f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH + 4];
+      d_min_Gy      =  f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3];
+      d_max_Gy      =  f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4];
     }
     else{
-      d_min_Gy      =  GSL_MIN(d_min_Gy, f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH + 3]);
-      d_max_Gy      =  GSL_MAX(d_max_Gy, f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH + 4]);
+      d_min_Gy      =  GSL_MIN(d_min_Gy, f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3]);
+      d_max_Gy      =  GSL_MAX(d_max_Gy, f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4]);
     }
   }
 
@@ -154,15 +154,15 @@ void  AT_SC_get_f1(
   for (i = 0; i < n; i++){
     norm_fluence[i]        =  fluence_cm2_local[i] / f_parameters[1];
     //printf("norm_fluence[%ld] = %g\n", i, norm_fluence[i]);
-    u_single                   =  fluence_cm2_local[i] / f1_parameters[i*9 + 6];
-    dose_contribution_Gy[i]    =  u_single * f1_parameters[i*9 + 7];
+    u_single                   =  fluence_cm2_local[i] / f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 6];
+    dose_contribution_Gy[i]    =  u_single * f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 7];
     //printf("dose_contribution_Gy[%ld] = %g\n", i, dose_contribution_Gy[i]);
     f_parameters[2]        +=  dose_contribution_Gy[i];
     f_parameters[3]        +=  norm_fluence[i] * E_MeV_u[i];
     f_parameters[4]        +=  dose_contribution_Gy[i] * E_MeV_u[i];
-    f_parameters[5]        +=  norm_fluence[i] * f1_parameters[i*9 + 0];
-    f_parameters[6]        +=  dose_contribution_Gy[i] * f1_parameters[i*9 + 0];
-    f_parameters[0]        +=  norm_fluence[i] * f1_parameters[i*9 + 7];
+    f_parameters[5]        +=  norm_fluence[i] * f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 0];
+    f_parameters[6]        +=  dose_contribution_Gy[i] * f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 0];
+    f_parameters[0]        +=  norm_fluence[i] * f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 7];
   }
 
   f_parameters[4]        /= f_parameters[2];
@@ -172,12 +172,12 @@ void  AT_SC_get_f1(
   ////////////////////////////////////////////////////////////////////////////////////////////
   //  2. create all-over f1-data-frame, if f_d_Gy array passed (i.e. n_bins_f1 == 0)
   if(n_bins_f1 > 0){
-    double  d_min      =  f1_parameters[0*AT_SC_F1_PARAMETERS_LENGTH + 3];
-    double  d_max      =  f1_parameters[0*AT_SC_F1_PARAMETERS_LENGTH + 4];
+    double  d_min      =  f1_parameters[0*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3];
+    double  d_max      =  f1_parameters[0*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4];
 
     for (i = 1; i < n; i++){
-      d_min          =  GSL_MIN(f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH + 3], d_min);
-      d_max          =  GSL_MAX(f1_parameters[i*AT_SC_F1_PARAMETERS_LENGTH + 4], d_max);
+      d_min          =  GSL_MIN(f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3], d_min);
+      d_max          =  GSL_MAX(f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4], d_max);
     }
 
     double  U        =  (log(2.0) / (double)N2);
@@ -205,8 +205,8 @@ void  AT_SC_get_f1(
     long   k;
     for (k = 0; k < n; k++){
 
-      double  d_min_k        =  f1_parameters[k*9 + 3];
-      double  d_max_k        =  f1_parameters[k*9 + 4];
+      double  d_min_k        =  f1_parameters[k*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3];
+      double  d_max_k        =  f1_parameters[k*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4];
 
       // find first and last bin to fit this particle's contribution into the all-over f1-frame
       long  i_low, i_high;
@@ -269,7 +269,7 @@ void  AT_SC_get_f1(
         }
 
         for (i = 0; i < n_bins_df; i++){
-          F1_1[i]            = gsl_pow_2(r[i] / f1_parameters[k*9 + 2]);        // F1 - 1 instead of F1 to avoid numeric cut-off problems
+          F1_1[i]            = gsl_pow_2(r[i] / f1_parameters[k*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 2]);        // F1 - 1 instead of F1 to avoid numeric cut-off problems
         }
 
         F1_1[n_bins_df-1]    =  0.0;
