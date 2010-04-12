@@ -256,13 +256,18 @@ int main(){
 //  free(f1_dd_Gy);
 //  free(f1);
 
-  const long n = 7;
-  const long particle_no[] = {1001,2003,2004,3005,6012,8016,92238};
-  char particle_name[7][PARTICLE_NAME_NCHAR];
+  const long n = 9;
+  const long particle_no[] = {1001,2003,2004,3005,6012,8016,92238,137137,512256};
+  char particle_name[n][PARTICLE_NAME_NCHAR];
 
   AT_particle_name_from_particle_no( n,
       particle_no,
       particle_name);
+
+  long i;
+  for( i = 0 ; i < n; i++){
+    printf("particle_name [ %ld ] = %s \n", particle_no[i], particle_name[i]);
+  }
 
   return 0;
 
