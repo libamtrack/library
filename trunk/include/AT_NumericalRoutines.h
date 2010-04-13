@@ -132,6 +132,14 @@ int vvla_(  double *va, double *x, double *pv);
 
 
 /**
+ * Compute parabolic gamma function
+ * @param x argument (x is not equal to 0,-1,-2,...)
+ * @param ga output
+ */
+int gamma_( const double *x, double *ga);
+
+
+/**
  * Numerical Recipes: Logarithm of gamma function
  * @param xx argument for gamma function
  * @return
