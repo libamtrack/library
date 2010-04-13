@@ -44,6 +44,94 @@
 
 
 /**
+ * TODO
+ * @param fz
+ * @param fR0
+ * @param fsigma
+ * @param fni
+ * @param funs
+ */
+void AT_Funs(  const double*  fz,
+    const double*  fR0,
+    const double*  fsigma,
+    const double* fni,
+    double* funs);
+
+
+/**
+ * TODO
+ * @param fy
+ * @param fx
+ * @param fDyx
+ */
+void AT_fDyx(  const double*  fy,
+    const double* fx,
+    double* fDyx);
+
+
+/**
+ * TODO
+ * @param a
+ * @param b
+ * @return
+ */
+double  d_sign( const double *a, const double *b);
+
+
+/**
+ * TODO
+ * @param v
+ * @param x
+ * @param dv
+ * @param dp
+ * @param pdf
+ * @param pdd
+ * @return
+ */
+int pbdv_(  double *v, double *x, double *dv, double *dp, double *pdf, double *pdd);
+
+
+/**
+ * Compute parabolic cylinder function Dv(x) for small argument
+ * routines called: GAMMA
+ * @param x argument
+ * @param va order
+ * @param pd output Dv(x)
+ */
+int dvsa_(  double *va, double *x, double *pd);
+
+/* 
+ * TODO investigate if parabolic cylinder functions can be implemented
+ * using Hermite polynomials, according to what wolfram engine says:
+ * http://www.wolframalpha.com/input/?i=parabolic+cylinder+function
+ */
+
+
+/**
+ * Compute parabolic cylinder function Dv(x) for large argument
+ * Routines called:
+ *             (1) VVLA for computing Vv(x) for large |x|
+ *             (2) GAMMA for computing �(x)
+ * @param x argument
+ * @param va order
+ * @param pd output Dv(x)
+ */
+int dvla_(  double *va, double *x, double *pd);
+
+
+/**
+ * Compute parabolic cylinder function Vv(x) for large argument
+ * Routines called:
+ *             (1) DVLA for computing Dv(x) for large |x|
+ *             (2) GAMMA for computing �(x)
+ * @param x argument
+ * @param va order
+ * @param pv output Vv(x)
+ */
+int vvla_(  double *va, double *x, double *pv);
+
+
+/**
  * Numerical Recipes: Logarithm of gamma function
  * @param xx argument for gamma function
  * @return
@@ -73,6 +161,11 @@ void gser(double *gamser, const double a, double const x, double *gln);
 
 /**
  * Numerical Recipes: Incomplete gamma function
+ *
+ * TODO this function seems to be implemented in GSL, see:
+ * http://www.gnu.org/software/gsl/manual/html_node/Incomplete-Gamma-Functions.html
+ * do we need normalized or not normalized incomplete gamma function ?
+ *
  * @param a
  * @param x
  * @return
