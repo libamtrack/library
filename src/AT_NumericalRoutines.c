@@ -31,84 +31,43 @@
 
 #include "AT_NumericalRoutines.h"
 
-/*       ========================================================= */
-/*       Purpose: This program computes the parabolic cylinder */
-/*                functions Dv(x) and their derivatives using */
-/*                subroutine PBDV */
-/*       Input:   x --- Argument of Dv(x) */
-/*                v --- Order of Dv(x) */
-/*       Output:  DV(na) --- Dn+v0(x) */
-/*                DP(na) --- Dn+v0'(x) */
-/*                ( na = |n|, n = int(v), v0 = v-n, |v0| < 1 */
-/*                  n = 0,+_1,+-2,..., |n| ? 100 ) */
-/*                PDF --- Dv(x) */
-/*                PDD --- Dv'(x) */
-/*       Example: v = 5.5,  x =10.0,  v0 = 0.5,  n = 0,1,...,5 */
+void AT_range_straggling_convolution(  const double z,
+    const double R0,
+    const double sigma,
+    const double ni,
+    double F)
+{
+  double  u     =  R0 - z;              // Residual range
+  double  zeta  =  u / sigma;           // parameter to divide convolution into domains
+                                        // for zeta < -5, F(z,R0) becomes very small
+                                        // for zeta > 10, F(z,R0) gets very close to (R0-z)^(ni-1)
 
-/*                  n+v0      Dv(x)           Dv'(x) */
-/*                --------------------------------------- */
-/*                  0.5   .43971930D-10  -.21767183D-09 */
-/*                  1.5   .43753148D-09  -.21216995D-08 */
-/*                  2.5   .43093569D-08  -.20452956D-07 */
-/*                  3.5   .41999741D-07  -.19491595D-06 */
-/*                  4.5   .40491466D-06  -.18355745D-05 */
-/*                  5.5   .38601477D-05  -.17073708D-04 */
+  if(zeta > -5.0 && zeta < 10){
+    F  =   1.0 / (sqrt(2.0 * M_PI) * sigma);
+    F  *=  exp(-1.0 * u * u / (4.0 * sigma * sigma)) * pow(sigma, ni);
 
-/*                Dv(x)= .38601477D-05,  Dv'(x)=-.17073708D-04 */
-/*       ========================================================= */
-/*       FORTRAN code by Jianming Jin, Department of Electrical and */
-/*       Computer Engineering, University of Illinois at Urbana-Champaign */
-/*       http://jin.ece.uiuc.edu/routines/mpbdv.for */
-/*       Downloaded and converted to C using f2c by */
-/*       S. Greilich, Risoe National Laboratory, Denmark */
-/*       Reworked as subroutine for AmTrack.dll, abandoning */
-/*       f2c.h and libf2c.lib */
-/*       ========================================================= */
+    double  tmp;
+    gamma_(&ni, &tmp);
+    F  *=  tmp;
 
-/* mpbdv.f -- translated by f2c (version 20060506).*/
+    AT_Dyx(-1.0 * ni, -1.0 * zeta, tmp);
 
-/* Table of constant values */
+    F  *=  tmp;
+  }
 
-//static int c__9 = 9;
-//static int c__1 = 1;
-//static int c__5 = 5;
-static double c_b31 = 1.;
-static double c_b40 = 2.;
+  if(zeta >= 10.0){
+    F      =  pow(u, ni - 1.0);
+  }
+}
 
-
-void AT_Dyx(  double*  y,  double*  x,  double*  Dyx)
+void AT_Dyx(  double  y,  double  x,  double  Dyx)
 {
   /* Local variables */
   //    static int na;
   static double dp[101], dv[101];
-  static double pdd, pdf;
-  extern /* Subroutine */ int pbdv_(double *, double *, double *
-      , double *, double *, double *);
+  static double pdd;
 
-  pbdv_(y, x, dv, dp, &pdf, &pdd);
-
-  *Dyx  =  pdf;
-}
-
-
-// TODO this is not used !
-void AT_fDyx(  const double*  fy,
-    const double* fx,
-    double* fDyx)
-{
-  double  y, x, Dyx;
-  y  = *fy;
-  x  = *fx;
-  AT_Dyx(  &y, &x, &Dyx);
-  *fDyx  = Dyx;
-}
-
-
-double d_sign(const double *a, const double *b)
-{
-  double x;
-  x = (*a >= 0 ? *a : - *a);
-  return( *b >= 0 ? x : -x);
+  pbdv_(&y, &x, dv, dp, &Dyx, &pdd);
 }
 
 
@@ -135,22 +94,7 @@ int pbdv_(double *v,
   extern /* Subroutine */ int dvla_(double *, double *, double *
   ), dvsa_(double *, double *, double *);
 
-
-  /*       ==================================================== */
-  /*       Purpose: Compute parabolic cylinder functions Dv(x) */
-  /*                and their derivatives */
-  /*       Input:   x --- Argument of Dv(x) */
-  /*                v --- Order of Dv(x) */
-  /*       Output:  DV(na) --- Dn+v0(x) */
-  /*                DP(na) --- Dn+v0'(x) */
-  /*                ( na = |n|, v0 = v-n, |v0| < 1, */
-  /*                  n = 0,�1,�2,��� ) */
-  /*                PDF --- Dv(x) */
-  /*                PDD --- Dv'(x) */
-  /*       Routines called: */
-  /*             (1) DVSA for computing Dv(x) for small |x| */
-  /*             (2) DVLA for computing Dv(x) for large |x| */
-  /*       ==================================================== */
+  static double c_b31 = 1.;
 
   xa = fabs(*x);
   vh = *v;
@@ -275,7 +219,12 @@ int pbdv_(double *v,
   return 0;
 } /* pbdv_ */
 
-
+double d_sign(const double *a, const double *b)
+{
+  double x;
+  x = (*a >= 0 ? *a : - *a);
+  return( *b >= 0 ? x : -x);
+}
 
 int dvsa_(double *va,
     double *x,
@@ -288,6 +237,7 @@ int dvsa_(double *va,
   static int m;
   static double r__, a0, g0, g1, r1, ep, gm, pi, vm, vt, ga0, va0, sq2,
   eps;
+  static double c_b40 = 2.;
 
   eps = 1e-15;
   pi = M_PI;
@@ -474,41 +424,6 @@ int gamma_(const double *x, double *ga)
 } /* gamma_ */
 
 
-//TODO this is not used anywhere
-void AT_Funs(  const double*  fz,
-    const double*  fR0,
-    const double*  fsigma,
-    const double* fni,
-    double* funs)
-{
-  double  z    =  *fz;
-  double  R0    =  *fR0;
-  double  sigma  = *fsigma;
-  double  ni    =  (*fni) + 1.0;
-
-  double  u    =  R0 - z;
-  double  zeta  =  u / sigma;
-
-  *funs = 0.0;
-
-  if(zeta > -5.0 && zeta < 10){
-    double  tmp1  =  1.0 / (sqrt(2.0 * M_PI) * sigma);
-    double  tmp2  =  exp(-1.0 * u * u / (4.0 * sigma * sigma)) * pow(sigma, ni);
-    double  tmp3;
-    gamma_(&ni, &tmp3);
-    double  tmp4;
-    double  y    =  -1.0 * ni;
-    double  x    =  -1.0 * zeta;
-    AT_Dyx(&y, &x, &tmp4);
-
-    double  result  =  tmp1 * tmp2 * tmp3 * tmp4;
-    *funs      =  result;
-  }
-
-  if(zeta >= 10.0){
-    *funs      =  pow(u, ni - 1.0);
-  }
-}
 
 
 double gammln(const double xx)
