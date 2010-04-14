@@ -44,49 +44,61 @@
 
 
 /**
- * TODO
- * @param fz
- * @param fR0
- * @param fsigma
- * @param fni
- * @param funs
+ * Computes the convolution of a term (R0 - z)^(ni - 1) with a Gaussian
+ * in z with variance sigma^2, i.e.
+ * F(z, R0) = 1/(2*pi*sigma) * int_{-inf}^{R0}[ (R0 - z)^(ni - 1) * exp(-(z - z')^2/(2*sigma^2)) * dz']
+ * that can be solved using the gamma function and the parabolic cylinder function:
+ * F(z, R0) = 1/(2*pi*sigma) * exp((R0 - z)/(4*sigma^2)) * sigma^ni * gamma(ni) * D[-ni](-(R0-z)/sigma)
+ * where D[-ni] is the parabolic cylinder function of order -ni
+ *
+ * The procedure is elucidated in Bortfeld, 1997, An analytical approximation of the Bragg curve for therapeutic
+ * proton beams, Med. Phys. 24(12), 2024ff., Appendix A, Eqs. A1, A6
+ *
+ * This function uses gamma_ and AT_Dyx.
+ *
+ * Cave: Be careful to give the correct ni (not ni - 1)!
+ *
+ * @param[in]   z
+ * @param[in]   R0
+ * @param[in]   sigma
+ * @param[in]   ni
+ * @param[out]  funs
  */
-void AT_Funs(  const double*  fz,
-    const double*  fR0,
-    const double*  fsigma,
-    const double* fni,
-    double* funs);
+void AT_range_straggling_convolution(  const double z,
+    const double R0,
+    const double sigma,
+    const double ni,
+    double F);
 
-
-/**
- * TODO
- * @param fy
- * @param fx
- * @param fDyx
+/** Computes parabolic cylinder function Dy(x)
+ *  using subroutine pbdv
+ *  Original FORTRAN code mpbdv.f by Jianming Jin, Department of Electrical and
+ *  Computer Engineering, University of Illinois at Urbana-Champaign
+ *  http://jin.ece.uiuc.edu/routines/mpbdv.for
+ *  Converted to C using f2c (version 20060506) by
+ *  S. Greilich, reworked as subroutine for libamtrack.dll, abandoning
+ *  f2c.h and libf2c.lib, as well as computation (returning) of derivatives
+ *
+ *  param[in]   x       argument of Dy(x)
+ *  param[in]   y       order of Dy(x)
+ *  param[out]  Dyx
+ *
+ * TODO investigate if parabolic cylinder functions can be implemented
+ * using Hermite polynomials, according to what wolfram engine says:
+ * http://www.wolframalpha.com/input/?i=parabolic+cylinder+function
  */
-void AT_fDyx(  const double*  fy,
-    const double* fx,
-    double* fDyx);
+void AT_Dyx(  double  y,  double  x,  double  Dyx);
 
-
-/**
- * TODO
- * @param a
- * @param b
- * @return
- */
-double  d_sign( const double *a, const double *b);
-
-
-/**
- * TODO
- * @param v
- * @param x
- * @param dv
- * @param dp
- * @param pdf
- * @param pdd
- * @return
+/** Computes parabolic cylinder function Dv(x) and its derivatives
+ *  see comments for AT_Dyx
+ *  The function calls dvsa for small |x| and dvla for large |x|
+ *
+ *  param[in]   v       order of Dv(x)
+ *  param[in]   x       argument of Dv(x)
+ *  param[out]  dv      DV(na) = Dn+v0(x) with na = |n|, v0 = v-n, |v0| < 1, n = 0, +/-1, +/-2, ...
+ *  param[out]  dp      DP(na) = Dn+v0'(x) with na = |n|, v0 = v-n, |v0| < 1, n = 0, +/-1, +/-2, ...
+ *  param[out]  pdf     Dv(x)
+ *  param[out]  pdd     Dv'(x)
  */
 int pbdv_(  double *v, double *x, double *dv, double *dp, double *pdf, double *pdd);
 
@@ -99,12 +111,6 @@ int pbdv_(  double *v, double *x, double *dv, double *dp, double *pdf, double *p
  * @param pd output Dv(x)
  */
 int dvsa_(  double *va, double *x, double *pd);
-
-/* 
- * TODO investigate if parabolic cylinder functions can be implemented
- * using Hermite polynomials, according to what wolfram engine says:
- * http://www.wolframalpha.com/input/?i=parabolic+cylinder+function
- */
 
 
 /**
@@ -129,6 +135,14 @@ int dvla_(  double *va, double *x, double *pd);
  * @param pv output Vv(x)
  */
 int vvla_(  double *va, double *x, double *pv);
+
+/**
+ * TODO
+ * @param a
+ * @param b
+ * @return
+ */
+double  d_sign( const double *a, const double *b);
 
 
 /**
