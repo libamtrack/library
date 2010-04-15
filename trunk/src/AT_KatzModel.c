@@ -425,6 +425,7 @@ int AT_KatzModel_inactivation_cross_section_m2(
   return 0;
 }
 
+/* TODO implement old Katz with kappa and sigma instead of track-width here */
 
 double AT_D_RDD_Gy_int( double  r_m,
     void*   params){

@@ -62,15 +62,24 @@
  * @param[in]   R0
  * @param[in]   sigma
  * @param[in]   ni
- * @param[out]  funs
+ * @return      funs
  */
-void AT_range_straggling_convolution(  const double z,
+double AT_range_straggling_convolution(  const double z,
     const double R0,
     const double sigma,
-    const double ni,
-    double F);
+    const double ni);
 
-/** Computes parabolic cylinder function Dy(x)
+/*
+ * parabolic cylinder functions can be implemented:
+ *  - using Hermite polynomials (no implemented in GSL ?) for order ni, which is integer
+ *  - using confluent hypergeometric function (gsl_sf_hyperg_U) for order ni, which is real number
+ * more information here:
+ * http://mathworld.wolfram.com/ParabolicCylinderFunction.html
+ * http://www.gnu.org/software/gsl/manual/html_node/Hypergeometric-Functions.html
+ */
+
+/**
+ *  Computes parabolic cylinder function Dy(x)
  *  using subroutine pbdv
  *  Original FORTRAN code mpbdv.f by Jianming Jin, Department of Electrical and
  *  Computer Engineering, University of Illinois at Urbana-Champaign
@@ -81,15 +90,13 @@ void AT_range_straggling_convolution(  const double z,
  *
  *  param[in]   x       argument of Dy(x)
  *  param[in]   y       order of Dy(x)
- *  param[out]  Dyx
- *
- * TODO investigate if parabolic cylinder functions can be implemented
- * using Hermite polynomials, according to what wolfram engine says:
- * http://www.wolframalpha.com/input/?i=parabolic+cylinder+function
+ *  return  Dyx
  */
-void AT_Dyx(  double  y,  double  x,  double  Dyx);
+double AT_Dyx(  double  y,  double  x);
 
-/** Computes parabolic cylinder function Dv(x) and its derivatives
+
+/**
+ *  Computes parabolic cylinder function Dv(x) and its derivatives
  *  see comments for AT_Dyx
  *  The function calls dvsa for small |x| and dvla for large |x|
  *
@@ -117,7 +124,7 @@ int dvsa_(  double *va, double *x, double *pd);
  * Compute parabolic cylinder function Dv(x) for large argument
  * Routines called:
  *             (1) VVLA for computing Vv(x) for large |x|
- *             (2) GAMMA for computing �(x)
+ *             (2) GAMMA for computing Gamma(x)
  * @param x argument
  * @param va order
  * @param pd output Dv(x)
@@ -129,12 +136,13 @@ int dvla_(  double *va, double *x, double *pd);
  * Compute parabolic cylinder function Vv(x) for large argument
  * Routines called:
  *             (1) DVLA for computing Dv(x) for large |x|
- *             (2) GAMMA for computing �(x)
+ *             (2) GAMMA for computing Gamma(x)
  * @param x argument
  * @param va order
  * @param pv output Vv(x)
  */
 int vvla_(  double *va, double *x, double *pv);
+
 
 /**
  * TODO
@@ -142,7 +150,7 @@ int vvla_(  double *va, double *x, double *pv);
  * @param b
  * @return
  */
-double  d_sign( const double *a, const double *b);
+inline double  d_sign( const double a, const double b);
 
 
 /**
@@ -153,46 +161,13 @@ double  d_sign( const double *a, const double *b);
 int gamma_( const double *x, double *ga);
 
 
+/* TODO it is logarithm of which gamma function ? it is not used */
 /**
  * Numerical Recipes: Logarithm of gamma function
  * @param xx argument for gamma function
  * @return
  */
 double gammln(const double xx);
-
-
-/**
- * Numerical Recipes: Continued fraction used by gammp and gammq
- * @param gammcf
- * @param a
- * @param x
- * @param gln
- */
-void gcf(double *gammcf, const double a, const double x, double *gln);
-
-
-/**
- * Numerical Recipes: Series used by gammp and gammq
- * @param gamser
- * @param a
- * @param x
- * @param gln
- */
-void gser(double *gamser, const double a, double const x, double *gln);
-
-
-/**
- * Numerical Recipes: Incomplete gamma function
- *
- * TODO this function seems to be implemented in GSL, see:
- * http://www.gnu.org/software/gsl/manual/html_node/Incomplete-Gamma-Functions.html
- * do we need normalized or not normalized incomplete gamma function ?
- *
- * @param a
- * @param x
- * @return
- */
-double gammp(const double a, const double x);
 
 
 /**
