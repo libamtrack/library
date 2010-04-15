@@ -37,6 +37,7 @@
 #include <string.h>
 
 #include "gsl/gsl_pow_int.h"
+#include "gsl/gsl_sf_gamma.h"
 
 #include "AT_Constants.h"
 #include "AT_NumericalRoutines.h"

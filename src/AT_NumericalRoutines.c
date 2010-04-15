@@ -31,12 +31,12 @@
 
 #include "AT_NumericalRoutines.h"
 
-void AT_range_straggling_convolution(  const double z,
+double AT_range_straggling_convolution(  const double z,
     const double R0,
     const double sigma,
-    const double ni,
-    double F)
+    const double ni)
 {
+  double  F     =  0;
   double  u     =  R0 - z;              // Residual range
   double  zeta  =  u / sigma;           // parameter to divide convolution into domains
                                         // for zeta < -5, F(z,R0) becomes very small
@@ -50,7 +50,7 @@ void AT_range_straggling_convolution(  const double z,
     gamma_(&ni, &tmp);
     F  *=  tmp;
 
-    AT_Dyx(-1.0 * ni, -1.0 * zeta, tmp);
+    tmp = AT_Dyx(-1.0 * ni, -1.0 * zeta);
 
     F  *=  tmp;
   }
@@ -58,16 +58,18 @@ void AT_range_straggling_convolution(  const double z,
   if(zeta >= 10.0){
     F      =  pow(u, ni - 1.0);
   }
+  return F;
 }
 
-void AT_Dyx(  double  y,  double  x,  double  Dyx)
+double AT_Dyx(  double  y,  double  x)
 {
-  /* Local variables */
-  //    static int na;
-  static double dp[101], dv[101];
-  static double pdd;
+  double  Dyx;
+  double dp[101], dv[101];
+  double pdd;
 
   pbdv_(&y, &x, dv, dp, &Dyx, &pdd);
+
+  return Dyx;
 }
 
 
@@ -81,6 +83,7 @@ int pbdv_(double *v,
   /* System generated locals */
   int i__1;
 
+  /* TODO why those variables are static ???? */
   /* Local variables */
   static double f;
   static int k, l, m;
@@ -91,6 +94,8 @@ int pbdv_(double *v,
   static double vh;
   static int nv;
   static double pd0, pd1;
+
+  /* TODO why do we need extern subroutines here ? */
   extern /* Subroutine */ int dvla_(double *, double *, double *
   ), dvsa_(double *, double *, double *);
 
@@ -98,7 +103,7 @@ int pbdv_(double *v,
 
   xa = fabs(*x);
   vh = *v;
-  *v += d_sign(&c_b31, v);
+  *v += d_sign(c_b31, *v);
   nv = (int) (*v);
   v0 = *v - nv;
   na = abs(nv);
@@ -219,12 +224,13 @@ int pbdv_(double *v,
   return 0;
 } /* pbdv_ */
 
-double d_sign(const double *a, const double *b)
+
+inline double d_sign(const double a, const double b)
 {
-  double x;
-  x = (*a >= 0 ? *a : - *a);
-  return( *b >= 0 ? x : -x);
+  double x = (a >= 0 ? a : - a);
+  return( b >= 0 ? x : -x);
 }
+
 
 int dvsa_(double *va,
     double *x,
@@ -233,6 +239,7 @@ int dvsa_(double *va,
   /* System generated locals */
   double d__1;
 
+  /* TODO why those variables are static ???? */
   /* Local variables */
   static int m;
   static double r__, a0, g0, g1, r1, ep, gm, pi, vm, vt, ga0, va0, sq2,
@@ -288,6 +295,7 @@ int dvla_(double *va, double *x, double *pd)
   /* System generated locals */
   double d__1;
 
+  /* TODO why those variables are static ???? */
   /* Local variables */
   static int k;
   static double r__, a0, x1, gl, ep, pi, vl, eps;
@@ -326,6 +334,7 @@ int vvla_(double *va, double *x, double *pv)
   /* System generated locals */
   double d__1, d__2;
 
+  /* TODO why those variables are static ???? */
   /* Local variables */
   static int k;
   static double r__, a0, x1, gl, qe, pi, pdl, dsl, eps;
@@ -362,6 +371,7 @@ int vvla_(double *va, double *x, double *pv)
 
 int gamma_(const double *x, double *ga)
 {
+  /* TODO why those variables are static ???? */
   /* Initialized data */
   static double g[26] = { 1.,.5772156649015329,-.6558780715202538,
       -.0420026350340952,.1665386113822915,-.0421977345555443,
@@ -428,6 +438,7 @@ int gamma_(const double *x, double *ga)
 
 double gammln(const double xx)
 {
+  /* TODO why those variables are static ???? */
   double x,y,tmp,ser;
   static double cof[6]=  {  76.18009172947146,-86.50532032941677,
       24.01409824083091,-1.231739572450155,
@@ -442,79 +453,6 @@ double gammln(const double xx)
 }
 
 
-#define ITMAX 100
-#define EPS 3.0e-7
-#define FPMIN 1.0e-30
-
-
-void gcf(double *gammcf, const double a, const double x, double *gln)
-{
-  int i;
-  double an,b,c,d,del,h;
-  *gln=gammln(a);
-  b=x+1.0-a;
-  c=1.0/FPMIN;
-  d=1.0/b;
-  h=d;
-  for (i=1;i<=ITMAX;i++) {
-    an = -i*(i-a);
-    b += 2.0;
-    d=an*d+b;
-    if (fabs(d) < FPMIN) d=FPMIN;
-    c=b+an/c;
-    if (fabs(c) < FPMIN) c=FPMIN;
-    d=1.0/d;
-    del=d*c;
-    h *= del;
-    if (fabs(del-1.0) < EPS) break;
-  }
-  //  if (i > ITMAX) nrerror("a too large, ITMAX too small in gcf");
-  *gammcf=exp(-x+a*log(x)-(*gln))*h;
-}
-
-
-void gser(double *gamser, const double a, const double x, double *gln)
-{
-  int n;
-  double sum,del,ap;
-  *gln=gammln(a);
-  if (x <= 0.0) {
-    if (x < 0.0) return;
-    *gamser=0.0;
-    return;
-  } else {
-    ap=a;
-    del=sum=1.0/a;
-    for (n=1;n<=ITMAX;n++) {
-      ++ap;
-      del *= x/ap;
-      sum += del;
-      if (fabs(del) < fabs(sum)*EPS) {
-        *gamser=sum*exp(-x+a*log(x)-(*gln));
-        return;
-      }
-    }
-    //  nrerror("a too large, ITMAX too small in routine gser");
-    return;
-  }
-}
-
-
-double gammp(const double a, const double x)
-{
-  double gamser, gammcf, gln;
-
-  if (x < 0.0 || a <= 0.0) return 0;
-  if (x < (a + 1.0)) {
-    gser(&gamser, a, x, &gln);
-    return gamser;
-  } else {
-    gcf(&gammcf, a, x, &gln);
-    return 1.0 - gammcf;
-  }
-}
-
-
 void nrerror(const char error_text[])
 {
   fprintf(stderr,"Numerical Recipes run-time error...\n");
@@ -524,6 +462,7 @@ void nrerror(const char error_text[])
 }
 
 
+/* TODO could SIGN be replaced by some system call ?*/
 #define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 #define MAXIT 60
 #define UNUSED (-1.11e30)
