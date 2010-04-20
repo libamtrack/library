@@ -149,35 +149,33 @@ class AmTrack(object):
         @return:  None
         '''
         #conversion of Python variables to C type variables
-        n_ctype =                  ctypes.byref(ctypes.c_int(n))
+        n_ctype =                  ctypes.c_int(n)
         tmp_array =         ctypes.c_float * len(E_MeV_u)
         E_MeV_u_ctype =     ctypes.byref(tmp_array(*E_MeV_u))
         tmp_array =         ctypes.c_long * len(particle_no)
         particle_no_ctype = ctypes.byref(tmp_array(*particle_no))     
         tmp_array =         ctypes.c_float * len(fluence_cm2)
         fluence_cm2_ctype =  ctypes.byref(tmp_array(*fluence_cm2))
-        material_no_ctype =        ctypes.byref(ctypes.c_int(material_no))
-        RDD_model_ctype =          ctypes.byref(ctypes.c_int(RDD_model))
+        material_no_ctype =        ctypes.c_int(material_no)
+        RDD_model_ctype =          ctypes.c_int(RDD_model)
         tmp_array = ctypes.c_float* len(RDD_parameters)        
         RDD_parameters_ctype =     ctypes.byref(tmp_array(*RDD_parameters))   
-        ER_model_ctype =           ctypes.byref(ctypes.c_int(ER_model))        
-        tmp_array = ctypes.c_float* len(ER_parameters)        
-        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))
-        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))
+        ER_model_ctype =           ctypes.c_int(ER_model)        
+        gamma_model_ctype =        ctypes.c_int(gamma_model)
         gamma_parameters.append(0.0) # required by AmTrack
         tmp_array = ctypes.c_float* len(gamma_parameters)        
-        gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))    
-        N2_ctype =                 ctypes.byref(ctypes.c_int(N2))
-        fluence_factor_ctype =     ctypes.byref(ctypes.c_float(fluence_factor))
-        write_output_ctype =       ctypes.byref(ctypes.c_bool(write_output)) 
-        shrink_tails_ctype =       ctypes.byref(ctypes.c_bool(shrink_tails))
-        shrink_tails_under_ctype = ctypes.byref(ctypes.c_float(shrink_tails_under))
-        adjust_N2_ctype =          ctypes.byref(ctypes.c_bool(adjust_N2))
-        lethal_events_mode_ctype = ctypes.byref(ctypes.c_bool(lethal_events_mode))
+        gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))   
+        N2_ctype =                 ctypes.c_int(N2)
+        fluence_factor_ctype =     ctypes.c_float(fluence_factor)
+        write_output_ctype =       ctypes.c_bool(write_output) 
+        shrink_tails_ctype =       ctypes.c_bool(shrink_tails)
+        shrink_tails_under_ctype = ctypes.c_float(shrink_tails_under)
+        adjust_N2_ctype =          ctypes.c_bool(adjust_N2)
+        lethal_events_mode_ctype = ctypes.c_bool(lethal_events_mode)
         tenfloats = ctypes.c_float*10
         results = tenfloats(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
         
-        c_at_spiff = libamtrack.AT_SPIFF
+        c_at_spiff = libamtrack.AT_run_SPIFF_method
         c_at_spiff.restype = ctypes.c_float *10
         c_at_spiff_output = c_at_spiff(n_ctype,
                                        E_MeV_u_ctype,
@@ -187,7 +185,6 @@ class AmTrack(object):
                                        RDD_model_ctype,
                                        RDD_parameters_ctype,
                                        ER_model_ctype,
-                                       ER_parameters_ctype,
                                        gamma_model_ctype,
                                        gamma_parameters_ctype,
                                        N2_ctype,
@@ -277,38 +274,37 @@ class AmTrack(object):
         @return: None
         '''
         #conversion of Python variables to C type variables
-        n_ctype =                  ctypes.byref(ctypes.c_int(n))
+        n_ctype =                  ctypes.c_int(n)
         tmp_array =         ctypes.c_float * len(E_MeV_u)
         E_MeV_u_ctype =     ctypes.byref(tmp_array(*E_MeV_u))
         tmp_array =         ctypes.c_long * len(particle_no)
         particle_no_ctype = ctypes.byref(tmp_array(*particle_no))
         tmp_array =         ctypes.c_float * len(fluence_cm2)
         fluence_cm2_ctype =  ctypes.byref(tmp_array(*fluence_cm2))
-        material_no_ctype =        ctypes.byref(ctypes.c_int(material_no))
-        RDD_model_ctype =          ctypes.byref(ctypes.c_int(RDD_model))
+        material_no_ctype =        ctypes.c_int(material_no)
+        RDD_model_ctype =          ctypes.c_int(RDD_model)
         
         tmp_array = ctypes.c_float* len(RDD_parameters)        
         RDD_parameters_ctype =     ctypes.byref(tmp_array(*RDD_parameters))
         
-        ER_model_ctype =           ctypes.byref(ctypes.c_int(ER_model))
+        ER_model_ctype =           ctypes.c_int(ER_model)
         
-        tmp_array = ctypes.c_float* len(ER_parameters)        
-        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))
-        
-        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))
+   
+      
+        gamma_model_ctype =        ctypes.c_int(gamma_model)
         gamma_parameters.append(0.0) # required by AmTrac
         tmp_array = ctypes.c_float* len(gamma_parameters)
         
         gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))
-        N_runs_ctype =             ctypes.byref(ctypes.c_long(int(n_runs)))
-        N2_ctype =                 ctypes.byref(ctypes.c_int(N2))
-        fluence_factor_ctype =     ctypes.byref(ctypes.c_float(fluence_factor))
-        write_output_ctype =       ctypes.byref(ctypes.c_int(write_output))
-        importance_sampling_ctype = ctypes.byref(ctypes.c_int(importance_sampling))
+        N_runs_ctype =             ctypes.c_long(int(n_runs))
+        N2_ctype =                 ctypes.c_int(N2)
+        fluence_factor_ctype =     ctypes.c_float(fluence_factor)
+        write_output_ctype =       ctypes.c_int(write_output)
+        importance_sampling_ctype = ctypes.c_int(importance_sampling)
         tenfloats = ctypes.c_float*10
         results = tenfloats(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
         
-        c_at_spiss = libamtrack.AT_SPISS
+        c_at_spiss = libamtrack.AT_run_SPISS_method
         c_at_spiss.restype = ctypes.c_float *10
         
         c_at_spiss_output =  c_at_spiss(n_ctype,
@@ -420,35 +416,34 @@ class AmTrack(object):
         @return: None
         '''
         #conversion of Python variables to C type variables
-        n_ctype =                  ctypes.pointer(ctypes.c_int(n))
+        n_ctype =                  ctypes.c_int(n)
         tmp_array =         ctypes.c_float * len(E_MeV_u)
         E_MeV_u_ctype =     ctypes.byref(tmp_array(*E_MeV_u))
         tmp_array =         ctypes.c_long * len(particle_no)
         particle_no_ctype = ctypes.byref(tmp_array(*particle_no))
         tmp_array =         ctypes.c_float * len(fluence_cm2)
         fluence_cm2_ctype =  ctypes.byref(tmp_array(*fluence_cm2))
-        material_no_ctype =        ctypes.byref(ctypes.c_int(material_no))
-        RDD_model_ctype =          ctypes.byref(ctypes.c_int(RDD_model))
+        material_no_ctype =        ctypes.c_int(material_no)
+        RDD_model_ctype =          ctypes.c_int(RDD_model)
         tmp_array = ctypes.c_float* len(RDD_parameters)        
         RDD_parameters_ctype =     ctypes.byref(tmp_array(*RDD_parameters))   
-        ER_model_ctype =           ctypes.byref(ctypes.c_int(ER_model))        
-        tmp_array = ctypes.c_float* len(ER_parameters)        
-        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))
-        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))
+        ER_model_ctype =           ctypes.c_int(ER_model)        
+
+        gamma_model_ctype =        ctypes.c_int(gamma_model)
         gamma_parameters.append(0.0) # required by AmTrac
         tmp_array = ctypes.c_float* len(gamma_parameters)        
         gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))        
-        N_runs_ctype = ctypes.pointer(ctypes.c_long(int(N_runs)))
-        N2_ctype =                 ctypes.pointer(ctypes.c_int(N2))
-        fluence_factor_ctype =     ctypes.pointer(ctypes.c_float(fluence_factor))
-        write_output_ctype =       ctypes.pointer(ctypes.c_bool(write_output)) 
-        nX_ctype = ctypes.pointer(ctypes.c_int(nX))
-        voxel_size_m_ctype = ctypes.pointer(ctypes.c_float(voxel_size_m))
-        lethal_events_mode_ctype = ctypes.pointer(ctypes.c_bool(lethal_events_mode))
+        N_runs_ctype = ctypes.c_long(int(N_runs))
+        N2_ctype =                 ctypes.c_int(N2)
+        fluence_factor_ctype =    ctypes.c_float(fluence_factor)
+        write_output_ctype =       ctypes.c_bool(write_output) 
+        nX_ctype = ctypes.c_int(nX)
+        voxel_size_m_ctype =ctypes.c_float(voxel_size_m)
+        lethal_events_mode_ctype = ctypes.c_bool(lethal_events_mode)
         tenfloats = ctypes.c_float*10
         results = tenfloats(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
         
-        c_at_gsm = libamtrack.AT_GSM
+        c_at_gsm = libamtrack.AT_run_GSM_method
         c_at_gsm.restype = ctypes.c_float  *10
         
         c_at_gsm_output = c_at_gsm(n_ctype,
@@ -537,29 +532,27 @@ class AmTrack(object):
         @return:  none
         '''
         #conversion of Python variables to C type variables
-        n_ctype =                  ctypes.byref(ctypes.c_int(n))
+        n_ctype =                 ctypes.c_int(n)
         tmp_array =         ctypes.c_float * len(E_MeV_u)
         E_MeV_u_ctype =     ctypes.byref(tmp_array(*E_MeV_u))
         tmp_array =         ctypes.c_long * len(particle_no)
         particle_no_ctype = ctypes.byref(tmp_array(*particle_no))
         tmp_array =         ctypes.c_float * len(fluence_cm2)
         fluence_cm2_ctype =  ctypes.byref(tmp_array(*fluence_cm2))
-        material_no_ctype =        ctypes.byref(ctypes.c_int(material_no))
-        RDD_model_ctype =          ctypes.byref(ctypes.c_int(RDD_model))
+        material_no_ctype =        ctypes.c_int(material_no)
+        RDD_model_ctype =          ctypes.c_int(RDD_model)
         tmp_array = ctypes.c_float* len(RDD_parameters)        
         RDD_parameters_ctype =     ctypes.byref(tmp_array(*RDD_parameters))   
-        ER_model_ctype =           ctypes.byref(ctypes.c_int(ER_model))        
-        tmp_array = ctypes.c_float* len(ER_parameters)        
-        ER_parameters_ctype =      ctypes.byref(tmp_array(*ER_parameters))
-        gamma_model_ctype =        ctypes.byref(ctypes.c_int(gamma_model))
+        ER_model_ctype =           ctypes.c_int(ER_model)        
+        gamma_model_ctype =        ctypes.c_int(gamma_model)
         gamma_parameters.append(0.0) # required by AmTrack
         tmp_array = ctypes.c_float* len(gamma_parameters)        
         gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))
-        saturation_cross_section_factor_ctype = ctypes.byref(ctypes.c_float(saturation_cross_section_factor))
+        saturation_cross_section_factor_ctype = ctypes.c_float(saturation_cross_section_factor)
         tenfloats = ctypes.c_float*10
         results = tenfloats(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
         
-        c_at_igk = libamtrack.AT_IGK
+        c_at_igk = libamtrack.AT_run_IGK_method
         c_at_igk.restype = ctypes.c_float  *10       
         
         c_at_igk_output = c_at_igk(n_ctype,
