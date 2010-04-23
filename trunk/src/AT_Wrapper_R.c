@@ -247,6 +247,35 @@ void AT_max_electron_ranges_m_R(  const int*  number_of_particles,
   free( E_MeV_u_double );
 }
 
+void AT_particle_no_from_Z_and_A_R  ( const int*  n,
+    const int*    Z,
+    const int*    A,
+    int*          particle_no)
+{
+  long  n_long = (long)*n;
+  long* Z_long = (long*)calloc(n_long,sizeof(long));
+  long* A_long = (long*)calloc(n_long,sizeof(long));
+  long* particle_no_long = (long*)calloc(n_long,sizeof(long));
+
+  long i;
+  for(i = 0 ; i < n_long ; i++){
+    Z_long[i] = (long)Z[i];
+    A_long[i] = (long)A[i];
+  }
+
+  AT_particle_no_from_Z_and_A( n_long,
+      Z_long,
+      A_long,
+      particle_no_long);
+
+  for(i = 0 ; i < n_long ; i++){
+    particle_no[i] = (int)particle_no_long[i];
+  }
+
+  free(Z_long);
+  free(A_long);
+  free(particle_no_long);
+}
 
 void AT_r_RDD_m_R  ( const int*  n,
     const float*  D_RDD_Gy,

@@ -55,8 +55,8 @@
 # AT.max.electron.range                      OK
 # AT.RDD.D.Gy                                OK
 # AT.RDD.D.ext.Gy                            OK
-# AT.SC.get.f1.array.size				              	 OK
-# AT.SC.get.f1								 				                  OK
+# AT.SC.get.f1.array.size				     OK
+# AT.SC.get.f1								 OK
 # AT.SC.get.f.array.size                     OK
 # AT.Katz.inactivation.probability           to be tested TODO
 # AT.Katz.inactivation.cross.section.m2      to be tested
@@ -192,6 +192,58 @@ AT.gamma.response	<-	function(	d.Gy,
 	return(res$S)
 }
 
+################################
+AT.Katz.inactivation.probability		<-	function(	r.m,
+													E.MeV.u,
+													particle.no,
+													material.no,
+													rdd.model,
+													rdd.parameters,
+													er.model,
+													gamma.parameters){
+
+	n					<-	length(r.m)
+	inactivation.probability					<-	numeric(n)
+
+	res						<-	.C("AT_KatzModel_inactivation_probability_R", 		n						= as.integer(n),
+																		r.m					               			= as.single(r.m),
+																		E.MeV.u								         		= as.single(E.MeV.u),
+																		particle.no			 				       = as.integer(particle.no),
+																		material.no								      	= as.integer(material.no),
+																		rdd.model				        					= as.integer(rdd.model),
+																		rdd.parameters						      = as.single(rdd.parameters),
+																		er.model	            					= as.integer(er.model),
+																		gamma.parameters					    	= as.single(gamma.parameters),
+																		inactivation.probability	 = as.single(inactivation.probability))
+
+	 return(res$inactivation.probability)
+}
+	
+#####################################
+AT.Katz.inactivation.cross.section.m2		<-	function(		E.MeV.u,
+													particle.no,
+													material.no,
+													rdd.model,
+													rdd.parameters,
+													er.model,
+													gamma.parameters){
+
+	n					<-	length(E.MeV.u)
+	inactivation.cross.section.m2					<-	numeric(n)
+
+	res						<-	.C("AT_KatzModel_inactivation_cross_section_m2_R", 		n						= as.integer(n),
+																		E.MeV.u								         		= as.single(E.MeV.u),
+																		particle.no			 				       = as.integer(particle.no),
+																		material.no								      	= as.integer(material.no),
+																		rdd.model				        					= as.integer(rdd.model),
+																		rdd.parameters						      = as.single(rdd.parameters),
+																		er.model	            					= as.integer(er.model),
+																		gamma.parameters					    	= as.single(gamma.parameters),
+																		inactivation.cross.section.m2	 = as.single(inactivation.cross.section.m2))
+
+	 return(res$inactivation.cross.section.m2)
+}
+
 #################
 AT.LET.MeV.cm2.g		<-	function(	E.MeV.u,
 										particle.no,
@@ -230,6 +282,50 @@ AT.max.electron.range					<-	function(	E.MeV.u,
 	return(res$range.m)
 }
 
+#################################
+AT.particle.name.from.particle.no		<-	function(		particle.no){
+
+	n					<-	length(particle.no)
+	particle.name		<-	character(n)
+	
+	for (i in 1:n){
+		cur.particle.name	<-	character(1)
+		res					<-	.C("AT_particle_name_from_particle_no_R", 		particle.no				= as.integer(particle.no[i]),
+																	particle.name			= as.character(cur.particle.name))
+		particle.name[i]	<-	res$particle.name
+	}		
+	return(particle.name)
+}
+	
+#################################	
+AT.particle.no.from.particle.name		<-	function(		particle.name ){
+
+	n					<-	length(particle.name)
+	particle.no		<-	numeric(n)
+	
+	for (i in 1:n){
+		cur.particle.no	<-	numeric(1)
+		res					<-	.C("AT_particle_no_from_particle_name_R", 		particle.name				= as.character(particle.name[i]),  
+																	 particle.no			= as.integer(cur.particle.no))
+		particle.no[i]	<-	res$particle.no
+	}		
+	return(particle.no)
+}
+
+#################################
+AT.particle.no.from.Z.and.A		<-	function(	Z, A){
+
+	n					<-	length(Z)
+	particle.no			<-	numeric(n)
+	
+	res					<-	.C("AT_particle_no_from_Z_and_A_R", 		n  						= as.integer(n),
+																		Z  						= as.integer(Z),
+																		A  						= as.integer(A),
+																		particle.no				= as.integer(particle.no))
+
+	return(res$particle.no)
+}
+	
 ##########
 AT.r.RDD.m					<-	function(	D.Gy,
 											E.MeV.u,
@@ -433,87 +529,8 @@ AT.SC.SuccessiveConvolutions		<-	function(	u,
 																fdd							=	res$fdd,
 																dfdd						=	res$dfdd)))																	
 }
-	
-############################
-AT.Katz.inactivation.probability		<-	function(	r.m,
-													E.MeV.u,
-													particle.no,
-													material.no,
-													rdd.model,
-													rdd.parameters,
-													er.model,
-													gamma.parameters){
 
-	n					<-	length(r.m)
-	inactivation.probability					<-	numeric(n)
 
-	res						<-	.C("AT_KatzModel_inactivation_probability_R", 		n						= as.integer(n),
-																		r.m					               			= as.single(r.m),
-																		E.MeV.u								         		= as.single(E.MeV.u),
-																		particle.no			 				       = as.integer(particle.no),
-																		material.no								      	= as.integer(material.no),
-																		rdd.model				        					= as.integer(rdd.model),
-																		rdd.parameters						      = as.single(rdd.parameters),
-																		er.model	            					= as.integer(er.model),
-																		gamma.parameters					    	= as.single(gamma.parameters),
-																		inactivation.probability	 = as.single(inactivation.probability))
-
-	 return(res$inactivation.probability)
-}
-	
-	###########################
-AT.Katz.inactivation.cross.section.m2		<-	function(		E.MeV.u,
-													particle.no,
-													material.no,
-													rdd.model,
-													rdd.parameters,
-													er.model,
-													gamma.parameters){
-
-	n					<-	length(E.MeV.u)
-	inactivation.cross.section.m2					<-	numeric(n)
-
-	res						<-	.C("AT_KatzModel_inactivation_cross_section_m2_R", 		n						= as.integer(n),
-																		E.MeV.u								         		= as.single(E.MeV.u),
-																		particle.no			 				       = as.integer(particle.no),
-																		material.no								      	= as.integer(material.no),
-																		rdd.model				        					= as.integer(rdd.model),
-																		rdd.parameters						      = as.single(rdd.parameters),
-																		er.model	            					= as.integer(er.model),
-																		gamma.parameters					    	= as.single(gamma.parameters),
-																		inactivation.cross.section.m2	 = as.single(inactivation.cross.section.m2))
-
-	 return(res$inactivation.cross.section.m2)
-}
-
-AT.particle.no.from.particle.name		<-	function(		particle.name ){
-
-	n					<-	length(particle.name)
-	particle.no		<-	numeric(n)
-	
-	for (i in 1:n){
-		cur.particle.no	<-	numeric(1)
-		res					<-	.C("AT_particle_no_from_particle_name_R", 		particle.name				= as.character(particle.name[i]),  
-																	 particle.no			= as.integer(cur.particle.no))
-		particle.no[i]	<-	res$particle.no
-	}		
-	return(particle.no)
-}
-
-AT.particle.name.from.particle.no		<-	function(		particle.no){
-
-	n					<-	length(particle.no)
-	particle.name		<-	character(n)
-	
-	for (i in 1:n){
-		cur.particle.name	<-	character(1)
-		res					<-	.C("AT_particle_name_from_particle_no_R", 		particle.no				= as.integer(particle.no[i]),
-																	particle.name			= as.character(cur.particle.name))
-		particle.name[i]	<-	res$particle.name
-	}		
-	return(particle.name)
-}
-	
 ######################################################################################################################################
 
 print(AT.version)
