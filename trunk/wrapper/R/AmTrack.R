@@ -485,6 +485,44 @@ AT.SC.get.f.start		<-	function(		N2,
 								f.start						=	res$f))
 }
 
+########################
+AT.SC.get.gamma.response		<-	function(	d.Gy,
+												dd.Gy,
+												f,
+												f0,
+												gamma.model,
+												gamma.parameters,
+												lethal.events.mode){
+
+	number.of.bins		<-	length(d.Gy)
+	S					<-	numeric(number.of.bins)
+	S.HCP				<-	numeric(1)
+	S.gamma				<-	numeric(1)
+	efficiency			<-	numeric(1)
+	
+	res						<-	.C("AT_SC_get_gamma_response_R", 		number.of.bins			= as.single(number.of.bins),
+																		d.Gy  					= as.single(d.Gy),
+																		dd.Gy					= as.single(dd.Gy),
+																		f						= as.single(f),
+																		f0						= as.single(f0),
+																		gamma.model				= as.integer(gamma.model),
+																		gamma.parameters		= as.single(gamma.parameters),
+																		lethal.events.mode		= as.integer(lethal.events.mode),
+																		S						= as.single(S),
+																		S.HCP					= as.single(S.HCP),
+																		S.gamma					= as.single(S.gamma),
+																		efficiency				= as.single(efficiency))
+																		
+																		
+	return(				list(	S.HCP			=	res$S.HCP,
+								S.gamma			=	res$S.gamma,
+								efficiency		=	res$efficiency,
+								S				=	data.frame(	d.Gy						=	d.Gy,
+																dd.Gy						=	dd.Gy,
+																f							=	f,
+																S							=	res$S)))																	
+}
+
 ############################
 AT.SC.SuccessiveConvolutions		<-	function(	u,
 													n.bins.f,

@@ -1,20 +1,20 @@
 run.SPIFF		<-	function(	E.MeV.u,
 					particle.no,
 					fluence.cm2,
-					material.no,
-					RDD.model,
-					RDD.parameters,
-					ER.model,
-					gamma.model,
-					gamma.parameters,
-					N2,
-					fluence.factor,
-					write.output,
-					shrink.tails,
-					shrink.tails.under,
-					adjust.N2,
-					lethal.events.mode,
-					verbose){
+					material.no				=	1,				# Liquid water
+					RDD.model				=	3,				# Geiß' RDD
+					RDD.parameters			=	5e-8,			# a0 = 50 nm
+					ER.model				=	4,				# Geiß' ER
+					gamma.model				=	2,				# General hit-target
+					gamma.parameters		=	c(1,10,1,1,0),	# One single-hit-single-target (exp-sat) component, characteristic dose 10 Gy
+					N2						=	20,				# 20 bins per factor 2 in histograms
+					fluence.factor			=	1,				# use fluence as given
+					write.output			=	F,				# no log file
+					shrink.tails			=	T,				# cut insignificant tails
+					shrink.tails.under		=	1e-30,			# cut them in case contribution to first moment is lower than
+					adjust.N2				=	T,				# adjust bin width during convolution
+					lethal.events.mode		=	F,				# use survival instead of activiation
+					verbose					=	F){				# return distributions etc.
 
 if(verbose){
 	results.1	<-	AT.SC.get.f1.array.size(E.MeV.u = E.MeV.u,
@@ -64,6 +64,34 @@ if(verbose){
 									shrink.tails.under = shrink.tails.under,
 									adjust.N2 = adjust.N2)
 
+	results.6	<-	AT.SC.get.gamma.response(	d.Gy = results.5$f$f.d.Gy,
+									dd.Gy = results.5$f$f.dd.Gy,
+									f = results.5$f$f,
+									f0 = results.5$f0,
+									gamma.model = gamma.model,
+									gamma.parameters = gamma.parameters,
+									lethal.events.mode = lethal.events.mode)
+	
+	index			<-	1:(length(results.1$f1.parameters) / 8) * 8 - 8
+	df.f1.parameters	<-	data.frame(	E.MeV.u				=	E.MeV.u,
+							particle.name			=	AT.particle.name.from.particle.no(particle.no),
+							LET.MeV.cm2.g			=	results.1$f1.parameters[index + 1],
+							r.min.m				=	results.1$f1.parameters[index + 2],
+							r.max.m				=	results.1$f1.parameters[index + 3],
+							d.min.Gy				=	results.1$f1.parameters[index + 4],
+							d.max.Gy				=	results.1$f1.parameters[index + 5],
+							normalization.constant.Gy 	=	results.1$f1.parameters[index + 6],
+							single.impact.fluence.cm2	=	results.1$f1.parameters[index + 7],
+							single.impact.dose.Gy		=	results.1$f1.parameters[index + 8])
+
+	df.f.parameters	<-	data.frame(	u					=	results.2$f.parameters[1],
+							total.fluence.cm2			=	results.2$f.parameters[2],
+							total.dose.Gy			=	results.2$f.parameters[3],
+							ave.E.MeV				=	results.2$f.parameters[4],
+							dw.E.MeV				=	results.2$f.parameters[5],
+							ave.LET.MeV.cm2.g			=	results.2$f.parameters[6],
+							dw.LET.MeV.cm2.g			=	results.2$f.parameters[7])
+
 	return(	list(		E.MeV.u = E.MeV.u,
 					particle.no = particle.no,
 					fluence.cm2 = fluence.cm2,
@@ -75,8 +103,8 @@ if(verbose){
 					ER.model = ER.model,
 					N2.set = N2,
 					N2 = results.5$N2,
-					f1.parameters = results.1$f1.parameters,
-					f.parameters = results.2$f.parameters,
+					f1.parameters = df.f1.parameters,
+					f.parameters = df.f.parameters,
 					n.bins.f1 = results.2$n.bins.f1,
 					n.bins.f = results.3$n.bins.f,
 					n.bins.f.used = results.5$n.bins.f.used,
