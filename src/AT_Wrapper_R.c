@@ -943,6 +943,73 @@ void  AT_SC_get_f_start_R( const int*    n_bins_f1,
   free(f_start_double);
 }
 
+void AT_SC_get_gamma_response_R(  const int* number_of_bins,
+    const float*   d_Gy,
+    const float*   dd_Gy,
+    const float*   f,
+    const float*   f0,
+    const int*     gamma_model,
+    const float*   gamma_parameter,
+    const int*     lethal_events_mode,
+    float*         S,
+    float*         S_HCP,
+    float*         S_gamma,
+    float*         efficiency){
+
+  const long number_of_bins_long        = (long)(*number_of_bins);
+  const double f0_double                = (const double)*f0;
+  const long gamma_model_long           = (long)*gamma_model;
+  const bool lethal_events_mode_bool    = (const bool)*lethal_events_mode;
+
+  double * d_Gy_double                  = (double*)calloc(number_of_bins_long,sizeof(double));
+  double * dd_Gy_double                 = (double*)calloc(number_of_bins_long,sizeof(double));
+  double * f_double                     = (double*)calloc(number_of_bins_long,sizeof(double));
+  long i;
+  for(i = 0 ; i < number_of_bins_long ; i++){
+    d_Gy_double[i]   =  (double)d_Gy[i];
+    dd_Gy_double[i]  =  (double)dd_Gy[i];
+    f_double[i]      =  (double)f[i];
+  }
+
+  const long n_gamma_parameters         = AT_Gamma_number_of_parameters( gamma_model_long);
+  double * gamma_parameters_double      = (double*)calloc(n_gamma_parameters,sizeof(double));
+  for(i = 0 ; i < n_gamma_parameters ; i++){
+    gamma_parameters_double[i]   =  (double)gamma_parameter[i];
+  }
+
+  /* place for results */
+  double * S_double                     = (double*)calloc(number_of_bins_long,sizeof(double));
+  double S_HCP_double, S_gamma_double, efficiency_double;
+
+  AT_get_gamma_response(  number_of_bins_long,
+    d_Gy_double,
+    dd_Gy_double,
+    f_double,
+    f0_double,
+    gamma_model_long,
+    gamma_parameters_double,
+    lethal_events_mode_bool,
+    // return
+    S,
+    &S_HCP_double,
+    &S_gamma_double,
+    &efficiency_double);
+
+  for(i = 0 ; i < number_of_bins_long ; i++){
+    S[i]   =  (float)S_double[i];
+  }
+
+  *S_HCP      = (float)S_HCP_double;
+  *S_gamma    = (float)S_gamma_double;
+  *efficiency = (float)efficiency_double;
+
+  free(S);
+  free(gamma_parameters_double);
+  free(f_double);
+  free(dd_Gy_double);
+  free(d_Gy_double);
+
+}
 
 void AT_SuccessiveConvolutions_R( const float*  u,
     const int*    n_bins_f,

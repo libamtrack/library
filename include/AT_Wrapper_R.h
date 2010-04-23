@@ -211,6 +211,18 @@ void  AT_SC_get_f_start_R(  const int*    n_bins_f1,
     float*        f_dd_Gy,
     float*        f_start);
 
+void AT_SC_get_gamma_response_R(  const int* number_of_bins,
+    const float*   d_Gy,
+    const float*   dd_Gy,
+    const float*   f,
+    const float*   f0,
+    const int*     gamma_model,
+    const float*   gamma_parameter,
+    const int*     lethal_events_mode,
+    float*         S,
+    float*         S_HCP,
+    float*         S_gamma,
+    float*         efficiency);
 
 void AT_SuccessiveConvolutions_R( const float*  u,
     const int*    n_bins_f,
