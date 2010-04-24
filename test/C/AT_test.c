@@ -256,18 +256,41 @@ int main(){
 //  free(f1_dd_Gy);
 //  free(f1);
 
-  const long n = 9;
-  const long particle_no[] = {1001,2003,2004,3005,6012,8016,92238,137137,512256};
-  char particle_name[n][PARTICLE_NAME_NCHAR];
+//  const long n = 9;
+//  const long particle_no[] = {1001,2003,2004,3005,6012,8016,92238,137137,512256};
+//  char particle_name[n][PARTICLE_NAME_NCHAR];
+//
+//  AT_particle_name_from_particle_no( n,
+//      particle_no,
+//      particle_name);
+//
+//  long i;
+//  for( i = 0 ; i < n; i++){
+//    printf("particle_name [ %ld ] = %s \n", particle_no[i], particle_name[i]);
+//  }
 
-  AT_particle_name_from_particle_no( n,
-      particle_no,
-      particle_name);
+  const int number_of_bins = 10;
+  const float d_Gy[] = {1,2,3,4,5,6,7,8,9,10};
+  const float dd_Gy[] = {1,1,1,1,1,1,1,1,1,1};
+  const float f[] = {0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1};
+  const int gamma_model = 2;
+  const float gamma_parameter[] = {1,10,1,1,0};
+  const int lethal_events_mode = 0;
+  float S[] = {0,0,0,0,0,0,0,0,0,0};
+  float f0, S_HCP, S_gamma, efficiency;
 
-  long i;
-  for( i = 0 ; i < n; i++){
-    printf("particle_name [ %ld ] = %s \n", particle_no[i], particle_name[i]);
-  }
+   AT_SC_get_gamma_response_R(  &number_of_bins,
+      d_Gy,
+      dd_Gy,
+      f,
+      &f0,
+      &gamma_model,
+      gamma_parameter,
+      &lethal_events_mode,
+      S,
+      &S_HCP,
+      &S_gamma,
+      &efficiency);
 
   return 0;
 

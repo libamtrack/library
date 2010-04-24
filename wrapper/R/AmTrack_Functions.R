@@ -71,6 +71,7 @@ if(verbose){
 									gamma.model = gamma.model,
 									gamma.parameters = gamma.parameters,
 									lethal.events.mode = lethal.events.mode)
+	results.5$f$S	<-	results.6$S
 	
 	index			<-	1:(length(results.1$f1.parameters) / 8) * 8 - 8
 	df.f1.parameters	<-	data.frame(	E.MeV.u				=	E.MeV.u,
@@ -119,9 +120,12 @@ if(verbose){
 					f1 = results.2$f1,
 					f.start = results.4,
 					f0 = results.5$f0,
-					f = results.5$f))
+					f = results.5$f,
+					S.HCP = results.6$S.HCP,
+					S.gamma = results.6$S.gamma,
+					efficiency = results.6$efficiency))
 	}else{
-		return(AT.run.SPIFF(	E.MeV.u 		= E.MeV.u,
+		return(AT.run.SPIFF.method(	E.MeV.u 		= E.MeV.u,
 							particle.no 	= particle.no,
 							fluence.cm2 	= fluence.cm2,
 							material.no 	= material.no,
@@ -136,6 +140,6 @@ if(verbose){
 							shrink.tails	= shrink.tails,
 							shrink.tails.under = shrink.tails.under,
 							adjust.N2 		= adjust.N2,
-							lethal.events.mode	= lethal.events.mode)$results)
+							lethal.events.mode	= lethal.events.mode))
 	}
 }

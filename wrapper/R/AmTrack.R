@@ -500,7 +500,7 @@ AT.SC.get.gamma.response		<-	function(	d.Gy,
 	S.gamma				<-	numeric(1)
 	efficiency			<-	numeric(1)
 	
-	res						<-	.C("AT_SC_get_gamma_response_R", 		number.of.bins			= as.single(number.of.bins),
+	res						<-	.C("AT_SC_get_gamma_response_R", 		number.of.bins			= as.integer(number.of.bins),
 																		d.Gy  					= as.single(d.Gy),
 																		dd.Gy					= as.single(dd.Gy),
 																		f						= as.single(f),
