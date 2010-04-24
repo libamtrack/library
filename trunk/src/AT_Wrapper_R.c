@@ -971,7 +971,7 @@ void AT_SC_get_gamma_response_R(  const int* number_of_bins,
     f_double[i]      =  (double)f[i];
   }
 
-  const long n_gamma_parameters         = AT_Gamma_number_of_parameters( gamma_model_long);
+  const long n_gamma_parameters         = 5; //AT_Gamma_number_of_parameters( gamma_model_long);
   double * gamma_parameters_double      = (double*)calloc(n_gamma_parameters,sizeof(double));
   for(i = 0 ; i < n_gamma_parameters ; i++){
     gamma_parameters_double[i]   =  (double)gamma_parameter[i];
@@ -990,7 +990,7 @@ void AT_SC_get_gamma_response_R(  const int* number_of_bins,
     gamma_parameters_double,
     lethal_events_mode_bool,
     // return
-    S,
+    S_double,
     &S_HCP_double,
     &S_gamma_double,
     &efficiency_double);
@@ -1003,7 +1003,7 @@ void AT_SC_get_gamma_response_R(  const int* number_of_bins,
   *S_gamma    = (float)S_gamma_double;
   *efficiency = (float)efficiency_double;
 
-  free(S);
+  free(S_double);
   free(gamma_parameters_double);
   free(f_double);
   free(dd_Gy_double);
