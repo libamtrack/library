@@ -568,6 +568,23 @@ AT.SC.SuccessiveConvolutions		<-	function(	u,
 																dfdd						=	res$dfdd)))																	
 }
 
+AT.total.D.Gy					<-	function(	E.MeV.u,
+											particle.no,
+											fluence.cm2,
+											material.no){
+	n					<-	length(E.MeV.u)
+	total.D.Gy			<-	numeric(1)
+  		
+    res					<-	.C(	"AT_total_D_Gy_R",	n						=	as.integer(n),
+													E.MeV.u					=	as.single(E.MeV.u),
+													particle.no				=	as.integer(particle.no),
+													fluence.cm2				=	as.single(fluence.cm2),
+													material.no				=	as.integer(material.no),
+													total.D.Gy				=	as.single(total.D.Gy))		
+			
+	 return(res$total.D.Gy)						
+}
+
 
 ######################################################################################################################################
 

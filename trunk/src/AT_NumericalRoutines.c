@@ -587,6 +587,29 @@ void is_element_int(const long element, const long set[], const long n_set, bool
   }
 }
 
+double AT_sum(     const long n,
+              const double data[])
+{
+  long i;
+  double sum = 0.0f;
+  for (i = 0; i < n; i++){
+    sum += data[i];
+  }
+  return(sum);
+}
+
+void AT_normalize(     const long n,
+                    const double data[],
+                    double normalized_data[])
+{
+  long i;
+  double sum = AT_sum(n, data);
+
+  for (i = 0; i < n; i++){
+    normalized_data[i] = data[i] / sum;
+  }
+}
+
 
 long locate(const double xx[], const long n, const double x)
 {

@@ -393,6 +393,12 @@ void AT_single_impact_fluence_cm2( const long n,
 inline double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
     const double single_impact_fluence_cm2);
 
+void AT_single_impact_dose_Gy( const long n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const long    material_no,
+    const long    er_model,
+    double        single_impact_dose_Gy[]);
 
 /**
  * Computes the total dose of a particle field
@@ -446,7 +452,7 @@ double AT_total_fluence_cm2( const long n,
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @return     average_E_MeV_u  result
  */
-double AT_fluenceweighted_E_MeV_u( const long    n,
+double AT_fluence_weighted_E_MeV_u( const long    n,
     const double E_MeV_u[],
     const double fluence_cm2[]);
 
@@ -465,7 +471,7 @@ double AT_fluenceweighted_E_MeV_u( const long    n,
  * @see          AT_DataMaterial.h for definition
  * @return     doseweighted_E_MeV_u  result
  */
-double AT_doseweighted_E_MeV_u( const long   n,
+double AT_dose_weighted_E_MeV_u( const long   n,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
@@ -486,7 +492,7 @@ double AT_doseweighted_E_MeV_u( const long   n,
  * @see          AT_DataMaterial.h for definition
  * @return     fluenceweighted_LET_MeV_cm2_g  result
  */
-double AT_fluenceweighted_LET_MeV_cm2_g( const long     n,
+double AT_fluence_weighted_LET_MeV_cm2_g( const long     n,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
@@ -508,10 +514,33 @@ double AT_fluenceweighted_LET_MeV_cm2_g( const long     n,
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @return     doseweighted_LET_MeV_cm2_g  result
  */
-double AT_doseweighted_LET_MeV_cm2_g( const long  n,
+double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
     const long    material_no);
 
+/**
+ * Computes the number of track contributing to a representative point in a mixed field
+ *
+ * For one component this is: u_single = dose_Gy / single_impact_dose_Gy
+ * For n components this is:  fluence_cm2 * u_single / total_fluence_cm2
+ *
+ * @param[in]  n            length of vectors for parameters
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  particle_no  particle index (array of size n)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
+ * @param[in]  er_model     chosen electron-range-model
+ * @return     result
+ */
+double AT_total_u(    const long n,
+                const double E_MeV_u[],
+                const long particle_no[],
+                const double fluence_cm2[],
+                const long material_no,
+                const long er_model);
 #endif /* AT_PHYSICSROUTINES_H_ */

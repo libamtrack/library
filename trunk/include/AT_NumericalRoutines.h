@@ -249,6 +249,24 @@ void is_element_char(const char element[], const char* const * set, const long n
  */
 void is_element_int(const long element, const long set[], const long n_set, bool matches[]);
 
+/**
+ * Sums all elements in a data array
+ * @param  n                number of array elements
+ * @param  data             data to sum
+ * @return  sum of all elements
+ */
+double AT_sum(     const long n,
+              const double data[]);
+
+/**
+ * Normalizes a data array by dividing each element by the sum of all elements
+ * @param[in]  n                number of array elements
+ * @param[in]  data             data to normalize
+ * @param[out] normalized_data  results
+ */
+void AT_normalize(     const long n,
+                    const double data[],
+                    double normalized_data[]);
 
 /**
  * interpolation on a table: code (w/ adapted indices) from Numerical Recipes, 2rd ed., chapter 3.1
