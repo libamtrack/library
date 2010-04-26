@@ -51,7 +51,7 @@ int AT_beta_from_E( const long  n,
 
 
 inline double AT_E_from_beta_single(  const double beta ){
-  return proton_mass_MeV_c2 * (1.0 / (1.0 - gsl_pow_2(beta)) - 1.0);
+  return 1.0079*proton_mass_MeV_c2 * (sqrt(1.0 / (1.0 - gsl_pow_2(beta))) - 1.0);
 }
 
 
