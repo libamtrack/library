@@ -315,5 +315,27 @@ void AT_RDD_f1_parameters(
     const long    er_model,
     double        f1_parameters[]);
 
+/**
+ * Pre-calculated useful parameters characterizing a mixed field
+ * @param[in]  n                     number of components
+ * @param[in]  E_MeV_u               particle (ion) energy per nucleon [MeV/u], array of size n
+ * @param[in]  particle_no           particle code number
+ * @param[in]  material_no           material code number
+ * @param[out] f_parameters          array of size 7 (AT_SC_F_PARAMETERS_LENGTH) holding numbers describing the characteristics of the composed fields:\n
+ *                                      0 - u (mean number of tracks contributing)\n
+ *                                      1 - total fluence_cm2\n
+ *                                      2 - total_dose_Gy\n
+ *                                      3 - fluence weighted mean energy (MeV/u)\n
+ *                                      4 - dose weighted mean energy (MeV/u)\n
+ *                                      5 - fluence weighted mean LET (MeV*cm2/g)\n
+ *                                      6 - dose weighted mean LET (MeV*cm2/g)
+ */
+void AT_RDD_f_parameters( const long n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  fluence_cm2[],
+    const long    material_no,
+    const long    er_model,
+    double        f_parameters[]);
 
 #endif // AT_RDD_H_

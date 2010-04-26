@@ -1008,7 +1008,6 @@ void AT_SC_get_gamma_response_R(  const int* number_of_bins,
   free(f_double);
   free(dd_Gy_double);
   free(d_Gy_double);
-
 }
 
 void AT_SuccessiveConvolutions_R( const float*  u,
@@ -1087,4 +1086,192 @@ void AT_SuccessiveConvolutions_R( const float*  u,
   *f0 = (float)f0_double;
   *d = (float)d_double;
 }
+
+void AT_total_D_Gy_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    float*        total_D_Gy)
+{
+  long i;
+  const long n_long             = (long)(*n);
+  const long material_no_long   = (long)(*material_no);
+  long * particle_no_long       = (long*)calloc(n_long,sizeof(long));
+  for(i = 0 ; i < n_long ; i++){
+    particle_no_long[i]                 = (long)particle_no[i];
+  }
+
+  double * E_MeV_u_double       = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_double   = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
+    E_MeV_u_double[i]                   = (double)E_MeV_u[i];
+    fluence_cm2_double[i]               = (double)fluence_cm2[i];
+  }
+
+  *total_D_Gy   = (float)AT_total_D_Gy( n_long,
+                                        E_MeV_u_double,
+                                        particle_no_long,
+                                        fluence_cm2_double,
+                                        material_no_long);
+
+  free(fluence_cm2_double);
+  free(E_MeV_u_double);
+  free(particle_no_long);
+}
+
+void AT_total_fluence_cm2_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    float*        total_fluence_cm2)
+{
+  long i;
+  const long n_long             = (long)(*n);
+  const long material_no_long   = (long)(*material_no);
+  long * particle_no_long       = (long*)calloc(n_long,sizeof(long));
+  for(i = 0 ; i < n_long ; i++){
+    particle_no_long[i]                 = (long)particle_no[i];
+  }
+
+  double * E_MeV_u_double       = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_double   = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
+    E_MeV_u_double[i]                   = (double)E_MeV_u[i];
+    fluence_cm2_double[i]               = (double)fluence_cm2[i];
+  }
+
+  *total_fluence_cm2 = (float)AT_total_fluence_cm2( n_long,
+                                        E_MeV_u_double,
+                                        particle_no_long,
+                                        fluence_cm2_double,
+                                        material_no_long);
+
+  free(fluence_cm2_double);
+  free(E_MeV_u_double);
+  free(particle_no_long);
+}
+
+void AT_fluence_weighted_E_MeV_u_R( const int* n,
+    const float*  E_MeV_u,
+    const float*  fluence_cm2,
+    float* fluence_weighted_E_MeV_u)
+{
+  long i;
+  const long n_long             = (long)(*n);
+  double * E_MeV_u_double       = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_double   = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
+    E_MeV_u_double[i]                   = (double)E_MeV_u[i];
+    fluence_cm2_double[i]               = (double)fluence_cm2[i];
+  }
+
+  *fluence_weighted_E_MeV_u = (float)AT_fluence_weighted_E_MeV_u( n_long,
+                                        E_MeV_u_double,
+                                        fluence_cm2_double);
+
+  free(fluence_cm2_double);
+  free(E_MeV_u_double);
+}
+
+void AT_dose_weighted_E_MeV_u_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    float*        dose_weighted_E_MeV_u)
+{
+  long i;
+  const long n_long             = (long)(*n);
+  const long material_no_long   = (long)(*material_no);
+  long * particle_no_long       = (long*)calloc(n_long,sizeof(long));
+  for(i = 0 ; i < n_long ; i++){
+    particle_no_long[i]                 = (long)particle_no[i];
+  }
+
+  double * E_MeV_u_double       = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_double   = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
+    E_MeV_u_double[i]                   = (double)E_MeV_u[i];
+    fluence_cm2_double[i]               = (double)fluence_cm2[i];
+  }
+
+  *dose_weighted_E_MeV_u = (float)AT_dose_weighted_E_MeV_u( n_long,
+                                        E_MeV_u_double,
+                                        particle_no_long,
+                                        fluence_cm2_double,
+                                        material_no_long);
+
+  free(fluence_cm2_double);
+  free(E_MeV_u_double);
+  free(particle_no_long);
+}
+
+void AT_fluence_weighted_LET_MeV_cm2_g_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    float*        fluence_weighted_LET_MeV_cm2_g)
+{
+  long i;
+  const long n_long             = (long)(*n);
+  const long material_no_long   = (long)(*material_no);
+  long * particle_no_long       = (long*)calloc(n_long,sizeof(long));
+  for(i = 0 ; i < n_long ; i++){
+    particle_no_long[i]                 = (long)particle_no[i];
+  }
+
+  double * E_MeV_u_double       = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_double   = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
+    E_MeV_u_double[i]                   = (double)E_MeV_u[i];
+    fluence_cm2_double[i]               = (double)fluence_cm2[i];
+  }
+
+  *fluence_weighted_LET_MeV_cm2_g = (float)AT_fluence_weighted_LET_MeV_cm2_g( n_long,
+                                        E_MeV_u_double,
+                                        particle_no_long,
+                                        fluence_cm2_double,
+                                        material_no_long);
+
+  free(fluence_cm2_double);
+  free(E_MeV_u_double);
+  free(particle_no_long);
+}
+
+void AT_dose_weighted_LET_MeV_cm2_g_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    float*        dose_weighted_LET_MeV_cm2_g)
+{
+  long i;
+  const long n_long             = (long)(*n);
+  const long material_no_long   = (long)(*material_no);
+  long * particle_no_long       = (long*)calloc(n_long,sizeof(long));
+  for(i = 0 ; i < n_long ; i++){
+    particle_no_long[i]                 = (long)particle_no[i];
+  }
+
+  double * E_MeV_u_double       = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_double   = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
+    E_MeV_u_double[i]                   = (double)E_MeV_u[i];
+    fluence_cm2_double[i]               = (double)fluence_cm2[i];
+  }
+
+  *dose_weighted_LET_MeV_cm2_g = (float)AT_dose_weighted_LET_MeV_cm2_g( n_long,
+                                        E_MeV_u_double,
+                                        particle_no_long,
+                                        fluence_cm2_double,
+                                        material_no_long);
+
+  free(fluence_cm2_double);
+  free(E_MeV_u_double);
+  free(particle_no_long);
+}
+
 

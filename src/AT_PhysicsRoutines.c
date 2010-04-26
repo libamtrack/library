@@ -306,6 +306,23 @@ inline double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
   return LET_MeV_cm2_g * MeV_g_to_J_kg * single_impact_fluence_cm2;        // LET * fluence
 }
 
+void AT_single_impact_dose_Gy( const long n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const long    material_no,
+    const long    er_model,
+    double        single_impact_dose_Gy[])
+{
+  long i;
+  for( i = 0 ; i < n ; i++ ){
+    single_impact_dose_Gy[i] = AT_single_impact_dose_Gy_single(       AT_LET_MeV_cm2_g_single(  E_MeV_u[i],
+                                                                                                particle_no[i],
+                                                                                                material_no),
+                                                                      AT_single_impact_fluence_cm2_single(      E_MeV_u[i],
+                                                                                                                material_no,
+                                                                                                                er_model));
+  }
+}
 
 double  AT_total_D_Gy( const long  n,
     const double  E_MeV_u[],
@@ -360,7 +377,7 @@ double AT_total_fluence_cm2( const long n,
 }
 
 
-double AT_fluenceweighted_E_MeV_u( const long    n,
+double AT_fluence_weighted_E_MeV_u( const long    n,
     const double E_MeV_u[],
     const double fluence_cm2[])
  {
@@ -382,7 +399,7 @@ double AT_fluenceweighted_E_MeV_u( const long    n,
  }
 
 
-double AT_doseweighted_E_MeV_u( const long   n,
+double AT_dose_weighted_E_MeV_u( const long   n,
     const double  E_MeV_u[],
     const long   particle_no[],
     const double  fluence_cm2[],
@@ -417,8 +434,7 @@ double AT_doseweighted_E_MeV_u( const long   n,
    return doseweighted_E_MeV_u;
 }
 
-
-double AT_fluenceweighted_LET_MeV_cm2_g( const long     n,
+double AT_fluence_weighted_LET_MeV_cm2_g( const long     n,
     const double  E_MeV_u[],
     const long   particle_no[],
     const double  fluence_cm2[],
@@ -452,7 +468,7 @@ double AT_fluenceweighted_LET_MeV_cm2_g( const long     n,
 }
 
 
-double AT_doseweighted_LET_MeV_cm2_g( const long  n,
+double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
     const double  E_MeV_u[],
     const long   particle_no[],
     const double  fluence_cm2[],
@@ -494,3 +510,32 @@ double AT_doseweighted_LET_MeV_cm2_g( const long  n,
 
    return doseweighted_LET_MeV_cm2_g;
  }
+
+double AT_total_u(    const long n,
+                const double E_MeV_u[],
+                const long particle_no[],
+                const double fluence_cm2[],
+                const long material_no,
+                const long er_model)
+{
+  double total_D_Gy             =       AT_total_D_Gy(  n,
+                                                        E_MeV_u,
+                                                        particle_no,
+                                                        fluence_cm2,
+                                                        material_no);
+  double total_fluence_cm2      =       AT_sum( n,
+                                                fluence_cm2);
+
+  double u                      =       0.0;
+  long i;
+  for (i = 0; i < n; i++){
+      u         +=      fluence_cm2[i] * AT_single_impact_dose_Gy_single(       AT_LET_MeV_cm2_g_single(  E_MeV_u[i],
+                                                                                                          particle_no[i],
+                                                                                                          material_no),
+                                                                                AT_single_impact_fluence_cm2_single(      E_MeV_u[i],
+                                                                                                                          material_no,
+                                                                                                                          er_model));
+  }
+
+  return(total_D_Gy * total_fluence_cm2 / u);
+}

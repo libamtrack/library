@@ -104,12 +104,9 @@ void  AT_SC_get_f1(
     double        f1[])
 {
 
-  //TODO replace f_parameters and f1_parameters with human-readable variables
   ////////////////////////////////////////////////////////////////////////////////////////////
   // 1. normalize fluence, get total fluence and dose, eff. LET and mean impact parameter u,
-  f_parameters[1]    = 0.0;
-
-  // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
+   // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
   // only the first entry will be check
   long   i;
   double*  fluence_cm2_local    =  (double*)calloc(n, sizeof(double));
@@ -137,37 +134,28 @@ void  AT_SC_get_f1(
         dose_Gy_local);
   }
 
-  for (i = 0; i < n; i++){
-    f_parameters[2]  +=  dose_Gy_local[i];
-    f_parameters[1]  +=  fluence_cm2_local[i];
-  }
+  // Normalize fluence vector
+  AT_normalize(    n,
+                fluence_cm2_local,
+                norm_fluence);
 
-  double u_single;
-  f_parameters[0]        =  0.0;
-  f_parameters[2]        =  0.0;
-  f_parameters[3]        =  0.0;
-  f_parameters[4]        =  0.0;
-  f_parameters[5]        =  0.0;
-  f_parameters[6]        =  0.0;
+  // Compute dose contributions of single field components
+  AT_D_Gy(      n,
+                E_MeV_u,
+                particle_no,
+                fluence_cm2,
+                material_no,
+                dose_contribution_Gy);
 
-  //TODO: Replace by explicit routines in AT_PhysicsRoutines.c
-  for (i = 0; i < n; i++){
-    norm_fluence[i]        =  fluence_cm2_local[i] / f_parameters[1];
-    //printf("norm_fluence[%ld] = %g\n", i, norm_fluence[i]);
-    u_single                   =  fluence_cm2_local[i] / f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 6];
-    dose_contribution_Gy[i]    =  u_single * f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 7];
-    //printf("dose_contribution_Gy[%ld] = %g\n", i, dose_contribution_Gy[i]);
-    f_parameters[2]        +=  dose_contribution_Gy[i];
-    f_parameters[3]        +=  norm_fluence[i] * E_MeV_u[i];
-    f_parameters[4]        +=  dose_contribution_Gy[i] * E_MeV_u[i];
-    f_parameters[5]        +=  norm_fluence[i] * f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 0];
-    f_parameters[6]        +=  dose_contribution_Gy[i] * f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 0];
-    f_parameters[0]        +=  norm_fluence[i] * f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 7];
-  }
+  // Compute f parameters
+  AT_RDD_f_parameters(  n,
+                        E_MeV_u,
+                        particle_no,
+                        fluence_cm2_local,
+                        material_no,
+                        er_model,
+                        f_parameters);
 
-  f_parameters[4]        /= f_parameters[2];
-  f_parameters[6]        /= f_parameters[2];
-  f_parameters[0]         = f_parameters[2] / f_parameters[0];
 
   ////////////////////////////////////////////////////////////////////////////////////////////
   //  2. create all-over f1-data-frame, if f_d_Gy array passed (i.e. n_bins_f1 == 0)

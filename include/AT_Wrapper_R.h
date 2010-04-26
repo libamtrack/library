@@ -240,4 +240,44 @@ void AT_SuccessiveConvolutions_R( const float*  u,
     const float*  shrink_tails_under,
     const int*    adjust_N2);
 
+void AT_total_D_Gy_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    float*        total_D_Gy);
+
+void AT_total_fluence_cm2_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    float*        total_fluence_cm2);
+
+void AT_fluence_weighted_E_MeV_u_R( const int* n,
+    const float*  E_MeV_u,
+    const float*  fluence_cm2,
+    float* fluence_weighted_E_MeV_u);
+
+void AT_dose_weighted_E_MeV_u_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    float*        dose_weighted_E_MeV_u);
+
+void AT_fluence_weighted_LET_MeV_cm2_g_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    float*        fluence_weighted_LET_MeV_cm2_g);
+
+void AT_dose_weighted_LET_MeV_cm2_g_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    float*        dose_weighted_LET_MeV_cm2_g);
+
 #endif /* AT_WRAPPER_R_H_ */
