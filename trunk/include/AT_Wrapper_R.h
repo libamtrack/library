@@ -280,4 +280,29 @@ void AT_dose_weighted_LET_MeV_cm2_g_R( const int* n,
     const int*    material_no,
     float*        dose_weighted_LET_MeV_cm2_g);
 
+void AT_get_materials_data_R( const int*  number_of_materials,
+    const int*  material_no,
+    float*  density_g_cm3,
+    float*  electron_density_m3,
+    float*  I_eV,
+    float*  alpha_g_cm2_MeV,
+    float*  p_MeV,
+    float*  m_g_cm2,
+    float*  average_A,
+    float*  average_Z);
+
+void AT_CSDA_range_g_cm2_R(  const int* number_of_particles,
+    const float*   E_MeV_u,
+    const int*     particle_no,
+    const int*     material_no,
+    float*         CSDA_range_g_cm2);
+
+void AT_A_from_particle_no_R( const int*  n,
+    const int* particle_no,
+    int*  A);
+
+void AT_Z_from_particle_no_R( const int*  n,
+    const int* particle_no,
+    int*  Z);
+
 #endif /* AT_WRAPPER_R_H_ */

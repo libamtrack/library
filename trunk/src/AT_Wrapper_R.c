@@ -1274,4 +1274,118 @@ void AT_dose_weighted_LET_MeV_cm2_g_R( const int* n,
   free(particle_no_long);
 }
 
+void AT_get_materials_data_R( const int*  number_of_materials,
+    const int*  material_no,
+    float*  density_g_cm3,
+    float*  electron_density_m3,
+    float*  I_eV,
+    float*  alpha_g_cm2_MeV,
+    float*  p_MeV,
+    float*  m_g_cm2,
+    float*  average_A,
+    float*  average_Z)
+{
+  const long number_of_materials_long           = (const long)*number_of_materials;
+  long* material_no_long                        = (long*)calloc(number_of_materials_long,sizeof(long));
+  double* density_g_cm3_double                  = (double*)calloc(number_of_materials_long,sizeof(double));
+  double* electron_density_m3_double            = (double*)calloc(number_of_materials_long,sizeof(double));
+  double* I_eV_double                           = (double*)calloc(number_of_materials_long,sizeof(double));
+  double* alpha_g_cm2_MeV_double                = (double*)calloc(number_of_materials_long,sizeof(double));
+  double* p_MeV_double                          = (double*)calloc(number_of_materials_long,sizeof(double));
+  double* m_g_cm2_double                        = (double*)calloc(number_of_materials_long,sizeof(double));
+  double* average_A_double                      = (double*)calloc(number_of_materials_long,sizeof(double));
+  double* average_Z_double                      = (double*)calloc(number_of_materials_long,sizeof(double));
+
+  long i;
+  for(i = 0 ; i < number_of_materials_long ; i++){
+    material_no_long[i]            = (long)material_no[i];
+   }
+
+  AT_get_materials_data( number_of_materials_long,
+      material_no_long,
+      density_g_cm3_double,
+      electron_density_m3_double,
+      I_eV_double,
+      alpha_g_cm2_MeV_double,
+      p_MeV_double,
+      m_g_cm2_double,
+      average_A_double,
+      average_Z_double);
+
+  for(i = 0 ; i < number_of_materials_long ; i++){
+    density_g_cm3[i]        = (float)density_g_cm3_double[i];
+    electron_density_m3[i]  = (float)electron_density_m3_double[i];
+    I_eV[i]                 = (float)I_eV_double[i];
+    alpha_g_cm2_MeV[i]      = (float)alpha_g_cm2_MeV_double[i];
+    p_MeV[i]                = (float)p_MeV_double[i];
+    m_g_cm2[i]              = (float)m_g_cm2_double[i];
+    average_A[i]            = (float)average_A_double[i];
+    average_Z[i]            = (float)average_Z_double[i];
+  }
+
+  free(material_no_long);
+  free(density_g_cm3_double);
+  free(electron_density_m3_double);
+  free(I_eV_double);
+  free(alpha_g_cm2_MeV_double);
+  free(p_MeV_double);
+  free(m_g_cm2_double);
+  free(average_A_double);
+  free(average_Z_double);
+}
+
+void AT_CSDA_range_g_cm2_R(  const int* number_of_particles,
+    const float*   E_MeV_u,
+    const int*     particle_no,
+    const int*     material_no,
+    float*         CSDA_range_g_cm2)
+{
+  const long number_of_particles_long          = (const long)*number_of_particles;
+  const long material_no_long                  = (const long)*material_no;
+
+  long* particle_no_long                  = (long*)calloc(number_of_particles_long,sizeof(long));
+  double* E_MeV_u_double                  = (double*)calloc(number_of_particles_long,sizeof(double));
+  double* CSDA_range_g_cm2_double         = (double*)calloc(number_of_particles_long,sizeof(double));
+
+  long i;
+  for(i = 0 ; i < number_of_particles_long ; i++){
+    particle_no_long[i]            = (long)particle_no[i];
+    E_MeV_u_double[i]              = (double)E_MeV_u[i];
+   }
+
+  AT_CSDA_range_g_cm2(  number_of_particles_long,
+    E_MeV_u_double,
+    particle_no_long,
+    material_no_long,
+    CSDA_range_g_cm2_double);
+
+  for(i = 0 ; i < number_of_particles_long ; i++){
+    CSDA_range_g_cm2[i]        = (float)CSDA_range_g_cm2_double[i];
+   }
+
+  free(particle_no_long);
+  free(E_MeV_u_double);
+  free(CSDA_range_g_cm2_double);
+}
+
+void AT_A_from_particle_no_R( const int*  n,
+    const int* particle_no,
+    int*  A)
+{
+  long i;
+  for (i = 0; i < (const long)*n; i++){
+    A[i]  =  (int)AT_A_from_particle_no_single((const long)particle_no[i]);
+  }
+}
+
+void AT_Z_from_particle_no_R( const int*  n,
+    const int* particle_no,
+    int*  Z)
+{
+  long i;
+  for (i = 0; i < (const long)*n; i++){
+    Z[i]  =  (int)AT_Z_from_particle_no_single((const long)particle_no[i]);
+  }
+}
+
 

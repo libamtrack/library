@@ -293,23 +293,55 @@ int main(){
 //      &efficiency);
 
 
-const long n = 3;
-const double E_MeV_u[] = {1,10,100};
-const long particle_no[] = {1001,6012,1001};
-const double fluence_cm2[] = {1e7, 1e6, 1e8};
-const long material_no = 1;
-double f_parameters[7];
-const long er_model = 4;
+//const long n = 3;
+//const double E_MeV_u[] = {1,10,100};
+//const long particle_no[] = {1001,6012,1001};
+//const double fluence_cm2[] = {1e7, 1e6, 1e8};
+//const long material_no = 1;
+//double f_parameters[7];
+//const long er_model = 4;
+//
+//
+//AT_RDD_f_parameters( n,
+//    E_MeV_u,
+//   particle_no,
+//    fluence_cm2,
+//    material_no,
+//    er_model,
+//    f_parameters);
+
+//const int number_of_materials = 3;
+//const int material_no[] = {1,2,3};
+//float dummy1[] = {0,0,0};
+//float dummy2[] = {0,0,0};
+//float dummy3[] = {0,0,0};
+//float dummy4[] = {0,0,0};
+//float dummy5[] = {0,0,0};
+//float dummy6[] = {0,0,0};
+//float dummy7[] = {0,0,0};
+//float dummy8[] = {0,0,0};
+//
+// AT_get_materials_data_R( &number_of_materials,
+//    material_no,
+//    dummy1,
+//    dummy2,
+//    dummy3,
+//    dummy4,
+//    dummy5,
+//    dummy6,
+//    dummy7,
+//    dummy8);
 
 
-AT_RDD_f_parameters( n,
-    E_MeV_u,
-   particle_no,
-    fluence_cm2,
-    material_no,
-    er_model,
-    f_parameters);
+const int particle_no[] = {1001,1001,1001,6012,6012,6012};
+int A[] = {0,0,0,0,0,0};
 
-  return 0;
+
+const int n = 6;
+AT_A_from_particle_no_R( &n,
+    particle_no,
+    A);
+
+return 0;
 
 };

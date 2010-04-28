@@ -249,29 +249,57 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
     const long   material_no,
     double        E_MeV[])
 {
-  // scaled energies
-  double*  scaled_E_MeV  =  (double*)calloc(number_of_particles, sizeof(double));
+  long  i;
 
-  //TODO add effective charge correction !!
-
-  // Conversion LETion => LETproton
-  long*  charge  =  (long*)calloc(number_of_particles, sizeof(long));
+  long*    Z             =  (long*)calloc(number_of_particles, sizeof(long));
+  double*  Z_eff         =  (double*)calloc(number_of_particles, sizeof(double));
+  long*    A             =  (long*)calloc(number_of_particles, sizeof(long));
   AT_Z_from_particle_no(        number_of_particles,
       particle_no,
-      charge);
+      Z);
+  AT_A_from_particle_no(        number_of_particles,
+      particle_no,
+      A);
 
-
-  // loop over n to find charge for all given particles and energies
-  double*  LET_MeV_cm2_g_copy = (double*)calloc(number_of_particles,sizeof(double));
-  memcpy(LET_MeV_cm2_g_copy,LET_MeV_cm2_g,number_of_particles);
-  long  i;
+  // 1. find approx. energy to compute effective charge
+  double*       LET_MeV_cm2_g_copy = (double*)calloc(number_of_particles,sizeof(double));
   for(i = 0; i < number_of_particles; i++){
-    LET_MeV_cm2_g_copy[i] /= gsl_pow_2( (double)charge[i] );;
+    LET_MeV_cm2_g_copy[i] = LET_MeV_cm2_g[i] / ((double)Z[i] * (double)Z[i] );
   }
 
-  getPSTARvalue(number_of_particles, LET_MeV_cm2_g_copy, material_no, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, AT_PSTAR_Data.kin_E_MeV, scaled_E_MeV);
+  // 2. Do 10 rounds of approximation
+  long j;
+  for (j = 0; j < 10; j++){
+    getPSTARvalue(        number_of_particles,
+                          LET_MeV_cm2_g_copy,
+                          material_no,
+                          AT_PSTAR_Data.stp_pow_el_MeV_cm2_g,
+                          AT_PSTAR_Data.kin_E_MeV,
+                          E_MeV);
 
-  free( charge );
+    // 2a. Compute effective charge from approx. energies
+    AT_effective_charge_from_E_MeV_u(  number_of_particles,
+        E_MeV,
+        particle_no,
+        Z_eff);
+
+    // 2b. find more accurate energy by using the computed effective charge
+    for(i = 0; i < number_of_particles; i++){
+      LET_MeV_cm2_g_copy[i] = LET_MeV_cm2_g[i] / ((double)Z_eff[i] * (double)Z_eff[i] );
+    }
+  }
+
+  // 3. find eventual energy
+  getPSTARvalue(        number_of_particles,
+                        LET_MeV_cm2_g_copy,
+                        material_no,
+                        AT_PSTAR_Data.stp_pow_el_MeV_cm2_g,
+                        AT_PSTAR_Data.kin_E_MeV,
+                        E_MeV);
+
+
+  free( Z );
+  free( A );
+  free( Z_eff );
   free( LET_MeV_cm2_g_copy );
-  free( scaled_E_MeV );
 }
