@@ -66,6 +66,20 @@
 debug 		<- F
 AT.version 	<- "libamtrack S/R wrapping script - 2010/03/23"
 
+#################
+AT.CSDA.range.g.cm2		<-	function(	E.MeV.u,
+										particle.no,
+										material.no){
+	n					<-	length(E.MeV.u)
+	CSDA.range.g.cm2	<-	numeric(n)
+	res					<-	.C(	"AT_CSDA_range_g_cm2_R",		n					=	as.integer(n),
+															    E.MeV.u				=	as.single(E.MeV.u),
+															    particle.no			=	as.integer(particle.no),
+															    material.no			=	as.integer(material.no),
+															    CSDA.range.g.cm2	=	as.single(CSDA.range.g.cm2))
+	return(res$CSDA.range.g.cm2)						
+}
+
 ###########
 AT.D.RDD.Gy					<-	function(	r.m,
 											E.MeV.u,
@@ -568,6 +582,7 @@ AT.SC.SuccessiveConvolutions		<-	function(	u,
 																dfdd						=	res$dfdd)))																	
 }
 
+#############
 AT.total.D.Gy					<-	function(	E.MeV.u,
 											particle.no,
 											fluence.cm2,
@@ -583,6 +598,67 @@ AT.total.D.Gy					<-	function(	E.MeV.u,
 													total.D.Gy				=	as.single(total.D.Gy))		
 			
 	 return(res$total.D.Gy)						
+}
+
+#####################
+AT.get.materials.data		<-	function( material.no){
+
+	number.of.materials			<-	length(material.no)
+	density.g.cm3				<-	numeric(number.of.materials)
+    electron.density.m3			<-	numeric(number.of.materials)
+    I.eV						<-	numeric(number.of.materials)
+    alpha.g.cm2.MeV				<-	numeric(number.of.materials)
+    p.MeV						<-	numeric(number.of.materials)
+    m.g.cm2						<-	numeric(number.of.materials)
+    average.A					<-	numeric(number.of.materials)
+    average.Z					<-	numeric(number.of.materials)
+	
+	res							<-	.C("AT_get_materials_data_R", 	number.of.materials		= as.integer(number.of.materials),
+															material.no				= as.integer(material.no),		
+															density.g.cm3			=	as.single(density.g.cm3),
+																	electron.density.m3		=	as.single(electron.density.m3),
+																	I.eV					=	as.single(I.eV),
+																	alpha.g.cm2.MeV			=	as.single(alpha.g.cm2.MeV),
+																	p.MeV					=	as.single(p.MeV),
+																	m.g.cm2					=	as.single(m.g.cm2),
+																	average.A				=	as.single(average.A),
+																	average.Z				=	as.single(average.Z))
+
+	return(	data.frame(	material.no				=	material.no,
+						density.g.cm3			=	res$density.g.cm3,
+						electron.density.m3		=	res$electron.density.m3,
+						I.eV					=	res$I.eV,
+						alpha.g.cm2.MeV			=	res$alpha.g.cm2.MeV,
+						p.MeV					=	res$p.MeV,
+						m.g.cm2					=	res$m.g.cm2,
+						average.A				=	res$average.A,
+						average.Z				=	res$average.Z))
+}
+
+#####################
+AT.A.from.particle.no		<-	function(	particle.no){
+	
+	n					<-	length(particle.no)
+	A					<-	integer(n)
+  		
+    res					<-	.C(	"AT_A_from_particle_no_R",	n						=	as.integer(n),
+													particle.no				=	as.integer(particle.no),
+													A						=	as.integer(A))		
+			
+	 return(res$A)						
+}
+
+#####################
+AT.Z.from.particle.no		<-	function(	particle.no){
+	
+	n					<-	length(particle.no)
+	Z					<-	integer(n)
+  		
+    res					<-	.C(	"AT_Z_from_particle_no_R",	n						=	as.integer(n),
+													particle.no				=	as.integer(particle.no),
+													Z						=	as.integer(Z))		
+			
+	 return(res$Z)						
 }
 
 
