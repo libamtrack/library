@@ -10,13 +10,13 @@ GSLDLLB="/usr/lib/libgslcblas.so"
 GCCEXE=gcc
 
 # Generate interface elements using SWIG 
-mkdir c-swig-src
+mkdir -p c-swig-src
 SWIGWRAPPER=example_wrap
 $SWIGEXE -dll example -r -o c-swig-src/$SWIGWRAPPER.c -outdir . ../example.i
 
 # Compile libamtrack C library + SWIG C wrapper
 
-mkdir obj
+mkdir -p obj
 rm obj/$SWIGWRAPPER.o
 # Compilation
 for a in ../../src/*.c
