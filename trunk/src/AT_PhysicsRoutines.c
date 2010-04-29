@@ -518,24 +518,28 @@ double AT_total_u(    const long n,
                 const long material_no,
                 const long er_model)
 {
-  double total_D_Gy             =       AT_total_D_Gy(  n,
-                                                        E_MeV_u,
-                                                        particle_no,
-                                                        fluence_cm2,
-                                                        material_no);
-  double total_fluence_cm2      =       AT_sum( n,
-                                                fluence_cm2);
+  double* norm_fluence          =       (double*)calloc(n, sizeof(double));
+  double total_D_Gy             =       AT_total_D_Gy(       n,
+      E_MeV_u,
+      particle_no,
+      fluence_cm2,
+      material_no);
+
+  AT_normalize( n,
+                fluence_cm2,
+                norm_fluence);
 
   double u                      =       0.0;
   long i;
   for (i = 0; i < n; i++){
-      u         +=      fluence_cm2[i] * AT_single_impact_dose_Gy_single(       AT_LET_MeV_cm2_g_single(  E_MeV_u[i],
-                                                                                                          particle_no[i],
-                                                                                                          material_no),
-                                                                                AT_single_impact_fluence_cm2_single(      E_MeV_u[i],
-                                                                                                                          material_no,
-                                                                                                                          er_model));
-  }
+      u         +=      norm_fluence[i] * AT_single_impact_dose_Gy_single(    AT_LET_MeV_cm2_g_single(  E_MeV_u[i],
+                                                                                                        particle_no[i],
+                                                                                                        material_no),
+                                                                              AT_single_impact_fluence_cm2_single(      E_MeV_u[i],
+                                                                                                                        material_no,
+                                                                                                                        er_model));
+                    }
 
-  return(total_D_Gy * total_fluence_cm2 / u);
+  free(norm_fluence);
+  return(total_D_Gy / u);
 }
