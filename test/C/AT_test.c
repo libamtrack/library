@@ -293,22 +293,60 @@ int main(){
 //      &efficiency);
 
 
-//const long n = 3;
-//const double E_MeV_u[] = {1,10,100};
-//const long particle_no[] = {1001,6012,1001};
-//const double fluence_cm2[] = {1e7, 1e6, 1e8};
-//const long material_no = 1;
-//double f_parameters[7];
-//const long er_model = 4;
-//
-//
-//AT_RDD_f_parameters( n,
-//    E_MeV_u,
-//   particle_no,
-//    fluence_cm2,
-//    material_no,
-//    er_model,
-//    f_parameters);
+const long n = 3;
+const double E_MeV_u[] = {1,10,100};
+const long particle_no[] = {1001,6012,1001};
+const double fluence_cm2[] = {0, 1e6, 1e8};
+const long material_no = 1;
+const long rdd_model = 3;
+const double rdd_parameter[] = {5e-8};
+const long er_model = 4;
+const long N2 = 20;
+long n_bins_f1;
+
+double f_parameters[7];
+double f1_parameters[3*8];
+
+AT_SC_get_f1_array_size(
+    n,
+    E_MeV_u,
+    particle_no,
+    material_no,
+    rdd_model,
+    rdd_parameter,
+    er_model,
+    N2,
+    &n_bins_f1,
+    f1_parameters);
+
+  double norm_fluence[]           =      {0,0,0};
+  double dose_contribution_Gy[]   =      {0,0,0};
+  double* f1_d_Gy                  =      (double*)malloc(n_bins_f1*sizeof(double));
+  double* f1_dd_Gy                 =      (double*)malloc(n_bins_f1*sizeof(double));
+  double* f1                       =      (double*)malloc(n_bins_f1*sizeof(double));
+
+  AT_SC_get_f1(
+      n,
+      E_MeV_u,
+      particle_no,
+      fluence_cm2,
+      material_no,
+      rdd_model,
+      rdd_parameter,
+      er_model,
+      N2,
+      n_bins_f1,
+      f1_parameters,
+      norm_fluence,
+      dose_contribution_Gy,
+      f_parameters,
+      f1_d_Gy,
+      f1_dd_Gy,
+      f1);
+
+  free(f1_d_Gy);
+  free(f1_dd_Gy);
+  free(f1);
 
 //const int number_of_materials = 3;
 //const int material_no[] = {1,2,3};
@@ -333,14 +371,14 @@ int main(){
 //    dummy8);
 
 
-const int particle_no[] = {1001,1001,1001,6012,6012,6012};
-int A[] = {0,0,0,0,0,0};
-
-
-const int n = 6;
-AT_A_from_particle_no_R( &n,
-    particle_no,
-    A);
+//const int particle_no[] = {1001,1001,1001,6012,6012,6012};
+//int A[] = {0,0,0,0,0,0};
+//
+//
+//const int n = 6;
+//AT_A_from_particle_no_R( &n,
+//    particle_no,
+//    A);
 
 return 0;
 

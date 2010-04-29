@@ -156,7 +156,6 @@ void  AT_SC_get_f1(
                         er_model,
                         f_parameters);
 
-
   ////////////////////////////////////////////////////////////////////////////////////////////
   //  2. create all-over f1-data-frame, if f_d_Gy array passed (i.e. n_bins_f1 == 0)
   if(n_bins_f1 > 0){
