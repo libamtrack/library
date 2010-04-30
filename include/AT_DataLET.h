@@ -33,6 +33,7 @@
 
 #include "AT_DataParticle.h"
 #include "AT_PhysicsRoutines.h"
+#include "AT_DataMaterial.h"
 
 /**
  * Total number of elements in data table
@@ -40,6 +41,12 @@
 #define PSTAR_DATA_N    792                             /* number of materials * 132 */
 
 // TODO implement method for getting LET of one particle
+
+enum LET_data_source{
+  User_Defined_Data    = 0, /**< To be defined by the user during runtime >**/
+  PowerLaw             = 1, /**< Liquid water */
+  PSTAR                = 2  /**< Aluminium oxide */
+};
 
 /**
  * PSTAR data, based on ICRU Report 49
@@ -57,6 +64,7 @@ typedef struct {
   const double   detour_factor[PSTAR_DATA_N];           /** Detour factor (ratio of projected range to CSDA range) */
   const long     material_no[PSTAR_DATA_N];             /** Material number (see AT_DataMaterial.h) */
 } pstar_data;
+
 
 
 //TODO needs to be moved to external file
@@ -748,10 +756,10 @@ static const pstar_data AT_PSTAR_Data = {
  * @param[in]  y_table       y part of data table
  * @param[out] y             array of interpolated y values
  */
-void getPSTARvalue(
+void get_table_value(
     const long    n,
     const double  x[],
-    const long    material_no,
+    const long    subset_no,
     const double  x_table[],
     const double  y_table[],
     double        y[]);
@@ -789,6 +797,14 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
     const long     material_no,
     double         LET_MeV_cm2_g[]);
 
+///**
+// * Example function for new way of material handling
+// */
+void AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
+    const double        E_MeV_u[],
+    const long          particle_no[],
+    const AT_material   material,
+    double              LET_MeV_cm2_g[]);
 
 /**
  * Calculates LET [keV/um] scaled by density for set of particles with given energies
@@ -874,5 +890,25 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
     const long    particle_no[],
     const long    material_no,
     double        E_MeV[]);
+
+
+/////////////////////////////////////////////////////////
+/* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
+void AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
+    const double        E_MeV_u[],
+    const long          particle_no[],
+    const AT_material   material,
+    double              LET_MeV_cm2_g[]);
+int AT_establish_LET_data( AT_material material);
+double AT_CDSA_range_g_cm2_from_power_law_single(  const double E_MeV_u,
+     const long particle_no,
+     const double p_MeV,
+     const double alpha_g_cm2_MeV);
+double AT_LET_MeV_cm2_g_from_power_law_single(  const double E_MeV_u,
+     const long particle_no,
+     const double p_MeV,
+     const double alpha_g_cm2_MeV);
+/* END OF TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
+////////////////////////////////////////////////////////////////
 
 #endif /* AT_DATALET_H_ */

@@ -30,7 +30,7 @@
  */
 
 #include "AT_DataMaterial.h"
-
+#include <string.h>
 ///////////////////////////////////////////// SINGLE MATERIAL IMPLEMENTATION ///////////////////////////////////////////////////////
 
 
@@ -283,4 +283,95 @@ void AT_get_materials_data( const long  number_of_materials,
   free(match);
 }
 
+/////////////////////////////////////////////////////////
+/* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
+int AT_check_material( AT_material material)
+{
+  if (material.material_established){
+    return 0;
+  }else{
+    return(AT_establish_material( material));
+  }
+}
 
+double AT_electron_density_m3( const long n,
+    const double density_g_cm3,
+    const long Z[],
+    const long A[],
+    const double weight_fraction[])
+{
+  return (6.6e23);
+}
+
+double AT_average_A( const long n,
+    const long A[],
+    const double weight_fraction[])
+{
+  return (6.6e23);
+}
+
+double AT_average_Z( const long n,
+    const long Z[],
+    const double weight_fraction[])
+{
+  return (6.6e23);
+}
+
+int AT_establish_material(AT_material material)
+{
+  if (material.material_no == 0){                               // USER DEFINED MATERIAL
+
+    /* Compute material properties */
+    material.electron_density_m3        = AT_electron_density_m3(       material.n_elements,
+        material.density_g_cm3,
+        material.elements_Z,
+        material.elements_A,
+        material.elements_weight_fraction);
+
+    material.average_Z                  = AT_average_Z(       material.n_elements,
+        material.elements_Z,
+        material.elements_weight_fraction);
+
+    material.average_A                  = AT_average_A(       material.n_elements,
+        material.elements_A,
+        material.elements_weight_fraction);
+
+    /* Establish LET data table(s) */
+    if(AT_establish_LET_data( material) != 0){
+      printf("Error during establishing LET data tables.");
+      return -1;
+    }
+
+    /* Set flag and exit*/
+    material.material_established        = true;
+    return 0;
+  }else{                                                        // LOAD PRE-DEFINED MATERIAL
+    /* Copy material properties from list */
+    long  index = AT_material_index_from_material_number( material.material_no );
+    if( index == -1){
+      printf("Material no %ld not found\n", material.material_no);
+      return -1;
+    }
+
+    material.ICRU_ID                    = AT_Material_Data.ICRU_ID[index];
+    material.I_eV                       = AT_Material_Data.I_eV[index];
+    material.density_g_cm3              = AT_Material_Data.density_g_cm3[index];
+    material.electron_density_m3        = AT_Material_Data.electron_density_m3[index];
+    material.alpha_g_cm2_MeV            = AT_Material_Data.alpha_g_cm2_MeV[index];
+    material.p_MeV                      = AT_Material_Data.p_MeV[index];
+    material.average_A                  = AT_Material_Data.average_A[index];
+    material.average_Z                  = AT_Material_Data.average_Z[index];
+    strcpy(material.material_name, AT_Material_Data.material_name[index]);
+    /* Establish LET data table(s) */
+    if(AT_establish_LET_data( material) != 0){
+      printf("Error during establishing LET data tables.");
+      return -1;
+    }
+
+    /* Set flag and exit*/
+    material.material_established        = true;
+    return 0;
+  }
+}
+/* END OF TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
+////////////////////////////////////////////////////////////////

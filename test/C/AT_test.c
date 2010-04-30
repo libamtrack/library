@@ -38,6 +38,8 @@
 
 #include "AmTrack.h"
 #include "AT_Wrapper_R.h"
+#include "AT_DataMaterial.h"
+#include "AT_DataLET.h"
 
 void test_AT_GSM(  double E_MeV_u[])
 {
@@ -293,60 +295,60 @@ int main(){
 //      &efficiency);
 
 
-const long n = 3;
-const double E_MeV_u[] = {1,10,100};
-const long particle_no[] = {1001,6012,1001};
-const double fluence_cm2[] = {0, 1e6, 1e8};
-const long material_no = 1;
-const long rdd_model = 3;
-const double rdd_parameter[] = {5e-8};
-const long er_model = 4;
-const long N2 = 20;
-long n_bins_f1;
-
-double f_parameters[7];
-double f1_parameters[3*8];
-
-AT_SC_get_f1_array_size(
-    n,
-    E_MeV_u,
-    particle_no,
-    material_no,
-    rdd_model,
-    rdd_parameter,
-    er_model,
-    N2,
-    &n_bins_f1,
-    f1_parameters);
-
-  double norm_fluence[]           =      {0,0,0};
-  double dose_contribution_Gy[]   =      {0,0,0};
-  double* f1_d_Gy                  =      (double*)malloc(n_bins_f1*sizeof(double));
-  double* f1_dd_Gy                 =      (double*)malloc(n_bins_f1*sizeof(double));
-  double* f1                       =      (double*)malloc(n_bins_f1*sizeof(double));
-
-  AT_SC_get_f1(
-      n,
-      E_MeV_u,
-      particle_no,
-      fluence_cm2,
-      material_no,
-      rdd_model,
-      rdd_parameter,
-      er_model,
-      N2,
-      n_bins_f1,
-      f1_parameters,
-      norm_fluence,
-      dose_contribution_Gy,
-      f_parameters,
-      f1_d_Gy,
-      f1_dd_Gy,
-      f1);
-
-  free(f1_d_Gy);
-  free(f1_dd_Gy);
-  free(f1);
+//const long n = 3;
+//const double E_MeV_u[] = {1,10,100};
+//const long particle_no[] = {1001,6012,1001};
+//const double fluence_cm2[] = {0, 1e6, 1e8};
+//const long material_no = 1;
+//const long rdd_model = 3;
+//const double rdd_parameter[] = {5e-8};
+//const long er_model = 4;
+//const long N2 = 20;
+//long n_bins_f1;
+//
+//double f_parameters[7];
+//double f1_parameters[3*8];
+//
+//AT_SC_get_f1_array_size(
+//    n,
+//    E_MeV_u,
+//    particle_no,
+//    material_no,
+//    rdd_model,
+//    rdd_parameter,
+//    er_model,
+//    N2,
+//    &n_bins_f1,
+//    f1_parameters);
+//
+//  double norm_fluence[]           =      {0,0,0};
+//  double dose_contribution_Gy[]   =      {0,0,0};
+//  double* f1_d_Gy                  =      (double*)malloc(n_bins_f1*sizeof(double));
+//  double* f1_dd_Gy                 =      (double*)malloc(n_bins_f1*sizeof(double));
+//  double* f1                       =      (double*)malloc(n_bins_f1*sizeof(double));
+//
+//  AT_SC_get_f1(
+//      n,
+//      E_MeV_u,
+//      particle_no,
+//      fluence_cm2,
+//      material_no,
+//      rdd_model,
+//      rdd_parameter,
+//      er_model,
+//      N2,
+//      n_bins_f1,
+//      f1_parameters,
+//      norm_fluence,
+//      dose_contribution_Gy,
+//      f_parameters,
+//      f1_d_Gy,
+//      f1_dd_Gy,
+//      f1);
+//
+//  free(f1_d_Gy);
+//  free(f1_dd_Gy);
+//  free(f1);
 
 //const int number_of_materials = 3;
 //const int material_no[] = {1,2,3};
@@ -379,6 +381,41 @@ AT_SC_get_f1_array_size(
 //AT_A_from_particle_no_R( &n,
 //    particle_no,
 //    A);
+
+  /////////////////////////////////////////////////////////
+  /* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
+  long elements_Z[] = {1,8};
+  long elements_A[] = {1,16};
+  double elements_weight_fraction[] = { 0.111894, 0.888106};
+
+  AT_material test_material;
+
+  test_material.material_no                     = 0;
+  test_material.material_established            = false;
+
+  test_material.density_g_cm3                   = 1.0;
+  test_material.I_eV                            = 75.0;
+
+  test_material.n_elements                      = 2;
+  test_material.elements_Z                      = &elements_Z;
+  test_material.elements_A                      = &elements_A;
+  test_material.elements_weight_fraction        = &elements_weight_fraction;
+
+  test_material.material_name                   = "Test material";
+
+  test_material.LET_data_source                 = PowerLaw;
+  test_material.p_MeV                           = 1.761;
+  test_material.alpha_g_cm2_MeV                 = 0.00231;
+
+  double result[] = {0};
+
+  AT_new_LET_MeV_cm2_g(  1,
+      100,
+      1001,
+      test_material,
+      result);
+  /* END OF TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
+  ////////////////////////////////////////////////////////////////
 
 return 0;
 
