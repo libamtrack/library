@@ -38,7 +38,7 @@
  * Materials code numbers
  */
 enum material_no{
-  User_Defined         = 0, /**< To be defined by the user during runtime >**/
+  User_Defined_Material= 0, /**< To be defined by the user during runtime >**/
   Water_Liquid         = 1, /**< Liquid water */
   Aluminum_Oxide       = 2, /**< Aluminium oxide */
   Aluminum             = 3, /**< Aluminium */
@@ -49,6 +49,56 @@ enum material_no{
 
 
 #define MATERIAL_DATA_N    7
+
+// The next two LET-related structures must be declared here rather than in AT_DataLET.h to avoid circular dependencies
+/**
+ * Stopping power data for a material and a particle type
+ */
+typedef struct {
+  long     n;                                     /**< number of items in the data table */
+  long     particle_no;                           /**< particle number this data is for, see AT_DataParticle.h for definition */
+  double*  kin_E_MeV;                             /**< Kinetic energy in MeV, pointer to array of size n */
+  double*  stp_pow_el_MeV_cm2_g;                  /**< Electronic (Collision) Stopping Power, pointer to array of size n */
+  double*  range_cdsa_g_cm2;                      /**< CSDA (continuous-slowing-down approximation) range, pointer to array of size n */
+} AT_LET_data_single;
+
+/**
+ * Stopping power data for a material
+ */
+typedef struct {
+  long            n;                              /**< number of data tables in the structure */
+  AT_LET_data_single*   LET_data_single;                /**< pointer to LET data tables for a particle type */
+} AT_LET_data;
+
+typedef struct {
+  long            material_no;                            /**< material number - if 0 the user has to specify the material properties by at least handing over the data marked 'essential', all other data will be computed if not overridden by the user. If a number > 0 is used, a predefined material will be loaded */
+  bool            material_established;                   /**< if true, the material has been established, MUST BE SET TO "FALSE" BY USER */
+
+  double          density_g_cm3;                          /**< physical density in g/cm3 [ESSENTIAL] */
+  double          I_eV;                                   /**< Ionization potential in eV [ESSENTIAL] */ //TODO: check if this could not be calculated
+
+  long            n_elements;                             /**< number of elements constituting the material [ESSENTIAL] */
+  long*           elements_Z;                             /**< Atomic numbers Z for the constituting elements, pointer to array of length n_elements [ESSENTIAL] */
+  long*           elements_A;                             /**< Mass numbers A for the constituting elements, pointer to array of length n_elements [ESSENTIAL] */
+  double*         elements_weight_fraction;               /**< Weight fractions for the constituting elements, pointer to array of length n_elements, have to add up to 1.0 [ESSENTIAL] */
+
+  char*           material_name;                          /**< material name */
+  long            ICRU_ID;                                /**< ICRU ID of the material, might serve for automatic look-up later */
+
+  double          average_Z;                              /**< Average atomic number, will be calculated if not given */
+  double          average_A;                              /**< Average mass number,  will be calculated if not given */
+  double          electron_density_m3;                    /**< Electron density (in 1/m^3),  will be calculated if not given */
+
+  long            LET_data_source;                        /**< Defines the source for stopping power data, see enum LET_data_source [ESSENTIAL]. The user has to make sure that he provides the necessary data. */
+
+  double          p_MeV;                                  /**< Prefactor for the power-law description of stopping power: S = p*E^alpha. In MeV^(1/alpha) */
+  double          alpha_g_cm2_MeV;                        /**< Exponent for the power-law description of stopping */
+
+  AT_LET_data     LET_data;                               /**< Stopping power data for the material, see AT_DataLET.h for definition. Will be calculated in case of power-law or given by the user (or read in from PSTAR data?). */
+                                                          /**<  LET_data has to hold at_least the proton stopping powers. For any particle where no explicit stopping power data is given, a scaling by Z_eff^2 will be performed. */
+
+//  const double  m_g_cm2;                                /**< Slope of linear approximation in fluence reduction due to nuclear interactions, not used yet */
+} AT_material;
 
 
 typedef struct {
@@ -70,7 +120,7 @@ typedef struct {
 
 static const material_data AT_Material_Data = {
     MATERIAL_DATA_N,
-    {  User_Defined,    Water_Liquid,   Aluminum_Oxide,   Aluminum,     PMMA,      Alanine,     LiF},           // material_no
+    {  User_Defined_Material,    Water_Liquid,   Aluminum_Oxide,   Aluminum,     PMMA,      Alanine,     LiF},           // material_no
     {  false,           true,           true,             true,         true,      true,        true},          // ready
     {  0,               276,             106,              13,           223,       0,           185},          // ICRU_ID
     {  0.0,             1.00,            3.97,             2.6989,       1.19,      1.42,        2.64},         // density_g_cm3
@@ -239,5 +289,24 @@ void AT_get_materials_data( const long  number_of_materials,
     double  m_g_cm2[],
     double  average_A[],
     double  average_Z[]);
+
+/////////////////////////////////////////////////////////
+/* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
+int AT_check_material( AT_material material);
+int AT_establish_material(AT_material material);
+double AT_electron_density_m3( const long n,
+    const double density_g_cm3,
+    const long Z[],
+    const long A[],
+    const double weight_fraction[]);
+double AT_average_A( const long n,
+    const long A[],
+    const double weight_fraction[]);
+double AT_average_Z( const long n,
+    const long Z[],
+    const double weight_fraction[]);
+/* END OF TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
+////////////////////////////////////////////////////////////////
+
 
 #endif /* AT_DATAMATERIAL_H_ */

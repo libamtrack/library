@@ -30,19 +30,20 @@
  */
 
 #include "AT_DataLET.h"
+#include "AT_DataParticle.h"
+#include <math.h>
 
-
-void getPSTARvalue(
+void get_table_value(
     const long    n,
     const double  x[],
-    const long    material_no,
+    const long    subset_no,
     const double  x_table[],
     const double  y_table[],
     double        y[])
 {
   // first: find those PSTAR entries that match the material number
   bool*    matches    =  (bool*)calloc(AT_PSTAR_Data.n, sizeof(bool));
-  is_element_int(    material_no,
+  is_element_int(    subset_no,
       AT_PSTAR_Data.material_no,
       AT_PSTAR_Data.n,
       matches);
@@ -94,7 +95,7 @@ double AT_LET_MeV_cm2_g_single(  const double  E_MeV_u,
   // get LET for proton of same energy / nucleon
   const long number_of_particles  =  1;
   double LET_MeV_cm2_g            =  0.0;
-  getPSTARvalue(number_of_particles, &E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, &LET_MeV_cm2_g);
+  get_table_value(number_of_particles, &E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, &LET_MeV_cm2_g);
 
   double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
 
@@ -116,7 +117,7 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
     double        LET_MeV_cm2_g[])
 {
   // get LET for proton of same energy / nucleon
-  getPSTARvalue(number_of_particles, E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, LET_MeV_cm2_g);
+  get_table_value(number_of_particles, E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.stp_pow_el_MeV_cm2_g, LET_MeV_cm2_g);
 
   // get effective charge for all given particles and energies
   double*  Zeff_ion  =  (double*)calloc( number_of_particles, sizeof(double));
@@ -181,7 +182,7 @@ void AT_CSDA_range_g_cm2(  const long  number_of_particles,
     const long    material_no,
     double        CSDA_range_g_cm2[])
 {
-  getPSTARvalue(number_of_particles, E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.range_cdsa_g_cm2, CSDA_range_g_cm2);
+  get_table_value(number_of_particles, E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.range_cdsa_g_cm2, CSDA_range_g_cm2);
 
   // Conversion CSDA_proton => CSDA_ion
   long*  Z  =  (long*)calloc(number_of_particles, sizeof(long));
@@ -237,7 +238,7 @@ void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
   // scaled energies
   double*  sE  =  (double*)calloc(number_of_particles, sizeof(double));
 
-  getPSTARvalue(number_of_particles, CSDA_range_g_cm2, material_no, AT_PSTAR_Data.range_cdsa_g_cm2, AT_PSTAR_Data.kin_E_MeV, sE);
+  get_table_value(number_of_particles, CSDA_range_g_cm2, material_no, AT_PSTAR_Data.range_cdsa_g_cm2, AT_PSTAR_Data.kin_E_MeV, sE);
 
   free( sE );
 }
@@ -270,7 +271,7 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
   // 2. Do 10 rounds of approximation
   long j;
   for (j = 0; j < 10; j++){
-    getPSTARvalue(        number_of_particles,
+    get_table_value(        number_of_particles,
                           LET_MeV_cm2_g_copy,
                           material_no,
                           AT_PSTAR_Data.stp_pow_el_MeV_cm2_g,
@@ -290,7 +291,7 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
   }
 
   // 3. find eventual energy
-  getPSTARvalue(        number_of_particles,
+  get_table_value(        number_of_particles,
                         LET_MeV_cm2_g_copy,
                         material_no,
                         AT_PSTAR_Data.stp_pow_el_MeV_cm2_g,
@@ -303,3 +304,87 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
   free( Z_eff );
   free( LET_MeV_cm2_g_copy );
 }
+
+
+/////////////////////////////////////////////////////////
+/* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
+void AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
+    const double        E_MeV_u[],
+    const long          particle_no[],
+    const AT_material   material,
+    double              LET_MeV_cm2_g[]){
+
+    AT_check_material(material);
+}
+
+
+double AT_CDSA_range_g_cm2_from_power_law_single(  const double E_MeV_u,
+     const long particle_no,
+     const double p_MeV,
+     const double alpha_g_cm2_MeV)
+{
+  double Z_eff          = AT_effective_charge_from_E_MeV_u_single(  E_MeV_u,
+      particle_no);
+  double A              = (double)AT_A_from_particle_no_single( particle_no);
+  return (A / (Z_eff * Z_eff) * p_MeV * pow(E_MeV_u, alpha_g_cm2_MeV));
+}
+
+
+double AT_LET_MeV_cm2_g_from_power_law_single(  const double E_MeV_u,
+     const long particle_no,
+     const double p_MeV,
+     const double alpha_g_cm2_MeV)
+{
+  /* Get CDSA range for energy first */
+  double CDSA_range_g_cm2 = AT_CDSA_range_g_cm2_from_power_law_single( E_MeV_u,
+      particle_no,
+      p_MeV,
+      alpha_g_cm2_MeV);
+
+  return 1.0 / (p_MeV * pow(alpha_g_cm2_MeV, 1.0 / p_MeV)) * pow(CDSA_range_g_cm2, 1.0 / p_MeV - 1.0);
+}
+
+#define POWERLAW_ENERGY_STEPS   100
+#define POWERLAW_ENERGY_MIN_MEV 1
+#define POWERLAW_ENERGY_MAX_MEV 250
+
+
+int AT_establish_LET_data( AT_material material){
+
+  if (material.LET_data_source == PowerLaw){
+    material.LET_data.n                 = 1;
+    material.LET_data.LET_data_single   = (AT_LET_data_single*)malloc(sizeof(AT_LET_data_single));
+
+    material.LET_data.LET_data_single[0].n                      =       POWERLAW_ENERGY_STEPS;
+    material.LET_data.LET_data_single[0].particle_no            =       1001;                           // build proton table
+    material.LET_data.LET_data_single[0].kin_E_MeV              =       (double*)malloc(material.LET_data.LET_data_single[0].n * sizeof(double));
+    material.LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g   =       (double*)malloc(material.LET_data.LET_data_single[0].n * sizeof(double));
+    material.LET_data.LET_data_single[0].range_cdsa_g_cm2       =       (double*)malloc(material.LET_data.LET_data_single[0].n * sizeof(double));
+
+    long i;
+    double E_step_size = (log(POWERLAW_ENERGY_MAX_MEV) - log(POWERLAW_ENERGY_MIN_MEV)) / (POWERLAW_ENERGY_STEPS - 1);
+    for (i = 0; i < material.LET_data.LET_data_single[0].n; i++){
+      material.LET_data.LET_data_single[0].kin_E_MeV[i]                 = POWERLAW_ENERGY_MIN_MEV + exp(i * E_step_size);
+      material.LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g[i]      = AT_LET_MeV_cm2_g_from_power_law_single( material.LET_data.LET_data_single[0].kin_E_MeV[i],
+                                                                                                                  material.LET_data.LET_data_single[0].particle_no,
+                                                                                                                  material.p_MeV,
+                                                                                                                  material.alpha_g_cm2_MeV);
+      material.LET_data.LET_data_single[0].range_cdsa_g_cm2[i]          = AT_CDSA_range_g_cm2_from_power_law_single(    material.LET_data.LET_data_single[0].kin_E_MeV[i],
+                                                                                                                        material.LET_data.LET_data_single[0].particle_no,
+                                                                                                                        material.p_MeV,
+                                                                                                                        material.alpha_g_cm2_MeV);
+    }
+    /**
+     * Stopping power data for a material
+     */
+    typedef struct {
+      const long            n;                              /**< number of data tables in the structure */
+      AT_LET_data_single*   LET_data_single;                /**< pointer to LET data tables for a particle type */
+    } AT_LET_data;
+  }
+
+  return 0;
+}
+/* END OF TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
+////////////////////////////////////////////////////////////////
+
