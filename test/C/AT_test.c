@@ -167,7 +167,7 @@ void test_AT_IGK(double E_MeV_u[])
 
 }
 
-int main(){
+/* THESE ARE LEFTOVERS FROM SEVERAL DEBUGGING SESSION - STILL HERE TO BE RECYCLED SO THAT ONE DOES NOT NEED TO REWRITE EVERY INITIALIZATION */
 //  long test_pn[] = {1001, 2004, 6012, 8016, 92238};
 //  double test_E_MeV_u[] = {100,100,100,100,100};
 //  long material_no = 1;
@@ -382,38 +382,97 @@ int main(){
 //    particle_no,
 //    A);
 
+int main(){
   /////////////////////////////////////////////////////////
   /* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
+  const long n = 3;
+  const double E_MeV_u[] = {1,10,100};
+  const long particle_no[] = {1001,6012,1001};
+
+  AT_material   userDefined_material_PowerLaw,
+                userDefined_material_PSTAR,
+                preDefined_material_PowerLaw,
+                preDefined_material_PSTAR;
+
+  double result_userDefined_PowerLaw[]   = {0,0,0};
+  double result_userDefined_PSTAR[]      = {0,0,0};
+  double result_preDefined_PowerLaw[]   = {0,0,0};
+  double result_preDefined_PSTAR[]      = {0,0,0};
+  double result_oldStyle[]      = {0,0,0};
+
   long elements_Z[] = {1,8};
   long elements_A[] = {1,16};
   double elements_weight_fraction[] = { 0.111894, 0.888106};
 
-  AT_material test_material;
+  /* */
+  userDefined_material_PowerLaw.material_no                     = 0;
+  userDefined_material_PowerLaw.material_established            = false;
+  userDefined_material_PowerLaw.density_g_cm3                   = 1.0;
+  userDefined_material_PowerLaw.I_eV                            = 75.0;
+  userDefined_material_PowerLaw.n_elements                      = 2;
+  userDefined_material_PowerLaw.elements_Z                      = &elements_Z;
+  userDefined_material_PowerLaw.elements_A                      = &elements_A;
+  userDefined_material_PowerLaw.elements_weight_fraction        = &elements_weight_fraction;
+  userDefined_material_PowerLaw.material_name                   = "Test material (PowerLaw)";
+  userDefined_material_PowerLaw.LET_data_source                 = PowerLaw;
+  userDefined_material_PowerLaw.p_MeV                           = 1.761;
+  userDefined_material_PowerLaw.alpha_g_cm2_MeV                 = 0.00231;
 
-  test_material.material_no                     = 0;
-  test_material.material_established            = false;
+  /* */
+  userDefined_material_PSTAR.material_no                     = User_Defined_Material;
+  userDefined_material_PSTAR.material_established            = false;
+  userDefined_material_PSTAR.density_g_cm3                   = 1.0;
+  userDefined_material_PSTAR.I_eV                            = 75.0;
+  userDefined_material_PSTAR.n_elements                      = 2;
+  userDefined_material_PSTAR.elements_Z                      = &elements_Z;
+  userDefined_material_PSTAR.elements_A                      = &elements_A;
+  userDefined_material_PSTAR.elements_weight_fraction        = &elements_weight_fraction;
+  userDefined_material_PSTAR.material_name                   = "Test material (PSTAR)";
+  userDefined_material_PSTAR.LET_data_source                 = PSTAR;
 
-  test_material.density_g_cm3                   = 1.0;
-  test_material.I_eV                            = 75.0;
+  /* */
+  preDefined_material_PowerLaw.material_no             = 1;
+  preDefined_material_PowerLaw.material_established    = false;
+  preDefined_material_PowerLaw.LET_data_source         = PowerLaw;
 
-  test_material.n_elements                      = 2;
-  test_material.elements_Z                      = &elements_Z;
-  test_material.elements_A                      = &elements_A;
-  test_material.elements_weight_fraction        = &elements_weight_fraction;
+  /* */
+  preDefined_material_PSTAR.material_no                = 1;
+  preDefined_material_PSTAR.material_established       = false;
+  preDefined_material_PSTAR.LET_data_source            = PSTAR;
 
-  test_material.material_name                   = "Test material";
+  /* */
+  const long material_no                                = 1; // old-style water
 
-  test_material.LET_data_source                 = PowerLaw;
-  test_material.p_MeV                           = 1.761;
-  test_material.alpha_g_cm2_MeV                 = 0.00231;
 
-  double result[] = {0};
+  AT_new_LET_MeV_cm2_g(  n,
+      E_MeV_u,
+      particle_no,
+      userDefined_material_PowerLaw,
+      result_userDefined_PowerLaw);
 
-  AT_new_LET_MeV_cm2_g(  1,
-      100,
-      1001,
-      test_material,
-      result);
+  AT_new_LET_MeV_cm2_g(  n,
+      E_MeV_u,
+      particle_no,
+      userDefined_material_PSTAR,
+      result_userDefined_PSTAR);
+
+  AT_new_LET_MeV_cm2_g(  n,
+      E_MeV_u,
+      particle_no,
+      preDefined_material_PowerLaw,
+      result_preDefined_PowerLaw);
+
+  AT_new_LET_MeV_cm2_g(  n,
+      E_MeV_u,
+      particle_no,
+      preDefined_material_PSTAR,
+      result_preDefined_PSTAR);
+
+  AT_LET_MeV_cm2_g(  n,
+      E_MeV_u,
+      particle_no,
+      material_no,
+      result_oldStyle);
   /* END OF TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
   ////////////////////////////////////////////////////////////////
 

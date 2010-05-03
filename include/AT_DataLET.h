@@ -39,7 +39,9 @@
 /**
  * Total number of elements in data table
  */
-#define PSTAR_DATA_N    792                             /* number of materials * 132 */
+#define PSTAR_DATA_N_PER_MATERIAL       132
+//#define PSTAR_DATA_N                    792
+#define PSTAR_DATA_N                    PSTAR_DATA_N_PER_MATERIAL * MATERIAL_DATA_N
 
 // TODO implement method for getting LET of one particle
 
@@ -798,15 +800,6 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
     const long     material_no,
     double         LET_MeV_cm2_g[]);
 
-///**
-// * Example function for new way of material handling
-// */
-void AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
-    const double        E_MeV_u[],
-    const long          particle_no[],
-    const AT_material   material,
-    double              LET_MeV_cm2_g[]);
-
 /**
  * Calculates LET [keV/um] scaled by density for set of particles with given energies
  *
@@ -895,11 +888,18 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
 
 /////////////////////////////////////////////////////////
 /* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
-void AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
+long AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
     const double        E_MeV_u[],
     const long          particle_no[],
-    const AT_material   material,
+    AT_material         material,
     double              LET_MeV_cm2_g[]);
+double AT_new_LET_MeV_cm2_g_single(  const double        E_MeV_u,
+    const long          particle_no,
+    AT_material         material);
+double get_table_value_new( const double  x,
+    const long    n,
+    const double  x_table[],
+    const double  y_table[]);
 int AT_establish_LET_data( AT_material*  pMaterial);
 double AT_CDSA_range_g_cm2_from_power_law_single(  const double E_MeV_u,
      const long particle_no,

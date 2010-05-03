@@ -24,3 +24,21 @@ long AT_check_E_MeV_u(   const long n,
   return AT_Success;
 }
 
+long AT_check_particle_no(   const long n,
+                             const long particle_no[])
+{
+  long i;
+  for (i = 0; i < n; i++)
+    {
+      if (      (particle_no[i] < 0) |
+                (AT_Z_from_particle_no_single(particle_no[i]) < 1) |
+                (AT_Z_from_particle_no_single(particle_no[i]) > 98) |
+                (AT_A_from_particle_no_single(particle_no[i]) < 1) |
+                (AT_A_from_particle_no_single(particle_no[i]) > 251))
+      {
+        return AT_Energy_Outside_Range;
+      }
+    }
+  return AT_Success;
+}
+

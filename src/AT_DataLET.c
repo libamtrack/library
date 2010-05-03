@@ -308,19 +308,75 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
 
 /////////////////////////////////////////////////////////
 /* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
-void AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
+long AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
     const double        E_MeV_u[],
     const long          particle_no[],
-    const AT_material   material,
+    AT_material         material,
     double              LET_MeV_cm2_g[]){
 
-    int material_established_here = AT_check_material(&material);
+    /* check input */
+    long error;
+    error = AT_check_E_MeV_u(   number_of_particles,
+                                E_MeV_u);
+    if(error != AT_Success)     return error;
 
-    if(material_established_here == AT_Success){
+    error = AT_check_particle_no(   number_of_particles,
+                                particle_no);
+    if(error != AT_Success)     return error;
+
+    /* establish material if not yet done */
+    int material_return_code = AT_check_material(&material);
+    if((material_return_code != AT_Success) | (material_return_code != AT_Material_Already_Established)){
+      return (material_return_code);
+    }
+
+    /* Loop over single particle function */
+    long i;
+    for (i = 0; i < number_of_particles; i++){
+      LET_MeV_cm2_g[i]  =       AT_new_LET_MeV_cm2_g_single(  E_MeV_u[i],
+          particle_no[i],
+          material);
+    }
+
+    /* if material was established here, release memory */
+    if(material_return_code == AT_Success){
       AT_free_material(&material);
     }
+
+    return(AT_Success);
 }
 
+double AT_new_LET_MeV_cm2_g_single(  const double        E_MeV_u,
+    const long          particle_no,
+    AT_material         material){
+
+    /* establish material if not yet done */
+    int material_return_code = AT_check_material(&material);
+    if((material_return_code != AT_Success) | (material_return_code != AT_Material_Already_Established)){
+      return (material_return_code);
+    }
+
+    /* TODO: Check if dedicated LET data is available for chosen particle */
+    double LET_MeV_cm2_g = get_table_value_new( E_MeV_u,
+        material.LET_data.LET_data_single[0].n,
+        material.LET_data.LET_data_single[0].kin_E_MeV,
+        material.LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g);
+
+    /* If no dedicated table: get LET for proton of same energy / nucleon and scale by effective Z */
+    double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
+    double Zeff_proton =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u, PARTICLE_PROTON_NUMBER);
+    // scale proton LET by ratio of effective Z
+    if( particle_no != PARTICLE_PROTON_NUMBER){ // for particles other than proton scale LET by (Zeff_ion / Zeff_proton)^2
+        LET_MeV_cm2_g *=   gsl_pow_2(Zeff_ion / Zeff_proton);
+    }
+
+    /* if material was established here, release memory */
+    if(material_return_code == AT_Success){
+      AT_free_material(&material);
+    }
+
+    return LET_MeV_cm2_g;
+}
 
 double AT_CDSA_range_g_cm2_from_power_law_single(  const double E_MeV_u,
      const long particle_no,
@@ -330,7 +386,7 @@ double AT_CDSA_range_g_cm2_from_power_law_single(  const double E_MeV_u,
   double Z_eff          = AT_effective_charge_from_E_MeV_u_single(  E_MeV_u,
       particle_no);
   double A              = (double)AT_A_from_particle_no_single( particle_no);
-  return (A / (Z_eff * Z_eff) * p_MeV * pow(E_MeV_u, alpha_g_cm2_MeV));
+  return (A / (Z_eff * Z_eff) * alpha_g_cm2_MeV * pow(E_MeV_u, p_MeV));
 }
 
 
@@ -377,9 +433,71 @@ int AT_establish_LET_data( AT_material* pMaterial){
                                                                                                                         pMaterial->LET_data.LET_data_single[0].particle_no,
                                                                                                                         pMaterial->p_MeV,
                                                                                                                         pMaterial->alpha_g_cm2_MeV);
-    }
+    return AT_Success;
+      }
   }
-  return AT_Success;
+
+    if (pMaterial->LET_data_source == PSTAR){
+       /* TODO: In case of non-predefined material: Read-In data from external PSTAR file */
+       if (pMaterial->material_no == User_Defined_Material){
+          return AT_No_PSTAR_Data;
+        }
+
+        /* find pre-defined material by material_no */
+        long* matches           = (long*)malloc(AT_PSTAR_Data.n * sizeof(long));
+        find_elements_int(      &pMaterial->material_no,
+                                AT_PSTAR_Data.n,
+                                AT_PSTAR_Data.material_no,
+                                AT_PSTAR_Data.n,
+                                matches);
+
+        long n_matches = 0;
+        long i;
+        for (i = 0; i < AT_PSTAR_Data.n; i++){
+          n_matches++;
+        }
+
+        /* alloc data arrays and copy data */
+        pMaterial->LET_data.n                 = 1;
+        pMaterial->LET_data.LET_data_single   = (AT_LET_data_single*)malloc(sizeof(AT_LET_data_single));
+
+        pMaterial->LET_data.LET_data_single[0].n                      =       n_matches;
+        pMaterial->LET_data.LET_data_single[0].particle_no            =       1001;                           // build proton table
+        pMaterial->LET_data.LET_data_single[0].kin_E_MeV              =       (double*)malloc(pMaterial->LET_data.LET_data_single[0].n * sizeof(double));
+        pMaterial->LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g   =       (double*)malloc(pMaterial->LET_data.LET_data_single[0].n * sizeof(double));
+        pMaterial->LET_data.LET_data_single[0].range_cdsa_g_cm2       =       (double*)malloc(pMaterial->LET_data.LET_data_single[0].n * sizeof(double));
+
+        for (i = 0; i < pMaterial->LET_data.LET_data_single[0].n; i++){
+          pMaterial->LET_data.LET_data_single[0].kin_E_MeV[i]             =       AT_PSTAR_Data.kin_E_MeV[matches[i]];
+          pMaterial->LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g[i]  =       AT_PSTAR_Data.stp_pow_el_MeV_cm2_g[matches[i]];
+          pMaterial->LET_data.LET_data_single[0].range_cdsa_g_cm2[i]      =       AT_PSTAR_Data.range_cdsa_g_cm2[matches[i]];
+        }
+        free(matches);
+
+        return (AT_Success);
+    }
+    return AT_Unknown_LET_Data_Source;
+}
+
+
+double get_table_value_new( const double  x,
+    const long    n,
+    const double  x_table[],
+    const double  y_table[])
+{
+  double  y = 0.0;
+  double  err_y_tmp  = 0.0;    // dummy
+  // Get tablulated value using 4th degree polynomial (n_pol - 1 = 2) interpolation
+  long  n_pol      = 4 + 1;
+  interp(    x_table,
+      y_table,
+      n,
+      n_pol,
+      x,
+      &y,
+      &err_y_tmp);
+
+  return y;
 }
 
 /* END OF TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
