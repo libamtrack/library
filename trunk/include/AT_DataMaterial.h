@@ -32,7 +32,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "AT_Error.h";
+#include "AT_Error.h"
 #include "AT_NumericalRoutines.h"
 
 /**
@@ -70,6 +70,8 @@ typedef struct AT_LET_data{
   long            n;                              /**< number of data tables in the structure */
   AT_LET_data_single*   LET_data_single;                /**< pointer to LET data tables for a particle type */
 } AT_LET_data;
+
+#define MATERIAL_NAME_LENGTH    255
 
 typedef struct {
   long            material_no;                            /**< material number - if 0 the user has to specify the material properties by at least handing over the data marked 'essential', all other data will be computed if not overridden by the user. If a number > 0 is used, a predefined material will be loaded */

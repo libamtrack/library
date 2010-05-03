@@ -288,7 +288,7 @@ void AT_get_materials_data( const long  number_of_materials,
 int AT_check_material( AT_material* pMaterial)
 {
   if (pMaterial->material_established){
-    return 0;
+    return AT_Material_Already_Established;
   }else{
     return(AT_establish_material( pMaterial));
   }
@@ -319,7 +319,7 @@ double AT_average_Z( const long n,
 
 int AT_establish_material(AT_material* pMaterial)
 {
-  if (pMaterial->material_no == 0){                               // USER DEFINED MATERIAL
+  if (pMaterial->material_no == User_Defined_Material){                               // USER DEFINED MATERIAL
 
     /* Compute material properties */
     pMaterial->electron_density_m3        = AT_electron_density_m3(       pMaterial->n_elements,
@@ -336,15 +336,7 @@ int AT_establish_material(AT_material* pMaterial)
         pMaterial->elements_A,
         pMaterial->elements_weight_fraction);
 
-    /* Establish LET data table(s) */
-    if(AT_establish_LET_data( pMaterial) != AT_Success){
-      printf("Error during establishing LET data tables.");
-      return -1;
-    }
 
-    /* Set flag and exit*/
-    pMaterial->material_established        = true;
-    return 0;
   }else{                                                        // LOAD PRE-DEFINED MATERIAL
     /* Copy material properties from list */
     long  index = AT_material_index_from_material_number( pMaterial->material_no );
@@ -361,22 +353,28 @@ int AT_establish_material(AT_material* pMaterial)
     pMaterial->p_MeV                      = AT_Material_Data.p_MeV[index];
     pMaterial->average_A                  = AT_Material_Data.average_A[index];
     pMaterial->average_Z                  = AT_Material_Data.average_Z[index];
-    strcpy(pMaterial->material_name, AT_Material_Data.material_name[index]);
-    /* Establish LET data table(s) */
-    if(AT_establish_LET_data( pMaterial) != 0){
-      printf("Error during establishing LET data tables.");
-      return -1;
-    }
+    /* TODO: correct memory handling of material name */
+//    strcpy(pMaterial->material_name, AT_Material_Data.material_name[index]);
+  }
 
+    /* Establish LET data table(s) */
+    long LET_return_code = AT_establish_LET_data( pMaterial);
     /* Set flag and exit*/
     pMaterial->material_established        = true;
-    return 0;
+    return LET_return_code;
   }
-}
+
 
 int AT_free_material(AT_material* pMaterial)
 {
-    return 0;
+    long i;
+    for (i = 0; i < pMaterial->LET_data.n; i++){
+      free(pMaterial->LET_data.LET_data_single[i].kin_E_MeV);
+      free(pMaterial->LET_data.LET_data_single[i].stp_pow_el_MeV_cm2_g);
+      free(pMaterial->LET_data.LET_data_single[i].range_cdsa_g_cm2);
+    }
+    free(pMaterial->LET_data.LET_data_single);
+    return AT_Success;
 }
 
 /* END OF TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
