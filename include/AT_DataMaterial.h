@@ -32,6 +32,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "AT_Error.h";
 #include "AT_NumericalRoutines.h"
 
 /**
@@ -54,7 +55,7 @@ enum material_no{
 /**
  * Stopping power data for a material and a particle type
  */
-typedef struct {
+typedef struct AT_LET_data_single{
   long     n;                                     /**< number of items in the data table */
   long     particle_no;                           /**< particle number this data is for, see AT_DataParticle.h for definition */
   double*  kin_E_MeV;                             /**< Kinetic energy in MeV, pointer to array of size n */
@@ -65,7 +66,7 @@ typedef struct {
 /**
  * Stopping power data for a material
  */
-typedef struct {
+typedef struct AT_LET_data{
   long            n;                              /**< number of data tables in the structure */
   AT_LET_data_single*   LET_data_single;                /**< pointer to LET data tables for a particle type */
 } AT_LET_data;
@@ -292,8 +293,9 @@ void AT_get_materials_data( const long  number_of_materials,
 
 /////////////////////////////////////////////////////////
 /* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
-int AT_check_material( AT_material material);
-int AT_establish_material(AT_material material);
+int AT_check_material( AT_material* pMaterial);
+int AT_establish_material(AT_material* pMaterial);
+int AT_free_material(AT_material* pMaterial);
 double AT_electron_density_m3( const long n,
     const double density_g_cm3,
     const long Z[],

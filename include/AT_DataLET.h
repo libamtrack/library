@@ -31,6 +31,7 @@
 
 #include <stdlib.h>
 
+#include "AT_Error.h"
 #include "AT_DataParticle.h"
 #include "AT_PhysicsRoutines.h"
 #include "AT_DataMaterial.h"
@@ -899,7 +900,7 @@ void AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
     const long          particle_no[],
     const AT_material   material,
     double              LET_MeV_cm2_g[]);
-int AT_establish_LET_data( AT_material material);
+int AT_establish_LET_data( AT_material*  pMaterial);
 double AT_CDSA_range_g_cm2_from_power_law_single(  const double E_MeV_u,
      const long particle_no,
      const double p_MeV,
