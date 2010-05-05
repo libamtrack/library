@@ -900,7 +900,7 @@ double get_table_value_new( const double  x,
     const long    n,
     const double  x_table[],
     const double  y_table[]);
-int AT_establish_LET_data( AT_material*  pMaterial);
+int AT_establish_LET_data( AT_material*  material);
 double AT_CDSA_range_g_cm2_from_power_law_single(  const double E_MeV_u,
      const long particle_no,
      const double p_MeV,

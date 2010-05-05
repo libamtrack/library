@@ -316,8 +316,10 @@ long AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
 
     /* check input */
     long error;
+    long purpose_energy_range = (material.LET_data_source == PSTAR) ? AT_energy_range_for_PSTAR_data : AT_energy_range_for_PowerLaw_data;
     error = AT_check_E_MeV_u(   number_of_particles,
-                                E_MeV_u);
+                                E_MeV_u,
+                                purpose_energy_range);
     if(error != AT_Success)     return error;
 
     error = AT_check_particle_no(   number_of_particles,
@@ -326,7 +328,7 @@ long AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
 
     /* establish material if not yet done */
     int material_return_code = AT_check_material(&material);
-    if((material_return_code != AT_Success) | (material_return_code != AT_Material_Already_Established)){
+    if((material_return_code != AT_Success) & (material_return_code != AT_Material_Already_Established)){
       return (material_return_code);
     }
 
@@ -352,7 +354,7 @@ double AT_new_LET_MeV_cm2_g_single(  const double        E_MeV_u,
 
     /* establish material if not yet done */
     int material_return_code = AT_check_material(&material);
-    if((material_return_code != AT_Success) | (material_return_code != AT_Material_Already_Established)){
+    if((material_return_code != AT_Success) & (material_return_code != AT_Material_Already_Established)){
       return (material_return_code);
     }
 
@@ -409,68 +411,74 @@ double AT_LET_MeV_cm2_g_from_power_law_single(  const double E_MeV_u,
 #define POWERLAW_ENERGY_MAX_MEV 250
 
 
-int AT_establish_LET_data( AT_material* pMaterial){
+int AT_establish_LET_data( AT_material* material){
 
-  if (pMaterial->LET_data_source == PowerLaw){
-    pMaterial->LET_data.n                 = 1;
-    pMaterial->LET_data.LET_data_single   = (AT_LET_data_single*)malloc(sizeof(AT_LET_data_single));
+  if (material->LET_data_source == PowerLaw){
+    material->LET_data.n                 = 1;
+    material->LET_data.LET_data_single   = (AT_LET_data_single*)malloc(sizeof(AT_LET_data_single));
 
-    pMaterial->LET_data.LET_data_single[0].n                      =       POWERLAW_ENERGY_STEPS;
-    pMaterial->LET_data.LET_data_single[0].particle_no            =       1001;                           // build proton table
-    pMaterial->LET_data.LET_data_single[0].kin_E_MeV              =       (double*)malloc(pMaterial->LET_data.LET_data_single[0].n * sizeof(double));
-    pMaterial->LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g   =       (double*)malloc(pMaterial->LET_data.LET_data_single[0].n * sizeof(double));
-    pMaterial->LET_data.LET_data_single[0].range_cdsa_g_cm2       =       (double*)malloc(pMaterial->LET_data.LET_data_single[0].n * sizeof(double));
+    material->LET_data.LET_data_single[0].n                      =       POWERLAW_ENERGY_STEPS;
+    material->LET_data.LET_data_single[0].particle_no            =       1001;                           // build proton table
+    material->LET_data.LET_data_single[0].kin_E_MeV              =       (double*)malloc(material->LET_data.LET_data_single[0].n * sizeof(double));
+    material->LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g   =       (double*)malloc(material->LET_data.LET_data_single[0].n * sizeof(double));
+    material->LET_data.LET_data_single[0].range_cdsa_g_cm2       =       (double*)malloc(material->LET_data.LET_data_single[0].n * sizeof(double));
 
     long i;
     double E_step_size = (log(POWERLAW_ENERGY_MAX_MEV) - log(POWERLAW_ENERGY_MIN_MEV)) / (POWERLAW_ENERGY_STEPS - 1);
-    for (i = 0; i < pMaterial->LET_data.LET_data_single[0].n; i++){
-      pMaterial->LET_data.LET_data_single[0].kin_E_MeV[i]                 = POWERLAW_ENERGY_MIN_MEV + exp(i * E_step_size);
-      pMaterial->LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g[i]      = AT_LET_MeV_cm2_g_from_power_law_single( pMaterial->LET_data.LET_data_single[0].kin_E_MeV[i],
-                                                                                                                  pMaterial->LET_data.LET_data_single[0].particle_no,
-                                                                                                                  pMaterial->p_MeV,
-                                                                                                                  pMaterial->alpha_g_cm2_MeV);
-      pMaterial->LET_data.LET_data_single[0].range_cdsa_g_cm2[i]          = AT_CDSA_range_g_cm2_from_power_law_single(    pMaterial->LET_data.LET_data_single[0].kin_E_MeV[i],
-                                                                                                                        pMaterial->LET_data.LET_data_single[0].particle_no,
-                                                                                                                        pMaterial->p_MeV,
-                                                                                                                        pMaterial->alpha_g_cm2_MeV);
+    for (i = 0; i < material->LET_data.LET_data_single[0].n; i++){
+      material->LET_data.LET_data_single[0].kin_E_MeV[i]                 = POWERLAW_ENERGY_MIN_MEV * exp(i * E_step_size);
+      material->LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g[i]      = AT_LET_MeV_cm2_g_from_power_law_single( material->LET_data.LET_data_single[0].kin_E_MeV[i],
+                                                                                                                  material->LET_data.LET_data_single[0].particle_no,
+                                                                                                                  material->p_MeV,
+                                                                                                                  material->alpha_g_cm2_MeV);
+      material->LET_data.LET_data_single[0].range_cdsa_g_cm2[i]          = AT_CDSA_range_g_cm2_from_power_law_single(    material->LET_data.LET_data_single[0].kin_E_MeV[i],
+                                                                                                                        material->LET_data.LET_data_single[0].particle_no,
+                                                                                                                        material->p_MeV,
+                                                                                                                        material->alpha_g_cm2_MeV);
+
+    }
     return AT_Success;
-      }
   }
 
-    if (pMaterial->LET_data_source == PSTAR){
+    if (material->LET_data_source == PSTAR){
        /* TODO: In case of non-predefined material: Read-In data from external PSTAR file */
-       if (pMaterial->material_no == User_Defined_Material){
+       if (material->material_no == User_Defined_Material){
           return AT_No_PSTAR_Data;
         }
 
         /* find pre-defined material by material_no */
-        long* matches           = (long*)malloc(AT_PSTAR_Data.n * sizeof(long));
-        find_elements_int(      &pMaterial->material_no,
-                                AT_PSTAR_Data.n,
-                                AT_PSTAR_Data.material_no,
-                                AT_PSTAR_Data.n,
-                                matches);
+        bool* matches           = (bool*)malloc(AT_PSTAR_Data.n * sizeof(bool));
+        is_element_int( material->material_no,
+                        AT_PSTAR_Data.material_no,
+                        AT_PSTAR_Data.n,
+                        matches);
 
-        long n_matches = 0;
         long i;
+        long n_matches = 0;
         for (i = 0; i < AT_PSTAR_Data.n; i++){
-          n_matches++;
+          if (matches[i]){
+            n_matches++;
+          }
         }
 
         /* alloc data arrays and copy data */
-        pMaterial->LET_data.n                 = 1;
-        pMaterial->LET_data.LET_data_single   = (AT_LET_data_single*)malloc(sizeof(AT_LET_data_single));
+        material->LET_data.n                 = 1;
+        material->LET_data.LET_data_single   = (AT_LET_data_single*)malloc(sizeof(AT_LET_data_single));
 
-        pMaterial->LET_data.LET_data_single[0].n                      =       n_matches;
-        pMaterial->LET_data.LET_data_single[0].particle_no            =       1001;                           // build proton table
-        pMaterial->LET_data.LET_data_single[0].kin_E_MeV              =       (double*)malloc(pMaterial->LET_data.LET_data_single[0].n * sizeof(double));
-        pMaterial->LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g   =       (double*)malloc(pMaterial->LET_data.LET_data_single[0].n * sizeof(double));
-        pMaterial->LET_data.LET_data_single[0].range_cdsa_g_cm2       =       (double*)malloc(pMaterial->LET_data.LET_data_single[0].n * sizeof(double));
+        material->LET_data.LET_data_single[0].n                      =       n_matches;
+        material->LET_data.LET_data_single[0].particle_no            =       1001;                           // build proton table
+        material->LET_data.LET_data_single[0].kin_E_MeV              =       (double*)malloc(material->LET_data.LET_data_single[0].n * sizeof(double));
+        material->LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g   =       (double*)malloc(material->LET_data.LET_data_single[0].n * sizeof(double));
+        material->LET_data.LET_data_single[0].range_cdsa_g_cm2       =       (double*)malloc(material->LET_data.LET_data_single[0].n * sizeof(double));
 
-        for (i = 0; i < pMaterial->LET_data.LET_data_single[0].n; i++){
-          pMaterial->LET_data.LET_data_single[0].kin_E_MeV[i]             =       AT_PSTAR_Data.kin_E_MeV[matches[i]];
-          pMaterial->LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g[i]  =       AT_PSTAR_Data.stp_pow_el_MeV_cm2_g[matches[i]];
-          pMaterial->LET_data.LET_data_single[0].range_cdsa_g_cm2[i]      =       AT_PSTAR_Data.range_cdsa_g_cm2[matches[i]];
+        long j = 0;
+        for (i = 0; i < material->LET_data.LET_data_single[0].n; i++){
+          if(matches[i]){
+            material->LET_data.LET_data_single[0].kin_E_MeV[j]             =       AT_PSTAR_Data.kin_E_MeV[i];
+            material->LET_data.LET_data_single[0].stp_pow_el_MeV_cm2_g[j]  =       AT_PSTAR_Data.stp_pow_el_MeV_cm2_g[i];
+            material->LET_data.LET_data_single[0].range_cdsa_g_cm2[j]      =       AT_PSTAR_Data.range_cdsa_g_cm2[i];
+            j++;
+          }
         }
         free(matches);
 
