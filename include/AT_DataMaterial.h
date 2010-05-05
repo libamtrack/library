@@ -295,9 +295,9 @@ void AT_get_materials_data( const long  number_of_materials,
 
 /////////////////////////////////////////////////////////
 /* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
-int AT_check_material( AT_material* pMaterial);
-int AT_establish_material(AT_material* pMaterial);
-int AT_free_material(AT_material* pMaterial);
+int AT_check_material( AT_material* material);
+int AT_establish_material(AT_material* material);
+int AT_free_material(AT_material* material);
 double AT_electron_density_m3( const long n,
     const double density_g_cm3,
     const long Z[],

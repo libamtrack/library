@@ -285,12 +285,12 @@ void AT_get_materials_data( const long  number_of_materials,
 
 /////////////////////////////////////////////////////////
 /* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
-int AT_check_material( AT_material* pMaterial)
+int AT_check_material( AT_material* material)
 {
-  if (pMaterial->material_established){
+  if (material->material_established){
     return AT_Material_Already_Established;
   }else{
-    return(AT_establish_material( pMaterial));
+    return(AT_establish_material( material));
   }
 }
 
@@ -317,63 +317,63 @@ double AT_average_Z( const long n,
   return (6.6e23);
 }
 
-int AT_establish_material(AT_material* pMaterial)
+int AT_establish_material(AT_material* material)
 {
-  if (pMaterial->material_no == User_Defined_Material){                               // USER DEFINED MATERIAL
+  if (material->material_no == User_Defined_Material){                               // USER DEFINED MATERIAL
 
     /* Compute material properties */
-    pMaterial->electron_density_m3        = AT_electron_density_m3(       pMaterial->n_elements,
-        pMaterial->density_g_cm3,
-        pMaterial->elements_Z,
-        pMaterial->elements_A,
-        pMaterial->elements_weight_fraction);
+    material->electron_density_m3        = AT_electron_density_m3(       material->n_elements,
+        material->density_g_cm3,
+        material->elements_Z,
+        material->elements_A,
+        material->elements_weight_fraction);
 
-    pMaterial->average_Z                  = AT_average_Z(       pMaterial->n_elements,
-        pMaterial->elements_Z,
-        pMaterial->elements_weight_fraction);
+    material->average_Z                  = AT_average_Z(       material->n_elements,
+        material->elements_Z,
+        material->elements_weight_fraction);
 
-    pMaterial->average_A                  = AT_average_A(       pMaterial->n_elements,
-        pMaterial->elements_A,
-        pMaterial->elements_weight_fraction);
+    material->average_A                  = AT_average_A(       material->n_elements,
+        material->elements_A,
+        material->elements_weight_fraction);
 
 
   }else{                                                        // LOAD PRE-DEFINED MATERIAL
     /* Copy material properties from list */
-    long  index = AT_material_index_from_material_number( pMaterial->material_no );
+    long  index = AT_material_index_from_material_number( material->material_no );
     if( index == -1){
-      printf("Material no %ld not found\n", pMaterial->material_no);
+      printf("Material no %ld not found\n", material->material_no);
       return -1;
     }
 
-    pMaterial->ICRU_ID                    = AT_Material_Data.ICRU_ID[index];
-    pMaterial->I_eV                       = AT_Material_Data.I_eV[index];
-    pMaterial->density_g_cm3              = AT_Material_Data.density_g_cm3[index];
-    pMaterial->electron_density_m3        = AT_Material_Data.electron_density_m3[index];
-    pMaterial->alpha_g_cm2_MeV            = AT_Material_Data.alpha_g_cm2_MeV[index];
-    pMaterial->p_MeV                      = AT_Material_Data.p_MeV[index];
-    pMaterial->average_A                  = AT_Material_Data.average_A[index];
-    pMaterial->average_Z                  = AT_Material_Data.average_Z[index];
+    material->ICRU_ID                    = AT_Material_Data.ICRU_ID[index];
+    material->I_eV                       = AT_Material_Data.I_eV[index];
+    material->density_g_cm3              = AT_Material_Data.density_g_cm3[index];
+    material->electron_density_m3        = AT_Material_Data.electron_density_m3[index];
+    material->alpha_g_cm2_MeV            = AT_Material_Data.alpha_g_cm2_MeV[index];
+    material->p_MeV                      = AT_Material_Data.p_MeV[index];
+    material->average_A                  = AT_Material_Data.average_A[index];
+    material->average_Z                  = AT_Material_Data.average_Z[index];
     /* TODO: correct memory handling of material name */
-//    strcpy(pMaterial->material_name, AT_Material_Data.material_name[index]);
+//    strcpy(material->material_name, AT_Material_Data.material_name[index]);
   }
 
     /* Establish LET data table(s) */
-    long LET_return_code = AT_establish_LET_data( pMaterial);
+    long LET_return_code = AT_establish_LET_data( material);
     /* Set flag and exit*/
-    pMaterial->material_established        = true;
+    material->material_established        = true;
     return LET_return_code;
   }
 
 
-int AT_free_material(AT_material* pMaterial)
+int AT_free_material(AT_material* material)
 {
     long i;
-    for (i = 0; i < pMaterial->LET_data.n; i++){
-      free(pMaterial->LET_data.LET_data_single[i].kin_E_MeV);
-      free(pMaterial->LET_data.LET_data_single[i].stp_pow_el_MeV_cm2_g);
-      free(pMaterial->LET_data.LET_data_single[i].range_cdsa_g_cm2);
+    for (i = 0; i < material->LET_data.n; i++){
+      free(material->LET_data.LET_data_single[i].kin_E_MeV);
+      free(material->LET_data.LET_data_single[i].stp_pow_el_MeV_cm2_g);
+      free(material->LET_data.LET_data_single[i].range_cdsa_g_cm2);
     }
-    free(pMaterial->LET_data.LET_data_single);
+    free(material->LET_data.LET_data_single);
     return AT_Success;
 }
 
