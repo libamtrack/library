@@ -207,7 +207,8 @@ void AT_run_GSM_method(  const long  n,
  * @see          AT_GammaResponse.h for definition
  * @param[in]  saturation_cross_section_factor  (algorithm specific)  scaling factor for the saturation cross section
  * @see          Waligorski, 1988
- * @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results\n
+* @param[in]  write_output        if true, a protocol is written to a file in the working directory
+*  * @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results\n
  *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
  *    results[1]    d_check         (algorithm independent)  not available with IGK\n
  *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -231,6 +232,7 @@ void AT_run_IGK_method(  const long  n,
     const long    gamma_model,
     const double  gamma_parameters[],
     const double  saturation_cross_section_factor,
+    const bool    write_output,
     double  results[]);
 
 
