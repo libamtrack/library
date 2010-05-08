@@ -746,7 +746,6 @@ void  AT_SC_get_f1_R(
     const float*  f1_parameters,
     float*        norm_fluence,
     float*        dose_contribution_Gy,
-    float*        f_parameters,
     float*        f1_d_Gy,
     float*        f1_dd_Gy,
     float*        f1){
@@ -783,7 +782,6 @@ void  AT_SC_get_f1_R(
   /* place for results */
   double * norm_fluence_double = (double*)calloc(n_long,sizeof(double));
   double * dose_contribution_Gy_double = (double*)calloc(n_long,sizeof(double));
-  double f_parameters_double[AT_SC_F_PARAMETERS_LENGTH];
   double * f1_d_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
   double * f1_dd_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
   double * f1_double = (double*)calloc(n_bins_f1_long,sizeof(double));
@@ -801,7 +799,6 @@ void  AT_SC_get_f1_R(
       f1_parameters_double,
       norm_fluence_double,
       dose_contribution_Gy_double,
-      f_parameters_double,
       f1_d_Gy_double,
       f1_dd_Gy_double,
       f1_double);
@@ -810,9 +807,6 @@ void  AT_SC_get_f1_R(
   for(i = 0 ; i < n_long ; i++){
     norm_fluence[i] = (float)norm_fluence_double[i];
     dose_contribution_Gy[i] = (float)dose_contribution_Gy_double[i];
-  }
-  for(i = 0 ; i < AT_SC_F_PARAMETERS_LENGTH ; i++){
-    f_parameters[i] = (float)f_parameters_double[i];
   }
   for(i = 0 ; i < n_bins_f1_long ; i++){
     f1_d_Gy[i] = (float)f1_d_Gy_double[i];

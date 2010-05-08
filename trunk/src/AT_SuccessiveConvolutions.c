@@ -98,7 +98,6 @@ void  AT_SC_get_f1(
     const double  f1_parameters[],
     double        norm_fluence[],
     double        dose_contribution_Gy[],
-    double        f_parameters[],
     double        f1_d_Gy[],
     double        f1_dd_Gy[],
     double        f1[])
@@ -146,15 +145,6 @@ void  AT_SC_get_f1(
                 fluence_cm2,
                 material_no,
                 dose_contribution_Gy);
-
-  // Compute f parameters
-  AT_RDD_f_parameters(  n,
-                        E_MeV_u,
-                        particle_no,
-                        fluence_cm2_local,
-                        material_no,
-                        er_model,
-                        f_parameters);
 
   ////////////////////////////////////////////////////////////////////////////////////////////
   //  2. create all-over f1-data-frame, if f_d_Gy array passed (i.e. n_bins_f1 == 0)

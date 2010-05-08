@@ -79,8 +79,6 @@ void AT_run_SPIFF_method(  const long  n,
   long     n_bins_f1;
   double*  f1_parameters;
 
-  double*  f_parameters;
-
   double*  norm_fluence;
   double*  dose_contribution_Gy;
 
@@ -126,8 +124,6 @@ void AT_run_SPIFF_method(  const long  n,
         &n_bins_f1,
         f1_parameters);
 
-    f_parameters  =  (double*)calloc(AT_SC_F_PARAMETERS_LENGTH, sizeof(double));
-
     norm_fluence  =  (double*)calloc(n, sizeof(double));
     dose_contribution_Gy  =  (double*)calloc(n, sizeof(double));
 
@@ -148,18 +144,57 @@ void AT_run_SPIFF_method(  const long  n,
         f1_parameters,
         norm_fluence,
         dose_contribution_Gy,
-        f_parameters,
         f1_d_Gy,
         f1_dd_Gy,
 
         f1);
+
+    double*  fluence_cm2_local    =  (double*)calloc(n, sizeof(double));
+    double*  dose_Gy_local        =  (double*)calloc(n, sizeof(double));
+
+    if(fluence_cm2[0] < 0){
+      for (i = 0; i < n; i++){
+        dose_Gy_local[i] = -1.0 * fluence_cm2[i];
+      }
+      AT_fluence_cm2(  n,
+          E_MeV_u,
+          particle_no,
+          dose_Gy_local,
+          material_no,
+          fluence_cm2_local);
+    }else{
+      for (i = 0; i < n; i++){
+        fluence_cm2_local[i] = fluence_cm2[i];
+      }
+      AT_D_Gy(  n,
+          E_MeV_u,
+          particle_no,
+          fluence_cm2_local,
+          material_no,
+          dose_Gy_local);
+    }
+
+    // Normalize fluence vector
+    AT_normalize(    n,
+                  fluence_cm2_local,
+                  norm_fluence);
+
+    const double u  =       AT_total_u(     n,
+        E_MeV_u,
+        particle_no,
+        fluence_cm2,
+        material_no,
+        er_model);
+
+    free( fluence_cm2_local );
+    free( dose_Gy_local );
 
     long      n_bins_f;
     double    u_start;
     long      n_convolutions;
 
 
-    AT_SC_get_f_array_size(  f_parameters[0],      // = u
+    AT_SC_get_f_array_size(  u,
         fluence_factor,
         N2,
         n_bins_f1,
@@ -189,7 +224,7 @@ void AT_run_SPIFF_method(  const long  n,
         f_dd_Gy,
         f);
 
-    AT_SuccessiveConvolutions(  f_parameters[0],    // u
+    AT_SuccessiveConvolutions(  u,
         n_bins_f,
         &N2,
         // input + return values
@@ -233,7 +268,7 @@ void AT_run_SPIFF_method(  const long  n,
     results[1]      =  d_check;
     results[2]      =  S_HCP;
     results[3]      =  S_gamma;
-    results[5]      =  f_parameters[0];    // 5 - 9: algo specific: u
+    results[5]      =  u;                 // 5 - 9: algo specific: u
     results[6]      =  u_start;
     results[7]      =  n_convolutions;
 
@@ -267,7 +302,6 @@ void AT_run_SPIFF_method(  const long  n,
   }
 
   free(f1_parameters);
-  free(f_parameters);
   free(norm_fluence);
   free(dose_contribution_Gy);
   free(f1_d_Gy);
@@ -367,14 +401,13 @@ void AT_run_GSM_method(  const long  n,
 
   fprintf(output_file, "\nOverall r.max/m = %e\n\n",   max_r_max_m);
 
-  double* f_parameters         =  (double*)calloc(7, sizeof(double));
   double* f1_d_Gy              =  (double*)calloc(n_bins_f1, sizeof(double));
   double* f1_dd_Gy             =  (double*)calloc(n_bins_f1, sizeof(double));
   double* f1                   =  (double*)calloc(n_bins_f1, sizeof(double));
   double* norm_fluence         =  (double*)calloc(n, sizeof(double));
   double* dose_contribution_Gy =  (double*)calloc(n, sizeof(double));
 
-  AT_SC_get_f1(  n,            // for f parameters only
+  AT_SC_get_f1(  n,
       E_MeV_u,
       particle_no,
       fluence_cm2,
@@ -387,10 +420,52 @@ void AT_run_GSM_method(  const long  n,
       f1_parameters,
       norm_fluence,
       dose_contribution_Gy,
-      f_parameters,
       f1_d_Gy,
       f1_dd_Gy,
       f1);
+
+  double*  fluence_cm2_local    =  (double*)calloc(n, sizeof(double));
+  double*  dose_Gy_local        =  (double*)calloc(n, sizeof(double));
+
+  if(fluence_cm2[0] < 0){
+    for (i = 0; i < n; i++){
+      dose_Gy_local[i] = -1.0 * fluence_cm2[i];
+    }
+    AT_fluence_cm2(  n,
+        E_MeV_u,
+        particle_no,
+        dose_Gy_local,
+        material_no,
+        fluence_cm2_local);
+  }else{
+    for (i = 0; i < n; i++){
+      fluence_cm2_local[i] = fluence_cm2[i];
+    }
+    AT_D_Gy(  n,
+        E_MeV_u,
+        particle_no,
+        fluence_cm2_local,
+        material_no,
+        dose_Gy_local);
+  }
+
+  // Normalize fluence vector
+  AT_normalize(    n,
+                fluence_cm2_local,
+                norm_fluence);
+
+  const double u  =       AT_total_u(     n,
+      E_MeV_u,
+      particle_no,
+      fluence_cm2,
+      material_no,
+      er_model);
+
+  double total_fluence_cm2  =       AT_sum(   n,
+      fluence_cm2);
+
+  free( fluence_cm2_local );
+  free( dose_Gy_local );
 
   for (i = 0; i < n; i++){
           fprintf(output_file, "Particle %ld: relative fluence: %4.2e, dose contribution %4.2e Gy\n", i+1, norm_fluence[i], dose_contribution_Gy[i]);
@@ -399,7 +474,6 @@ void AT_run_GSM_method(  const long  n,
   long	  n_bins_f;
   double  u_start;
   long    n_convolutions;
-  double  u   = f_parameters[0];
 
   AT_SC_get_f_array_size(   u,
       fluence_factor,
@@ -437,15 +511,6 @@ void AT_run_GSM_method(  const long  n,
   double	min_bin_Gy	= log10(f_d_Gy[0]);
   double	dd_bin_Gy	= (max_bin_Gy - min_bin_Gy) / n_bins_f;
 
-  fprintf(output_file, "f parameters\n");
-  fprintf(output_file, "%e\t%e\t%e\t%e\t%e\t%e\t%e\n",   f_parameters[0],
-      f_parameters[1],
-      f_parameters[2],
-      f_parameters[3],
-      f_parameters[4],
-      f_parameters[5],
-      f_parameters[6]);
-
   // Largest r.max --> calculate size of sample area
   double sample_grid_size_m  = calc_grid_size_m + 2.01 * max_r_max_m;
   double sample_grid_area_cm2  = sample_grid_size_m * sample_grid_size_m * 10000;
@@ -456,7 +521,7 @@ void AT_run_GSM_method(  const long  n,
   double* mean_number_particles = (double*)calloc(n, sizeof(double));
   long*  act_number_particles  =  (long*)calloc(n, sizeof(double));
   for (i = 0; i < n; i++){
-    mean_number_particles[i] = sample_grid_area_cm2 * f_parameters[1] * norm_fluence[i];        // Area * Total_fluence (particle i)
+    mean_number_particles[i] = sample_grid_area_cm2 * total_fluence_cm2 * norm_fluence[i];        // Area * Total_fluence (particle i)
   }
 
   // create and initialize RNGs
@@ -836,7 +901,6 @@ void AT_run_GSM_method(  const long  n,
   gsl_rng_free(rng2);
 
   free(f1_parameters);
-  free(f_parameters);
   free(norm_fluence);
   free(dose_contribution_Gy);
 
@@ -892,14 +956,13 @@ void AT_run_IGK_method(  const long  n,
       &n_bins_f1,
       f1_parameters);
 
-  double*  f_parameters          =  (double*)calloc(7, sizeof(double));
   double*  norm_fluence          =  (double*)calloc(n, sizeof(double));
   double*  accu_fluence          =  (double*)calloc(n, sizeof(double));
   double*  dose_contribution_Gy  =  (double*)calloc(n, sizeof(double));
 
   ////////////////////////////////////////////////////////////////////////////////////////////
   // 1. normalize fluence, get total fluence and dose
-  f_parameters[1]    = 0.0;
+  double total_fluence_cm2    = 0.0;
 
   // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
   // only the first entry will be check
@@ -929,15 +992,17 @@ void AT_run_IGK_method(  const long  n,
         dose_Gy_local);
   }
 
+  double total_dose_Gy = 0.0;
+
   for (i = 0; i < n; i++){
-    f_parameters[2]  +=  dose_Gy_local[i];
-    f_parameters[1]  +=  fluence_cm2_local[i];
+    total_dose_Gy      +=  dose_Gy_local[i];
+    total_fluence_cm2  +=  fluence_cm2_local[i];
   }
 
   double u_single;
 
   for (i = 0; i < n; i++){
-    norm_fluence[i]          =  fluence_cm2_local[i] / f_parameters[1];
+    norm_fluence[i]          =  fluence_cm2_local[i] / total_fluence_cm2;
     u_single                 =  fluence_cm2_local[i] / f1_parameters[i*9 + 6];
     dose_contribution_Gy[i]  =  u_single * f1_parameters[i*9 + 7];
   }
@@ -1065,7 +1130,7 @@ void AT_run_IGK_method(  const long  n,
     s0_m2   = saturation_cross_section_factor * M_PI * gsl_pow_2(a0_m);
 
     // Ion-kill probability
-    double   fluence_cm2  = norm_fluence[0] * f_parameters[1];      // norm. fluence for particle i * total_fluence
+    double   fluence_cm2  = norm_fluence[0] * total_fluence_cm2;    // norm. fluence for particle i * total_fluence
     double   D_Gy         = dose_contribution_Gy[0];                // dose by particle i
 
     cross_section_ratio  = sI_m2 / s0_m2;
@@ -1081,11 +1146,11 @@ void AT_run_IGK_method(  const long  n,
           params->gamma_parameters,
           // return
           &P_g);
-      P_g             = 1.0 - P_g;                                                                             // prob of being activated by gamma kill mode
-      S_HCP_component = gamma_parameters[i*4] * (1.0 - P_I * P_g); // activation prob, weighted by S0 for ith component
+      P_g             = 1.0 - P_g;                                  // prob of being activated by gamma kill mode
+      S_HCP_component = gamma_parameters[i*4] * (1.0 - P_I * P_g);  // activation prob, weighted by S0 for ith component
     }else{
-      P_I             = 1.0 - exp(-1.0 * sI_cm2 * fluence_cm2);   // prob of being activated by ion kill mode
-      S_HCP_component = gamma_parameters[i*4] * P_I;               // activation prob, weighted by S0 for ith component
+      P_I             = 1.0 - exp(-1.0 * sI_cm2 * fluence_cm2);     // prob of being activated by ion kill mode
+      S_HCP_component = gamma_parameters[i*4] * P_I;                // activation prob, weighted by S0 for ith component
     }
 
     S_HCP += S_HCP_component;
@@ -1093,7 +1158,7 @@ void AT_run_IGK_method(  const long  n,
   }
 
   AT_gamma_response(  n_tmp,
-      &f_parameters[2],
+      &total_dose_Gy,
       gamma_model,
       gamma_parameters,
       // return
@@ -1112,7 +1177,6 @@ void AT_run_IGK_method(  const long  n,
 
 
   free(f1_parameters);
-  free(f_parameters);
   free(norm_fluence);
   free(dose_contribution_Gy);
   free(accu_fluence);
@@ -1185,8 +1249,6 @@ void AT_run_SPISS_method(  const long  n,
       &n_bins_f1,
       f1_parameters);
 
-  double*  f_parameters      				=  (double*)calloc(7, sizeof(double));
-
   double*  norm_fluence      				=  (double*)calloc(n, sizeof(double));
   double*  accu_fluence      				=  (double*)calloc(n, sizeof(double));
   double*  dose_contribution_Gy  			=  (double*)calloc(n, sizeof(double));
@@ -1209,14 +1271,54 @@ void AT_run_SPISS_method(  const long  n,
       // from here: return values
       norm_fluence,
       dose_contribution_Gy,
-      f_parameters,
       f1_d_Gy,
       f1_dd_Gy,
       f1);
 
+  double*  fluence_cm2_local    =  (double*)calloc(n, sizeof(double));
+  double*  dose_Gy_local        =  (double*)calloc(n, sizeof(double));
+
+  long i;
+  if(fluence_cm2[0] < 0){
+    for (i = 0; i < n; i++){
+      dose_Gy_local[i] = -1.0 * fluence_cm2[i];
+    }
+    AT_fluence_cm2(  n,
+        E_MeV_u,
+        particle_no,
+        dose_Gy_local,
+        material_no,
+        fluence_cm2_local);
+  }else{
+    for (i = 0; i < n; i++){
+      fluence_cm2_local[i] = fluence_cm2[i];
+    }
+    AT_D_Gy(  n,
+        E_MeV_u,
+        particle_no,
+        fluence_cm2_local,
+        material_no,
+        dose_Gy_local);
+  }
+
+  // Normalize fluence vector
+  AT_normalize(    n,
+                fluence_cm2_local,
+                norm_fluence);
+
+  const double u  =       AT_total_u(     n,
+      E_MeV_u,
+      particle_no,
+      fluence_cm2,
+      material_no,
+      er_model);
+
+  free( fluence_cm2_local );
+  free( dose_Gy_local );
+
   // Get accumulated normalized fluence for later sampling of particle type
   accu_fluence[0]   =	norm_fluence[0];
-  long i;
+
   if(n > 1){
     for (i = 1; i < n; i++){
       accu_fluence[i] +=  accu_fluence[i-1] + norm_fluence[i];
@@ -1226,7 +1328,6 @@ void AT_run_SPISS_method(  const long  n,
   long	   n_bins_f;
   double   u_start;
   long     n_convolutions;
-  double   u = f_parameters[0];
 
   AT_SC_get_f_array_size(   u,
       fluence_factor,
@@ -1370,7 +1471,6 @@ void AT_run_SPISS_method(  const long  n,
   }
   /* TODO memory might be not freed before !!!!
 	free(f1_parameters);
-	free(f_parameters);
 	free(norm_fluence);
 	free(dose_contribution_Gy);
 	free(accu_fluence);
