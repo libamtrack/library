@@ -33,15 +33,13 @@
 
 
 // TODO returning string in following way should be changed to something more appriopriate
-char* AT_get_error_msg(const long error_no){
+char* AT_get_error_msg(const int error_no){
   return "Look up error_no in error_messages and return String.";
 }
 
 
-long AT_check_E_MeV_u(  const long n,
-                        const double E_MeV_u[],
-                        const long purpose_energy_range)
-{
+int AT_check_energy_range_single_particle( const double E_MeV_u,
+                        const int purpose_energy_range){
   double E_max_MeV_u;
   double E_min_MeV_u;
 
@@ -68,32 +66,45 @@ long AT_check_E_MeV_u(  const long n,
     break;
   };
 
-
-  long i;
-  for (i = 0; i < n; i++)
-    {
-      if ((E_MeV_u[i] < E_min_MeV_u) | (E_MeV_u[i] > E_max_MeV_u)){
+  if ((E_MeV_u < E_min_MeV_u) || (E_MeV_u > E_max_MeV_u)){
         return AT_Energy_Outside_Range;
-      }
-    }
+  }
   return AT_Success;
 }
 
-long AT_check_particle_no(   const long n,
+
+int AT_check_energy_range_single_field(  const long n,
+    const double E_MeV_u[],
+    const int purpose_energy_range)
+{
+  int error_code;
+  long i;
+  for (i = 0; i < n; i++){
+    error_code = AT_check_energy_range_single_particle(E_MeV_u[i],purpose_energy_range);
+    if( error_code != AT_Success )
+      return error_code;
+  }
+  return AT_Success;
+}
+
+
+int AT_check_particle_no_single_particle( const long particle_no){
+  if ( (AT_Z_from_particle_no_single(particle_no) < 0) || (AT_A_from_particle_no_single(particle_no) < 0) )
+    return AT_Particle_Not_Defined;
+  return AT_Success;
+}
+
+
+int AT_check_particle_no_single_field(   const long n,
                              const long particle_no[])
 {
+  int error_code;
   long i;
-  for (i = 0; i < n; i++)
-    {
-      if (      (particle_no[i] < 0) |
-                (AT_Z_from_particle_no_single(particle_no[i]) < 1) |
-                (AT_Z_from_particle_no_single(particle_no[i]) > 98) |
-                (AT_A_from_particle_no_single(particle_no[i]) < 1) |
-                (AT_A_from_particle_no_single(particle_no[i]) > 251))
-      {
-        return AT_Particle_Not_Defined;
-      }
-    }
+  for (i = 0; i < n; i++){
+    error_code = AT_check_particle_no_single_particle(particle_no[i]);
+    if( error_code != AT_Success )
+      return error_code;
+  }
   return AT_Success;
 }
 

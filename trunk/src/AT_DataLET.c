@@ -315,14 +315,15 @@ long AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
     double              LET_MeV_cm2_g[]){
 
     /* check input */
-    long error;
-    long purpose_energy_range = (material.LET_data_source == PSTAR) ? AT_energy_range_for_PSTAR_data : AT_energy_range_for_PowerLaw_data;
-    error = AT_check_E_MeV_u(   number_of_particles,
+    int error;
+    int purpose_energy_range = (material.LET_data_source == PSTAR) ? AT_energy_range_for_PSTAR_data : AT_energy_range_for_PowerLaw_data;
+    error = AT_check_energy_range_single_field(   number_of_particles,
                                 E_MeV_u,
                                 purpose_energy_range);
     if(error != AT_Success)     return error;
 
-    error = AT_check_particle_no(   number_of_particles,
+
+    error = AT_check_particle_no_single_field(   number_of_particles,
                                 particle_no);
     if(error != AT_Success)     return error;
 
