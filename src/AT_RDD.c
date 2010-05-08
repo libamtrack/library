@@ -415,68 +415,6 @@ void AT_RDD_f1_parameters(
   f1_parameters[7]  =  single_impact_dose_Gy;
 }
 
-void AT_RDD_f_parameters( const long n,
-    const double  E_MeV_u[],
-    const long    particle_no[],
-    const double  fluence_cm2[],
-    const long    material_no,
-    const long    er_model,
-    double        f_parameters[])
-{
-  double u                              =  0.0;
-  double total_fluence_cm2              =  0.0;
-  double total_dose_Gy                  =  0.0;
-  double fluence_weighted_E_MeV_u       =  0.0;
-  double dose_weighted_E_MeV_u          =  0.0;
-  double fluence_weighted_LET_MeV_cm2_g =  0.0;
-  double dose_weighted_LET_MeV_cm2_g    =  0.0;
-
-
-  u                                   =       AT_total_u(     n,
-                                                        E_MeV_u,
-                                                        particle_no,
-                                                        fluence_cm2,
-                                                        material_no,
-                                                        er_model);
-
-  total_dose_Gy                       =       AT_total_D_Gy(    n,
-                                                        E_MeV_u,
-                                                        particle_no,
-                                                        fluence_cm2,
-                                                        material_no);
-
-  total_fluence_cm2                   =       AT_sum(   n,
-                                                  fluence_cm2);
-
-  fluence_weighted_E_MeV_u            =       AT_fluence_weighted_E_MeV_u(    n,
-                                                                        E_MeV_u,
-                                                                        fluence_cm2);
-  dose_weighted_E_MeV_u               =       AT_dose_weighted_E_MeV_u(       n,
-                                                                        E_MeV_u,
-                                                                        particle_no,
-                                                                        fluence_cm2,
-                                                                        material_no);
-  fluence_weighted_LET_MeV_cm2_g      =       AT_fluence_weighted_LET_MeV_cm2_g(    n,
-                                                                        E_MeV_u,
-                                                                        particle_no,
-                                                                        fluence_cm2,
-                                                                        material_no);
-  dose_weighted_LET_MeV_cm2_g         =       AT_dose_weighted_LET_MeV_cm2_g(       n,
-                                                                        E_MeV_u,
-                                                                        particle_no,
-                                                                        fluence_cm2,
-                                                                        material_no);
-
-  // write data to output table
-  f_parameters[0]  =  u;
-  f_parameters[1]  =  total_fluence_cm2;
-  f_parameters[2]  =  total_dose_Gy;
-  f_parameters[3]  =  fluence_weighted_E_MeV_u;
-  f_parameters[4]  =  dose_weighted_E_MeV_u;
-  f_parameters[5]  =  fluence_weighted_LET_MeV_cm2_g;
-  f_parameters[6]  =  dose_weighted_LET_MeV_cm2_g;
-}
-
 
 int AT_D_RDD_Gy( const long  n,
     const double  r_m[],

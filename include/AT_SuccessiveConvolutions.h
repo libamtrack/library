@@ -41,7 +41,7 @@
 
 /**
  * Structure to hold all variables necessary for the SuccessiveConvolution routine
- * It has been defined to mimic the global variables in the origial FORTRAN IV code
+ * It has been defined to mimic the global variables in the original FORTRAN IV code
  * TODO replace by C variables
  */
 typedef struct{
@@ -81,9 +81,9 @@ typedef struct{
   double*  DE;                          /**< Array holding energy bin widths for distributions F, H */
   long     MIE;                         /**< Index of first bin currently used for E */
 
-  double*  DI;                          /**< Auxilary array that enables easy index operations */
-  double*  A;                           /**< Auxilary array used for Kellerer's quadratic interpolation during AT_SC_FOLD */
-  double*  BI;                          /**< Auxilary array used for Kellerer's quadratic interpolation during AT_SC_FOLD */
+  double*  DI;                          /**< Auxiliary array that enables easy index operations */
+  double*  A;                           /**< Auxiliary array used for Kellerer's quadratic interpolation during AT_SC_FOLD */
+  double*  BI;                          /**< Auxiliary array used for Kellerer's quadratic interpolation during AT_SC_FOLD */
 
   bool     write_output;                /**< if true, a verbose log file will be written */
   FILE*    output_file;                 /**< name of log file */
@@ -129,7 +129,6 @@ void  AT_SC_get_f1_array_size(
     long *       n_bins_f1,
     double       f1_parameters[]);
 
-#define AT_SC_F_PARAMETERS_LENGTH 7             /**< Length of the mixed-energy field characteristics */
 #define AT_SC_F1_PARAMETERS_SINGLE_LENGTH 8     /**< Length of the single particle component characteristics, length of f1_parameters array is AT_SC_F1_PARAMETERS_SINGLE_LENGTH * number of particle components in the field */
 
 /**
@@ -148,14 +147,6 @@ void  AT_SC_get_f1_array_size(
  * @param[in]  n_bins_f1             number of bins holding the f1 distribution (from AT_SC_get_f1_array_size)
  * @param[out] norm_fluence          relative fluences for field components (array of size n)
  * @param[out] dose_contribution_Gy  absolute dose contribution from each field component (array of size n)
- * @param[out] f_parameters          array of size 7 (AT_SC_F_PARAMETERS_LENGTH) holding numbers describing the characteristics of the composed fields:\n
- *                                      0 - u (mean number of tracks contributing)\n
- *                                      1 - total fluence_cm2\n
- *                                      2 - total_dose_Gy\n
- *                                      3 - ave_E_MeV\n
- *                                      4 - dw_E_MeV\n
- *                                      5 - ave_LET_MeV_cm2_g\n
- *                                      6 - dw_LET_MeV_cm2_g
  * @param[out] f1_d_Gy               bin midpoints for f1, array of size n_bins_f1
  * @param[out] f1_dd_Gy              bin widths for f1, array of size n_bins_f1
  * @param[out] f1                    f1 values, array of size n_bins_f1
@@ -174,7 +165,7 @@ void  AT_SC_get_f1(
     const double f1_parameters[],
     double       norm_fluence[],
     double       dose_contribution_Gy[],
-    double       f_parameters[],
+//    double       f_parameters[],
     double       f1_d_Gy[],
     double       f1_dd_Gy[],
     double       f1[]);

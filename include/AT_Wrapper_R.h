@@ -182,7 +182,6 @@ void  AT_SC_get_f1_R(
     const float*  f1_parameters,
     float*        norm_fluence,
     float*        dose_contribution_Gy,
-    float*        f_parameters,
     float*        f1_d_Gy,
     float*        f1_dd_Gy,
     float*        f1);
