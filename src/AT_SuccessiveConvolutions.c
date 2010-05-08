@@ -84,6 +84,12 @@ void  AT_SC_get_f1_array_size(
 }
 
 
+// TODO this function does not need to return norm_fluence
+// as it can be easily calculated using   AT_normalize method
+
+// TODO this function does not need to return dose_contribution_Gy
+// as it can be easily calculated using   AT_D_Gy method
+
 void  AT_SC_get_f1(
     const long    n,
     const double  E_MeV_u[],
