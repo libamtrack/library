@@ -1055,7 +1055,6 @@ void   AT_SuccessiveConvolutions( const double  u,
 
   //////////////////////////////////////////
   // Free allocated KList structures
-  // (Destructor)
   //////////////////////////////////////////
   free(KList.F);
   free(KList.H);
@@ -1075,6 +1074,4 @@ void   AT_SuccessiveConvolutions( const double  u,
     // Close file
     fclose(KList.output_file);
   }
-
-  return;
 }
