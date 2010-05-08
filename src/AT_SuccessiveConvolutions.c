@@ -79,7 +79,7 @@ void  AT_SC_get_f1_array_size(
     *n_bins_f1        =  (long)(floor(tmp) + 1.0);
   } else {
     printf("AT_SC_get_f1_array_size: problem in evaluating n_bins_f1: d_min = %g [Gy], d_max = %g [Gy] \n", d_min_Gy, d_max_Gy);
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 }
 

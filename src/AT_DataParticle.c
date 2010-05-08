@@ -46,7 +46,7 @@ int AT_particle_no_from_Z_and_A( const long  n,
   for (i = 0; i < n; i++){
     particle_no[i]  =  AT_particle_no_from_Z_and_A_single(Z[i], A[i]);
   }
-  return 0;
+  return AT_Success;
 }
 
 inline long AT_A_from_particle_no_single(  const long  particle_no ){
@@ -67,8 +67,11 @@ int AT_A_from_particle_no( const long  n,
   long i;
   for (i = 0; i < n; i++){
     A[i]  =  AT_A_from_particle_no_single(particle_no[i]);
+    if( A[i] < 0 ){
+      return AT_Particle_Not_Defined;
+    }
   }
-  return 0;
+  return AT_Success;
 }
 
 
@@ -77,7 +80,8 @@ inline long AT_Z_from_particle_no_single(  const long  particle_no ){
   if( (1 <= Z) && (Z <= 118) ){
     return Z;
   } else {
-    printf( "Wrong particle number %ld, please provide it in correct format \n(XXXYYY, where XXX is Z (from 1 to 118) and YYY is A (from 1 to 300)\n", particle_no);    return -1;
+    printf( "Wrong particle number %ld, please provide it in correct format \n(XXXYYY, where XXX is Z (from 1 to 118) and YYY is A (from 1 to 300)\n", particle_no);
+    return -1;
   }
 }
 
@@ -89,8 +93,11 @@ int AT_Z_from_particle_no( const long  n,
   long i;
   for (i = 0; i < n; i++){
     Z[i]  =  AT_Z_from_particle_no_single(particle_no[i]);
+    if( Z[i] < 0){
+      return AT_Particle_Not_Defined;
+    }
   }
-  return 0;
+  return AT_Success;
 }
 
 
@@ -118,7 +125,7 @@ int AT_atomic_weight_from_particle_no( const long  n,
 
   free(Z);
   free(matches);
-  return 0;
+  return AT_Success;
 }
 
 
@@ -159,7 +166,7 @@ int AT_particle_name_from_particle_no( const long  n,
   free(A);
   free(Z);
   free(matches);
-  return 0;
+  return AT_Success;
 }
 
 
@@ -198,5 +205,5 @@ int AT_particle_no_from_particle_name( const long  n,
 
     free(test);
   }
-  return 0;
+  return AT_Success;
 }

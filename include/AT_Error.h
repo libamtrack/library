@@ -33,6 +33,9 @@
  */
 
 
+#include "AT_DataParticle.h"
+
+
 /**
  * TODO
  */
@@ -84,7 +87,17 @@ static const AT_error_msg error_messages[6] = {
  * @param error_no
  * @return
  */
-char* AT_get_error_msg(const long error_no);
+char* AT_get_error_msg(const int error_no);
+
+
+/**
+ * TODO
+ * @param E_MeV_u
+ * @param purpose_energy_range
+ * @return
+ */
+int AT_check_energy_range_single_particle( const double E_MeV_u,
+                        const int purpose_energy_range);
 
 
 /**
@@ -94,9 +107,17 @@ char* AT_get_error_msg(const long error_no);
  * @param purpose_energy_range
  * @return
  */
-long AT_check_E_MeV_u(   const long n,
+int AT_check_energy_range_single_field(   const long n,
                         const double E_MeV_u[],
-                        const long purpose_energy_range);
+                        const int purpose_energy_range);
+
+
+/**
+ * TODO
+ * @param particle_no
+ * @return
+ */
+int AT_check_particle_no_single_particle( const long particle_no);
 
 
 /**
@@ -105,7 +126,7 @@ long AT_check_E_MeV_u(   const long n,
  * @param particle_no
  * @return
  */
-long AT_check_particle_no(   const long n,
+int AT_check_particle_no_single_field(   const long n,
                              const long particle_no[]);
 
 #endif /* AT_ERROR_H_ */
