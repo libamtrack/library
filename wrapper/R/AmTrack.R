@@ -407,6 +407,8 @@ AT.SC.get.f1		<-	function(		E.MeV.u,
 
 	n								<-	length(E.MeV.u)
 	
+	f.parameters					<-	numeric(7)
+	
 	norm.fluence					<-	numeric(n)
 	dose.contribution.Gy			<-	numeric(n)
 	
@@ -427,6 +429,7 @@ AT.SC.get.f1		<-	function(		E.MeV.u,
 																f1.parameters			= as.single(f1.parameters),
 																norm.fluence			= as.single(norm.fluence),
 																dose.contribution.Gy	= as.single(dose.contribution.Gy),
+																f.parameters			= as.single(f.parameters),
 																f1.d.Gy					= as.single(f1.d.Gy),
 																f1.dd.Gy				= as.single(f1.dd.Gy),
 																f1						= as.single(f1))
@@ -434,6 +437,7 @@ AT.SC.get.f1		<-	function(		E.MeV.u,
 	results	<-	list(	fluence.cm2					= 	res$fluence.cm2,
 						norm.fluence				= 	res$norm.fluence,
 						dose.contribution.Gy		= 	res$dose.contribution.Gy,
+						f.parameters				=	res$f.parameters,											
 						f1							=	data.frame(	f1.d.Gy						=	res$f1.d.Gy,
 																	f1.dd.Gy					=	res$f1.dd.Gy,
 																	f1							=	res$f1))
@@ -657,6 +661,71 @@ AT.Z.from.particle.no		<-	function(	particle.no){
 	 return(res$Z)						
 }
 
+###########################
+AT.fluence.weighted.E.MeV.u		<-	function(	E.MeV.u,
+												fluence.cm2)
+{
+	n							<-	length(E.MeV.u)
+	fluence.weighted.E.MeV.u	<-	numeric(1)
+    res					<-	.C(	"AT_fluence_weighted_E_MeV_u_R",	n							=	as.integer(n),
+																	E.MeV.u						=	as.single(E.MeV.u),
+																	fluence.cm2					=	as.single(fluence.cm2),
+																	fluence.weighted.E.MeV.u	=	as.single(fluence.weighted.E.MeV.u))		
+	
+	return(res$fluence.weighted.E.MeV.u)
+}
+								
+########################
+AT.dose.weighted.E.MeV.u		<-	function(	E.MeV.u,
+												particle.no,
+												fluence.cm2,
+												material.no)
+{
+	n							<-	length(E.MeV.u)
+	dose.weighted.E.MeV.u		<-	numeric(1)
+    res							<-	.C(	"AT_dose_weighted_E_MeV_u_R",	n							=	as.integer(n),
+																		E.MeV.u						=	as.single(E.MeV.u),
+																		particle.no					=	as.integer(particle.no),
+																		fluence.cm2					=	as.single(fluence.cm2),
+																		material.no					=	as.integer(material.no),
+																		dose.weighted.E.MeV.u		=	as.single(dose.weighted.E.MeV.u))		
+	return(res$dose.weighted.E.MeV.u)
+}
+			
+#################################
+AT.fluence.weighted.LET.MeV.cm2.g	<-	function(	E.MeV.u,
+													particle.no,
+													fluence.cm2,
+													material.no)
+{
+	n								<-	length(E.MeV.u)
+	fluence.weighted.LET.MeV.cm2.g	<-	numeric(1)
+    res								<-	.C(	"AT_fluence_weighted_LET_MeV_cm2_g_R",	n								=	as.integer(n),
+																					E.MeV.u							=	as.single(E.MeV.u),
+																					particle.no						=	as.integer(particle.no),
+																					fluence.cm2						=	as.single(fluence.cm2),
+																					material.no						=	as.integer(material.no),
+																					fluence.weighted.LET.MeV.cm2.g	=	as.single(fluence.weighted.LET.MeV.cm2.g))		
+	return(res$fluence.weighted.LET.MeV.cm2.g)
+}
+			
+##############################
+AT.dose.weighted.LET.MeV.cm2.g		<-	function(	E.MeV.u,
+													particle.no,
+													fluence.cm2,
+													material.no)
+{
+	n							<-	length(E.MeV.u)
+	dose.weighted.LET.MeV.cm2.g	<-	numeric(1)
+    res							<-	.C(	"AT_dose_weighted_LET_MeV_cm2_g_R",	n							=	as.integer(n),
+																			E.MeV.u						=	as.single(E.MeV.u),
+																			particle.no					=	as.integer(particle.no),
+																			fluence.cm2					=	as.single(fluence.cm2),
+																			material.no					=	as.integer(material.no),
+																			dose.weighted.LET.MeV.cm2.g	=	as.single(dose.weighted.LET.MeV.cm2.g))		
+	
+	return(res$dose.weighted.LET.MeV.cm2.g)
+}
 
 ######################################################################################################################################
 
