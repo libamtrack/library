@@ -84,9 +84,6 @@ void AT_run_SPIFF_method(  const long  n,
       &n_bins_f1,
       f1_parameters);
 
-  double*  norm_fluence           =  (double*)calloc(n, sizeof(double));
-  double*  dose_contribution_Gy   =  (double*)calloc(n, sizeof(double));
-
   double*  f1_d_Gy       =  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1_dd_Gy      =  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1            =  (double*)calloc(n_bins_f1, sizeof(double));
@@ -102,14 +99,9 @@ void AT_run_SPIFF_method(  const long  n,
       N2,
       n_bins_f1,
       f1_parameters,
-      norm_fluence,
-      dose_contribution_Gy,
       f1_d_Gy,
       f1_dd_Gy,
       f1);
-
-  free( norm_fluence );
-  free(dose_contribution_Gy);
 
   double*  fluence_cm2_local    =  (double*)calloc(n, sizeof(double));
 
@@ -344,8 +336,6 @@ void AT_run_GSM_method(  const long  n,
   double* f1_d_Gy              =  (double*)calloc(n_bins_f1, sizeof(double));
   double* f1_dd_Gy             =  (double*)calloc(n_bins_f1, sizeof(double));
   double* f1                   =  (double*)calloc(n_bins_f1, sizeof(double));
-  double* norm_fluence         =  (double*)calloc(n, sizeof(double));
-  double* dose_contribution_Gy =  (double*)calloc(n, sizeof(double));
 
   AT_SC_get_f1(  n,
       E_MeV_u,
@@ -358,8 +348,6 @@ void AT_run_GSM_method(  const long  n,
       N2,
       n_bins_f1,
       f1_parameters,
-      norm_fluence,
-      dose_contribution_Gy,
       f1_d_Gy,
       f1_dd_Gy,
       f1);
@@ -385,6 +373,8 @@ void AT_run_GSM_method(  const long  n,
     }
   }
 
+  double* norm_fluence         =  (double*)calloc(n, sizeof(double));
+
   // Normalize fluence vector
   AT_normalize(    n,
                 fluence_cm2_local,
@@ -404,7 +394,7 @@ void AT_run_GSM_method(  const long  n,
 
   if( write_output ){
     for (i = 0; i < n; i++){
-      fprintf(output_file, "Particle %ld: relative fluence: %4.2e, dose contribution %4.2e Gy\n", i+1, norm_fluence[i], dose_contribution_Gy[i]);
+      fprintf(output_file, "Particle %ld: relative fluence: %4.2e\n", i+1, norm_fluence[i]);
     }
   }
 
@@ -462,6 +452,8 @@ void AT_run_GSM_method(  const long  n,
   for (i = 0; i < n; i++){
     mean_number_particles[i] = sample_grid_area_cm2 * total_fluence_cm2 * norm_fluence[i];        // Area * Total_fluence (particle i)
   }
+
+  free(norm_fluence);
 
   // create and initialize RNGs
   gsl_rng * rng1  =  gsl_rng_alloc(gsl_rng_taus);
@@ -835,8 +827,6 @@ void AT_run_GSM_method(  const long  n,
   gsl_rng_free(rng2);
 
   free(f1_parameters);
-  free(norm_fluence);
-  free(dose_contribution_Gy);
 
   free(mean_number_particles);
   free(act_number_particles);
@@ -861,7 +851,6 @@ void AT_run_IGK_method(  const long  n,
     const bool    write_output,
     double  results[])
 {
-  FILE*    output_file;
   long N2 = 2;
 
   // The histogram initialization and handling has been adapted to SPIFF
@@ -941,8 +930,8 @@ void AT_run_IGK_method(  const long  n,
     }
   }
 
-
   //TODO rename KatseMitGlatse to something more reasonable
+  FILE*    output_file = NULL;
   if( write_output ){
     output_file    =  fopen("KatseMitGlatse.log","w");
     if (output_file == NULL) return;                      // File error
@@ -1150,10 +1139,6 @@ void AT_run_SPISS_method(  const long  n,
       &n_bins_f1,
       f1_parameters);
 
-  double*  norm_fluence      				=  (double*)calloc(n, sizeof(double));
-  double*  accu_fluence      				=  (double*)calloc(n, sizeof(double));
-  double*  dose_contribution_Gy  			=  (double*)calloc(n, sizeof(double));
-
   double*  f1_d_Gy          				=  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1_dd_Gy        				=  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1            				=  (double*)calloc(n_bins_f1, sizeof(double));
@@ -1170,8 +1155,6 @@ void AT_run_SPISS_method(  const long  n,
       n_bins_f1,
       f1_parameters,
       // from here: return values
-      norm_fluence,
-      dose_contribution_Gy,
       f1_d_Gy,
       f1_dd_Gy,
       f1);
@@ -1201,6 +1184,7 @@ void AT_run_SPISS_method(  const long  n,
         material_no,
         dose_Gy_local);
   }
+  double*  norm_fluence                                 =  (double*)calloc(n, sizeof(double));
 
   // Normalize fluence vector
   AT_normalize(    n,
@@ -1217,6 +1201,8 @@ void AT_run_SPISS_method(  const long  n,
   free( fluence_cm2_local );
   free( dose_Gy_local );
 
+  double*  accu_fluence                                 =  (double*)calloc(n, sizeof(double));
+
   // Get accumulated normalized fluence for later sampling of particle type
   accu_fluence[0]   =	norm_fluence[0];
 
@@ -1225,6 +1211,8 @@ void AT_run_SPISS_method(  const long  n,
       accu_fluence[i] +=  accu_fluence[i-1] + norm_fluence[i];
     }
   }
+
+  free(norm_fluence);
 
   long	   n_bins_f;
   double   u_start;
@@ -1377,11 +1365,11 @@ void AT_run_SPISS_method(  const long  n,
     fprintf(output_file, "############################################################\n");
     fclose(output_file);
   }
+
+  free(accu_fluence);
+
   /* TODO memory might be not freed before !!!!
         free(f1_parameters);
-        free(norm_fluence);
-        free(dose_contribution_Gy);
-        free(accu_fluence);
         free(f1_d_Gy);
         free(f1_dd_Gy);
         free(f1);

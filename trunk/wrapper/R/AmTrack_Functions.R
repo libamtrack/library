@@ -2,9 +2,9 @@ run.SPIFF		<-	function(	E.MeV.u,
 					particle.no,
 					fluence.cm2,
 					material.no				=	1,				# Liquid water
-					RDD.model				=	3,				# Geiß' RDD
+					RDD.model				=	3,				# Geiss RDD
 					RDD.parameters			=	5e-8,			# a0 = 50 nm
-					ER.model				=	4,				# Geiß' ER
+					ER.model				=	4,				# Geiss ER
 					gamma.model				=	2,				# General hit-target
 					gamma.parameters		=	c(1,10,1,1,0),	# One single-hit-single-target (exp-sat) component, characteristic dose 10 Gy
 					N2						=	20,				# 20 bins per factor 2 in histograms
@@ -24,7 +24,13 @@ if(verbose){
 								RDD.model = RDD.model,
 								RDD.parameters = RDD.parameters,
 								ER.model = ER.model,
-								N2 = N2)
+								N2 = N2)							
+								
+    results.u    <-  AT.total.u( E.MeV.u = E.MeV.u,
+                            particle.no = particle.no,
+                            fluence.cm2 = fluence.cm2,
+                            material.no = material.no,	
+                            er.model = ER.model)						   
 
 	results.2	<-	AT.SC.get.f1(	E.MeV.u = E.MeV.u,
 							particle.no = particle.no,
@@ -37,7 +43,7 @@ if(verbose){
 							n.bins.f1 = results.1$n.bins.f1,
 							f1.parameters = results.1$f1.parameters)
 
-	results.3	<-	AT.SC.get.f.array.size(	u = results.2$f.parameters[1],
+	results.3	<-	AT.SC.get.f.array.size(	u = results.u,
 								fluence.factor = fluence.factor,
 								N2 = N2,
 								n.bins.f1 = results.1$n.bins.f1,
@@ -52,7 +58,7 @@ if(verbose){
 								f1 = results.2$f1$f1,
 								n.bins.f = results.3$n.bins.f)
 
-	results.5	<-	AT.SC.SuccessiveConvolutions(	u = results.2$f.parameters[1],
+	results.5	<-	AT.SC.SuccessiveConvolutions(	u = results.u,
 									n.bins.f = results.3$n.bins.f,
 									N2 = N2,
 									n.bins.f.used = results.1$n.bins.f1,
@@ -85,14 +91,6 @@ if(verbose){
 							single.impact.fluence.cm2	=	results.1$f1.parameters[index + 7],
 							single.impact.dose.Gy		=	results.1$f1.parameters[index + 8])
 
-	df.f.parameters	<-	data.frame(	u					=	results.2$f.parameters[1],
-							total.fluence.cm2			=	results.2$f.parameters[2],
-							total.dose.Gy			=	results.2$f.parameters[3],
-							ave.E.MeV				=	results.2$f.parameters[4],
-							dw.E.MeV				=	results.2$f.parameters[5],
-							ave.LET.MeV.cm2.g			=	results.2$f.parameters[6],
-							dw.LET.MeV.cm2.g			=	results.2$f.parameters[7])
-
 	return(	list(		E.MeV.u = E.MeV.u,
 					particle.no = particle.no,
 					fluence.cm2 = fluence.cm2,
@@ -105,7 +103,6 @@ if(verbose){
 					N2.set = N2,
 					N2 = results.5$N2,
 					f1.parameters = df.f1.parameters,
-					f.parameters = df.f.parameters,
 					n.bins.f1 = results.2$n.bins.f1,
 					n.bins.f = results.3$n.bins.f,
 					n.bins.f.used = results.5$n.bins.f.used,

@@ -22,7 +22,14 @@ results.1	<-	AT.SC.get.f1.array.size(E.MeV.u = E.MeV.u,
 							ER.model = ER.model,
 							ER.parameters = ER.parameters,
 							N2 = N2)
-
+						
+							
+results.u    <-  AT.total.u( E.MeV.u = E.MeV.u,
+                            particle.no = particle.no,
+                            fluence.cm2 = fluence.cm2,
+                            material.no = material.no,  
+                            er.model = ER.model)
+                                    
 results.2	<-	AT.SC.get.f1(	E.MeV.u = E.MeV.u,
 						particle.no = particle.no,
 						fluence.cm2 = fluence.cm2,
@@ -35,7 +42,7 @@ results.2	<-	AT.SC.get.f1(	E.MeV.u = E.MeV.u,
 						n.bins.f1 = results.1$n.bins.f1,
 						f1.parameters = results.1$f1.parameters)
 
-results.3	<-	AT.SC.get.f.array.size(	u = results.2$f.parameters[1],
+results.3	<-	AT.SC.get.f.array.size(	u = results.u,
 							fluence.factor = fluence.factor,
 							N2 = N2,
 							n.bins.f1 = results.1$n.bins.f1,
@@ -43,7 +50,7 @@ results.3	<-	AT.SC.get.f.array.size(	u = results.2$f.parameters[1],
 							f1.dd.Gy = results.2$f1$f1.dd.Gy,
 							f1 = results.2$f1$f1)
 
-results.4	<-	AT.SC.get.f.start(	u = results.2$f.parameters[1],
+results.4	<-	AT.SC.get.f.start(	u = results.u,
 							N2 = N2,
 							n.bins.f1 = results.1$n.bins.f1,
 							f1.d.Gy = results.2$f1$f1.d.Gy,
@@ -51,7 +58,7 @@ results.4	<-	AT.SC.get.f.start(	u = results.2$f.parameters[1],
 							f1 = results.2$f1$f1,
 							n.bins.f = results.3$n.bins.f)
 
-results.5	<-	AT.SC.SuccessiveConvolutions(	u = results.2$f.parameters[1],
+results.5	<-	AT.SC.SuccessiveConvolutions(	u = results.u,
 								n.bins.f = results.3$n.bins.f,
 								N2 = N2,
 								n.bins.f.used = results.1$n.bins.f1,
@@ -66,8 +73,6 @@ results.5	<-	AT.SC.SuccessiveConvolutions(	u = results.2$f.parameters[1],
 return(	list(		E.MeV.u = E.MeV.u,
 					particle.no = particle.no,
 					fluence.cm2 = fluence.cm2,
-					norm.fluence = results.2$norm.fluence,
-					dose.contribution.Gy = results.2$dose.contribution.Gy,
 					material.no = material.no,
 					RDD.model = RDD.model,
 					RDD.parameters = RDD.parameters,

@@ -145,8 +145,6 @@ void  AT_SC_get_f1_array_size(
  * @param[in]  N2                    number of bins per factor of two in local dose array
  * @param[in]  f1_parameters         array of size n * 8 with n field component characteristics (from AT_SC_get_f1_array_size)
  * @param[in]  n_bins_f1             number of bins holding the f1 distribution (from AT_SC_get_f1_array_size)
- * @param[out] norm_fluence          relative fluences for field components (array of size n)
- * @param[out] dose_contribution_Gy  absolute dose contribution from each field component (array of size n)
  * @param[out] f1_d_Gy               bin midpoints for f1, array of size n_bins_f1
  * @param[out] f1_dd_Gy              bin widths for f1, array of size n_bins_f1
  * @param[out] f1                    f1 values, array of size n_bins_f1
@@ -163,9 +161,6 @@ void  AT_SC_get_f1(
     const long   N2,
     const long   n_bins_f1,
     const double f1_parameters[],
-    double       norm_fluence[],
-    double       dose_contribution_Gy[],
-//    double       f_parameters[],
     double       f1_d_Gy[],
     double       f1_dd_Gy[],
     double       f1[]);
