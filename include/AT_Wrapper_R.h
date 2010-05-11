@@ -94,11 +94,14 @@ void AT_max_electron_ranges_m_R(  const int*  number_of_particles,
     const int*    er_model,
     float*        max_electron_range_m);
 
+
 void AT_particle_name_from_particle_no_R(const int* particle_no,
     char** particle_name);
 
+
 void AT_particle_no_from_particle_name_R(const char** particle_name,
     int* particle_no);
+
 
 void AT_particle_no_from_Z_and_A_R  ( const int*  n,
     const int*    Z,
@@ -180,8 +183,6 @@ void  AT_SC_get_f1_R(
     const int*    N2,
     const int*    n_bins_f1,
     const float*  f1_parameters,
-    float*        norm_fluence,
-    float*        dose_contribution_Gy,
     float*        f1_d_Gy,
     float*        f1_dd_Gy,
     float*        f1);
@@ -210,6 +211,7 @@ void  AT_SC_get_f_start_R(  const int*    n_bins_f1,
     float*        f_dd_Gy,
     float*        f_start);
 
+
 void AT_SC_get_gamma_response_R(  const int* number_of_bins,
     const float*   d_Gy,
     const float*   dd_Gy,
@@ -222,6 +224,7 @@ void AT_SC_get_gamma_response_R(  const int* number_of_bins,
     float*         S_HCP,
     float*         S_gamma,
     float*         efficiency);
+
 
 void AT_SuccessiveConvolutions_R( const float*  u,
     const int*    n_bins_f,
@@ -239,12 +242,14 @@ void AT_SuccessiveConvolutions_R( const float*  u,
     const float*  shrink_tails_under,
     const int*    adjust_N2);
 
+
 void AT_total_D_Gy_R( const int* n,
     const float*  E_MeV_u,
     const int*    particle_no,
     const float*  fluence_cm2,
     const int*    material_no,
     float*        total_D_Gy);
+
 
 void AT_total_fluence_cm2_R( const int* n,
     const float*  E_MeV_u,
@@ -253,10 +258,12 @@ void AT_total_fluence_cm2_R( const int* n,
     const int*    material_no,
     float*        total_fluence_cm2);
 
+
 void AT_fluence_weighted_E_MeV_u_R( const int* n,
     const float*  E_MeV_u,
     const float*  fluence_cm2,
     float* fluence_weighted_E_MeV_u);
+
 
 void AT_dose_weighted_E_MeV_u_R( const int* n,
     const float*  E_MeV_u,
@@ -265,6 +272,7 @@ void AT_dose_weighted_E_MeV_u_R( const int* n,
     const int*    material_no,
     float*        dose_weighted_E_MeV_u);
 
+
 void AT_fluence_weighted_LET_MeV_cm2_g_R( const int* n,
     const float*  E_MeV_u,
     const int*    particle_no,
@@ -272,12 +280,14 @@ void AT_fluence_weighted_LET_MeV_cm2_g_R( const int* n,
     const int*    material_no,
     float*        fluence_weighted_LET_MeV_cm2_g);
 
+
 void AT_dose_weighted_LET_MeV_cm2_g_R( const int* n,
     const float*  E_MeV_u,
     const int*    particle_no,
     const float*  fluence_cm2,
     const int*    material_no,
     float*        dose_weighted_LET_MeV_cm2_g);
+
 
 void AT_get_materials_data_R( const int*  number_of_materials,
     const int*  material_no,
@@ -290,18 +300,30 @@ void AT_get_materials_data_R( const int*  number_of_materials,
     float*  average_A,
     float*  average_Z);
 
+
 void AT_CSDA_range_g_cm2_R(  const int* number_of_particles,
     const float*   E_MeV_u,
     const int*     particle_no,
     const int*     material_no,
     float*         CSDA_range_g_cm2);
 
+
 void AT_A_from_particle_no_R( const int*  n,
     const int* particle_no,
     int*  A);
 
+
 void AT_Z_from_particle_no_R( const int*  n,
     const int* particle_no,
     int*  Z);
+
+
+void AT_total_u_R(    const int * n,
+                const float * E_MeV_u,
+                const int   * particle_no,
+                const float * fluence_cm2,
+                const int   * material_no,
+                const int   * er_model,
+                float *       u);
 
 #endif /* AT_WRAPPER_R_H_ */

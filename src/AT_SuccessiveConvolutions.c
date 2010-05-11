@@ -37,6 +37,8 @@
 #define DEBUG_SIGMA                          1.0
 
 
+// TODO name of this function suggests that it returns
+// some array size, but in fact in returns an array also
 void  AT_SC_get_f1_array_size(
     const long    n,
     const double  E_MeV_u[],
@@ -84,12 +86,6 @@ void  AT_SC_get_f1_array_size(
 }
 
 
-// TODO this function does not need to return norm_fluence
-// as it can be easily calculated using   AT_normalize method
-
-// TODO this function does not need to return dose_contribution_Gy
-// as it can be easily calculated using   AT_D_Gy method
-
 void  AT_SC_get_f1(
     const long    n,
     const double  E_MeV_u[],
@@ -102,22 +98,15 @@ void  AT_SC_get_f1(
     const long    N2,
     const long    n_bins_f1,
     const double  f1_parameters[],
-    double        norm_fluence[],
-    double        dose_contribution_Gy[],
     double        f1_d_Gy[],
     double        f1_dd_Gy[],
     double        f1[])
 {
-
-  ////////////////////////////////////////////////////////////////////////////////////////////
-  // 1. normalize fluence, get total fluence and dose, eff. LET and mean impact parameter u,
-   // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
-  // only the first entry will be check
-  long   i;
   double*  fluence_cm2_local    =  (double*)calloc(n, sizeof(double));
-  double*  dose_Gy_local        =  (double*)calloc(n, sizeof(double));
 
+  long i;
   if(fluence_cm2[0] < 0){
+    double*  dose_Gy_local        =  (double*)calloc(n, sizeof(double));
     for (i = 0; i < n; i++){
       dose_Gy_local[i] = -1.0 * fluence_cm2[i];
     }
@@ -127,33 +116,21 @@ void  AT_SC_get_f1(
         dose_Gy_local,
         material_no,
         fluence_cm2_local);
+    free( dose_Gy_local );
   }else{
     for (i = 0; i < n; i++){
       fluence_cm2_local[i] = fluence_cm2[i];
     }
-    AT_D_Gy(  n,
-        E_MeV_u,
-        particle_no,
-        fluence_cm2_local,
-        material_no,
-        dose_Gy_local);
   }
+  double*  norm_fluence                                 =  (double*)calloc(n, sizeof(double));
 
   // Normalize fluence vector
   AT_normalize(    n,
                 fluence_cm2_local,
                 norm_fluence);
 
-  // Compute dose contributions of single field components
-  AT_D_Gy(      n,
-                E_MeV_u,
-                particle_no,
-                fluence_cm2,
-                material_no,
-                dose_contribution_Gy);
+  free( fluence_cm2_local );
 
-  ////////////////////////////////////////////////////////////////////////////////////////////
-  //  2. create all-over f1-data-frame, if f_d_Gy array passed (i.e. n_bins_f1 == 0)
   if(n_bins_f1 > 0){
     double  d_min      =  f1_parameters[0*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3];
     double  d_max      =  f1_parameters[0*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4];
@@ -164,7 +141,6 @@ void  AT_SC_get_f1(
     }
 
     double  U        =  (log(2.0) / (double)N2);
-
 
     double*  d_df_low      =  (double*)calloc(n_bins_f1, sizeof(double));
     double*  d_df_mid      =  (double*)calloc(n_bins_f1, sizeof(double));
@@ -309,7 +285,7 @@ void  AT_SC_get_f1(
 
   } // if(f1_d_Gy != NULL)
 
-  free(fluence_cm2_local);
+  free( norm_fluence );
 
 }
 

@@ -543,4 +543,5 @@ double AT_total_u(    const long n,
                 const double fluence_cm2[],
                 const long material_no,
                 const long er_model);
+
 #endif /* AT_PHYSICSROUTINES_H_ */

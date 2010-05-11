@@ -406,12 +406,7 @@ AT.SC.get.f1		<-	function(		E.MeV.u,
 										f1.parameters){
 
 	n								<-	length(E.MeV.u)
-	
-	f.parameters					<-	numeric(7)
-	
-	norm.fluence					<-	numeric(n)
-	dose.contribution.Gy			<-	numeric(n)
-	
+		
 	f1.d.Gy							<-	numeric(n.bins.f1)
 	f1.dd.Gy						<-	numeric(n.bins.f1)
 	f1								<-	numeric(n.bins.f1)	
@@ -427,17 +422,11 @@ AT.SC.get.f1		<-	function(		E.MeV.u,
 																N2						= as.integer(N2),
 																n.bins.f1				= as.integer(n.bins.f1),
 																f1.parameters			= as.single(f1.parameters),
-																norm.fluence			= as.single(norm.fluence),
-																dose.contribution.Gy	= as.single(dose.contribution.Gy),
-																f.parameters			= as.single(f.parameters),
 																f1.d.Gy					= as.single(f1.d.Gy),
 																f1.dd.Gy				= as.single(f1.dd.Gy),
 																f1						= as.single(f1))
 	
 	results	<-	list(	fluence.cm2					= 	res$fluence.cm2,
-						norm.fluence				= 	res$norm.fluence,
-						dose.contribution.Gy		= 	res$dose.contribution.Gy,
-						f.parameters				=	res$f.parameters,											
 						f1							=	data.frame(	f1.d.Gy						=	res$f1.d.Gy,
 																	f1.dd.Gy					=	res$f1.dd.Gy,
 																	f1							=	res$f1))
@@ -725,6 +714,27 @@ AT.dose.weighted.LET.MeV.cm2.g		<-	function(	E.MeV.u,
 																			dose.weighted.LET.MeV.cm2.g	=	as.single(dose.weighted.LET.MeV.cm2.g))		
 	
 	return(res$dose.weighted.LET.MeV.cm2.g)
+}
+
+##############################
+AT.total.u      <-  function(   E.MeV.u,
+                                                    particle.no,
+                                                    fluence.cm2,
+                                                    material.no,
+                                                    er.model)
+{
+    n                           <-  length(E.MeV.u)
+    u                           <-  numeric(1)
+    res                         <-  .C( "AT_total_u_R", n                           =   as.integer(n),
+                                                                            E.MeV.u                     =   as.single(E.MeV.u),
+                                                                            particle.no                 =   as.integer(particle.no),
+                                                                            fluence.cm2                 =   as.single(fluence.cm2),
+                                                                            material.no                 =   as.integer(material.no),
+                                                                            er.model                    =   as.integer(er.model),
+                                                                            u                           =   as.single(u))
+                                                                            
+
+    return(res$u)
 }
 
 ######################################################################################################################################
