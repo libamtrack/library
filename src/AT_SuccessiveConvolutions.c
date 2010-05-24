@@ -37,9 +37,7 @@
 #define DEBUG_SIGMA                          1.0
 
 
-// TODO name of this function suggests that it returns
-// some array size, but in fact in returns an array also
-void  AT_SC_get_f1_array_size(
+long  AT_SC_get_f1_array_size(
     const long    n,
     const double  E_MeV_u[],
     const long    particle_no[],
@@ -47,42 +45,47 @@ void  AT_SC_get_f1_array_size(
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
-    const long    N2,
-    long *        n_bins_f1,
-    double        f1_parameters[])
+    const long    N2)
 {
   /* get lowest and highest dose */
   double d_max_Gy    =  0.0;
   double d_min_Gy    =  0.0;
 
+  // TODO think if d_min calculations can be done in smarter way. LET is only needed for Geiss RDD
+
   long  i;
   for (i = 0; i < n; i++){
-    /* get RDD parameters for all particles and energies */
-    AT_RDD_f1_parameters(  E_MeV_u[i],
-        particle_no[i],
-        material_no,
-        rdd_model,
-        rdd_parameter,
-        er_model,
-        &f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH]);
+
+    double max_electron_range_m = AT_max_electron_range_m( E_MeV_u[i], (int)material_no, (int)er_model);
+
+    double LET_MeV_cm2_g = AT_LET_MeV_cm2_g_single(E_MeV_u[i], particle_no[i], material_no);
+
+    double norm_constant_Gy = AT_RDD_precalculated_constant_Gy(max_electron_range_m, LET_MeV_cm2_g, E_MeV_u[i], particle_no[i], material_no, rdd_model, rdd_parameter, er_model);
+
+    double current_d_min_Gy = AT_RDD_d_min_Gy( E_MeV_u[i], particle_no[i], material_no, rdd_model, rdd_parameter, er_model, norm_constant_Gy);
+
+    double current_d_max_Gy = AT_RDD_d_max_Gy( E_MeV_u[i], particle_no[i], material_no, rdd_model, rdd_parameter, er_model);
+
     if(i == 0){
-      d_min_Gy      =  f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3];
-      d_max_Gy      =  f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4];
+      d_min_Gy      =  current_d_min_Gy;
+      d_max_Gy      =  current_d_max_Gy;
     }
     else{
-      d_min_Gy      =  GSL_MIN(d_min_Gy, f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3]);
-      d_max_Gy      =  GSL_MAX(d_max_Gy, f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4]);
+      d_min_Gy      =  GSL_MIN(d_min_Gy, current_d_min_Gy);
+      d_max_Gy      =  GSL_MAX(d_max_Gy, current_d_max_Gy);
     }
   }
 
+  long n_bins_f1 = 0;
   // get number of bins needed to span that dose range
   if( (d_min_Gy > 0) && (d_max_Gy >0) ){
     double tmp        =  log10(d_max_Gy/d_min_Gy) / log10(2.0) * ((double)N2);
-    *n_bins_f1        =  (long)(floor(tmp) + 1.0);
+    n_bins_f1        =  (long)(floor(tmp) + 1.0);
   } else {
     printf("AT_SC_get_f1_array_size: problem in evaluating n_bins_f1: d_min = %g [Gy], d_max = %g [Gy] \n", d_min_Gy, d_max_Gy);
     exit(EXIT_FAILURE);
   }
+  return n_bins_f1;
 }
 
 

@@ -708,15 +708,22 @@ void  AT_SC_get_f1_array_size_R(
   /* place for results */
   double * f1_parameters_double = (double*)calloc( n_long * AT_SC_F1_PARAMETERS_SINGLE_LENGTH, sizeof(double));
 
-  AT_SC_get_f1_array_size( n_long,
+  n_bins_f1_long = AT_SC_get_f1_array_size( n_long,
       E_MeV_u_double,
       particle_no_long,
       material_no_long,
       rdd_model_long,
       rdd_parameter_double,
       er_model_long,
-      N2_long,
-      &n_bins_f1_long,
+      N2_long);
+
+  AT_RDD_f1_parameters_mixed_field( n_long,
+      E_MeV_u_double,
+      particle_no_long,
+      material_no_long,
+      rdd_model_long,
+      rdd_parameter_double,
+      er_model_long,
       f1_parameters_double);
 
   /* long -> int conversion (results) */

@@ -69,20 +69,26 @@ void AT_run_SPIFF_method(  const long  n,
     fprintf(output_file, "This is LGC2.2 core - successive convolution mode (2008/08/12).\n");
   }
 
-  double*  f1_parameters      =  (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * n, sizeof(double));
-  long     n_bins_f1;
-
-  AT_SC_get_f1_array_size(  n,
-
+  long     n_bins_f1 = AT_SC_get_f1_array_size(  n,
       E_MeV_u,
       particle_no,
       material_no,
       rdd_model,
       rdd_parameters,
       er_model,
-      N2,
-      &n_bins_f1,
-      f1_parameters);
+      N2);
+
+  double*  f1_parameters      =  (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * n, sizeof(double));
+
+  AT_RDD_f1_parameters_mixed_field( n,
+      E_MeV_u,
+      particle_no,
+      material_no,
+      rdd_model,
+      rdd_parameters,
+      er_model,
+      f1_parameters
+  );
 
   double*  f1_d_Gy       =  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1_dd_Gy      =  (double*)calloc(n_bins_f1, sizeof(double));
@@ -297,21 +303,27 @@ void AT_run_GSM_method(  const long  n,
   }
 
   // Get f1, f parameters
-  double* f1_parameters        = (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * n, sizeof(double));
-  double  max_r_max_m          = 0.0;
-  long    n_bins_f1            = 0;
-
-
-  AT_SC_get_f1_array_size( n,
+  double  max_r_max_m          =  0.0;
+  long    n_bins_f1            =  AT_SC_get_f1_array_size( n,
       E_MeV_u,
       particle_no,
       material_no,
       rdd_model,
       rdd_parameters,
       er_model,
-      N2,
-      &n_bins_f1,
-      f1_parameters);
+      N2);
+
+  double* f1_parameters        = (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * n, sizeof(double));
+
+  AT_RDD_f1_parameters_mixed_field( n,
+      E_MeV_u,
+      particle_no,
+      material_no,
+      rdd_model,
+      rdd_parameters,
+      er_model,
+      f1_parameters
+  );
 
   for (i = 0; i < n; i++){
     max_r_max_m    =   GSL_MAX(max_r_max_m, f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 2]);
@@ -855,19 +867,27 @@ void AT_run_IGK_method(  const long  n,
 
   // The histogram initialization and handling has been adapted to SPIFF
   // although some features are not used here
-  long    n_bins_f1;
-  double* f1_parameters = (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * n, sizeof(double));
-
-  AT_SC_get_f1_array_size( n,
+  long    n_bins_f1 = AT_SC_get_f1_array_size( n,
       E_MeV_u,
       particle_no,
       material_no,
       rdd_model,
       rdd_parameters,
       er_model,
-      N2,
-      &n_bins_f1,
-      f1_parameters);
+      N2);
+
+  double* f1_parameters        = (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * n, sizeof(double));
+
+  AT_RDD_f1_parameters_mixed_field( n,
+      E_MeV_u,
+      particle_no,
+      material_no,
+      rdd_model,
+      rdd_parameters,
+      er_model,
+      f1_parameters
+  );
+
 
   double*  norm_fluence          =  (double*)calloc(n, sizeof(double));
   double*  accu_fluence          =  (double*)calloc(n, sizeof(double));
@@ -1125,19 +1145,26 @@ void AT_run_SPISS_method(  const long  n,
 
   // The histogram initialization and handling has been adapted to SPIFF
   // although some features are not used here
-  long    n_bins_f1;
-  double*  f1_parameters      =  (double*)calloc(9 * n, sizeof(double));
-
-  AT_SC_get_f1_array_size(  	n,
+  long    n_bins_f1 = AT_SC_get_f1_array_size(  	n,
       E_MeV_u,
       particle_no,
       material_no,
       rdd_model,
       rdd_parameters,
       er_model,
-      N2,
-      &n_bins_f1,
-      f1_parameters);
+      N2);
+
+  double* f1_parameters        = (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * n, sizeof(double));
+
+  AT_RDD_f1_parameters_mixed_field( n,
+      E_MeV_u,
+      particle_no,
+      material_no,
+      rdd_model,
+      rdd_parameters,
+      er_model,
+      f1_parameters
+  );
 
   double*  f1_d_Gy          				=  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1_dd_Gy        				=  (double*)calloc(n_bins_f1, sizeof(double));
