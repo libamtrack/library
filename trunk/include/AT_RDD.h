@@ -76,6 +76,8 @@ enum RDDModels {
  */
 #define RDD_MAX_NUMBER_OF_PARAMETERS    3
 
+#define AT_SC_F1_PARAMETERS_SINGLE_LENGTH 8     /**< Length of the single particle component characteristics, length of f1_parameters array is AT_SC_F1_PARAMETERS_SINGLE_LENGTH * number of particle components in the field */
+
 
 /**
  * RDD data
@@ -306,9 +308,39 @@ double AT_RDD_d_max_Gy(
  *     6 - single_impact_fluence_cm2 \n
  *     7 - single_impact_dose_Gy
  */
-void AT_RDD_f1_parameters(
+void AT_RDD_f1_parameters_single_field(
     const double  E_MeV_u,
     const long    particle_no,
+    const long    material_no,
+    const long    rdd_model,
+    const double  rdd_parameter[],
+    const long    er_model,
+    double        f1_parameters[]);
+
+
+/**
+ * Pre-calculated many useful parameters characterizing RDD.
+ * @param[in]  n                     number of particle types in the mixed particle field
+ * @param[in]  E_MeV_u               energy of particles in the mixed particle field (array of size n)
+ * @param[in]  particle_no           type of the particles in the mixed particle field (array of size n)
+ * @param[in]  material_no           material code number
+ * @param[in]  rdd_model             Radial Dose Distribution model code number
+ * @param[in]  rdd_parameter         Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
+ * @param[in]  er_model              delta electron range model code number
+ * @param[out] f1_parameters\n
+ *     0 - LET_MeV_cm2_g \n
+ *     1 - r_min_m \n
+ *     2 - r_max_m \n
+ *     3 - d_min_Gy \n
+ *     4 - d_max_Gy \n
+ *     5 - normalization constant [Gy] \n
+ *     6 - single_impact_fluence_cm2 \n
+ *     7 - single_impact_dose_Gy
+ */
+void AT_RDD_f1_parameters_mixed_field(
+    const long    n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
     const long    material_no,
     const long    rdd_model,
     const double  rdd_parameter[],

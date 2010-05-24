@@ -354,7 +354,7 @@ double AT_RDD_d_max_Gy(
 }
 
 
-void AT_RDD_f1_parameters(
+void AT_RDD_f1_parameters_single_field(
     const double  E_MeV_u,
     const long    particle_no,
     const long    material_no,
@@ -413,6 +413,30 @@ void AT_RDD_f1_parameters(
   f1_parameters[5]  =  norm_constant_Gy;
   f1_parameters[6]  =  single_impact_fluence_cm2;
   f1_parameters[7]  =  single_impact_dose_Gy;
+}
+
+
+void AT_RDD_f1_parameters_mixed_field(
+    const long    n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const long    material_no,
+    const long    rdd_model,
+    const double  rdd_parameter[],
+    const long    er_model,
+    double        f1_parameters[]){
+
+  long  i;
+  for (i = 0; i < n; i++){
+    /* get RDD parameters for all particles and energies */
+    AT_RDD_f1_parameters_single_field(  E_MeV_u[i],
+        particle_no[i],
+        material_no,
+        rdd_model,
+        rdd_parameter,
+        er_model,
+        &f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH]);
+  }
 }
 
 

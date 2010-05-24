@@ -105,19 +105,9 @@ typedef struct{
  * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @param[in]  er_model            index number for chosen electron-range model
  * @param[in]  N2                  number of bins per factor of two in local dose array
- * @param[out] n_bins_f1           number of bins to hold the f1 distribution
- * @param[out] f1_parameters       array with numbers describing characteristics of the single particle components composing the mixed field
- *                                 the array is of size n * 8, the characteristics being:\n
- *                                      0 - LET_MeV_cm2_g \n
- *                                      1 - r_min_m \n
- *                                      2 - r_max_m \n
- *                                      3 - d_min_Gy \n
- *                                      4 - d_max_Gy \n
- *                                      5 - normalization constant [Gy] \n
- *                                      6 - single_impact_fluence_cm2 \n
- *                                      7 - single_impact_dose_Gy
+ * @return n_bins_f1           number of bins to hold the f1 distribution
  */
-void  AT_SC_get_f1_array_size(
+long  AT_SC_get_f1_array_size(
     const long   n,
     const double E_MeV_u[],
     const long   particle_no[],
@@ -125,11 +115,8 @@ void  AT_SC_get_f1_array_size(
     const long   rdd_model,
     const double rdd_parameter[],
     const long   er_model,
-    const long   N2,
-    long *       n_bins_f1,
-    double       f1_parameters[]);
+    const long   N2);
 
-#define AT_SC_F1_PARAMETERS_SINGLE_LENGTH 8     /**< Length of the single particle component characteristics, length of f1_parameters array is AT_SC_F1_PARAMETERS_SINGLE_LENGTH * number of particle components in the field */
 
 /**
  * Computes the f1 (single impact) local dose distribution for a given field, rdd, er
