@@ -240,7 +240,7 @@ double AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2(
   inact_prob_parameters.m_number_of_targets        =  m_number_of_targets;
 
   F.params = (void*)(&inact_prob_parameters);
-  int status = gsl_integration_qag (&F, low_lim_m, max_electron_range_m + a0_m, 0, 1e-5, 1000, GSL_INTEG_GAUSS21, w1, &integral_m2, &error);
+  int status = gsl_integration_qag (&F, low_lim_m, max_electron_range_m + a0_m, 0, 1e-4, 1000, GSL_INTEG_GAUSS21, w1, &integral_m2, &error);
   if (status == GSL_EROUND || status == GSL_ESING){
     printf("Error in AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2: er_model = %ld, integration from %g to %g [m] + %g [m]\n", er_model, low_lim_m, max_electron_range_m, a0_m);
     integral_m2 = 0.0;
@@ -317,7 +317,7 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2(
   inact_prob_parameters.m_number_of_targets        =  m_number_of_targets;
 
   F.params = (void*)(&inact_prob_parameters);
-  int status = gsl_integration_qag (&F, low_lim_m, max_electron_range_m + a0_m, 0, 1e-5, 1000, GSL_INTEG_GAUSS21, w1, &integral_m2, &error);
+  int status = gsl_integration_qag (&F, low_lim_m, max_electron_range_m + a0_m, 0, 1e-4, 1000, GSL_INTEG_GAUSS21, w1, &integral_m2, &error);
   if (status == GSL_EROUND || status == GSL_ESING){
     printf("Error in AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2: integration from %g to %g [m] + %g [m]\n", low_lim_m, max_electron_range_m, a0_m);
     integral_m2 = 0.0;
@@ -334,7 +334,7 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2(
       gamma_parameters,
       &inactivation_probability_plateau);
 
-  return 2.0 * M_PI * integral_m2 + M_PI * gsl_pow_2(0.01*a0_m) * inactivation_probability_plateau;
+ return 2.0 * M_PI * integral_m2 + M_PI * gsl_pow_2(0.01*a0_m) * inactivation_probability_plateau;
 
 }
 
@@ -354,12 +354,14 @@ int AT_KatzModel_inactivation_cross_section_m2(
   const double c_hittedness               =  gamma_parameters[2];
   const double m_number_of_targets        =  gamma_parameters[3];
 
+  //printf("\nD0 = %g, c = %g, m = %g\n", D0_characteristic_dose_Gy, c_hittedness, m_number_of_targets);
+
   if( rdd_model == RDD_KatzExtTarget ){
     long i;
     for( i = 0 ; i < n ; i++){
 
       const double max_electron_range_m  =  AT_max_electron_range_m( E_MeV_u[i], (int)material_no, (int)er_model);
-      const double a0_m                  =  AT_RDD_a0_m( max_electron_range_m, rdd_model, rdd_parameters );
+      const double a0_m                  =  rdd_parameters[1]; //AT_RDD_a0_m( max_electron_range_m, rdd_model, rdd_parameters );
       const double KatzPoint_r_min_m     =  AT_RDD_r_min_m( max_electron_range_m, rdd_model, rdd_parameters );
       const double Katz_point_coeff_Gy   =  AT_RDD_Katz_coeff_Gy_general( E_MeV_u[i], particle_no, material_no, er_model);
       const double r_max_m               =  GSL_MIN(a0_m, max_electron_range_m);
@@ -395,7 +397,7 @@ int AT_KatzModel_inactivation_cross_section_m2(
     for( i = 0 ; i < n ; i++){
 
       const double max_electron_range_m  =  AT_max_electron_range_m( E_MeV_u[i], (int)material_no, (int)er_model);
-      const double a0_m                  =  AT_RDD_a0_m( max_electron_range_m, rdd_model, rdd_parameters );
+      const double a0_m                  =  rdd_parameters[1]; // AT_RDD_a0_m( max_electron_range_m, rdd_model, rdd_parameters );
       const double KatzPoint_r_min_m     =  AT_RDD_r_min_m( max_electron_range_m, rdd_model, rdd_parameters );
       const double Katz_point_coeff_Gy   =  AT_RDD_Katz_coeff_Gy_general( E_MeV_u[i], particle_no, material_no, er_model);
       const double r_max_m               =  GSL_MIN(a0_m, max_electron_range_m);
