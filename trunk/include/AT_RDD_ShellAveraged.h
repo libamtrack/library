@@ -320,6 +320,21 @@ double   AT_RDD_Cucinotta_Cnorm( const double r_min_m,
     const double Katz_point_coeff_Gy);
 
 
+/**
+ * TODO
+ * @param r1_m
+ * @param r2_m
+ * @param a0_m
+ * @param max_electron_range_m
+ * @param norm_Gy
+ * @return
+ */
+double   AT_RDD_Geiss_average_Gy(  const double r1_m,
+    const double r2_m,
+    const double a0_m,
+    const double max_electron_range_m,
+    const double norm_Gy);
+
 /* --------------------------------------------------- dEdx IN OUTER SHELL ---------------------------------------------------*/
 
 
