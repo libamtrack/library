@@ -863,39 +863,9 @@ void AT_run_IGK_method(  const long  n,
     const bool    write_output,
     double  results[])
 {
-  long N2 = 2;
-
-  // The histogram initialization and handling has been adapted to SPIFF
-  // although some features are not used here
-  long    n_bins_f1 = AT_SC_get_f1_array_size( n,
-      E_MeV_u,
-      particle_no,
-      material_no,
-      rdd_model,
-      rdd_parameters,
-      er_model,
-      N2);
-
-  double* f1_parameters        = (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * n, sizeof(double));
-
-  AT_RDD_f1_parameters_mixed_field( n,
-      E_MeV_u,
-      particle_no,
-      material_no,
-      rdd_model,
-      rdd_parameters,
-      er_model,
-      f1_parameters
-  );
-
-
-  double*  norm_fluence          =  (double*)calloc(n, sizeof(double));
-  double*  accu_fluence          =  (double*)calloc(n, sizeof(double));
-  double*  dose_contribution_Gy  =  (double*)calloc(n, sizeof(double));
 
   ////////////////////////////////////////////////////////////////////////////////////////////
   // 1. normalize fluence, get total fluence and dose
-  double total_fluence_cm2    = 0.0;
 
   // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
   // only the first entry will be check
@@ -924,31 +894,43 @@ void AT_run_IGK_method(  const long  n,
         material_no,
         dose_Gy_local);
   }
-  free( dose_Gy_local );
 
   double total_dose_Gy = 0.0;
+  double total_fluence_cm2    = 0.0;
 
   for (i = 0; i < n; i++){
     total_dose_Gy      +=  dose_Gy_local[i];
     total_fluence_cm2  +=  fluence_cm2_local[i];
   }
 
+  free( dose_Gy_local );
+
   double u_single;
 
+  double*  norm_fluence          =  (double*)calloc(n, sizeof(double));
+  double*  dose_contribution_Gy  =  (double*)calloc(n, sizeof(double));
+
   for (i = 0; i < n; i++){
+	double LET_MeV_cm2_g = AT_LET_MeV_cm2_g_single(E_MeV_u[i], particle_no[i], material_no);
+	double single_impact_fluence_cm2 = AT_single_impact_fluence_cm2_single(E_MeV_u[i], material_no, er_model);
     norm_fluence[i]          =  fluence_cm2_local[i] / total_fluence_cm2;
-    u_single                 =  fluence_cm2_local[i] / f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 6];
-    dose_contribution_Gy[i]  =  u_single * f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 7];
+    u_single                 =  fluence_cm2_local[i] / single_impact_fluence_cm2;
+    double single_impact_dose_Gy = AT_single_impact_dose_Gy_single(LET_MeV_cm2_g, single_impact_fluence_cm2);
+    dose_contribution_Gy[i]  =  u_single * single_impact_dose_Gy;
   }
 
+  free( fluence_cm2_local );
 
   // Get accumulated normalized fluence for later sampling of particle type
+  double*  accu_fluence          =  (double*)calloc(n, sizeof(double));
   accu_fluence[0]            =  norm_fluence[0];
   if(n > 1){
     for (i = 1; i < n; i++){
       accu_fluence[i] += accu_fluence[i-1] + norm_fluence[i];
     }
   }
+  free(accu_fluence);
+  // TODO do we really need accu_fluence ? it is not needed anywhere else
 
   //TODO rename KatseMitGlatse to something more reasonable
   FILE*    output_file = NULL;
@@ -1105,10 +1087,8 @@ void AT_run_IGK_method(  const long  n,
   results[9]              =       0.0;
 
 
-  free(f1_parameters);
   free(norm_fluence);
   free(dose_contribution_Gy);
-  free(accu_fluence);
 
   free(params);
   fclose(output_file);
