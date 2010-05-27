@@ -41,9 +41,9 @@ library("lattice")
 
 E.MeV.u <- c( 1, 10, 100)
 particle.no <- c( 1001, 6012, 1001)
-fluence.cm2 <- c( -1, -10, -15)  # in Gy
+fluence.cm2 <- c( -1, -10, -8)  # in Gy
 
-factor <- 10^seq( -4, 0, length = 10)
+factor <- 10^seq( -4, 0, length = 5)
 
 material.no <- 1
 
@@ -75,13 +75,13 @@ df1$GSM.check <- numeric(nrow(df1))
 # 1, D0, c, m, 0
 GR.parameters <- c(1, 3.0, 1, 2, 0)
 
-
 for( i in ER.model) {
  ii 			<- df1$ER.model == i
 	for( j in RDD.model) {
- 	jj 			<- ((df1$RDD.model == j) && (df1$ER.model == i))
+ 	jj 			<- ((df1$RDD.model == j) & (df1$ER.model == i))
  	 for( k in factor ){   
- 	    kk 			<- ((df1$RDD.model == j) && (df1$ER.model == i) && (df1$factor == k))
+ 	    kk 			<- ((df1$RDD.model == j) & (df1$ER.model == i) & (df1$factor == k))
+ 	    
  	    current.fluence.cm2 <- df1$factor[kk] * fluence.cm2
  	        
  	    SPIFF.res <- AT.run.SPIFF.method( E.MeV.u = E.MeV.u,
@@ -114,7 +114,7 @@ for( i in ER.model) {
                                     ER.model = i,
                                     gamma.model = 2,
                                     gamma.parameters = GR.parameters,
-                                    N.runs = 3,
+                                    N.runs = 1,
                                     N2 = 2,
                                     fluence.factor = 1.0,
                                     write.output = F,
