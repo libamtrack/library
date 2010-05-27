@@ -43,6 +43,10 @@
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.mingw.base.906894193" name="MinGW C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.mingw.base">
 <option defaultValue="true" id="gnu.c.link.option.shared.1494085547" name="Shared (-shared)" superClass="gnu.c.link.option.shared" valueType="boolean"/>
+<option id="gnu.c.link.option.libs.1755154040" superClass="gnu.c.link.option.libs" valueType="libs">
+<listOptionValue builtIn="false" value="gsl"/>
+<listOptionValue builtIn="false" value="gslcblas"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.linker.input.514486553" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 <additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -434,6 +438,10 @@
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.mingw.base.470187166" name="MinGW C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.mingw.base">
 <option defaultValue="true" id="gnu.c.link.option.shared.954752659" name="Shared (-shared)" superClass="gnu.c.link.option.shared" valueType="boolean"/>
+<option id="gnu.c.link.option.libs.655019018" superClass="gnu.c.link.option.libs" valueType="libs">
+<listOptionValue builtIn="false" value="gsl"/>
+<listOptionValue builtIn="false" value="gslcblas"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.linker.input.294721658" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 <additionalInput kind="additionalinput" paths="$(LIBS)"/>

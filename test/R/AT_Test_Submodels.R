@@ -18,16 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # long with AmTrack (file: copying.txt).
 # If not, see <http://www.gnu.org/licenses/>
-#
-# 2009-09-29: sgre, combined single test scripts to this new script
-#
 ################################################################################################
 
 # clear workspace
 rm( list = ls() )
 
 # load libAmTrack library
-dyn.load("../../AT_Release/libAmTrack.dll")
+dyn.load("../../Release/libamtrack.dll")
 
 # load wrapping scripts
 source("../../wrapper/R/AmTrack.R")
