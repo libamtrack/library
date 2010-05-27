@@ -37,16 +37,6 @@ library("lattice")
 
 ####################### INACTIVATION PROBABILITY function test #########################################
 
-#const long n = 3;
-#const double E_MeV_u[] = {1,10,100};
-#const long particle_no[] = {1001,6012,1001};
-#const double fluence_cm2[] = {0, 1e6, 1e8};
-#const long material_no = 1;
-#const long rdd_model = 3;
-#const double rdd_parameter[] = {5e-8};
-#const long er_model = 4;
-#const long N2 = 20;
-
 # Mixed field of 3 particles:
 
 E.MeV.u <- c( 1, 10, 100)
@@ -66,7 +56,7 @@ RDD.model.names <- c("Simple step test function",  "Katz' point target", "Geiss'
 RDD.model <- c(3)
 
 # RDD parameters
-RDD.parameters <- list(c(1),c(1e-10,1e-10), c(1e-8),c(1e-8,1e-10),c(5e-11,1e-10),c(1e-10,1e-8,1e-10),c(5e-11,1e-8,1e-10))
+RDD.parameters <- list(c(1),c(1e-10,1e-10), c(5e-8),c(1e-8,1e-10),c(5e-11,1e-10),c(1e-10,1e-8,1e-10),c(5e-11,1e-8,1e-10))
 
 # data frame setup
 df1 <- expand.grid( factor = factor, ER.model = ER.model, RDD.model = RDD.model )
@@ -78,16 +68,22 @@ df1$SPIFF.ion	<- numeric(nrow(df1))
 df1$SPIFF.gamma	<- numeric(nrow(df1))
 df1$SPIFF.check	<- numeric(nrow(df1))
 
+df1$GSM.ion   <- numeric(nrow(df1))
+df1$GSM.gamma <- numeric(nrow(df1))
+df1$GSM.check <- numeric(nrow(df1))
+
 # 1, D0, c, m, 0
 GR.parameters <- c(1, 3.0, 1, 2, 0)
+
 
 for( i in ER.model) {
  ii 			<- df1$ER.model == i
 	for( j in RDD.model) {
- 	jj 			<- ((df1$RDD.model == j) & (df1$ER.model == i))
+ 	jj 			<- ((df1$RDD.model == j) && (df1$ER.model == i))
  	 for( k in factor ){   
- 	    kk 			<- ((df1$RDD.model == j) & (df1$ER.model == i) & (df1$factor == k))
- 	    current.fluence.cm2 <- df1$factor[kk] * fluence.cm2 	    
+ 	    kk 			<- ((df1$RDD.model == j) && (df1$ER.model == i) && (df1$factor == k))
+ 	    current.fluence.cm2 <- df1$factor[kk] * fluence.cm2
+ 	        
  	    SPIFF.res <- AT.run.SPIFF.method( E.MeV.u = E.MeV.u,
 									particle.no = particle.no,
 									fluence.cm2 = current.fluence.cm2,
@@ -104,10 +100,31 @@ for( i in ER.model) {
 									shrink.tails.under = 1e-30,
 									adjust.N2 = T,
 									lethal.events.mode = F)
-							cat( "SPIFF results ", SPIFF.res , "\n")
-							df1$SPIFF.ion[kk] <- SPIFF.res[2]
-							df1$SPIFF.gamma[kk] <- SPIFF.res[3]
-							df1$SPIFF.check[kk] <- SPIFF.res[1]
+         cat( "SPIFF results ", SPIFF.res , "\n")
+         df1$SPIFF.ion[kk] <- SPIFF.res[2]
+         df1$SPIFF.gamma[kk] <- SPIFF.res[3]
+         df1$SPIFF.check[kk] <- SPIFF.res[1]
+         
+         GSM.res <- AT.run.GSM.method( E.MeV.u = E.MeV.u,
+                                    particle.no = particle.no,
+                                    fluence.cm2 = current.fluence.cm2,
+                                    material.no = material.no,
+                                    RDD.model = j,
+                                    RDD.parameters = RDD.parameters[[j]],
+                                    ER.model = i,
+                                    gamma.model = 2,
+                                    gamma.parameters = GR.parameters,
+                                    N.runs = 3,
+                                    N2 = 2,
+                                    fluence.factor = 1.0,
+                                    write.output = F,
+                                    nX = 10,
+                                    voxel.size.m = 1e-8,
+                                    lethal.events.mode = F)
+         cat( "GSM results ", GSM.res , "\n")
+         df1$GSM.ion[kk] <- GSM.res[2]
+         df1$GSM.gamma[kk] <- GSM.res[3]
+         df1$GSM.check[kk] <- GSM.res[1]
 			}
 		}
 }
@@ -117,9 +134,12 @@ df1
 # plots...
 
 p1 <- xyplot( SPIFF.ion ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Inactivation prob.", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list(log = 10))
+p2 <- xyplot( GSM.ion ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Inactivation prob.", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list(log = 10))
+
 
 pdf("Models.pdf")
 
 p1
+p2
 
 dev.off()
