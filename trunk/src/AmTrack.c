@@ -446,9 +446,9 @@ void AT_run_GSM_method(  const long  n,
     f[i] = 0;
   }
 
-  double	max_bin_Gy	= log10(f_d_Gy[n_bins_f-1]);
-  double	min_bin_Gy	= log10(f_d_Gy[0]);
-  double	dd_bin_Gy	= (max_bin_Gy - min_bin_Gy) / n_bins_f;
+  double max_bin_Gy	= log10(f_d_Gy[n_bins_f-1]);
+  double min_bin_Gy	= log10(f_d_Gy[0]);
+  double dd_bin_Gy	= (max_bin_Gy - min_bin_Gy) / n_bins_f;
 
   // Largest r.max --> calculate size of sample area
   double sample_grid_size_m    = calc_grid_size_m + 2.01 * max_r_max_m;
@@ -476,7 +476,7 @@ void AT_run_GSM_method(  const long  n,
   // run loop
   long n_particles;
   for (m = 0; m < N_runs; m++){
-    double* run_results = (double*)calloc(10, sizeof(double));
+    double run_results[10];
 
     // sample particles numbers
     n_particles = 0;
@@ -637,6 +637,8 @@ void AT_run_GSM_method(  const long  n,
 
     }
 
+    free(r_m);
+
     // get gamma response for local dose
 
     double d_total_Gy = 0.0;
@@ -763,18 +765,22 @@ void AT_run_GSM_method(  const long  n,
       }
     }
 
-    printf("\n\nRun %ld results\n", m + 1);
-    printf("efficiency     = %e\n", run_results[0]);
-    printf("d.check.Gy     = %e\n", run_results[1]);
-    printf("S (HCP)        = %e\n", run_results[2]);
-    printf("S (gamma)      = %e\n", run_results[3]);
-    printf("no. particles  = %e\n", run_results[4]);
-
     free(x_pos);
     free(y_pos);
     free(particle_index);
     free(r_max_m);
   }// end run loop
+
+  free(f1_parameters);
+
+  gsl_rng_free(rng1);
+  gsl_rng_free(rng2);
+
+  free(mean_number_particles);
+  free(act_number_particles);
+
+  free(grid_d_Gy);
+  free(grid_S);
 
   results[0]  /= N_runs;
   results[1]  /= N_runs;
@@ -843,19 +849,16 @@ void AT_run_GSM_method(  const long  n,
     for (i = 0; i < n_bins_f1; i++){
       fprintf(output_file, "%ld; %4.2e; %4.2e; %4.2e\n", i+1, f1_d_Gy[i], f1_dd_Gy[i], f1[i]);
     }
+    fclose(output_file);
   }
-  fclose(output_file);
 
-  gsl_rng_free(rng1);
-  gsl_rng_free(rng2);
+  free(f_d_Gy);
+  free(f_dd_Gy);
+  free(f);
 
-  free(f1_parameters);
-
-  free(mean_number_particles);
-  free(act_number_particles);
-
-  free(grid_d_Gy);
-  free(grid_S);
+  free(f1_d_Gy);
+  free(f1_dd_Gy);
+  free(f1);
 
 }
 
