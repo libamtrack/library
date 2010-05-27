@@ -132,14 +132,14 @@ void AT_run_SPIFF_method(  const long  n,
     }
   }
 
-  free( fluence_cm2_local );
-
   const double u  =       AT_total_u(     n,
       E_MeV_u,
       particle_no,
-      fluence_cm2,
+      fluence_cm2_local,
       material_no,
       er_model);
+
+  free( fluence_cm2_local );
 
   long      n_bins_f;
   double    u_start;
@@ -392,17 +392,17 @@ void AT_run_GSM_method(  const long  n,
                 fluence_cm2_local,
                 norm_fluence);
 
-  free( fluence_cm2_local );
-
   const double u  =       AT_total_u(     n,
       E_MeV_u,
       particle_no,
-      fluence_cm2,
+      fluence_cm2_local,
       material_no,
       er_model);
 
   double total_fluence_cm2  =       AT_sum(   n,
-      fluence_cm2);
+      fluence_cm2_local);
+
+  free( fluence_cm2_local );
 
   if( write_output ){
     for (i = 0; i < n; i++){
