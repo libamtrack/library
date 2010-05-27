@@ -713,8 +713,8 @@ void AT_run_GSM_method(  const long  n,
     }
 
     // write graph (first run)
-    bool write_graph = true;
-    if(write_graph & (m == 0)){
+    bool write_graph = false;
+    if(write_graph && (m == 0)){
       FILE*    graph_file;
       graph_file    =  fopen("GridGraph.csv","w");
       if (graph_file == NULL) return;    // File error
@@ -729,6 +729,8 @@ void AT_run_GSM_method(  const long  n,
               grid_S[j * nX + i]);
         }
       }
+      fclose(graph_file);
+
     }
 
     run_results[0]    = efficiency;
@@ -761,6 +763,13 @@ void AT_run_GSM_method(  const long  n,
       }
     }
 
+    printf("\n\nRun %ld results\n", m + 1);
+    printf("efficiency     = %e\n", run_results[0]);
+    printf("d.check.Gy     = %e\n", run_results[1]);
+    printf("S (HCP)        = %e\n", run_results[2]);
+    printf("S (gamma)      = %e\n", run_results[3]);
+    printf("no. particles  = %e\n", run_results[4]);
+
     free(x_pos);
     free(y_pos);
     free(particle_index);
@@ -791,11 +800,13 @@ void AT_run_GSM_method(  const long  n,
   results[8]  = GSL_MAX(0, results[8]);
   results[9]  = GSL_MAX(0, results[9]);
 
-  results[5]  = sqrt(results[5] / (N_runs - 1.));
-  results[6]  = sqrt(results[6] / (N_runs - 1.));
-  results[7]  = sqrt(results[7] / (N_runs - 1.));
-  results[8]  = sqrt(results[8] / (N_runs - 1.));
-  results[9]  = sqrt(results[9] / (N_runs - 1.));
+  if( N_runs > 1 ){
+	  results[5]  = sqrt(results[5] / (N_runs - 1.));
+	  results[6]  = sqrt(results[6] / (N_runs - 1.));
+	  results[7]  = sqrt(results[7] / (N_runs - 1.));
+	  results[8]  = sqrt(results[8] / (N_runs - 1.));
+	  results[9]  = sqrt(results[9] / (N_runs - 1.));
+  }
 
   if( write_output ){
     fprintf(output_file, "\n###############################################\nResults\n");
