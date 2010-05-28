@@ -43,13 +43,13 @@ E.MeV.u <- c( 1, 10, 100)
 particle.no <- c( 1001, 6012, 1001)
 fluence.cm2 <- c( -1, -10, -8)  # in Gy
 
-factor <- 10^seq( -4, 0, length = 5)
+factor <- 10^seq( -4, -1, length = 5)
 
 material.no <- 1
 
 # electron range models definition
 ER.model.names <- c("simple test",  "Butts & Katz' (linear)",  "Waligorski's (power-law wmax)",  "Geiss' (power-law E)", "Scholz' (power-law E)", "Edmund' (power-law wmax)","Tabata")
-ER.model <- c(2,3,4,7)
+ER.model <- c(4)
 
 # RDD models definition
 RDD.model.names <- c("Simple step test function",  "Katz' point target", "Geiss'", "Site", "Cucinotta", "KatzExtTarget", "CucinottaExtTarget")
@@ -83,6 +83,8 @@ for( i in ER.model) {
  	    kk 			<- ((df1$RDD.model == j) & (df1$ER.model == i) & (df1$factor == k))
  	    
  	    current.fluence.cm2 <- df1$factor[kk] * fluence.cm2
+ 	    
+ 	    cat( "Fluences ", current.fluence.cm2 , "\n")
  	        
  	    SPIFF.res <- AT.run.SPIFF.method( E.MeV.u = E.MeV.u,
 									particle.no = particle.no,
@@ -93,7 +95,7 @@ for( i in ER.model) {
 									ER.model = i,
 									gamma.model = 2,
 									gamma.parameters = GR.parameters,
-									N2 = 2,
+									N2 = 3,
 									fluence.factor = 1.0,
 									write.output = F,
 									shrink.tails = T,
@@ -115,11 +117,11 @@ for( i in ER.model) {
                                     gamma.model = 2,
                                     gamma.parameters = GR.parameters,
                                     N.runs = 1,
-                                    N2 = 2,
+                                    N2 = 4,
                                     fluence.factor = 1.0,
                                     write.output = F,
-                                    nX = 10,
-                                    voxel.size.m = 1e-8,
+                                    nX = 5,
+                                    voxel.size.m = 1e-7,
                                     lethal.events.mode = F)
          cat( "GSM results ", GSM.res , "\n")
          df1$GSM.ion[kk] <- GSM.res[2]
