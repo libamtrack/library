@@ -273,6 +273,27 @@ void AT_run_GSM_method(  const long  n,
     const bool     lethal_events_mode,
     double         results[])
 {
+
+	/** in case of debugging
+	printf("n = %ld\n", n);
+	printf("E_MeV_u[] = %g, %g, %g\n", E_MeV_u[0], E_MeV_u[1], E_MeV_u[2]);
+	printf("particle_no[] = %ld, %ld, %ld\n", particle_no[0], particle_no[1], particle_no[2]);
+	printf("fluence_cm2[] = %g, %g, %g\n", fluence_cm2[0], fluence_cm2[1], fluence_cm2[2]);
+	printf("material_no = %ld\n", material_no);
+	printf("rdd_model = %ld\n", rdd_model);
+	printf("rdd_parameters[] = %g\n", rdd_parameters[0]);
+	printf("er_model = %ld\n", er_model);
+	printf("gamma_model = %ld\n", gamma_model);
+	printf("gamma_parameters[] = %g, %g, %g, %g, %g\n", gamma_parameters[0], gamma_parameters[1], gamma_parameters[2], gamma_parameters[3], gamma_parameters[4]);
+	printf("N_runs = %ld\n", N_runs);
+	printf("N2 = %ld\n", N2);
+	printf("fluence_factor = %g\n", fluence_factor);
+	printf("write_output = %d\n", write_output);
+	printf("nX = %ld\n", nX);
+	printf("voxel_size_m = %g\n", voxel_size_m);
+	printf("lethal_events_mode = %d\n", lethal_events_mode);
+*/
+
   long    i, j, k, m;
   long    n_grid                =  gsl_pow_2(nX);
   double  calc_grid_size_m      =  voxel_size_m * nX;
@@ -304,14 +325,14 @@ void AT_run_GSM_method(  const long  n,
 
   // Get f1, f parameters
   double  max_r_max_m          =  0.0;
-  long    n_bins_f1            =  AT_SC_get_f1_array_size( n,
-      E_MeV_u,
-      particle_no,
-      material_no,
-      rdd_model,
-      rdd_parameters,
-      er_model,
-      N2);
+//  long    n_bins_f1            =  AT_SC_get_f1_array_size( n,
+//      E_MeV_u,
+//      particle_no,
+//      material_no,
+//      rdd_model,
+//      rdd_parameters,
+//      er_model,
+//      N2);
 
   double* f1_parameters        = (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * n, sizeof(double));
 
@@ -345,24 +366,24 @@ void AT_run_GSM_method(  const long  n,
     fprintf(output_file, "\nOverall r.max/m = %e\n\n",   max_r_max_m);
   }
 
-  double* f1_d_Gy              =  (double*)calloc(n_bins_f1, sizeof(double));
-  double* f1_dd_Gy             =  (double*)calloc(n_bins_f1, sizeof(double));
-  double* f1                   =  (double*)calloc(n_bins_f1, sizeof(double));
-
-  AT_SC_get_f1(  n,
-      E_MeV_u,
-      particle_no,
-      fluence_cm2,
-      material_no,
-      rdd_model,
-      rdd_parameters,
-      er_model,
-      N2,
-      n_bins_f1,
-      f1_parameters,
-      f1_d_Gy,
-      f1_dd_Gy,
-      f1);
+//  double* f1_d_Gy              =  (double*)calloc(n_bins_f1, sizeof(double));
+//  double* f1_dd_Gy             =  (double*)calloc(n_bins_f1, sizeof(double));
+//  double* f1                   =  (double*)calloc(n_bins_f1, sizeof(double));
+//
+//  AT_SC_get_f1(  n,
+//      E_MeV_u,
+//      particle_no,
+//      fluence_cm2,
+//      material_no,
+//      rdd_model,
+//      rdd_parameters,
+//      er_model,
+//      N2,
+//      n_bins_f1,
+//      f1_parameters,
+//      f1_d_Gy,
+//      f1_dd_Gy,
+//      f1);
 
   double*  fluence_cm2_local    =  (double*)calloc(n, sizeof(double));
 
@@ -392,12 +413,12 @@ void AT_run_GSM_method(  const long  n,
                 fluence_cm2_local,
                 norm_fluence);
 
-  const double u  =       AT_total_u(     n,
-      E_MeV_u,
-      particle_no,
-      fluence_cm2_local,
-      material_no,
-      er_model);
+//  const double u  =       AT_total_u(     n,
+//      E_MeV_u,
+//      particle_no,
+//      fluence_cm2_local,
+//      material_no,
+//      er_model);
 
   double total_fluence_cm2  =       AT_sum(   n,
       fluence_cm2_local);
@@ -410,45 +431,45 @@ void AT_run_GSM_method(  const long  n,
     }
   }
 
-  long	  n_bins_f;
-  double  u_start;
-  long    n_convolutions;
-
-  AT_SC_get_f_array_size(   u,
-      fluence_factor,
-      N2,
-      n_bins_f1,
-      f1_d_Gy,
-      f1_dd_Gy,
-      f1,
-      // from here: return values
-      &n_bins_f,
-      &u_start,
-      &n_convolutions);
-
-  double*  f_d_Gy        =  (double*)calloc(n_bins_f, sizeof(double));
-  double*  f_dd_Gy       =  (double*)calloc(n_bins_f, sizeof(double));
-  double*  f             =  (double*)calloc(n_bins_f, sizeof(double));
-  double   f0            =  0.0;
-
-  AT_SC_get_f_start(  n_bins_f1,
-      N2,
-      f1_d_Gy,
-      f1_dd_Gy,
-      f1,
-      n_bins_f,
-      f_d_Gy,
-      f_dd_Gy,
-      f);
+//  long	  n_bins_f;
+//  double  u_start;
+//  long    n_convolutions;
+//
+//  AT_SC_get_f_array_size(   u,
+//      fluence_factor,
+//      N2,
+//      n_bins_f1,
+//      f1_d_Gy,
+//      f1_dd_Gy,
+//      f1,
+//      // from here: return values
+//      &n_bins_f,
+//      &u_start,
+//      &n_convolutions);
+//
+//  double*  f_d_Gy        =  (double*)calloc(n_bins_f, sizeof(double));
+//  double*  f_dd_Gy       =  (double*)calloc(n_bins_f, sizeof(double));
+//  double*  f             =  (double*)calloc(n_bins_f, sizeof(double));
+//  double   f0            =  0.0;
+//
+//  AT_SC_get_f_start(  n_bins_f1,
+//      N2,
+//      f1_d_Gy,
+//      f1_dd_Gy,
+//      f1,
+//      n_bins_f,
+//      f_d_Gy,
+//      f_dd_Gy,
+//      f);
 
   // We are only interested in f_d_Gy and f_dd_Gy, so clear f
-  for (i = 0; i < n_bins_f; i++){
-    f[i] = 0;
-  }
-
-  double max_bin_Gy	= log10(f_d_Gy[n_bins_f-1]);
-  double min_bin_Gy	= log10(f_d_Gy[0]);
-  double dd_bin_Gy	= (max_bin_Gy - min_bin_Gy) / n_bins_f;
+//  for (i = 0; i < n_bins_f; i++){
+//    f[i] = 0;
+//  }
+//
+//  double max_bin_Gy	= log10(f_d_Gy[n_bins_f-1]);
+//  double min_bin_Gy	= log10(f_d_Gy[0]);
+//  double dd_bin_Gy	= (max_bin_Gy - min_bin_Gy) / n_bins_f;
 
   // Largest r.max --> calculate size of sample area
   double sample_grid_size_m    = calc_grid_size_m + 2.01 * max_r_max_m;
@@ -533,7 +554,7 @@ void AT_run_GSM_method(  const long  n,
 
     //TODO include this speedup trick also for n > 1
 
-    if( n_particles == 1){
+    if( n == 1){
 
       // calculate total number of contributing parts
       long no_contr_part = 0;
@@ -611,6 +632,17 @@ void AT_run_GSM_method(  const long  n,
       free(doses);
 
     } else {
+
+      // allocate memory for vector of vectors distances between track cores and all grid points
+      double**  distances = (double**)calloc(n, sizeof(double*));
+      long* no_contr_part = (long*)calloc(n, sizeof(long));
+      long* distances_index = (long*)calloc(n, sizeof(long));
+
+      for (i = 0; i < n; i++){
+    	  no_contr_part[i] = 0;
+    	  distances_index[i] = 0;
+      }
+
       // grid loop
       for (j = 0; j < nX; j++){          // y
         double cur_y_pos   =  max_r_max_m + ((double)j + 0.5f)*voxel_size_m;
@@ -620,20 +652,103 @@ void AT_run_GSM_method(  const long  n,
           for (k = 0; k < n_particles; k++){  // particles
             r_m[k]        =  sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
             if(r_m[k] <= r_max_m[k]){    // does particle contribute?
-              AT_D_RDD_Gy(  n_tmp,
-                  &r_m[k],
-                  E_MeV_u[particle_index[k]],
-                  particle_no[particle_index[k]],
-                  material_no,
-                  rdd_model,
-                  rdd_parameters,
-                  er_model,
-                  &d_tmp_Gy);
-              grid_d_Gy[j * nX + i]  +=  d_tmp_Gy;
+              no_contr_part[particle_index[k]]++;
             } // particle contribution
           }// particle loop
         } // x loop
       } // y loop
+
+      for (i = 0; i < n; i++){
+    	  distances[i] = (double*)calloc( no_contr_part[i], sizeof(double) );
+      }
+
+      // calculate distances between track cores and all grid points and save them into allocated table
+      for (j = 0; j < nX; j++){                                      // y
+        double cur_y_pos       = max_r_max_m + ((double)j + 0.5f)*voxel_size_m;
+        for (i = 0; i < nX; i++){                              // x
+          double cur_x_pos     = max_r_max_m + ((double)i + 0.5f)*voxel_size_m;
+          grid_d_Gy[j * nX + i] = 0.0;
+          for (k = 0; k < n_particles; k++){      // particles
+            r_m[k]            = sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
+
+            if(r_m[k] <= r_max_m[k]){               // does particle contribute?
+              distances[particle_index[k]][distances_index[particle_index[k]]] = r_m[k];
+              distances_index[particle_index[k]]++;
+            }
+          }// particle loop
+        } // x loop
+      } // y loop
+
+      double**  doses = (double**)calloc(n, sizeof(double*));
+      for (i = 0; i < n; i++){
+    	  doses[i] = (double*)calloc( no_contr_part[i], sizeof(double) );
+          // calculate doses at given distances
+          AT_D_RDD_Gy( distances_index[i],
+              distances[i],
+              E_MeV_u[i],
+              particle_no[i],
+              material_no,
+              rdd_model,
+              rdd_parameters,
+              er_model,
+              doses[i]);
+      }
+      for (i = 0; i < n; i++){
+    	  free(distances[i]);
+      }
+
+      for (i = 0; i < n; i++){
+    	  distances_index[i] = 0;
+      }
+      free(distances);
+      free(no_contr_part);
+
+      // grid loop
+      for (j = 0; j < nX; j++){          // y
+        double cur_y_pos   =  max_r_max_m + ((double)j + 0.5f)*voxel_size_m;
+        for (i = 0; i < nX; i++){        // x
+          double cur_x_pos =  max_r_max_m + ((double)i + 0.5f)*voxel_size_m;
+          grid_d_Gy[j * nX + i]=  0.0;
+          for (k = 0; k < n_particles; k++){  // particles
+            r_m[k]        =  sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
+            if(r_m[k] <= r_max_m[k]){    // does particle contribute?
+                grid_d_Gy[j * nX + i] += doses[particle_index[k]][distances_index[particle_index[k]]];
+                distances_index[particle_index[k]]++;
+            } // particle contribution
+          }// particle loop
+        } // x loop
+      } // y loop
+
+      for (i = 0; i < n; i++){
+    	  free(doses[i]);
+      }
+
+      free(doses);
+      free(distances_index);
+
+      // grid loop - OLD APPROACH
+//      for (j = 0; j < nX; j++){          // y
+//        double cur_y_pos   =  max_r_max_m + ((double)j + 0.5f)*voxel_size_m;
+//        for (i = 0; i < nX; i++){        // x
+//          double cur_x_pos =  max_r_max_m + ((double)i + 0.5f)*voxel_size_m;
+//          grid_d_Gy[j * nX + i]=  0.0;
+//          for (k = 0; k < n_particles; k++){  // particles
+//            r_m[k]        =  sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
+//            if(r_m[k] <= r_max_m[k]){    // does particle contribute?
+//              AT_D_RDD_Gy(  n_tmp,
+//                  &r_m[k],
+//                  E_MeV_u[particle_index[k]],
+//                  particle_no[particle_index[k]],
+//                  material_no,
+//                  rdd_model,
+//                  rdd_parameters,
+//                  er_model,
+//                  &d_tmp_Gy);
+//              grid_d_Gy[j * nX + i]  +=  d_tmp_Gy;
+//            } // particle contribution
+//          }// particle loop
+//        } // x loop
+//      } // y loop
 
     }
 
@@ -701,39 +816,39 @@ void AT_run_GSM_method(  const long  n,
       efficiency = S_HCP / S_gamma;
     }
 
-    long bin_no;
-    // Fill dose into histogram
-    for(i = 0; i < n_grid; i++){
-      if (grid_d_Gy[i] == 0.0){
-        f0 += 1.0f;
-      }
-      else{
-        bin_no = floor((log10(grid_d_Gy[i]) - min_bin_Gy + 3.0*dd_bin_Gy/2.0) / dd_bin_Gy);
-        if (bin_no > n_bins_f) bin_no = n_bins_f;
-        f[bin_no - 1]		+= 1.0 / f_dd_Gy[bin_no - 1];
-      }
-    }
+//    long bin_no;
+//    // Fill dose into histogram
+//    for(i = 0; i < n_grid; i++){
+//      if (grid_d_Gy[i] == 0.0){
+//        f0 += 1.0f;
+//      }
+//      else{
+//        bin_no = floor((log10(grid_d_Gy[i]) - min_bin_Gy + 3.0*dd_bin_Gy/2.0) / dd_bin_Gy);
+//        if (bin_no > n_bins_f) bin_no = n_bins_f;
+//        f[bin_no - 1]		+= 1.0 / f_dd_Gy[bin_no - 1];
+//      }
+//    }
 
     // write graph (first run)
-    bool write_graph = false;
-    if(write_graph && (m == 0)){
-      FILE*    graph_file;
-      graph_file    =  fopen("GridGraph.csv","w");
-      if (graph_file == NULL) return;    // File error
-
-      fprintf(graph_file, "x.m; y.m; d.Gy; S\n");
-
-      for (j = 0; j < nX; j++){
-        for (i = 0; i < nX; i++){
-          fprintf(graph_file, "%e; %e; %e; %e\n",  max_r_max_m + ((double)i + 0.5)*voxel_size_m,
-              max_r_max_m + ((double)j + 0.5)*voxel_size_m,
-              grid_d_Gy[j * nX + i],
-              grid_S[j * nX + i]);
-        }
-      }
-      fclose(graph_file);
-
-    }
+//    bool write_graph = false;
+//    if(write_graph && (m == 0)){
+//      FILE*    graph_file;
+//      graph_file    =  fopen("GridGraph.csv","w");
+//      if (graph_file == NULL) return;    // File error
+//
+//      fprintf(graph_file, "x.m; y.m; d.Gy; S\n");
+//
+//      for (j = 0; j < nX; j++){
+//        for (i = 0; i < nX; i++){
+//          fprintf(graph_file, "%e; %e; %e; %e\n",  max_r_max_m + ((double)i + 0.5)*voxel_size_m,
+//              max_r_max_m + ((double)j + 0.5)*voxel_size_m,
+//              grid_d_Gy[j * nX + i],
+//              grid_S[j * nX + i]);
+//        }
+//      }
+//      fclose(graph_file);
+//
+//    }
 
     run_results[0]    = efficiency;
     run_results[1]    = d_total_Gy;
@@ -824,41 +939,41 @@ void AT_run_GSM_method(  const long  n,
     fprintf(output_file, "###############################################\n");
   }
 
-  // Normalize f
-  double norm 		= 0.0;
-  double d_check	= 0.0;
-  for (i = 0; i < n_bins_f; i++){
-    norm	+= f_dd_Gy[i] * f[i];
-  }
-  norm += f0;
-  for (i = 0; i < n_bins_f; i++){
-    f[i]	/= norm;
-    d_check += f_d_Gy[i]*f_dd_Gy[i]*f[i];
-  }
-
-  if( write_output ){
-    fprintf(output_file, "Grid summation dose distribution\n");
-    fprintf(output_file, "check D / Gy:   %4.3e\n", d_check);
-    fprintf(output_file, "norm:           %4.3e\n", norm);
-    fprintf(output_file, "f_n (%ld bins)\n", n_bins_f);
-    fprintf(output_file, "f0: %4.2e\n", f0);
-    for (i = 0; i < n_bins_f; i++){
-      fprintf(output_file, "%ld; %4.2e; %4.2e; %4.2e\n", i+1, f_d_Gy[i], f_dd_Gy[i], f[i]);
-    }
-    fprintf(output_file, "f_1 (%ld bins)\n", n_bins_f1);
-    for (i = 0; i < n_bins_f1; i++){
-      fprintf(output_file, "%ld; %4.2e; %4.2e; %4.2e\n", i+1, f1_d_Gy[i], f1_dd_Gy[i], f1[i]);
-    }
-    fclose(output_file);
-  }
-
-  free(f_d_Gy);
-  free(f_dd_Gy);
-  free(f);
-
-  free(f1_d_Gy);
-  free(f1_dd_Gy);
-  free(f1);
+//  // Normalize f
+//  double norm 		= 0.0;
+//  double d_check	= 0.0;
+//  for (i = 0; i < n_bins_f; i++){
+//    norm	+= f_dd_Gy[i] * f[i];
+//  }
+//  norm += f0;
+//  for (i = 0; i < n_bins_f; i++){
+//    f[i]	/= norm;
+//    d_check += f_d_Gy[i]*f_dd_Gy[i]*f[i];
+//  }
+//
+//  if( write_output ){
+//    fprintf(output_file, "Grid summation dose distribution\n");
+//    fprintf(output_file, "check D / Gy:   %4.3e\n", d_check);
+//    fprintf(output_file, "norm:           %4.3e\n", norm);
+//    fprintf(output_file, "f_n (%ld bins)\n", n_bins_f);
+//    fprintf(output_file, "f0: %4.2e\n", f0);
+//    for (i = 0; i < n_bins_f; i++){
+//      fprintf(output_file, "%ld; %4.2e; %4.2e; %4.2e\n", i+1, f_d_Gy[i], f_dd_Gy[i], f[i]);
+//    }
+//    fprintf(output_file, "f_1 (%ld bins)\n", n_bins_f1);
+//    for (i = 0; i < n_bins_f1; i++){
+//      fprintf(output_file, "%ld; %4.2e; %4.2e; %4.2e\n", i+1, f1_d_Gy[i], f1_dd_Gy[i], f1[i]);
+//    }
+//    fclose(output_file);
+//  }
+//
+//  free(f_d_Gy);
+//  free(f_dd_Gy);
+//  free(f);
+//
+//  free(f1_d_Gy);
+//  free(f1_dd_Gy);
+//  free(f1);
 
 }
 
