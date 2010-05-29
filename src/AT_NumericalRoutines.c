@@ -587,18 +587,20 @@ void is_element_int(const long element, const long set[], const long n_set, bool
   }
 }
 
-double AT_sum(     const long n,
+
+inline double AT_sum(     const long n,
               const double data[])
 {
   long i;
-  double sum = 0.0f;
+  double sum = 0.0;
   for (i = 0; i < n; i++){
     sum += data[i];
   }
-  return(sum);
+  return sum;
 }
 
-void AT_normalize(     const long n,
+
+inline void AT_normalize(     const long n,
                     const double data[],
                     double normalized_data[])
 {
