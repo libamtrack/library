@@ -254,6 +254,54 @@ void AT_run_SPIFF_method(  const long  n,
 }
 
 
+void AT_GSM_shoot_particles_on_grid(  const long  number_of_field_components,
+		const double   fluence_cm2[],
+		const double   sample_grid_size_m,
+		long           number_of_particles_in_field_component[],
+		double*        x_position[],
+		double*        y_position[]){
+
+	/* Create and initialize random number generator */
+	gsl_rng * rng  =  gsl_rng_alloc(gsl_rng_taus);
+	gsl_rng_set(rng, 12345678);
+
+	/* Calculate total fluence */
+	double total_fluence_cm2     =  AT_sum(  number_of_field_components, fluence_cm2);
+
+	/* Normalize fluence vector */
+	double* norm_fluence         =  (double*)calloc(number_of_field_components, sizeof(double));
+	AT_normalize(  number_of_field_components,  fluence_cm2, norm_fluence);
+
+	/* Mean number of particles from one component in the sample grid area */
+	double mean_number_particles_in_field_component;
+
+	long i;
+	double sample_grid_area_cm2 = gsl_pow_2(100.0 * sample_grid_size_m);
+	for (i = 0; i < number_of_field_components; i++){
+		mean_number_particles_in_field_component   =  sample_grid_area_cm2 * total_fluence_cm2 * norm_fluence[i];
+
+		/* Actual number of particles from one component in the sample grid area, taken from Poissonian distribution */
+		number_of_particles_in_field_component[i]  =  (long)gsl_ran_poisson(rng, mean_number_particles_in_field_component);
+
+		/* Now we know how many particles from one component we have, so position tables can be allocated */
+		x_position[i] =  (double*)calloc(number_of_particles_in_field_component[i], sizeof(double));
+		y_position[i] =  (double*)calloc(number_of_particles_in_field_component[i], sizeof(double));
+	}
+	free(norm_fluence);
+
+	/* Sample particle positions for every component from uniform distribution */
+	long j;
+	for (i = 0; i < number_of_field_components; i++){
+		for( j = 0 ; j < number_of_particles_in_field_component[i] ; j ++){
+			x_position[i][j] = gsl_rng_uniform_pos(rng) * sample_grid_size_m;
+			y_position[i][j] = gsl_rng_uniform_pos(rng) * sample_grid_size_m;
+		}
+	}
+	gsl_rng_free(rng);
+}
+
+
+
 void AT_run_GSM_method(  const long  n,
     const double   E_MeV_u[],
     const long     particle_no[],
