@@ -146,9 +146,8 @@ void AT_GSM_shoot_particles_on_grid( const long  number_of_field_components,
 
 
 /**
- * Computes how many particles will be in grid area (using Poissonian distribution
- * and fluence) and distribute particles randomly on grid.
- * Particles positions will be saved in x_position and y_position tables.
+ * Computes dose distribution in grid
+ *
  * @param[in]  number_of_field_components                number of particle types in the mixed particle field
  * @param[in]  E_MeV_u                                   energy of particles in the mixed particle field (array of size number_of_field_components)
  * @param[in]  particle_no                               type of the particles in the mixed particle field (array of size number_of_field_components)
@@ -171,7 +170,7 @@ void AT_GSM_shoot_particles_on_grid( const long  number_of_field_components,
  *                                                         of Y-positions of particles of each type in the mixed particle field
  * @param[in]  nX                                        number of cells on grid side
  * @param[in]  pixel_size_m                              linear size of pixel in grid
- * @param[out] grid_D_Gy                                 grid dose pattern (2-D array of dimensions nX x nX)
+ * @param[out] grid_D_Gy                                 grid dose pattern (2-D array of dimensions nX x nX, linearly allocated)
  */
 void AT_GSM_calculate_dose_pattern( const long  number_of_field_components,
 	    const double   E_MeV_u[],
@@ -185,7 +184,26 @@ void AT_GSM_calculate_dose_pattern( const long  number_of_field_components,
 		const double*  y_position[],
 		const long     nX,
 		const double   pixel_size_m,
-		double*        grid_D_Gy[]);
+		double**       grid_D_Gy);
+
+
+/**
+ * Computes response distribution in grid
+ *
+ * @param[in]  nX                                        number of cells on grid side
+ * @param[in]  gamma_model                               index number for chosen gamma response
+ * @param[in]  gamma_parameters                          parameters for chosen gamma response (array of size depending on chosen model)
+ * @see          AT_GammaResponse.h for definition
+ * @param[in]  grid_D_Gy                                 grid dose pattern (2-D array of dimensions nX x nX, linearly allocated)
+ * @param[in]  lethal_events_mode                        if true, allows to do calculations for cell survival
+ * @param[out] grid_S                                    response pattern (2-D array of dimensions nX x nX, linearly allocated)
+ */
+void AT_GSM_calculate_local_response_grid( const long      nX,
+		const long      gamma_model,
+		const double    gamma_parameters[],
+		const double**  grid_D_Gy,
+		const bool      lethal_events_mode,
+		double**        grid_S);
 
 
 /**
