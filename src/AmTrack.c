@@ -313,7 +313,7 @@ void AT_GSM_calculate_dose_pattern( const long  number_of_field_components,
 		const double*  y_position[],
 		const long     nX,
 		const double   pixel_size_m,
-		double*        grid_D_Gy[]){
+		double**       grid_D_Gy){
 
 	long i,j,k,l;
 
@@ -427,6 +427,55 @@ void AT_GSM_calculate_dose_pattern( const long  number_of_field_components,
     free(doses);
     free(distances_index);
 	free(r_max_m);
+}
+
+
+// TODO for linearly allocated 2-D array, refer to http://c-faq.com/aryptr/dynmuldimary.html (array2 example)
+void AT_GSM_calculate_local_response_grid( const long      nX,
+		const long      gamma_model,
+		const double    gamma_parameters[],
+		const double**  grid_D_Gy,
+		const bool      lethal_events_mode,
+		double**        grid_S){
+
+	if( lethal_events_mode ){
+		if (gamma_model != GR_LinQuad){
+			printf("##############################################################################\n");
+			printf("Sorry, no Grid Summation model with other than Linear Quadratic gamma response\n");
+			printf("Please choose gamma_model = %d. Exiting now...\n", GR_LinQuad);
+			printf("##############################################################################\n");
+			return;
+		}
+
+		// TODO treat better situation when different GR model is specified
+
+		double alpha  =  gamma_parameters[0];
+		double beta   =  gamma_parameters[1];
+		double D0     =  gamma_parameters[2];
+
+		// averaging over number of lethal events
+		long i,j;
+		for (i = 0; i < nX; i++){
+			for (j = 0; j < nX; j++){
+				if( grid_D_Gy[i][j] < D0 ){
+					grid_S[i][j] = alpha * grid_D_Gy[i][j] + beta * gsl_pow_2(grid_D_Gy[i][j]);
+				} else {
+					grid_S[i][j] = alpha * D0 - beta * gsl_pow_2(D0) + ( alpha + 2 * beta * D0) * (grid_D_Gy[i][j] - D0);
+				}
+			} // j
+		} // i
+
+	} else { // non-lethal events mode (for detectors)
+
+		// get gamma response for local dose
+		AT_gamma_response( nX * nX,
+				grid_D_Gy[0],
+				gamma_model,
+				gamma_parameters,
+				grid_S[0]);
+
+	}
+
 }
 
 
