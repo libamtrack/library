@@ -301,6 +301,134 @@ void AT_GSM_shoot_particles_on_grid(  const long  number_of_field_components,
 }
 
 
+void AT_GSM_calculate_dose_pattern( const long  number_of_field_components,
+	    const double   E_MeV_u[],
+	    const long     particle_no[],
+	    const long     material_no,
+	    const long     rdd_model,
+	    const double   rdd_parameter[],
+	    const long     er_model,
+		const long     number_of_particles_in_field_component[],
+		const double*  x_position[],
+		const double*  y_position[],
+		const long     nX,
+		const double   pixel_size_m,
+		double*        grid_D_Gy[]){
+
+	long i,j,k,l;
+
+	/* calculate maximum delta-electron range for all components */
+	double* r_max_m   = (double*)calloc(number_of_field_components, sizeof(double));
+	AT_max_electron_ranges_m( number_of_field_components, E_MeV_u, material_no, er_model, r_max_m );
+
+	/* find maximum of maximal delta-electron ranges */
+	double max_r_max_m = 0.0;
+	for (i = 0; i < number_of_field_components; i++){
+		max_r_max_m    =   GSL_MAX(max_r_max_m, r_max_m[i]);
+	}
+
+    /* allocate memory for vector of vectors distances between track cores and grid points */
+    double**  distances   = (double**)calloc(number_of_field_components, sizeof(double*));
+
+    /* table of number (one number per component of multi field) of visible pixels from all particles */
+    long* number_of_visible_pixels   = (long*)calloc(number_of_field_components, sizeof(long));
+
+    /* vector of indices for distances vectors */
+    long* distances_index = (long*)calloc(number_of_field_components, sizeof(long));
+
+    for (i = 0; i < number_of_field_components; i++){
+  	  number_of_visible_pixels[i] = 0;
+  	  distances_index[i] = 0;
+    }
+
+    /* calculate how many grid pixels are visible for all particles from given component */
+    for (j = 0; j < nX; j++){          // y
+    	double cur_y_pos   =  max_r_max_m + ((double)j + 0.5)*pixel_size_m;
+    	for (i = 0; i < nX; i++){        // x
+    		double cur_x_pos =  max_r_max_m + ((double)i + 0.5)*pixel_size_m;
+    		for (k = 0; k < number_of_field_components; k++){  // field components
+    			for (l = 0; l < number_of_particles_in_field_component[k]; l++){  // particles
+    				double r_m  =  sqrt( gsl_pow_2(x_position[k][l] - cur_x_pos) + gsl_pow_2(y_position[k][l] - cur_y_pos));
+    				if(r_m <= r_max_m[k]){    // does particle contribute?
+    					number_of_visible_pixels[k]++;
+    				}
+    			} // particle contribution
+    		} // field components
+    	} // x loop
+    } // y loop
+
+    for (k = 0; k < number_of_field_components; k++){
+  	  distances[k] = (double*)calloc( number_of_visible_pixels[k], sizeof(double) );
+    }
+
+    /* save distances between visible grid pixels and all particles from given component in linear vectors */
+    for (j = 0; j < nX; j++){          // y
+    	double cur_y_pos   =  max_r_max_m + ((double)j + 0.5)*pixel_size_m;
+    	for (i = 0; i < nX; i++){        // x
+    		double cur_x_pos =  max_r_max_m + ((double)i + 0.5)*pixel_size_m;
+    		for (k = 0; k < number_of_field_components; k++){  // field components
+    			for (l = 0; l < number_of_particles_in_field_component[k]; l++){  // particles
+    				double r_m  =  sqrt( gsl_pow_2(x_position[k][l] - cur_x_pos) + gsl_pow_2(y_position[k][l] - cur_y_pos));
+    				if(r_m <= r_max_m[k]){    // does particle contribute?
+    					distances[k][distances_index[k]] = r_m;
+    					distances_index[k]++;
+    				}
+    			} // particle contribution
+    		} // field components
+    	} // x loop
+    } // y loop
+
+    /* for every component calculate doses delivered to points in given distance from particle track */
+    double**  doses = (double**)calloc(number_of_field_components, sizeof(double*));
+    for (i = 0; i < number_of_field_components; i++){
+    	doses[i] = (double*)calloc( number_of_visible_pixels[i], sizeof(double) );
+
+    	AT_D_RDD_Gy( number_of_visible_pixels[i],
+    			distances[i],
+    			E_MeV_u[i],
+    			particle_no[i],
+    			material_no,
+    			rdd_model,
+    			rdd_parameter,
+    			er_model,
+    			doses[i]);
+    }
+
+    for (i = 0; i < number_of_field_components; i++){
+    	free(distances[i]);
+    	distances_index[i] = 0;
+    }
+
+    free(distances);
+    free(number_of_visible_pixels);
+
+    /* sum up doses for every grid cell from every component */
+    for (j = 0; j < nX; j++){          // y
+    	double cur_y_pos   =  max_r_max_m + ((double)j + 0.5)*pixel_size_m;
+    	for (i = 0; i < nX; i++){        // x
+    		double cur_x_pos =  max_r_max_m + ((double)i + 0.5)*pixel_size_m;
+    		grid_D_Gy[i][j]  =  0.0;
+
+    		for (k = 0; k < number_of_field_components; k++){  // field components
+    			for (l = 0; l < number_of_particles_in_field_component[k]; l++){  // particles
+    				double r_m  =  sqrt( gsl_pow_2(x_position[k][l] - cur_x_pos) + gsl_pow_2(y_position[k][l] - cur_y_pos));
+    				if(r_m <= r_max_m[k]){    // does particle contribute?
+    					grid_D_Gy[i][j] += doses[k][distances_index[k]];
+    					distances_index[k]++;
+    				}
+    			} // particle contribution
+    		} // field components
+    	} // x loop
+    } // y loop
+
+    for (i = 0; i < number_of_field_components; i++){
+    	free(doses[i]);
+    }
+    free(doses);
+    free(distances_index);
+	free(r_max_m);
+}
+
 
 void AT_run_GSM_method(  const long  n,
     const double   E_MeV_u[],
@@ -609,9 +737,9 @@ void AT_run_GSM_method(  const long  n,
       double cur_x_pos = 0;
       double cur_y_pos = 0;
       for (j = 0; j < nX; j++){                                      // y
-        cur_y_pos    = max_r_max_m + ((double)j + 0.5f)*voxel_size_m;
+        cur_y_pos    = max_r_max_m + ((double)j + 0.5)*voxel_size_m;
         for (i = 0; i < nX; i++){                              // x
-          cur_x_pos  = max_r_max_m + ((double)i + 0.5f)*voxel_size_m;
+          cur_x_pos  = max_r_max_m + ((double)i + 0.5)*voxel_size_m;
           for (k = 0; k < n_particles; k++){      // particles
             r_m[k]   = sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
             if(r_m[k] <= r_max_m[k]){               // does particle contribute?
@@ -627,9 +755,9 @@ void AT_run_GSM_method(  const long  n,
       // calculate distances between track cores and all grid points and save them into allocated table
       long distances_index = 0;
       for (j = 0; j < nX; j++){                                      // y
-        double cur_y_pos       = max_r_max_m + ((double)j + 0.5f)*voxel_size_m;
+        double cur_y_pos       = max_r_max_m + ((double)j + 0.5)*voxel_size_m;
         for (i = 0; i < nX; i++){                              // x
-          double cur_x_pos     = max_r_max_m + ((double)i + 0.5f)*voxel_size_m;
+          double cur_x_pos     = max_r_max_m + ((double)i + 0.5)*voxel_size_m;
           grid_d_Gy[j * nX + i] = 0.0;
           for (k = 0; k < n_particles; k++){      // particles
             r_m[k]            = sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
@@ -664,9 +792,9 @@ void AT_run_GSM_method(  const long  n,
       // fill grid using doses values stored in doses table
       distances_index = 0;
       for (j = 0; j < nX; j++){                                      // y
-        double cur_y_pos   = max_r_max_m + ((double)j + 0.5f)*voxel_size_m;
+        double cur_y_pos   = max_r_max_m + ((double)j + 0.5)*voxel_size_m;
         for (i = 0; i < nX; i++){                              // x
-          double cur_x_pos = max_r_max_m + ((double)i + 0.5f)*voxel_size_m;
+          double cur_x_pos = max_r_max_m + ((double)i + 0.5)*voxel_size_m;
           for (k = 0; k < n_particles; k++){      // particles
             r_m[k]        = sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
             if(r_m[k] <= r_max_m[k]){               // does particle contribute?
@@ -693,9 +821,9 @@ void AT_run_GSM_method(  const long  n,
 
       // grid loop
       for (j = 0; j < nX; j++){          // y
-        double cur_y_pos   =  max_r_max_m + ((double)j + 0.5f)*voxel_size_m;
+        double cur_y_pos   =  max_r_max_m + ((double)j + 0.5)*voxel_size_m;
         for (i = 0; i < nX; i++){        // x
-          double cur_x_pos =  max_r_max_m + ((double)i + 0.5f)*voxel_size_m;
+          double cur_x_pos =  max_r_max_m + ((double)i + 0.5)*voxel_size_m;
           grid_d_Gy[j * nX + i]=  0.0;
           for (k = 0; k < n_particles; k++){  // particles
             r_m[k]        =  sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
@@ -712,9 +840,9 @@ void AT_run_GSM_method(  const long  n,
 
       // calculate distances between track cores and all grid points and save them into allocated table
       for (j = 0; j < nX; j++){                                      // y
-        double cur_y_pos       = max_r_max_m + ((double)j + 0.5f)*voxel_size_m;
+        double cur_y_pos       = max_r_max_m + ((double)j + 0.5)*voxel_size_m;
         for (i = 0; i < nX; i++){                              // x
-          double cur_x_pos     = max_r_max_m + ((double)i + 0.5f)*voxel_size_m;
+          double cur_x_pos     = max_r_max_m + ((double)i + 0.5)*voxel_size_m;
           grid_d_Gy[j * nX + i] = 0.0;
           for (k = 0; k < n_particles; k++){      // particles
             r_m[k]            = sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
@@ -753,9 +881,9 @@ void AT_run_GSM_method(  const long  n,
 
       // grid loop
       for (j = 0; j < nX; j++){          // y
-        double cur_y_pos   =  max_r_max_m + ((double)j + 0.5f)*voxel_size_m;
+        double cur_y_pos   =  max_r_max_m + ((double)j + 0.5)*voxel_size_m;
         for (i = 0; i < nX; i++){        // x
-          double cur_x_pos =  max_r_max_m + ((double)i + 0.5f)*voxel_size_m;
+          double cur_x_pos =  max_r_max_m + ((double)i + 0.5)*voxel_size_m;
           grid_d_Gy[j * nX + i]=  0.0;
           for (k = 0; k < n_particles; k++){  // particles
             r_m[k]        =  sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
@@ -776,9 +904,9 @@ void AT_run_GSM_method(  const long  n,
 
       // grid loop - OLD APPROACH
 //      for (j = 0; j < nX; j++){          // y
-//        double cur_y_pos   =  max_r_max_m + ((double)j + 0.5f)*voxel_size_m;
+//        double cur_y_pos   =  max_r_max_m + ((double)j + 0.5)*voxel_size_m;
 //        for (i = 0; i < nX; i++){        // x
-//          double cur_x_pos =  max_r_max_m + ((double)i + 0.5f)*voxel_size_m;
+//          double cur_x_pos =  max_r_max_m + ((double)i + 0.5)*voxel_size_m;
 //          grid_d_Gy[j * nX + i]=  0.0;
 //          for (k = 0; k < n_particles; k++){  // particles
 //            r_m[k]        =  sqrt( (x_pos[k] - cur_x_pos) * (x_pos[k] - cur_x_pos) + (y_pos[k] - cur_y_pos) * (y_pos[k] - cur_y_pos));
