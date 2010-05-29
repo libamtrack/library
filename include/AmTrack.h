@@ -131,11 +131,11 @@ void AT_run_SPIFF_method(  const long  n,
  * @param[in]   sample_grid_size_m                       linear size of grid (length of grid square side)
  * @param[out]  number_of_particles_in_field_component   table of number of particles of each type in the mixed particle field
  * @param[out]  x_position                               two-dimensional table (1st dimension - component of mixed field,
- *                                                       2nd dimension - particle index for given component)
- *                                                       of X-positions of particles of each type in the mixed particle field
+ *                                                         2nd dimension - particle index for given component)
+ *                                                         of X-positions of particles of each type in the mixed particle field
  * @param[out]  y_position                               two-dimensional table (1st dimension - component of mixed field,
- *                                                       2nd dimension - particle index for given component)
- *                                                       of Y-positions of particles of each type in the mixed particle field
+ *                                                         2nd dimension - particle index for given component)
+ *                                                         of Y-positions of particles of each type in the mixed particle field
  */
 void AT_GSM_shoot_particles_on_grid( const long  number_of_field_components,
 		const double   fluence_cm2[],
@@ -143,6 +143,49 @@ void AT_GSM_shoot_particles_on_grid( const long  number_of_field_components,
 		long           number_of_particles_in_field_component[],
 		double*        x_position[],
 		double*        y_position[]);
+
+
+/**
+ * Computes how many particles will be in grid area (using Poissonian distribution
+ * and fluence) and distribute particles randomly on grid.
+ * Particles positions will be saved in x_position and y_position tables.
+ * @param[in]  number_of_field_components                number of particle types in the mixed particle field
+ * @param[in]  E_MeV_u                                   energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  particle_no                               type of the particles in the mixed particle field (array of size number_of_field_components)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  fluence_cm2                               fluences for the given particles, doses in Gy if negative (array of size number_of_field_components)
+ * @param[in]  material_no                               index number for detector material
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]  rdd_model                                 index number for chosen radial dose distribution
+ * @param[in]  rdd_parameter                             parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @see          AT_RDD.h for definition
+ * @param[in]  er_model                                  index number for chosen electron-range model
+ * @see          AT_ElectronRange.h for definition
+ * @param[in]  sample_grid_size_m                        linear size of grid (length of grid square side)
+ * @param[in]  number_of_particles_in_field_component    table of number of particles of each type in the mixed particle field
+ * @param[in]  x_position                                two-dimensional table (1st dimension - component of mixed field,
+ *                                                         2nd dimension - particle index for given component)
+ *                                                         of X-positions of particles of each type in the mixed particle field
+ * @param[in]  y_position                                two-dimensional table (1st dimension - component of mixed field,
+ *                                                         2nd dimension - particle index for given component)
+ *                                                         of Y-positions of particles of each type in the mixed particle field
+ * @param[in]  nX                                        number of cells on grid side
+ * @param[in]  pixel_size_m                              linear size of pixel in grid
+ * @param[out] grid_D_Gy                                 grid dose pattern (2-D array of dimensions nX x nX)
+ */
+void AT_GSM_calculate_dose_pattern( const long  number_of_field_components,
+	    const double   E_MeV_u[],
+	    const long     particle_no[],
+	    const long     material_no,
+	    const long     rdd_model,
+	    const double   rdd_parameter[],
+	    const long     er_model,
+		const long     number_of_particles_in_field_component[],
+		const double*  x_position[],
+		const double*  y_position[],
+		const long     nX,
+		const double   pixel_size_m,
+		double*        grid_D_Gy[]);
 
 
 /**
