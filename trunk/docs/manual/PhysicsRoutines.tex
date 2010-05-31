@@ -4,7 +4,7 @@
 
 \chapter{Physics routines}
 
-\texttt{libamtrack} contains a number of auxiliary routines handling the physics of ion beams needed. These routines can be used independently from the efficiency methods. They are implemented in \texttt{AT\_PhysicsRoutines.c} and are described in detail in this.
+\la{} contains a number of auxiliary routines handling the physics of ion beams needed. These routines can be used independently from the efficiency methods. They are implemented in \texttt{AT\_PhysicsRoutines.c} and are described in detail in this.
 
 \section{\texttt{AT\_beta\_from\_E}}
 
@@ -29,7 +29,6 @@ Multi version:\\
 \end{tabular}
 
 
-
 \section{\texttt{AT\_effective\_charge\_from\_beta}}
 
 Computes the effective charge of a travelling HCP as a function of its relativistic speed. Due to charge pick-up slower particle might not be fully stripped. Here, the Barkas (ref.?) equation is used:
@@ -52,4 +51,10 @@ Multi version:\\
 \texttt{beta} & relativistic speed (array of double, size \texttt{n}) \\
 \texttt{Z} & charge (array of long integer, size \texttt{n}) \\
 \texttt{effective\_charge} & relativistic speed (array of double, size \texttt{n}) \\
+\end{tabular}
+
+
+\section*{Document status}
+\begin{tabular}{l l}
+2010.05.28&Created by S. Greilich
 \end{tabular}
