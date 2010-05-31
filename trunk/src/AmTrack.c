@@ -255,15 +255,16 @@ void AT_run_SPIFF_method(  const long  n,
 
 
 void AT_GSM_shoot_particles_on_grid(  const long  number_of_field_components,
-		const double   fluence_cm2[],
-		const double   sample_grid_size_m,
-		long           number_of_particles_in_field_component[],
-		double*        x_position[],
-		double*        y_position[]){
+		const double         fluence_cm2[],
+		const double         sample_grid_size_m,
+		const unsigned long  random_number_generator_seed,
+		long                 number_of_particles_in_field_component[],
+		double*              x_position[],
+		double*              y_position[]){
 
 	/* Create and initialize random number generator */
 	gsl_rng * rng  =  gsl_rng_alloc(gsl_rng_taus);
-	gsl_rng_set(rng, 12345678);
+	gsl_rng_set(rng, random_number_generator_seed);
 
 	/* Calculate total fluence */
 	double total_fluence_cm2     =  AT_sum(  number_of_field_components, fluence_cm2);
