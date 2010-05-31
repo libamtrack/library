@@ -56,6 +56,7 @@ void AT_gamma_response_R( const int*  n,
     const float*  gamma_parameter,
     float*        S);
 
+
 void AT_KatzModel_inactivation_probability_R( const int* n,
     const float*   r_m,
     const float*   E_MeV_u,
@@ -67,6 +68,7 @@ void AT_KatzModel_inactivation_probability_R( const int* n,
     const float*   gamma_parameters,
     float*         inactivation_probability);
 
+
 void AT_KatzModel_inactivation_cross_section_m2_R( const int* n,
     const float*   E_MeV_u,
     const int*     particle_no,
@@ -77,11 +79,13 @@ void AT_KatzModel_inactivation_cross_section_m2_R( const int* n,
     const float*   gamma_parameters,
     float*         inactivation_cross_section_m2);
 
+
 void AT_LET_MeV_cm2_g_R(  const int*  n,
     const float*  E_MeV_u,
     const int*    particle_no,
     const int*    material_no,
     float*        LET_MeV_cm2_g);
+
 
 void AT_max_E_transfer_MeV_R(  const int*  n,
     const float*  E_MeV_u,
@@ -108,6 +112,7 @@ void AT_particle_no_from_Z_and_A_R  ( const int*  n,
     const int*    A,
     int*          particle_no);
 
+
 void AT_r_RDD_m_R  ( const int*  n,
     const float*  D_RDD_Gy,
     const float*  E_MeV_u,
@@ -117,6 +122,7 @@ void AT_r_RDD_m_R  ( const int*  n,
     const float*  rdd_parameter,
     const int*    er_model,
     float*        r_RDD_m);
+
 
 void AT_run_GSM_method_R(  const int*  n,
     const float*  E_MeV_u,
@@ -129,8 +135,6 @@ void AT_run_GSM_method_R(  const int*  n,
     const int*    gamma_model,
     const float*  gamma_parameters,
     const int*    N_runs,
-    const int*    N2,
-    const float*  fluence_factor,
     const int*    write_output,
     const int*    nX,
     const float*  voxel_size_m,

@@ -139,12 +139,12 @@ void AT_run_SPIFF_method(  const long  n,
  *                                                         of Y-positions of particles of each type in the mixed particle field
  */
 void AT_GSM_shoot_particles_on_grid( const long  number_of_field_components,
-		const double         fluence_cm2[],
-		const double         sample_grid_size_m,
-		const unsigned long  random_number_generator_seed,
-		long                 number_of_particles_in_field_component[],
-		double*              x_position[],
-		double*              y_position[]);
+    const double         fluence_cm2[],
+    const double         sample_grid_size_m,
+    const unsigned long  random_number_generator_seed,
+    long                 number_of_particles_in_field_component[],
+    double*              x_position[],
+    double*              y_position[]);
 
 
 /**
@@ -175,18 +175,18 @@ void AT_GSM_shoot_particles_on_grid( const long  number_of_field_components,
  * @param[out] grid_D_Gy                                 grid dose pattern (2-D array of dimensions nX x nX, linearly allocated)
  */
 void AT_GSM_calculate_dose_pattern( const long  number_of_field_components,
-	    const double   E_MeV_u[],
-	    const long     particle_no[],
-	    const long     material_no,
-	    const long     rdd_model,
-	    const double   rdd_parameter[],
-	    const long     er_model,
-		const long     number_of_particles_in_field_component[],
-		const double*  x_position[],
-		const double*  y_position[],
-		const long     nX,
-		const double   pixel_size_m,
-		double**       grid_D_Gy);
+    const double   E_MeV_u[],
+    const long     particle_no[],
+    const long     material_no,
+    const long     rdd_model,
+    const double   rdd_parameter[],
+    const long     er_model,
+    const long     number_of_particles_in_field_component[],
+    const double*  x_position[],
+    const double*  y_position[],
+    const long     nX,
+    const double   pixel_size_m,
+    double**       grid_D_Gy);
 
 
 /**
@@ -196,16 +196,16 @@ void AT_GSM_calculate_dose_pattern( const long  number_of_field_components,
  * @param[in]  gamma_model                               index number for chosen gamma response
  * @param[in]  gamma_parameters                          parameters for chosen gamma response (array of size depending on chosen model)
  * @see          AT_GammaResponse.h for definition
- * @param[in]  grid_D_Gy                                 grid dose pattern (2-D array of dimensions nX x nX, linearly allocated)
+ * @param[in]  grid_D_Gy                                 grid dose pattern (2-D array of dimensions nX x nX)
  * @param[in]  lethal_events_mode                        if true, allows to do calculations for cell survival
- * @param[out] grid_S                                    response pattern (2-D array of dimensions nX x nX, linearly allocated)
+ * @param[out] grid_response                             response pattern (2-D array of dimensions nX x nX)
  */
 void AT_GSM_calculate_local_response_grid( const long      nX,
-		const long      gamma_model,
-		const double    gamma_parameters[],
-		const double**  grid_D_Gy,
-		const bool      lethal_events_mode,
-		double**        grid_S);
+                const long      gamma_model,
+                const double    gamma_parameters[],
+                const double**  grid_D_Gy,
+                const bool      lethal_events_mode,
+                double**        grid_response);
 
 
 /**
@@ -228,8 +228,6 @@ void AT_GSM_calculate_local_response_grid( const long      nX,
  * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size depending on chosen model)
  * @see          AT_GammaResponse.h for definition
  * @param[in]  N_runs              (algorithm specific) number of runs within which track positions will be resampled
- * @param[in]  N2                  (algorithm specific) number of bins per factor of two in local dose array
- * @param[in]  fluence_factor      factor to scale the fluences given as "fluence_cm2" with
  * @param[in]  write_output        if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory
  * @param[in]  shrink_tails        (algorithm specific) if true, tails of the local dose distribution, contributing less than "shrink_tails_under" are cut
  * @param[in]  shrink_tails_under  (algorithm specific) limit for tail cutting in local dose distribution
@@ -261,13 +259,11 @@ void AT_run_GSM_method(  const long  n,
     const long     gamma_model,
     const double   gamma_parameters[],
     const long     N_runs,
-    const long     N2,
-    const double   fluence_factor,
     const bool     write_output,
     const long     nX,
     const double   voxel_size_m,
     const bool     lethal_events_mode,
-    double  results[]);
+    double  results[10]);
 
 
 /**

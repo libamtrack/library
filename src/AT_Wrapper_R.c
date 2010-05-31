@@ -473,6 +473,7 @@ void AT_particle_no_from_particle_name_R(const char** particle_name,
   *particle_no = (int)particle_no_long;
 }
 
+
 void AT_run_GSM_method_R(  const int*  n,
     const float*  E_MeV_u,
     const int*    particle_no,
@@ -484,8 +485,6 @@ void AT_run_GSM_method_R(  const int*  n,
     const int*    gamma_model,
     const float*  gamma_parameters,
     const int*    N_runs,
-    const int*    N2,
-    const float*  fluence_factor,
     const int*    write_output,
     const int*    nX,
     const float*  voxel_size_m,
@@ -504,7 +503,6 @@ void AT_run_GSM_method_R(  const int*  n,
     particle_no_long[i] = (long)particle_no[i];
   }
   const long N_runs_long = (long)(*N_runs);
-  const long N2_long = (long)(*N2);
   const long nX_long = (long)(*nX);
 
   /* int -> bool conversion */
@@ -535,7 +533,6 @@ void AT_run_GSM_method_R(  const int*  n,
   for(i = 0 ; i < number_of_gamma_parameters ; i++){
     gamma_parameter_double[i] = (double)gamma_parameters[i];
   }
-  double fluence_factor_double = (double)(*fluence_factor);
   double voxel_size_m_double = (double)(*voxel_size_m);
 
   /* place for results */
@@ -552,8 +549,6 @@ void AT_run_GSM_method_R(  const int*  n,
       gamma_model_long,
       gamma_parameter_double,
       N_runs_long,
-      N2_long,
-      fluence_factor_double,
       write_output_bool,
       nX_long,
       voxel_size_m_double,

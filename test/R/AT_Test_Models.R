@@ -41,7 +41,7 @@ library("lattice")
 
 E.MeV.u <- c( 1, 10, 100)
 particle.no <- c( 1001, 6012, 1001)
-fluence.cm2 <- c( -1, -10, -8)  # in Gy
+fluence.cm2 <- c( -1, -5, -4)  # in Gy
 
 factor <- 10^seq( -4, -1, length = 5)
 
@@ -117,8 +117,6 @@ for( i in ER.model) {
                                     gamma.model = 2,
                                     gamma.parameters = GR.parameters,
                                     N.runs = 1,
-                                    N2 = 4,
-                                    fluence.factor = 1.0,
                                     write.output = F,
                                     nX = 5,
                                     voxel.size.m = 1e-7,
