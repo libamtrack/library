@@ -129,6 +129,7 @@ void AT_run_SPIFF_method(  const long  n,
  * @param[in]   number_of_field_components               number of particle types in the mixed particle field
  * @param[in]   fluence_cm2                              fluences for the given particles (array of size number_of_field_components)
  * @param[in]   sample_grid_size_m                       linear size of grid (length of grid square side)
+ * @param[in]   random_number_generator_seed             GSL random number generator seed
  * @param[out]  number_of_particles_in_field_component   table of number of particles of each type in the mixed particle field
  * @param[out]  x_position                               two-dimensional table (1st dimension - component of mixed field,
  *                                                         2nd dimension - particle index for given component)
@@ -138,11 +139,12 @@ void AT_run_SPIFF_method(  const long  n,
  *                                                         of Y-positions of particles of each type in the mixed particle field
  */
 void AT_GSM_shoot_particles_on_grid( const long  number_of_field_components,
-		const double   fluence_cm2[],
-		const double   sample_grid_size_m,
-		long           number_of_particles_in_field_component[],
-		double*        x_position[],
-		double*        y_position[]);
+		const double         fluence_cm2[],
+		const double         sample_grid_size_m,
+		const unsigned long  random_number_generator_seed,
+		long                 number_of_particles_in_field_component[],
+		double*              x_position[],
+		double*              y_position[]);
 
 
 /**
