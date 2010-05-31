@@ -1,0 +1,23 @@
+% File for libamtrack manual
+% Copyright 2006, 2010 Steffen Greilich / the libamtrack team
+% This file is part of the libAmTrack project (libamtrack.dkfz.org).
+
+\chapter{libamtrack methods}
+
+\section{Introduction}
+'Methods' are the top-level routines in libamtrack. From the physical parameters describing a HCP field they compute the predicted RE or RBE. In order to do so, the user has to both chose 
+\begin{itemize}
+\item{method independent settings, such as the RDD, ER, gamma model to be used and}
+\item{method specific setting, e.g. the binning width to be used.}
+\end{itemize}
+
+Methods are implemented in the \texttt{Amtrack.c} and make use of all other subordinate routines. At the moment, four methods are available:
+\begin{itemize}
+\item{Grid summation method (GSM)}
+\item{Ion-gamma-kill method (IGK)}
+\item{Compound Poisson processes using successive convolution (CPP-SC)}
+\item{Compound Poisson processes using statistical sampling (CPP-SS)}
+\end{itemize}
+
+\section{The grid summation method}
+The most straight-forward approach of
