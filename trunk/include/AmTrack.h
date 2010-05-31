@@ -190,6 +190,38 @@ void AT_GSM_calculate_dose_pattern( const long  number_of_field_components,
 
 
 /**
+ * Computes histogram
+ * TODO - to be tested
+ */
+void AT_GSM_calculate_histogram_from_grid( const long     nX,
+    const double** grid,
+    const long     number_of_bins,
+    const double   bin_centers_Gy[],
+    double *       zero_fraction,
+    double         frequency[]);
+
+
+/**
+ * Computes dose histogram for given binning
+ * TODO
+ */
+void AT_GSM_calculate_dose_histogram( const long  number_of_field_components,
+    const double   E_MeV_u[],
+    const double   fluence_cm2[],
+    const long     particle_no[],
+    const long     material_no,
+    const long     rdd_model,
+    const double   rdd_parameter[],
+    const long     er_model,
+    const long     nX,
+    const double   pixel_size_m,
+    const double   number_of_bins,
+    const double   dose_bin_centers_Gy[],
+    double *       zero_dose_fraction,
+    double         dose_frequency_Gy[]);
+
+
+/**
  * Computes response distribution in grid
  *
  * @param[in]  nX                                        number of cells on grid side
