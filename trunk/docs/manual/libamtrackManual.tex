@@ -6,8 +6,15 @@
 
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{array}
+\usepackage[version=3]{mhchem}
+\usepackage{lineno}
+\usepackage{tensor}
+\usepackage{graphicx}
 
 \newcommand{\la}{\texttt{libAmTrack}}
+
+\bibliographystyle{unsrt}
 
 \title{\la{} Manual}
 \author{Steffen Greilich / the \la{} team}
@@ -23,8 +30,13 @@
 \include{Introduction}
 \include{Installation}
 \include{Methods}
+\include{RadialDoseDistributions}
+\include{ElectronRange}
+\include{PhotonResponse}
 \include{PhysicsRoutines}
 \include{ListOfSymbols}
+
+\bibliography{libamtrackManual}
 
 \end{document}
 
