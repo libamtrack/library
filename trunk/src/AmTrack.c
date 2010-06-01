@@ -867,6 +867,7 @@ void AT_run_IGK_method(  const long  n,
   double*  norm_fluence          =  (double*)calloc(n, sizeof(double));
   double*  dose_contribution_Gy  =  (double*)calloc(n, sizeof(double));
 
+  /* TODO: Replace by explicit functions */
   for (i = 0; i < n; i++){
         double LET_MeV_cm2_g = AT_LET_MeV_cm2_g_single(E_MeV_u[i], particle_no[i], material_no);
         double single_impact_fluence_cm2 = AT_single_impact_fluence_cm2_single(E_MeV_u[i], material_no, er_model);

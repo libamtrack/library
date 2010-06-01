@@ -44,6 +44,7 @@
 #              new (but non-SWIG) access from R to the library. As the old version of AmTrack.R
 #              is kept in the repository (pre-rev 304) function can be copied into the new 
 #              script whenever needed
+# 2010-Jun-01: Added IGK methode, and variable names for all methods' result arrays
 ################################################################################################
 
 ################################################################################################
@@ -137,7 +138,16 @@ AT.run.GSM.method	<-	function(	E.MeV.u,
 														lethal.events.mode 	= 	as.integer(lethal.events.mode),
 														results				=	as.single(results))
 		results			<-	res$results
-	
+		names(results)		<-	c(	"efficiency", 
+								"D.check.Gy", 
+								"response.HCP", 
+								"response.gamma", 
+								"n.particles",	
+								"err.efficiency", 
+								"err.D.check.Gy", 
+								"err.response.HCP", 
+								"err.response.gamma", 
+								"err.n.particles")
 	return(results)
 }
 											
@@ -181,11 +191,63 @@ AT.run.SPIFF.method	<-	function(	E.MeV.u,
 															lethal.events.mode 	= 	as.integer(lethal.events.mode),
 															results				=	as.single(results))
 		results			<-	res$results
+		names(results)		<-	c(	"efficiency", 
+								"D.check.Gy", 
+								"response.HCP", 
+								"response.gamma", 
+								"---",	
+								"u", 
+								"u.start", 
+								"n.convolutions", 
+								"---", 
+								"---")
 	
 	return(results)
 }
-											
 
+											
+##################
+AT.run.IGK.method	<-	function(	E.MeV.u,
+									particle.no,
+									fluence.cm2,
+									material.no,
+									RDD.model,
+									RDD.parameters,
+									ER.model,
+									gamma.model,
+									gamma.parameters,
+									saturation.cross.section.factor,
+									write.output){
+	
+		results			<-	numeric(10)
+		res				<-	.C(	"AT_run_IGK_method_R",		n					= 	as.integer(length(E.MeV.u)),
+															E.MeV.u				=	as.single(E.MeV.u),
+															particle.no			=	as.integer(particle.no),
+															fluence.cm2			=	as.single(fluence.cm2),
+															material.no			=	as.integer(material.no),
+															RDD.model			=	as.integer(RDD.model),
+															RDD.parameters		=	as.single(RDD.parameters),
+															ER.model			=	as.integer(ER.model),
+															gamma.model			=	as.integer(gamma.model),
+															gamma.parameters	=	as.single(gamma.parameters),
+															saturation.cross.section.factor 	=	as.single(saturation.cross.section.factor),
+															write.output		=	as.integer(write.output),
+															results				=	as.single(results))
+		results			<-	res$results
+		names(results)		<-	c(	"efficiency", 
+								"---", 
+								"response.HCP", 
+								"response.gamma", 
+								"---",	
+								"ion.cross.section.cm2", 
+								"gamma.dose.Gy", 
+								"pi.Ion", 
+								"pi.Gamma", 
+								"---")
+	
+	return(results)
+}
+						
 
 #################
 AT.gamma.response	<-	function(	d.Gy,

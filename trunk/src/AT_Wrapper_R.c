@@ -473,7 +473,6 @@ void AT_particle_no_from_particle_name_R(const char** particle_name,
   *particle_no = (int)particle_no_long;
 }
 
-
 void AT_run_GSM_method_R(  const int*  n,
     const float*  E_MeV_u,
     const int*    particle_no,
@@ -656,6 +655,88 @@ void AT_run_SPIFF_method_R(  const int*  n,
    *N2 = (int)N2_long;
 
    /* double -> float conversion (results) */
+   for(i = 0 ; i < 10 ; i++){
+     results[i] = (float)results_double[i];
+   }
+   free(particle_no_long);
+   free(E_MeV_u_double);
+   free(fluence_cm2_double);
+}
+
+
+void AT_run_IGK_method_R(  const int*  n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    const int*    rdd_model,
+    const float*  rdd_parameters,
+    const int*    er_model,
+    const int*    gamma_model,
+    const float*  gamma_parameters,
+    const float*  saturation_cross_section_factor,
+	const int*    write_output,
+    float*       results){
+
+  /* int -> long conversion */
+  const long n_long = (long)(*n);
+  const long rdd_model_long = (long)(*rdd_model);
+  const long er_model_long = (long)(*er_model);
+  const long gamma_model_long = (long)(*gamma_model);
+  const long material_no_long = (long)(*material_no);
+  long * particle_no_long = (long*)calloc(n_long,sizeof(long));
+  long i;
+  for(i = 0 ; i < n_long ; i++){
+    particle_no_long[i] = (long)particle_no[i];
+  }
+
+  /* int -> bool conversion */
+  const bool write_output_bool = (bool)(*write_output);
+
+  /* float -> double conversion */
+  const double saturation_cross_section_factor_double = (const double)(*saturation_cross_section_factor);
+  double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_double = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
+    E_MeV_u_double[i] = (double)E_MeV_u[i];
+    fluence_cm2_double[i] = (double)fluence_cm2[i];
+  }
+  double rdd_parameter_double[RDD_MAX_NUMBER_OF_PARAMETERS];
+  for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
+    rdd_parameter_double[i] = (double)rdd_parameters[i];
+  }
+  long number_of_gamma_parameters = 0;
+  if ( gamma_model_long == GR_GeneralTarget ){
+    while  (gamma_parameters[number_of_gamma_parameters] != 0){
+      number_of_gamma_parameters  += 4;
+    }
+    number_of_gamma_parameters++; /* to include also trailing zero */
+  } else {
+    number_of_gamma_parameters = AT_Gamma_number_of_parameters( gamma_model_long );
+  }
+  double * gamma_parameter_double  = (double*)calloc(number_of_gamma_parameters,sizeof(double));
+  for(i = 0 ; i < number_of_gamma_parameters ; i++){
+    gamma_parameter_double[i] = (double)gamma_parameters[i];
+  }
+
+  /* place for results */
+  double results_double[10];
+
+  AT_run_IGK_method(  n_long,
+      E_MeV_u_double,
+      particle_no_long,
+      fluence_cm2_double,
+      material_no_long,
+      rdd_model_long,
+      rdd_parameter_double,
+      er_model_long,
+      gamma_model_long,
+      gamma_parameter_double,
+      saturation_cross_section_factor_double,
+      write_output_bool,
+      results_double);
+
+    /* double -> float conversion (results) */
    for(i = 0 ; i < 10 ; i++){
      results[i] = (float)results_double[i];
    }
