@@ -141,6 +141,19 @@ void AT_run_GSM_method_R(  const int*  n,
     const int*    lethal_events_mode,
     float*        results);
 
+void AT_run_IGK_method_R(  const int*  n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    const int*    rdd_model,
+    const float*  rdd_parameters,
+    const int*    er_model,
+    const int*    gamma_model,
+    const float*  gamma_parameters,
+    const float*  saturation_cross_section_factor,
+	const int*    write_output,
+    float*       results);
 
 void AT_run_SPIFF_method_R(  const int*  n,
     const float*  E_MeV_u,
