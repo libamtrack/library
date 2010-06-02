@@ -7,18 +7,37 @@
 \section{Introduction}
 'Methods' are the top-level routines in \la{}. From the physical parameters describing a HCP field they compute the predicted RE or RBE. In order to do so, the user has to both chose 
 \begin{itemize}
-\item{method independent settings, such as the RDD, ER, gamma model to be used and}
+\item{method independent settings, such as the radiation field, RDD, ER, gamma model and}
 \item{method specific setting, e.g. the binning width to be used.}
 \end{itemize}
 
-Methods are implemented in the \texttt{Amtrack.c} and make use of all other subordinate routines. At the moment, four methods are available:
-\begin{itemize}
-\item{Grid summation method (GSM)}
-\item{Ion-gamma-kill method (IGK)}
-\item{Compound Poisson processes using successive convolution (CPP-SC)}
-\item{Compound Poisson processes using statistical sampling (CPP-SS)}
-\end{itemize}
-Table \ref{tbl:Methods} gives an overview on the methods implemented in \la{} at the moment. All models share the impinging mixed particle radiation field and the detector material as the main input parameter.
+Methods are implemented in the \texttt{Amtrack.c} and make use of all other subordinate routines. At the moment, four methods are available, Tab. \ref{tbl:Methods} gives an overview. All 	methods apply to slice of a homogenous detector being infinitesimally small in $z$ direction\footnote{Or a slice of the detector with finite size in $z$ but with crucial parameters, such as LET, fluence etc. not changing significantly over $\Delta z$}, i.e. in direction of the beam. The latter is supposed to be perfectly parallel and homogenous in fluence with respect to $x$ and $y$ (Fig. \ref{fig:Coordinates}. 
+
+\begin{figure*}
+	\centering
+		\includegraphics[width=0.5\textwidth]{pictures/CoordinatesMethods.png}
+	\caption{Coordinate definition in \la{}}
+	\label{fig:Coordinates}
+\end{figure*}
+
+All methods share the following input parameters:\\
+\begin{tabular}{p{0.25\textwidth} p{0.75\textwidth}}
+\texttt{n} & number of components in mixed field (long integer) \\
+\texttt{E\_MeV\_u[]} & the kinetic energy per nucleon for each component (array of double, size \texttt{n}) \\
+\texttt{particle\_no[]} & the particle id number for each component, see ref. for more details (array of long, size \texttt{n}) \\
+\texttt{fluence\_cm2[]} & the fluence (in cm$^{-2}$) or the dose (in Gy), if negative, for each component (array of double, size \texttt{n}) \\
+\texttt{material\_no} & the material id number (long integer) \\
+\texttt{rdd\_model} & the radial dose distribution id number, see \ref{chap:RDDs} for details (long) \\
+\texttt{rdd\_parameters[]} & parameters for the given RDD, see \ref{chap:RDDs} for details (array of long, size depending on RDD model) \\
+\texttt{er\_model} & the electron range id number, see \ref{chap:ERs} for details (long) \\
+\texttt{gamma\_model} & the photon response id number, see \ref{chap:GRs} for details (long) \\
+\texttt{gamma\_parameters[]} & parameters for the given RDD, see \ref{chap:GRs} for details (array of long, size depending on GR model) \\
+\end{tabular}\\
+
+All methods need in addition an array to return their results:\\
+\begin{tabular}{p{0.25\textwidth} p{0.75\textwidth}}
+\texttt{results[]} & the particle id number for each component (array of long, size 10) \\
+\end{tabular}
 
 \begin{table}
 \label{tbl:Methods}
