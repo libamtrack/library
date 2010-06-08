@@ -12,9 +12,12 @@
 \usepackage{tensor}
 \usepackage{graphicx}
 
+% include hyperlinks in document and gives the pdf a title
+\usepackage[pdftitle={libAmTrack Manual}]{hyperref}
+
 \newcommand{\la}{\texttt{libAmTrack}}
 
-\bibliographystyle{unsrt}
+
 
 \title{\la{} Manual}
 \author{Steffen Greilich / the \la{} team}
@@ -34,10 +37,14 @@
 \include{ElectronRange}
 \include{PhotonResponse}
 \include{PhysicsRoutines}
+% desciption of the included wrapper
+\include{wrapper}
 \include{ListOfSymbols}
 
+\bibliographystyle{unsrt}
 \bibliography{libamtrackManual}
 
 \end{document}
 
+% RH:what does this command?
 \endinput
