@@ -1,6 +1,6 @@
 /*
  * @file
- * @brief Dummy file to enable debugging, to be changed by the user anyway they like.
+ * @brief Dummy file to save dose pattern to output file.
  */
 
 /*
@@ -38,9 +38,121 @@
 
 #include "AmTrack.h"
 
+
+void AT_GSM_save_dose_pattern_to_file( const long  number_of_field_components,
+    const double   E_MeV_u[],
+    const double   fluence_cm2[],
+    const long     particle_no[],
+    const long     material_no,
+    const long     rdd_model,
+    const double   rdd_parameter[],
+    const long     er_model,
+    const long     nX,
+    const double   pixel_size_m,
+    const char *   filename){
+
+	long    i;
+
+	/* find maximum of maximal delta-electron ranges */
+	double max_r_max_m = 0.0;
+	for (i = 0; i < number_of_field_components; i++){
+		max_r_max_m    =   GSL_MAX(max_r_max_m, AT_max_electron_range_m(E_MeV_u[i], material_no, er_model));
+	}
+
+	/* largest r.max --> calculate size of sample area */
+	double sample_grid_size_m    = pixel_size_m * nX + 2.01 * max_r_max_m;
+
+	long*  number_of_particles_in_field_component   =  (long*)calloc(number_of_field_components, sizeof(double));
+	double** x_position = (double**)calloc(number_of_field_components, sizeof(double*));
+	double** y_position = (double**)calloc(number_of_field_components, sizeof(double*));
+
+	/* linearly allocated 2-D arrays, see http://c-faq.com/aryptr/dynmuldimary.html */
+	double** grid_D_Gy = (double**)calloc(nX, sizeof(double*));
+	grid_D_Gy[0] = (double*)calloc(nX * nX, sizeof(double));
+	for(i = 1; i < nX; i++)
+		grid_D_Gy[i] = grid_D_Gy[0] + i * nX;
+
+	/* find random positions of particles on grid
+	 * allocate xy_position tables */
+	AT_GSM_shoot_particles_on_grid( number_of_field_components,
+			fluence_cm2,
+			sample_grid_size_m,
+			137,
+			number_of_particles_in_field_component,
+			x_position,
+			y_position);
+
+	/* calculate dose deposition pattern in grid cells */
+	AT_GSM_calculate_dose_pattern( number_of_field_components,
+			E_MeV_u,
+			particle_no,
+			material_no,
+			rdd_model,
+			rdd_parameter,
+			er_model,
+			number_of_particles_in_field_component,
+			(const double**)x_position,
+			(const double**)y_position,
+			nX,
+			pixel_size_m,
+			grid_D_Gy);
+
+	/* free memory */
+	for (i = 0; i < number_of_field_components; i++){
+		free( x_position[i] );
+		free( y_position[i] );
+	}
+
+	FILE * outfile = fopen( filename, "w" );
+
+	long j;
+	for(i = 0; i < nX; i++)
+		for(j = 0; j < nX; j++)
+			fprintf(outfile,"%ld,%ld,%g\n",i,j,grid_D_Gy[i][j]);
+	fclose(outfile);
+
+	free( grid_D_Gy[0] );
+	free( grid_D_Gy );
+
+	free( number_of_particles_in_field_component );
+
+	free( x_position );
+	free( y_position );
+}
+
 int main( int argc, char * argv[] ){
 
-	printf("Test of GSM algorithm\n");
+	char filename[200] = "grid.dat";
+
+	if( argc != 3){
+		printf("Usage: %s nX pixel_size_m\n", argv[0]);
+		exit(EXIT_FAILURE);
+	}
+
+	printf("Saving dose pattern to file %s\n", filename);
+
+	long number_of_field_components = 3;
+	double   E_MeV_u[] = {60.,100.,1.};
+	double   fluence_cm2[] = {1e7,1e5,1e4};
+	long     particle_no[] = {1001,6012,1001};
+	long     material_no = Water_Liquid;
+	long     rdd_model   = RDD_Geiss;
+	double   rdd_parameter[] = {5e-8};
+	long     er_model    = ER_Waligorski;
+	long     nX = atoi(argv[1]);
+	double   pixel_size_m = atof(argv[2]);
+
+	AT_GSM_save_dose_pattern_to_file( number_of_field_components,
+	    E_MeV_u,
+	    fluence_cm2,
+	    particle_no,
+	    material_no,
+	    rdd_model,
+	    rdd_parameter,
+	    er_model,
+	    nX,
+	    pixel_size_m,
+	    filename);
 
 	return 0;
 };
