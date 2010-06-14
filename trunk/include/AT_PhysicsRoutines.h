@@ -144,7 +144,7 @@ int AT_E_from_beta(  const long  n,
 /**
  * Effective charge according to Barkas-Bethe-approximation:
  *
- * Zeff = Z * exp( -125 * beta / Z^(2/3) )
+ * Zeff = Z *[1- exp( -125 * beta / Z^(2/3) )]
  *
  * calculated for particle with given relative speed beta
  *
@@ -159,7 +159,7 @@ inline double AT_effective_charge_from_beta_single(  const double beta,
 /**
  * Effective charge according to Barkas-Bethe-approximation:
  *
- * Zeff = Z * exp( -125 * beta / Z^(2/3) )
+ * Zeff = Z *[1-exp( -125 * beta / Z^(2/3) )]
  *
  * calculated for particle with given relative speed beta
  *
@@ -189,7 +189,7 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
 /**
  * Effective charge according to Barkas-Bethe-approximation:
  *
- * Zeff = Z * exp( -125 * beta / Z^(2/3) )
+ * Zeff = Z *[1- exp( -125 * beta / Z^(2/3) )]
  *
  * calculated for particle with given energy per nucleon
  *
@@ -204,7 +204,7 @@ double AT_effective_charge_from_E_MeV_u_single(  const double E_MeV_u,
 /**
  * Effective charge according to Barkas-Bethe-approximation:
  *
- * Zeff = Z * exp( -125 * beta / Z^(2/3) )
+ * Zeff = Z * [1-exp( -125 * beta / Z^(2/3) )]
  *
  * calculated for particle with given energy per nucleon
  *
