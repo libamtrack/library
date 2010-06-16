@@ -81,6 +81,24 @@ AT.CSDA.range.g.cm2		<-	function(	E.MeV.u,
 	return(res$CSDA.range.g.cm2)						
 }
 
+#############
+AT.D.Gy					<-	function(	E.MeV.u,
+										particle.no,
+										fluence.cm2,
+										material.no){
+	n					<-	length(E.MeV.u)
+	D.Gy			<-	numeric(n)
+  		
+    res					<-	.C(	"AT_D_Gy_R",	n						=	as.integer(n),
+												E.MeV.u					=	as.single(E.MeV.u),
+												particle.no				=	as.integer(particle.no),
+												fluence.cm2				=	as.single(fluence.cm2),
+												material.no				=	as.integer(material.no),
+												D.Gy					=	as.single(D.Gy))		
+			
+	 return(res$D.Gy)						
+}
+
 ###########
 AT.D.RDD.Gy					<-	function(	r.m,
 											E.MeV.u,
@@ -91,7 +109,7 @@ AT.D.RDD.Gy					<-	function(	r.m,
 											RDD.parameters){
 	n					<-	length(r.m)
 	D.Gy				<-	numeric(n)
-  		
+  		.
     res					<-	.C(	"AT_D_RDD_Gy_R",	n						=	as.integer(n),
 													r.m						=	as.single(r.m),
 													E.MeV.u					=	as.single(E.MeV.u),
@@ -103,6 +121,24 @@ AT.D.RDD.Gy					<-	function(	r.m,
 													D.Gy					=	as.single(D.Gy))		
 			
 	 return(res$D.Gy)						
+}
+
+#############
+AT.fluence.cm2			<-	function(	E.MeV.u,
+										particle.no,
+										D.Gy,
+										material.no){
+	n					<-	length(E.MeV.u)
+	fluence.cm2			<-	numeric(n)
+  		
+    res					<-	.C(	"AT_fluence_cm2_R",	n						=	as.integer(n),
+												E.MeV.u					=	as.single(E.MeV.u),
+												particle.no				=	as.integer(particle.no),
+												D.Gy					=	as.single(D.Gy),
+												material.no				=	as.integer(material.no),
+												fluence.cm2				=	as.single(fluence.cm2))		
+			
+	 return(res$fluence.cm2)						
 }
 
 ##################
