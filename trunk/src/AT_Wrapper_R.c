@@ -40,6 +40,47 @@
 
 #include "AT_Wrapper_R.h"
 
+void AT_D_Gy_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    float*        D_Gy)
+{
+  long i;
+  const long n_long             = (long)(*n);
+  const long material_no_long   = (long)(*material_no);
+  long * particle_no_long       = (long*)calloc(n_long,sizeof(long));
+  for(i = 0 ; i < n_long ; i++){
+    particle_no_long[i]                 = (long)particle_no[i];
+  }
+
+  double * E_MeV_u_double       = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_double   = (double*)calloc(n_long,sizeof(double));
+  double * D_Gy_double   		= (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
+    E_MeV_u_double[i]                   = (double)E_MeV_u[i];
+    fluence_cm2_double[i]               = (double)fluence_cm2[i];
+  }
+
+  AT_D_Gy( 	n_long,
+			E_MeV_u_double,
+			particle_no_long,
+			fluence_cm2_double,
+			material_no_long,
+			D_Gy_double);
+
+  for(i = 0 ; i < n_long ; i++){
+    D_Gy[i]                   = (float)D_Gy_double[i];
+  }		
+			
+			
+  free(fluence_cm2_double);
+  free(E_MeV_u_double);
+  free(particle_no_long);
+  free(D_Gy_double);
+}
+
 
 void AT_D_RDD_Gy_R( const int*  n,
     const float*  r_m,
@@ -90,6 +131,48 @@ void AT_D_RDD_Gy_R( const int*  n,
 
   free(r_m_double);
   free(D_RDD_Gy_double);
+}
+
+
+void AT_fluence_cm2_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*        D_Gy,
+    const int*    material_no,
+    float*  fluence_cm2)
+{
+  long i;
+  const long n_long             = (long)(*n);
+  const long material_no_long   = (long)(*material_no);
+  long * particle_no_long       = (long*)calloc(n_long,sizeof(long));
+  for(i = 0 ; i < n_long ; i++){
+    particle_no_long[i]                 = (long)particle_no[i];
+  }
+
+  double * E_MeV_u_double       = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_double   = (double*)calloc(n_long,sizeof(double));
+  double * D_Gy_double   		= (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
+    E_MeV_u_double[i]               = (double)E_MeV_u[i];
+    D_Gy_double[i]               	= (double)D_Gy[i];
+  }
+
+  AT_fluence_cm2( 	n_long,
+					E_MeV_u_double,
+					particle_no_long,
+					D_Gy_double,
+					material_no_long,
+					fluence_cm2_double);
+
+  for(i = 0 ; i < n_long ; i++){
+	  fluence_cm2[i]                   = (float)fluence_cm2_double[i];
+  }
+
+
+  free(fluence_cm2_double);
+  free(E_MeV_u_double);
+  free(particle_no_long);
+  free(D_Gy_double);
 }
 
 

@@ -38,6 +38,12 @@
 #include "AT_GammaResponse.h"
 #include "AT_SuccessiveConvolutions.h"
 
+void AT_D_Gy_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    float*        D_Gy);
 
 void AT_D_RDD_Gy_R( const int*  n,
     const float*  r_m,
@@ -49,6 +55,12 @@ void AT_D_RDD_Gy_R( const int*  n,
     const int*    er_model,
     float*        D_RDD_Gy);
 
+void AT_fluence_cm2_R( const int* n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*        D_Gy,
+    const int*    material_no,
+    float*  fluence_cm2);
 
 void AT_gamma_response_R( const int*  n,
     const float*  d_Gy,
