@@ -1615,3 +1615,43 @@ void AT_total_u_R(    const int * n,
   free( E_MeV_u_double );
   free( fluence_cm2_double );
 }
+
+void AT_convert_beam_parameters_R(  const int*  n,
+    float* fluence_cm2,
+    float* sigma_cm,
+    float* N,
+    float* FWHM_mm)
+{
+	  long i;
+
+	  const long n_long = (long)(*n);
+
+	  double * fluence_cm2_double  	= (double*)calloc(n_long,sizeof(double));
+	  double * sigma_cm_double  	= (double*)calloc(n_long,sizeof(double));
+	  double * N_double  			= (double*)calloc(n_long,sizeof(double));
+	  double * FWHM_mm_double  		= (double*)calloc(n_long,sizeof(double));
+	  for(i = 0 ; i < n_long ; i++){
+		  fluence_cm2_double[i]     	=  (double)fluence_cm2[i];
+		  sigma_cm_double[i]     		=  (double)sigma_cm[i];
+		  N_double[i]     				=  (double)N[i];
+		  FWHM_mm_double[i]     		=  (double)FWHM_mm[i];
+	  }
+
+	AT_convert_beam_parameters(  n_long,
+			fluence_cm2_double,
+			sigma_cm_double,
+			N_double,
+			FWHM_mm_double);
+
+	  for(i = 0 ; i < n_long ; i++){
+		  fluence_cm2[i]     	=  (float)fluence_cm2_double[i];
+		  sigma_cm[i]    		=  (float)sigma_cm_double[i];
+		  N[i]     				=  (float)N_double[i];
+		  FWHM_mm[i]    		=  (float)FWHM_mm_double[i];
+	  }
+
+	free(fluence_cm2_double);
+	free(sigma_cm_double);
+	free(N_double);
+	free(FWHM_mm_double);
+}
