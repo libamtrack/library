@@ -355,4 +355,10 @@ void AT_total_u_R(    const int * n,
                 const int   * er_model,
                 float *       u);
 
+void AT_convert_beam_parameters_R(  const int*  n,
+    float* fluence_cm2,
+    float* sigma_cm,
+    float* N,
+    float* FWHM_mm);
+
 #endif /* AT_WRAPPER_R_H_ */

@@ -67,6 +67,33 @@
 debug 		<- F
 AT.version 	<- "libamtrack S/R wrapping script - 2010/03/23"
 
+##########################
+AT.convert.beam.parameters	<-	function(	N 				= 0,
+											FWHM.mm			= 0,
+											fluence.cm2		= 0,
+											sigma.cm		= 0){
+	n					<-	max(length(N), length(FWHM.mm), length(fluence.cm2), length(sigma.cm))
+	if(N == 0){
+		N					<-	numeric(n)
+	}
+	if(FWHM.mm == 0){
+		FWHM.mm				<-	numeric(n)
+	}
+	if(fluence.cm2 == 0){
+		fluence.cm2			<-	numeric(n)
+	}
+	if(sigma.cm == 0){
+		sigma.cm			<-	numeric(n)
+	}
+	
+	res					<-	.C(	"AT_convert_beam_parameters_R",						n					=	as.integer(n),
+																					fluence.cm2			=	as.single(fluence.cm2),
+																					sigma.cm			=	as.single(sigma.cm),
+																					N					=	as.single(N),
+																					FWHM.mm				=	as.single(FWHM.mm))
+	return(res)						
+}
+
 #################
 AT.CSDA.range.g.cm2		<-	function(	E.MeV.u,
 										particle.no,
