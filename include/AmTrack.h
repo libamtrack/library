@@ -71,7 +71,7 @@ int AT_GetNumber(void);
  * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2         fluences for the given particles, doses in Gy if negative (array of size n)
+ * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
  * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  rdd_model           index number for chosen radial dose distribution
@@ -105,7 +105,7 @@ int AT_GetNumber(void);
 void AT_run_SPIFF_method(  const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
-    const double  fluence_cm2[],
+    const double  fluence_cm2_or_dose_Gy[],
     const long    material_no,
     const long    rdd_model,
     const double  rdd_parameters[],
@@ -248,7 +248,7 @@ void AT_GSM_calculate_local_response_grid( const long      nX,
  * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2         fluences for the given particles, doses in Gy if negative (array of size n)
+ * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
  * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  RDD_model           index number for chosen radial dose distribution
@@ -283,7 +283,7 @@ void AT_GSM_calculate_local_response_grid( const long      nX,
 void AT_run_GSM_method(  const long  n,
     const double   E_MeV_u[],
     const long     particle_no[],
-    const double   fluence_cm2[],
+    const double   fluence_cm2_or_dose_Gy[],
     const long     material_no,
     const long     RDD_model,
     const double   RDD_parameters[],
@@ -306,7 +306,7 @@ void AT_run_GSM_method(  const long  n,
  * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2         fluences for the given particles, doses in Gy if negative (array of size n)
+ * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
  * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  RDD_model           index number for chosen radial dose distribution
@@ -336,7 +336,7 @@ void AT_run_GSM_method(  const long  n,
 void AT_run_IGK_method(  const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
-    const double  fluence_cm2[],
+    const double  fluence_cm2_or_dose_Gy[],
     const long    material_no,
     const long    RDD_model,
     const double  RDD_parameters[],
@@ -356,7 +356,7 @@ void AT_run_IGK_method(  const long  n,
  * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2         fluences for the given particles, doses in Gy if negative (array of size n)
+ * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
  * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  RDD_model           index number for chosen radial dose distribution
@@ -387,7 +387,7 @@ void AT_run_IGK_method(  const long  n,
 void AT_run_SPISS_method(  const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
-    const double  fluence_cm2[],
+    const double  fluence_cm2_or_dose_Gy[],
     const long    material_no,
     const long    RDD_model,
     const double  RDD_parameters[],

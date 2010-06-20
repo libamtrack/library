@@ -93,7 +93,7 @@ void  AT_SC_get_f1(
     const long    n,
     const double  E_MeV_u[],
     const long    particle_no[],
-    const double  fluence_cm2[],
+    const double  fluence_cm2_or_dose_Gy[],
     const long    material_no,
     const long    rdd_model,
     const double  rdd_parameter[],
@@ -105,34 +105,34 @@ void  AT_SC_get_f1(
     double        f1_dd_Gy[],
     double        f1[])
 {
-  double*  fluence_cm2_local    =  (double*)calloc(n, sizeof(double));
+  double*  fluence_cm2    =  (double*)calloc(n, sizeof(double));
 
   long i;
-  if(fluence_cm2[0] < 0){
-    double*  dose_Gy_local        =  (double*)calloc(n, sizeof(double));
+  if(fluence_cm2_or_dose_Gy[0] < 0){
+    double*  dose_Gy        =  (double*)calloc(n, sizeof(double));
     for (i = 0; i < n; i++){
-      dose_Gy_local[i] = -1.0 * fluence_cm2[i];
+      dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
     AT_fluence_cm2(  n,
         E_MeV_u,
         particle_no,
-        dose_Gy_local,
+        dose_Gy,
         material_no,
-        fluence_cm2_local);
-    free( dose_Gy_local );
+        fluence_cm2);
+    free( dose_Gy );
   }else{
     for (i = 0; i < n; i++){
-      fluence_cm2_local[i] = fluence_cm2[i];
+      fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
     }
   }
   double*  norm_fluence                                 =  (double*)calloc(n, sizeof(double));
 
   // Normalize fluence vector
   AT_normalize(    n,
-                fluence_cm2_local,
+                fluence_cm2,
                 norm_fluence);
 
-  free( fluence_cm2_local );
+  free( fluence_cm2 );
 
   if(n_bins_f1 > 0){
     double  d_min      =  f1_parameters[0*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3];

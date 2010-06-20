@@ -43,7 +43,7 @@ int AT_GetNumber(void){ // TODO to be removed
 void AT_run_SPIFF_method(  const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
-    const double  fluence_cm2[],
+    const double  fluence_cm2_or_dose_Gy[],
     const long    material_no,
     const long    rdd_model,
     const double  rdd_parameters[],
@@ -97,7 +97,7 @@ void AT_run_SPIFF_method(  const long  n,
   AT_SC_get_f1(  n,
       E_MeV_u,
       particle_no,
-      fluence_cm2,
+      fluence_cm2_or_dose_Gy,
       material_no,
       rdd_model,
       rdd_parameters,
@@ -109,37 +109,37 @@ void AT_run_SPIFF_method(  const long  n,
       f1_dd_Gy,
       f1);
 
-  double*  fluence_cm2_local    =  (double*)calloc(n, sizeof(double));
+  double*  fluence_cm2    =  (double*)calloc(n, sizeof(double));
 
   long i;
 
-  if(fluence_cm2[0] < 0){
-    double*  dose_Gy_local      =  (double*)calloc(n, sizeof(double));
+  if(fluence_cm2_or_dose_Gy[0] < 0){
+    double*  dose_Gy      =  (double*)calloc(n, sizeof(double));
     for (i = 0; i < n; i++){
-      dose_Gy_local[i] = -1.0 * fluence_cm2[i];
+      dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
     // convert dose to fluence
     AT_fluence_cm2(  n,
         E_MeV_u,
         particle_no,
-        dose_Gy_local,
+        dose_Gy,
         material_no,
-        fluence_cm2_local);
-    free( dose_Gy_local );
+        fluence_cm2);
+    free( dose_Gy );
   }else{
     for (i = 0; i < n; i++){
-      fluence_cm2_local[i] = fluence_cm2[i];
+      fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
     }
   }
 
   const double u  =       AT_total_u(     n,
       E_MeV_u,
       particle_no,
-      fluence_cm2_local,
+      fluence_cm2,
       material_no,
       er_model);
 
-  free( fluence_cm2_local );
+  free( fluence_cm2 );
 
   long      n_bins_f;
   double    u_start;
@@ -809,7 +809,7 @@ void AT_run_GSM_method(  const long  n,
 void AT_run_IGK_method(  const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
-    const double  fluence_cm2[],
+    const double  fluence_cm2_or_dose_Gy[],
     const long    material_no,
     const long    rdd_model,
     const double  rdd_parameters[],
@@ -827,40 +827,40 @@ void AT_run_IGK_method(  const long  n,
   // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
   // only the first entry will be check
   long   i;
-  double*  fluence_cm2_local    =  (double*)calloc(n, sizeof(double));
-  double*  dose_Gy_local        =  (double*)calloc(n, sizeof(double));
+  double*  fluence_cm2    =  (double*)calloc(n, sizeof(double));
+  double*  dose_Gy        =  (double*)calloc(n, sizeof(double));
 
-  if(fluence_cm2[0] < 0){
+  if(fluence_cm2_or_dose_Gy[0] < 0){
     for (i = 0; i < n; i++){
-      dose_Gy_local[i] = -1.0 * fluence_cm2[i];
+      dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
     AT_fluence_cm2(  n,
         E_MeV_u,
         particle_no,
-        dose_Gy_local,
+        dose_Gy,
         material_no,
-        fluence_cm2_local);
+        fluence_cm2);
   }else{
     for (i = 0; i < n; i++){
-      fluence_cm2_local[i] = fluence_cm2[i];
+      fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
     }
     AT_D_Gy(  n,
         E_MeV_u,
         particle_no,
-        fluence_cm2_local,
+        fluence_cm2,
         material_no,
-        dose_Gy_local);
+        dose_Gy);
   }
 
   double total_dose_Gy = 0.0;
   double total_fluence_cm2    = 0.0;
 
   for (i = 0; i < n; i++){
-    total_dose_Gy      +=  dose_Gy_local[i];
-    total_fluence_cm2  +=  fluence_cm2_local[i];
+    total_dose_Gy      +=  dose_Gy[i];
+    total_fluence_cm2  +=  fluence_cm2[i];
   }
 
-  free( dose_Gy_local );
+  free( dose_Gy );
 
   double u_single;
 
@@ -871,13 +871,13 @@ void AT_run_IGK_method(  const long  n,
   for (i = 0; i < n; i++){
         double LET_MeV_cm2_g = AT_LET_MeV_cm2_g_single(E_MeV_u[i], particle_no[i], material_no);
         double single_impact_fluence_cm2 = AT_single_impact_fluence_cm2_single(E_MeV_u[i], material_no, er_model);
-    norm_fluence[i]          =  fluence_cm2_local[i] / total_fluence_cm2;
-    u_single                 =  fluence_cm2_local[i] / single_impact_fluence_cm2;
+    norm_fluence[i]          =  fluence_cm2[i] / total_fluence_cm2;
+    u_single                 =  fluence_cm2[i] / single_impact_fluence_cm2;
     double single_impact_dose_Gy = AT_single_impact_dose_Gy_single(LET_MeV_cm2_g, single_impact_fluence_cm2);
     dose_contribution_Gy[i]  =  u_single * single_impact_dose_Gy;
   }
 
-  free( fluence_cm2_local );
+  free( fluence_cm2 );
 
   // Get accumulated normalized fluence for later sampling of particle type
   double*  accu_fluence          =  (double*)calloc(n, sizeof(double));
@@ -1056,7 +1056,7 @@ void AT_run_IGK_method(  const long  n,
 void AT_run_SPISS_method(  const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
-    const double  fluence_cm2[],
+    const double  fluence_cm2_or_dose_Gy[],
     const long    material_no,
     const long    rdd_model,
     const double  rdd_parameters[],
@@ -1111,7 +1111,7 @@ void AT_run_SPISS_method(  const long  n,
   AT_SC_get_f1(           n,
       E_MeV_u,
       particle_no,
-      fluence_cm2,
+      fluence_cm2_or_dose_Gy,
       material_no,
       rdd_model,
       rdd_parameters,
@@ -1124,36 +1124,36 @@ void AT_run_SPISS_method(  const long  n,
       f1_dd_Gy,
       f1);
 
-  double*  fluence_cm2_local    =  (double*)calloc(n, sizeof(double));
-  double*  dose_Gy_local        =  (double*)calloc(n, sizeof(double));
+  double*  fluence_cm2    =  (double*)calloc(n, sizeof(double));
+  double*  dose_Gy        =  (double*)calloc(n, sizeof(double));
 
   long i;
-  if(fluence_cm2[0] < 0){
+  if(fluence_cm2_or_dose_Gy[0] < 0){
     for (i = 0; i < n; i++){
-      dose_Gy_local[i] = -1.0 * fluence_cm2[i];
+      dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
     AT_fluence_cm2(  n,
         E_MeV_u,
         particle_no,
-        dose_Gy_local,
+        dose_Gy,
         material_no,
-        fluence_cm2_local);
+        fluence_cm2);
   }else{
     for (i = 0; i < n; i++){
-      fluence_cm2_local[i] = fluence_cm2[i];
+      fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
     }
     AT_D_Gy(  n,
         E_MeV_u,
         particle_no,
-        fluence_cm2_local,
+        fluence_cm2,
         material_no,
-        dose_Gy_local);
+        dose_Gy);
   }
   double*  norm_fluence                                 =  (double*)calloc(n, sizeof(double));
 
   // Normalize fluence vector
   AT_normalize(    n,
-                fluence_cm2_local,
+                fluence_cm2,
                 norm_fluence);
 
   const double u  =       AT_total_u(     n,
@@ -1163,8 +1163,8 @@ void AT_run_SPISS_method(  const long  n,
       material_no,
       er_model);
 
-  free( fluence_cm2_local );
-  free( dose_Gy_local );
+  free( fluence_cm2 );
+  free( dose_Gy );
 
   double*  accu_fluence                                 =  (double*)calloc(n, sizeof(double));
 
