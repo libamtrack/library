@@ -41,7 +41,7 @@ library("lattice")
 
 E.MeV.u <- c( 1, 10, 100)
 particle.no <- c( 1001, 6012, 1001)
-fluence.cm2 <- c( -1, -5, -4)  # in Gy
+fluence.cm2.or.dose.Gy <- c( -1, -5, -4)  # in Gy
 
 factor <- 10^seq( -4, -1, length = 5)
 
@@ -82,13 +82,13 @@ for( i in ER.model) {
  	 for( k in factor ){   
  	    kk 			<- ((df1$RDD.model == j) & (df1$ER.model == i) & (df1$factor == k))
  	    
- 	    current.fluence.cm2 <- df1$factor[kk] * fluence.cm2
+ 	    current.fluence.cm2.or.dose.Gy <- df1$factor[kk] * fluence.cm2.or.dose.Gy
  	    
- 	    cat( "Fluences ", current.fluence.cm2 , "\n")
+ 	    cat( "Fluences ", current.fluence.cm2.or.dose.Gy , "\n")
  	        
  	    SPIFF.res <- AT.run.SPIFF.method( E.MeV.u = E.MeV.u,
 									particle.no = particle.no,
-									fluence.cm2 = current.fluence.cm2,
+									fluence.cm2.or.dose.Gy = current.fluence.cm2.or.dose.Gy,
 									material.no = material.no,
 									RDD.model = j,
 									RDD.parameters = RDD.parameters[[j]],
@@ -109,7 +109,7 @@ for( i in ER.model) {
          
          GSM.res <- AT.run.GSM.method( E.MeV.u = E.MeV.u,
                                     particle.no = particle.no,
-                                    fluence.cm2 = current.fluence.cm2,
+                                    fluence.cm2.or.dose.Gy = current.fluence.cm2.or.dose.Gy,
                                     material.no = material.no,
                                     RDD.model = j,
                                     RDD.parameters = RDD.parameters[[j]],

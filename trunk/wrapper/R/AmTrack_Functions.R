@@ -1,10 +1,10 @@
 run.SPIFF		<-	function(	E.MeV.u,
 					particle.no,
-					fluence.cm2,
+					fluence.cm2.or.dose.Gy,
 					material.no				=	1,				# Liquid water
-					RDD.model				=	3,				# Geiß' RDD
+					RDD.model				=	3,				# Geiss RDD
 					RDD.parameters			=	5e-8,			# a0 = 50 nm
-					ER.model				=	4,				# Geiß' ER
+					ER.model				=	4,				# Geiss ER
 					gamma.model				=	2,				# General hit-target
 					gamma.parameters		=	c(1,10,1,1,0),	# One single-hit-single-target (exp-sat) component, characteristic dose 10 Gy
 					N2						=	20,				# 20 bins per factor 2 in histograms
@@ -13,13 +13,13 @@ run.SPIFF		<-	function(	E.MeV.u,
 					shrink.tails			=	T,				# cut insignificant tails
 					shrink.tails.under		=	1e-30,			# cut them in case contribution to first moment is lower than
 					adjust.N2				=	T,				# adjust bin width during convolution
-					lethal.events.mode		=	F,				# use survival instead of activiation
+					lethal.events.mode		=	F,				# use survival instead of activation
 					verbose					=	F){				# return distributions etc.
 
 if(verbose){
 	results.1	<-	AT.SC.get.f1.array.size(E.MeV.u = E.MeV.u,
 								particle.no = particle.no,
-								fluence.cm2 = fluence.cm2,
+								fluence.cm2.or.dose.Gy = fluence.cm2.or.dose.Gy,
 								material.no = material.no,
 								RDD.model = RDD.model,
 								RDD.parameters = RDD.parameters,
@@ -28,7 +28,7 @@ if(verbose){
 
 	results.2	<-	AT.SC.get.f1(	E.MeV.u = E.MeV.u,
 							particle.no = particle.no,
-							fluence.cm2 = fluence.cm2,
+							fluence.cm2.or.dose.Gy = fluence.cm2.or.dose.Gy,
 							material.no = material.no,
 							RDD.model = RDD.model,
 							RDD.parameters = RDD.parameters,
@@ -95,7 +95,7 @@ if(verbose){
 
 	return(	list(		E.MeV.u = E.MeV.u,
 					particle.no = particle.no,
-					fluence.cm2 = fluence.cm2,
+					fluence.cm2.or.dose.Gy = fluence.cm2.or.dose.Gy,
 					norm.fluence = results.2$norm.fluence,
 					dose.contribution.Gy = results.2$dose.contribution.Gy,
 					material.no = material.no,
@@ -127,7 +127,7 @@ if(verbose){
 	}else{
 		return(AT.run.SPIFF.method(	E.MeV.u 		= E.MeV.u,
 							particle.no 	= particle.no,
-							fluence.cm2 	= fluence.cm2,
+							fluence.cm2.or.dose.Gy 	= fluence.cm2.or.dose.Gy,
 							material.no 	= material.no,
 							RDD.model 		= RDD.model,
 							RDD.parameters 	= RDD.parameters,
@@ -146,23 +146,23 @@ if(verbose){
 
 run.GSM		<-	function(	E.MeV.u,
 					particle.no,
-					fluence.cm2,
+					fluence.cm2.or.dose.Gy,
 					material.no				=	1,				# Liquid water
-					RDD.model				=	3,				# Geiß' RDD
+					RDD.model				=	3,				# Geiss RDD
 					RDD.parameters			=	5e-8,			# a0 = 50 nm
-					ER.model				=	4,				# Geiß' ER
+					ER.model				=	4,				# Geiss ER
 					gamma.model				=	2,				# General hit-target
 					gamma.parameters		=	c(1,10,1,1,0),	# One single-hit-single-target (exp-sat) component, characteristic dose 10 Gy
-					N.runs				=	1,		### 1 run for begining
+					N.runs				=	1,		### 1 run for beginning
 					write.output			=	F,				# no log file
 					nX					=	5,		### 100 x 100 grid
 					voxel.size.m			=	0.01,	### .1 mm voxel size
-					lethal.events.mode		=	F				# use survival instead of activiation
+					lethal.events.mode		=	F				# use survival instead of activation
 					){
 
 	return(AT.run.GSM.method(	E.MeV.u 		= E.MeV.u,
 						particle.no 	= particle.no,
-						fluence.cm2 	= fluence.cm2,
+						fluence.cm2.or.dose.Gy 	= fluence.cm2.or.dose.Gy,
 						material.no 	= material.no,
 						RDD.model 		= RDD.model,
 						RDD.parameters 	= RDD.parameters,
@@ -178,11 +178,11 @@ run.GSM		<-	function(	E.MeV.u,
 
 run.IGK		<-	function(	E.MeV.u,
 					particle.no,
-					fluence.cm2,
+					fluence.cm2.or.dose.Gy,
 					material.no						=	1,				# Liquid water
-					RDD.model						=	3,				# Geiß' RDD
+					RDD.model						=	3,				# Geiss RDD
 					RDD.parameters					=	5e-8,			# a0 = 50 nm
-					ER.model						=	3,				# Geiß' ER
+					ER.model						=	3,				# Geiss ER
 					gamma.model						=	2,				# General hit-target
 					gamma.parameters				=	c(1,10,1,1,0),	# One single-hit-single-target (exp-sat) component, characteristic dose 10 Gy
 					saturation.cross.section.factor = 	1,
@@ -190,7 +190,7 @@ run.IGK		<-	function(	E.MeV.u,
 
 	return(AT.run.IGK.method(	E.MeV.u 							= E.MeV.u,
 								particle.no 						= particle.no,
-								fluence.cm2 						= fluence.cm2,
+								fluence.cm2.or.dose.Gy 				= fluence.cm2.or.dose.Gy,
 								material.no 						= material.no,
 								RDD.model 							= RDD.model,
 								RDD.parameters 						= RDD.parameters,

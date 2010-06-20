@@ -124,7 +124,7 @@ long  AT_SC_get_f1_array_size(
  * @param[in]  n                     number of particle types in the mixed particle field
  * @param[in]  E_MeV_u               energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no           type of the particles in the mixed particle field (array of size n)
- * @param[in]  fluence_cm2           fluences for the given particles, doses in Gy if negative (array of size n)
+ * @param[in]  fluence_cm2_or_dose_Gy           fluences for the given particles, doses in Gy if negative (array of size n)
  * @param[in]  material_no           index number for detector material
  * @param[in]  rdd_model             index number for chosen radial dose distribution
  * @param[in]  rdd_parameters        parameters for chosen radial dose distribution (array of size depending on chosen model)
@@ -140,7 +140,7 @@ void  AT_SC_get_f1(
     const long   n,
     const double E_MeV_u[],
     const long   particle_no[],
-    const double fluence_cm2[],
+    const double fluence_cm2_or_dose_Gy[],
     const long   material_no,
     const long   rdd_model,
     const double rdd_parameter[],

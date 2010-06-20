@@ -559,7 +559,7 @@ void AT_particle_no_from_particle_name_R(const char** particle_name,
 void AT_run_GSM_method_R(  const int*  n,
     const float*  E_MeV_u,
     const int*    particle_no,
-    const float*  fluence_cm2,
+    const float*  fluence_cm2_or_dose_Gy,
     const int*    material_no,
     const int*    rdd_model,
     const float*  rdd_parameters,
@@ -593,10 +593,10 @@ void AT_run_GSM_method_R(  const int*  n,
 
   /* float -> double conversion */
   double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
-  double * fluence_cm2_double = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_or_dose_Gy_double = (double*)calloc(n_long,sizeof(double));
   for(i = 0 ; i < n_long ; i++){
     E_MeV_u_double[i] = (double)E_MeV_u[i];
-    fluence_cm2_double[i] = (double)fluence_cm2[i];
+    fluence_cm2_or_dose_Gy_double[i] = (double)fluence_cm2_or_dose_Gy[i];
   }
   double rdd_parameter_double[RDD_MAX_NUMBER_OF_PARAMETERS];
   for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
@@ -623,7 +623,7 @@ void AT_run_GSM_method_R(  const int*  n,
   AT_run_GSM_method(n_long,
       E_MeV_u_double,
       particle_no_long,
-      fluence_cm2_double,
+      fluence_cm2_or_dose_Gy_double,
       material_no_long,
       rdd_model_long,
       rdd_parameter_double,
@@ -643,14 +643,14 @@ void AT_run_GSM_method_R(  const int*  n,
   }
   free(particle_no_long);
   free(E_MeV_u_double);
-  free(fluence_cm2_double);
+  free(fluence_cm2_or_dose_Gy_double);
 }
 
 
 void AT_run_SPIFF_method_R(  const int*  n,
     const float*  E_MeV_u,
     const int*    particle_no,
-    const float*  fluence_cm2,
+    const float*  fluence_cm2_or_dose_Gy,
     const int*    material_no,
     const int*    rdd_model,
     const float*  rdd_parameters,
@@ -687,10 +687,10 @@ void AT_run_SPIFF_method_R(  const int*  n,
 
   /* float -> double conversion */
   double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
-  double * fluence_cm2_double = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_or_dose_Gy_double = (double*)calloc(n_long,sizeof(double));
   for(i = 0 ; i < n_long ; i++){
     E_MeV_u_double[i] = (double)E_MeV_u[i];
-    fluence_cm2_double[i] = (double)fluence_cm2[i];
+    fluence_cm2_or_dose_Gy_double[i] = (double)fluence_cm2_or_dose_Gy[i];
   }
   double rdd_parameter_double[RDD_MAX_NUMBER_OF_PARAMETERS];
   for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
@@ -718,7 +718,7 @@ void AT_run_SPIFF_method_R(  const int*  n,
   AT_run_SPIFF_method(  n_long,
       E_MeV_u_double,
       particle_no_long,
-      fluence_cm2_double,
+      fluence_cm2_or_dose_Gy_double,
       material_no_long,
       rdd_model_long,
       rdd_parameter_double,
@@ -743,14 +743,14 @@ void AT_run_SPIFF_method_R(  const int*  n,
    }
    free(particle_no_long);
    free(E_MeV_u_double);
-   free(fluence_cm2_double);
+   free(fluence_cm2_or_dose_Gy_double);
 }
 
 
 void AT_run_IGK_method_R(  const int*  n,
     const float*  E_MeV_u,
     const int*    particle_no,
-    const float*  fluence_cm2,
+    const float*  fluence_cm2_or_dose_Gy,
     const int*    material_no,
     const int*    rdd_model,
     const float*  rdd_parameters,
@@ -779,10 +779,10 @@ void AT_run_IGK_method_R(  const int*  n,
   /* float -> double conversion */
   const double saturation_cross_section_factor_double = (const double)(*saturation_cross_section_factor);
   double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
-  double * fluence_cm2_double = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_or_dose_Gy_double = (double*)calloc(n_long,sizeof(double));
   for(i = 0 ; i < n_long ; i++){
     E_MeV_u_double[i] = (double)E_MeV_u[i];
-    fluence_cm2_double[i] = (double)fluence_cm2[i];
+    fluence_cm2_or_dose_Gy_double[i] = (double)fluence_cm2_or_dose_Gy[i];
   }
   double rdd_parameter_double[RDD_MAX_NUMBER_OF_PARAMETERS];
   for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
@@ -808,7 +808,7 @@ void AT_run_IGK_method_R(  const int*  n,
   AT_run_IGK_method(  n_long,
       E_MeV_u_double,
       particle_no_long,
-      fluence_cm2_double,
+      fluence_cm2_or_dose_Gy_double,
       material_no_long,
       rdd_model_long,
       rdd_parameter_double,
@@ -825,7 +825,7 @@ void AT_run_IGK_method_R(  const int*  n,
    }
    free(particle_no_long);
    free(E_MeV_u_double);
-   free(fluence_cm2_double);
+   free(fluence_cm2_or_dose_Gy_double);
 }
 
 
@@ -902,7 +902,7 @@ void  AT_SC_get_f1_R(
     const int*    n,
     const float*  E_MeV_u,
     const int*    particle_no,
-    const float*  fluence_cm2,
+    const float*  fluence_cm2_or_dose_Gy,
     const int*    material_no,
     const int*    rdd_model,
     const float*  rdd_parameter,
@@ -929,10 +929,10 @@ void  AT_SC_get_f1_R(
 
   /* float -> double conversion */
   double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
-  double * fluence_cm2_double = (double*)calloc(n_long,sizeof(double));
+  double * fluence_cm2_or_dose_Gy_double = (double*)calloc(n_long,sizeof(double));
   for(i = 0 ; i < n_long ; i++){
     E_MeV_u_double[i] = (double)E_MeV_u[i];
-    fluence_cm2_double[i] = (double)fluence_cm2[i];
+    fluence_cm2_or_dose_Gy_double[i] = (double)fluence_cm2_or_dose_Gy[i];
   }
   double rdd_parameter_double[RDD_MAX_NUMBER_OF_PARAMETERS];
   for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
@@ -951,7 +951,7 @@ void  AT_SC_get_f1_R(
   AT_SC_get_f1( n_long,
       E_MeV_u_double,
       particle_no_long,
-      fluence_cm2_double,
+      fluence_cm2_or_dose_Gy_double,
       material_no_long,
       rdd_model_long,
       rdd_parameter_double,
@@ -971,7 +971,7 @@ void  AT_SC_get_f1_R(
   }
   free(particle_no_long);
   free(E_MeV_u_double);
-  free(fluence_cm2_double);
+  free(fluence_cm2_or_dose_Gy_double);
   free(f1_parameters_double);
   free(f1_d_Gy_double);
   free(f1_dd_Gy_double);

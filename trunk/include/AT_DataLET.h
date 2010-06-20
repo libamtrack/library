@@ -40,7 +40,6 @@
  * Total number of elements in data table
  */
 #define PSTAR_DATA_N_PER_MATERIAL       132
-//#define PSTAR_DATA_N                    792
 #define PSTAR_DATA_N                    PSTAR_DATA_N_PER_MATERIAL * MATERIAL_DATA_N
 
 // TODO implement method for getting LET of one particle
