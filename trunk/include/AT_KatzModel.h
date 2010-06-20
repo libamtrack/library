@@ -252,6 +252,24 @@ int AT_KatzModel_inactivation_cross_section_m2(
     const double gamma_parameters[5],
     double inactivation_cross_section_m2[]);
 
+
+/**
+ * TODO
+ */
+double AT_KatzModel_single_field_survival(
+    const double fluence_cm2,
+	const double E_MeV_u,
+    const long   particle_no,
+    const long   material_no,
+    const long   rdd_model,
+    const double rdd_parameters[],
+    const long   er_model,
+    const double D0_characteristic_dose_Gy,
+    const double m_number_of_targets,
+    const double sigma0,
+    const double kappa);
+
+
 /**
  * TODO
  */

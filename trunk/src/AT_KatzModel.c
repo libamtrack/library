@@ -427,7 +427,62 @@ int AT_KatzModel_inactivation_cross_section_m2(
   return 0;
 }
 
+
 /* TODO implement old Katz with kappa and sigma instead of track-width here */
+double AT_KatzModel_single_field_survival(
+    const double fluence_cm2,
+	const double E_MeV_u,
+    const long   particle_no,
+    const long   material_no,
+    const long   rdd_model,
+    const double rdd_parameters[],
+    const long   er_model,
+    const double D0_characteristic_dose_Gy,
+    const double m_number_of_targets,
+    const double sigma0,
+    const double kappa){
+
+	double inactivation_cross_section_m2;
+
+	double gamma_parameters[5] = {1.,D0_characteristic_dose_Gy,1.,m_number_of_targets,0.};
+
+	AT_KatzModel_inactivation_cross_section_m2(
+	    1,
+	    &E_MeV_u,
+	    particle_no,
+	    material_no,
+	    rdd_model,
+	    rdd_parameters,
+	    er_model,
+	    gamma_parameters,
+	    &inactivation_cross_section_m2);
+
+	const double beta = AT_beta_from_E_single(E_MeV_u);
+
+	const double zeff = AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
+
+	double ion_kill_mode_fraction = pow( 1 - exp( - gsl_pow_2(zeff/beta)/kappa), m_number_of_targets);
+
+	double cross_section_ratio = inactivation_cross_section_m2 / sigma0;
+
+	double dose_Gy;
+	AT_D_Gy(  1, &E_MeV_u, &particle_no, &fluence_cm2, material_no, &dose_Gy);
+
+	double gamma_kill_dose = (1 - ion_kill_mode_fraction) * dose_Gy;
+
+	double gamma_kill_mode_survival;
+	double ion_kill_mode_survival;
+	if( ion_kill_mode_fraction > 0.98 ){
+		gamma_kill_mode_survival = 1;
+		ion_kill_mode_survival = exp( - inactivation_cross_section_m2 * fluence_cm2);
+	} else {
+		gamma_kill_mode_survival = 1 - pow( 1 - exp( - gamma_kill_dose / D0_characteristic_dose_Gy), m_number_of_targets);
+		ion_kill_mode_survival = exp( - sigma0 * fluence_cm2);
+	}
+
+	return ion_kill_mode_survival * gamma_kill_mode_survival;
+}
+
 
 double AT_D_RDD_Gy_int( double  r_m,
     void*   params){

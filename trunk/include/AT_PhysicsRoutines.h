@@ -258,6 +258,22 @@ int AT_max_E_transfer_MeV(  const long  n,
 
 
 /**
+ * Returns dose in Gy for particles with given fluence and energy
+ * @param[in]  E_MeV_u      energy of particles
+ * @param[in]  fluence_cm2  fluence in 1/cm2
+ * @param[in]  particle_no  type of the particles
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @return     D_Gy         dose in Gy
+ */
+double AT_Dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
+    const long    particle_no,
+    const double  fluence_cm2,
+    const long    material_no);
+
+
+/**
  * Returns dose in Gy for each given particle
  * @param[in]  n            number of particle types in the mixed particle field
  * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
