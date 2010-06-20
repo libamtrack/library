@@ -176,11 +176,25 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
   }
 }
 
+
+double AT_Dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
+    const long    particle_no,
+    const double  fluence_cm2,
+    const long    material_no){
+
+	double LET_MeV_cm2_g = AT_LET_MeV_cm2_g_single( E_MeV_u, particle_no, material_no );
+
+	// Multiply by fluence, convert from MeV/g to Gy
+	return LET_MeV_cm2_g * fluence_cm2 * MeV_g_to_J_kg;
+}
+
+
+// TODO can it be renamed to AT_Dose_Gy_from_fluence_cm2 ?
 void AT_D_Gy(  const long  n,
     const double  E_MeV_u[],
-    const long   particle_no[],
+    const long    particle_no[],
     const double  fluence_cm2[],
-    const long   material_no,
+    const long    material_no,
     double        D_Gy[])
 {
   // Get LET (write already into D_Gy)
@@ -192,8 +206,14 @@ void AT_D_Gy(  const long  n,
   // Multiply by fluence, convert from MeV/g to Gy
   long  i;
   for (i = 0; i < n; i++){
-    D_Gy[i]     =       D_Gy[i] * fluence_cm2[i] * MeV_g_to_J_kg;
+    D_Gy[i] =  D_Gy[i] * fluence_cm2[i] * MeV_g_to_J_kg;
   }
+
+  // TODO can't it be replaced by following code:
+  //for (i = 0; i < n; i++){
+  //  D_Gy[i] =  AT_Dose_Gy_from_fluence_cm2_single(  E_MeV_u[i], particle_no[i], fluence_cm2[i], material_no );
+  //}
+
 }
 
 
