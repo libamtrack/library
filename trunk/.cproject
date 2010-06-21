@@ -9,6 +9,7 @@
 <externalSetting>
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/libamtrack"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/libamtrack/Debug"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/libamtrack/AT_Debug"/>
 </externalSetting>
 </externalSettings>
 <extensions>
@@ -58,7 +59,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="data/Tsuruoka_2005/run_simulation_GSM.c|test/C/AT_UI.c|test/C/AT_test.c|wrapper/R/example.c|wrapper/example.h|wrapper/example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="test/C/AT_test_Katz.c|test/C/AT_test_GSM.c|data/Tsuruoka_2005/run_simulation_GSM.c|test/C/AT_UI.c|test/C/AT_test.c|wrapper/R/example.c|wrapper/example.h|wrapper/example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>
@@ -487,6 +488,7 @@
 <externalSetting>
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/libamtrack"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/libamtrack/Release"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/libamtrack/AT_Release"/>
 </externalSetting>
 </externalSettings>
 <extensions>
@@ -536,7 +538,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="data/Tsuruoka_2005/run_simulation_GSM.c|test/C/AT_UI.c|test/C/AT_test.c|wrapper/R/example.c|wrapper/example.h|wrapper/example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="test/C/AT_test_Katz.c|test/C/AT_test_GSM.c|data/Tsuruoka_2005/run_simulation_GSM.c|test/C/AT_UI.c|test/C/AT_test.c|wrapper/R/example.c|wrapper/example.h|wrapper/example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>
