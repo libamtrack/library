@@ -37,7 +37,7 @@
 #include <string.h>
 
 #include "AmTrack.h"
-
+#include "AT_ElectronRange.h"
 
 void AT_GSM_save_dose_pattern_to_file( const long  number_of_field_components,
     const double   E_MeV_u[],
@@ -120,21 +120,22 @@ void AT_GSM_save_dose_pattern_to_file( const long  number_of_field_components,
 	free( y_position );
 }
 
+
 int main( int argc, char * argv[] ){
 
-	char filename[200] = "grid.dat";
+	char filename1[200] = "grid1.dat";
 
 	if( argc != 3){
 		printf("Usage: %s nX pixel_size_m\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
 
-	printf("Saving dose pattern to file %s\n", filename);
+	printf("Saving dose pattern to file %s\n", filename1);
 
-	long number_of_field_components = 3;
-	double   E_MeV_u[] = {60.,100.,1.};
-	double   fluence_cm2[] = {1e7,1e5,1e4};
-	long     particle_no[] = {1001,6012,1001};
+	long     number_of_field_components = 2;
+	double   E_MeV_u[] = {1.,1.};
+	double   fluence_cm2[] = {1e7,1e7};
+	long     particle_no[] = {1001,6012};
 	long     material_no = Water_Liquid;
 	long     rdd_model   = RDD_Geiss;
 	double   rdd_parameter[] = {5e-8};
@@ -152,7 +153,7 @@ int main( int argc, char * argv[] ){
 	    er_model,
 	    nX,
 	    pixel_size_m,
-	    filename);
+	    filename1);
 
-	return 0;
+	return EXIT_SUCCESS;
 };
