@@ -67,6 +67,10 @@ test_GSM:AT_test_GSM.o $(LIBOBJS)
 		$(GCCDIR)gcc -L$(GSLPATH)$(DSEP)lib $(LIBOBJS) AT_test_GSM.o -o AT_test_GSM.exe $(LFLAGS) 
 		$(RMCMD) *.o
 
+test_IGK:AT_test_Katz.o $(LIBOBJS)
+		$(GCCDIR)gcc -L$(GSLPATH)$(DSEP)lib $(LIBOBJS) AT_test_Katz.o -o AT_test_IGK.exe $(LFLAGS) 
+		$(RMCMD) *.o
+
 clean:
 		- $(RMCMD) *.o
 		- $(RMCMD) $(NAMELIB)
@@ -85,3 +89,5 @@ AT_test.o:test$(DSEP)C$(DSEP)AT_test.c
 AT_test_GSM.o:test$(DSEP)C$(DSEP)AT_test_GSM.c 
 		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) test$(DSEP)C$(DSEP)AT_test_GSM.c
 
+AT_test_Katz.o:test$(DSEP)C$(DSEP)AT_test_Katz.c 
+		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) test$(DSEP)C$(DSEP)AT_test_Katz.c

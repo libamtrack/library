@@ -439,13 +439,22 @@ double AT_KatzModel_single_field_survival(
     const long   er_model,
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
-    const double sigma0,
     const double kappa){
 
+	/* some useful variables */
+	const double beta = AT_beta_from_E_single(E_MeV_u);   /* energy to beta */
+	const double zeff = AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);  /* (energy to beta) + particle_no -> effective charge */
+	double dose_Gy = AT_Dose_Gy_from_fluence_cm2_single( E_MeV_u, particle_no, fluence_cm2, material_no); /* fluence + LET -> dose */
+
+	/* fraction of dose delivered in ion kill mode */
+	double ion_kill_mode_fraction = pow( 1 - exp( - gsl_pow_2(zeff/beta)/kappa), m_number_of_targets); /* here we use kappa and m */
+	printf("ion_kill_mode_fraction = %g\n", ion_kill_mode_fraction);
+
+	double gamma_kill_dose = (1. - ion_kill_mode_fraction) * dose_Gy;
+
+	/* single particle inactivation cross section calculation */
 	double inactivation_cross_section_m2;
-
 	double gamma_parameters[5] = {1.,D0_characteristic_dose_Gy,1.,m_number_of_targets,0.};
-
 	AT_KatzModel_inactivation_cross_section_m2(
 	    1,
 	    &E_MeV_u,
@@ -455,31 +464,28 @@ double AT_KatzModel_single_field_survival(
 	    rdd_parameters,
 	    er_model,
 	    gamma_parameters,
-	    &inactivation_cross_section_m2);
-
-	const double beta = AT_beta_from_E_single(E_MeV_u);
-
-	const double zeff = AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
-
-	double ion_kill_mode_fraction = pow( 1 - exp( - gsl_pow_2(zeff/beta)/kappa), m_number_of_targets);
-
-	double cross_section_ratio = inactivation_cross_section_m2 / sigma0;
-
-	double dose_Gy;
-	AT_D_Gy(  1, &E_MeV_u, &particle_no, &fluence_cm2, material_no, &dose_Gy);
-
-	double gamma_kill_dose = (1 - ion_kill_mode_fraction) * dose_Gy;
+	    &inactivation_cross_section_m2);    /* here we use D0, m and a0 */
+	printf("inactivation_cross_section = %g [m2]\n", inactivation_cross_section_m2);
 
 	double gamma_kill_mode_survival;
 	double ion_kill_mode_survival;
+
+	/* ion kill mode survival gives exponential SF curve */
+	ion_kill_mode_survival = exp( - inactivation_cross_section_m2 * 1e4 * fluence_cm2);  /* depends on D0, m and a0; not on kappa !*/
+
+	/* gamma kill mode survival gives shouldered SF curve */
 	if( ion_kill_mode_fraction > 0.98 ){
-		gamma_kill_mode_survival = 1;
-		ion_kill_mode_survival = exp( - inactivation_cross_section_m2 * fluence_cm2);
+		gamma_kill_mode_survival = 1.0;
+		/* this if is quite artificial, for ion_kill_mode_fraction greater than 0.98
+		 * gamma_kill_mode_survival is so close to 1 that it does not make sense to calculate it
+		 */
 	} else {
-		gamma_kill_mode_survival = 1 - pow( 1 - exp( - gamma_kill_dose / D0_characteristic_dose_Gy), m_number_of_targets);
-		ion_kill_mode_survival = exp( - sigma0 * fluence_cm2);
+		gamma_kill_mode_survival = 1. - pow( 1. - exp( - gamma_kill_dose / D0_characteristic_dose_Gy), m_number_of_targets);  /* depends on D0, m and kappa; not on a0 ! */
 	}
 
+	printf("ion_kill_mode_survival = %g , gamma_kill_mode_survival = %g[m2]\n", ion_kill_mode_survival, gamma_kill_mode_survival);
+
+	/* finally survival as a product of ion and gamma kill modes */
 	return ion_kill_mode_survival * gamma_kill_mode_survival;
 }
 
