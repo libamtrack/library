@@ -217,11 +217,22 @@ void AT_D_Gy(  const long  n,
 }
 
 
+double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
+    const long    particle_no,
+    const double  D_Gy,
+    const long    material_no )
+{
+  double LET_MeV_cm2_g = AT_LET_MeV_cm2_g_single( E_MeV_u, particle_no, material_no );
+
+  return (D_Gy / MeV_g_to_J_kg) / LET_MeV_cm2_g;
+}
+
+
 void AT_fluence_cm2(  const long  n,
     const double  E_MeV_u[],
-    const long   particle_no[],
+    const long    particle_no[],
     const double  D_Gy[],
-    const long   material_no,
+    const long    material_no,
     double        fluence_cm2[])
 {
   // Get LET (write already into fluence_cm2)
@@ -235,6 +246,11 @@ void AT_fluence_cm2(  const long  n,
   for (i = 0; i < n; i++){
     fluence_cm2[i]     =    (D_Gy[i] / MeV_g_to_J_kg) / fluence_cm2[i];
   }
+
+  // TODO can't it be replaced by following code:
+  //for (i = 0; i < n; i++){
+  //  fluence_cm2[i] =  AT_fluence_cm2_from_dose_Gy_single(  E_MeV_u[i], particle_no[i], D_Gy[i], material_no );
+  //}
 }
 
 
