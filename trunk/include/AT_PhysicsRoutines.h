@@ -258,10 +258,10 @@ int AT_max_E_transfer_MeV(  const long  n,
 
 
 /**
- * Returns dose in Gy for particles with given fluence and energy
- * @param[in]  E_MeV_u      energy of particles
+ * Returns dose in Gy for particle with given fluence and energy
+ * @param[in]  E_MeV_u      energy per unit mass
  * @param[in]  fluence_cm2  fluence in 1/cm2
- * @param[in]  particle_no  type of the particles
+ * @param[in]  particle_no  type of the particle
  * @see          AT_DataParticle.h for definition
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
@@ -290,6 +290,22 @@ void AT_D_Gy(  const long  n,
     const double  fluence_cm2[],
     const long    material_no,
     double        D_Gy[]);
+
+
+/**
+ * Returns fluence in 1/cm2 for particles with given dose and energy
+ * @param[in]  E_MeV_u      energy of particle
+ * @param[in]  particle_no  type of the particles
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  D_Gy         dose in Gy
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @return fluence in 1/cm2
+ */
+double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
+    const long    particle_no,
+    const double  D_Gy,
+    const long    material_no );
 
 
 /**
