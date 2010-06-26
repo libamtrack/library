@@ -49,6 +49,23 @@ int AT_beta_from_E( const long  n,
   return 0;
 }
 
+inline double AT_gamma_from_E_single( const double E_MeV_u ){
+  double beta 	= AT_beta_from_E_single( E_MeV_u );
+  return (1.0 / sqrt(1.0 - beta * beta));
+}
+
+int AT_gamma_from_E( const long  n,
+    const double  E_MeV_u[],
+    double        gamma[])
+{
+  // loop over n to find gamma for all energies
+  long  i;
+  for(i = 0; i < n; i++){
+    gamma[i]        =  AT_gamma_from_E_single(E_MeV_u[i]);
+  }
+  return 0;
+}
+
 
 inline double AT_E_from_beta_single(  const double beta ){
   return 1.0079*proton_mass_MeV_c2 * (sqrt(1.0 / (1.0 - gsl_pow_2(beta))) - 1.0);
@@ -153,6 +170,29 @@ int AT_max_E_transfer_MeV(  const long  n,
   return 0;
 }
 
+inline double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u,
+											   const long	particle_no){
+	double	beta		=	AT_beta_from_E_single(E_MeV_u);
+	double	gamma		=	AT_gamma_from_E_single(E_MeV_u);
+//	long	A			=	AT_A_from_particle_no_single(particle_no);
+//	double	m_MeV_c2	=	A * 1.0079 * proton_mass_MeV_c2;
+	double	m_MeV_c2	=	1.0079 * proton_mass_MeV_c2;
+	return 	gamma * m_MeV_c2 * beta * 1.0;			// Here: c = 1
+}
+
+int AT_momentum_from_E_MeV_c_u( const long  n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    double        momentum_MeV_c_u[])
+{
+  // loop over n
+  long  i;
+  for(i = 0; i < n; i++){
+	  momentum_MeV_c_u[i]       =  AT_momentum_from_E_MeV_c_u_single(	E_MeV_u[i],
+																		particle_no[i]);
+  }
+  return 0;
+}
 
 void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
     const long*  material_no,

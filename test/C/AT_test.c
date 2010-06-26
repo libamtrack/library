@@ -43,33 +43,47 @@
 
 int main(){
 
-	const int		n							=	1;
-	const float		E_MeV_u[]					=	{10};
-	const int		particle_no[]				=	{1001};
-	const float	fluence_cm2_or_dose_Gy[]	=	{-1.0};
-	const int		material_no					=	1;
-	const int		rdd_model					=	3;
-	const float	rdd_parameters[]			=	{50e-9};
-	const int		er_model					=	3;
-	const int		gamma_model					=	2;
-	const float	gamma_parameters[]			=	{1,10,1,1,0};
-	const float		saturation_cross_section_factor = 1.0;
-	const int		write_output				=	0;
-	float			results[10];
+//	const int		n							=	1;
+//	const float		E_MeV_u[]					=	{10};
+//	const int		particle_no[]				=	{1001};
+//	const float	fluence_cm2_or_dose_Gy[]	=	{-1.0};
+//	const int		material_no					=	1;
+//	const int		rdd_model					=	3;
+//	const float	rdd_parameters[]			=	{50e-9};
+//	const int		er_model					=	3;
+//	const int		gamma_model					=	2;
+//	const float	gamma_parameters[]			=	{1,10,1,1,0};
+//	const float		saturation_cross_section_factor = 1.0;
+//	const int		write_output				=	0;
+//	float			results[10];
+//
+//	AT_run_IGK_method_R(  &n,
+//	    E_MeV_u,
+//	    particle_no,
+//	    fluence_cm2_or_dose_Gy,
+//	    &material_no,
+//	    &rdd_model,
+//	    rdd_parameters,
+//	    &er_model,
+//	    &gamma_model,
+//	    gamma_parameters,
+//	    &saturation_cross_section_factor,
+//		&write_output,
+//	    results);
 
-	AT_run_IGK_method_R(  &n,
-	    E_MeV_u,
-	    particle_no,
-	    fluence_cm2_or_dose_Gy,
-	    &material_no,
-	    &rdd_model,
-	    rdd_parameters,
-	    &er_model,
-	    &gamma_model,
-	    gamma_parameters,
-	    &saturation_cross_section_factor,
-		&write_output,
-	    results);
 
-return 0;
+	const long		n				= 7;
+	const double 	E_MeV_u[]		= {1, 10, 100, 126, 10000, 100, 10000};
+	const long		particle_no[]	= {1001, 1001, 1001, 1001, 1001, 6012, 6012};
+	double			gamma[7], momentum_MeV_c_u[7];
+
+	AT_gamma_from_E(	n,
+						E_MeV_u,
+						gamma);
+	AT_momentum_from_E_MeV_c_u(	n,
+								E_MeV_u,
+								particle_no,
+								momentum_MeV_c_u);
+
+	return 0;
 };

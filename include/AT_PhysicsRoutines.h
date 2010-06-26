@@ -140,6 +140,25 @@ int AT_E_from_beta(  const long  n,
     const double  beta[],
     double  E_MeV_u[]);
 
+/**
+ *  Returns relativistic gamma for single value of energy
+ *
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
+ * @return     gamma
+ */
+inline double AT_gamma_from_E_single( const double E_MeV_u );
+
+/**
+ *  Returns relativistic gamma for many particles
+ *
+ * @param[in]  n                        number of particles
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV]
+ * @param[out] gamma                    vector of results
+ * @return     status code
+ */
+int AT_gamma_from_E( const long  n,
+    const double  E_MeV_u[],
+    double        gamma[]);
 
 /**
  * Effective charge according to Barkas-Bethe-approximation:
@@ -256,6 +275,29 @@ int AT_max_E_transfer_MeV(  const long  n,
     const double  E_MeV_u[],
     double        max_E_transfer_MeV[]);
 
+/**
+ *  Returns relativistic momentum (per nucleon) of particle
+ *
+ * @param	  	E_MeV_u                 kinetic Energy per nucleon
+ * @param		particle_no				particle type
+ * @return                              momentum [MeV/c]
+ */
+inline double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u,
+												 const long	particle_no);
+
+/**
+ *  Returns relativistic momenta per nucleon for many particles
+ *
+ * @param[in]	n						number of particles
+ * @param[in]  	E_MeV_u                 kinetic Energy per nucleon [array of size n]
+ * @param[in]	particle_no				particle type [array of size n]
+ * @param[out]	momentum_MeV_c_u		results [array of size n]
+ * @return                              return code
+ */
+int AT_momentum_from_E_MeV_c_u( const long  n,
+    const double  E_MeV_u[],
+    const long	  particle_no[],
+    double        momentum_MeV_c[]);
 
 /**
  * Returns dose in Gy for particle with given fluence and energy
