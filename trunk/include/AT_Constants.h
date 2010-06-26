@@ -46,5 +46,6 @@ static const double  MeV_g_to_J_kg         =  1.60217646e-10;
 static const double  m_to_cm               =  100.0;
 static const double  cm_to_mm              =  10.0;
 
+static const double	 c_m_s				   =  299792458;
 
 #endif /* AT_CONSTANTS_H_ */
