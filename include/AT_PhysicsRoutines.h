@@ -120,7 +120,7 @@ int AT_beta_from_E( const long  n,
 
 
 /**
- *  Return energy per nucleon of particle with relative speed beta
+ *  Returns energy per nucleon of particle with relative speed beta
  *
  * @param[in]  beta                     relative particle speed beta = v/c
  * @return                              energy of particle per nucleon [MeV]
@@ -129,7 +129,7 @@ inline double AT_E_from_beta_single(  const double beta );
 
 
 /**
- *  Return energy per nucleon of particle with relative speed beta
+ *  Returns energy per nucleon of particle with relative speed beta
  *
  * @param[in]  n                        number of particles
  * @param[in]  beta                     vector of relative particle speed beta = v/c
@@ -139,6 +139,26 @@ inline double AT_E_from_beta_single(  const double beta );
 int AT_E_from_beta(  const long  n,
     const double  beta[],
     double  E_MeV_u[]);
+
+/**
+ *  Returns energy per nucleon of particle with given momentum per nucleon
+ *
+ * @param[in]  momentum_MeV_c_u         momentum per particle [MeV/c]
+ * @return                              energy of particle per nucleon [MeV]
+ */
+inline double AT_E_MeV_u_from_momentum_single( 	const double momentum_MeV_c_u);
+
+/**
+ *  Returns energy per nucleon of particles with given momentum per nucleon
+ *
+ * @param[in]  n                        number of particles
+ * @param[in]  beta                     vector of particle momenta per nucleon [MeV/c], size n
+ * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV], size n
+ * @return     status code
+ */
+int AT_E_MeV_u_from_momentum(  const long  n,
+    const double  momentum_MeV_c_u[],
+    double        E_MeV_u[]);
 
 /**
  *  Returns relativistic gamma for single value of energy
@@ -279,24 +299,20 @@ int AT_max_E_transfer_MeV(  const long  n,
  *  Returns relativistic momentum (per nucleon) of particle
  *
  * @param	  	E_MeV_u                 kinetic Energy per nucleon
- * @param		particle_no				particle type
  * @return                              momentum [MeV/c]
  */
-inline double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u,
-												 const long	particle_no);
+inline double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u);
 
 /**
  *  Returns relativistic momenta per nucleon for many particles
  *
  * @param[in]	n						number of particles
  * @param[in]  	E_MeV_u                 kinetic Energy per nucleon [array of size n]
- * @param[in]	particle_no				particle type [array of size n]
  * @param[out]	momentum_MeV_c_u		results [array of size n]
  * @return                              return code
  */
 int AT_momentum_from_E_MeV_c_u( const long  n,
     const double  E_MeV_u[],
-    const long	  particle_no[],
     double        momentum_MeV_c[]);
 
 /**

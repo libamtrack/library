@@ -74,16 +74,17 @@ int main(){
 
 	const long		n				= 7;
 	const double 	E_MeV_u[]		= {1, 10, 100, 126, 10000, 100, 10000};
-	const long		particle_no[]	= {1001, 1001, 1001, 1001, 1001, 6012, 6012};
-	double			gamma[7], momentum_MeV_c_u[7];
+	double			gamma[7], momentum_MeV_c_u[7], E_MeV_u_back[7];
 
 	AT_gamma_from_E(	n,
 						E_MeV_u,
 						gamma);
 	AT_momentum_from_E_MeV_c_u(	n,
 								E_MeV_u,
-								particle_no,
 								momentum_MeV_c_u);
+	AT_E_MeV_u_from_momentum(	n,
+								momentum_MeV_c_u,
+								E_MeV_u_back);
 
 	return 0;
 };

@@ -84,6 +84,22 @@ int AT_E_from_beta(  const long  n,
   return 0;
 }
 
+inline double AT_E_MeV_u_from_momentum_single( 	const double momentum_MeV_c_u){
+	double total_E_MeV_u = sqrt(momentum_MeV_c_u * momentum_MeV_c_u + 1.0079 * 1.0079 * proton_mass_MeV_c2 * proton_mass_MeV_c2);
+	return (total_E_MeV_u - 1.0079 * proton_mass_MeV_c2);
+}
+
+int AT_E_MeV_u_from_momentum(  const long  n,
+    const double  momentum_MeV_c_u[],
+    double        E_MeV_u[])
+{
+  // loop over n to find E for all betas
+  long  i;
+  for(i = 0; i < n; i++){
+    E_MeV_u[i]      =  AT_E_MeV_u_from_momentum_single(momentum_MeV_c_u[i]);
+  }
+  return 0;
+}
 
 inline double AT_effective_charge_from_beta_single(  const double beta,
     const long Z){
@@ -170,8 +186,7 @@ int AT_max_E_transfer_MeV(  const long  n,
   return 0;
 }
 
-inline double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u,
-											   const long	particle_no){
+inline double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u){
 	double	beta		=	AT_beta_from_E_single(E_MeV_u);
 	double	gamma		=	AT_gamma_from_E_single(E_MeV_u);
 //	long	A			=	AT_A_from_particle_no_single(particle_no);
@@ -182,14 +197,12 @@ inline double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u,
 
 int AT_momentum_from_E_MeV_c_u( const long  n,
     const double  E_MeV_u[],
-    const long    particle_no[],
     double        momentum_MeV_c_u[])
 {
   // loop over n
   long  i;
   for(i = 0; i < n; i++){
-	  momentum_MeV_c_u[i]       =  AT_momentum_from_E_MeV_c_u_single(	E_MeV_u[i],
-																		particle_no[i]);
+	  momentum_MeV_c_u[i]       =  AT_momentum_from_E_MeV_c_u_single(	E_MeV_u[i]);
   }
   return 0;
 }
