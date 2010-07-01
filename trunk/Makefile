@@ -1,7 +1,5 @@
 #****************************************************************************
-#
 # Makefile for libamtrack
-#
 #****************************************************************************
 
 ############################################################
@@ -19,7 +17,7 @@ GSLPATH   = /usr
 ## Under Windows please specify the path to your MinGW installation
 #  leave empty under Linux: MINGWPATH = 
 #  for Windows most likely:
-#  MINGWPATH = C:\Programme\MinGW (Windows)
+#  MINGWPATH = C:\Program Files\MinGW (Windows)
 MINGWPATH = 
 ############################################################
 
@@ -28,20 +26,22 @@ LFLAGS    = -lm -lgsl -lgslcblas
 
 ifeq ($(OS),Linux)
 NAMELIB   = libamtrack.so
-NAMEEXE   = AmTrack
 DSEP      = /
 SRCDIR    = ./src
 INCLDIR   = ./include
 RMCMD     = rm
-GCCDIR    = 
+GCC       = gcc 
+GSLINCLUDE = "$(GSLPATH)/include"
+GSLLIB     = "$(GSLPATH)/lib"
 else
-NAMELIB   = libamtrack.dll
-NAMEEXE   = AmTrack.exe
-DSEP      = \\
-SRCDIR    = .\src
-INCLDIR   = .\include
-RMCMD     = del
-GCCDIR    = $(MINGWPATH)\bin$(DSEP)
+NAMELIB    = libamtrack.dll
+DSEP       = \\
+SRCDIR     = .\src
+INCLDIR    = .\include
+RMCMD      = del
+GCC        = "$(MINGWPATH)\bin\gcc.exe"
+GSLINCLUDE = "$(GSLPATH)\include"
+GSLLIB     = "$(GSLPATH)\lib"
 endif
 
 LIBCOBJS  = $(SRCDIR)$(DSEP)AmTrack.c $(SRCDIR)$(DSEP)AT_Error.c $(SRCDIR)$(DSEP)AT_Constants.c $(SRCDIR)$(DSEP)AT_GammaResponse.c $(SRCDIR)$(DSEP)AT_DataLET.c $(SRCDIR)$(DSEP)AT_DataMaterial.c $(SRCDIR)$(DSEP)AT_DataParticle.c $(SRCDIR)$(DSEP)AT_ElectronRange.c $(SRCDIR)$(DSEP)AT_GammaResponse.c $(SRCDIR)$(DSEP)AT_NumericalRoutines.c $(SRCDIR)$(DSEP)AT_PhysicsRoutines.c $(SRCDIR)$(DSEP)AT_RDD.c $(SRCDIR)$(DSEP)AT_RDD_Simple.c $(SRCDIR)$(DSEP)AT_RDD_ShellAveraged.c $(SRCDIR)$(DSEP)AT_RDD_ExtendedTarget.c $(SRCDIR)$(DSEP)AT_KatzModel.c $(SRCDIR)$(DSEP)AT_SuccessiveConvolutions.c $(SRCDIR)$(DSEP)AT_Wrapper_R.c
@@ -52,42 +52,42 @@ LIBOBJS  = AmTrack.o AT_Error.o AT_Constants.o AT_DataLET.o AT_DataMaterial.o AT
 
 all:$(LIBOBJS)
 		echo $(GSLPATH)$(DSEP)
-		$(GCCDIR)gcc -L$(GSLPATH)$(DSEP)lib -shared $(LIBOBJS) -o $(NAMELIB) $(LFLAGS) 
+		$(GCC) -L$(GSLLIB) -shared $(LIBOBJS) -o $(NAMELIB) $(LFLAGS) 
 		$(RMCMD) *.o
 
-UI:AT_UI.o $(LIBOBJS)
-		$(GCCDIR)gcc -L$(GSLPATH)$(DSEP)lib $(LIBOBJS) AT_UI.o -o $(NAMEEXE) $(LFLAGS) 
+UI:AT_UI.o $(NAMELIB)
+		$(GCC) -L$(GSLLIB) -L. AT_UI.o -o AT_UI.exe $(LFLAGS) -lamtrack
 		$(RMCMD) *.o
 
-test:AT_test.o $(LIBOBJS)
-		$(GCCDIR)gcc -L$(GSLPATH)$(DSEP)lib $(LIBOBJS) AT_test.o -o AT_test.exe $(LFLAGS) 
+test:AT_test.o $(NAMELIB)
+		$(GCC) -L$(GSLLIB) -L. AT_test.o -o AT_test.exe $(LFLAGS) -lamtrack 
 		$(RMCMD) *.o
 
-test_GSM:AT_test_GSM.o $(LIBOBJS)
-		$(GCCDIR)gcc -L$(GSLPATH)$(DSEP)lib $(LIBOBJS) AT_test_GSM.o -o AT_test_GSM.exe $(LFLAGS) 
+test_GSM:AT_test_GSM.o $(NAMELIB)
+		$(GCC) -L$(GSLLIB) -L. AT_test_GSM.o -o AT_test_GSM.exe $(LFLAGS) -lamtrack 
 		$(RMCMD) *.o
 
-test_IGK:AT_test_Katz.o $(LIBOBJS)
-		$(GCCDIR)gcc -L$(GSLPATH)$(DSEP)lib $(LIBOBJS) AT_test_Katz.o -o AT_test_IGK.exe $(LFLAGS) 
+test_IGK:AT_test_Katz.o $(NAMELIB)
+		$(GCC) -L$(GSLLIB) -L. AT_test_Katz.o -o AT_test_IGK.exe $(LFLAGS) -lamtrack
 		$(RMCMD) *.o
 
 clean:
 		- $(RMCMD) *.o
 		- $(RMCMD) $(NAMELIB)
-		- $(RMCMD) $(NAMEEXE)
+		- $(RMCMD) AT_UI.exe
 		- $(RMCMD) AT_test.exe
 
 $(LIBOBJS):$(LIBCOBJS) $(LIBHOBJS)
-		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) $(LIBCOBJS)
+		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) $(LIBCOBJS)
 
 AT_UI.o:test$(DSEP)C$(DSEP)AT_UI.c 
-		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) test$(DSEP)C$(DSEP)AT_UI.c
+		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) test$(DSEP)C$(DSEP)AT_UI.c
 
 AT_test.o:test$(DSEP)C$(DSEP)AT_test.c 
-		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) test$(DSEP)C$(DSEP)AT_test.c
+		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) test$(DSEP)C$(DSEP)AT_test.c
 
 AT_test_GSM.o:test$(DSEP)C$(DSEP)AT_test_GSM.c 
-		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) test$(DSEP)C$(DSEP)AT_test_GSM.c
+		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) test$(DSEP)C$(DSEP)AT_test_GSM.c
 
 AT_test_Katz.o:test$(DSEP)C$(DSEP)AT_test_Katz.c 
-		$(GCCDIR)gcc -I$(INCLDIR) -I$(GSLPATH)$(DSEP)include $(CFLAGS) test$(DSEP)C$(DSEP)AT_test_Katz.c
+		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) test$(DSEP)C$(DSEP)AT_test_Katz.c
