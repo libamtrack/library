@@ -42,14 +42,17 @@ long AT_RDD_index_from_material_number( const long RDD_number ){
   return index;
 }
 
-void AT_RDD_name_from_number(const long RDD_no, char* RDD_name){
+
+int AT_RDD_name_from_number(const long RDD_no, char* RDD_name){
   long  index = AT_RDD_index_from_material_number( RDD_no );
 
   if( index != -1){
     strcpy(RDD_name, AT_RDD_Data.RDD_name[index]);
   } else {
     strcpy(RDD_name,"*** invalid choice of RDD ***");
+    return -1;
   }
+  return AT_Success;
 }
 
 

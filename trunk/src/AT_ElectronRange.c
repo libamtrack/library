@@ -31,7 +31,7 @@
 
 #include "AT_ElectronRange.h"
 
-void getERName(
+int getERName(
     const int ER_no,
     char* ER_name){
 
@@ -48,7 +48,9 @@ void getERName(
     strcpy(ER_name, AT_ER_Data.ER_name[match]);
   } else {
     strcpy(ER_name,"*** invalid choice ***");
+    return -1;
   }
+  return AT_Success;
 }
 
 

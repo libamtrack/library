@@ -68,7 +68,7 @@ enum RDDModels {
 /**
  * Total number of RDD models
  */
-#define RDD_DATA_N    8
+#define RDD_DATA_N    7
 
 
 /**
@@ -120,8 +120,9 @@ long AT_RDD_index_from_material_number( const long RDD_number );
  *
  * @param[in]   RDD_no   radial dose distribution model number
  * @param[out]  RDD_name string containing radial dose distribution model name
+ * @return      status code
  */
-void AT_RDD_name_from_number( const long RDD_no,
+int AT_RDD_name_from_number( const long RDD_no,
     char* RDD_name);
 
 
