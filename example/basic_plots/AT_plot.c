@@ -71,37 +71,30 @@ int main( int argc, char* argv[]){
 
 	bool xlogscale_flag = false;
 
-	while (1)
-	{
+	long particle_no = -1;
+	char particle_name[PARTICLE_NAME_NCHAR];
+
+	/* decode user parameters passed to program */
+	while (1){
 		static struct option long_options[] = {
-				{"plottype",  required_argument,    0, 'p'},
+				{"plottype",  required_argument,    0, 't'},
 				{"xmin",   required_argument,    0, 'n'},
 				{"xmax",   required_argument,    0, 'x'},
 				{"xlogscale", no_argument  , 0, 'l'},
 				{"npoints", required_argument  , 0, 'm'},
+				{"particle", required_argument  , 0, 'p'},
 				{0, 0, 0, 0}
 		};
-		/* getopt_long stores the option index here. */
-		int option_index = 0;
 
-		c = getopt_long (argc, argv, "p:n:x:lm:", long_options, &option_index);
+		int option_index = 0; /* getopt_long stores the option index here. */
 
-		/* Detect the end of the options. */
-		if (c == -1)
+		c = getopt_long (argc, argv, "t:n:x:lm:p:", long_options, &option_index);
+
+		if (c == -1) /* Detect the end of the options. */
 			break;
 
 		switch (c) {
-		case 0:
-			/* If this option set a flag, do nothing else now. */
-			if (long_options[option_index].flag != 0)
-				break;
-			printf ("option %s", long_options[option_index].name);
-			if (optarg)
-				printf (" with arg %s", optarg);
-			printf ("\n");
-			break;
-
-		case 'p':
+		case 't':
 			plottype = optarg;
 			break;
 
@@ -139,6 +132,13 @@ int main( int argc, char* argv[]){
 			break;
 		};
 
+		case 'p':
+			strncpy(particle_name, optarg, PARTICLE_NAME_NCHAR-1);
+			particle_no = AT_particle_no_from_particle_name_single( particle_name );
+			if( particle_no < 0)
+				printf("Error in decoding particle type (--particle option)\n");
+			break;
+
 		case '?': /* getopt_long already printed an error message. */
 			break;
 
@@ -156,44 +156,48 @@ int main( int argc, char* argv[]){
 		putchar ('\n');
 	}
 
+	/* prepare input */
+	const long material_no = Water_Liquid;  // water
+
+	/* prepare default values */
 	if( plottype == NULL){
-		printf("Please specify plottype using -p option\n");
+		printf("Please specify plottype using -t (--plottype) option\n");
 		usage(argc,argv);
 		exit(EXIT_FAILURE);
 	}
 
-	/* prepare input */
-	const long particle_no = 6012;  // carbon ion
-	char particle_name[PARTICLE_NAME_NCHAR];
-	AT_particle_name_from_particle_no_single(particle_no, particle_name);
+	if( particle_no < 0){
+		particle_no = 6012;
+		AT_particle_name_from_particle_no_single(particle_no, particle_name);
+		printf("particle not set, setting default value %s\n", particle_name);
+	}
 
-	const long material_no = Water_Liquid;  // water
 
 	if( strcmp( plottype , "ER") == 0 || strcmp( plottype , "LET") == 0){
 		if(x_start < 0){
-			x_start = 0.1;			printf("xmin not set, setting default value %g [MeV]\n", x_start);
+			x_start = 0.1;	    printf("xmin not set, setting default value %g [MeV]\n", x_start);
 		}
 		if(x_stop < 0){
-			x_stop = 500.0;			printf("xmax not set, setting default value %g [MeV]\n", x_stop);
+			x_stop = 500.0;	    printf("xmax not set, setting default value %g [MeV]\n", x_stop);
 		}
 	} else if( strcmp( plottype , "RDD") == 0){
 		if(x_start < 0){
-			x_start = 1e-12;			printf("xmin not set, setting default value %g [m]\n", x_start);
+			x_start = 1e-12;	printf("xmin not set, setting default value %g [m]\n", x_start);
 		}
 		if(x_stop < 0){
-			x_stop = 1e-6;			printf("xmax not set, setting default value %g [m]\n", x_stop);
+			x_stop = 1e-6;		printf("xmax not set, setting default value %g [m]\n", x_stop);
 		}
 	} else {
 		if(x_start < 0){
-			x_start = 1e-12;			printf("xmin not set, setting default value %g\n", x_start);
+			x_start = 1e-12;	printf("xmin not set, setting default value %g\n", x_start);
 		}
 		if(x_stop < 0){
-			x_stop = 1e-6;			printf("xmax not set, setting default value %g\n", x_stop);
+			x_stop = 1e-6;		printf("xmax not set, setting default value %g\n", x_stop);
 		}
 	}
 
 	if( number_of_points_on_x_axis < 0 ){
-		number_of_points_on_x_axis = 10;			printf("npoints not set, setting default value %d\n", number_of_points_on_x_axis);
+		number_of_points_on_x_axis = 10;	printf("npoints not set, setting default value %d\n", number_of_points_on_x_axis);
 	}
 
 	double * x = (double*)calloc(number_of_points_on_x_axis,sizeof(double));
