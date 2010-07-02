@@ -1,0 +1,13 @@
+basic_plots README
+
+1. Compilation
+
+Our example assume that compiled library is in AT_Release folder.
+Adjust operating system (Linux or Windows) in the Makefile in current directory.
+Compile:
+
+$ make all
+
+2. Run
+
+./AT_plot.exe
