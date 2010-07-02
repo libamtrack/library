@@ -54,7 +54,7 @@ void plottype_usage(){
 
 
 void usage(int argc, char* argv[]){
-	printf("Usage: %s -p plottype\n", argv[0]);
+	printf("Usage: %s --plottype TYPE [--xmin XMIN --xmax XMAX --xlogscale]\n", argv[0]);
 	plottype_usage();
 }
 
@@ -65,17 +65,26 @@ int main( int argc, char* argv[]){
 	int c;
 
 	char *plottype = NULL;
+	double x_start = -1;
+	double x_stop = -1;
+	int number_of_points_on_x_axis = -1;
+
+	bool xlogscale_flag = false;
 
 	while (1)
 	{
 		static struct option long_options[] = {
-				{"plottype",   required_argument,    0, 'p'},
+				{"plottype",  required_argument,    0, 'p'},
+				{"xmin",   required_argument,    0, 'n'},
+				{"xmax",   required_argument,    0, 'x'},
+				{"xlogscale", no_argument  , 0, 'l'},
+				{"npoints", required_argument  , 0, 'm'},
 				{0, 0, 0, 0}
 		};
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long (argc, argv, "p:", long_options, &option_index);
+		c = getopt_long (argc, argv, "p:n:x:lm:", long_options, &option_index);
 
 		/* Detect the end of the options. */
 		if (c == -1)
@@ -95,6 +104,40 @@ int main( int argc, char* argv[]){
 		case 'p':
 			plottype = optarg;
 			break;
+
+		case 'n':
+		{
+			char * test1 = 0;
+			x_start = strtod(optarg,&test1);
+			if( ((x_start == 0) && (*test1 != 0)) || (*test1 != '\0')){
+				printf("Error in decoding xmin (--xmin option)\n");
+			}
+			break;
+		};
+
+		case 'x':
+		{
+			char * test2 = 0;
+			x_stop = strtod(optarg,&test2);
+			if( ((x_stop == 0) && (*test2 != 0)) || (*test2 != '\0')){
+				printf("Error in decoding xmax (--xmax option)\n");
+			}
+			break;
+		};
+
+		case 'l':
+			xlogscale_flag = true;
+			break;
+
+		case 'm':
+		{
+			char * test3 = 0;
+			number_of_points_on_x_axis = strtol(optarg,&test3,10);
+			if( ((number_of_points_on_x_axis == 0) && (*test3 != 0)) || (*test3 != '\0')){
+				printf("Error in decoding npoints (--npoints option)\n");
+			}
+			break;
+		};
 
 		case '?': /* getopt_long already printed an error message. */
 			break;
@@ -121,30 +164,68 @@ int main( int argc, char* argv[]){
 
 	/* prepare input */
 	const long particle_no = 6012;  // carbon ion
+	char particle_name[PARTICLE_NAME_NCHAR];
+	AT_particle_name_from_particle_no_single(particle_no, particle_name);
+
 	const long material_no = Water_Liquid;  // water
 
-	int number_of_points_on_x_axis = 10;
-	const double x_start = 1e-1;
-	const double x_stop = 500.0;
-	const double x_multiplier = exp(((log( x_stop ) - log( x_start)) / ((double)number_of_points_on_x_axis-1.)));
+	if( strcmp( plottype , "ER") == 0 || strcmp( plottype , "LET") == 0){
+		if(x_start < 0){
+			x_start = 0.1;			printf("xmin not set, setting default value %g [MeV]\n", x_start);
+		}
+		if(x_stop < 0){
+			x_stop = 500.0;			printf("xmax not set, setting default value %g [MeV]\n", x_stop);
+		}
+	} else if( strcmp( plottype , "RDD") == 0){
+		if(x_start < 0){
+			x_start = 1e-12;			printf("xmin not set, setting default value %g [m]\n", x_start);
+		}
+		if(x_stop < 0){
+			x_stop = 1e-6;			printf("xmax not set, setting default value %g [m]\n", x_stop);
+		}
+	} else {
+		if(x_start < 0){
+			x_start = 1e-12;			printf("xmin not set, setting default value %g\n", x_start);
+		}
+		if(x_stop < 0){
+			x_stop = 1e-6;			printf("xmax not set, setting default value %g\n", x_stop);
+		}
+	}
+
+	if( number_of_points_on_x_axis < 0 ){
+		number_of_points_on_x_axis = 10;			printf("npoints not set, setting default value %d\n", number_of_points_on_x_axis);
+	}
+
 	double * x = (double*)calloc(number_of_points_on_x_axis,sizeof(double));
 	double * y = (double*)calloc(number_of_points_on_x_axis,sizeof(double));
 	int i;
 	x[0] = x_start;
-	for( i = 1 ; i < number_of_points_on_x_axis ; i++){
-		x[i] = x[i-1] * x_multiplier;
+
+	if( xlogscale_flag ){
+		const double x_multiplier = exp(((log( x_stop ) - log( x_start)) / ((double)number_of_points_on_x_axis-1.)));
+		for( i = 1 ; i < number_of_points_on_x_axis ; i++){
+			x[i] = x[i-1] * x_multiplier;
+		}
+	} else {
+		const double x_increment = (x_stop - x_start) / ((double)number_of_points_on_x_axis-1.);
+		for( i = 1 ; i < number_of_points_on_x_axis ; i++){
+			x[i] = x[i-1] + x_increment;
+		}
 	}
 
 	/* calculate results */
 	if( strcmp( plottype , "ER") == 0){
-		printf("#ER: Tabata\n");
-		printf("#ionenergy[MeV] range[m]\n");
 		long er_model = ER_Tabata;
+		char er_name[200];
+		getERName( er_model, er_name);
+		printf("#ionenergy[MeV] range[m]\n");
 		AT_max_electron_ranges_m( number_of_points_on_x_axis , x, material_no, er_model, y);
 	} else if( strcmp( plottype , "RDD") == 0){
-		printf("#RDD: Katz\n");
-		printf("#r[m] D[Gy]\n");
 		long rdd_model = RDD_KatzExtTarget;
+		char rdd_name[200];
+		AT_RDD_name_from_number(rdd_model, rdd_name);
+		printf("#RDD: %s; particle: %s (code: %ld)\n", rdd_name, particle_name, particle_no);
+		printf("#r[m] D[Gy]\n");
 		double rdd_parameter[RDD_MAX_NUMBER_OF_PARAMETERS] = {5e-11,1e-8,1e-10};
 		double E_MeV_u = 100.0;
 		long er_model = ER_Tabata;
