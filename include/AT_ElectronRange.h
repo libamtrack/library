@@ -38,6 +38,7 @@
 #include "AT_DataMaterial.h"
 #include "AT_DataParticle.h"
 #include "AT_PhysicsRoutines.h"
+#include "AT_Error.h"
 
 /**
  * Electron range models code numbers
@@ -80,8 +81,9 @@ static const er_data AT_ER_Data = {
  *
  * @param[in]   ER_no    electron-range-model index
  * @param[out]  Er_name  string containing the electron-range model name
+ * @return      Status cose
  */
-void  getERName(  const int ER_no,
+int  getERName(  const int ER_no,
     char* ER_name);
 
 
