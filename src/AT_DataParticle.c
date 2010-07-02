@@ -129,6 +129,60 @@ int AT_atomic_weight_from_particle_no( const long  n,
 }
 
 
+int AT_particle_name_from_particle_no_single( const long  particle_no,
+    char * particle_name){
+
+	  long  Z = AT_Z_from_particle_no_single(  particle_no );
+	  long  A = AT_A_from_particle_no_single(  particle_no );
+
+	  long  match;
+
+	  find_elements_int(  &Z,
+			  1,
+			  AT_Particle_Data.Z,
+			  AT_Particle_Data.n,
+			  &match);
+
+	  sprintf(particle_name, "%ld", A);
+	  if( match >= 0 ){
+		  strcat(particle_name, AT_Particle_Data.element_acronym[match]);
+	  } else {
+		  const char * unknown_acronym = "??";
+		  strcat(particle_name, unknown_acronym);
+	  }
+
+	  return AT_Success;
+}
+
+
+long AT_particle_no_from_particle_name_single( const char particle_name[PARTICLE_NAME_NCHAR]){
+	char   any_character[30] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	long split_pos = strcspn(particle_name, any_character);
+
+	char A_str[4] = "\0\0\0\0";
+	strncpy(A_str, particle_name, split_pos);
+	long A        = atol(A_str);
+
+	char element_acronym_str[1][PARTICLE_NAME_NCHAR];
+	strncpy(element_acronym_str[0], &particle_name[split_pos], PARTICLE_NAME_NCHAR - split_pos);
+	long  match = 0;
+	char** test = (char**)malloc(sizeof(char*));
+	*test = (char*)element_acronym_str[0];
+
+	find_elements_char( (const char**)test,
+			1,
+			AT_Particle_Data.element_acronym,
+			PARTICLE_DATA_N,
+			&match);
+
+	free(test);
+	// TODO check if match != -1 !
+
+	long Z = AT_Particle_Data.Z[match];
+
+	return AT_particle_no_from_Z_and_A_single(Z, A);
+}
+
 
 int AT_particle_name_from_particle_no( const long  n,
     const long  particle_no[],

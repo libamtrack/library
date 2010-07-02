@@ -211,6 +211,19 @@ int AT_atomic_weight_from_particle_no(  const long  n,
 
 /**
  * TODO
+ */
+int AT_particle_name_from_particle_no_single( const long  particle_no,
+    char * particle_name);
+
+
+/**
+ * TODO
+ */
+long AT_particle_no_from_particle_name_single( const char particle_name[PARTICLE_NAME_NCHAR]);
+
+
+/**
+ * TODO
  * @param[in]  n
  * @param[in]  particle_no
  * @param[out] particle_name
@@ -221,8 +234,12 @@ int AT_particle_name_from_particle_no(const long  n,
     char particle_name[][PARTICLE_NAME_NCHAR]);
 
 
+/**
+ * TODO
+ */
 int AT_particle_no_from_particle_name( const long  n,
     char * particle_name[],
     long particle_no[]);
+
 
 #endif /* AT_DATAPARTICLE_H_ */
