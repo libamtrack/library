@@ -551,12 +551,12 @@ void find_elements_char(const char** elements, const long n_elements, const char
   for (i = 0; i < n_elements; i++){
     matches[i] = 0;
 
-    while ((strcmp( set[matches[i]], elements[i]) != 0) && (matches[i] < n_set)){
+    while ( strcmp( set[matches[i]], elements[i]) != 0 ){
       matches[i]++;
-    }
-
-    if (matches[i] == n_set) {
-      matches[i] = -1;
+      if( matches[i] == n_set ){
+    	  matches[i] = -1;
+    	  break;
+      }
     }
   }
 }

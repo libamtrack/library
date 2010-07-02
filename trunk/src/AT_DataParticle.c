@@ -156,27 +156,26 @@ int AT_particle_name_from_particle_no_single( const long  particle_no,
 
 
 long AT_particle_no_from_particle_name_single( const char particle_name[PARTICLE_NAME_NCHAR]){
-	char   any_character[30] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	long split_pos = strcspn(particle_name, any_character);
 
-	char A_str[4] = "\0\0\0\0";
-	strncpy(A_str, particle_name, split_pos);
-	long A        = atol(A_str);
+	char * literal_part = 0;
+	long A = strtol(particle_name,&literal_part,10);
+	if( (A == 0) && (*literal_part != 0)){
+		return -1;
+	}
+	if( A == 0){
+		return -1;
+	}
 
-	char element_acronym_str[1][PARTICLE_NAME_NCHAR];
-	strncpy(element_acronym_str[0], &particle_name[split_pos], PARTICLE_NAME_NCHAR - split_pos);
-	long  match = 0;
-	char** test = (char**)malloc(sizeof(char*));
-	*test = (char*)element_acronym_str[0];
-
-	find_elements_char( (const char**)test,
+	long match;
+	find_elements_char( (const char**)(&literal_part),
 			1,
 			AT_Particle_Data.element_acronym,
 			PARTICLE_DATA_N,
 			&match);
 
-	free(test);
-	// TODO check if match != -1 !
+	if( match == -1){
+		return -1;
+	}
 
 	long Z = AT_Particle_Data.Z[match];
 
@@ -224,40 +223,16 @@ int AT_particle_name_from_particle_no( const long  n,
 }
 
 
-// TODO single particle method needed
 // TODO some comments needed
 int AT_particle_no_from_particle_name( const long  n,
     char * particle_name[],
     long particle_no[]){
 
   long i;
-  char   any_character[30] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   for (i = 0; i < n; i++){
-    long split_pos = strcspn(particle_name[i], any_character);
-
-    char A_str[4] = "\0\0\0\0";
-    strncpy(A_str, particle_name[i], split_pos);
-    long A        = atol(A_str);
-
-    char element_acronym_str[1][PARTICLE_NAME_NCHAR];
-    strncpy(element_acronym_str[0], &particle_name[i][split_pos], PARTICLE_NAME_NCHAR - split_pos);
-    long  match = 0;
-    char** test = (char**)malloc(sizeof(char*));
-    *test = (char*)element_acronym_str[0];
-
-    find_elements_char( (const char**)test,
-        1,
-        AT_Particle_Data.element_acronym,
-        PARTICLE_DATA_N,
-        &match);
-
-    // TODO check if match != -1 !
-
-    long Z = AT_Particle_Data.Z[match];
-
-    particle_no[i] = AT_particle_no_from_Z_and_A_single(Z, A);
-
-    free(test);
+	particle_no[i] = AT_particle_no_from_particle_name_single( particle_name[i] );
+	if( particle_no[i] < 0)
+		return AT_Particle_Not_Defined;
   }
   return AT_Success;
 }
