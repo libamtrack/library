@@ -15,6 +15,16 @@ Our example assume that compiled library is in AT_Release folder. Compilation
 is done using Makefile provided in current directory.
 First step is to adjust operating system (Linux or Windows) in the Makefile in current directory.
 
+To adjust PATH variable in Windows (which keeps track of the directories
+containing executable files that can be run without providing full path), 
+run windows command line shell (cmd.exe) and use following command:
+
+path %path%;"C:\Program Files\MinGW\bin"
+path %path%;"C:\Program Files\GnuWin32\bin"
+
+These two command should append directories containing make.exe and gcc.exe to the PATH variable. 
+This trick will work only for one cmd session.
+
 Compile:
 
 make all
@@ -26,6 +36,9 @@ AT_plot.c + libamtrack header files (*.h) + gsl header files (*.h) ---(compiling
 AT_plot.o + libamtrack library (*.dll or *.so) + gsl libraries (*.dll or *.so) ---(linking)---->  AT_plot.exe
 
 2. Run
+
+When you will have AT_plot.exe file and want to run it under Windows, copy to the same
+directory as .exe file all libraries (3 dll files for GSL and libamtrack). 
 
 First let us try to run without any switches:
 
