@@ -31,6 +31,7 @@
 
 
 #include "AmTrack.h"
+#include "AT_DataMaterial.h"
 #include "AT_PhysicsRoutines.h"
 #include "AT_ElectronRange.h"
 #include "AT_RDD.h"
@@ -118,6 +119,11 @@ void AT_particle_name_from_particle_no_R(const int* particle_no,
 void AT_particle_no_from_particle_name_R(const char** particle_name,
     int* particle_no);
 
+void AT_material_name_from_number_R( const int* material_no,
+    char** material_name);
+
+void AT_material_number_from_name_R( const char** material_name,
+	int* material_no);
 
 void AT_particle_no_from_Z_and_A_R  ( const int*  n,
     const int*    Z,
