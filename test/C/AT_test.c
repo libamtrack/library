@@ -72,19 +72,25 @@ int main(){
 //	    results);
 
 
-	const long		n				= 7;
-	const double 	E_MeV_u[]		= {1, 10, 100, 126, 10000, 100, 10000};
-	double			gamma[7], momentum_MeV_c_u[7], E_MeV_u_back[7];
+//	const long		n				= 7;
+//	const double 	E_MeV_u[]		= {1, 10, 100, 126, 10000, 100, 10000};
+//	double			gamma[7], momentum_MeV_c_u[7], E_MeV_u_back[7];
+//
+//	AT_gamma_from_E(	n,
+//						E_MeV_u,
+//						gamma);
+//	AT_momentum_from_E_MeV_c_u(	n,
+//								E_MeV_u,
+//								momentum_MeV_c_u);
+//	AT_E_MeV_u_from_momentum(	n,
+//								momentum_MeV_c_u,
+//								E_MeV_u_back);
 
-	AT_gamma_from_E(	n,
-						E_MeV_u,
-						gamma);
-	AT_momentum_from_E_MeV_c_u(	n,
-								E_MeV_u,
-								momentum_MeV_c_u);
-	AT_E_MeV_u_from_momentum(	n,
-								momentum_MeV_c_u,
-								E_MeV_u_back);
+	char * test_name = (char*)calloc(MATERIAL_NAME_LENGTH, sizeof(char));
+	const long test_no = 1;
 
+	AT_material_name_from_number(test_no, test_name);
+
+	free(test_name);
 	return 0;
 };

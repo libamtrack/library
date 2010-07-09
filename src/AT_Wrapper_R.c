@@ -556,6 +556,35 @@ void AT_particle_no_from_particle_name_R(const char** particle_name,
   *particle_no = (int)particle_no_long;
 }
 
+void AT_material_name_from_number_R( const int* material_no,
+    char** material_name){
+
+	const long material_no_long = (long)(*material_no);
+	char * material_name_str = (char*)calloc(MATERIAL_NAME_LENGTH, sizeof(char));
+
+	AT_material_name_from_number( material_no_long,
+	      material_name_str);
+
+	strcpy(*material_name, material_name_str);
+
+	free(material_name_str);
+}
+
+void AT_material_number_from_name_R( const char** material_name,
+	int* material_no){
+
+	  char * material_name_str = (char*)calloc(MATERIAL_NAME_LENGTH, sizeof(char));
+	  strcpy(material_name_str, *material_name);
+
+	  long material_no_long = 0;
+
+	  material_no_long	= AT_material_number_from_name( material_name_str);
+
+	  free( material_name_str);
+
+	  *material_no = (int)material_no_long;
+}
+
 void AT_run_GSM_method_R(  const int*  n,
     const float*  E_MeV_u,
     const int*    particle_no,
