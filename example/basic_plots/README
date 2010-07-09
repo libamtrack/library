@@ -9,6 +9,8 @@ Source file AT_plot.c can be compiled and linked to libamtrack library
 to produce executable file AT_plot.exe. This executable file
 can be used to generate plots data, can be steered using comman line switches.
 
+Lines starting with "$" character are commands to be executed by reader of this tutorial.
+
 1. Compilation
 
 Our example assume that compiled library is in AT_Release folder. Compilation
@@ -19,15 +21,15 @@ To adjust PATH variable in Windows (which keeps track of the directories
 containing executable files that can be run without providing full path), 
 run windows command line shell (cmd.exe) and use following command:
 
-path %path%;"C:\Program Files\MinGW\bin"
-path %path%;"C:\Program Files\GnuWin32\bin"
+$ path %path%;"C:\Program Files\MinGW\bin"
+$ path %path%;"C:\Program Files\GnuWin32\bin"
 
 These two command should append directories containing make.exe and gcc.exe to the PATH variable. 
 This trick will work only for one cmd session.
 
 Compile:
 
-make all
+$ make all
 
 After this step two files should be generated: AT_plot.o (not needed later) and AT_plot.exe.
 Compilation schema is following:
@@ -39,10 +41,13 @@ AT_plot.o + libamtrack library (*.dll or *.so) + gsl libraries (*.dll or *.so) -
 
 When you will have AT_plot.exe file and want to run it under Windows, copy to the same
 directory as .exe file all libraries (3 dll files for GSL and libamtrack). 
+Under Linux, adjust LD_LIBRARY_PATH variable:
+
+$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../../AT_Release
 
 First let us try to run without any switches:
 
-./AT_plot.exe
+$ ./AT_plot.exe
 Please specify plottype using -t (--plottype) option
 Usage: ./AT_plot.exe --plottype PLOTTYPE [ --modeltype MODELTYPE --submodeltype SUBMODELTYPE --xmin XMIN --xmax XMAX --xlogscale --npoints NPOINTS --particle PARTICLE]
 Usage (short): ./AT_plot.exe -t PLOTTYPE [ -s MODELTYPE -y SUBMODELTYPE -n XMIN -x XMAX -l -m NPOINTS -p PARTICLE]
@@ -50,7 +55,7 @@ Plottypes supported: ER RDD LET
 
 We will see short usage summary. There is one main mandatory switch: plottype. Let us check LET:
 
-./AT_plot.exe -t LET
+$ ./AT_plot.exe -t LET
 particle not set, setting default value 12C
 xmin not set, setting default value 0.1 [MeV]
 xmax not set, setting default value 500 [MeV]
@@ -71,7 +76,7 @@ npoints not set, setting default value 10
 
 Now let us come to more complicated example: RDD.
 
-./AT_plot.exe -t RDD
+$ ./AT_plot.exe -t RDD
 Specify RDD model using --modeltype (-s) option
 1 - Simple step test function
 2 - Katz' point target RDD
@@ -84,7 +89,7 @@ Specify RDD model using --modeltype (-s) option
 As we see now it is not enough to provide plottype, we also need
 to specify which RDD do we want to use. Let us play with Katz point target:
 
-./AT_plot.exe -t RDD --modeltype 2
+$ ./AT_plot.exe -t RDD --modeltype 2
 Specify ER model using --submodeltype (-y) option
 1 - simple test ER model
 2 - Butts & Katz' ER model (linear)
@@ -100,7 +105,7 @@ both types of switch providing method: long and short are equivalent.
 RDD is complicated example as I said, what we see now is that ER is missing.
 Let us choose 4:
 
-./AT_plot.exe -t RDD --modeltype 2 -y 4
+$ ./AT_plot.exe -t RDD --modeltype 2 -y 4
 particle not set, setting default value 12C
 xmin not set, setting default value 1e-12 [m]
 xmax not set, setting default value 1e-06 [m]
@@ -117,7 +122,7 @@ Incompatible ER model (Geiss' ER model (power-law E)) used with RDD model (Katz'
 Unfortunately Katz point RDD is well defined only for
 few electron range models, so let us take different choice:
 
-./AT_plot.exe -t RDD --modeltype 2 -y 3
+$ ./AT_plot.exe -t RDD --modeltype 2 -y 3
 particle not set, setting default value 12C
 xmin not set, setting default value 1e-12 [m]
 xmax not set, setting default value 1e-06 [m]
@@ -141,7 +146,7 @@ npoints not set, setting default value 10
 
 Now we can come back to usage summary:
 
-./AT_plot.exe 
+$ ./AT_plot.exe 
 Please specify plottype using -t (--plottype) option
 Usage: ./AT_plot.exe --plottype PLOTTYPE [ --modeltype MODELTYPE --submodeltype SUBMODELTYPE --xmin XMIN --xmax XMAX --xlogscale --npoints NPOINTS --particle PARTICLE]
 Usage (short): ./AT_plot.exe -t PLOTTYPE [ -s MODELTYPE -y SUBMODELTYPE -n XMIN -x XMAX -l -m NPOINTS -p PARTICLE]
@@ -150,7 +155,7 @@ Plottypes supported: ER RDD LET
 In the options list we see also possibility of specyfing range on X axis, axis type (linear or logarythmic),
 number of points and particle type. Let us use this options:
 
-./AT_plot.exe -t RDD --modeltype 2 -y 3 --xmin 1e-10 --xmax 1e-5 --xlogscale --npoints 20 --particle 4He
+$ ./AT_plot.exe -t RDD --modeltype 2 -y 3 --xmin 1e-10 --xmax 1e-5 --xlogscale --npoints 20 --particle 4He
 #ER: Waligorski's ER model (power-law wmax)
 #RDD: Katz' point target RDD
 # RDD parameter 0 : r_min_m = 1e-10
@@ -181,13 +186,13 @@ number of points and particle type. Let us use this options:
 Not relevant messages are printed to stderr, so in order to save results to the
 file for later printing (ex. with gnuplot we can use following trick):
 
-grzanka@T61:~/workspace/libamtrack/example/basic_plots$ ./AT_plot.exe -t RDD --modeltype 2 -y 3 > file.dat
+$ ./AT_plot.exe -t RDD --modeltype 2 -y 3 > file.dat
 particle not set, setting default value 12C
 xmin not set, setting default value 1e-12 [m]
 xmax not set, setting default value 1e-06 [m]
 npoints not set, setting default value 10
 
-grzanka@T61:~/workspace/libamtrack/example/basic_plots$ cat file.dat 
+$ cat file.dat 
 #ER: Waligorski's ER model (power-law wmax)
 #RDD: Katz' point target RDD
 # RDD parameter 0 : r_min_m = 1e-10
