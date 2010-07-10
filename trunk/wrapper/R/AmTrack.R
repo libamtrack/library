@@ -47,25 +47,8 @@
 # 2010-Jun-01: Added IGK methode, and variable names for all methods' result arrays
 ################################################################################################
 
-################################################################################################
-# FUNCTION LIST
-#
-# AT.gamma.response                          looks OK, to be tested
-# AT.LET.MeV.cm2.g                           OK
-# AT.max.E.transfer.MeV                      OK
-# AT.max.electron.range                      OK
-# AT.RDD.D.Gy                                OK
-# AT.RDD.D.ext.Gy                            OK
-# AT.SC.get.f1.array.size				     OK
-# AT.SC.get.f1								 OK
-# AT.SC.get.f.array.size                     OK
-# AT.Katz.inactivation.probability           to be tested TODO
-# AT.Katz.inactivation.cross.section.m2      to be tested
-# 
-################################################################################################
-
 debug 		<- F
-AT.version 	<- "libamtrack S/R wrapping script - 2010/03/23"
+AT.version 	<- "libamtrack S/R wrapping script - 2010/07/10"
 
 ##########################
 AT.convert.beam.parameters	<-	function(	N 				= 0,
@@ -391,6 +374,20 @@ AT.LET.MeV.cm2.g		<-	function(	E.MeV.u,
 															material.no			=	as.integer(material.no),
 															LET.MeV.cm2.g		=	as.single(LET.MeV.cm2.g))
 	return(res$LET.MeV.cm2.g)						
+}
+
+#################
+AT.LET.keV.um		<-	function(	E.MeV.u,
+										particle.no,
+										material.no){
+	n					<-	length(E.MeV.u)
+	LET.keV.um			<-	numeric(n)
+	res					<-	.C(	"AT_LET_keV_um_R",			n					=	as.integer(n),
+															E.MeV.u				=	as.single(E.MeV.u),
+															particle.no			=	as.integer(particle.no),
+															material.no			=	as.integer(material.no),
+															LET.keV.um			=	as.single(LET.keV.um))
+	return(res$LET.keV.um)						
 }
 
 #####################

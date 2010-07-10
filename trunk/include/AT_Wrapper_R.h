@@ -99,6 +99,11 @@ void AT_LET_MeV_cm2_g_R(  const int*  n,
     const int*    material_no,
     float*        LET_MeV_cm2_g);
 
+void AT_LET_keV_um_R(  const int*  n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const int*    material_no,
+    float*        LET_keV_um);
 
 void AT_max_E_transfer_MeV_R(  const int*  n,
     const float*  E_MeV_u,

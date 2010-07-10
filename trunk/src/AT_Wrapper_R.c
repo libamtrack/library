@@ -264,6 +264,46 @@ void AT_LET_MeV_cm2_g_R(  const int*  n,
   free(LET_MeV_cm2_g_double);
 }
 
+void AT_LET_keV_um_R(  const int*  n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const int*    material_no,
+    float*        LET_keV_um){
+
+	  /* int -> long conversion */
+	  const long n_long = (long)(*n);
+	  const long material_no_long = (long)(*material_no);
+	  long * particle_no_long = (long*)calloc(n_long,sizeof(long));
+	  long i;
+	  for(i = 0 ; i < n_long ; i++){
+	    particle_no_long[i] = (long)particle_no[i];
+	  }
+
+	  /* float -> double conversion */
+	  double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
+	  for(i = 0 ; i < n_long ; i++){
+	    E_MeV_u_double[i] = (double)E_MeV_u[i];
+	  }
+
+	  /* place for results */
+	  double * LET_keV_um_double = (double*)calloc(n_long,sizeof(double));
+
+	  AT_LET_keV_um(  n_long,
+	      E_MeV_u_double,
+	      particle_no_long,
+	      material_no_long,
+	      LET_keV_um_double);
+
+	  /* double -> float conversion (results) */
+	  for(i = 0 ; i < n_long ; i++){
+	    LET_keV_um[i] = (float)LET_keV_um_double[i];
+	  }
+
+	  free(E_MeV_u_double);
+	  free(LET_keV_um_double);
+}
+
+
 
 void AT_max_E_transfer_MeV_R(  const int*  n,
     const float*  E_MeV_u,
