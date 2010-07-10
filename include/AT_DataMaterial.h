@@ -45,11 +45,12 @@ enum material_no{
   Aluminum             = 3, /**< Aluminium */
   PMMA                 = 4, /**< PMMA */
   Alanine              = 5, /**< Alanine */
-  LiF                  = 6  /**< Lithium Fluoride */
+  LiF                  = 6, /**< Lithium Fluoride */
+  Air				   = 7  /**< Air */
 };
 
 
-#define MATERIAL_DATA_N    7
+#define MATERIAL_DATA_N    8
 
 // The next two LET-related structures must be declared here rather than in AT_DataLET.h to avoid circular dependencies
 /**
@@ -123,18 +124,18 @@ typedef struct {
 
 static const material_data AT_Material_Data = {
     MATERIAL_DATA_N,
-    {  User_Defined_Material,    Water_Liquid,   Aluminum_Oxide,   Aluminum,     PMMA,      Alanine,     LiF},           // material_no
-    {  false,           true,           true,             true,         true,      true,        true},          // ready
-    {  0,               276,             106,              13,           223,       0,           185},          // ICRU_ID
-    {  0.0,             1.00,            3.97,             2.6989,       1.19,      1.42,        2.64},         // density_g_cm3
-    {  0.0,             3.3456e29,       1.1719e30,        7.8314e29,    3.8698e29, 4.60571e29,  7.341e29},     // electron_density_g_cm3
-    {  0.0,             75.0,            145.2,            166.0,        74.0,      71.9,        10.0},         // I_eV
-    {  0.0,             0.00231,         0.003058,         0.003266,     0.001988,  0.00216381,  0.0},          // alpha_g_cm2 - TODO No data for LiF
-    {  0.0,             1.761,           1.748,            1.745,        1.762,     1.79165987,  0.0},          // p_MeV - TODO No data for LiF
-    {  0.0,             0.01153,         0.01305,          0.01230,      0.01338,   -100.0,      0.0},          // m_g_cm2 - TODO No data processed for nuclear interactions in Alanine, hence set to -100
-    {  0.0,             13.0,            21.72,            27.0,         0.0,       0.0,         17.7333},      // average_A - TODO find average A values for PMMA and alanine
-    {  0.0,             7.22,            10.637,           13.0,         0.0,       0.0,         8.0},          // average_Z - TODO find average Z values for PMMA and alanine
-    {  "User defined",  "Water, Liquid", "Aluminum Oxide", "Aluminum",   "PMMA",    "Alanine",   "Lithium Fluoride" }
+    {  User_Defined_Material,    Water_Liquid,   Aluminum_Oxide,   Aluminum,     PMMA,      Alanine,     LiF,	Air},           // material_no
+    {  false,           true,           true,             true,         true,      true,        true,			true},          // ready
+    {  0,               276,             106,              13,           223,       0,           185,			104},           // ICRU_ID
+    {  0.0,             1.00,            3.97,             2.6989,       1.19,      1.42,        2.64,			1.20479E-03},   // density_g_cm3
+    {  0.0,             3.3456e29,       1.1719e30,        7.8314e29,    3.8698e29, 4.60571e29,  7.341e29,		-100},          // electron_density_g_cm3 (TODO for air)
+    {  0.0,             75.0,            145.2,            166.0,        74.0,      71.9,        10.0, 			85.7},          // I_eV
+    {  0.0,             0.00231,         0.003058,         0.003266,     0.001988,  0.00216381,  0.0,			0.0},           // alpha_g_cm2 - TODO No data for LiF, air
+    {  0.0,             1.761,           1.748,            1.745,        1.762,     1.79165987,  0.0,           0.0},			// p_MeV - TODO No data for LiF, air
+    {  0.0,             0.01153,         0.01305,          0.01230,      0.01338,   -100.0,      0.0,			0.0},           // m_g_cm2 - TODO No data processed for nuclear interactions in Alanine, hence set to -100
+    {  0.0,             13.0,            21.72,            27.0,         0.0,       0.0,         17.7333,		0.0},      		// average_A - TODO find average A values for PMMA and alanine
+    {  0.0,             7.22,            10.637,           13.0,         0.0,       0.0,         8.0,			0.0},           // average_Z - TODO find average Z values for PMMA and alanine
+    {  "User defined",  "Water, Liquid", "Aluminum Oxide", "Aluminum",   "PMMA",    "Alanine",   "Lithium Fluoride", "Air" }
 };
 
 /* Cucinnotta calculated average A for water as 14.3, but it seems that it is 13.0 (Leszek) *
