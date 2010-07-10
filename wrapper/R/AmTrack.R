@@ -448,6 +448,36 @@ AT.particle.no.from.particle.name		<-	function(		particle.name ){
 }
 
 #################################
+AT.material.name.from.material.no		<-	function(		material.no){
+
+	n					<-	length(material.no)
+	material.name		<-	character(n)
+	
+	for (i in 1:n){
+		cur.material.name	<-	character(1)
+		res					<-	.C("AT_material_name_from_number_R", 		material.no				= as.integer(material.no[i]),
+																	material.name			= as.character(cur.material.name))
+		material.name[i]	<-	res$material.name
+	}		
+	return(material.name)
+}
+	
+#################################	
+AT.material.no.from.material.name		<-	function(		material.name ){
+
+	n					<-	length(material.name)
+	material.no		<-	numeric(n)
+	
+	for (i in 1:n){
+		cur.material.no	<-	numeric(1)
+		res					<-	.C("AT_material_number_from_name_R", 		material.name				= as.character(material.name[i]),  
+																	 material.no			= as.integer(cur.material.no))
+		material.no[i]	<-	res$material.no
+	}		
+	return(material.no)
+}
+
+#################################
 AT.particle.no.from.Z.and.A		<-	function(	Z, A){
 
 	n					<-	length(Z)
