@@ -30,6 +30,7 @@
  */
 
 #include "AmTrack.h"
+#include <math.h>
 
 void AT_PrintName(void){
   printf("This is libamtrack.\n");
@@ -59,15 +60,6 @@ void AT_run_SPIFF_method(  const long  n,
     const bool    lethal_events_mode,
     double        results[])
 {
-  FILE* output_file = NULL;
-  if(write_output){
-    output_file    =  fopen("SuccessiveConvolutions.log","w");
-    if (output_file == NULL) return;                      // File error
-
-    fprintf(output_file, "##############################################################\n");
-    fprintf(output_file, "##############################################################\n");
-    fprintf(output_file, "This is LGC2.2 core - successive convolution mode (2008/08/12).\n");
-  }
 
   long     n_bins_f1 = AT_SC_get_f1_array_size(  n,
       E_MeV_u,
@@ -215,6 +207,39 @@ void AT_run_SPIFF_method(  const long  n,
       &S_gamma,
       &efficiency);
 
+  /* Get zero-dose reponse and its ln */
+  double		s0 = 0.0, log_s0 = 0.0;
+  const long 	number_of_bins = 1;
+  const double	d0 = 0.0;
+
+  AT_gamma_response(  number_of_bins,
+      &d0,
+      gamma_model,
+      gamma_parameters,
+      // return
+      &s0);
+
+  if(s0 > 0){
+	  log_s0 = log(s0);
+  }
+
+  /* Compute lower bound */
+  double lower_Jensen_bound = f0*log_s0;
+  for (i = 0; i < n_bins_f_used; i++){
+	  double	log_s	= 0.0;
+	  if (S[i] > 0){
+		  log_s 	= log(S[i]);
+	  }
+	  lower_Jensen_bound 	+= f[i] * log_s * f_dd_Gy[i];
+  }
+  lower_Jensen_bound	=	exp(lower_Jensen_bound);
+
+  /* Compute upper bound */
+  double upper_Jensen_bound = f0*s0;
+  for (i = 0; i < n_bins_f_used; i++){
+	  upper_Jensen_bound 	+= f[i] * S[i] * f_dd_Gy[i];
+  }
+
   results[0]      =  efficiency;        // 0 - 4: algo independent results
   results[1]      =  d_check;
   results[2]      =  S_HCP;
@@ -222,24 +247,8 @@ void AT_run_SPIFF_method(  const long  n,
   results[5]      =  u;                 // 5 - 9: algo specific: u
   results[6]      =  u_start;
   results[7]      =  n_convolutions;
-
-  //////////////////////////////////////////
-  // Output results
-  //////////////////////////////////////////
-  if(write_output){
-    fprintf(output_file, "\n\nResults:\n");
-    fprintf(output_file, "\ndose check / Gy:         %4.3e Gy", results[1]);
-    fprintf(output_file, "\nmean impact number u:    %4.3e Gy", results[5]);
-    fprintf(output_file, "\nstart impact number:     %4.3e Gy", results[6]);
-    fprintf(output_file, "\nnumber of convolutions:  %ld",      (long)(results[7]));
-    fprintf(output_file, "\n\nf0: %4.3e\n", f0);
-    for (i = 0; i < n_bins_f_used;i++){
-      fprintf(output_file, "%ld; %4.2e; %4.2e; %4.2e\n",     i+1, f_d_Gy[i], f_dd_Gy[i], f[i]);
-    }
-    fprintf(output_file, "\nDone.\n###############################################\n");
-    fprintf(output_file, "###############################################\n");
-    fclose(output_file);
-  }
+  results[8]	  =  lower_Jensen_bound;
+  results[9]	  =  upper_Jensen_bound;
 
   free(f1_parameters);
   free(f1_d_Gy);
@@ -257,14 +266,14 @@ void AT_run_SPIFF_method(  const long  n,
 void AT_GSM_shoot_particles_on_grid(  const long  number_of_field_components,
                 const double         fluence_cm2[],
                 const double         sample_grid_size_m,
-                const unsigned long  random_number_generator_seed,
+                unsigned long* 		 random_number_generator_seed,
                 long                 number_of_particles_in_field_component[],
                 double*              x_position[],
                 double*              y_position[]){
 
         /* Create and initialize random number generator */
         gsl_rng * rng  =  gsl_rng_alloc(gsl_rng_taus);
-        gsl_rng_set(rng, random_number_generator_seed);
+        gsl_rng_set(rng, *random_number_generator_seed);
 
         /* Calculate total fluence */
         double total_fluence_cm2     =  AT_sum(  number_of_field_components, fluence_cm2);
@@ -298,6 +307,10 @@ void AT_GSM_shoot_particles_on_grid(  const long  number_of_field_components,
                         y_position[i][j] = gsl_rng_uniform_pos(rng) * sample_grid_size_m;
                 }
         }
+
+        // get random integer as next seed
+        *random_number_generator_seed = gsl_rng_get(rng);
+
         gsl_rng_free(rng);
 }
 
@@ -471,8 +484,9 @@ void AT_GSM_calculate_dose_histogram( const long  number_of_field_components,
     const long     er_model,
     const long     nX,
     const double   pixel_size_m,
-    const double   number_of_bins,
+    const long     number_of_bins,
     const double   dose_bin_centers_Gy[],
+    unsigned long* random_number_generator_seed,
     double *       zero_dose_fraction,
     double         dose_frequency_Gy[]){
 
@@ -502,7 +516,7 @@ void AT_GSM_calculate_dose_histogram( const long  number_of_field_components,
   AT_GSM_shoot_particles_on_grid( number_of_field_components,
                   fluence_cm2,
                   sample_grid_size_m,
-                  137,
+                  random_number_generator_seed,
                   number_of_particles_in_field_component,
                   x_position,
                   y_position);
@@ -663,16 +677,18 @@ void AT_run_GSM_method(  const long  n,
 
   gsl_rng * rng  =  gsl_rng_alloc(gsl_rng_taus);
   gsl_rng_set(rng, 137);
+  unsigned long random_number_generator_seed = gsl_rng_get(rng);
 
   /* start loop over N_runs */
   for (k = 0; k < N_runs; k++){
 
     /* find random positions of particles on grid
      * allocate xy_position tables */
-    AT_GSM_shoot_particles_on_grid( n,
+
+	AT_GSM_shoot_particles_on_grid( n,
                     fluence_cm2,
                     sample_grid_size_m,
-                    gsl_rng_get(rng),
+                    &random_number_generator_seed,
                     number_of_particles_in_field_component,
                     x_position,
                     y_position);
@@ -701,6 +717,26 @@ void AT_run_GSM_method(  const long  n,
     for (i = 0; i < n; i++){
       free( x_position[i] );
       free( y_position[i] );
+    }
+
+    /* For debugging: write grid to disk */
+    if(k == 0){
+    	  FILE*    output_file = NULL;
+    	  output_file    =  fopen("GSMdoseGrid.csv","w");
+    	  if (output_file == NULL) return;                      // File error
+   	      fprintf(output_file, "x.m;y.m;d.Gy\n");
+   	    	  for (j = 0; j < nX; j++){          // y
+   	    	    double cur_y_pos   =  max_r_max_m + ((double)j + 0.5)*voxel_size_m;
+   	    	    for (i = 0; i < nX; i++){        // x
+   	    	      double cur_x_pos =  max_r_max_m + ((double)i + 0.5)*voxel_size_m;
+   	    	      fprintf(output_file,
+   	    	    		  "%e;%e;%e\n",
+   	    	    		  cur_x_pos,
+   	    	    		  cur_y_pos,
+   	    	    		  grid_D_Gy[i][j]);
+   	    	    }
+   	    	  }
+   	       fclose(output_file);
     }
 
     /* calculate response pattern in grid cells, knowing dose pattern */

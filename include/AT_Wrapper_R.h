@@ -372,4 +372,20 @@ void AT_convert_beam_parameters_R(  const int*  n,
     float* N,
     float* FWHM_mm);
 
+void AT_GSM_calculate_dose_histogram_R( const int*  number_of_field_components,
+    const float*   E_MeV_u,
+    const float*   fluence_cm2,
+    const int*     particle_no,
+    const int*     material_no,
+    const int*     rdd_model,
+    const float*   rdd_parameter,
+    const int*     er_model,
+    const int*     nX,
+    const float*   pixel_size_m,
+    const int*		N_runs,
+    const int*     number_of_bins,
+    const float*   dose_bin_centers_Gy,
+    float *        zero_dose_fraction,
+    float *        dose_frequency_Gy);
+
 #endif /* AT_WRAPPER_R_H_ */
