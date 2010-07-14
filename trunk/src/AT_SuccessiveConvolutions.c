@@ -370,11 +370,6 @@ void  AT_SC_get_f_start(  const long     n_bins_f1,
 
 aKList  AT_SC_NORMAL(aKList theKList){
 
-  if(theKList.write_output){
-    fprintf(theKList.output_file,  "\n\nThis is subroutine AT_SC_NORMAL\n");
-    fprintf(theKList.output_file,      "=========================\n");
-  }
-
   double  Y        =  theKList.CM1 * 2;
   double  Z        =  theKList.CM2 * 2;
   double  CM0      =  theKList.H0;
@@ -412,27 +407,11 @@ aKList  AT_SC_NORMAL(aKList theKList){
   Y          =  theKList.CM1 / Y;
   Z          =  theKList.CM2 / Z;
 
-  if(theKList.write_output){
-    if(theKList.N1 > 0){
-      fprintf(theKList.output_file,  "\nPrecision control (ratio actual/theoretical):\n");
-      fprintf(theKList.output_file,  "Norm:\t\t %4.3e\n", theKList.X);
-      fprintf(theKList.output_file,  "Mean:\t\t %4.3e\n", Y);
-      fprintf(theKList.output_file,  "Var:\t\t %4.3e\n", Z);
-    }else{
-      fprintf(theKList.output_file,  "\nSingle hit distribution integral:\t\t %4.3e\n", CM0);
-    }
-  }
-
   return(theKList);
 }
 
 
 aKList  AT_SC_OUTPUT(aKList theKList){
-
-  if(theKList.write_output){
-    fprintf(theKList.output_file,  "\n\nThis is subroutine AT_SC_OUTPUT\n");
-    fprintf(theKList.output_file,      "=========================\n");
-  }
 
   //double*  SD            =  (double*)calloc(theKList.array_size, sizeof(double));
 
@@ -451,43 +430,22 @@ aKList  AT_SC_OUTPUT(aKList theKList){
   }
 
   if(theKList.write_output){
-    fprintf(  theKList.output_file,
-        "\nZero component:\t\t%4.3e\n",
-        theKList.H0);
-
-    fprintf(  theKList.output_file,
-        "\nMean\t\t\t\t\tActual:\t%4.3e\tTheory:\t%4.3e\n",
-        theKList.CM1, S1);
-    fprintf(  theKList.output_file,
-        "Variance/Mean^2\t\t\tActual:\t%4.3e\tTheory:\t%4.3e\n",
-        B, S2);
-    fprintf(  theKList.output_file,
-        "Central3/Variance^3/2\tActual:\t%4.3e\tTheory:\t%4.3e\n",
-        C, S3);
-    fprintf(  theKList.output_file,
-        "Central4/Variance^2\t\tActual:\t%4.3e\tTheory:\t%4.3e\n",
-        D, S4);
-
-    fprintf(  theKList.output_file,
-        "\nMIF: %ld, LEF: %ld, MIH: %ld, LEH: %ld, MIE: %ld\n\n",
-        theKList.MIF,
-        theKList.LEF,
-        theKList.MIH,
-        theKList.LEH,
-        theKList.MIE);
-
-    fprintf(  theKList.output_file,
-        "i\tE\t\t\tDE\t\t\tH\t\t\tF\n");
-
     long   L;
     for (L = 1; L <= theKList.array_size; L++){
       fprintf(  theKList.output_file,
-          "%ld\t%4.3e\t%4.3e\t%4.3e\t%4.3e\n",
+          "%ld;%e;%e;%e;%e;%e;%ld;%ld;%ld;%ld;%ld;%ld\n",
           L,
           theKList.E[L-1],
           theKList.DE[L-1],
           theKList.H[L-1],
-          theKList.F[L-1]);
+          theKList.H0,
+          theKList.F[L-1],
+          theKList.N1,
+          theKList.MIF,
+          theKList.LEF,
+          theKList.MIH,
+          theKList.LEH,
+          theKList.MIE);
     }
   }
 
@@ -528,12 +486,6 @@ aKList  AT_SC_RESET(aKList theKList){
       theKList.N2          +=  (long)(0.1 + exp((double)((long)(log(TT) / S - 0.99)) * S));
       TT                   =  TT / (double)theKList.N2;
       theKList.U           =  S / (double)theKList.N2;
-
-      if(theKList.write_output){
-        fprintf(theKList.output_file,      "\n\nThis is subroutine AT_SC_RESET\n");
-        fprintf(theKList.output_file,      "========================\n");
-        fprintf(theKList.output_file,      "\nCoordinate change with new N2: %ld\n", theKList.N2);
-      }
 
       theKList            =  AT_SC_INTERP(theKList);
       theKList.F[theKList.LEF]  =  0;
@@ -616,11 +568,6 @@ aKList  AT_SC_RESET(aKList theKList){
 
 
 aKList  AT_SC_ZERO(aKList theKList){
-
-  if(theKList.write_output){
-    fprintf(theKList.output_file,      "\n\nThis is subroutine AT_SC_ZERO\n");
-    fprintf(theKList.output_file,      "========================\n");
-  }
 
   theKList.X          =  0;
   long N              =  theKList.MIH - theKList.MIE;
@@ -800,11 +747,8 @@ void   AT_SuccessiveConvolutions( const double  u,
   if(KList.write_output){
     KList.output_file    =  fopen("SuccessiveConvolutions.log","w");
     if (KList.output_file == NULL) return;                      // File error
-
-    fprintf(KList.output_file, "##############################################################\n");
-    fprintf(KList.output_file, "##############################################################\n");
-    fprintf(KList.output_file, "This is LGC2.2 core - successive convolution mode (2008/08/12).\n");
-  }
+		fprintf(KList.output_file, "i;E;DE;H;H0;F;convolution.no;MIF;LEF;MIH;LEH;MIE\n");
+   }
 
   //////////////////////////////////
 
@@ -836,11 +780,6 @@ void   AT_SuccessiveConvolutions( const double  u,
   KList.MIF      = 0;
   KList.LEF      = 0;
 
-  if(KList.write_output){
-    fprintf(KList.output_file,  "\n\nThis is main\n");
-    fprintf(KList.output_file,      "============\n");
-  }
-
   // Copy input data
   KList.E0      = f_d_Gy[0] * exp(-1.0 * KList.U);
 
@@ -867,24 +806,23 @@ void   AT_SuccessiveConvolutions( const double  u,
   KList  = AT_SC_NORMAL(KList);
 
   if(KList.write_output){
-    fprintf(KList.output_file,  "\n\nThis is main\n");
-    fprintf(KList.output_file,      "============\n");
-
-    fprintf(KList.output_file, "\nNormalized single hit distribution in KList:\n");
     long i;
     for (i = 0; i < KList.array_size; i++){
-      fprintf(  KList.output_file,
-          "i: %ld\t\tKList.E: %4.3e Gy\t\tKList.DE: %4.3e\t\tKList.H: %4.3e\t\t\n",
-          i,
-          KList.E[i],
-          KList.DE[i],
-          KList.H[i]);
+        fprintf(  KList.output_file,
+            "%ld;%e;%e;%e;%e;%e;%ld;%ld;%ld;%ld;%ld;%ld\n",
+            i,
+            KList.E[L-1],
+            KList.DE[L-1],
+            KList.H[L-1],
+            KList.H0,
+            KList.F[L-1],
+            KList.N1,
+            KList.MIF,
+            KList.LEF,
+            KList.MIH,
+            KList.LEH,
+            KList.MIE);
     }
-
-    fprintf(KList.output_file,  "\n\nThis is main\n");
-    fprintf(KList.output_file,      "============\n");
-
-    fprintf(KList.output_file, "\nMoments of the single hit distribution:\n");
   }
 
   ///////////////////////////////////////
@@ -902,30 +840,6 @@ void   AT_SuccessiveConvolutions( const double  u,
   double  S4        =    KList.D4 / KList.D1;
   S                 =    S3 / sqrt(gsl_pow_3(S2));
   double  TT        =    S4  / gsl_pow_2(S2);
-
-  if(KList.write_output){
-    fprintf(  KList.output_file,
-        "\nInitial distribution:\n");
-    fprintf(  KList.output_file,
-        "Delta 1:\t\t%4.3e\n",
-        KList.D1);
-    fprintf(  KList.output_file,
-        "Delta 2:\t\t%4.3e\n",
-        KList.D2);
-
-    fprintf(  KList.output_file,
-        "\nCharacteristics of the solution to the mean value E\n");
-    fprintf(  KList.output_file,
-        "Rel. variance:\t%4.3e / E\n",
-        S2);
-    fprintf(  KList.output_file,
-        "Skewness:\t\t%4.3e / sqrt(E)\n",
-        S);
-    fprintf(  KList.output_file,
-        "Kurtosis:\t\t%4.3e / E + 3\n",
-        TT);
-  }
-
 
   ///////////////////////////////////////
   // AT_SC_SHRINK distribution
@@ -953,18 +867,6 @@ void   AT_SuccessiveConvolutions( const double  u,
     n_convolutions++;
   }
 
-  if(KList.write_output){
-    fprintf(KList.output_file,  "\n\nThis is main\n");
-    fprintf(KList.output_file,      "============\n");
-
-    fprintf(  KList.output_file,  "\nSmall hit number approximation:\n");
-    fprintf(  KList.output_file,
-        "\nTarget hit value:\t%4.3e\t\tStart hit value:\t%4.3e\t\tNumber of convolutions:\t%ld\n",
-        u,
-        KList.CN,
-        n_convolutions);
-  }
-
   KList.H0         =    1.0 - KList.CN;
 
   for (L = 1; L <= KList.LEH; L++){
@@ -978,18 +880,6 @@ void   AT_SuccessiveConvolutions( const double  u,
   for(j = 0; j < n_convolutions; j++){
     KList.N1        =  KList.N1 + 1;
     KList.CN        =  KList.CN * 2.0;
-
-    if(KList.write_output){
-      fprintf(  KList.output_file,
-          "\n\n##############################################################\n");
-      fprintf(  KList.output_file,  "\n\nThis is main\n");
-      fprintf(  KList.output_file,      "============\n");
-
-      fprintf(  KList.output_file,
-          "\nConvolution number:\t\t%ld\nMean hit number:\t\t%4.3e\n",
-          KList.N1,
-          KList.CN);
-    }
 
     for (L = 1; L <= KList.LEH; L++){
       KList.F[L -1]      =  KList.H[L -1];
@@ -1050,12 +940,6 @@ void   AT_SuccessiveConvolutions( const double  u,
   free(KList.BI);
 
   if(KList.write_output){
-    fprintf(KList.output_file, "\n\nThis is main\n");
-    fprintf(KList.output_file, "============\n");
-    fprintf(KList.output_file, "\nDone.\n");
-    fprintf(KList.output_file, "##############################################################\n");
-    fprintf(KList.output_file, "##############################################################\n");
-
     // Close file
     fclose(KList.output_file);
   }

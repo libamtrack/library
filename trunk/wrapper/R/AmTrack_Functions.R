@@ -153,13 +153,13 @@ run.GSM		<-	function(	E.MeV.u,
 					ER.model				=	4,				# Geiss ER
 					gamma.model				=	2,				# General hit-target
 					gamma.parameters		=	c(1,10,1,1,0),	# One single-hit-single-target (exp-sat) component, characteristic dose 10 Gy
-					N.runs				=	1,		### 1 run for beginning
+					N.runs					=	1,				### 1 run for beginning
 					write.output			=	F,				# no log file
-					nX					=	5,		### 100 x 100 grid
-					voxel.size.m			=	0.01,	### .1 mm voxel size
-					lethal.events.mode		=	F				# use survival instead of activation
-					){
-
+					nX						=	5,				### 100 x 100 grid
+					voxel.size.m			=	0.01,			### .1 mm voxel size
+					lethal.events.mode		=	F,				# use survival instead of activation
+					verbose					=	F){
+if(verbose){
 	return(AT.run.GSM.method(	E.MeV.u 		= E.MeV.u,
 						particle.no 	= particle.no,
 						fluence.cm2.or.dose.Gy 	= fluence.cm2.or.dose.Gy,
@@ -174,6 +174,22 @@ run.GSM		<-	function(	E.MeV.u,
 						nX			= nX,
 						voxel.size.m	= voxel.size.m,
 						lethal.events.mode	= lethal.events.mode))
+}else{
+	return(AT.run.GSM.method(	E.MeV.u 		= E.MeV.u,
+						particle.no 	= particle.no,
+						fluence.cm2.or.dose.Gy 	= fluence.cm2.or.dose.Gy,
+						material.no 	= material.no,
+						RDD.model 		= RDD.model,
+						RDD.parameters 	= RDD.parameters,
+						ER.model 		= ER.model,
+						gamma.model		= gamma.model,
+						gamma.parameters	= gamma.parameters,
+						N.runs		= N.runs,
+						write.output 	= write.output,
+						nX			= nX,
+						voxel.size.m	= voxel.size.m,
+						lethal.events.mode	= lethal.events.mode))
+	}
 }
 
 run.IGK		<-	function(	E.MeV.u,

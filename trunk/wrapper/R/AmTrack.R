@@ -245,8 +245,8 @@ AT.run.SPIFF.method	<-	function(	E.MeV.u,
 								"u", 
 								"u.start", 
 								"n.convolutions", 
-								"---", 
-								"---")
+								"lower.Jensen.bound", 
+								"upper.Jensen.bound")
 	
 	return(results)
 }
@@ -884,6 +884,59 @@ AT.total.u      <-  function(   E.MeV.u,
 
     return(res$u)
 }
+
+##################
+AT.GSM.calculate.dose.histogram	<-	function(	E.MeV.u,
+									particle.no,
+									fluence.cm2.or.dose.Gy,
+									material.no,
+									RDD.model,
+									RDD.parameters,
+									ER.model,
+									nX,
+									pixel.size.m,
+									N.runs,
+									dose.bin.centers.Gy){
+	
+		n				<-	length(E.MeV.u)
+		n.bins			<-	length(dose.bin.centers.Gy)
+		
+		if(fluence.cm2.or.dose.Gy[1] < 0){
+			fluence.cm2.or.dose.Gy	<-	AT.fluence.cm2(	E.MeV.u,
+														particle.no,
+														-1.0 * fluence.cm2.or.dose.Gy,
+														material.no)	
+		}
+		
+		dose.frequency.Gy		<-	numeric(n.bins)
+		zero.dose.fraction	<-	numeric(1)
+
+		res				<-	.C(	"AT_GSM_calculate_dose_histogram_R",	n						= 	as.integer(n),
+																		E.MeV.u					=	as.single(E.MeV.u),
+																		fluence.cm2.or.dose.Gy	=	as.single(fluence.cm2.or.dose.Gy),
+																		particle.no				=	as.integer(particle.no),
+																		material.no				=	as.integer(material.no),
+																		RDD.model				=	as.integer(RDD.model),
+																		RDD.parameters			=	as.single(RDD.parameters),
+																		ER.model				=	as.integer(ER.model),
+																		nX						=	as.integer(nX),
+																		pixel.size.m			=	as.single(pixel.size.m),
+																		N.runs				=	as.integer(N.runs),
+																		number.of.bins			=	as.integer(n.bins),
+																		dose.bin.centers.Gy		=	as.single(dose.bin.centers.Gy),
+																		zero.dose.fraction		=	as.single(zero.dose.fraction),
+																		dose.frequency.Gy		=	as.single(dose.frequency.Gy))
+
+
+	results			<-	data.frame(		dose.bin.centers.Gy		= dose.bin.centers.Gy,
+										dose.frequency.Gy		= res$dose.frequency.Gy,
+										zero.dose.fraction		= rep(res$zero.dose.fraction, n.bins))
+
+	
+	return(results)
+}
+
+											
 
 ######################################################################################################################################
 

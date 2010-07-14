@@ -43,19 +43,45 @@
 
 int main(){
 
-//	const int		n							=	1;
-//	const float		E_MeV_u[]					=	{10};
-//	const int		particle_no[]				=	{1001};
-//	const float	fluence_cm2_or_dose_Gy[]	=	{-1.0};
-//	const int		material_no					=	1;
-//	const int		rdd_model					=	3;
-//	const float	rdd_parameters[]			=	{50e-9};
-//	const int		er_model					=	3;
-//	const int		gamma_model					=	2;
-//	const float	gamma_parameters[]			=	{1,10,1,1,0};
-//	const float		saturation_cross_section_factor = 1.0;
-//	const int		write_output				=	0;
-//	float			results[10];
+	const long		n							=	1;
+	const double		E_MeV_u[]					=	{10};
+	const long		particle_no[]				=	{6012};
+	const double	fluence_cm2_or_dose_Gy[]		=	{-1.0};
+	const long		material_no					=	1;
+	const long		rdd_model					=	3;
+	const double	rdd_parameters[]			=	{50e-9};
+	const long		er_model					=	3;
+	const long		gamma_model					=	2;
+	const double	gamma_parameters[]			=	{1,10,1,1,0};
+	long			N2							= 	20;
+	const double	fluence_factor				=	1.0;
+	const bool		write_output				=	false;
+	const bool		shrink_tails				=	true;
+	const double	shrink_tails_under			=	1e-30;
+	const bool		adjust_N2					=	true;
+	const bool		lethal_events_mode			=	false;
+
+	double			results[10];
+
+	AT_run_SPIFF_method(  n,
+	    E_MeV_u,
+	    particle_no,
+	    fluence_cm2_or_dose_Gy,
+	    material_no,
+	    rdd_model,
+	    rdd_parameters,
+	    er_model,
+	    gamma_model,
+	    gamma_parameters,
+	    N2, // TODO investigate if this can be changed inside
+	    fluence_factor,
+	    write_output,
+	    shrink_tails,
+	    shrink_tails_under,
+	    adjust_N2,
+	    lethal_events_mode,
+	    results);
+
 //
 //	AT_run_IGK_method_R(  &n,
 //	    E_MeV_u,
@@ -86,11 +112,46 @@ int main(){
 //								momentum_MeV_c_u,
 //								E_MeV_u_back);
 
-	char * test_name = (char*)calloc(MATERIAL_NAME_LENGTH, sizeof(char));
-	const long test_no = 1;
+//	char * test_name = (char*)calloc(MATERIAL_NAME_LENGTH, sizeof(char));
+//	const long test_no = 1;
+//
+//	AT_material_name_from_number(test_no, test_name);
+//
+//	free(test_name);
+//
 
-	AT_material_name_from_number(test_no, test_name);
+//	const int		n							=	1;
+//	const float		E_MeV_u[]					=	{10};
+//	const int		particle_no[]				=	{1001};
+//	const float	fluence_cm2_or_dose_Gy[]	=	{10e7};
+//	const int		material_no					=	1;
+//	const int		rdd_model					=	3;
+//	const float	rdd_parameters[]			=	{50e-9};
+//	const int		er_model					=	4;
+//	const int		nX						= 1;
+//	const float		pixel_size_m			= 1e-6;
+//	const int		N_runs					= 10;
+//	const int		number_of_bins			= 5;
+//	const float		dose_bin_centers_Gy[]	= {1e-5, 1e-4, 1e-3, 1e-2, 1e-1};
+//	float		zero_dose_fraction		= 0;
+//	 float		dose_frequency_Gy[]	= {0,0,0,0,0};
+//
+//	AT_GSM_calculate_dose_histogram_R( &n,
+//	    E_MeV_u,
+//	    fluence_cm2_or_dose_Gy,
+//	    particle_no,
+//	    &material_no,
+//	    &rdd_model,
+//	    rdd_parameters,
+//	    &er_model,
+//	    &nX,
+//	    &pixel_size_m,
+//	    &N_runs,
+//		&number_of_bins,
+//	    dose_bin_centers_Gy,
+//	    &zero_dose_fraction,
+//	    dose_frequency_Gy);
 
-	free(test_name);
+
 	return 0;
 };
