@@ -48,7 +48,7 @@
 ################################################################################################
 
 debug 		<- F
-AT.version 	<- "libamtrack S/R wrapping script - 2010/07/10"
+AT.version 	<- "libamtrack S/R wrapping script - 2010/07/19"
 
 ##########################
 AT.convert.beam.parameters	<-	function(	N 				= 0,
@@ -131,6 +131,43 @@ AT.D.RDD.Gy					<-	function(	r.m,
 													D.Gy					=	as.single(D.Gy))		
 			
 	 return(res$D.Gy)						
+}
+
+###########
+AT.RDD.f1.parameters.mixed.field					<-	function(	E.MeV.u,
+											particle.no,
+											material.no,
+											ER.model,
+											RDD.model,
+											RDD.parameters){
+	AT.SC.F1.PARAMETERS.SINGLE.LENGTH	<-	8
+	n						<-	length(E.MeV.u)
+	f1.parameters				<-	numeric(n * AT.SC.F1.PARAMETERS.SINGLE.LENGTH)
+  		
+    res					<-	.C(	"AT_RDD_f1_parameters_mixed_field_R",	n						=	as.integer(n),
+													E.MeV.u					=	as.single(E.MeV.u),
+													particle.no				=	as.integer(particle.no),
+													material.no				=	as.integer(material.no),
+													RDD.model				=	as.integer(RDD.model),
+													RDD.parameters			=	as.single(RDD.parameters),
+													ER.model				=	as.integer(ER.model),
+													f1.parameters			=	as.single(f1.parameters))		
+			
+	df					<-	data.frame(	LET.MeV.cm2.g			= numeric(0),
+									r.min.m				= numeric(0),
+									r.max.m				= numeric(0),
+									d.min.Gy				= numeric(0),
+									d.max.Gy				= numeric(0),
+									normalization.constant		= numeric(0),
+									single.impact.fluence.cm2	= numeric(0),
+									single.impact.dose.Gy		= numeric(0))
+
+	for(i in 1:n){
+		# i <- 2
+		df[i,]	<-	res$f1.parameters[(((i - 1) * AT.SC.F1.PARAMETERS.SINGLE.LENGTH)+1):(i * AT.SC.F1.PARAMETERS.SINGLE.LENGTH)]
+	}
+	
+	return(df)						
 }
 
 #############

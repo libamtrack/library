@@ -134,6 +134,61 @@ void AT_D_RDD_Gy_R( const int*  n,
 }
 
 
+void AT_RDD_f1_parameters_mixed_field_R( const int* n,
+    const float* E_MeV_u,
+    const int*    particle_no,
+    const int*    material_no,
+    const int*    rdd_model,
+    const float*    rdd_parameters,
+    const int*    er_model,
+    float*    f1_parameters){
+
+  long i;
+
+  /* int -> long conversion */
+  const long n_long = (long)(*n);
+  const long material_no_long = (long)(*material_no);
+  const long er_model_long = (long)(*er_model);
+  const long rdd_model_long = (long)(*rdd_model);
+  long * particle_no_long       = (long*)calloc(n_long,sizeof(long));
+  for(i = 0 ; i < n_long ; i++){
+    particle_no_long[i]                 = (long)particle_no[i];
+  }
+
+  /* float -> double conversion */
+  double * E_MeV_u_double       = (double*)calloc(n_long,sizeof(double));
+  for(i = 0 ; i < n_long ; i++){
+    E_MeV_u_double[i]                   = (double)E_MeV_u[i];
+  }
+
+  double rdd_parameter_double[RDD_MAX_NUMBER_OF_PARAMETERS];
+  for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
+	  rdd_parameter_double[i] = (double)rdd_parameters[i];
+  }
+
+  /* place for results */
+  double * f1_parameters_double = (double*)calloc(n_long*AT_SC_F1_PARAMETERS_SINGLE_LENGTH,sizeof(double));
+
+  AT_RDD_f1_parameters_mixed_field( n_long,
+      E_MeV_u_double,
+      particle_no_long,
+      material_no_long,
+      rdd_model_long,
+      rdd_parameter_double,
+      er_model_long,
+      f1_parameters_double);
+
+  /* double -> float conversion (results) */
+  for(i = 0 ; i < n_long*AT_SC_F1_PARAMETERS_SINGLE_LENGTH; i++){
+	  f1_parameters[i] = (float)f1_parameters_double[i];
+  }
+
+  free(E_MeV_u_double);
+  free(particle_no_long);
+  free(f1_parameters_double);
+}
+
+
 void AT_fluence_cm2_R( const int* n,
     const float*  E_MeV_u,
     const int*    particle_no,
