@@ -56,6 +56,15 @@ void AT_D_RDD_Gy_R( const int*  n,
     const int*    er_model,
     float*        D_RDD_Gy);
 
+void AT_RDD_f1_parameters_mixed_field_R( const int* n,
+    const float* E_MeV_u,
+    const int*    particle_no,
+    const int*    material_no,
+    const int*    rdd_model,
+    const float*    rdd_parameters,
+    const int*    er_model,
+    float*    f1_parameters);
+
 void AT_fluence_cm2_R( const int* n,
     const float*  E_MeV_u,
     const int*    particle_no,
