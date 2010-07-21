@@ -1465,14 +1465,14 @@ void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_comp
 		zero_dose_fraction			/= (double)N_runs;
 
 		for(j = 0 ; j < number_of_bins; j++){
-			dose_frequency_Gy[j]     		=  (double)N_runs;
+			dose_frequency_Gy[j]     		/=  (double)N_runs;
 		}
 
 
 		/* compute <d> */
 		float cur_d_check_Gy	=	0.0;
 		for (j = 0; j < number_of_bins; j++){
-			cur_d_check_Gy		+=	dose_bin_centers_Gy[j] * dose_frequency_Gy[j] * dose_bin_width_Gy[j];
+			cur_d_check_Gy		+=	dose_bin_centers_Gy[j] * dose_frequency_Gy[j]; // * dose_bin_width_Gy[j];
 		}
 
 		*mean_d_check_Gy		+=	cur_d_check_Gy;
