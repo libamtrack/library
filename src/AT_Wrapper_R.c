@@ -1780,6 +1780,8 @@ void AT_convert_beam_parameters_R(  const int*  n,
 	free(FWHM_mm_double);
 }
 
+
+
 void AT_GSM_calculate_dose_histogram_R( const int*  number_of_field_components,
     const float*   E_MeV_u,
     const float*   fluence_cm2,
@@ -1835,7 +1837,11 @@ void AT_GSM_calculate_dose_histogram_R( const int*  number_of_field_components,
 
 	  long			N_runs_long						= (long)*N_runs;
 	  long			j;
-	  unsigned long  random_number_generator_seed	= 137;
+
+	  /* Create and initialize random number generator */
+	  gsl_rng * rng  								= gsl_rng_alloc(gsl_rng_taus);
+	  gsl_rng_set(rng, 137);
+	  unsigned long  random_number_generator_seed	= gsl_rng_get(rng);
 
 	  for (i = 0; i < N_runs_long; i++){
 		  AT_GSM_calculate_dose_histogram( n_long,
@@ -1876,5 +1882,116 @@ void AT_GSM_calculate_dose_histogram_R( const int*  number_of_field_components,
 	  free(dose_bin_centers_Gy_double);
 	  free(dose_frequency_Gy_double);
 	  free(dose_frequency_Gy_tmp);
+
+}
+
+void AT_GSM_calculate_multiple_dose_histograms_R( const int*  number_of_field_components,
+    const float*   	E_MeV_u,
+    const float*   	fluence_cm2,
+    const int*     	particle_no,
+    const int*     	material_no,
+    const int*     	rdd_model,
+    const float*   	rdd_parameter,
+    const int*     	er_model,
+    const int*     	nX,
+    const float*   	pixel_size_m,
+    const int*		N_runs,
+    const int*		N_repetitions,
+    const int*     	number_of_bins,
+    const float*   	dose_bin_centers_Gy,
+    float *   		dose_bin_width_Gy,
+    float *       	mean_d_check_Gy,
+    float *       	sd_d_check_Gy,
+    float *       	mean_zero_dose_fraction,
+    float *       	sd_zero_dose_fraction,
+    float *       	mean_dose_frequency_Gy,
+    float *       	sd_dose_frequency_Gy){
+
+	  long i;
+
+	  const long n_long = (long)(*number_of_field_components);
+
+	  double * 	E_MeV_u_double  			= (double*)calloc(n_long,sizeof(double));
+	  double * 	fluence_cm2_double  		= (double*)calloc(n_long,sizeof(double));
+	  long*		particle_no_long			= (long*)calloc(n_long,sizeof(long));
+
+	  for(i = 0 ; i < n_long ; i++){
+		  E_MeV_u_double[i]     		=  (double)E_MeV_u[i];
+		  fluence_cm2_double[i]     	=  (double)fluence_cm2[i];
+		  particle_no_long[i]			=  (long)particle_no[i];
+	  }
+
+	  const long		material_no_long			= (const long)(*material_no);
+	  const long		rdd_model_long				= (const long)(*rdd_model);
+	  const long		er_model_long				= (const long)(*er_model);
+	  const long		nX_long						= (const long)(*nX);
+
+	  double 		rdd_parameter_double[RDD_MAX_NUMBER_OF_PARAMETERS];
+	  for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
+	    rdd_parameter_double[i] = (double)rdd_parameter[i];
+	  }
+
+	  double	pixel_size_m_double				= (double)(*pixel_size_m);
+	  long		number_of_bins_long				= (long)(*number_of_bins);
+	  double * 	dose_bin_centers_Gy_double 		= (double*)calloc(number_of_bins_long,sizeof(double));
+	  double * 	dose_bin_widths_Gy_double 		= (double*)calloc(number_of_bins_long,sizeof(double));
+
+	  for(i = 0 ; i < number_of_bins_long ; i++){
+		  dose_bin_centers_Gy_double[i]     		=  (double)dose_bin_centers_Gy[i];
+	  }
+
+
+	  long			N_runs_long						= (long)*N_runs;
+	  long			N_repetitions_long				= (long)*N_repetitions;
+
+	  double		mean_d_check_Gy_double			= 0;
+	  double		sd_d_check_Gy_double			= 0;
+	  double		mean_zero_dose_fraction_double	= 0;
+	  double		sd_zero_dose_fraction_double	= 0;
+
+	  double * 		mean_dose_frequency_Gy_double 	= (double*)calloc(number_of_bins_long,sizeof(double));
+	  double * 		sd_dose_frequency_Gy_double		= (double*)calloc(number_of_bins_long,sizeof(double));
+
+	AT_GSM_calculate_multiple_dose_histograms( n_long,
+	    E_MeV_u_double,
+	    fluence_cm2_double,
+	    particle_no_long,
+	    material_no_long,
+	    rdd_model_long,
+	    rdd_parameter_double,
+	    er_model_long,
+	    nX_long,
+	    pixel_size_m_double,
+	    N_runs_long,
+	    N_repetitions_long,
+	    number_of_bins_long,
+	    dose_bin_centers_Gy_double,
+	    dose_bin_widths_Gy_double,
+	    &mean_d_check_Gy_double,
+	    &sd_d_check_Gy_double,
+	    &mean_zero_dose_fraction_double,
+	    &sd_zero_dose_fraction_double,
+	    mean_dose_frequency_Gy_double,
+	    sd_dose_frequency_Gy_double);
+
+	  *mean_d_check_Gy					= (float)mean_d_check_Gy_double;
+	  *sd_d_check_Gy					= (float)sd_d_check_Gy_double;
+	  *mean_zero_dose_fraction			= (float)mean_zero_dose_fraction_double;
+	  *sd_zero_dose_fraction			= (float)sd_zero_dose_fraction_double;
+
+	  for(i = 0 ; i < number_of_bins_long ; i++){
+		  dose_bin_width_Gy[i]     		=  	(float)dose_bin_widths_Gy_double[i];
+		  mean_dose_frequency_Gy[i]		=	(float)mean_dose_frequency_Gy_double[i];
+		  sd_dose_frequency_Gy[i]		=	(float)sd_dose_frequency_Gy_double[i];
+	  }
+
+	  free(E_MeV_u_double);
+	  free(fluence_cm2_double);
+	  free(particle_no_long);
+
+	  free(dose_bin_centers_Gy_double);
+	  free(dose_bin_widths_Gy_double);
+	  free(mean_dose_frequency_Gy_double);
+	  free(sd_dose_frequency_Gy_double);
 
 }

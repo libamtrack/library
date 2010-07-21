@@ -72,7 +72,6 @@ double AT_Dyx(  double  y,  double  x)
   return Dyx;
 }
 
-
 int pbdv_(double *v,
     double *x,
     double *dv,

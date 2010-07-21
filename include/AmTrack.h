@@ -42,6 +42,7 @@
 #include "AT_RDD_ExtendedTarget.h"
 #include "AT_SuccessiveConvolutions.h"
 #include "AT_GammaResponse.h"
+#include "AT_Histograms.h"
 #include "AT_PhysicsRoutines.h"
 #include "AT_NumericalRoutines.h"
 #include "AT_KatzModel.h"
@@ -402,5 +403,26 @@ void AT_run_SPISS_method(  const long  n,
     const long    importance_sampling,
     double        results[]);
 
+void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_components,
+    const double   	E_MeV_u[],
+    const double   	fluence_cm2[],
+    const long     	particle_no[],
+    const long     	material_no,
+    const long     	rdd_model,
+    const double   	rdd_parameter[],
+    const long     	er_model,
+    const long     	nX,
+    const double   	pixel_size_m,
+    const long		N_runs,
+    const long		N_repetitions,
+    const long     	number_of_bins,
+    const double   	dose_bin_centers_Gy[],
+    double    		dose_bin_width_Gy[],
+    double *       	mean_d_check_Gy,
+    double *       	sd_d_check_Gy,
+    double *       	mean_zero_dose_fraction,
+    double *       	sd_zero_dose_fraction,
+    double        	mean_dose_frequency_Gy[],
+    double        	sd_dose_frequency_Gy[]);
 
 #endif /* AmTrack_H_ */
