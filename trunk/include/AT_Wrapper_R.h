@@ -397,4 +397,26 @@ void AT_GSM_calculate_dose_histogram_R( const int*  number_of_field_components,
     float *        zero_dose_fraction,
     float *        dose_frequency_Gy);
 
+void AT_GSM_calculate_multiple_dose_histograms_R( const int*  number_of_field_components,
+    const float*   	E_MeV_u,
+    const float*   	fluence_cm2,
+    const int*     	particle_no,
+    const int*     	material_no,
+    const int*     	rdd_model,
+    const float*   	rdd_parameter,
+    const int*     	er_model,
+    const int*     	nX,
+    const float*   	pixel_size_m,
+    const int*		N_runs,
+    const int*		N_repetitions,
+    const int*     	number_of_bins,
+    const float*   	dose_bin_centers_Gy,
+    float *   		dose_bin_width_Gy,
+    float *       	mean_d_check_Gy,
+    float *       	sd_d_check_Gy,
+    float *       	mean_zero_dose_fraction,
+    float *       	sd_zero_dose_fraction,
+    float *       	mean_dose_frequency_Gy,
+    float *       	sd_dose_frequency_Gy);
+
 #endif /* AT_WRAPPER_R_H_ */
