@@ -1995,3 +1995,38 @@ void AT_GSM_calculate_multiple_dose_histograms_R( const int*  number_of_field_co
 	  free(sd_dose_frequency_Gy_double);
 
 }
+
+void AT_fluence_weighted_stopping_power_ratio_R( const int*     n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    const int*	  reference_material_no,
+    float*		  fluence_weighted_stopping_power_ratio){
+
+	long i;
+
+	const long n_long = (long)(*n);
+
+	double * 	E_MeV_u_double  			= (double*)calloc(n_long,sizeof(double));
+	double * 	fluence_cm2_double  		= (double*)calloc(n_long,sizeof(double));
+	long*		particle_no_long			= (long*)calloc(n_long,sizeof(long));
+
+	for(i = 0 ; i < n_long ; i++){
+		E_MeV_u_double[i]     		=  (double)E_MeV_u[i];
+		fluence_cm2_double[i]     	=  (double)fluence_cm2[i];
+		particle_no_long[i]			=  (long)particle_no[i];
+	}
+
+	const long		material_no_long			= (const long)(*material_no);
+	const long		reference_material_no_long	= (const long)(*reference_material_no);
+
+	double fluence_weighted_stopping_power_ratio_double = AT_fluence_weighted_stopping_power_ratio( n_long,
+	    E_MeV_u_double,
+	    particle_no_long,
+	    fluence_cm2_double,
+	    material_no_long,
+	    reference_material_no_long);
+
+	*fluence_weighted_stopping_power_ratio = (float)fluence_weighted_stopping_power_ratio_double;
+}

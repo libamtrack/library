@@ -48,7 +48,7 @@
 ################################################################################################
 
 debug 		<- F
-AT.version 	<- "libamtrack S/R wrapping script - 2010/07/19"
+AT.version 	<- "libamtrack S/R wrapping script - 2010/07/21"
 
 ##########################
 AT.convert.beam.parameters	<-	function(	N 				= 0,
@@ -757,6 +757,26 @@ AT.SC.SuccessiveConvolutions		<-	function(	u,
 }
 
 #############
+AT.fluence.weighted.stopping.power.ratio.R					<-	function(	E.MeV.u,
+											particle.no,
+											fluence.cm2,
+											material.no,
+											reference.material.no){
+	n										<-	length(E.MeV.u)
+	fluence.weighted.stopping.power.ratio	<-	numeric(1)
+  		
+    res					<-	.C(	"AT_fluence_weighted_stopping_power_ratio_R",	n						=	as.integer(n),
+																				E.MeV.u					=	as.single(E.MeV.u),
+																				particle.no				=	as.integer(particle.no),
+																				fluence.cm2				=	as.single(fluence.cm2),
+																				material.no				=	as.integer(material.no),
+																				reference.material.no	=	as.integer(reference.material.no),
+																				result					=	as.single(fluence.weighted.stopping.power.ratio))		
+			
+	 return(res$result)						
+}
+
+#############
 AT.total.D.Gy					<-	function(	E.MeV.u,
 											particle.no,
 											fluence.cm2,
@@ -922,7 +942,32 @@ AT.total.u      <-  function(   E.MeV.u,
     return(res$u)
 }
 
-##################
+##############################
+AT.u      <-  function(   E.MeV.u,
+                                                    particle.no,
+                                                    fluence.cm2,
+                                                    material.no,
+                                                    er.model)
+{
+    n                           <-  length(E.MeV.u)
+    u_cur                          <-  numeric(1)
+    u	                          <-  numeric(n)
+    for (i in 1:n){
+		res                         <-  .C( "AT_total_u_R", n                           =   as.integer(1),
+                                                                           E.MeV.u                     =   as.single(E.MeV.u[i]),
+                                                                           particle.no                 =   as.integer(particle.no[i]),
+                                                                           fluence.cm2                 =   as.single(fluence.cm2[i]),
+                                                                            material.no                 =   as.integer(material.no),
+                                                                            er.model                    =   as.integer(er.model),
+                                                                            u                           =   as.single(u_cur))
+                                                                            
+		u[i]	<-	res$u
+	}
+    
+	return(u)
+}
+
+###############################
 AT.GSM.calculate.dose.histogram	<-	function(	E.MeV.u,
 									particle.no,
 									fluence.cm2.or.dose.Gy,
@@ -973,7 +1018,73 @@ AT.GSM.calculate.dose.histogram	<-	function(	E.MeV.u,
 	return(results)
 }
 
-											
+#########################################
+AT.GSM.calculate.multiple.dose.histograms	<-	function(	E.MeV.u,
+															particle.no,
+															fluence.cm2.or.dose.Gy,
+															material.no,
+															RDD.model,
+															RDD.parameters,
+															ER.model,
+															nX,
+															pixel.size.m,
+															N.runs,
+															N.repetitions,
+															dose.bin.centers.Gy){
+	
+		n				<-	length(E.MeV.u)
+		n.bins			<-	length(dose.bin.centers.Gy)
+		
+		if(fluence.cm2.or.dose.Gy[1] < 0){
+			fluence.cm2.or.dose.Gy	<-	AT.fluence.cm2(	E.MeV.u,
+														particle.no,
+														-1.0 * fluence.cm2.or.dose.Gy,
+														material.no)	
+		}
+		
+		dose.bin.widths.Gy		<-	numeric(n.bins)
+		mean.dose.frequency.Gy	<-	numeric(n.bins)
+		sd.dose.frequency.Gy	<-	numeric(n.bins)
+		mean.zero.dose.fraction	<-	numeric(1)
+		sd.zero.dose.fraction	<-	numeric(1)
+		mean.d.check.Gy			<-	numeric(1)
+		sd.d.check.Gy			<-	numeric(1)
+
+		res				<-	.C(	"AT_GSM_calculate_multiple_dose_histograms_R",	n						= 	as.integer(n),
+																				E.MeV.u					=	as.single(E.MeV.u),
+																				fluence.cm2.or.dose.Gy	=	as.single(fluence.cm2.or.dose.Gy),
+																				particle.no				=	as.integer(particle.no),
+																				material.no				=	as.integer(material.no),
+																				RDD.model				=	as.integer(RDD.model),
+																				RDD.parameters			=	as.single(RDD.parameters),
+																				ER.model				=	as.integer(ER.model),
+																				nX						=	as.integer(nX),
+																				pixel.size.m			=	as.single(pixel.size.m),
+																				N.runs					=	as.integer(N.runs),
+																				N.repetitions			=	as.integer(N.repetitions),
+																				number.of.bins			=	as.integer(n.bins),
+																				dose.bin.centers.Gy		=	as.single(dose.bin.centers.Gy),
+																				dose.bin.widths.Gy		=	as.single(dose.bin.widths.Gy),
+																				mean.d.check.Gy			=	as.single(mean.d.check.Gy),
+																				sd.d.check.Gy			=	as.single(sd.d.check.Gy),
+																				mean.zero.dose.fraction	=	as.single(mean.zero.dose.fraction),
+																				sd.zero.dose.fraction	=	as.single(sd.zero.dose.fraction),
+																				mean.dose.frequency.Gy	=	as.single(mean.dose.frequency.Gy),
+																				sd.dose.frequency.Gy	=	as.single(sd.dose.frequency.Gy))
+
+
+	results			<-	data.frame(		dose.bin.centers.Gy		= dose.bin.centers.Gy,
+										dose.bin.width.Gy		= res$dose.bin.widths.Gy,
+										mean.dose.frequency.Gy	= res$mean.dose.frequency.Gy,
+										sd.dose.frequency.Gy	= res$sd.dose.frequency.Gy,
+										mean.zero.dose.fraction	= rep(res$mean.zero.dose.fraction, n.bins),
+										sd.zero.dose.fraction	= rep(res$sd.zero.dose.fraction, n.bins),
+										mean.d.check.Gy			= rep(res$mean.d.check.Gy, n.bins),
+										sd.d.check.Gy			= rep(res$sd.d.check.Gy, n.bins))
+	
+	return(results)
+}
+
 
 ######################################################################################################################################
 

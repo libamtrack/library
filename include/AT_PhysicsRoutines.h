@@ -610,6 +610,13 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
     const double  fluence_cm2[],
     const long    material_no);
 
+double AT_fluence_weighted_stopping_power_ratio( const long     n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  fluence_cm2[],
+    const long    material_no,
+    const long	  reference_material_no);
+
 /**
  * Computes the number of track contributing to a representative point in a mixed field
  *
