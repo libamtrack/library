@@ -600,6 +600,45 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
    return doseweighted_LET_MeV_cm2_g;
  }
 
+double AT_fluence_weighted_stopping_power_ratio( const long     n,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const double  fluence_cm2[],
+    const long    material_no,
+    const long	  reference_material_no){
+
+	double* LET_MeV_cm2_g			= (double*)calloc(n, sizeof(double));
+	double* reference_LET_MeV_cm2_g	= (double*)calloc(n, sizeof(double));
+
+	AT_LET_MeV_cm2_g(  n,
+	    E_MeV_u,
+	    particle_no,
+	    material_no,
+	    LET_MeV_cm2_g);
+
+	AT_LET_MeV_cm2_g(  n,
+	    E_MeV_u,
+	    particle_no,
+	    reference_material_no,
+	    reference_LET_MeV_cm2_g);
+
+	long i;
+	double	stopping_power_ratio	= 0.0;
+	double	total_fluence_cm2		= 0.0;
+
+	for (i = 0; i < n; i++){
+		if(reference_LET_MeV_cm2_g[i] != 0){
+			stopping_power_ratio	=	fluence_cm2[i] * LET_MeV_cm2_g[i] / reference_LET_MeV_cm2_g[i];
+		}
+		total_fluence_cm2		+= fluence_cm2[i];
+	}
+
+	free(LET_MeV_cm2_g);
+	free(reference_LET_MeV_cm2_g);
+
+	return(stopping_power_ratio / total_fluence_cm2);
+}
+
 
 double AT_total_u(    const long n,
                 const double E_MeV_u[],

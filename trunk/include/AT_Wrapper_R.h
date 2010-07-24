@@ -419,4 +419,12 @@ void AT_GSM_calculate_multiple_dose_histograms_R( const int*  number_of_field_co
     float *       	mean_dose_frequency_Gy,
     float *       	sd_dose_frequency_Gy);
 
+void AT_fluence_weighted_stopping_power_ratio_R( const int*     n,
+    const float*  E_MeV_u,
+    const int*    particle_no,
+    const float*  fluence_cm2,
+    const int*    material_no,
+    const int*	  reference_material_no,
+    float*		  fluence_weighted_stopping_power_ratio);
+
 #endif /* AT_WRAPPER_R_H_ */
