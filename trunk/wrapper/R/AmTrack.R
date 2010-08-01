@@ -119,7 +119,7 @@ AT.D.RDD.Gy					<-	function(	r.m,
 											RDD.parameters){
 	n					<-	length(r.m)
 	D.Gy				<-	numeric(n)
-  		.
+
     res					<-	.C(	"AT_D_RDD_Gy_R",	n						=	as.integer(n),
 													r.m						=	as.single(r.m),
 													E.MeV.u					=	as.single(E.MeV.u),
