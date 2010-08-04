@@ -469,7 +469,8 @@ class AmTrack(object):
                 ER_parameters,
                 gamma_model,
                 gamma_parameters,
-                saturation_cross_section_factor):
+                saturation_cross_section_factor,
+                write_output):
         '''
         Computes HCP response and RE/RBE using Katz\' Ion-Gamma-Kill approach
         according to Waligorski, 1988
@@ -535,6 +536,7 @@ class AmTrack(object):
         tmp_array = ctypes.c_double* len(gamma_parameters)        
         gamma_parameters_ctype =   ctypes.byref(tmp_array(*gamma_parameters))
         saturation_cross_section_factor_ctype = ctypes.c_double(saturation_cross_section_factor)
+        write_output_ctype =ctypes.c_bool(True) #Standard
         tenfloats = ctypes.c_double*10
         results = tenfloats(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
         
@@ -552,6 +554,7 @@ class AmTrack(object):
                                    gamma_model_ctype,
                                    gamma_parameters_ctype,
                                    saturation_cross_section_factor_ctype,
+                                   write_output_ctype,
                                    results)
         AT_IGK_output = []
         for item in results:
@@ -718,6 +721,7 @@ class AmIgkRun(AmTrack):
                   gamma_model=2,
                   gamma_parameters=[1,10.5e4,1,1],
                   saturation_cross_section_factor=1,
+                  write_output = True,    
                   name = 'igk_run'):
         self.name  = name
         self.number_particles = n
@@ -732,6 +736,7 @@ class AmIgkRun(AmTrack):
         self.gamma_model = gamma_model
         self.gamma_parameters = gamma_parameters
         self.saturation_cross_section_factor = saturation_cross_section_factor
+        self.write_output = write_output
         #results
         self.efficency = 0.0
         self.d_check = 0.0
@@ -747,7 +752,7 @@ class AmIgkRun(AmTrack):
         RUN AT_IGK
         '''
         self.results = self.AT_IGK(self.number_particles,
-                                   self.E_MeV_u, self.particle_no, self.fluence_cm2, self.material_no, self.RDD_model, self.RDD_parameters, self.ER_model, self.ER_parameters, self.gamma_model, self.gamma_parameters, self.saturation_cross_section_factor)
+                                   self.E_MeV_u, self.particle_no, self.fluence_cm2, self.material_no, self.RDD_model, self.RDD_parameters, self.ER_model, self.ER_parameters, self.gamma_model, self.gamma_parameters, self.saturation_cross_section_factor, self.write_output)
         self.efficency = self.results[0]
         self.d_check= self.results[1]
         self.hcp_response = self.results[2]       
