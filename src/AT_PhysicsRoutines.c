@@ -628,7 +628,7 @@ double AT_fluence_weighted_stopping_power_ratio( const long     n,
 
 	for (i = 0; i < n; i++){
 		if(reference_LET_MeV_cm2_g[i] != 0){
-			stopping_power_ratio	=	fluence_cm2[i] * LET_MeV_cm2_g[i] / reference_LET_MeV_cm2_g[i];
+			stopping_power_ratio	+=	fluence_cm2[i] * LET_MeV_cm2_g[i] / reference_LET_MeV_cm2_g[i];
 		}
 		total_fluence_cm2		+= fluence_cm2[i];
 	}
