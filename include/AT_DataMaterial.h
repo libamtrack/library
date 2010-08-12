@@ -133,8 +133,8 @@ static const material_data AT_Material_Data = {
     {  0.0,             0.00231,         0.003058,         0.003266,     0.001988,  0.00216381,  0.0,			0.0},           // alpha_g_cm2 - TODO No data for LiF, air
     {  0.0,             1.761,           1.748,            1.745,        1.762,     1.79165987,  0.0,           0.0},			// p_MeV - TODO No data for LiF, air
     {  0.0,             0.01153,         0.01305,          0.01230,      0.01338,   -100.0,      0.0,			0.0},           // m_g_cm2 - TODO No data processed for nuclear interactions in Alanine, hence set to -100
-    {  0.0,             13.0,            21.72,            27.0,         0.0,       0.0,         17.7333,		0.0},      		// average_A - TODO find average A values for PMMA and alanine
-    {  0.0,             7.22,            10.637,           13.0,         0.0,       0.0,         8.0,			0.0},           // average_Z - TODO find average Z values for PMMA and alanine
+    {  0.0,             13.0,            21.72,            27.0,         0.0,       12.8088,         17.7333,		0.0},      		// average_A - TODO find average A values for PMMA and alanine
+    {  0.0,             7.22,            10.637,           13.0,         0.0,       6.44,         8.0,			0.0},           // average_Z - TODO find average Z values for PMMA and alanine
     {  "User defined",  "Water, Liquid", "Aluminum Oxide", "Aluminum",   "PMMA",    "Alanine",   "Lithium Fluoride", "Air" }
 };
 
