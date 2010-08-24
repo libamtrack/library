@@ -967,6 +967,24 @@ AT.u      <-  function(   E.MeV.u,
 	return(u)
 }
 
+########################################
+AT.Bethe.Mass.Stopping.Power.MeV.cm2.g     <-  function(   E.MeV.u,
+                                                    particle.no,
+                                                    material.no,
+                                                    E.restricted.keV)
+{
+    n                           						<-  length(E.MeV.u)
+    Bethe.Mass.Stopping.Power.MeV.cm2.g                 <-  numeric(n)
+	res                         <-  .C( "AT_Bethe_Mass_Stopping_Power_MeV_cm2_g_R", n                           		=   as.integer(n),
+																					E.MeV.u                     		=   as.single(E.MeV.u),
+																					particle.no                 		=   as.integer(particle.no),
+																					material.no                 		=   as.integer(material.no),
+																					E.restricted.keV            		=   as.single(E.restricted.keV),
+																					Bethe.Mass.Stopping.Power.MeV.cm2.g =   as.single(Bethe.Mass.Stopping.Power.MeV.cm2.g))
+                                                                            
+	return(res$Bethe.Mass.Stopping.Power.MeV.cm2.g)
+}
+
 ###############################
 AT.GSM.calculate.dose.histogram	<-	function(	E.MeV.u,
 									particle.no,

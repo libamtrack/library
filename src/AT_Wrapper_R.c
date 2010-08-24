@@ -2029,4 +2029,48 @@ void AT_fluence_weighted_stopping_power_ratio_R( const int*     n,
 	    reference_material_no_long);
 
 	*fluence_weighted_stopping_power_ratio = (float)fluence_weighted_stopping_power_ratio_double;
+
+	free(E_MeV_u_double);
+	free(fluence_cm2_double);
+	free(particle_no_long);
+}
+
+void AT_Bethe_Mass_Stopping_Power_MeV_cm2_g_R(	const int* n,
+		const float* E_MeV_u,
+		const int* particle_no,
+		const int* material_no,
+		const float* E_restricted_keV,
+		float* Mass_Stopping_Power_MeV_cm2_g){
+
+	long i;
+
+	const long n_long = (long)(*n);
+
+	double * 	E_MeV_u_double  			= (double*)calloc(n_long,sizeof(double));
+	long*		particle_no_long			= (long*)calloc(n_long,sizeof(long));
+
+	for(i = 0 ; i < n_long ; i++){
+		E_MeV_u_double[i]     		=  (double)E_MeV_u[i];
+		particle_no_long[i]			=  (long)particle_no[i];
+	}
+
+	const long		material_no_long			= (const long)(*material_no);
+	const double	E_restricted_keV_double		= (const double)(*E_restricted_keV);
+
+	double * 		Mass_Stopping_Power_MeV_cm2_g_double  	= (double*)calloc(n_long,sizeof(double));
+
+	AT_Bethe_Mass_Stopping_Power_MeV_cm2_g( n_long,
+	    E_MeV_u_double,
+	    particle_no_long,
+	    material_no_long,
+	    E_restricted_keV_double,
+	    Mass_Stopping_Power_MeV_cm2_g_double);
+
+	for(i = 0 ; i < n_long ; i++){
+		Mass_Stopping_Power_MeV_cm2_g[i]     		=  (float)Mass_Stopping_Power_MeV_cm2_g_double[i];
+	}
+
+	free(E_MeV_u_double);
+	free(particle_no_long);
+	free(Mass_Stopping_Power_MeV_cm2_g_double);
 }
