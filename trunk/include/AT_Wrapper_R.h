@@ -427,4 +427,11 @@ void AT_fluence_weighted_stopping_power_ratio_R( const int*     n,
     const int*	  reference_material_no,
     float*		  fluence_weighted_stopping_power_ratio);
 
+void AT_Bethe_Mass_Stopping_Power_MeV_cm2_g_R(	const int* n,
+		const float* E_MeV_u,
+		const int* particle_no,
+		const int* material_no,
+		const float* E_restricted_keV,
+		float* Mass_Stopping_Power_MeV_cm2_g);
+
 #endif /* AT_WRAPPER_R_H_ */
