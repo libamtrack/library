@@ -747,7 +747,7 @@ void   AT_SuccessiveConvolutions( const double  u,
   if(KList.write_output){
     KList.output_file    =  fopen("SuccessiveConvolutions.log","w");
     if (KList.output_file == NULL) return;                      // File error
-		fprintf(KList.output_file, "i;E;DE;H;H0;F;convolution.no;MIF;LEF;MIH;LEH;MIE\n");
+    fprintf(KList.output_file, "#i;E;DE;H;H0;F;convolution.no;MIF;LEF;MIH;LEH;MIE\n");
    }
 
   //////////////////////////////////
