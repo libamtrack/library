@@ -39,7 +39,10 @@ import ctypes
 import sys
 from  platform import python_version
 from platform import system as os_system
-
+try:
+    import numpy
+except:
+    print 'numpy library not found'
 
 
 __status__ = 'Prototype'
@@ -667,40 +670,24 @@ class AmSpiffRun(AmTrack):
         '''
         extract data from file \'SuccessiveConvolutions.log\'
         '''
-        SC_file = open('SuccessiveConvolutions.log','r')
-        SC_content = SC_file.readlines()
-        SC_file.close()        
-        start_stop =[0,0]
-        for line_no,line in enumerate(SC_content):
-            if string.split(line) ==['This', 'is', 'main'] :
-                start_stop[0]= start_stop[1]
-                start_stop[1]=line_no
-        line_no = start_stop[0]
-        is_data = False
-        data_i =[]
-        data_E = []
-        data_DE= []
-        data_H = []
-        data_F = []
-        while line_no < start_stop[1]:
-            line = string.split(SC_content[line_no])
-            if is_data and line == []:
-                is_data = False
-            if is_data:
-                data_i.append(str(line[0]))
-                data_E.append(float(line[1]))
-                data_DE.append(float(line[2]))
-                data_H.append(float(line[3]))
-                data_F.append(float(line[4]))                             
-            if line ==['i','E','DE','H','F']:
-                is_data = True
-            line_no = line_no +1
-        data_i =numpy.array(data_i)
-        data_E =numpy.array(data_E)
-        data_DE =numpy.array(data_DE)
-        data_H =numpy.array(data_H)
-        data_F =numpy.array(data_F)        
-        self.SC_data= [data_i, data_E, data_DE, data_H, data_F]
+        SC_file = numpy.loadtxt('SuccessiveConvolutions.log',delimiter=';')
+
+        data_i = SC_file[:,0]
+        data_E = SC_file[:,1]
+        data_DE= SC_file[:,2]
+        data_H = SC_file[:,3]     
+        data_H0 = SC_file[:,4]
+        data_F = SC_file[:,5]
+        data_con_no = SC_file[:,6]
+        data_MIF = SC_file[:,7]
+        data_LEF = SC_file[:,8]
+        data_MIH = SC_file[:,9]
+        data_LEH = SC_file[:,10]
+        data_MIE = SC_file[:,11]
+        len_set = data_i[-1]
+        no_set = len(data_i)/len_set
+        
+        self.SC_data= [data_i[-len_set:], data_E[-len_set:], data_DE[-len_set:], data_H[-len_set:],data_H0[-len_set:], data_F[-len_set:], data_con_no[-len_set:], data_MIF[-len_set:], data_LEF[-len_set:], data_MIH[-len_set:], data_MIE[-len_set:]]
 
 
 
