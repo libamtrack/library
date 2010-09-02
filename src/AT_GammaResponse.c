@@ -234,6 +234,31 @@ void AT_gamma_response( const long  number_of_doses,
       }
     }
   }
+
+  /*
+   *  (7) Multi-component model as given in Geiﬂ, 1997 (PhD thesis)
+   *
+   *  N.B.: This function is supposed to be a mixed of one- and two-hit characteristics. Due to missing linear terms in the second
+   *        component, however, it cannot be expressed using the general hit-target model (implemented as (1))
+   *
+   *  5 parameters:  c  - constant, arbitrary for efficiency prediction
+   *                 k1 - contribution from linear component (0.8 for Geiﬂ, 1997)
+   *                 a1 - dose prefactor for linear component (3e-4 for Geiﬂ, 1997)
+   *                 k2 - contribution from quadratic component (0.2 for Geiﬂ, 1997)
+   *                 a2 - dose prefactor for quadratic component (1e-6 for Geiﬂ, 1997)
+   **/
+  if(gamma_model == GR_Geiss){
+	     double co	= gamma_parameter[0];
+	     double k1	= gamma_parameter[1];
+	     double a1	= gamma_parameter[2];
+	     double k2	= gamma_parameter[3];
+	     double a2	= gamma_parameter[4];
+
+	 for (i = 0; i < number_of_doses; i++){
+       S[i]    = co * (k1 * (1.0 - exp(-1.0 * a1 * d_Gy[i])) + k2 * (1.0 - exp(-1.0 * a2 * d_Gy[i] * d_Gy[i])));
+      }
+    }
+
 }
 
 

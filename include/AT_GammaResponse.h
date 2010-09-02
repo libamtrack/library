@@ -52,11 +52,12 @@ enum GammaResponseModels{
       GR_Radioluminescence = 3,      /**< 0 - Smax, 1 - D0, 2 - dyn */
       GR_ExpSaturation     = 4,      /**< 0 - Smax, 1 - D0 */
       GR_LinQuad           = 5,      /**< 0 - alpha, 1 - beta, 2 - D0 */
-      GR_LinQuad_Log       = 6       /**< 0 - alpha, 1 - beta, 2 - D0 */
+      GR_LinQuad_Log       = 6,      /**< 0 - alpha, 1 - beta, 2 - D0 */
+      GR_Geiss			   = 7       /**< TODO */
 };
 
 
-#define GR_DATA_N    6
+#define GR_DATA_N    7
 
 
 /**
@@ -77,11 +78,45 @@ typedef struct {
  */
 static const gr_data AT_GR_Data = {
     GR_DATA_N,
-    {  GR_Test,          GR_GeneralTarget,          GR_Radioluminescence,        GR_ExpSaturation, GR_LinQuad, GR_LinQuad_Log},
-    {  2, 5, 3, 2, 3, 3},
-    {  {"","","",""},{"S_max", "D0_Gy", "c", "m"},{"S_max","D0_Gy","dyn",""},{"S_max","D0_Gy","",""},{"alpha","beta","D0_Gy",""},{"alpha","beta","D0_Gy",""}},
-    {  {0,0,0,0}, {1, 10, 1, 1}, {1,10,5,0}, {1,10,0,0}, {1, 1, 10, 0}, {1, 1, 10, 0}},
-    {  "simple test gamma response",  "generalized multi-target/multi-hit gamma response",  "radioluminescence gamma response",    "exp.-sat. gamma response (obsolete, use gen. target/hit instead)", "linear-quadratic gamma response","lethal events number response"}
+    {  GR_Test,
+       GR_GeneralTarget,
+       GR_Radioluminescence,
+       GR_ExpSaturation,
+       GR_LinQuad,
+       GR_LinQuad_Log,
+       GR_Geiss
+    },
+    {  2,
+	   5,
+	   3,
+	   2,
+	   3,
+	   3,
+	   5},
+    {  {"","","",""},
+       {"S_max", "D0_Gy", "c", "m"},
+       {"S_max","D0_Gy","dyn",""},
+       {"S_max","D0_Gy","",""},
+       {"alpha","beta","D0_Gy",""},
+       {"alpha","beta","D0_Gy",""},
+       {"const", "k1", "a1", "k2", "a2"}
+    },
+    {  {0,0,0,0},
+       {1, 10, 1, 1},
+       {1,10,5,0},
+       {1,10,0,0},
+       {1, 1, 10, 0},
+       {1, 1, 10, 0},
+       {6e3, 0.8, 3e-4, 0.2, 1e-6}
+	  },
+    {  "simple test gamma response",
+       "generalized multi-target/multi-hit gamma response",
+       "radioluminescence gamma response",
+       "exp.-sat. gamma response (obsolete, use gen. target/hit instead)",
+       "linear-quadratic gamma response",
+       "lethal events number response",
+       "Geiss model (1997)"
+    }
 };
 
 
