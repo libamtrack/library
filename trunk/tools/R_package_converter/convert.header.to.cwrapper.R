@@ -1,4 +1,24 @@
-try(setwd("C:/Data/__Studium/01-R_test/wrapper"), silent = T)
+################################################################################################
+# C wrapper generator
+################################################################################################
+# Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+# 
+# This file is part of the AmTrack program (libamtrack.sourceforge.net).
+#
+# AmTrack is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# AmTrack is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# long with AmTrack (file: copying.txt).
+# If not, see <http://www.gnu.org/licenses/>
+################################################################################################
 
 rm(list = ls())
 
@@ -6,15 +26,13 @@ source("type.conversion.R")
 
 load("functions.ssd")
 
-write("// Automatically created header file\n", file = "header.h")
+write("// Automatically created header file\n", file = "Rwrapper.h")
 
-write("// Automatically created header and body file\n", file = "header.c")
+write("// Automatically created header and body file\n", file = "Rwrapper.c")
 
 for(i in 1:length(functions)){
 	tmp <- functions[[i]]
 	
-	cat(tmp[[1]],"\n")
-
 	##############################
 	# create header
 	##############################
@@ -24,28 +42,18 @@ for(i in 1:length(functions)){
 					convert.c(tmp$parameter$type[1]), "\t",
 					tmp$parameter$name[1], ",", sep = "")
 
-	if( tmp[[1]] == "AT_SuccessiveConvolutions" )
-		cat( "\t",convert.c(tmp$parameter$type[1])," (","\t",tmp$parameter$type[1],")","\t",tmp$parameter$name[1], "\n" )
-
 	if(length(header) > 2){
 		for(j in 2:(length(header)-1)){
 			header[j] <- paste( "\t", convert.c(tmp$parameter$type[j]), " ",
 							tmp$parameter$name[j], ",", sep = "")
-							
-			if( tmp[[1]] == "AT_SuccessiveConvolutions" )
-				cat( "\t",convert.c(tmp$parameter$type[j])," (","\t",tmp$parameter$type[j],")","\t",tmp$parameter$name[j], "\n" )
 		}
 	}
 
 	if(length(header) > 1){
 		header[length(header)] <- paste( "\t", convert.c(tmp$parameter$type[length(header)]), " ",
 							tmp$parameter$name[length(header)], ");", sep = "")
-
-		if( tmp[[1]] == "AT_SuccessiveConvolutions" )
-			cat( "\t",convert.c(tmp$parameter$type[length(header)])," (","\t",tmp$parameter$type[length(header)],")","\t",tmp$parameter$name[length(header)], "\n" )
-
 	}
-	write(c(header, "\n"), file = "header.h", append = T)
+	write(c(header, "\n"), file = "Rwrapper.h", append = T)
 
 	###########################
 	# create function body
@@ -67,17 +75,7 @@ for(i in 1:length(functions)){
 		body <- c(body, "  long i;")
 	}
 
-	# add the input parameters
-	if( tmp[[1]] == "AT_SuccessiveConvolutions" ){
-		ii <- which(input)
-		if(length(ii) > 0){
-			for(j in ii){
-					cat( "\tpara.name=_", para$name[j], "_\ttype=_", para$type[j] ,"_\n", sep="")
-			}
-		}
-	}
-	
-	
+	# add the input parameters	
 	ii <- which(input & !vector)
 	if(length(ii) > 0){
 		for(j in ii){
@@ -85,9 +83,6 @@ for(i in 1:length(functions)){
 					gsub("const ", "", para$type[j]), " = (",
 					gsub("const ", "", para$type[j]), ")(*",  para$name[j], 
 					");", sep = ""))
-			
-#			if( tmp[[1]] == "AT_SuccessiveConvolutions" )
-#				cat( "\tpara.name=_", para$name[j], "_\ttype=_", para$type[j] ,"_\n", sep="")
 		}
 	}
 	body <- c(body, "")
@@ -186,6 +181,6 @@ for(i in 1:length(functions)){
 
 	# close body
 	body <- c(body, "}\n\n")
-	write(body, file = "header.c", append = T)
+	write(body, file = "Rwrapper.c", append = T)
 }
 
