@@ -53,13 +53,13 @@ typedef struct {
   const char*     element_acronym[PARTICLE_DATA_N];
   const double    density_g_cm3[PARTICLE_DATA_N];
   const double    I_eV[PARTICLE_DATA_N];
-} particle_data;
+} AT_particle_data_struct;
 
 
 /**
  * TODO
  */
-static const particle_data AT_Particle_Data = {
+static const AT_particle_data_struct AT_Particle_Data = {
     PARTICLE_DATA_N,
     {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10,

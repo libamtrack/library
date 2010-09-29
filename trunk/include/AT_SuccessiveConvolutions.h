@@ -91,7 +91,7 @@ typedef struct{
   bool     shrink_tails;                /**< if true, tails of F that contribute less than "shrink_tails_under" to first moment will be removed */
   double   shrink_tails_under;          /**< threshold to cut tails, usually 1e-30 */
   bool     adjust_N2;                   /**< if true N2 will be increased if resolution becomes inefficient */
-}     aKList;
+}     AT_aKList;
 
 
 /**
@@ -100,7 +100,7 @@ typedef struct{
  * @param[in]  n                   number of particle types in the mixed particle field
  * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
- * @param[in]  material_no         index number for detector material
+ * @param[in]  AT_material_no         index number for detector material
  * @param[in]  rdd_model           index number for chosen radial dose distribution
  * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @param[in]  er_model            index number for chosen electron-range model
@@ -125,7 +125,7 @@ long  AT_SC_get_f1_array_size(
  * @param[in]  E_MeV_u               energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no           type of the particles in the mixed particle field (array of size n)
  * @param[in]  fluence_cm2_or_dose_Gy           fluences for the given particles, doses in Gy if negative (array of size n)
- * @param[in]  material_no           index number for detector material
+ * @param[in]  AT_material_no           index number for detector material
  * @param[in]  rdd_model             index number for chosen radial dose distribution
  * @param[in]  rdd_parameters        parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @param[in]  er_model              index number for chosen electron-range model
@@ -252,7 +252,7 @@ void   AT_SuccessiveConvolutions( const double  u,
  * @param theKList
  * @return
  */
-aKList  AT_SC_NORMAL(aKList theKList);
+AT_aKList  AT_SC_NORMAL(AT_aKList theKList);
 
 
 /**
@@ -260,7 +260,7 @@ aKList  AT_SC_NORMAL(aKList theKList);
  * @param theKList
  * @return
  */
-aKList  AT_SC_OUTPUT(aKList theKList);
+AT_aKList  AT_SC_OUTPUT(AT_aKList theKList);
 
 
 /**
@@ -268,7 +268,7 @@ aKList  AT_SC_OUTPUT(aKList theKList);
  * @param theKList
  * @return
  */
-aKList  AT_SC_INTERP(aKList theKList);
+AT_aKList  AT_SC_INTERP(AT_aKList theKList);
 
 
 /**
@@ -276,7 +276,7 @@ aKList  AT_SC_INTERP(aKList theKList);
  * @param theKList
  * @return
  */
-aKList  AT_SC_RESET(aKList theKList);
+AT_aKList  AT_SC_RESET(AT_aKList theKList);
 
 
 /**
@@ -284,7 +284,7 @@ aKList  AT_SC_RESET(aKList theKList);
  * @param theKList
  * @return
  */
-aKList  AT_SC_ZERO(aKList theKList);
+AT_aKList  AT_SC_ZERO(AT_aKList theKList);
 
 
 /**
@@ -292,7 +292,7 @@ aKList  AT_SC_ZERO(aKList theKList);
  * @param theKList
  * @return
  */
-aKList  AT_SC_SHRINK(aKList theKList);
+AT_aKList  AT_SC_SHRINK(AT_aKList theKList);
 
 
 /**
@@ -300,7 +300,7 @@ aKList  AT_SC_SHRINK(aKList theKList);
  * @param theKList
  * @return
  */
-aKList AT_SC_FOLD(aKList theKList);
+AT_aKList AT_SC_FOLD(AT_aKList theKList);
 
 
 #endif // AT_SUCCESSIVECONVOLUTIONS_H_

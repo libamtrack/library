@@ -46,7 +46,7 @@
 /**
  * Gamma Response code numbers
  */
-enum GammaResponseModels{
+enum AT_GammaResponseModels{
   GR_Test                  = 1,      /**< no parameters */
       GR_GeneralTarget     = 2,      /**< TODO */
       GR_Radioluminescence = 3,      /**< 0 - Smax, 1 - D0, 2 - dyn */
@@ -59,24 +59,26 @@ enum GammaResponseModels{
 
 #define GR_DATA_N    7
 
+#define GR_MAX_NUMBER_OF_PARAMETERS  5
+
 
 /**
- * TODO
+ * @struct AT_GR_data_struct
  */
 typedef struct {
   const long     n;
   const long     GR_no[GR_DATA_N];
   const long     n_parameters[GR_DATA_N];
-  const char*    parameter_name[GR_DATA_N][4];
-  const double   parameter_default[GR_DATA_N][4];
+  const char*    parameter_name[GR_DATA_N][GR_MAX_NUMBER_OF_PARAMETERS];
+  const double   parameter_default[GR_DATA_N][GR_MAX_NUMBER_OF_PARAMETERS];
   const char*    GR_name[GR_DATA_N];
-} gr_data;
+} AT_GR_data_struct;
 
 
 /**
  * TODO
  */
-static const gr_data AT_GR_Data = {
+static const AT_GR_data_struct AT_GR_Data = {
     GR_DATA_N,
     {  GR_Test,
        GR_GeneralTarget,
@@ -93,20 +95,20 @@ static const gr_data AT_GR_Data = {
 	   3,
 	   3,
 	   5},
-    {  {"","","",""},
-       {"S_max", "D0_Gy", "c", "m"},
-       {"S_max","D0_Gy","dyn",""},
-       {"S_max","D0_Gy","",""},
-       {"alpha","beta","D0_Gy",""},
-       {"alpha","beta","D0_Gy",""},
-       {"const", "k1", "a1", "k2", "a2"}
+    {  {"",      "",      "",      "",   ""},
+       {"S_max", "D0_Gy", "c",     "m",  ""},
+       {"S_max", "D0_Gy", "dyn",   "",   ""},
+       {"S_max", "D0_Gy", "",      "",   ""},
+       {"alpha", "beta",  "D0_Gy", "",   ""},
+       {"alpha", "beta",  "D0_Gy", "",   ""},
+       {"const", "k1",    "a1",    "k2", "a2"}
     },
-    {  {0,0,0,0},
-       {1, 10, 1, 1},
-       {1,10,5,0},
-       {1,10,0,0},
-       {1, 1, 10, 0},
-       {1, 1, 10, 0},
+    {  {0.,  0.,  0.,   0.,  0.},
+       {1.,  10., 1.,   1.,  0.},
+       {1.,  10., 5.,   0.,  0.},
+       {1.,  10., 0.,   0.,  0.},
+       {1.,  1.,  10.,  0.,  0.},
+       {1.,  1.,  10.,  0.,  0.},
        {6e3, 0.8, 3e-4, 0.2, 1e-6}
 	  },
     {  "simple test gamma response",

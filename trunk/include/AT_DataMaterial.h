@@ -36,9 +36,9 @@
 #include "AT_NumericalRoutines.h"
 
 /**
- * Materials code numbers
+ * @enum Materials code numbers
  */
-enum material_no{
+enum AT_material_no{
   User_Defined_Material= 0, /**< To be defined by the user during runtime >**/
   Water_Liquid         = 1, /**< Liquid water */
   Aluminum_Oxide       = 2, /**< Aluminium oxide */
@@ -52,11 +52,13 @@ enum material_no{
 
 #define MATERIAL_DATA_N    8
 
-// The next two LET-related structures must be declared here rather than in AT_DataLET.h to avoid circular dependencies
+// TODO The next two LET-related structures must be declared here rather than in AT_DataLET.h to avoid circular dependencies
+
 /**
+ * @struct AT_LET_data_single
  * Stopping power data for a material and a particle type
  */
-typedef struct AT_LET_data_single{
+typedef struct {
   long     n;                                     /**< number of items in the data table */
   long     particle_no;                           /**< particle number this data is for, see AT_DataParticle.h for definition */
   double*  kin_E_MeV;                             /**< Kinetic energy in MeV, pointer to array of size n */
@@ -65,15 +67,20 @@ typedef struct AT_LET_data_single{
 } AT_LET_data_single;
 
 /**
- * Stopping power data for a material
+ * @struct AT_LET_data Stopping power data for a material
  */
-typedef struct AT_LET_data{
+typedef struct {
   long            n;                              /**< number of data tables in the structure */
-  AT_LET_data_single*   LET_data_single;                /**< pointer to LET data tables for a particle type */
+  AT_LET_data_single*   LET_data_single;          /**< pointer to LET data tables for a particle type */
 } AT_LET_data;
 
 #define MATERIAL_NAME_LENGTH    255
 
+
+/**
+ * @struct AT_single_material_data_struct
+ * TODO
+ */
 typedef struct {
   long            material_no;                            /**< material number - if 0 the user has to specify the material properties by at least handing over the data marked 'essential', all other data will be computed if not overridden by the user. If a number > 0 is used, a predefined material will be loaded */
   bool            material_established;                   /**< if true, the material has been established, MUST BE SET TO "FALSE" BY USER */
@@ -93,7 +100,7 @@ typedef struct {
   double          average_A;                              /**< Average mass number,  will be calculated if not given */
   double          electron_density_m3;                    /**< Electron density (in 1/m^3),  will be calculated if not given */
 
-  long            LET_data_source;                        /**< Defines the source for stopping power data, see enum LET_data_source [ESSENTIAL]. The user has to make sure that he provides the necessary data. */
+  long            LET_data_source;                        /**< Defines the source for stopping power data, see enum AT_LET_data_source [ESSENTIAL]. The user has to make sure that he provides the necessary data. */
 
   double          p_MeV;                                  /**< Prefactor for the power-law description of stopping power: S = p*E^alpha. In MeV^(1/alpha) */
   double          alpha_g_cm2_MeV;                        /**< Exponent for the power-law description of stopping */
@@ -102,9 +109,13 @@ typedef struct {
                                                           /**<  LET_data has to hold at_least the proton stopping powers. For any particle where no explicit stopping power data is given, a scaling by Z_eff^2 will be performed. */
 
 //  const double  m_g_cm2;                                /**< Slope of linear approximation in fluence reduction due to nuclear interactions, not used yet */
-} AT_material;
+} AT_single_material_data_struct;
 
 
+/**
+ * @struct AT_table_of_material_data_struct
+ * TODO
+ */
 typedef struct {
   const long    n;
   const long    material_no[MATERIAL_DATA_N];
@@ -119,12 +130,12 @@ typedef struct {
   const double  average_A[MATERIAL_DATA_N];
   const double  average_Z[MATERIAL_DATA_N];
   const char*   material_name[MATERIAL_DATA_N];
-} material_data;
+} AT_table_of_material_data_struct;
 
 
-static const material_data AT_Material_Data = {
+static const AT_table_of_material_data_struct AT_Material_Data = {
     MATERIAL_DATA_N,
-    {  User_Defined_Material,    Water_Liquid,   Aluminum_Oxide,   Aluminum,     PMMA,      Alanine,     LiF,	Air},           // material_no
+    {  User_Defined_Material,    Water_Liquid,   Aluminum_Oxide,   Aluminum,     PMMA,      Alanine,     LiF,	Air},           // AT_material_no
     {  false,           true,           true,             true,         true,      true,        true,			true},          // ready
     {  0,               276,             106,              13,           223,       0,           185,			104},           // ICRU_ID
     {  0.0,             1.00,            3.97,             2.6989,       1.19,      1.42,        2.64,			1.20479E-03},   // density_g_cm3
@@ -133,8 +144,8 @@ static const material_data AT_Material_Data = {
     {  0.0,             0.00231,         0.003058,         0.003266,     0.001988,  0.00216381,  0.0,			0.0},           // alpha_g_cm2 - TODO No data for LiF, air
     {  0.0,             1.761,           1.748,            1.745,        1.762,     1.79165987,  0.0,           0.0},			// p_MeV - TODO No data for LiF, air
     {  0.0,             0.01153,         0.01305,          0.01230,      0.01338,   -100.0,      0.0,			0.0},           // m_g_cm2 - TODO No data processed for nuclear interactions in Alanine, hence set to -100
-    {  0.0,             13.0,            21.72,            27.0,         0.0,       12.8088,         17.7333,		0.0},      		// average_A - TODO find average A values for PMMA and alanine
-    {  0.0,             7.22,            10.637,           13.0,         0.0,       6.44,         8.0,			0.0},           // average_Z - TODO find average Z values for PMMA and alanine
+    {  0.0,             13.0,            21.72,            27.0,         0.0,       12.8088,     17.7333,		0.0},           // average_A - TODO find average A values for PMMA and alanine
+    {  0.0,             7.22,            10.637,           13.0,         0.0,       6.44,        8.0,			0.0},           // average_Z - TODO find average Z values for PMMA and alanine
     {  "User defined",  "Water, Liquid", "Aluminum Oxide", "Aluminum",   "PMMA",    "Alanine",   "Lithium Fluoride", "Air" }
 };
 
@@ -142,7 +153,7 @@ static const material_data AT_Material_Data = {
  * looks like error in his article */
 
 /**
- * Get index of material in AT_Material_Data for given material_no
+ * Get index of material in AT_Material_Data for given AT_material_no
  * (currently for example material with number 2 has index 1)
  *
  * @param material_number  material number
@@ -153,7 +164,7 @@ long AT_material_index_from_material_number( const long material_number );
 
 /**
  * Get material name
- * @param[in]  material_no
+ * @param[in]  AT_material_no
  * @param[out] material_name
  */
 void AT_material_name_from_number( const long material_no,
@@ -169,64 +180,64 @@ long AT_material_number_from_name( const char* material_name );
 
 
 /**
- * Get material density [g/cm3] for single material with number material_no
- * @param[in] material_no
+ * Get material density [g/cm3] for single material with number AT_material_no
+ * @param[in] AT_material_no
  * @return    material density [g/cm3]
  */
 double AT_density_g_cm3_from_material_no( const long   material_no );
 
 
 /**
- * Get electron density [1/m3] for single material with number material_no
- * @param[in] material_no
+ * Get electron density [1/m3] for single material with number AT_material_no
+ * @param[in] AT_material_no
  * @return    electron density [1/m3]
  */
 double AT_electron_density_m3_from_material_no( const long   material_no );
 
 
 /**
- * Get mean ionization potential in eV for single material with number material_no
- * @param[in] material_no
+ * Get mean ionization potential in eV for single material with number AT_material_no
+ * @param[in] AT_material_no
  * @return    mean ionization potential [eV]
  */
 double AT_I_eV_from_material_no( const long   material_no );
 
 
 /**
- * Get fit parameter for power-law representation of stp.power/range/E-dependence for single material with number material_no
- * @param[in] material_no
+ * Get fit parameter for power-law representation of stp.power/range/E-dependence for single material with number AT_material_no
+ * @param[in] AT_material_no
  * @return    fit parameter for power-law representation of stp.power/range/E-dependence
  */
 double AT_alpha_g_cm2_MeV_from_material_no( const long   material_no );
 
 
 /**
- * Get fit parameter for power-law representation of stp.power/range/E-dependence for single material with number material_no
- * @param[in] material_no
+ * Get fit parameter for power-law representation of stp.power/range/E-dependence for single material with number AT_material_no
+ * @param[in] AT_material_no
  * @return    fit parameter for power-law representation of stp.power/range/E-dependence
  */
 double AT_p_MeV_from_material_no( const long   material_no );
 
 
 /**
- * Get fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni for single material with number material_no
- * @param[in] material_no
+ * Get fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni for single material with number AT_material_no
+ * @param[in] AT_material_no
  * @return    fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni
  */
 double AT_m_g_cm2_from_material_no( const long   material_no );
 
 
 /**
- * Get average mass number for single material with number material_no
- * @param[in] material_no
+ * Get average mass number for single material with number AT_material_no
+ * @param[in] AT_material_no
  * @return    average mass number
  */
 double AT_average_A_from_material_no( const long   material_no );
 
 
 /**
- * Get average atomic number for single material with number material_no
- * @param[in] material_no
+ * Get average atomic number for single material with number AT_material_no
+ * @param[in] AT_material_no
  * @return    average atomic number
  */
 double AT_average_Z_from_material_no( const long   material_no );
@@ -234,7 +245,7 @@ double AT_average_Z_from_material_no( const long   material_no );
 
 /**
  * Returns material data for single material
- * @param[in]  material_no
+ * @param[in]  AT_material_no
  * @param[out] density_g_cm3
  * @param[out] electron_density_m3
  * @param[out] I_eV
@@ -258,7 +269,7 @@ void AT_get_material_data(     const long  material_no,
 /**
  * Returns material data for list of materials
  * @param[in]   number_of_materials  numbers of materials the routine is called for (array of length number_of_materials)
- * @param[in]   material_no          material indices (array of length number_of_materials)
+ * @param[in]   AT_material_no          material indices (array of length number_of_materials)
  * @param[out]  density_g_cm3        material density in g/cm3 (array of length number_of_materials)
  * @param[out]  electron_density_m3  electron density in 1/m3 (array of length number_of_materials)\n
  *   electron_density = number_of_electron_per_molecule * avogadro_constant / molar_mass * 1m3 * density
@@ -296,9 +307,9 @@ void AT_get_materials_data( const long  number_of_materials,
 
 /////////////////////////////////////////////////////////
 /* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
-int AT_check_material( AT_material* material);
-int AT_establish_material(AT_material* material);
-int AT_free_material(AT_material* material);
+int AT_check_material( AT_single_material_data_struct* material);
+int AT_establish_material(AT_single_material_data_struct* material);
+int AT_free_material(AT_single_material_data_struct* material);
 double AT_electron_density_m3( const long n,
     const double density_g_cm3,
     const long Z[],

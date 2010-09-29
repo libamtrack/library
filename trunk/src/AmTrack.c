@@ -614,7 +614,7 @@ void AT_run_GSM_method(  const long  n,
   printf("E_MeV_u[] = %g, %g, %g\n", E_MeV_u[0], E_MeV_u[1], E_MeV_u[2]);
   printf("particle_no[] = %ld, %ld, %ld\n", particle_no[0], particle_no[1], particle_no[2]);
   printf("fluence_cm2[] = %g, %g, %g\n", fluence_cm2[0], fluence_cm2[1], fluence_cm2[2]);
-  printf("material_no = %ld\n", material_no);
+  printf("AT_material_no = %ld\n", AT_material_no);
   printf("rdd_model = %ld\n", rdd_model);
   printf("rdd_parameters[] = %g\n", rdd_parameters[0]);
   printf("er_model = %ld\n", er_model);
@@ -768,9 +768,9 @@ void AT_run_GSM_method(  const long  n,
     if( lethal_events_mode ){
     	average_grid_response_ions  = exp(-1.0 * average_grid_response_ions);
 
-    	if( gamma_model == GR_ExpSaturation |
-    			gamma_model == GR_GeneralTarget |
-    			gamma_model == GR_Radioluminescence |
+    	if( gamma_model == GR_ExpSaturation ||
+    			gamma_model == GR_GeneralTarget ||
+    			gamma_model == GR_Radioluminescence ||
     			gamma_model == GR_Geiss){
     		average_grid_response_ions  = 1.0 - average_grid_response_ions;
     	}

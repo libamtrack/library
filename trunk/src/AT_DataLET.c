@@ -311,7 +311,7 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
 long AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
     const double        E_MeV_u[],
     const long          particle_no[],
-    AT_material         material,
+    AT_single_material_data_struct         material,
     double              LET_MeV_cm2_g[]){
 
     /* check input */
@@ -351,7 +351,7 @@ long AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
 
 double AT_new_LET_MeV_cm2_g_single(  const double        E_MeV_u,
     const long          particle_no,
-    AT_material         material){
+    AT_single_material_data_struct         material){
 
     /* establish material if not yet done */
     int material_return_code = AT_check_material(&material);
@@ -412,7 +412,7 @@ double AT_LET_MeV_cm2_g_from_power_law_single(  const double E_MeV_u,
 #define POWERLAW_ENERGY_MAX_MEV 250
 
 
-int AT_establish_LET_data( AT_material* material){
+int AT_establish_LET_data( AT_single_material_data_struct* material){
 
   if (material->LET_data_source == PowerLaw){
     material->LET_data.n                 = 1;
@@ -447,7 +447,7 @@ int AT_establish_LET_data( AT_material* material){
           return AT_No_PSTAR_Data;
         }
 
-        /* find pre-defined material by material_no */
+        /* find pre-defined material by AT_material_no */
         bool* matches           = (bool*)malloc(AT_PSTAR_Data.n * sizeof(bool));
         is_element_int( material->material_no,
                         AT_PSTAR_Data.material_no,

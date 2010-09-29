@@ -285,7 +285,7 @@ void AT_get_materials_data( const long  number_of_materials,
 
 /////////////////////////////////////////////////////////
 /* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
-int AT_check_material( AT_material* material)
+int AT_check_material( AT_single_material_data_struct* material)
 {
   if (material->material_established){
     return AT_Material_Already_Established;
@@ -317,7 +317,7 @@ double AT_average_Z( const long n,
   return (6.6e23);
 }
 
-int AT_establish_material(AT_material* material)
+int AT_establish_material(AT_single_material_data_struct* material)
 {
   if (material->material_no == User_Defined_Material){                               // USER DEFINED MATERIAL
 
@@ -365,7 +365,7 @@ int AT_establish_material(AT_material* material)
   }
 
 
-int AT_free_material(AT_material* material)
+int AT_free_material(AT_single_material_data_struct* material)
 {
     long i;
     for (i = 0; i < material->LET_data.n; i++){

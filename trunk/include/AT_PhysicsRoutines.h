@@ -50,7 +50,7 @@ typedef struct {
   double   E_MeV_u;                /** energy of the particles in MeV/u */
   double   particle_no;            /** particle index */
   double   fluence_cm2;            /** fluence_cm2 */
-} single_field_data;
+} AT_single_field_data;
 
 
 /**
@@ -58,7 +58,7 @@ typedef struct {
  */
 typedef struct {
   double   material_no;            /** material index */
-} detector_data;
+} AT_detector_data;
 
 
 /**
@@ -77,7 +77,7 @@ typedef struct {
   double   single_impact_fluence_cm2;    /** fluences at which every point of the detector lies within the area ONE track only */
   double   single_impact_dose_Gy;        /** corresponding dose */
   double   normalization;                /** normalization constant for RDD (e.g. to meet LET) */
-} single_field_information;
+} AT_single_field_information;
 
 
 /**
@@ -94,7 +94,7 @@ typedef struct {
   double   fluenceweighted_LET_MeV_cm2_g;    /** fluence-weighted average LET (in MeV*cm2/g) */
   double   doseweighted_LET_MeV_cm2_g;       /** dose-weighted average LET (in MeV*cm2/g) */
   double   u;                                /** average number of track contributing to a detector voxel, needed by AT_SPIFF, AT_SPISS */
-} mixed_field_information;
+} AT_mixed_field_information;
 
 
 /**
@@ -217,7 +217,7 @@ int AT_effective_charge_from_beta(  const long  n,
 /**
  * Get Bohr's energy spread (Wilson, 1947, Phys Rev 71, 385)
  * @param[in]  n                        number of particles
- * @param[in]  material_no              index number for detector material
+ * @param[in]  AT_material_no              index number for detector material
  * @param[out] dsE2dz                   Increase of energy spread (variance s_E^2) with thickness of material: d(s_E^2)/dz
  */
 void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
@@ -321,7 +321,7 @@ int AT_momentum_from_E_MeV_c_u( const long  n,
  * @param[in]  fluence_cm2  fluence in 1/cm2
  * @param[in]  particle_no  type of the particle
  * @see          AT_DataParticle.h for definition
- * @param[in]  material_no  material index
+ * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @return     D_Gy         dose in Gy
  */
@@ -338,7 +338,7 @@ double AT_Dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
  * @param[in]  fluence_cm2  fluence for each particle type (array of size n)
  * @param[in]  particle_no  type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param[in]  material_no  material index
+ * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[out] D_Gy         vector of size n to be allocated by the user which will be used to return the results
  */
@@ -356,7 +356,7 @@ void AT_D_Gy(  const long  n,
  * @param[in]  particle_no  type of the particles
  * @see          AT_DataParticle.h for definition
  * @param[in]  D_Gy         dose in Gy
- * @param[in]  material_no  material index
+ * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @return fluence in 1/cm2
  */
@@ -373,7 +373,7 @@ double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
  * @param[in]  D_Gy         dose / Gy for each particle type (array of size n)
  * @param[in]  particle_no  type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param[in]  material_no  material index
+ * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[out] fluence_cm2         vector of size n to be allocated by the user which will be used to return the results
  */
@@ -442,7 +442,7 @@ void AT_inv_interparticleDistance_Gy(  const long   n,
  * Needed by SuccessiveConvolutions
  *
  * @param[in]  E_MeV_u      energy of particle
- * @param[in]  material_no  material index
+ * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[in]  er_model     index of electron-range model
  * @see          AT_ElectronRange.h for definition
@@ -461,7 +461,7 @@ double AT_single_impact_fluence_cm2_single( const double E_MeV_u,
  *
  * @param[in]  n            length of vectors for parameters
  * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
- * @param[in]  material_no  material index
+ * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[in]  er_model     index of electron-range model
  * @see          AT_ElectronRange.h for definition
@@ -500,7 +500,7 @@ void AT_single_impact_dose_Gy( const long n,
  * @param[in]  particle_no  particle index (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
- * @param[in]  material_no  material index
+ * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @return     total_dose_Gy  result
   */
@@ -521,7 +521,7 @@ double  AT_total_D_Gy( const long  n,
  * @param[in]  particle_no  particle index (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  D_Gy  doses of particles in the mixed particle field (array of size n)
- * @param[in]  material_no  material index
+ * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @return       total_fluence_cm  result
   */
@@ -557,7 +557,7 @@ double AT_fluence_weighted_E_MeV_u( const long    n,
  * @param[in]  particle_no  particle index (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
- * @param[in]  material_no  material index
+ * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @return     doseweighted_E_MeV_u  result
  */
@@ -578,7 +578,7 @@ double AT_dose_weighted_E_MeV_u( const long   n,
  * @param[in]  particle_no  particle index (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
- * @param[in]  material_no  material index
+ * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @return     fluenceweighted_LET_MeV_cm2_g  result
  */
@@ -599,7 +599,7 @@ double AT_fluence_weighted_LET_MeV_cm2_g( const long     n,
  * @param[in]  particle_no  particle index (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
- * @param[in]  material_no  material index
+ * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @return     doseweighted_LET_MeV_cm2_g  result
@@ -628,7 +628,7 @@ double AT_fluence_weighted_stopping_power_ratio( const long     n,
  * @param[in]  particle_no  particle index (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
- * @param[in]  material_no  material index
+ * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @param[in]  er_model     chosen electron-range-model
@@ -649,7 +649,7 @@ double AT_total_u(    const long n,
  * @param  	   E_MeV_u      energy of particle per nucleon
  * @param  	   particle_no  particle index
  * @see          AT_DataParticle.h for definition
- * @param      material_no  material index
+ * @param      AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping number will be computed
  * @return     result
@@ -667,7 +667,7 @@ double AT_Bethe_Stopping_Number_single(	const double 	E_MeV_u,
  * @param  	   E_MeV_u      energy of particle per nucleon
  * @param  	   particle_no  particle index
  * @see          AT_DataParticle.h for definition
- * @param      material_no  material index
+ * @param      AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping power will be computed
  * @return     result
@@ -687,7 +687,7 @@ double AT_Bethe_Mass_Stopping_Power_MeV_cm2_g_single(	const double 	E_MeV_u,
  * @param  	   E_MeV_u      energies of particle per nucleon (array of size n)
  * @param  	   particle_no  particle indices (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param      material_no  material index (single value)
+ * @param      AT_material_no  material index (single value)
  * @see          AT_DataMaterial.h for definition
  * @param      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping power will be computed (single value)
  * @return     result
