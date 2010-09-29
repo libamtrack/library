@@ -73,14 +73,13 @@ void AT_gamma_response( const long  number_of_doses,
     const long     gamma_model,
     const double   gamma_parameter[],
     const bool	   lethal_events_mode,
-    // return
     double         S[]){
 
   long  i,j;
   /*
-   * (0) Testmodel, response m*x + c
+   * (0) Test model, response m*x + c
    * parameters:  m - gamma_parameter[0]
-   *         c - gamma_parameter[1]
+   *              c - gamma_parameter[1]
    */
   if(gamma_model == GR_Test){
     double  m  = gamma_parameter[0];
@@ -162,6 +161,7 @@ void AT_gamma_response( const long  number_of_doses,
 	  double Smax   =  gamma_parameter[0];
 	  double D1     =  gamma_parameter[1];
 	  double chi    =  gamma_parameter[2];
+
 	  // transform parameters
 	  double c0     =  Smax / chi;
 	  double B      =  (Smax - c0) / D1;
@@ -187,7 +187,6 @@ void AT_gamma_response( const long  number_of_doses,
    *         D1    - characteristic dose at which rate signal reaches saturation
    */
   if(gamma_model == GR_ExpSaturation){
-    // exp-saturation model
     double  Smax  =  gamma_parameter[0];
     double  D0    =  gamma_parameter[1];
 
@@ -203,8 +202,8 @@ void AT_gamma_response( const long  number_of_doses,
   /*
    *  (4) LINEAR-QUADRATIC MODEL
    *
-   *  parameters:  alpha   - 1st parameter in equation SF = exp( - alpha *D^2 - beta *D)
-   *               beta    - 2nd parameter in equation SF = exp( - alpha *D^2 - beta *D)
+   *  parameters:  alpha   - 1st parameter in LQ equation
+   *               beta    - 2nd parameter in LQ equation
    *               D0      - 3rd parameter - transition-dose
    */
   if(gamma_model == GR_LinQuad){
@@ -219,52 +218,19 @@ void AT_gamma_response( const long  number_of_doses,
       beta = 0.0;
 
     for (i = 0; i < number_of_doses; i++){
-    	if(lethal_events_mode){
-    		if( d_Gy[i] < D0 ){
-    			S[i]    =       alpha * d_Gy[i] + beta * gsl_pow_2(d_Gy[i]);
-    		} else {
-    			S[i]    =       alpha * D0 + beta * gsl_pow_2(D0) + ( alpha + 2.0 * beta * D0) * (d_Gy[i] - D0);
-    		}
-    	}else{
-    		if( d_Gy[i] < D0 ){
-    			S[i]    =  exp( -alpha * d_Gy[i] - beta * gsl_pow_2(d_Gy[i]));
-    		} else {
-    			S[i]    =  exp( -alpha * D0 - beta * gsl_pow_2(D0) - ( alpha + 2.0 * beta * D0) * (d_Gy[i] - D0) );
-    		}
+		if( d_Gy[i] < D0 ){
+			S[i]    =       alpha * d_Gy[i] + beta * gsl_pow_2(d_Gy[i]);
+		} else {
+			S[i]    =       alpha * D0 + beta * gsl_pow_2(D0) + ( alpha + 2.0 * beta * D0) * (d_Gy[i] - D0);
+		}
+    	if(!lethal_events_mode){  // non-lethal events mode
+    		S[i]    =       exp( -S[i] );
     	}
     }
   }
 
   /*
-   *  (5) LINEAR-QUADRATIC MODEL
-   *
-   *      parameters:     alpha   - 1st parameter in equation SF = exp( - alpha *D^2 - beta *D)
-   *                      beta    - 2nd parameter in equation SF = exp( - alpha *D^2 - beta *D)
-   *                      D0      - 3rd parameter - transition-dose
-   */
-
-  if(gamma_model == GR_LinQuad_Log){
-
-    double   alpha   =       gamma_parameter[0];
-    double   beta    =       gamma_parameter[1];
-    double   D0      =       gamma_parameter[2];
-
-    if( alpha < 0.0 )
-      alpha = 0.0;
-    if( beta < 0.0 )
-      beta = 0.0;
-
-    for (i = 0; i < number_of_doses; i++){
-      if( d_Gy[i] < D0 ){
-        S[i]    =       alpha * d_Gy[i] + beta * gsl_pow_2(d_Gy[i]);
-      } else {
-        S[i]    =       alpha * D0 + beta * gsl_pow_2(D0) + ( alpha + 2.0 * beta * D0) * (d_Gy[i] - D0);
-      }
-    }
-  }
-
-  /*
-   *  (7) Multi-component model as given in Geiss, 1997 (PhD thesis)
+   *  (6) Multi-component model as given in Geiss, 1997 (PhD thesis)
    *
    *  N.B.: This function is supposed to be a mixed of one- and two-hit characteristics. Due to missing linear terms in the second
    *        component, however, it cannot be expressed using the general hit-target model (implemented as (1))
@@ -303,7 +269,6 @@ void AT_get_gamma_response(  const long  number_of_bins,
     const long    gamma_model,
     const double   gamma_parameter[],
     const bool    lethal_events_mode,
-    // return
     double   S[],
     double*  S_HCP,
     double*  S_gamma,
@@ -316,7 +281,6 @@ void AT_get_gamma_response(  const long  number_of_bins,
       gamma_model,
       gamma_parameter,
       lethal_events_mode,
-      // return
       S);
 
   *S_HCP         =  0.0;
@@ -327,22 +291,13 @@ void AT_get_gamma_response(  const long  number_of_bins,
     *S_HCP    +=  S[i] * dd_Gy[i] * f[i];
   }
 
-//  if( lethal_events_mode ){
-//    *S_HCP = exp( -(*S_HCP) );
-//  }
-
   i  = 1;
   AT_gamma_response(  i,
       &D_gamma,
       gamma_model,
       gamma_parameter,
       lethal_events_mode,
-      // return
       S_gamma);
-
-  if( lethal_events_mode ){
-    *S_gamma = exp( -(*S_gamma) );
-  }
 
   *efficiency    =  *S_HCP / *S_gamma;
 }
