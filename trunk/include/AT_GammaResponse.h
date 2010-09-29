@@ -52,12 +52,11 @@ enum AT_GammaResponseModels{
       GR_Radioluminescence = 3,      /**< 0 - Smax, 1 - D0, 2 - dyn */
       GR_ExpSaturation     = 4,      /**< 0 - Smax, 1 - D0 */
       GR_LinQuad           = 5,      /**< 0 - alpha, 1 - beta, 2 - D0 */
-      GR_LinQuad_Log       = 6,      /**< 0 - alpha, 1 - beta, 2 - D0 */
-      GR_Geiss			   = 7       /**< TODO */
+      GR_Geiss			   = 6       /**< TODO */
 };
 
 
-#define GR_DATA_N    7
+#define GR_DATA_N    6
 
 #define GR_MAX_NUMBER_OF_PARAMETERS  5
 
@@ -85,7 +84,6 @@ static const AT_GR_data_struct AT_GR_Data = {
        GR_Radioluminescence,
        GR_ExpSaturation,
        GR_LinQuad,
-       GR_LinQuad_Log,
        GR_Geiss
     },
     {  2,
@@ -93,13 +91,11 @@ static const AT_GR_data_struct AT_GR_Data = {
 	   3,
 	   2,
 	   3,
-	   3,
 	   5},
     {  {"",      "",      "",      "",   ""},
        {"S_max", "D0_Gy", "c",     "m",  ""},
        {"S_max", "D0_Gy", "dyn",   "",   ""},
        {"S_max", "D0_Gy", "",      "",   ""},
-       {"alpha", "beta",  "D0_Gy", "",   ""},
        {"alpha", "beta",  "D0_Gy", "",   ""},
        {"const", "k1",    "a1",    "k2", "a2"}
     },
@@ -108,7 +104,6 @@ static const AT_GR_data_struct AT_GR_Data = {
        {1.,  10., 5.,   0.,  0.},
        {1.,  10., 0.,   0.,  0.},
        {1.,  1.,  10.,  0.,  0.},
-       {1.,  1.,  10.,  0.,  0.},
        {6e3, 0.8, 3e-4, 0.2, 1e-6}
 	  },
     {  "simple test gamma response",
@@ -116,7 +111,6 @@ static const AT_GR_data_struct AT_GR_Data = {
        "radioluminescence gamma response",
        "exp.-sat. gamma response (obsolete, use gen. target/hit instead)",
        "linear-quadratic gamma response",
-       "lethal events number response",
        "Geiss model (1997)"
     }
 };
@@ -182,11 +176,11 @@ void AT_gamma_response( const long  number_of_doses,
  * @param[in]  gamma_model         gamma response model index
  * @param[in]  gamma_parameter     vector holding necessary parameters for the chose gamma response model
  * @param[in]  lethal_events_mode  if true, allows to do calculations for cell survival
- * @see  AmTrack.c/AT_IGK
- * @param[in]  S                   gamma responses for given bins (vector of length number_of_bins)
- * @param[in]  S_HCP               HCP response for given local dose distribution (expectation value of S distribution)
- * @param[in]  S_gamma             gamma response for given local dose distribution (gamma response of expectation value of d distribution)
- * @param[in]  efficiency          RE = S_HCP/S_gamma for given local dose distribution
+ *    @see  AmTrack.c/AT_IGK
+ * @param[out] S                   gamma responses for given bins (vector of length number_of_bins)
+ * @param[out] S_HCP               HCP response for given local dose distribution (expectation value of S distribution)
+ * @param[out] S_gamma             gamma response for given local dose distribution (gamma response of expectation value of d distribution)
+ * @param[out] efficiency          RE = S_HCP/S_gamma for given local dose distribution
  */
 void AT_get_gamma_response(  const long  number_of_bins,
     const double   d_Gy[],
