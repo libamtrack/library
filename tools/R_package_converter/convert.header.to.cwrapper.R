@@ -169,10 +169,11 @@ for(i in 1:length(functions)){
 							gsub("const ", "", para$type[j]), 
 							"[i];", sep = ""))
 				}
+				body <- c(body, "  }")
 			}
 		}
 	}
-	body <- c(body, "  }")
+	
 
 	body <- c(body, "\n//Free allocated space")
 	kk <- which(vector)	
