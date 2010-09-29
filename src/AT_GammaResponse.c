@@ -72,6 +72,7 @@ void AT_gamma_response( const long  number_of_doses,
     const double   d_Gy[],
     const long     gamma_model,
     const double   gamma_parameter[],
+    const bool	   lethal_events_mode,
     // return
     double         S[]){
 
@@ -85,7 +86,11 @@ void AT_gamma_response( const long  number_of_doses,
     double  m  = gamma_parameter[0];
     double  c  = gamma_parameter[1];
     for (i = 0; i < number_of_doses; i++){
-      S[i]    =  m * d_Gy[i] + c;
+      if(lethal_events_mode){
+    	  S[i]    =  0;								// No lethal_event_mode that would make sense
+      }else{
+    	  S[i]    =  m * d_Gy[i] + c;
+      }
     }
   }
   /*
@@ -100,38 +105,44 @@ void AT_gamma_response( const long  number_of_doses,
    *  if 4*ith parameter (k_i == 0) -> end of parameter list
    **/
   if(gamma_model == GR_GeneralTarget){
-    long  n_gamma_parameter = 0;
-    while  (gamma_parameter[n_gamma_parameter] != 0){
-      n_gamma_parameter  += 4;
-    }
+	  long  n_gamma_parameter = 0;
+	  while  (gamma_parameter[n_gamma_parameter] != 0){
+		  n_gamma_parameter  += 4;
+	  }
 
-    for (i = 0; i < number_of_doses; i++){
-      S[i]  = 0.0;
-    }
-    for (j = 0; j < n_gamma_parameter / 4; j++){            // loop over all components
-      double k      =  gamma_parameter[j * 4];
-      double D1     =  gamma_parameter[j * 4 + 1];
-      double c      =  gamma_parameter[j * 4 + 2];
-      double m      =  gamma_parameter[j * 4 + 3];
+	  for (i = 0; i < number_of_doses; i++){
+		  S[i]  = 0.0;
+	  }
 
-      double tmp    =  0.0;
+	  for (j = 0; j < n_gamma_parameter / 4; j++){            // loop over all components
+		  double k      =  gamma_parameter[j * 4];
+		  double D1     =  gamma_parameter[j * 4 + 1];
+		  double c      =  gamma_parameter[j * 4 + 2];
+		  double m      =  gamma_parameter[j * 4 + 3];
 
-      for (i = 0; i < number_of_doses; i++){
-        if(c == 1){                    // in case of c = 1 use simplified, faster formula
-          tmp      =  1.0 - exp(-1.0 * d_Gy[i] / D1);
-        }else{                      // for c > 1 use incomplete gamma function
-          tmp      =  gsl_sf_gamma_inc_P(c, d_Gy[i] / D1);
-        }
+		  double tmp    =  0.0;
 
-        if(m == 1){                    // in case of m = 1 do not use pow for speed reasons
-          tmp      *=  k;
-        }else{
-          tmp      = k * pow(tmp, m);
-        }
+		  for (i = 0; i < number_of_doses; i++){
+			  if(c == 1){                    // in case of c = 1 use simplified, faster formula
+				  tmp      =  1.0 - exp(-1.0 * d_Gy[i] / D1);
+			  }else{                      // for c > 1 use incomplete gamma function
+				  tmp      =  gsl_sf_gamma_inc_P(c, d_Gy[i] / D1);
+			  }
 
-        S[i]    +=  tmp;
-      }
-    }
+			  if(m == 1){                    // in case of m = 1 do not use pow for speed reasons
+				  tmp      *=  k;
+			  }else{
+				  tmp      = k * pow(tmp, m);
+			  }
+
+			  S[i]    +=  tmp;
+		  }
+	  }
+	  if(lethal_events_mode){
+		  for(i = 0; i < number_of_doses; i++){
+			  S[i]	= -1.0 * log(1.0 - S[i]);
+		  }
+	  }
   }
   /*
    *  (2) RL ACCUMULATED COUNTS MODEL
@@ -148,20 +159,25 @@ void AT_gamma_response( const long  number_of_doses,
    */
 
   if(gamma_model == GR_Radioluminescence){
-    double Smax   =  gamma_parameter[0];
-    double D1     =  gamma_parameter[1];
-    double chi    =  gamma_parameter[2];
-    // transform parameters
-    double c0     =  Smax / chi;
-    double B      =  (Smax - c0) / D1;
+	  double Smax   =  gamma_parameter[0];
+	  double D1     =  gamma_parameter[1];
+	  double chi    =  gamma_parameter[2];
+	  // transform parameters
+	  double c0     =  Smax / chi;
+	  double B      =  (Smax - c0) / D1;
 
-    for (i = 0; i < number_of_doses; i++){
-      if(d_Gy[i]  <= D1){
-        S[i]    =  c0 * d_Gy[i] + 0.5f * B * gsl_pow_2(d_Gy[i]);
-      }else{
-        S[i]    =  c0 * D1 + 0.5f * B * gsl_pow_2(D1) + Smax * (d_Gy[i] - D1);
-      }
-    }
+	  for (i = 0; i < number_of_doses; i++){
+		  if(d_Gy[i]  <= D1){
+			  S[i]    =  c0 * d_Gy[i] + 0.5f * B * gsl_pow_2(d_Gy[i]);
+		  }else{
+			  S[i]    =  c0 * D1 + 0.5f * B * gsl_pow_2(D1) + Smax * (d_Gy[i] - D1);
+		  }
+	  }
+	  if(lethal_events_mode){
+		  for(i = 0; i < number_of_doses; i++){
+			  S[i]	= -1.0 * log(1.0 - S[i]);
+		  }
+	  }
   }
 
   /*
@@ -176,7 +192,11 @@ void AT_gamma_response( const long  number_of_doses,
     double  D0    =  gamma_parameter[1];
 
     for (i = 0; i < number_of_doses; i++){
-      S[i]    =  Smax * (1.0 - exp(-1.0 * d_Gy[i] / D0));
+      if(lethal_events_mode){
+    	  S[i]	  =  d_Gy[i] / D0;
+      }else{
+     	  S[i]    =  Smax * (1.0 - exp(-1.0 * d_Gy[i] / D0));
+     }
     }
   }
 
@@ -199,16 +219,24 @@ void AT_gamma_response( const long  number_of_doses,
       beta = 0.0;
 
     for (i = 0; i < number_of_doses; i++){
-      if( d_Gy[i] < D0 ){
-        S[i]    =  exp( -alpha * d_Gy[i] - beta * gsl_pow_2(d_Gy[i]));
-      } else {
-        S[i]    =  exp( -alpha * D0 - beta * gsl_pow_2(D0) - ( alpha + 2.0 * beta * D0) * (d_Gy[i] - D0) );
-      }
+    	if(lethal_events_mode){
+    		if( d_Gy[i] < D0 ){
+    			S[i]    =       alpha * d_Gy[i] + beta * gsl_pow_2(d_Gy[i]);
+    		} else {
+    			S[i]    =       alpha * D0 + beta * gsl_pow_2(D0) + ( alpha + 2.0 * beta * D0) * (d_Gy[i] - D0);
+    		}
+    	}else{
+    		if( d_Gy[i] < D0 ){
+    			S[i]    =  exp( -alpha * d_Gy[i] - beta * gsl_pow_2(d_Gy[i]));
+    		} else {
+    			S[i]    =  exp( -alpha * D0 - beta * gsl_pow_2(D0) - ( alpha + 2.0 * beta * D0) * (d_Gy[i] - D0) );
+    		}
+    	}
     }
   }
 
   /*
-   *  (4) LINEAR-QUADRATIC MODEL
+   *  (5) LINEAR-QUADRATIC MODEL
    *
    *      parameters:     alpha   - 1st parameter in equation SF = exp( - alpha *D^2 - beta *D)
    *                      beta    - 2nd parameter in equation SF = exp( - alpha *D^2 - beta *D)
@@ -255,7 +283,12 @@ void AT_gamma_response( const long  number_of_doses,
 	     double a2	= gamma_parameter[4];
 
 	 for (i = 0; i < number_of_doses; i++){
-       S[i]    = co * (k1 * (1.0 - exp(-1.0 * a1 * d_Gy[i])) + k2 * (1.0 - exp(-1.0 * a2 * d_Gy[i] * d_Gy[i])));
+		 if(lethal_events_mode){
+		     // TODO: Use more efficient formula
+			 S[i]    = -1.0 * log(1.0 - k1 * (1.0 - exp(-1.0 * a1 * d_Gy[i])) - k2 * (1.0 - exp(-1.0 * a2 * d_Gy[i] * d_Gy[i])));
+		 }else{
+			 S[i]    = co * (k1 * (1.0 - exp(-1.0 * a1 * d_Gy[i])) + k2 * (1.0 - exp(-1.0 * a2 * d_Gy[i] * d_Gy[i])));
+		 }
       }
     }
 
@@ -282,6 +315,7 @@ void AT_get_gamma_response(  const long  number_of_bins,
       d_Gy,
       gamma_model,
       gamma_parameter,
+      lethal_events_mode,
       // return
       S);
 
@@ -293,15 +327,16 @@ void AT_get_gamma_response(  const long  number_of_bins,
     *S_HCP    +=  S[i] * dd_Gy[i] * f[i];
   }
 
-  if( lethal_events_mode ){
-    *S_HCP = exp( -(*S_HCP) );
-  }
+//  if( lethal_events_mode ){
+//    *S_HCP = exp( -(*S_HCP) );
+//  }
 
   i  = 1;
   AT_gamma_response(  i,
       &D_gamma,
       gamma_model,
       gamma_parameter,
+      lethal_events_mode,
       // return
       S_gamma);
 

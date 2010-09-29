@@ -76,6 +76,7 @@ void AT_gamma_response_R( const int*  n,
     const float*  d_Gy,
     const int*    gamma_model,
     const float*  gamma_parameter,
+    const int*	  lethal_events_mode,
     float*        S);
 
 

@@ -216,6 +216,7 @@ void AT_run_SPIFF_method(  const long  n,
       &d0,
       gamma_model,
       gamma_parameters,
+      false,
       // return
       &s0);
 
@@ -568,11 +569,13 @@ void AT_GSM_calculate_local_response_grid( const long      nX,
     const bool      lethal_events_mode,
     double**        grid_response){
 
-  if( lethal_events_mode && (gamma_model != GR_LinQuad) ){
-    printf("Sorry, no Grid Summation model (lethal events mode) with other than Linear Quadratic gamma response\n");
-    printf("Please choose gamma_model = %d. Exiting now...\n", GR_LinQuad);
-    return;
-  }
+/* lethal_events_mode (dGSM) works with arbitrary gamma models */
+/* It is however more efficient to use GR_LinQuad_Log if LQ is used */
+//  if( lethal_events_mode && (gamma_model != GR_LinQuad) ){
+//    printf("Sorry, no Grid Summation model (lethal events mode) with other than Linear Quadratic gamma response\n");
+//    printf("Please choose gamma_model = %d. Exiting now...\n", GR_LinQuad);
+//    return;
+//  }
 
   // get gamma response for local dose
   long i;
@@ -581,6 +584,7 @@ void AT_GSM_calculate_local_response_grid( const long      nX,
         grid_D_Gy[i],
         gamma_model,
         gamma_parameters,
+        lethal_events_mode,
         grid_response[i]);
   } // i
 
@@ -757,11 +761,19 @@ void AT_run_GSM_method(  const long  n,
         average_grid_response_ions  += grid_response[i][j];
       }
     }
-    average_grid_response_ions  /= gsl_pow_2(nX);
+
     total_dose_on_grid_ions_Gy  /= gsl_pow_2(nX);
+    average_grid_response_ions  /= gsl_pow_2(nX);
 
     if( lethal_events_mode ){
-      average_grid_response_ions  = exp( - average_grid_response_ions );
+    	average_grid_response_ions  = exp(-1.0 * average_grid_response_ions);
+
+    	if( gamma_model == GR_ExpSaturation |
+    			gamma_model == GR_GeneralTarget |
+    			gamma_model == GR_Radioluminescence |
+    			gamma_model == GR_Geiss){
+    		average_grid_response_ions  = 1.0 - average_grid_response_ions;
+    	}
     }
 
     /* calculate gamma response for total grid dose */
@@ -770,6 +782,7 @@ void AT_run_GSM_method(  const long  n,
         &total_dose_on_grid_ions_Gy,
         gamma_model,
         gamma_parameters,
+        false,
         &gamma_response);
 
     /* finally calculate efficiency */
@@ -790,6 +803,14 @@ void AT_run_GSM_method(  const long  n,
     results[7]      += gsl_pow_2(average_grid_response_ions);
     results[8]      += gsl_pow_2(gamma_response);
     results[9]      += gsl_pow_2(n_particles);
+
+    /* Write intermediate results to file */
+
+//    FILE*    output_file = NULL;
+//    output_file    =  fopen("GSMdoseGrid.csv","w");
+//    if (output_file == NULL) return;                      // File error
+//    fprintf(output_file, "x.m;y.m;d.Gy\n");
+
   }// end run loop
 
   /* average over number of runs */
@@ -1049,6 +1070,7 @@ void AT_run_IGK_method(  const long  n,
           &gamma_D_Gy,
           gamma_model,
           params->gamma_parameters,
+          false,
           // return
           &P_g);
       P_g             = 1.0 - P_g;                                  // prob of being activated by gamma kill mode
@@ -1066,6 +1088,7 @@ void AT_run_IGK_method(  const long  n,
       &total_dose_Gy,
       gamma_model,
       gamma_parameters,
+      false,
       // return
       &S_gamma);
 
