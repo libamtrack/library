@@ -43,7 +43,7 @@
 /**
  * Electron range models code numbers
  */
-enum ERModels{
+enum AT_ERModels{
   ER_Test                  = 1,     /**< dummy electron range models */
       ER_ButtsKatz         = 2,     /**< Butts&Katz(?) electron range model, R = k * w, valid for ?? < w < 2keV , TODO ref needed [Katz et al., 1972] */
       ER_Waligorski        = 3,     /**< Waligorski(?) electron range model, R = k * w ^ alpha, valid for ?? < w < ? TODO ref needed*/
@@ -63,13 +63,13 @@ typedef struct {
   int     n;
   int     ER_no[ER_DATA_N];
   char*   ER_name[ER_DATA_N];
-} er_data;
+} AT_ER_data_struct;
 
 
 /**
  * TODO
  */
-static const er_data AT_ER_Data = {
+static const AT_ER_data_struct AT_ER_Data = {
     ER_DATA_N,
     {  ER_Test,                 ER_ButtsKatz,                       ER_Waligorski,                             ER_Geiss,                         ER_Scholz,                       ER_Edmund,                          ER_Tabata },
     {  "simple test ER model",  "Butts & Katz' ER model (linear)",  "Waligorski's ER model (power-law wmax)",  "Geiss' ER model (power-law E)", "Scholz' ER model (power-law E)", "Edmund' ER model (power-law wmax)","Tabata  ER model"}
@@ -81,7 +81,7 @@ static const er_data AT_ER_Data = {
  *
  * @param[in]   ER_no    electron-range-model index
  * @param[out]  Er_name  string containing the electron-range model name
- * @return      Status cose
+ * @return      Status code
  */
 int  getERName(  const int ER_no,
     char* ER_name);
@@ -182,7 +182,7 @@ inline void AT_ER_Tabata_constants(const double average_A,
  *
  * @param[in]  number_of_particles          number of particles in the incident field
  * @param[in]  E_MeV_u                      kinetic energy for particles in the given field (vector of length number_of_particles)
- * @param[in]  material_no                  index for detector material
+ * @param[in]  AT_material_no                  index for detector material
  * @param[in]  er_model                     index for electron-range model chosen
  * @param[out] max_electron_range_m         electron range (track diameter) in m  (vector of length number_of_particles)
  */
@@ -197,7 +197,7 @@ void AT_max_electron_ranges_m( const long number_of_particles ,
  * Returns the maximum electron range (track diameter) in m for given energy
  *
  * @param[in]  E_MeV_u                      kinetic energy for particles in the given field
- * @param[in]  material_no                  index for detector material
+ * @param[in]  AT_material_no                  index for detector material
  * @param[in]  er_model                     index for electron-range model chosen
  * @return                                  electron range (track diameter) in m
  */

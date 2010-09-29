@@ -265,7 +265,7 @@ void AT_D_Gy(  const long  n,
 
   // TODO can't it be replaced by following code:
   //for (i = 0; i < n; i++){
-  //  D_Gy[i] =  AT_Dose_Gy_from_fluence_cm2_single(  E_MeV_u[i], particle_no[i], fluence_cm2[i], material_no );
+  //  D_Gy[i] =  AT_Dose_Gy_from_fluence_cm2_single(  E_MeV_u[i], particle_no[i], fluence_cm2[i], AT_material_no );
   //}
 
 }
@@ -303,7 +303,7 @@ void AT_fluence_cm2(  const long  n,
 
   // TODO can't it be replaced by following code:
   //for (i = 0; i < n; i++){
-  //  fluence_cm2[i] =  AT_fluence_cm2_from_dose_Gy_single(  E_MeV_u[i], particle_no[i], D_Gy[i], material_no );
+  //  fluence_cm2[i] =  AT_fluence_cm2_from_dose_Gy_single(  E_MeV_u[i], particle_no[i], D_Gy[i], AT_material_no );
   //}
 }
 

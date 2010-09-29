@@ -44,7 +44,7 @@
 
 // TODO implement method for getting LET of one particle
 
-enum LET_data_source{
+enum AT_LET_data_source{
   User_Defined_Data    = 0, /**< To be defined by the user during runtime >**/
   PowerLaw             = 1, /**< Liquid water */
   PSTAR                = 2  /**< Aluminium oxide */
@@ -65,12 +65,12 @@ typedef struct {
   const double   range_proj_g_cm2[PSTAR_DATA_N];        /** Projected range */
   const double   detour_factor[PSTAR_DATA_N];           /** Detour factor (ratio of projected range to CSDA range) */
   const long     material_no[PSTAR_DATA_N];             /** Material number (see AT_DataMaterial.h) */
-} pstar_data;
+} AT_pstar_data_struct;
 
 
 
 //TODO needs to be moved to external file
-static const pstar_data AT_PSTAR_Data = {
+static const AT_pstar_data_struct AT_PSTAR_Data = {
     PSTAR_DATA_N,
 
     ///////////////////////////////////////////////////////////////////////
@@ -866,7 +866,7 @@ static const pstar_data AT_PSTAR_Data = {
  *
  * @param[in]  n             number of points to interpolate
  * @param[in]  x             array of x values for which interpolation is done
- * @param[in]  material_no
+ * @param[in]  AT_material_no
  * @param[in]  x_table       x part of data table
  * @param[in]  y_table       y part of data table
  * @param[out] y             array of interpolated y values
@@ -886,7 +886,7 @@ void get_table_value(
  * @param[in]   E_MeV_u                  energy of particle
  * @param[in]   particle_no              type of the particle
  * @see          AT_DataParticle.h for definition
- * @param[in]   material_no              material index
+ * @param[in]   AT_material_no              material index
  * @see          AT_DataMaterial.h for definition
  * @return      LET_MeV_cm2_g
  */
@@ -902,7 +902,7 @@ double AT_LET_MeV_cm2_g_single(  const double  E_MeV_u,
  * @param[in]   E_MeV_u                  energy of particles in the mixed particle field (array of size number_of_particles)
  * @param[in]   particle_no              type of the particles in the mixed particle field (array of size number_of_particles)
  * @see          AT_DataParticle.h for definition
- * @param[in]   material_no              material index
+ * @param[in]   AT_material_no              material index
  * @see          AT_DataMaterial.h for definition
  * @param[out] LET_MeV_cm2_g
  */
@@ -919,7 +919,7 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
  * @param[in]   E_MeV_u                  energy of particles in the mixed particle field (array of size number_of_particles)
  * @param[in]   particle_no              type of the particles in the mixed particle field (array of size number_of_particles)
  * @see          AT_DataParticle.h for definition
- * @param[in]   material_no              material index
+ * @param[in]   AT_material_no              material index
  * @see          AT_DataMaterial.h for definition
  * @param[out] LET_keV_um
  */
@@ -936,7 +936,7 @@ void AT_LET_keV_um(  const long  number_of_particles,
  * @param[in]   E_MeV_u                  energy of particles in the mixed particle field (array of size number_of_particles)
  * @param[in]   particle_no              type of the particles in the mixed particle field (array of size number_of_particles)
  * @see          AT_DataParticle.h for definition
- * @param[in]   material_no              material index
+ * @param[in]   AT_material_no              material index
  * @see          AT_DataMaterial.h for definition
  * @param[out]  CSDA_range_g_cm2         vector of size number_of_particles to be allocated by the user which will be used to return the results
  */
@@ -953,7 +953,7 @@ void AT_CSDA_range_g_cm2(  const long  number_of_particles,
  * @param[in]   E_MeV_u                  energy of particles in the mixed particle field (array of size number_of_particles)
  * @param[in]   particle_no              type of the particles in the mixed particle field (array of size number_of_particles)
  * @see          AT_DataParticle.h for definition
- * @param[in]   material_no              material index
+ * @param[in]   AT_material_no              material index
  * @see          AT_DataMaterial.h for definition
  * @param[out]  CSDA_range_g_cm2         vector of size number_of_particles to be allocated by the user which will be used to return the results
  * @return  none
@@ -972,7 +972,7 @@ void AT_CSDA_range_m(  const long  number_of_particles,
  * @param[in]   CSDA_range_g_cm2         CSDA range
  * @param[in]   particle_no              type of the particles in the mixed particle field (array of size number_of_particles)
  * @see          AT_DataParticle.h for definition
- * @param[in]   material_no              material index
+ * @param[in]   AT_material_no              material index
  * @see          AT_DataMaterial.h for definition
  * @param[out]  E_MeV energy (array of size number_of_particles)
  */
@@ -988,7 +988,7 @@ void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
  * @param number_of_particles
  * @param LET_MeV_cm2_g
  * @param particle_no
- * @param material_no
+ * @param AT_material_no
  * @param E_MeV
  */
 void AT_E_MeV_from_LET(  const long  number_of_particles,
@@ -1003,16 +1003,16 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
 long AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
     const double        E_MeV_u[],
     const long          particle_no[],
-    AT_material         material,
+    AT_single_material_data_struct         material,
     double              LET_MeV_cm2_g[]);
 double AT_new_LET_MeV_cm2_g_single(  const double        E_MeV_u,
     const long          particle_no,
-    AT_material         material);
+    AT_single_material_data_struct         material);
 double get_table_value_new( const double  x,
     const long    n,
     const double  x_table[],
     const double  y_table[]);
-int AT_establish_LET_data( AT_material*  material);
+int AT_establish_LET_data( AT_single_material_data_struct*  material);
 double AT_CDSA_range_g_cm2_from_power_law_single(  const double E_MeV_u,
      const long particle_no,
      const double p_MeV,

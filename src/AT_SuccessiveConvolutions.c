@@ -368,7 +368,7 @@ void  AT_SC_get_f_start(  const long     n_bins_f1,
 }
 
 
-aKList  AT_SC_NORMAL(aKList theKList){
+AT_aKList  AT_SC_NORMAL(AT_aKList theKList){
 
   double  Y        =  theKList.CM1 * 2;
   double  Z        =  theKList.CM2 * 2;
@@ -411,7 +411,7 @@ aKList  AT_SC_NORMAL(aKList theKList){
 }
 
 
-aKList  AT_SC_OUTPUT(aKList theKList){
+AT_aKList  AT_SC_OUTPUT(AT_aKList theKList){
 
   //double*  SD            =  (double*)calloc(theKList.array_size, sizeof(double));
 
@@ -453,7 +453,7 @@ aKList  AT_SC_OUTPUT(aKList theKList){
 }
 
 
-aKList  AT_SC_INTERP(aKList theKList){
+AT_aKList  AT_SC_INTERP(AT_aKList theKList){
 
   theKList.A[0]             =  theKList.F[1] - theKList.F[0];
   theKList.BI[0]            =  0.0;
@@ -476,7 +476,7 @@ aKList  AT_SC_INTERP(aKList theKList){
 }
 
 
-aKList  AT_SC_RESET(aKList theKList){
+AT_aKList  AT_SC_RESET(AT_aKList theKList){
 
   if (theKList.N2 <= 256){
     if(theKList.LEF <= 64){
@@ -567,7 +567,7 @@ aKList  AT_SC_RESET(aKList theKList){
 }
 
 
-aKList  AT_SC_ZERO(aKList theKList){
+AT_aKList  AT_SC_ZERO(AT_aKList theKList){
 
   theKList.X          =  0;
   long N              =  theKList.MIH - theKList.MIE;
@@ -610,7 +610,7 @@ aKList  AT_SC_ZERO(aKList theKList){
 }
 
 
-aKList  AT_SC_SHRINK(aKList theKList){
+AT_aKList  AT_SC_SHRINK(AT_aKList theKList){
 
   double  EX          =  theKList.shrink_tails_under;
   double  S           =  0.0;
@@ -655,7 +655,7 @@ aKList  AT_SC_SHRINK(aKList theKList){
 }
 
 
-aKList AT_SC_FOLD(aKList theKList){
+AT_aKList AT_SC_FOLD(AT_aKList theKList){
   double*  FDE        =  (double*)calloc(theKList.array_size, sizeof(double));
 
   if((theKList.CN >= 10.0) && (theKList.adjust_N2 == true)){
@@ -734,7 +734,7 @@ void   AT_SuccessiveConvolutions( const double  u,
   // Init KList structure
   // (Constructor)
   //////////////////////////////////////////
-  aKList KList;
+  AT_aKList KList;
 
   KList.array_size  = n_bins_f;
   KList.N2          = *N2;

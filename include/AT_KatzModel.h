@@ -97,7 +97,7 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_probability(
  * @param r_m
  * @param E_MeV_u
  * @param particle_no
- * @param material_no
+ * @param AT_material_no
  * @param rdd_model
  * @param rdd_parameters
  * @param er_model
@@ -233,7 +233,7 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2(
  * @param n
  * @param E_MeV_u
  * @param particle_no
- * @param material_no
+ * @param AT_material_no
  * @param rdd_model
  * @param rdd_parameters
  * @param er_model

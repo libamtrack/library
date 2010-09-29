@@ -128,7 +128,7 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
    ********* CALCULATION BEFORE PARTICLE LOOP *************
    *******************************************************/
 
-  // Get density and average A/Z matching to material_no
+  // Get density and average A/Z matching to AT_material_no
   double material_density_g_cm3        =  0.0;
   double average_A                     =  0.0;
   double average_Z                     =  0.0;
@@ -200,7 +200,7 @@ double AT_max_electron_range_m(  const double E_MeV_u,
     const int    material_no,
     const int    er_model){
 
-  // Get density and average A/Z matching to material_no
+  // Get density and average A/Z matching to AT_material_no
   double material_density_g_cm3        = 0.0;
   double average_A                     = 0.0;
   double average_Z                     = 0.0;

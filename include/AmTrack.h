@@ -73,7 +73,7 @@ int AT_GetNumber(void);
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
- * @param[in]  material_no         index number for detector material
+ * @param[in]  AT_material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  rdd_model           index number for chosen radial dose distribution
  * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
@@ -156,7 +156,7 @@ void AT_GSM_shoot_particles_on_grid( const long  number_of_field_components,
  * @param[in]  particle_no                               type of the particles in the mixed particle field (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2                               fluences for the given particles, doses in Gy if negative (array of size number_of_field_components)
- * @param[in]  material_no                               index number for detector material
+ * @param[in]  AT_material_no                               index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  rdd_model                                 index number for chosen radial dose distribution
  * @param[in]  rdd_parameter                             parameters for chosen radial dose distribution (array of size depending on chosen model)
@@ -251,7 +251,7 @@ void AT_GSM_calculate_local_response_grid( const long      nX,
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
- * @param[in]  material_no         index number for detector material
+ * @param[in]  AT_material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  RDD_model           index number for chosen radial dose distribution
  * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
@@ -309,7 +309,7 @@ void AT_run_GSM_method(  const long  n,
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
- * @param[in]  material_no         index number for detector material
+ * @param[in]  AT_material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  RDD_model           index number for chosen radial dose distribution
  * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
@@ -359,7 +359,7 @@ void AT_run_IGK_method(  const long  n,
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
- * @param[in]  material_no         index number for detector material
+ * @param[in]  AT_material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  RDD_model           index number for chosen radial dose distribution
  * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
