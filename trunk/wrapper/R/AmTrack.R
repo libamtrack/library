@@ -335,7 +335,8 @@ AT.run.IGK.method	<-	function(	E.MeV.u,
 #################
 AT.gamma.response	<-	function(	d.Gy,
 										gamma.model,
-										gamma.parameters){
+										gamma.parameters,
+										lethal.events.mode = F){
 											
 	n						<-	length(d.Gy)
 	S						<-	numeric(n)
@@ -343,6 +344,7 @@ AT.gamma.response	<-	function(	d.Gy,
 																d.Gy				= as.single(d.Gy),
 																gamma.model			= as.integer(gamma.model),
 																gamma.parameters	= as.single(gamma.parameters),
+																lethal.events.mode	= as.integer(lethal.events.mode),
 																S					= as.single(S))
 	return(res$S)
 }

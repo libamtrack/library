@@ -56,6 +56,7 @@ double AT_KatzModel_KatzExtTarget_inactivation_probability(
         &D_Gy,
         gamma_model,
         gamma_parameters,
+        false,
         &inactivation_probability);
 
     return inactivation_probability;
@@ -89,6 +90,7 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_probability(
         &D_Gy,
         gamma_model,
         gamma_parameters,
+        false,
         &inactivation_probability);
 
     return inactivation_probability;
@@ -255,6 +257,7 @@ double AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2(
       &Katz_plateau_Gy,
       gamma_model,
       gamma_parameters,
+      false,
       &inactivation_probability_plateau);
 
   return 2.0 * M_PI * integral_m2 + M_PI * gsl_pow_2(0.01*a0_m) * inactivation_probability_plateau;
@@ -332,6 +335,7 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2(
       &Cucinotta_plateau_Gy,
       gamma_model,
       gamma_parameters,
+      false,
       &inactivation_probability_plateau);
 
  return 2.0 * M_PI * integral_m2 + M_PI * gsl_pow_2(0.01*a0_m) * inactivation_probability_plateau;
@@ -544,6 +548,7 @@ double AT_P_RDD( double  r_m,
       &D_Gy,
       gamma_model,
       par->gamma_parameters,
+      false,
       // return
       &P);
   return P;

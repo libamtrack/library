@@ -235,11 +235,15 @@ void AT_gamma_response_R( const int*  n,
     const float*  d_Gy,
     const int*    gamma_model,
     const float*  gamma_parameter,
-    float*        S){
+    const int*    lethal_events_mode,
+	float*        S){
 
   /* int -> long conversion */
   const long n_long = (long)(*n);
   const long gamma_model_long = (long)(*gamma_model);
+
+  /* int -> bool conversion */
+  const bool lethal_events_mode_bool = (bool)(*lethal_events_mode);
 
   /* float -> double conversion */
   double * d_Gy_double = (double*)calloc(n_long,sizeof(double));
@@ -268,6 +272,7 @@ void AT_gamma_response_R( const int*  n,
       d_Gy_double,
       gamma_model_long,
       gamma_parameter_double,
+      lethal_events_mode_bool,
       S_double);
 
   /* double -> float conversion (results) */

@@ -159,7 +159,8 @@ for(cur.M in unique(df.GR$GR.model)){
 	ii					<-	cur.M == df.GR$GR.model
 	df.GR$S[ii] 		<- 	AT.gamma.response(	d.Gy	 			= df.GR$D.Gy[ii], 
 													gamma.model		= unique(df.GR$GR.model[ii]),
-													gamma.parameters	= GR.parameters[[unique(df.GR$GR.model[ii])]])
+													gamma.parameters	= GR.parameters[[unique(df.GR$GR.model[ii])]],
+													lethal.events.mode = F)
 }
 
 p4 <- xyplot(		data = df.GR,

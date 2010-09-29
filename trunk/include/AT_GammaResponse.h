@@ -163,6 +163,7 @@ void AT_gamma_response( const long  number_of_doses,
     const double   d_Gy[],
     const long     gamma_model,
     const double   gamma_parameter[],
+    const bool	   lethal_event_mode,
     double         S[]);
 
 
