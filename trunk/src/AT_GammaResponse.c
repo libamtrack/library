@@ -261,12 +261,153 @@ void AT_gamma_response( const long  number_of_doses,
 }
 
 
+double AT_get_gamma_response_for_average_dose(  const long  number_of_bins,
+    const double   dose_Gy_bin_position[],
+    const double   dose_Gy_bin_width[],
+    const double   dose_bin_frequency[],
+    const long     gamma_model,
+    const double   gamma_parameter[],
+    const bool     lethal_events_mode)
+{
+  long i;
+  double total_dose =  0.0;
+  for(i = 0; i < number_of_bins; i++){
+    total_dose   +=  dose_Gy_bin_position[i] * dose_Gy_bin_width[i] * dose_bin_frequency[i];
+  }
+
+  double gamma_response = 0.0;
+  i  = 1;
+  AT_gamma_response(  i,
+      &total_dose,
+      gamma_model,
+      gamma_parameter,
+      lethal_events_mode,
+      &gamma_response);
+
+  return gamma_response;
+}
+
+
+void AT_get_response_distribution_from_dose_distribution(  const long  number_of_bins,
+    const double   dose_Gy_bin_position[],
+    const double   dose_bin_frequency[],
+    const long     gamma_model,
+    const double   gamma_parameter[],
+    const bool     lethal_events_mode,
+    double         response_bin_frequency[])
+{
+  AT_gamma_response(  number_of_bins,
+      dose_Gy_bin_position,
+      gamma_model,
+      gamma_parameter,
+      lethal_events_mode,
+      response_bin_frequency);
+}
+
+
+double AT_get_ion_response_from_response_distribution(  const long  number_of_bins,
+	const double   dose_Gy_bin_width[],
+    const double   dose_bin_frequency[],
+    const double   ion_response_bin_frequency[])
+{
+  long i;
+  double ion_response =  0.0;
+  for(i = 0; i < number_of_bins; i++){
+    ion_response    +=  ion_response_bin_frequency[i] * dose_Gy_bin_width[i] * dose_bin_frequency[i];
+  }
+  return ion_response;
+}
+
+
+double AT_get_ion_response_from_dose_distribution(  const long  number_of_bins,
+	    const double   dose_Gy_bin_position[],
+	    const double   dose_Gy_bin_width[],
+	    const double   dose_bin_frequency[],
+	    const long     gamma_model,
+	    const double   gamma_parameter[],
+	    const bool     lethal_events_mode)
+{
+	double* ion_response_bin_frequency = (double*)calloc(sizeof(double),number_of_bins);
+
+	AT_get_response_distribution_from_dose_distribution(  number_of_bins,
+	    dose_Gy_bin_position,
+	    dose_bin_frequency,
+	    gamma_model,
+	    gamma_parameter,
+	    lethal_events_mode,
+	    ion_response_bin_frequency);
+
+	double ion_response = AT_get_ion_response_from_response_distribution( number_of_bins,
+			  dose_Gy_bin_width,
+			  dose_bin_frequency,
+			  ion_response_bin_frequency);
+
+	free( ion_response_bin_frequency);
+
+	return ion_response;
+}
+
+
+double AT_get_ion_efficiency_from_dose_distribution(  const long  number_of_bins,
+	    const double   dose_Gy_bin_position[],
+	    const double   dose_Gy_bin_width[],
+	    const double   dose_bin_frequency[],
+	    const long     gamma_model,
+	    const double   gamma_parameter[],
+	    const bool     lethal_events_mode)
+{
+  double ion_response = AT_get_ion_response_from_dose_distribution(  number_of_bins,
+		    dose_Gy_bin_position,
+		    dose_Gy_bin_width,
+		    dose_bin_frequency,
+		    gamma_model,
+		    gamma_parameter,
+		    lethal_events_mode);
+
+  double gamma_response = AT_get_gamma_response_for_average_dose( number_of_bins,
+		  dose_Gy_bin_position,
+		  dose_Gy_bin_width,
+		  dose_bin_frequency,
+		  gamma_model,
+		  gamma_parameter,
+		  lethal_events_mode);
+
+  return ion_response / gamma_response;
+}
+
+
+double AT_get_ion_efficiency_from_response_distribution(  const long  number_of_bins,
+	    const double   dose_Gy_bin_position[],
+	    const double   dose_Gy_bin_width[],
+	    const double   dose_bin_frequency[],
+	    const double   ion_response_bin_frequency[],
+	    const long     gamma_model,
+	    const double   gamma_parameter[],
+	    const bool     lethal_events_mode)
+{
+  double ion_response = AT_get_ion_response_from_response_distribution( number_of_bins,
+		  dose_Gy_bin_width,
+		  dose_bin_frequency,
+		  ion_response_bin_frequency);
+
+  double gamma_respone = AT_get_gamma_response_for_average_dose( number_of_bins,
+		  dose_Gy_bin_position,
+		  dose_Gy_bin_width,
+		  dose_bin_frequency,
+		  gamma_model,
+		  gamma_parameter,
+		  lethal_events_mode);
+
+  return ion_response / gamma_respone;
+}
+
+
 void AT_get_gamma_response(  const long  number_of_bins,
     const double   d_Gy[],
     const double   dd_Gy[],
     const double   f[],
     const double   f0,
-    const long    gamma_model,
+    const long     gamma_model,
     const double   gamma_parameter[],
     const bool    lethal_events_mode,
     double   S[],
