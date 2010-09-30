@@ -20,7 +20,6 @@
 # If not, see <http://www.gnu.org/licenses/>
 ################################################################################################
 
-
 # save current working directory
 cur.dir <- getwd()
 
@@ -257,7 +256,20 @@ for(file in record){
 		# add parameters to list
 		current.function$parameter <- parameter
 
-		
+		# add input output information from doxygen file 
+		pos.in <- grepl("in", current.function$parameter.comment$type) 
+		pos.out <- grepl("out", current.function$parameter.comment$type) 
+
+
+		# get the position of the parameters from the position in the comments
+		pos.in.para <- match(current.function$parameter.comment$name[pos.in & !pos.out], current.function$parameter$name)
+		pos.out.para <- match(current.function$parameter.comment$name[pos.out & !pos.in], current.function$parameter$name)
+		pos.in.out.para <- match(current.function$parameter.comment$name[pos.in & pos.out], current.function$parameter$name)
+
+		current.function$parameter$in.out <- "TODO"
+		current.function$parameter$in.out[pos.in.para] <- "in" 
+		current.function$parameter$in.out[pos.out.para] <- "out" 
+		current.function$parameter$in.out[pos.in.out.para] <- "in.out" 
 
 		functions[[function.no]] <- current.function
 		processed.functions <- c(processed.functions, name)
@@ -270,4 +282,3 @@ for(file in record){
 setwd(cur.dir)
 
 save(functions, file = "functions.ssd")
-#functions

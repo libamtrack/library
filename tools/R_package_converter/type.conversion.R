@@ -26,12 +26,11 @@ conversion.c <- c("int*\t", "int*\t", "int*\t", "long*\t", "float*")
 conversion.R <- c("as.integer", "as.integer", "as.integer", "as.integer", "as.single")
 extension <- c("_long", "_long", "_long", "_long", "_double")
 
-conversion.table <- data.frame(	type = c(types, paste("const", types), paste(types,"*",sep = "")),
+conversion.table <- data.frame(	type = c(types, paste("const", types)),
 						conversion.c = c(paste(conversion.c, "\t", sep = ""),
-									 paste("const", conversion.c),
-									 paste(conversion.c)),
-						conversion.R = c(conversion.R, conversion.R, conversion.R),
-						extension = c(extension, extension, extension),
+									 paste("const", conversion.c)),
+						conversion.R = c(conversion.R, conversion.R),
+						extension = c(extension, extension),
 						stringsAsFactors = F
 					)
 
