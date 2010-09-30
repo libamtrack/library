@@ -164,6 +164,76 @@ void AT_gamma_response( const long  number_of_doses,
 
 
 /**
+ * TODO
+ */
+double AT_get_gamma_response_for_average_dose(  const long  number_of_bins,
+    const double   dose_Gy_bin_position[],
+    const double   dose_Gy_bin_width[],
+    const double   dose_bin_frequency[],
+    const long     gamma_model,
+    const double   gamma_parameter[],
+    const bool     lethal_events_mode);
+
+
+/**
+ * TODO
+ */
+void AT_get_response_distribution_from_dose_distribution(  const long  number_of_bins,
+    const double   dose_Gy_bin_position[],
+    const double   dose_bin_frequency[],
+    const long     gamma_model,
+    const double   gamma_parameter[],
+    const bool     lethal_events_mode,
+    double         response_bin_frequency[]);
+
+
+/**
+ * TODO
+ */
+double AT_get_ion_response_from_response_distribution(  const long  number_of_bins,
+	const double   dose_Gy_bin_width[],
+    const double   dose_bin_frequency[],
+    const double   ion_response_bin_frequency[]);
+
+
+/**
+ * TODO
+ */
+double AT_get_ion_response_from_dose_distribution(  const long  number_of_bins,
+	    const double   dose_Gy_bin_position[],
+	    const double   dose_Gy_bin_width[],
+	    const double   dose_bin_frequency[],
+	    const long     gamma_model,
+	    const double   gamma_parameter[],
+	    const bool     lethal_events_mode);
+
+
+/**
+ * TODO
+ */
+double AT_get_ion_efficiency_from_dose_distribution(  const long  number_of_bins,
+	    const double   dose_Gy_bin_position[],
+	    const double   dose_Gy_bin_width[],
+	    const double   dose_bin_frequency[],
+	    const long     gamma_model,
+	    const double   gamma_parameter[],
+	    const bool     lethal_events_mode);
+
+
+/**
+ * TODO
+ */
+double AT_get_ion_efficiency_from_response_distribution(  const long  number_of_bins,
+	    const double   dose_Gy_bin_position[],
+	    const double   dose_Gy_bin_width[],
+	    const double   dose_bin_frequency[],
+	    const double   ion_response_bin_frequency[],
+	    const long     gamma_model,
+	    const double   gamma_parameter[],
+	    const bool     lethal_events_mode);
+
+
+/**
  * Returns the detector / cell gamma response for a local dose distribution
  * according to the chosen gamma response model, used by response model
  * routines in AmTrack.c
@@ -194,5 +264,6 @@ void AT_get_gamma_response(  const long  number_of_bins,
     double*        S_HCP,
     double*        S_gamma,
     double*        efficiency);
+
 
 #endif // AT_GAMMARESPONSE_H_

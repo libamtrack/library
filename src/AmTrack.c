@@ -190,22 +190,45 @@ void AT_run_SPIFF_method(  const long  n,
   double*  S            =  (double*)calloc(n_bins_f_used, sizeof(double));
   double   S_HCP, S_gamma, efficiency;
 
-  AT_get_gamma_response(  n_bins_f_used,
-
+  AT_get_response_distribution_from_dose_distribution(  n_bins_f_used,
       f_d_Gy,
-      f_dd_Gy,
-
       f,
-      f0,
       gamma_model,
       gamma_parameters,
       lethal_events_mode,
-      // return
+      S);
 
-      S,
-      &S_HCP,
-      &S_gamma,
-      &efficiency);
+  S_HCP = AT_get_ion_response_from_response_distribution( n_bins_f_used,
+		  f_dd_Gy,
+		  f,
+		  S);
+
+  S_gamma = AT_get_gamma_response_for_average_dose( n_bins_f_used,
+		  f_d_Gy,
+		  f_dd_Gy,
+		  f,
+		  gamma_model,
+		  gamma_parameters,
+		  lethal_events_mode);
+
+  efficiency = S_HCP / S_gamma;
+
+//  AT_get_gamma_response(  n_bins_f_used,
+//
+//      f_d_Gy,
+//      f_dd_Gy,
+//
+//      f,
+//      f0,
+//      gamma_model,
+//      gamma_parameters,
+//      lethal_events_mode,
+//      // return
+//
+//      S,
+//      &S_HCP,
+//      &S_gamma,
+//      &efficiency);
 
   /* Get zero-dose reponse and its ln */
   double		s0 = 0.0, log_s0 = 0.0;
