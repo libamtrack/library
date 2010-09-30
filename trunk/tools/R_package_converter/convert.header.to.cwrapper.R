@@ -67,7 +67,7 @@ for(i in 1:length(functions)){
 	# conversion and allocation of input parameters
 	para <- functions[[i]]$parameter
 
-	input <- grepl("const", para$type, fixed = T)
+	input <- grepl("in", para$in.out)
 	vector <- (para$length != 1)
 
 	# create count variable i, if sum(vector) > 0
@@ -137,8 +137,11 @@ for(i in 1:length(functions)){
 			gsub("const ", "", para$type[nrow(para)]), ");", sep = ""))
 
 
+	output <- grepl("out", para$in.out)
+
+
 	body <- c(body, paste("\n//Results:"))
-	kk <-  which(!input & !vector)
+	kk <-  which(output & !vector)
 	if(length(kk) > 0){
 		for(j in kk){
 			body <- c(body, paste("  *", para$name[j],	" = (", 
@@ -150,7 +153,7 @@ for(i in 1:length(functions)){
 		}
 	}
 
-	ll <-  which(!input & vector)
+	ll <-  which(output & vector)
 	if(length(ll) > 0){
 		for(l in para.length){
 			kk <-  which(!input & vector & para$length == l)
