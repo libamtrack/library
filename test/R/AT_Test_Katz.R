@@ -1,7 +1,7 @@
 ################################################################################################
 # R test script for implemented electron range models
 ################################################################################################
-# Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+# Copyright 2006, 2010 The libamtrack team
 # 
 # This file is part of the AmTrack program (libamtrack.sourceforge.net).
 #
