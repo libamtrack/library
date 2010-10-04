@@ -317,7 +317,7 @@ void AT_run_IGK_method(  const long  n,
     for (i = 0; i < n; i++){
       fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
     }
-    AT_D_Gy(  n,
+    AT_dose_Gy_from_fluence_cm2(  n,
         E_MeV_u,
         particle_no,
         fluence_cm2,
@@ -617,7 +617,7 @@ void AT_run_SPISS_method(  const long  n,
     for (i = 0; i < n; i++){
       fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
     }
-    AT_D_Gy(  n,
+    AT_dose_Gy_from_fluence_cm2(  n,
         E_MeV_u,
         particle_no,
         fluence_cm2,
