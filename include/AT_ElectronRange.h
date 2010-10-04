@@ -80,7 +80,7 @@ static const AT_ER_data_struct AT_ER_Data = {
  * Returns name of the electron model from index
  *
  * @param[in]   ER_no    electron-range-model index
- * @param[out]  Er_name  string containing the electron-range model name
+ * @param[out]  ER_name  string containing the electron-range model name
  * @return      Status code
  */
 int  getERName(  const int ER_no,
@@ -182,7 +182,7 @@ inline void AT_ER_Tabata_constants(const double average_A,
  *
  * @param[in]  number_of_particles          number of particles in the incident field
  * @param[in]  E_MeV_u                      kinetic energy for particles in the given field (vector of length number_of_particles)
- * @param[in]  AT_material_no                  index for detector material
+ * @param[in]  material_no                  index for detector material
  * @param[in]  er_model                     index for electron-range model chosen
  * @param[out] max_electron_range_m         electron range (track diameter) in m  (vector of length number_of_particles)
  */
@@ -197,7 +197,7 @@ void AT_max_electron_ranges_m( const long number_of_particles ,
  * Returns the maximum electron range (track diameter) in m for given energy
  *
  * @param[in]  E_MeV_u                      kinetic energy for particles in the given field
- * @param[in]  AT_material_no                  index for detector material
+ * @param[in]  material_no                  index for detector material
  * @param[in]  er_model                     index for electron-range model chosen
  * @return                                  electron range (track diameter) in m
  */

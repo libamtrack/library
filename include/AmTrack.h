@@ -62,7 +62,7 @@
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
- * @param[in]  AT_material_no         index number for detector material
+ * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  rdd_model           index number for chosen radial dose distribution
  * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
@@ -121,7 +121,7 @@ void AT_run_SPIFF_method(  const long  n,
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
- * @param[in]  AT_material_no         index number for detector material
+ * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  RDD_model           index number for chosen radial dose distribution
  * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
@@ -171,7 +171,7 @@ void AT_run_IGK_method(  const long  n,
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
- * @param[in]  AT_material_no         index number for detector material
+ * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  RDD_model           index number for chosen radial dose distribution
  * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
@@ -215,6 +215,31 @@ void AT_run_SPISS_method(  const long  n,
     const long    importance_sampling,
     double        results[]);
 
+
+/**
+ * TODO
+ * @param number_of_field_components
+ * @param E_MeV_u
+ * @param fluence_cm2
+ * @param particle_no
+ * @param material_no
+ * @param rdd_model
+ * @param rdd_parameter
+ * @param er_model
+ * @param nX
+ * @param pixel_size_m
+ * @param N_runs
+ * @param N_repetitions
+ * @param number_of_bins
+ * @param dose_bin_centers_Gy
+ * @param dose_bin_width_Gy
+ * @param mean_d_check_Gy
+ * @param sd_d_check_Gy
+ * @param mean_zero_dose_fraction
+ * @param sd_zero_dose_fraction
+ * @param mean_dose_frequency_Gy
+ * @param sd_dose_frequency_Gy
+ */
 void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_components,
     const double   	E_MeV_u[],
     const double   	fluence_cm2[],

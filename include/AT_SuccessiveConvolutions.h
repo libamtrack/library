@@ -100,7 +100,7 @@ typedef struct{
  * @param[in]  n                   number of particle types in the mixed particle field
  * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
- * @param[in]  AT_material_no         index number for detector material
+ * @param[in]  material_no         index number for detector material
  * @param[in]  rdd_model           index number for chosen radial dose distribution
  * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @param[in]  er_model            index number for chosen electron-range model
@@ -125,7 +125,7 @@ long  AT_SC_get_f1_array_size(
  * @param[in]  E_MeV_u               energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no           type of the particles in the mixed particle field (array of size n)
  * @param[in]  fluence_cm2_or_dose_Gy           fluences for the given particles, doses in Gy if negative (array of size n)
- * @param[in]  AT_material_no           index number for detector material
+ * @param[in]  material_no           index number for detector material
  * @param[in]  rdd_model             index number for chosen radial dose distribution
  * @param[in]  rdd_parameters        parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @param[in]  er_model              index number for chosen electron-range model

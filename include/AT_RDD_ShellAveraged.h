@@ -62,17 +62,17 @@
  * Calculates average dose for "old" Katz RDD (derived from linear (on wmax) ER model).
  * Here averaging is done over a shell between radius r_1 and r_2
  *
- * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 D(r) 2 pi r dr
+ * Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * int_r1^r2 D(r) 2 pi r dr
  *
  * thus:
  *
- * Dav(r1,r2) = coeff / (pi r2^2 - pi r1^2)  *  \int_r1^r2 rmax/r * (rmax/r - 1.) 2 pi r dr
- * Dav(r1,r2) = 2 * coeff * rmax^2/ (r2^2 - r1^2)  *  \int_r1^r2 (1/r - 1/rmax) dr
- * Dav(r1,r2) = 2 * coeff / ((r2/rmax)^2 - (r1/rmax)^2) * \int_r1^r2 (1/r - 1/rmax) dr
+ * Dav(r1,r2) = coeff / (pi r2^2 - pi r1^2)  *  int_r1^r2 rmax/r * (rmax/r - 1.) 2 pi r dr
+ * Dav(r1,r2) = 2 * coeff * rmax^2/ (r2^2 - r1^2)  *  int_r1^r2 (1/r - 1/rmax) dr
+ * Dav(r1,r2) = 2 * coeff / ((r2/rmax)^2 - (r1/rmax)^2) * int_r1^r2 (1/r - 1/rmax) dr
  *
  * Let us calculate integral:
  *
- * \int_r1^r2 (1/r - 1/rmax) dr = log(r) - r/rmax |_r1^r2 = log(r2/r1) - (r2 - r1)/rmax
+ * int_r1^r2 (1/r - 1/rmax) dr = log(r) - r/rmax |_r1^r2 = log(r2/r1) - (r2 - r1)/rmax
  *
  * in other words:
  *
@@ -94,8 +94,8 @@ inline double   AT_RDD_Katz_LinearER_Daverage_Gy(  const double r1_m,
  * Calculates average dose kernel for "new" Katz RDD (derived from power-law (on wmax) ER model).
  * Here averaging is done over a shell between radius r_1 and r_2
  *
- * kernel = 2/(x2^2 - x1^2) * \int_x1^x2 1/x^2 * 1/alpha * (1 - x)^(1/alpha) x dx =
- *        = 2/(x2^2 - x1^2) * \int_x1^x2 1/x * 1/alpha * (1 - x)^(1/alpha) dx
+ * kernel = 2/(x2^2 - x1^2) * int_x1^x2 1/x^2 * 1/alpha * (1 - x)^(1/alpha) x dx =
+ *        = 2/(x2^2 - x1^2) * int_x1^x2 1/x * 1/alpha * (1 - x)^(1/alpha) dx
  *
  * now we use the information that:
  *
@@ -126,8 +126,8 @@ double   AT_RDD_Katz_PowerLawER_DaverageKernel(  const double x1,
  * Calculates approximate value of average dose kernel for "new" Katz RDD (derived from power-law (on wmax) ER model).
  * Here averaging is done over a shell between radius r_1 and r_2
  *
- * kernel = 2/(x2^2 - x1^2) * \int_x1^x2 1/x^2 * 1/alpha * (1 - x)^(1/alpha) x dx =
- *        = 2/(x2^2 - x1^2) * \int_x1^x2 1/x * 1/alpha * (1 - x)^(1/alpha) dx
+ * kernel = 2/(x2^2 - x1^2) * int_x1^x2 1/x^2 * 1/alpha * (1 - x)^(1/alpha) x dx =
+ *        = 2/(x2^2 - x1^2) * int_x1^x2 1/x * 1/alpha * (1 - x)^(1/alpha) dx
  *
  * now we use the series expansion:
  *
