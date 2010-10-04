@@ -154,7 +154,7 @@ inline double AT_RDD_Katz_coeff_Gy( const double Z_eff,
  * TODO
  * @param E_MeV_u
  * @param particle_no
- * @param AT_material_no
+ * @param material_no
  * @param er_model
  * @return
  */

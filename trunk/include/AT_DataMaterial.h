@@ -36,9 +36,9 @@
 #include "AT_NumericalRoutines.h"
 
 /**
- * @enum Materials code numbers
+ * @enum material_no Materials code numbers
  */
-enum AT_material_no{
+enum material_no{
   User_Defined_Material= 0, /**< To be defined by the user during runtime >**/
   Water_Liquid         = 1, /**< Liquid water */
   Aluminum_Oxide       = 2, /**< Aluminium oxide */
@@ -67,7 +67,8 @@ typedef struct {
 } AT_LET_data_single;
 
 /**
- * @struct AT_LET_data Stopping power data for a material
+ * @struct AT_LET_data
+ * Stopping power data for a material
  */
 typedef struct {
   long            n;                              /**< number of data tables in the structure */
@@ -135,7 +136,7 @@ typedef struct {
 
 static const AT_table_of_material_data_struct AT_Material_Data = {
     MATERIAL_DATA_N,
-    {  User_Defined_Material,    Water_Liquid,   Aluminum_Oxide,   Aluminum,     PMMA,      Alanine,     LiF,	Air},           // AT_material_no
+    {  User_Defined_Material,    Water_Liquid,   Aluminum_Oxide,   Aluminum,     PMMA,      Alanine,     LiF,	Air},           // material_no
     {  false,           true,           true,             true,         true,      true,        true,			true},          // ready
     {  0,               276,             106,              13,           223,       0,           185,			104},           // ICRU_ID
     {  0.0,             1.00,            3.97,             2.6989,       1.19,      1.42,        2.64,			1.20479E-03},   // density_g_cm3
@@ -153,7 +154,7 @@ static const AT_table_of_material_data_struct AT_Material_Data = {
  * looks like error in his article */
 
 /**
- * Get index of material in AT_Material_Data for given AT_material_no
+ * Get index of material in AT_Material_Data for given material_no
  * (currently for example material with number 2 has index 1)
  *
  * @param material_number  material number
@@ -164,7 +165,7 @@ long AT_material_index_from_material_number( const long material_number );
 
 /**
  * Get material name
- * @param[in]  AT_material_no
+ * @param[in]  material_no
  * @param[out] material_name
  */
 void AT_material_name_from_number( const long material_no,
@@ -180,64 +181,64 @@ long AT_material_number_from_name( const char* material_name );
 
 
 /**
- * Get material density [g/cm3] for single material with number AT_material_no
- * @param[in] AT_material_no
+ * Get material density [g/cm3] for single material with number material_no
+ * @param[in] material_no
  * @return    material density [g/cm3]
  */
 double AT_density_g_cm3_from_material_no( const long   material_no );
 
 
 /**
- * Get electron density [1/m3] for single material with number AT_material_no
- * @param[in] AT_material_no
+ * Get electron density [1/m3] for single material with number material_no
+ * @param[in] material_no
  * @return    electron density [1/m3]
  */
 double AT_electron_density_m3_from_material_no( const long   material_no );
 
 
 /**
- * Get mean ionization potential in eV for single material with number AT_material_no
- * @param[in] AT_material_no
+ * Get mean ionization potential in eV for single material with number material_no
+ * @param[in] material_no
  * @return    mean ionization potential [eV]
  */
 double AT_I_eV_from_material_no( const long   material_no );
 
 
 /**
- * Get fit parameter for power-law representation of stp.power/range/E-dependence for single material with number AT_material_no
- * @param[in] AT_material_no
+ * Get fit parameter for power-law representation of stp.power/range/E-dependence for single material with number material_no
+ * @param[in] material_no
  * @return    fit parameter for power-law representation of stp.power/range/E-dependence
  */
 double AT_alpha_g_cm2_MeV_from_material_no( const long   material_no );
 
 
 /**
- * Get fit parameter for power-law representation of stp.power/range/E-dependence for single material with number AT_material_no
- * @param[in] AT_material_no
+ * Get fit parameter for power-law representation of stp.power/range/E-dependence for single material with number material_no
+ * @param[in] material_no
  * @return    fit parameter for power-law representation of stp.power/range/E-dependence
  */
 double AT_p_MeV_from_material_no( const long   material_no );
 
 
 /**
- * Get fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni for single material with number AT_material_no
- * @param[in] AT_material_no
+ * Get fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni for single material with number material_no
+ * @param[in] material_no
  * @return    fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni
  */
 double AT_m_g_cm2_from_material_no( const long   material_no );
 
 
 /**
- * Get average mass number for single material with number AT_material_no
- * @param[in] AT_material_no
+ * Get average mass number for single material with number material_no
+ * @param[in] material_no
  * @return    average mass number
  */
 double AT_average_A_from_material_no( const long   material_no );
 
 
 /**
- * Get average atomic number for single material with number AT_material_no
- * @param[in] AT_material_no
+ * Get average atomic number for single material with number material_no
+ * @param[in] material_no
  * @return    average atomic number
  */
 double AT_average_Z_from_material_no( const long   material_no );
@@ -245,7 +246,7 @@ double AT_average_Z_from_material_no( const long   material_no );
 
 /**
  * Returns material data for single material
- * @param[in]  AT_material_no
+ * @param[in]  material_no
  * @param[out] density_g_cm3
  * @param[out] electron_density_m3
  * @param[out] I_eV
@@ -269,7 +270,7 @@ void AT_get_material_data(     const long  material_no,
 /**
  * Returns material data for list of materials
  * @param[in]   number_of_materials  numbers of materials the routine is called for (array of length number_of_materials)
- * @param[in]   AT_material_no          material indices (array of length number_of_materials)
+ * @param[in]   material_no          material indices (array of length number_of_materials)
  * @param[out]  density_g_cm3        material density in g/cm3 (array of length number_of_materials)
  * @param[out]  electron_density_m3  electron density in 1/m3 (array of length number_of_materials)\n
  *   electron_density = number_of_electron_per_molecule * avogadro_constant / molar_mass * 1m3 * density
@@ -284,13 +285,13 @@ void AT_get_material_data(     const long  material_no,
  *   @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
  * @param[out]  average_A            average mass number (array of length number_of_materials) \n
  *   let f_i be fraction by weight of the constituent element with atomic number Z_i and atomic weight A_i\n
- *   let us define average_Z/A = \sum_i f_i Z_i / A_i \n
+ *   let us define average_Z/A = sum_i f_i Z_i / A_i \n
  *   then we have: average_A = average_Z / (average_Z/A) \n
  *   for water (H20) we have: average_Z/A = (2/18) * (1/1) + (16/18)*(8/16) = 0.5555 \n
  *   average_A = 7.22 / 0.555 = 13
  * @param[out]  average_Z            average atomic number (array of length number_of_materials)\n
  *   let f_i be fraction by weight of the constituent element with atomic number Z_i and atomic weight A_i\n
- *   average_Z = \sum_i f_i Z_i \n
+ *   average_Z = sum_i f_i Z_i \n
  *   for water (H20) we have: average_Z = (2/18)*1 + (16/18)*8 = 7.22\n
  *   @see Tabata, T. (1972) Generalized semiempirical equations for the extrapolated range of electrons, Nucl. Instr and Meth. 103, 85-91.
  */

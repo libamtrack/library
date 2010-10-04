@@ -84,8 +84,7 @@ void AT_GSM_shoot_particles_on_grid( const long  number_of_field_components,
  * @param[in]  E_MeV_u                                   energy of particles in the mixed particle field (array of size number_of_field_components)
  * @param[in]  particle_no                               type of the particles in the mixed particle field (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2                               fluences for the given particles, doses in Gy if negative (array of size number_of_field_components)
- * @param[in]  AT_material_no                               index number for detector material
+ * @param[in]  material_no                               index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  rdd_model                                 index number for chosen radial dose distribution
  * @param[in]  rdd_parameter                             parameters for chosen radial dose distribution (array of size depending on chosen model)
@@ -180,7 +179,7 @@ void AT_GSM_calculate_local_response_grid( const long      nX,
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
- * @param[in]  AT_material_no         index number for detector material
+ * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  RDD_model           index number for chosen radial dose distribution
  * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
@@ -192,12 +191,9 @@ void AT_GSM_calculate_local_response_grid( const long      nX,
  * @see          AT_GammaResponse.h for definition
  * @param[in]  N_runs              (algorithm specific) number of runs within which track positions will be resampled
  * @param[in]  write_output        if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory
- * @param[in]  shrink_tails        (algorithm specific) if true, tails of the local dose distribution, contributing less than "shrink_tails_under" are cut
- * @param[in]  shrink_tails_under  (algorithm specific) limit for tail cutting in local dose distribution
- * @param[in]  adjust_N2           (algorithm specific) if true, "N2" will be increase if necessary at high fluence to ensure sufficient binning resolution
- * @param[in]  lethal_events_mode  (algorithm specific) if true, allows to do calculations for cell survival
  * @param[in]  nX                  (algorithm specific) number of voxels of the grid in x (and y as the grid is quadratic)
  * @param[in]  voxel_size_m        side length of a voxel in m
+ * @param[in]  lethal_events_mode  (algorithm specific) if true, allows to do calculations for cell survival
  * @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results\n
  *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
  *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm\n
