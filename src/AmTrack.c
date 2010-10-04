@@ -32,15 +32,6 @@
 #include "AmTrack.h"
 #include <math.h>
 
-void AT_PrintName(void){
-  printf("This is libamtrack.\n");
-}
-
-
-int AT_GetNumber(void){ // TODO to be removed
-  return 137;
-}
-
 void AT_run_SPIFF_method(  const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
