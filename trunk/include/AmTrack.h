@@ -54,18 +54,6 @@
 
 
 /**
-* Prints name for debugging
-*/
-void AT_PrintName(  void);
-
-
-/**
-* Dummy method, needs to be removed TODO
-*/
-int AT_GetNumber(void);
-
-
-/**
  * Computes HCP response and RE/RBE using compound Poison process and
  * successive convolutions (CPP_SC, the 'SPIFF' algorithm)
  *

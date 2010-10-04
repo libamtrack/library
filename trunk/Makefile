@@ -25,7 +25,7 @@ CFLAGS    = -Wall -c -O3 -fPIC
 LFLAGS    = -lm -lgsl -lgslcblas
 
 ifeq ($(OS),Linux)
-NAMELIB   = libamtrack.so
+NAMELIB   = lib/libamtrack.so
 DSEP      = /
 SRCDIR    = ./src
 INCLDIR   = ./include
@@ -34,7 +34,7 @@ GCC       = gcc
 GSLINCLUDE = "$(GSLPATH)/include"
 GSLLIB     = "$(GSLPATH)/lib"
 else
-NAMELIB    = libamtrack.dll
+NAMELIB    = lib\libamtrack.dll
 DSEP       = \\
 SRCDIR     = .\src
 INCLDIR    = .\include
@@ -56,19 +56,19 @@ all:$(LIBOBJS)
 		$(RMCMD) *.o
 
 UI:AT_UI.o $(NAMELIB)
-		$(GCC) -L$(GSLLIB) -L. AT_UI.o -o AT_UI.exe $(LFLAGS) -lamtrack
+		$(GCC) -L$(GSLLIB) -Llib AT_UI.o -o AT_UI.exe $(LFLAGS) -lamtrack
 		$(RMCMD) *.o
 
 test:AT_test.o $(NAMELIB)
-		$(GCC) -L$(GSLLIB) -L. AT_test.o -o AT_test.exe $(LFLAGS) -lamtrack 
+		$(GCC) -L$(GSLLIB) -Llib AT_test.o -o AT_test.exe $(LFLAGS) -lamtrack 
 		$(RMCMD) *.o
 
 test_GSM:AT_test_GSM.o $(NAMELIB)
-		$(GCC) -L$(GSLLIB) -L. AT_test_GSM.o -o AT_test_GSM.exe $(LFLAGS) -lamtrack 
+		$(GCC) -L$(GSLLIB) -Llib AT_test_GSM.o -o AT_test_GSM.exe $(LFLAGS) -lamtrack 
 		$(RMCMD) *.o
 
 test_IGK:AT_test_Katz.o $(NAMELIB)
-		$(GCC) -L$(GSLLIB) -L. AT_test_Katz.o -o AT_test_IGK.exe $(LFLAGS) -lamtrack
+		$(GCC) -L$(GSLLIB) -Llib AT_test_Katz.o -o AT_test_IGK.exe $(LFLAGS) -lamtrack
 		$(RMCMD) *.o
 
 clean:
