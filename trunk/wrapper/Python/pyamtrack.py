@@ -6,7 +6,7 @@
    =========
 
    Created on: 16.02.2010
-   Author: herrmann
+   Creator: herrmann
    
    Python class for interfacing AmTrack functions. 
    

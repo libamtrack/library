@@ -16,7 +16,7 @@
  *    AT_RDD_Simple.h
  *    ========
  *
- *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+ *    Copyright 2006, 2010 The libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *

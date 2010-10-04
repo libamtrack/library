@@ -1,9 +1,12 @@
 ################################################################################################
 # C wrapper generator
 ################################################################################################
-# Copyright 2006, 2009 Steffen Greilich / the libamtrack team
+# Copyright 2006, 2010 The libamtrack team
 # 
 # This file is part of the AmTrack program (libamtrack.sourceforge.net).
+#
+#    Created on: 13.09.2010
+#    Creator: kleinf
 #
 # AmTrack is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
