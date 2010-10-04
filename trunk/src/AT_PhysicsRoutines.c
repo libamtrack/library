@@ -253,7 +253,7 @@ void AT_dose_Gy_from_fluence_cm2(  const long  n,
   // Multiply by fluence, convert from MeV/g to Gy
   long  i;
   for (i = 0; i < n; i++){
-    dose_Gy[i] =  AT_dose_Gy_from_fluence_cm2_single(  E_MeV_u[i], particle_no[i], fluence_cm2[i], AT_material_no );
+    dose_Gy[i] =  AT_dose_Gy_from_fluence_cm2_single(  E_MeV_u[i], particle_no[i], fluence_cm2[i], material_no );
   }
 
 }
