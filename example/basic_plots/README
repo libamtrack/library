@@ -7,13 +7,13 @@ which could be later used in plots. It cover most basic units
 of libamtrack library: ER, RDD models and LET calculations.
 Source file AT_plot.c can be compiled and linked to libamtrack library
 to produce executable file AT_plot.exe. This executable file
-can be used to generate plots data, can be steered using comman line switches.
+can be used to generate plots data, can be steered using command line switches.
 
 Lines starting with "$" character are commands to be executed by reader of this tutorial.
 
 1. Compilation
 
-Our example assume that compiled library is in AT_Release folder. Compilation
+Our example assume that compiled library is in lib folder. Compilation
 is done using Makefile provided in current directory.
 First step is to adjust operating system (Linux or Windows) in the Makefile in current directory.
 
@@ -43,7 +43,7 @@ When you will have AT_plot.exe file and want to run it under Windows, copy to th
 directory as .exe file all libraries (3 dll files for GSL and libamtrack). 
 Under Linux, adjust LD_LIBRARY_PATH variable:
 
-$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../../AT_Release
+$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../../lib
 
 First let us try to run without any switches:
 

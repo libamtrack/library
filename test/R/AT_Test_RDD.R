@@ -25,7 +25,7 @@
 rm( list = ls() )
 
 # load libAmTrack library
-dyn.load("../../AT_Release/libamtrack.dll")
+dyn.load("../../lib/libamtrack.dll")
 
 # load wrapping scripts
 source("../../wrapper/R/AmTrack.R")

@@ -55,39 +55,9 @@ all:$(LIBOBJS)
 		$(GCC) -L$(GSLLIB) -shared $(LIBOBJS) -o $(NAMELIB) $(LFLAGS) 
 		$(RMCMD) *.o
 
-UI:AT_UI.o $(NAMELIB)
-		$(GCC) -L$(GSLLIB) -Llib AT_UI.o -o AT_UI.exe $(LFLAGS) -lamtrack
-		$(RMCMD) *.o
-
-test:AT_test.o $(NAMELIB)
-		$(GCC) -L$(GSLLIB) -Llib AT_test.o -o AT_test.exe $(LFLAGS) -lamtrack 
-		$(RMCMD) *.o
-
-test_GSM:AT_test_GSM.o $(NAMELIB)
-		$(GCC) -L$(GSLLIB) -Llib AT_test_GSM.o -o AT_test_GSM.exe $(LFLAGS) -lamtrack 
-		$(RMCMD) *.o
-
-test_IGK:AT_test_Katz.o $(NAMELIB)
-		$(GCC) -L$(GSLLIB) -Llib AT_test_Katz.o -o AT_test_IGK.exe $(LFLAGS) -lamtrack
-		$(RMCMD) *.o
-
 clean:
 		- $(RMCMD) *.o
 		- $(RMCMD) $(NAMELIB)
-		- $(RMCMD) AT_UI.exe
-		- $(RMCMD) AT_test.exe
 
 $(LIBOBJS):$(LIBCOBJS) $(LIBHOBJS)
 		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) $(LIBCOBJS)
-
-AT_UI.o:test$(DSEP)C$(DSEP)AT_UI.c 
-		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) test$(DSEP)C$(DSEP)AT_UI.c
-
-AT_test.o:test$(DSEP)C$(DSEP)AT_test.c 
-		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) test$(DSEP)C$(DSEP)AT_test.c
-
-AT_test_GSM.o:test$(DSEP)C$(DSEP)AT_test_GSM.c 
-		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) test$(DSEP)C$(DSEP)AT_test_GSM.c
-
-AT_test_Katz.o:test$(DSEP)C$(DSEP)AT_test_Katz.c 
-		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) test$(DSEP)C$(DSEP)AT_test_Katz.c
