@@ -28,6 +28,105 @@
  */
 #include "AT_Histograms.h"
 
+
+void AT_histo_bin_width(        const long number_of_bins,
+                                const double left_limits[],
+                                double bin_widths[])
+{
+  long i;
+  for (i = 0; i < number_of_bins - 1; i++){
+    bin_widths[i] = left_limits[i+1] - left_limits[i];
+  }
+}
+
+
+void AT_histo_midpoints(        const long number_of_bins,
+                                const double left_limits[],
+                                const long histo_type,
+                                double midpoints[]){
+  if (histo_type == AT_histo_linear){
+    AT_histo_arithmetic_midpoints( number_of_bins,
+                                   left_limits,
+                                   midpoints);
+  }else{
+    AT_histo_geometric_midpoints( number_of_bins,
+                                  left_limits,
+                                  midpoints);
+  }
+}
+
+
+void AT_histo_arithmetic_midpoints( const long number_of_bins,
+    const double left_limits[],
+    double midpoints[]){
+
+  long i;
+  for (i = 0; i < number_of_bins - 1; i++){
+    midpoints[i] = 0.5 * (left_limits[i+1] + left_limits[i]);
+  }
+}
+
+
+void AT_histo_geometric_midpoints( const long number_of_bins,
+    const double left_limits[],
+    double midpoints[]){
+
+  long i;
+  for (i = 0; i < number_of_bins - 1; i++){
+    midpoints[i] = sqrt(left_limits[i+1]*left_limits[i]);
+  }
+}
+
+
+void AT_histo_left_limits( const long number_of_bins,
+    const double midpoints[],
+    const long histo_type,
+    double left_limits[])
+{
+  if (histo_type == AT_histo_linear){
+    AT_histo_arithmetic_left_limits( number_of_bins,
+                                   midpoints,
+                                   left_limits);
+  }else{
+    AT_histo_geometric_left_limits( number_of_bins,
+        midpoints,
+        left_limits);
+  }
+}
+
+
+void AT_histo_arithmetic_left_limits( const long number_of_bins,
+    const double midpoints[],
+    double left_limits[])
+{
+  /* left_limits as arithmetic mean between midpoints */
+  long i;
+  for (i = 1; i < number_of_bins - 1; i++){
+    left_limits[i] = 0.5 * (midpoints[i-1] + midpoints[i]);
+  }
+  /* Assume that lowest and highest bin is symmetric around midpoints */
+  left_limits[0] = 2.0 * midpoints[0] - left_limits[1];
+  left_limits[number_of_bins - 1] = 2.0 * midpoints[number_of_bins - 2] - left_limits[number_of_bins - 2];
+}
+
+
+void AT_histo_geometric_left_limits( const long number_of_bins,
+    const double midpoints[],
+    double left_limits[])
+{
+  /* left_limits as geometric mean between midpoints */
+  long i;
+  for (i = 1; i < number_of_bins - 1; i++){
+    left_limits[i] = sqrt(midpoints[i-1] * midpoints[i]);
+  }
+  /* Assume that lowest and highest bin is symmetric around midpoints */
+  left_limits[0] = midpoints[0] * midpoints[0] / left_limits[1];
+  left_limits[number_of_bins - 1] = midpoints[number_of_bins - 2] * midpoints[number_of_bins - 2] / left_limits[number_of_bins - 2];
+}
+
+
+
+/* OLD ROUTINES, KEPT FOR COMPATIBILITY */
 double AT_histo_log_bin_width(	const long number_of_bins,
 								const double bin_centers[])
 {
