@@ -63,7 +63,7 @@ void AT_D_Gy_R( const int* n,
     fluence_cm2_double[i]               = (double)fluence_cm2[i];
   }
 
-  AT_D_Gy( 	n_long,
+  AT_dose_Gy_from_fluence_cm2( 	n_long,
 			E_MeV_u_double,
 			particle_no_long,
 			fluence_cm2_double,

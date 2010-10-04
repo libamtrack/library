@@ -448,7 +448,7 @@ double AT_KatzModel_single_field_survival(
 	/* some useful variables */
 	const double beta = AT_beta_from_E_single(E_MeV_u);   /* energy to beta */
 	const double zeff = AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);  /* (energy to beta) + particle_no -> effective charge */
-	double dose_Gy = AT_Dose_Gy_from_fluence_cm2_single( E_MeV_u, particle_no, fluence_cm2, material_no); /* fluence + LET -> dose */
+	double dose_Gy = AT_dose_Gy_from_fluence_cm2_single( E_MeV_u, particle_no, fluence_cm2, material_no); /* fluence + LET -> dose */
 
 	/* fraction of dose delivered in ion kill mode */
 	double ion_kill_mode_fraction = pow( 1 - exp( - gsl_pow_2(zeff/beta)/kappa), m_number_of_targets); /* here we use kappa and m */

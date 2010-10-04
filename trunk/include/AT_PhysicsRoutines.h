@@ -325,7 +325,7 @@ int AT_momentum_from_E_MeV_c_u( const long  n,
  * @see          AT_DataMaterial.h for definition
  * @return     D_Gy         dose in Gy
  */
-double AT_Dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
+double AT_dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
     const long    particle_no,
     const double  fluence_cm2,
     const long    material_no);
@@ -340,14 +340,14 @@ double AT_Dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
  * @see          AT_DataParticle.h for definition
  * @param[in]  AT_material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[out] D_Gy         vector of size n to be allocated by the user which will be used to return the results
+ * @param[out] dose_Gy         vector of size n to be allocated by the user which will be used to return the results
  */
-void AT_D_Gy(  const long  n,
+void AT_dose_Gy_from_fluence_cm2(  const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
     const long    material_no,
-    double        D_Gy[]);
+    double        dose_Gy[]);
 
 
 /**

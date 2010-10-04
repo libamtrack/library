@@ -231,7 +231,7 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
 }
 
 
-double AT_Dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
+double AT_dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
     const long    particle_no,
     const double  fluence_cm2,
     const long    material_no){
@@ -243,30 +243,18 @@ double AT_Dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
 }
 
 
-// TODO can it be renamed to AT_Dose_Gy_from_fluence_cm2 ?
-void AT_D_Gy(  const long  n,
+void AT_dose_Gy_from_fluence_cm2(  const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
     const long    material_no,
-    double        D_Gy[])
+    double        dose_Gy[])
 {
-  // Get LET (write already into D_Gy)
-  AT_LET_MeV_cm2_g(n,
-      E_MeV_u,
-      particle_no,
-      material_no,
-      D_Gy);
   // Multiply by fluence, convert from MeV/g to Gy
   long  i;
   for (i = 0; i < n; i++){
-    D_Gy[i] =  D_Gy[i] * fluence_cm2[i] * MeV_g_to_J_kg;
+    dose_Gy[i] =  AT_dose_Gy_from_fluence_cm2_single(  E_MeV_u[i], particle_no[i], fluence_cm2[i], AT_material_no );
   }
-
-  // TODO can't it be replaced by following code:
-  //for (i = 0; i < n; i++){
-  //  D_Gy[i] =  AT_Dose_Gy_from_fluence_cm2_single(  E_MeV_u[i], particle_no[i], fluence_cm2[i], AT_material_no );
-  //}
 
 }
 
@@ -423,7 +411,7 @@ double  AT_total_D_Gy( const long  n,
   double   total_dose_Gy    =  0.0;
   double*  single_doses_Gy  =  (double*)calloc(n, sizeof(double));
 
-  AT_D_Gy(      n,
+  AT_dose_Gy_from_fluence_cm2(      n,
       E_MeV_u,
       particle_no,
       fluence_cm2,
@@ -499,7 +487,7 @@ double AT_dose_weighted_E_MeV_u( const long   n,
 
   double*  single_doses_Gy        =  (double*)calloc(n, sizeof(double));
 
-  AT_D_Gy(      n,
+  AT_dose_Gy_from_fluence_cm2(      n,
       E_MeV_u,
       particle_no,
       fluence_cm2,
@@ -575,7 +563,7 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
       material_no,
       single_LETs_MeV_cm2_g);
 
-  AT_D_Gy(      n,
+  AT_dose_Gy_from_fluence_cm2(      n,
       E_MeV_u,
       particle_no,
       fluence_cm2,
