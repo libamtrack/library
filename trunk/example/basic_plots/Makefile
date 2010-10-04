@@ -26,7 +26,7 @@ LFLAGS    = -lm -lgsl -lgslcblas
 
 ifeq ($(OS),Linux)
 NAMELIB   = libamtrack.so
-LIBDIR    = ../../AT_Release
+LIBDIR    = ../../lib
 DSEP      = /
 INCLDIR   = ../../include
 RMCMD     = rm
@@ -35,7 +35,7 @@ GSLINCLUDE = "$(GSLPATH)/include"
 GSLLIB     = "$(GSLPATH)/lib"
 else
 NAMELIB    = libamtrack.dll
-LIBDIR    = ..\..\AT_Release
+LIBDIR    = ..\..\lib
 DSEP       = \\
 INCLDIR    = ..\..\include
 RMCMD      = del
