@@ -171,7 +171,7 @@ public class NewSwingApp extends javax.swing.JFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				int res = example.AT_GetNumber();
+				int res = 137;
 				NewSwingApp inst = new NewSwingApp(Integer.toString(res));
 				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
