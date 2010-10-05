@@ -2,8 +2,7 @@
 #define AT_WRAPPER_R_H_
 
 /**
- * @file
- * @brief Wrapper functions
+ * @brief R Wrapper functions
  */
 
 /*

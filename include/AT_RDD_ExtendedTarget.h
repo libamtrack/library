@@ -2,8 +2,7 @@
 #define AT_RDD_EXTENDEDTARGET_H_
 
 /**
- * @file
- * @brief Extended Target RDDs
+ * @brief
  * File contains implementation of RDD
  * averaged over finite size, circular target of radius a0.
  * Here also inverse RDD (radius as function of dose) are implemented.

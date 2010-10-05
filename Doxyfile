@@ -77,13 +77,13 @@ QUIET = NO
 WARNINGS = YES
 WARN_IF_UNDOCUMENTED = YES
 WARN_IF_DOC_ERROR = YES
-WARN_NO_PARAMDOC = NO
+WARN_NO_PARAMDOC = YES
 WARN_FORMAT = "$file:$line: $text"
 WARN_LOGFILE = 
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT = .
+INPUT = include src 
 INPUT_ENCODING = UTF-8
 FILE_PATTERNS = *.c *.cc *.cxx *.cpp *.c++ *.d *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh *.hxx *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.dox *.py *.f90 *.f *.vhd *.vhdl *.C *.CC *.C++ *.II *.I++ *.H *.HH *.H++ *.CS *.PHP *.PHP3 *.M *.MM *.PY *.F90 *.F *.VHD *.VHDL
 RECURSIVE = YES
@@ -94,7 +94,7 @@ EXCLUDE_SYMBOLS =
 EXAMPLE_PATH = 
 EXAMPLE_PATTERNS = *
 EXAMPLE_RECURSIVE = NO
-IMAGE_PATH = docs\manual\pictures 
+IMAGE_PATH = docs\manual\pictures
 INPUT_FILTER = 
 FILTER_PATTERNS = 
 FILTER_SOURCE_FILES = NO
@@ -217,7 +217,7 @@ PERL_PATH = /usr/bin/perl
 CLASS_DIAGRAMS = NO
 MSCGEN_PATH = 
 HIDE_UNDOC_RELATIONS = NO
-HAVE_DOT = NO
+HAVE_DOT = YES
 DOT_FONTNAME = FreeSans
 DOT_FONTPATH = 
 CLASS_GRAPH = YES
