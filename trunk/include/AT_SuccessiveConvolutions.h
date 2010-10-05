@@ -2,7 +2,6 @@
 #define AT_SUCCESSIVECONVOLUTIONS_H_
 
 /**
- * @file
  * @brief Successive Convolution algorithm
  */
 
@@ -51,7 +50,7 @@ typedef struct{
   double   U;                           /**< Logarithmic stepwith corresponding to N2, U = ln(2)/N2 */
 
   double   X;                           /**< seem to not be used, TODO remove */
-  double   FINAL;                       /**< Final mean impact number * <d> from single impact distribution */
+  double   FINAL;                       /**< Final mean impact number * @<d@> from single impact distribution */
 
   double   CN;                          /**< Number of contributing tracks for linearized f_start, corresp. to u_start */
   long     N1;                          /**< Current convolution number */
@@ -102,7 +101,7 @@ typedef struct{
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @param[in]  material_no         index number for detector material
  * @param[in]  rdd_model           index number for chosen radial dose distribution
- * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  rdd_parameter       parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @param[in]  er_model            index number for chosen electron-range model
  * @param[in]  N2                  number of bins per factor of two in local dose array
  * @return n_bins_f1           number of bins to hold the f1 distribution
@@ -127,7 +126,7 @@ long  AT_SC_get_f1_array_size(
  * @param[in]  fluence_cm2_or_dose_Gy           fluences for the given particles, doses in Gy if negative (array of size n)
  * @param[in]  material_no           index number for detector material
  * @param[in]  rdd_model             index number for chosen radial dose distribution
- * @param[in]  rdd_parameters        parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  rdd_parameter         parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @param[in]  er_model              index number for chosen electron-range model
  * @param[in]  N2                    number of bins per factor of two in local dose array
  * @param[in]  f1_parameters         array of size n * 8 with n field component characteristics (from AT_SC_get_f1_array_size)
@@ -208,7 +207,7 @@ void  AT_SC_get_f_start(  const long    n_bins_f1,
  * Routine to perform the convolutions from initial linearized local dose distribution f_start to resulting f
  * as described by Kellerer, 1969. This is a to most extend a reimplementation of Kellerer's original FORTRAN IV code.
  * Usually step 5 of the CPP-SC method
- * @param[in]      u_start             value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from AT_SC_get_f_array_size)
+ * @param[in]      u                   value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from AT_SC_get_f_array_size)
  * @param[in]      n_bins_f            number of bins holding the resulting f local dose distribution (from AT_SC_get_f_array_size)
  * @param[in,out]  N2                  number of bins per factor of two in local dose array f_start, will return new value in case it was adjusted by the routine (higher resolution in case of high fluences)
  * @param[in,out]  n_bins_f_used       in: number of bins used for f_start, \n
@@ -221,9 +220,9 @@ void  AT_SC_get_f_start(  const long    n_bins_f1,
  * @param[out]     f0                  zero-dose f value (as bins are log this has to be separated)
  * @param[out]     fdd                 frequency:          H * DE        (f * dd), size n_bins_f, used: n_bins_f_used
  * @param[out]     dfdd                dose contribution:  H * E * DE    (f * d * dd), size n_bins_f, used: n_bins_f_used
- * @param[out]     d                   first moment:       (<d>)         provides check on convolution quality
+ * @param[out]     d                   first moment:       (@<d@>)         provides check on convolution quality
  * @param[in]      write_output        if true, a very verbose log file will be written ("SuccessiveConvolutions.log") with results from each convolution
- * @param[in]      shrink_tails        if true, the upper and lower tail of f will be cut after every convolution (bins that contribute less than "shrink_tails_under" to the first moment <d>)
+ * @param[in]      shrink_tails        if true, the upper and lower tail of f will be cut after every convolution (bins that contribute less than "shrink_tails_under" to the first moment @<d@>)
  * @param[in]      shrink_tails_under  cut threshold for tails
  * @param[in]      adjust_N2           if true, N2 (i.e. the bin density) can be adjusted. This can be necessary esp. for high doses / fluences where f gets very narrow
  */
@@ -288,7 +287,7 @@ AT_aKList  AT_SC_ZERO(AT_aKList theKList);
 
 
 /**
- * Cuts tails of distribution that contribute less that shrink_tails_under to <f>
+ * Cuts tails of distribution that contribute less that shrink_tails_under to @<f@>
  * @param theKList
  * @return
  */

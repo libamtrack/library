@@ -2,7 +2,6 @@
 #define AT_RDD_SIMPLE_H_
 
 /**
- * @file
  * @brief Radial Dose Distribution models, mostly point-like.
  * Radial Dose Distribution describes dose deposition around
  * particle track: dose D in point as a function of distance r.
@@ -138,7 +137,7 @@ static const double AT_Katz_C1_J_m2 = \
  *
  * @param[in] Z_eff                    effective ion charge Zeff
  * @param[in] beta                     relative ion speed beta = v/c
- * @param[in] material_density_kg_m3   material density rho [kg/m^3]
+ * @param[in] density_kg_m3   material density rho [kg/m^3]
  * @param[in] electron_density_m3      electron density of given material [1/m^3]
  * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
  * @return coeff [Gy]                  calculated coefficient
@@ -370,6 +369,7 @@ static const double AT_RDD_Cucinotta_C_dm_wr  =  0.5 * GSL_CONST_MKSA_PLANCKS_CO
  * @param[in] r_m                      distance [m]
  * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
  * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] C_norm                   TODO
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return Dexc(r) [Gy]
  */
@@ -393,6 +393,7 @@ double   AT_RDD_Cucinotta_Dexc_Gy( const double r_m,
  * @param[in] r_min_m                  minimum cut-off [m]
  * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
  * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] C_norm                   TODO
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy]
  */

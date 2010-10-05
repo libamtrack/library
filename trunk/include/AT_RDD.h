@@ -2,7 +2,6 @@
 #define AT_RDD_H_
 
 /**
- * @file
  * @brief Radial Dose Distribution models
  */
 
@@ -138,8 +137,8 @@ long AT_RDD_number_from_name( const char* RDD_name );
 /**
  * Returns number of parameters of the radial dose distribution model from model number
  *
- * @param[in]   RDD_no   radial dose distribution model number
- * return                number of RDD parameters
+ * @param[in]   RDD_model   radial dose distribution model number
+ * return                   number of RDD parameters
  */
 int AT_RDD_number_of_parameters( const long RDD_model);
 
@@ -299,14 +298,14 @@ double AT_RDD_d_max_Gy(
  * @param[in]  rdd_model             Radial Dose Distribution model code number
  * @param[in]  rdd_parameter         Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @param[in]  er_model              delta electron range model code number
- * @param[out] f1_parameters\n
- *     0 - LET_MeV_cm2_g \n
- *     1 - r_min_m \n
- *     2 - r_max_m \n
- *     3 - d_min_Gy \n
- *     4 - d_max_Gy \n
- *     5 - normalization constant [Gy] \n
- *     6 - single_impact_fluence_cm2 \n
+ * @param[out] f1_parameters <br>
+ *     0 - LET_MeV_cm2_g <br>
+ *     1 - r_min_m <br>
+ *     2 - r_max_m <br>
+ *     3 - d_min_Gy <br>
+ *     4 - d_max_Gy <br>
+ *     5 - normalization constant [Gy] <br>
+ *     6 - single_impact_fluence_cm2 <br>
  *     7 - single_impact_dose_Gy
  */
 void AT_RDD_f1_parameters_single_field(
