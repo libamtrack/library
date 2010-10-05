@@ -31,7 +31,8 @@
 
 #include "AT_RDD.h"
 
-long AT_RDD_index_from_material_number( const long RDD_number ){
+
+long AT_RDD_index_from_RDD_number( const long RDD_number ){
   long  index           =  -1;
   long  number_of_RDDs  =  1;
   find_elements_int(  &RDD_number,
@@ -44,7 +45,7 @@ long AT_RDD_index_from_material_number( const long RDD_number ){
 
 
 int AT_RDD_name_from_number(const long RDD_no, char* RDD_name){
-  long  index = AT_RDD_index_from_material_number( RDD_no );
+  long  index = AT_RDD_index_from_RDD_number( RDD_no );
 
   if( index != -1){
     strcpy(RDD_name, AT_RDD_Data.RDD_name[index]);
@@ -76,7 +77,7 @@ long AT_RDD_number_from_name(const char* RDD_name){
 
 
 int AT_RDD_number_of_parameters( const long RDD_model){
-  long  index = AT_RDD_index_from_material_number( RDD_model );
+  long  index = AT_RDD_index_from_RDD_number( RDD_model );
   if( index == -1){
     printf("RDD no %ld not found\n", RDD_model);
     return 0;

@@ -75,10 +75,16 @@ enum RDDModels {
  */
 #define RDD_MAX_NUMBER_OF_PARAMETERS    3
 
-#define AT_SC_F1_PARAMETERS_SINGLE_LENGTH 8     /**< Length of the single particle component characteristics, length of f1_parameters array is AT_SC_F1_PARAMETERS_SINGLE_LENGTH * number of particle components in the field */
+
+/**
+ * Length of the single particle component characteristics,
+ * length of f1_parameters array is AT_SC_F1_PARAMETERS_SINGLE_LENGTH * number of particle components in the field
+ */
+#define AT_SC_F1_PARAMETERS_SINGLE_LENGTH 8
 
 
 /**
+ * @struct AT_rdd_data_struct
  * RDD data
  */
 typedef struct {
@@ -111,7 +117,7 @@ static const AT_rdd_data_struct AT_RDD_Data = {
  * @param RDD_number  RDD number
  * @return            RDD index in AT_RDD_Data table
  */
-long AT_RDD_index_from_material_number( const long RDD_number );
+long AT_RDD_index_from_RDD_number( const long RDD_number );
 
 
 /**
@@ -199,9 +205,9 @@ int AT_r_RDD_m  ( const long  n,
 
 /**
  * Returns lower integration limit for given RDD (or 0.0 if not used).
- * @param max_electron_range_m           delta electron maximum range [m]
- * @param rdd_model                      Radial Dose Distribution model code number
- * @param rdd_parameter                  Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
+ * @param[in] max_electron_range_m           delta electron maximum range [m]
+ * @param[in] rdd_model                      Radial Dose Distribution model code number
+ * @param[in] rdd_parameter                  Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @return rmin - lower integration limit for given RDD [m]
  */
 double AT_RDD_r_min_m(
@@ -212,9 +218,9 @@ double AT_RDD_r_min_m(
 
 /**
  * Returns target size (core size) for given RDD (or 0.0 if not used).
- * @param max_electron_range_m           delta electron maximum range [m]
- * @param rdd_model                      Radial Dose Distribution model code number
- * @param rdd_parameter                  Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
+ * @param[in] max_electron_range_m           delta electron maximum range [m]
+ * @param[in] rdd_model                      Radial Dose Distribution model code number
+ * @param[in] rdd_parameter                  Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
  * @return a0 - target size (core size) for given RDD [m]
  */
 double AT_RDD_a0_m(
@@ -225,14 +231,14 @@ double AT_RDD_a0_m(
 
 /**
  * Returns precalculated constant for given RDD: normalization factor or some coefficient
- * @param max_electron_range_m           delta electron maximum range [m]
- * @param LET_MeV_cm2_g
- * @param E_MeV_u                        particle (ion) energy per nucleon [MeV/u]
- * @param particle_no                    particle code number
- * @param material_no                    material code number
- * @param rdd_model                      Radial Dose Distribution model code number
- * @param rdd_parameter                  Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
- * @param er_model                       delta electron range model code number
+ * @param[in] max_electron_range_m           delta electron maximum range [m]
+ * @param[in] LET_MeV_cm2_g
+ * @param[in] E_MeV_u                        particle (ion) energy per nucleon [MeV/u]
+ * @param[in] particle_no                    particle code number
+ * @param[in] material_no                    material code number
+ * @param[in] rdd_model                      Radial Dose Distribution model code number
+ * @param[in] rdd_parameter                  Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
+ * @param[in] er_model                       delta electron range model code number
  * @return precalculated constant for given RDD [Gy]
  */
 double AT_RDD_precalculated_constant_Gy(
@@ -251,13 +257,13 @@ double AT_RDD_precalculated_constant_Gy(
  * (in case of RDDs which gives zero-dose at maximum range (rmax))
  * or value of RDD is calculated at rmax and it is taken as Dmax (if higher than user
  * provided value).
- * @param E_MeV_u                         particle (ion) energy per nucleon [MeV/u]
- * @param particle_no                     particle code number
- * @param material_no                     material code number
- * @param rdd_model                       Radial Dose Distribution model code number
- * @param rdd_parameter                   Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
- * @param er_model                        delta electron range model code number
- * @param precalculated_constant_Gy
+ * @param[in] E_MeV_u                         particle (ion) energy per nucleon [MeV/u]
+ * @param[in] particle_no                     particle code number
+ * @param[in] material_no                     material code number
+ * @param[in] rdd_model                       Radial Dose Distribution model code number
+ * @param[in] rdd_parameter                   Radial Dose Distribution model parameters vector  (array of size depending on chosen model, maximum length 3)
+ * @param[in] er_model                        delta electron range model code number
+ * @param[in] precalculated_constant_Gy
  * @return miminal dose for given RDD [Gy]
  */
 double AT_RDD_d_min_Gy(
