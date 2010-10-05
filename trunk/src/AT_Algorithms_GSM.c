@@ -229,7 +229,7 @@ void AT_GSM_calculate_histogram_from_grid( const long     nX,
         (*zero_fraction) += 1.0;
       }
       else{
-        bin_no = AT_histo_bin_no(	number_of_bins,
+        bin_no = AT_histoOld_bin_no(	number_of_bins,
 									bin_centers_Gy,
 									grid[i][j]);
         frequency[bin_no]  += 1.0;

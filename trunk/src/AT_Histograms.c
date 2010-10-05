@@ -28,160 +28,323 @@
  */
 #include "AT_Histograms.h"
 
-
-void AT_histo_bin_width(        const long number_of_bins,
-                                const double left_limits[],
-                                double bin_widths[])
-{
-  long i;
-  for (i = 0; i < number_of_bins - 1; i++){
-    bin_widths[i] = left_limits[i+1] - left_limits[i];
-  }
-}
-
-
-void AT_histo_midpoints(        const long number_of_bins,
-                                const double left_limits[],
-                                const long histo_type,
-                                double midpoints[]){
-  if (histo_type == AT_histo_linear){
-    AT_histo_arithmetic_midpoints( number_of_bins,
-                                   left_limits,
-                                   midpoints);
+///////////////////////////////// Left limit routines ////////////////////////////////////
+double AT_histo_linear_left_limit(      const long number_of_bins,
+                                const double lowest_left_limit,
+                                const double step,
+                                const long bin_no){
+  if((bin_no < 0) | (bin_no > number_of_bins)){
+    return(NAN);
   }else{
-    AT_histo_geometric_midpoints( number_of_bins,
-                                  left_limits,
-                                  midpoints);
+    return(lowest_left_limit + bin_no * step);
   }
 }
 
 
-void AT_histo_arithmetic_midpoints( const long number_of_bins,
-    const double left_limits[],
-    double midpoints[]){
-
-  long i;
-  for (i = 0; i < number_of_bins - 1; i++){
-    midpoints[i] = 0.5 * (left_limits[i+1] + left_limits[i]);
+double AT_histo_logarithmic_left_limit(      const long number_of_bins,
+                                const double lowest_left_limit,
+                                const double step,
+                                const long bin_no){
+  if((bin_no < 0) | (bin_no > number_of_bins)){
+    return(NAN);
+  }else{
+    return(lowest_left_limit * (bin_no + 1.0) * step);
   }
 }
 
 
-void AT_histo_geometric_midpoints( const long number_of_bins,
-    const double left_limits[],
-    double midpoints[]){
-
-  long i;
-  for (i = 0; i < number_of_bins - 1; i++){
-    midpoints[i] = sqrt(left_limits[i+1]*left_limits[i]);
+double AT_histo_left_limit( const long number_of_bins,
+    const double lowest_left_limit,
+    const double step,
+    const long histo_type,
+    const long bin_no)
+{
+  if (histo_type == AT_histo_linear){
+    return(AT_histo_linear_left_limit( number_of_bins,
+                                   lowest_left_limit,
+                                   step,
+                                   bin_no));
+  }else{
+    return(AT_histo_logarithmic_left_limit( number_of_bins,
+                                   lowest_left_limit,
+                                   step,
+                                   bin_no));
   }
 }
-
 
 void AT_histo_left_limits( const long number_of_bins,
-    const double midpoints[],
+    const double lowest_left_limit,
+    const double step,
     const long histo_type,
     double left_limits[])
 {
+  long bin_no;
+  for (bin_no = 0; bin_no < number_of_bins + 1; bin_no++){
+    left_limits[bin_no] = AT_histo_left_limit( number_of_bins,
+                                          lowest_left_limit,
+                                          step,
+                                          histo_type,
+                                          bin_no);
+  }
+}
+
+///////////////////////////////// Bin widths routines ////////////////////////////////////
+double AT_histo_linear_bin_width(      const long number_of_bins,
+                                const double lowest_left_limit,
+                                const double step,
+                                const long bin_no)
+{
+  return(step);
+}
+
+double AT_histo_logarithmic_bin_width(      const long number_of_bins,
+                                const double lowest_left_limit,
+                                const double step,
+                                const long bin_no)
+{
+  return(       AT_histo_logarithmic_left_limit(       number_of_bins,
+                                          lowest_left_limit,
+                                          step,
+                                          bin_no + 1) -
+                AT_histo_logarithmic_left_limit(       number_of_bins,
+                                          lowest_left_limit,
+                                          step,
+                                          bin_no));
+}
+
+double AT_histo_bin_width(      const long number_of_bins,
+                                const double lowest_left_limit,
+                                const double step,
+                                const long histo_type,
+                                const long bin_no){
   if (histo_type == AT_histo_linear){
-    AT_histo_arithmetic_left_limits( number_of_bins,
-                                   midpoints,
-                                   left_limits);
+    return(AT_histo_linear_bin_width( number_of_bins,
+                                   lowest_left_limit,
+                                   step,
+                                   bin_no));
   }else{
-    AT_histo_geometric_left_limits( number_of_bins,
-        midpoints,
-        left_limits);
+    return(AT_histo_logarithmic_bin_width( number_of_bins,
+                                   lowest_left_limit,
+                                   step,
+                                   bin_no));
   }
 }
 
-
-void AT_histo_arithmetic_left_limits( const long number_of_bins,
-    const double midpoints[],
-    double left_limits[])
+void AT_histo_bin_widths( const long number_of_bins,
+    const double lowest_left_limit,
+    const double step,
+    const long histo_type,
+    double bin_widths[])
 {
-  /* left_limits as arithmetic mean between midpoints */
-  long i;
-  for (i = 1; i < number_of_bins - 1; i++){
-    left_limits[i] = 0.5 * (midpoints[i-1] + midpoints[i]);
+  long bin_no;
+  for (bin_no = 0; bin_no < number_of_bins; bin_no++){
+    bin_widths[bin_no] = AT_histo_bin_width( number_of_bins,
+                                          lowest_left_limit,
+                                          step,
+                                          histo_type,
+                                          bin_no);
   }
-  /* Assume that lowest and highest bin is symmetric around midpoints */
-  left_limits[0] = 2.0 * midpoints[0] - left_limits[1];
-  left_limits[number_of_bins - 1] = 2.0 * midpoints[number_of_bins - 2] - left_limits[number_of_bins - 2];
 }
 
-
-void AT_histo_geometric_left_limits( const long number_of_bins,
-    const double midpoints[],
-    double left_limits[])
+///////////////////////////////// Midpoint routines ////////////////////////////////////
+double AT_histo_linear_midpoint(      const long number_of_bins,
+                                const double lowest_left_limit,
+                                const double step,
+                                const long bin_no)
 {
-  /* left_limits as geometric mean between midpoints */
-  long i;
-  for (i = 1; i < number_of_bins - 1; i++){
-    left_limits[i] = sqrt(midpoints[i-1] * midpoints[i]);
+  return(AT_histo_linear_left_limit( number_of_bins,
+                                      lowest_left_limit,
+                                      step,
+                                      bin_no) + 0.5 * step);
+}
+
+double AT_histo_logarithmic_midpoint(      const long number_of_bins,
+                                const double lowest_left_limit,
+                                const double step,
+                                const long bin_no)
+{
+  return(       sqrt(AT_histo_logarithmic_left_limit(       number_of_bins,
+                                          lowest_left_limit,
+                                          step,
+                                          bin_no + 1) *
+                AT_histo_logarithmic_left_limit(       number_of_bins,
+                                          lowest_left_limit,
+                                          step,
+                                          bin_no)));
+}
+
+double AT_histo_midpoint(      const long number_of_bins,
+                                const double lowest_left_limit,
+                                const double step,
+                                const long histo_type,
+                                const long bin_no){
+  if (histo_type == AT_histo_linear){
+    return(AT_histo_linear_midpoint( number_of_bins,
+                                   lowest_left_limit,
+                                   step,
+                                   bin_no));
+  }else{
+    return(AT_histo_logarithmic_midpoint( number_of_bins,
+                                   lowest_left_limit,
+                                   step,
+                                   bin_no));
   }
-  /* Assume that lowest and highest bin is symmetric around midpoints */
-  left_limits[0] = midpoints[0] * midpoints[0] / left_limits[1];
-  left_limits[number_of_bins - 1] = midpoints[number_of_bins - 2] * midpoints[number_of_bins - 2] / left_limits[number_of_bins - 2];
+}
+
+void AT_histo_midpoints( const long number_of_bins,
+    const double lowest_left_limit,
+    const double step,
+    const long histo_type,
+    double midpoints[])
+{
+  long bin_no;
+  for (bin_no = 0; bin_no < number_of_bins; bin_no++){
+    midpoints[bin_no] = AT_histo_midpoint( number_of_bins,
+                                          lowest_left_limit,
+                                          step,
+                                          histo_type,
+                                          bin_no);
+  }
+}
+
+///////////////////////////////// Access routines ////////////////////////////////////
+long AT_histo_linear_bin_no(      const long number_of_bins,
+                                const double lowest_left_limit,
+                                const double step,
+                                const double value)
+{
+  double difference = value - lowest_left_limit;
+  if (difference < 0){
+    return (-1);
+  }
+  long bin_no = floor(difference / step);
+
+  if (bin_no > number_of_bins - 1){
+    return(-2);
+  }
+
+  return(bin_no);
 }
 
 
+long AT_histo_logarithmic_bin_no(      const long number_of_bins,
+                                const double lowest_left_limit,
+                                const double step,
+                                const double value)
+{
+  double factor = value / lowest_left_limit;
+  if (factor < 1.0){
+    return (-1);
+  }
+  long bin_no = floor(log10(factor) - log10(step));
+
+  if (bin_no > number_of_bins - 1){
+    return(-2);
+  }
+
+  return(bin_no);
+}
+
+
+long AT_histo_bin_no(      const long number_of_bins,
+    const double lowest_left_limit,
+    const double step,
+    const long histo_type,
+    const double value){
+  if (histo_type == AT_histo_linear){
+    return(AT_histo_linear_bin_no( number_of_bins,
+                                   lowest_left_limit,
+                                   step,
+                                   value));
+  }else{
+    return(AT_histo_logarithmic_bin_no( number_of_bins,
+                                   lowest_left_limit,
+                                   step,
+                                   value));
+  }
+}
+
+void AT_histo_add(      const long number_of_bins,
+    const double lowest_left_limit,
+    const double step,
+    const long histo_type,
+    const double value,
+    const double weight,
+    double frequency[])
+{
+  long bin_no;
+  if (histo_type == AT_histo_linear){
+    bin_no = AT_histo_linear_bin_no( number_of_bins,
+                                   lowest_left_limit,
+                                   step,
+                                   value);
+  }else{
+    bin_no = AT_histo_logarithmic_bin_no( number_of_bins,
+                                   lowest_left_limit,
+                                   step,
+                                   value);
+  }
+  if(bin_no > 0){
+    frequency[bin_no] += weight;
+  }
+}
 
 /* OLD ROUTINES, KEPT FOR COMPATIBILITY */
-double AT_histo_log_bin_width(	const long number_of_bins,
+double AT_histoOld_log_bin_width(	const long number_of_bins,
 								const double bin_centers[])
 {
 	return(log(bin_centers[number_of_bins-1]) - log(bin_centers[0]))/(number_of_bins-1.);
 }
 
-double AT_histo_lower_bin_limit(const long number_of_bins,
+double AT_histoOld_lower_bin_limit(const long number_of_bins,
 								const double bin_centers[],
 								const long bin_no)
 {
-	return(exp(log(bin_centers[bin_no]) - 0.5 * AT_histo_log_bin_width(	number_of_bins,
+	return(exp(log(bin_centers[bin_no]) - 0.5 * AT_histoOld_log_bin_width(	number_of_bins,
 																		bin_centers)));
 }
 
-double AT_histo_upper_bin_limit(const long number_of_bins,
+double AT_histoOld_upper_bin_limit(const long number_of_bins,
 								const double bin_centers[],
 								const long bin_no)
 {
-	return(exp(log(bin_centers[bin_no]) + 0.5 * AT_histo_log_bin_width(	number_of_bins,
+	return(exp(log(bin_centers[bin_no]) + 0.5 * AT_histoOld_log_bin_width(	number_of_bins,
 																		bin_centers)));
 }
 
-double AT_histo_get_bin_width(	const long number_of_bins,
+double AT_histoOld_get_bin_width(	const long number_of_bins,
 								const double bin_centers[],
 								const long bin_no)
 {
-	double lower_limit		=	AT_histo_lower_bin_limit(	number_of_bins,
+	double lower_limit		=	AT_histoOld_lower_bin_limit(	number_of_bins,
 															bin_centers,
 															bin_no);
-	double upper_limit		=	AT_histo_upper_bin_limit(	number_of_bins,
+	double upper_limit		=	AT_histoOld_upper_bin_limit(	number_of_bins,
 															bin_centers,
 															bin_no);
 	return(upper_limit - lower_limit);
 }
 
-void AT_histo_get_bin_widths(	const long number_of_bins,
+void AT_histoOld_get_bin_widths(	const long number_of_bins,
 								const double bin_centers[],
 								double bin_widths[])
 {
 	long i;
 	for (i = 0; i < number_of_bins; i++){
-		bin_widths[i] = AT_histo_get_bin_width(	number_of_bins,
+		bin_widths[i] = AT_histoOld_get_bin_width(	number_of_bins,
 												bin_centers,
 												i);
 	}
 }
 
-long AT_histo_bin_no(	const long number_of_bins,
+long AT_histoOld_bin_no(	const long number_of_bins,
 						const double bin_centers[],
 						const double value)
 {
-	double lower_limit		=	AT_histo_lower_bin_limit(	number_of_bins,
+	double lower_limit		=	AT_histoOld_lower_bin_limit(	number_of_bins,
 															bin_centers,
 															0);
-	double log_bin_width	=	AT_histo_log_bin_width(	number_of_bins,
+	double log_bin_width	=	AT_histoOld_log_bin_width(	number_of_bins,
 														bin_centers);
 
 	return(floor(  (log(value) - log(lower_limit)) / log_bin_width ));
