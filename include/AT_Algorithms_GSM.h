@@ -91,7 +91,6 @@ void AT_GSM_shoot_particles_on_grid( const long  number_of_field_components,
  * @see          AT_RDD.h for definition
  * @param[in]  er_model                                  index number for chosen electron-range model
  * @see          AT_ElectronRange.h for definition
- * @param[in]  sample_grid_size_m                        linear size of grid (length of grid square side)
  * @param[in]  number_of_particles_in_field_component    table of number of particles of each type in the mixed particle field
  * @param[in]  x_position                                two-dimensional table (1st dimension - component of mixed field,
  *                                                         2nd dimension - particle index for given component)

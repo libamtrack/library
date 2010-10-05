@@ -866,6 +866,7 @@ static const AT_pstar_data_struct AT_PSTAR_Data = {
  *
  * @param[in]  n             number of points to interpolate
  * @param[in]  x             array of x values for which interpolation is done
+ * @param[in]  subset_no     TODO
  * @param[in]  x_table       x part of data table
  * @param[in]  y_table       y part of data table
  * @param[out] y             array of interpolated y values
