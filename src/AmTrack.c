@@ -844,7 +844,7 @@ void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_comp
 
 	long i,j,k;
 
-	AT_histo_get_bin_widths(	number_of_bins,
+	AT_histoOld_get_bin_widths(	number_of_bins,
 								dose_bin_centers_Gy,
 								dose_bin_width_Gy);
 

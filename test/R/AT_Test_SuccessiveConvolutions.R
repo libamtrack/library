@@ -4,11 +4,11 @@
 
 rm(list = ls())
 
-try(dyn.load("libamtrack.dll"))
-try(dyn.load("libamtrack.so"))
-try(dyn.load("libamtrack.dylib"))
+try(dyn.load("..\..\lib\libamtrack.dll"))
+try(dyn.load("../../lib/libamtrack.so"))
+try(dyn.load("../../lib/libamtrack.dylib"))
 
-source("AmTrack.R")
+source("../../wrapper/R/AmTrack.R")
 
 library(lattice)
 
