@@ -95,7 +95,6 @@ typedef struct{
 
 /**
  * Computes the size of the array to hold the f1 (single impact) local dose distribution for a given field, rdd, er
- * Usually step 1 of the CPP-SC method
  * @param[in]  n                   number of particle types in the mixed particle field
  * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
@@ -104,9 +103,9 @@ typedef struct{
  * @param[in]  rdd_parameter       parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @param[in]  er_model            index number for chosen electron-range model
  * @param[in]  N2                  number of bins per factor of two in local dose array
- * @return n_bins_f1           number of bins to hold the f1 distribution
+ * @return number of bins to hold the f1 distribution
  */
-long  AT_SC_get_f1_array_size(
+long  AT_n_bins_for_singe_impact_local_dose_ditrib(
     const long   n,
     const double E_MeV_u[],
     const long   particle_no[],
