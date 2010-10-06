@@ -30,63 +30,76 @@
 
 
 ///////////////////////////////// Left limit routines ////////////////////////////////////
-double AT_histo_linear_left_limit(      const long number_of_bins,
-                                const double lowest_left_limit,
-                                const double step,
-                                const long bin_no){
-  if((bin_no < 0) | (bin_no > number_of_bins)){
-    return(NAN);
-  }else{
-    return(lowest_left_limit + bin_no * step);
-  }
+int AT_histo_linear_left_limit( const long number_of_bins,
+								const double lowest_left_limit,
+								const double step,
+								const long bin_no,
+								double * left_limit){
+	if((bin_no >= 0) && (bin_no <= number_of_bins)){
+		*left_limit = lowest_left_limit + bin_no * step;
+		return EXIT_SUCCESS;
+	}
+	return EXIT_FAILURE;
 }
 
 
-double AT_histo_logarithmic_left_limit(      const long number_of_bins,
-                                const double lowest_left_limit,
-                                const double step,
-                                const long bin_no){
-  if((bin_no < 0) | (bin_no > number_of_bins)){
-    return(NAN);
-  }else{
-    return(lowest_left_limit * (bin_no + 1.0) * step);
-  }
+int AT_histo_logarithmic_left_limit(    const long number_of_bins,
+										const double lowest_left_limit,
+										const double step,
+										const long bin_no,
+										double * left_limit){
+	if((bin_no >= 0) && (bin_no <= number_of_bins)){
+		*left_limit = lowest_left_limit * (bin_no + 1.0) * step;
+		return EXIT_SUCCESS;
+	}
+	return EXIT_FAILURE;
 }
 
 
-double AT_histo_left_limit( const long number_of_bins,
+int AT_histo_left_limit( const long number_of_bins,
     const double lowest_left_limit,
     const double step,
     const long histo_type,
-    const long bin_no)
+    const long bin_no,
+    double * left_limit)
 {
+  int status_code;
   if (histo_type == AT_histo_linear){
-    return(AT_histo_linear_left_limit( number_of_bins,
+    status_code = AT_histo_linear_left_limit( number_of_bins,
                                    lowest_left_limit,
                                    step,
-                                   bin_no));
+                                   bin_no,
+                                   left_limit);
   }else{
-    return(AT_histo_logarithmic_left_limit( number_of_bins,
+	status_code = AT_histo_logarithmic_left_limit( number_of_bins,
                                    lowest_left_limit,
                                    step,
-                                   bin_no));
+                                   bin_no,
+                                   left_limit);
   }
+  return EXIT_FAILURE;
 }
 
-void AT_histo_left_limits( const long number_of_bins,
+
+int AT_histo_left_limits( const long number_of_bins,
     const double lowest_left_limit,
     const double step,
     const long histo_type,
     double left_limits[])
 {
   long bin_no;
+  int global_status_code = EXIT_SUCCESS;
   for (bin_no = 0; bin_no < number_of_bins + 1; bin_no++){
-    left_limits[bin_no] = AT_histo_left_limit( number_of_bins,
+	  int status_code = AT_histo_left_limit( number_of_bins,
                                           lowest_left_limit,
                                           step,
                                           histo_type,
-                                          bin_no);
+                                          bin_no,
+                                          &left_limits[bin_no]);
+	  if( status_code == EXIT_FAILURE)
+		  global_status_code = EXIT_FAILURE;
   }
+  return global_status_code;
 }
 
 ///////////////////////////////// Bin widths routines ////////////////////////////////////
@@ -98,114 +111,176 @@ double AT_histo_linear_bin_width(      const long number_of_bins,
   return(step);
 }
 
-double AT_histo_logarithmic_bin_width(      const long number_of_bins,
+
+int AT_histo_logarithmic_bin_width(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
-                                const long bin_no)
+                                const long bin_no,
+                                double * bin_width)
 {
-  return(       AT_histo_logarithmic_left_limit(       number_of_bins,
+  double left_limit, right_limit;
+  int status_code = AT_histo_logarithmic_left_limit(       number_of_bins,
                                           lowest_left_limit,
                                           step,
-                                          bin_no + 1) -
-                AT_histo_logarithmic_left_limit(       number_of_bins,
+                                          bin_no + 1,
+                                          &left_limit);
+  if( status_code == EXIT_FAILURE )
+	  return status_code;
+  status_code = AT_histo_logarithmic_left_limit(       number_of_bins,
                                           lowest_left_limit,
                                           step,
-                                          bin_no));
+                                          bin_no,
+                                          &right_limit);
+  if( status_code == EXIT_FAILURE )
+	  return status_code;
+  *bin_width = right_limit - left_limit;
+  return EXIT_SUCCESS;
+
 }
 
-double AT_histo_bin_width(      const long number_of_bins,
+
+int AT_histo_bin_width(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const long histo_type,
-                                const long bin_no){
+                                const long bin_no,
+                                double * bin_width){
+  int status_code = EXIT_FAILURE;
   if (histo_type == AT_histo_linear){
-    return(AT_histo_linear_bin_width( number_of_bins,
+    AT_histo_linear_bin_width( number_of_bins,
                                    lowest_left_limit,
                                    step,
-                                   bin_no));
+                                   bin_no);
+    status_code = EXIT_SUCCESS;
   }else{
-    return(AT_histo_logarithmic_bin_width( number_of_bins,
+    status_code = AT_histo_logarithmic_bin_width( number_of_bins,
                                    lowest_left_limit,
                                    step,
-                                   bin_no));
+                                   bin_no,
+                                   bin_width);
   }
+  return status_code;
 }
 
-void AT_histo_bin_widths( const long number_of_bins,
+
+int AT_histo_bin_widths( const long number_of_bins,
     const double lowest_left_limit,
     const double step,
     const long histo_type,
     double bin_widths[])
 {
   long bin_no;
+  int global_status_code = EXIT_SUCCESS;
   for (bin_no = 0; bin_no < number_of_bins; bin_no++){
-    bin_widths[bin_no] = AT_histo_bin_width( number_of_bins,
+     int status_code = AT_histo_bin_width( number_of_bins,
                                           lowest_left_limit,
                                           step,
                                           histo_type,
-                                          bin_no);
+                                          bin_no,
+                                          &bin_widths[bin_no]);
+	  if( status_code == EXIT_FAILURE)
+		  global_status_code = EXIT_FAILURE;
   }
+  return global_status_code;
 }
+
 
 ///////////////////////////////// Midpoint routines ////////////////////////////////////
-double AT_histo_linear_midpoint(      const long number_of_bins,
+int AT_histo_linear_midpoint(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
-                                const long bin_no)
+                                const long bin_no,
+                                double * midpoint)
 {
-  return(AT_histo_linear_left_limit( number_of_bins,
-                                      lowest_left_limit,
-                                      step,
-                                      bin_no) + 0.5 * step);
+  double left_limit;
+  int status_code = AT_histo_linear_left_limit( number_of_bins,
+                                        lowest_left_limit,
+                                        step,
+                                        bin_no,
+                                        &left_limit);
+  if( status_code == EXIT_FAILURE)
+	  return status_code;
+
+  *midpoint = left_limit + 0.5 * step;
+  return EXIT_SUCCESS;
 }
 
-double AT_histo_logarithmic_midpoint(      const long number_of_bins,
+
+int AT_histo_logarithmic_midpoint(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
-                                const long bin_no)
+                                const long bin_no,
+                                double * midpoint)
 {
-  return(       sqrt(AT_histo_logarithmic_left_limit(       number_of_bins,
-                                          lowest_left_limit,
-                                          step,
-                                          bin_no + 1) *
-                AT_histo_logarithmic_left_limit(       number_of_bins,
-                                          lowest_left_limit,
-                                          step,
-                                          bin_no)));
+  double left_limit, right_limit;
+
+  int status_code = AT_histo_logarithmic_left_limit(       number_of_bins,
+          lowest_left_limit,
+          step,
+          bin_no + 1,
+          &right_limit);
+
+  if( status_code == EXIT_FAILURE )
+	  return status_code;
+
+  status_code = AT_histo_logarithmic_left_limit(       number_of_bins,
+                                            lowest_left_limit,
+                                            step,
+                                            bin_no,
+                                            &left_limit);
+
+  if( status_code == EXIT_FAILURE )
+	  return status_code;
+
+  *midpoint = sqrt( left_limit * right_limit );
+
+  return EXIT_SUCCESS;
 }
 
-double AT_histo_midpoint(      const long number_of_bins,
-                                const double lowest_left_limit,
-                                const double step,
-                                const long histo_type,
-                                const long bin_no){
-  if (histo_type == AT_histo_linear){
-    return(AT_histo_linear_midpoint( number_of_bins,
-                                   lowest_left_limit,
-                                   step,
-                                   bin_no));
-  }else{
-    return(AT_histo_logarithmic_midpoint( number_of_bins,
-                                   lowest_left_limit,
-                                   step,
-                                   bin_no));
-  }
+
+int AT_histo_midpoint(      const long number_of_bins,
+						const double lowest_left_limit,
+						const double step,
+						const long histo_type,
+						const long bin_no,
+						double * midpoint){
+	int status_code = EXIT_FAILURE;
+	if (histo_type == AT_histo_linear){
+		status_code = AT_histo_linear_midpoint( number_of_bins,
+				lowest_left_limit,
+				step,
+				bin_no,
+				midpoint);
+	}else{
+		status_code = AT_histo_logarithmic_midpoint( number_of_bins,
+				lowest_left_limit,
+				step,
+				bin_no,
+				midpoint);
+	}
+	return status_code;
 }
 
-void AT_histo_midpoints( const long number_of_bins,
+
+int AT_histo_midpoints( const long number_of_bins,
     const double lowest_left_limit,
     const double step,
     const long histo_type,
     double midpoints[])
 {
   long bin_no;
+  int global_status_code = EXIT_SUCCESS;
   for (bin_no = 0; bin_no < number_of_bins; bin_no++){
-    midpoints[bin_no] = AT_histo_midpoint( number_of_bins,
+	  int status_code = AT_histo_midpoint( number_of_bins,
                                           lowest_left_limit,
                                           step,
                                           histo_type,
-                                          bin_no);
+                                          bin_no,
+                                          &midpoints[bin_no]);
+	  if( status_code == EXIT_FAILURE)
+		  global_status_code = EXIT_FAILURE;
   }
+  return global_status_code;
 }
 
 ///////////////////////////////// Access routines ////////////////////////////////////
@@ -265,6 +340,7 @@ long AT_histo_bin_no(      const long number_of_bins,
   }
 }
 
+
 void AT_histo_add(      const long number_of_bins,
     const double lowest_left_limit,
     const double step,
@@ -290,12 +366,14 @@ void AT_histo_add(      const long number_of_bins,
   }
 }
 
+
 /* OLD ROUTINES, KEPT FOR COMPATIBILITY */
 double AT_histoOld_log_bin_width(	const long number_of_bins,
 								const double bin_centers[])
 {
 	return(log(bin_centers[number_of_bins-1]) - log(bin_centers[0]))/(number_of_bins-1.);
 }
+
 
 double AT_histoOld_lower_bin_limit(const long number_of_bins,
 								const double bin_centers[],
@@ -305,6 +383,7 @@ double AT_histoOld_lower_bin_limit(const long number_of_bins,
 																		bin_centers)));
 }
 
+
 double AT_histoOld_upper_bin_limit(const long number_of_bins,
 								const double bin_centers[],
 								const long bin_no)
@@ -312,6 +391,7 @@ double AT_histoOld_upper_bin_limit(const long number_of_bins,
 	return(exp(log(bin_centers[bin_no]) + 0.5 * AT_histoOld_log_bin_width(	number_of_bins,
 																		bin_centers)));
 }
+
 
 double AT_histoOld_get_bin_width(	const long number_of_bins,
 								const double bin_centers[],
@@ -326,6 +406,7 @@ double AT_histoOld_get_bin_width(	const long number_of_bins,
 	return(upper_limit - lower_limit);
 }
 
+
 void AT_histoOld_get_bin_widths(	const long number_of_bins,
 								const double bin_centers[],
 								double bin_widths[])
@@ -337,6 +418,7 @@ void AT_histoOld_get_bin_widths(	const long number_of_bins,
 												i);
 	}
 }
+
 
 long AT_histoOld_bin_no(	const long number_of_bins,
 						const double bin_centers[],
