@@ -573,7 +573,7 @@ AT.SC.get.f1.array.size		<-	function(		E.MeV.u,
 															RDD.parameters		= as.single(RDD.parameters),
 															ER.model			= as.integer(ER.model),
 															N2					= as.integer(N2),
-															n.bins.f1			= as.integer(n.bins.f1)))
+															n.bins.f1			= as.integer(n.bins.f1))
 		
 	return(res)
 }
@@ -924,7 +924,7 @@ AT.dose.weighted.LET.MeV.cm2.g		<-	function(	E.MeV.u,
 ##############################
 AT.total.u      <-  function(   E.MeV.u,
                                                     particle.no,
-                                                    fluence.cm2,
+                                                    fluence.cm2.or.dose.Gy,
                                                     material.no,
                                                     er.model)
 {
@@ -933,7 +933,7 @@ AT.total.u      <-  function(   E.MeV.u,
     res                         <-  .C( "AT_total_u_R", n                           =   as.integer(n),
                                                                             E.MeV.u                     =   as.single(E.MeV.u),
                                                                             particle.no                 =   as.integer(particle.no),
-                                                                            fluence.cm2                 =   as.single(fluence.cm2),
+                                                                            fluence.cm2.or.dose.Gy                 =   as.single(fluence.cm2.or.dose.Gy),
                                                                             material.no                 =   as.integer(material.no),
                                                                             er.model                    =   as.integer(er.model),
                                                                             u                           =   as.single(u))
@@ -945,7 +945,7 @@ AT.total.u      <-  function(   E.MeV.u,
 ##############################
 AT.u      <-  function(   E.MeV.u,
                                                     particle.no,
-                                                    fluence.cm2,
+                                                    fluence.cm2.or.dose.Gy,
                                                     material.no,
                                                     er.model)
 {
@@ -956,7 +956,7 @@ AT.u      <-  function(   E.MeV.u,
 		res                         <-  .C( "AT_total_u_R", n                           =   as.integer(1),
                                                                            E.MeV.u                     =   as.single(E.MeV.u[i]),
                                                                            particle.no                 =   as.integer(particle.no[i]),
-                                                                           fluence.cm2                 =   as.single(fluence.cm2[i]),
+                                                                           fluence.cm2.or.dose.Gy                 =   as.single(fluence.cm2.or.dose.Gy[i]),
                                                                             material.no                 =   as.integer(material.no),
                                                                             er.model                    =   as.integer(er.model),
                                                                             u                           =   as.single(u_cur))
