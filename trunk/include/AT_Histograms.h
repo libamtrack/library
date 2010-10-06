@@ -31,64 +31,68 @@
  */
 
 #include <math.h>
-
-#ifndef NAN
-#define NAN (0.0/0.0)
-#endif
+#include <stdlib.h>
 
 /**
  * @enum AT_histo_type
  * Histogram type enumerator
  */
 enum AT_histo_type{
-  AT_histo_linear       = 0, /** Histogram with linear bins and arithmetic midpoints, step is the bin limit difference **/
-  AT_histo_log          = 1  /** Histogram with logarithmic bins and geometrical midpoints, step ist the bin limit factor **/
+  AT_histo_linear       = 0, /**< Histogram with linear bins and arithmetic midpoints, step is the bin limit difference **/
+  AT_histo_log          = 1  /**< Histogram with logarithmic bins and geometrical midpoints, step is the bin limit factor **/
 };
 
 
 ///////////////////////////////// Left limit routines ////////////////////////////////////
 /**
  * Returns left limit of bin with given index number for linear histograms
- * @param number_of_bins        number of bins in histogram
- * @param left_limit            left limit of first bin
- * @param step                  step between bin limits
- * @param bin_no                index number of bin (zero-based)
- * @return                      left limit of bin
+ * @param[in]  number_of_bins        number of bins in histogram
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  step                  step between bin limits
+ * @param[in]  bin_no                index number of bin (zero-based)
+ * @param[out] left_limit            left limit of bin
+ * @return     status code
  */
-double AT_histo_linear_left_limit(      const long number_of_bins,
+int AT_histo_linear_left_limit(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
-                                const long bin_no);
+                                const long bin_no,
+                                double * left_limit);
+
 
 /**
  * Returns left limit of bin with given index number for logarithmic histograms
- * @param number_of_bins        number of bins in histogram
- * @param left_limit            left limit of first bin
- * @param step                  step between bin limits
- * @param bin_no                index number of bin (zero-based)
- * @return                      left limit of bin
+ * @param[in]  number_of_bins        number of bins in histogram
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  step                  step between bin limits
+ * @param[in]  bin_no                index number of bin (zero-based)
+ * @param[out] left_limit            left limit of bin
+ * @return     status code
  */
-double AT_histo_logarithmic_left_limit(      const long number_of_bins,
+int AT_histo_logarithmic_left_limit(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
-                                const long bin_no);
+                                const long bin_no,
+                                double * left_limit);
 
 
 /**
  * Returns left limit of bin with given index number
- * @param number_of_bins        number of bins in histogram
- * @param left_limit            left limit of first bin
- * @param step                  step between bin limits
- * @param bin_no                index number of bin (zero-based)
- * @param histo_type            type of histogram (linear or logarithmic)
+ * @param[in]  number_of_bins        number of bins in histogram
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  step                  step between bin limits
+ * @param[in]  bin_no                index number of bin (zero-based)
+ * @param[in]  histo_type            type of histogram (linear or logarithmic)
  * @see AT_histo_type
- * @return                      left limit of bin
+ * @param[out] left_limit            left limit of bin
+ * @return                      status code
  */
-double AT_histo_left_limit( const long number_of_bins,
+int AT_histo_left_limit( const long number_of_bins,
     const double lowest_left_limit,
     const double step,
     const long histo_type,
-    const long bin_no);
+    const long bin_no,
+    double * left_limit);
 
 
 /**
@@ -99,9 +103,10 @@ double AT_histo_left_limit( const long number_of_bins,
  * @param[in] histo_type                type of histogram (linear or logarithmic)
  * @see AT_histo_type
  * @param[out] left_limits              array of bin width
- * @length number_of_bins + 1
+ * length number_of_bins + 1
+ * @return status code
  */
-void AT_histo_left_limits( const long number_of_bins,
+int AT_histo_left_limits( const long number_of_bins,
     const double lowest_left_limit,
     const double step,
     const long histo_type,
@@ -111,10 +116,10 @@ void AT_histo_left_limits( const long number_of_bins,
 ///////////////////////////////// Bin widths routines ////////////////////////////////////
 /**
  * Returns width of bin with given index number for linear histograms
- * @param number_of_bins        number of bins in histogram
- * @param left_limit            left limit of first bin
- * @param step                  step between bin limits
- * @param bin_no                index number of bin (zero-based)
+ * @param[in] number_of_bins        number of bins in histogram
+ * @param[in] lowest_left_limit     left limit of first bin
+ * @param[in] step                  step between bin limits
+ * @param[in] bin_no                index number of bin (zero-based)
  * @return                      width of bin
  */
 double AT_histo_linear_bin_width(      const long number_of_bins,
@@ -125,33 +130,37 @@ double AT_histo_linear_bin_width(      const long number_of_bins,
 
 /**
  * Returns width of bin with given index number for logarithmic histograms
- * @param number_of_bins        number of bins in histogram
- * @param left_limit            left limit of first bin
- * @param step                  step between bin limits
- * @param bin_no                index number of bin (zero-based)
- * @return                      width of bin
+ * @param[in]  number_of_bins        number of bins in histogram
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  step                  step between bin limits
+ * @param[in]  bin_no                index number of bin (zero-based)
+ * @param[out] bin_width             width of bin
+ * @return status code
  */
-double AT_histo_logarithmic_bin_width(      const long number_of_bins,
+int AT_histo_logarithmic_bin_width(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
-                                const long bin_no);
+                                const long bin_no,
+                                double * bin_width);
 
 
 /**
  * Returns width of bin with given index number
- * @param number_of_bins        number of bins in histogram
- * @param left_limit            left limit of first bin
- * @param step                  step between bin limits
- * @param bin_no                index number of bin (zero-based)
- * @param histo_type            type of histogram (linear or logarithmic)
+ * @param[in]  number_of_bins        number of bins in histogram
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  step                  step between bin limits
+ * @param[in]  bin_no                index number of bin (zero-based)
+ * @param[in] histo_type             type of histogram (linear or logarithmic)
  * @see AT_histo_type
- * @return                      width of bin
+ * @param[out] bin_width             width of bin
+ * @return status code
  */
-double AT_histo_bin_width(      const long number_of_bins,
+int AT_histo_bin_width(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const long histo_type,
-                                const long bin_no);
+                                const long bin_no,
+                                double * bin_width);
 
 
 /**
@@ -162,9 +171,10 @@ double AT_histo_bin_width(      const long number_of_bins,
  * @param[in] histo_type                type of histogram (linear or logarithmic)
  * @see AT_histo_type
  * @param[out] bin_widths              array of bin width
- * @length number_of_bins
+ * length number_of_bins
+ * @return status code
  */
-void AT_histo_bin_widths( const long number_of_bins,
+int AT_histo_bin_widths( const long number_of_bins,
     const double lowest_left_limit,
     const double step,
     const long histo_type,
@@ -174,47 +184,53 @@ void AT_histo_bin_widths( const long number_of_bins,
 ///////////////////////////////// Midpoint routines ////////////////////////////////////
 /**
  * Returns midpoint of bin with given index number for linear histograms
- * @param number_of_bins        number of bins in histogram
- * @param left_limit            left limit of first bin
- * @param step                  step between bin limits
- * @param bin_no                index number of bin (zero-based)
- * @return                      midpoint of bin
+ * @param[in]  number_of_bins        number of bins in histogram
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  step                  step between bin limits
+ * @param[in]  bin_no                index number of bin (zero-based)
+ * @param[out] midpoint              midpoint of bin
+ * @return status code
  */
-double AT_histo_linear_midpoint(      const long number_of_bins,
+int AT_histo_linear_midpoint(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
-                                const long bin_no);
+                                const long bin_no,
+                                double * midpoint);
 
 
 /**
  * Returns midpoint of bin with given index number for logarithmic histograms
- * @param number_of_bins        number of bins in histogram
- * @param left_limit            left limit of first bin
- * @param step                  step between bin limits
- * @param bin_no                index number of bin (zero-based)
- * @return                      midpoint of bin
+ * @param[in]  number_of_bins        number of bins in histogram
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  step                  step between bin limits
+ * @param[in]  bin_no                index number of bin (zero-based)
+ * @param[out] midpoint              midpoint of bin
+ * @return status code
  */
-double AT_histo_logarithmic_midpoint(      const long number_of_bins,
+int AT_histo_logarithmic_midpoint(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
-                                const long bin_no);
+                                const long bin_no,
+                                double * midpoint);
 
 
 /**
  * Returns midpoint of bin with given index number
- * @param number_of_bins        number of bins in histogram
- * @param left_limit            left limit of first bin
- * @param step                  step between bin limits
- * @param bin_no                index number of bin (zero-based)
- * @param histo_type            type of histogram (linear or logarithmic)
+ * @param[in]  number_of_bins       number of bins in histogram
+ * @param[in]  lowest_left_limit    left limit of first bin
+ * @param[in]  step                 step between bin limits
+ * @param[in]  bin_no               index number of bin (zero-based)
+ * @param[in] histo_type            type of histogram (linear or logarithmic)
  * @see AT_histo_type
- * @return                      midpoint of bin
+ * @param[out] midpoint             midpoint of bin
+ * @return status code
  */
-double AT_histo_midpoint(      const long number_of_bins,
+int AT_histo_midpoint(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const long histo_type,
-                                const long bin_no);
+                                const long bin_no,
+                                double * midpoint);
 
 
 /**
@@ -224,10 +240,11 @@ double AT_histo_midpoint(      const long number_of_bins,
  * @param[in] step                      step between bin limits
  * @param[in] histo_type                type of histogram (linear or logarithmic)
  * @see AT_histo_type
- * @param[out] bin_widths               array of midpoints
- * @length number_of_bins
+ * @param[out] midpoints                array of midpoints
+ * length number_of_bins
+ * @return status code
  */
-void AT_histo_midpoints( const long number_of_bins,
+int AT_histo_midpoints( const long number_of_bins,
     const double lowest_left_limit,
     const double step,
     const long histo_type,
@@ -237,10 +254,10 @@ void AT_histo_midpoints( const long number_of_bins,
 ///////////////////////////////// Access routines ////////////////////////////////////
 /**
  * Returns bin index number for a given value for linear histograms
- * @param number_of_bins        number of bins in histogram
- * @param left_limit            left limit of first bin
- * @param step                  step between bin limits
- * @param value                 value
+ * @param[in] number_of_bins        number of bins in histogram
+ * @param[in] lowest_left_limit     left limit of first bin
+ * @param[in] step                  step between bin limits
+ * @param[in] value                 value
  * @return                      bin index number (zero-based, positive), -1 if value below first, -2 if value above last bin
  */
 long AT_histo_linear_bin_no(      const long number_of_bins,
@@ -251,10 +268,10 @@ long AT_histo_linear_bin_no(      const long number_of_bins,
 
 /**
  * Returns bin index number for a given value for logarithmic histograms
- * @param number_of_bins        number of bins in histogram
- * @param left_limit            left limit of first bin
- * @param step                  step between bin limits
- * @param value                 value
+ * @param[in] number_of_bins        number of bins in histogram
+ * @param[in] lowest_left_limit     left limit of first bin
+ * @param[in] step                  step between bin limits
+ * @param[in] value                 value
  * @return                      bin index number (zero-based, positive), -1 if value below first, -2 if value above last bin
  */
 long AT_histo_logarithmic_bin_no(      const long number_of_bins,
@@ -265,13 +282,13 @@ long AT_histo_logarithmic_bin_no(      const long number_of_bins,
 
 /**
  * Returns bin index number for a given value for logarithmic histograms
- * @param number_of_bins        number of bins in histogram
- * @param left_limit            left limit of first bin
- * @param step                  step between bin limits
- * @param[in] histo_type        type of histogram (linear or logarithmic)
+ * @param[in] number_of_bins      number of bins in histogram
+ * @param[in] lowest_left_limit   left limit of first bin
+ * @param[in] step                step between bin limits
+ * @param[in] histo_type          type of histogram (linear or logarithmic)
  * @see AT_histo_type
- * @param value                 value
- * @return                      bin index number (zero-based, positive), -1 if value below first, -2 if value above last bin
+ * @param[in] value               value
+ * @return                        bin index number (zero-based, positive), -1 if value below first, -2 if value above last bin
  */
 long AT_histo_bin_no(      const long number_of_bins,
     const double lowest_left_limit,
@@ -282,15 +299,15 @@ long AT_histo_bin_no(      const long number_of_bins,
 
 /**
  * Increases bin frequency content by 'weight' for a given value
- * @param[in] number_of_bins    number of bins in histogram
- * @param[in] left_limit        left limit of first bin
- * @param[in] step              step between bin limits
- * @param[in] histo_type        type of histogram (linear or logarithmic)
+ * @param[in] number_of_bins       number of bins in histogram
+ * @param[in] lowest_left_limit    left limit of first bin
+ * @param[in] step                 step between bin limits
+ * @param[in] histo_type           type of histogram (linear or logarithmic)
  * @see AT_histo_type
- * @param value[in]             value
- * @param weight[in]            weight by which the bin frequency content for 'value' is increase (usually 1)
- * @param frequency[in/out]     vector of frequencies for the histogram
- * @length number_of_bins
+ * @param[in] value                value
+ * @param[in] weight               weight by which the bin frequency content for 'value' is increase (usually 1)
+ * @param[in,out] frequency        vector of frequencies for the histogram
+ * length number_of_bins
  */
 void AT_histo_add(      const long number_of_bins,
     const double lowest_left_limit,
