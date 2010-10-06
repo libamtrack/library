@@ -77,7 +77,7 @@ void AT_run_SPIFF_method(  const long  n,
   double*  f1_dd_Gy      =  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1            =  (double*)calloc(n_bins_f1, sizeof(double));
 
-  AT_SC_get_f1(  n,
+  AT_single_impact_local_dose_distrib(  n,
       E_MeV_u,
       particle_no,
       fluence_cm2_or_dose_Gy,
@@ -128,7 +128,7 @@ void AT_run_SPIFF_method(  const long  n,
   double    u_start;
   long      n_convolutions;
 
-  AT_SC_get_f_array_size(  u,
+  AT_n_bins_for_low_fluence_local_dose_distribution(  u,
       fluence_factor,
       N2,
       n_bins_f1,
@@ -148,7 +148,7 @@ void AT_run_SPIFF_method(  const long  n,
   double   f0           =  0.0;
   double   d_check      =  0.0;
 
-  AT_SC_get_f_start(  n_bins_f1,
+  AT_low_fluence_local_dose_distribution(  n_bins_f1,
       N2,
       f1_d_Gy,
       f1_dd_Gy,
@@ -583,7 +583,7 @@ void AT_run_SPISS_method(  const long  n,
   double*  f1_dd_Gy                                     =  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1                                           =  (double*)calloc(n_bins_f1, sizeof(double));
 
-  AT_SC_get_f1(           n,
+  AT_single_impact_local_dose_distrib(           n,
       E_MeV_u,
       particle_no,
       fluence_cm2_or_dose_Gy,
@@ -658,7 +658,7 @@ void AT_run_SPISS_method(  const long  n,
   double   u_start;
   long     n_convolutions;
 
-  AT_SC_get_f_array_size(   u,
+  AT_n_bins_for_low_fluence_local_dose_distribution(   u,
       fluence_factor,
       N2,
       n_bins_f1,
@@ -675,7 +675,7 @@ void AT_run_SPISS_method(  const long  n,
   double*  f                    =  (double*)calloc(n_bins_f, sizeof(double));
   double   f0                   =  0.0;
 
-  AT_SC_get_f_start(  n_bins_f1,
+  AT_low_fluence_local_dose_distribution(  n_bins_f1,
       N2,
       f1_d_Gy,
       f1_dd_Gy,

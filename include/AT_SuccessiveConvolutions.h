@@ -134,7 +134,7 @@ long  AT_n_bins_for_singe_impact_local_dose_distrib(
  * @param[out] f1_dd_Gy              bin widths for f1, array of size n_bins_f1
  * @param[out] f1                    f1 values, array of size n_bins_f1
  */
-void  AT_SC_get_f1(
+void  AT_single_impact_local_dose_distrib(
     const long   n,
     const double E_MeV_u[],
     const long   particle_no[],
@@ -165,7 +165,7 @@ void  AT_SC_get_f1(
  * @param[out] u_start             value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid
  * @param[out] n_convolutions      number of convolutions necessary to get from u_start to u (u = 2^n_convolutions * u_start)
  */
-void AT_SC_get_f_array_size(  const double   u,
+void AT_n_bins_for_low_fluence_local_dose_distribution(  const double   u,
     const double  fluence_factor,
     const long    N2,
     const long    n_bins_f1,
@@ -191,7 +191,7 @@ void AT_SC_get_f_array_size(  const double   u,
  * @param[out] f_dd_Gy             bin widths for f, array of size n_bins_f
  * @param[out] f_start             f values to start with, array of size n_bins_f
  */
-void  AT_SC_get_f_start(  const long    n_bins_f1,
+void  AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
     const long    N2,
     const double  f1_d_Gy[],
     const double  f1_dd_Gy[],
