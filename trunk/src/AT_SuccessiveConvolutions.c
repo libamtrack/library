@@ -37,7 +37,7 @@
 #define DEBUG_SIGMA                          1.0
 
 
-long  AT_SC_get_f1_array_size(
+long  AT_n_bins_for_singe_impact_local_dose_ditrib(
     const long    n,
     const double  E_MeV_u[],
     const long    particle_no[],
@@ -76,16 +76,16 @@ long  AT_SC_get_f1_array_size(
     }
   }
 
-  long n_bins_f1 = 0;
+  long n_bins_for_singe_impact_local_dose_ditrib = 0;
   // get number of bins needed to span that dose range
   if( (d_min_Gy > 0) && (d_max_Gy >0) ){
     double tmp        =  log10(d_max_Gy/d_min_Gy) / log10(2.0) * ((double)N2);
-    n_bins_f1        =  (long)(floor(tmp) + 1.0);
+    n_bins_for_singe_impact_local_dose_ditrib        =  (long)(floor(tmp) + 1.0);
   } else {
-    printf("AT_SC_get_f1_array_size: problem in evaluating n_bins_f1: d_min = %g [Gy], d_max = %g [Gy] \n", d_min_Gy, d_max_Gy);
+    printf("AT_n_bins_for_singe_impact_local_dose_ditrib: problem in evaluating n_bins_for_singe_impact_local_dose_ditrib: d_min = %g [Gy], d_max = %g [Gy] \n", d_min_Gy, d_max_Gy);
     exit(EXIT_FAILURE);
   }
-  return n_bins_f1;
+  return n_bins_for_singe_impact_local_dose_ditrib;
 }
 
 
