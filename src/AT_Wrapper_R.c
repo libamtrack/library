@@ -1664,7 +1664,7 @@ void AT_Z_from_particle_no_R( const int*  n,
 void AT_total_u_R(    const int * n,
                 const float * E_MeV_u,
                 const int   * particle_no,
-                const float * fluence_cm2,
+                const float * fluence_cm2_or_dose_Gy,
                 const int   * material_no,
                 const int   * er_model,
                 float *       u)
@@ -1688,10 +1688,10 @@ void AT_total_u_R(    const int * n,
   }
 
   double*  fluence_cm2_local    =  (double*)calloc(n_long, sizeof(double));
-  if(fluence_cm2[0] < 0){
+  if(fluence_cm2_or_dose_Gy[0] < 0){
     double*  dose_Gy_local      =  (double*)calloc(n_long, sizeof(double));
     for (i = 0; i < n_long; i++){
-      dose_Gy_local[i] = -1.0 * fluence_cm2[i];
+      dose_Gy_local[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
     // convert dose to fluence
     AT_fluence_cm2(  n_long,
@@ -1703,7 +1703,7 @@ void AT_total_u_R(    const int * n,
     free( dose_Gy_local );
   }else{
     for (i = 0; i < n_long; i++){
-      fluence_cm2_local[i] = fluence_cm2[i];
+      fluence_cm2_local[i] = fluence_cm2_or_dose_Gy[i];
     }
   }
 

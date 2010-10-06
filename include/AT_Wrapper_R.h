@@ -369,7 +369,7 @@ void AT_Z_from_particle_no_R( const int*  n,
 void AT_total_u_R(    const int * n,
                 const float * E_MeV_u,
                 const int   * particle_no,
-                const float * fluence_cm2,
+                const float * fluence_cm2_or_dose_Gy,
                 const int   * material_no,
                 const int   * er_model,
                 float *       u);
