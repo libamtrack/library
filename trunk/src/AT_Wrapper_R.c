@@ -1059,7 +1059,7 @@ void  AT_SC_get_f1_R(
   double * f1_dd_Gy_double = (double*)calloc(n_bins_f1_long,sizeof(double));
   double * f1_double = (double*)calloc(n_bins_f1_long,sizeof(double));
 
-  AT_SC_get_f1( n_long,
+  AT_single_impact_local_dose_distrib( n_long,
       E_MeV_u_double,
       particle_no_long,
       fluence_cm2_or_dose_Gy_double,
@@ -1124,7 +1124,7 @@ void  AT_SC_get_f_array_size_R(
   long n_convolutions_long;
   double u_start_double;
 
-  AT_SC_get_f_array_size(  u_double,
+  AT_n_bins_for_low_fluence_local_dose_distribution(  u_double,
       fluence_factor_double,
       N2_long,
       n_bins_f1_long,
@@ -1179,7 +1179,7 @@ void  AT_SC_get_f_start_R( const int*    n_bins_f1,
   double * f_dd_Gy_double = (double*)calloc(n_bins_f_long,sizeof(double));
   double * f_start_double = (double*)calloc(n_bins_f_long,sizeof(double));
 
-  AT_SC_get_f_start( n_bins_f1_long,
+  AT_low_fluence_local_dose_distribution( n_bins_f1_long,
       N2_long,
       f1_d_Gy_double,
       f1_dd_Gy_double,

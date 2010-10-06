@@ -85,7 +85,7 @@ long  AT_n_bins_for_singe_impact_local_dose_distrib(
 }
 
 
-void  AT_SC_get_f1(
+void  AT_single_impact_local_dose_distrib(
     const long    n,
     const double  E_MeV_u[],
     const long    particle_no[],
@@ -289,7 +289,7 @@ void  AT_SC_get_f1(
 }
 
 
-void  AT_SC_get_f_array_size( const double  u,
+void  AT_n_bins_for_low_fluence_local_dose_distribution( const double  u,
     const double   fluence_factor,
     const long     N2,
     const long     n_bins_f1,
@@ -328,7 +328,7 @@ void  AT_SC_get_f_array_size( const double  u,
 }
 
 
-void  AT_SC_get_f_start(  const long     n_bins_f1,
+void  AT_low_fluence_local_dose_distribution(  const long     n_bins_f1,
     const long     N2,
     const double   f1_d_Gy[],
     const double   f1_dd_Gy[],

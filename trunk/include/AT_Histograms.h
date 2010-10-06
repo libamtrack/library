@@ -250,6 +250,91 @@ int AT_histo_midpoints( const long number_of_bins,
     const long histo_type,
     double midpoints[]);
 
+///////////////////////////////// Step routines ////////////////////////////////////
+/**
+ * Returns step for given range for linear histograms
+ * @param[in]  number_of_bins        number of bins in histogram
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  highest_left_limit    right (exclusive) limit of last bin
+ * @param[out] step                  step between bins
+ * @return status code
+ */
+int AT_histo_linear_step(      const long number_of_bins,
+                                const double lowest_left_limit,
+                                const double highest_left_limit,
+                                double * step);
+
+/**
+ * Returns step for given range for logarithmic histograms
+ * @param[in]  number_of_bins        number of bins in histogram
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  highest_left_limit    right (exclusive) limit of last bin
+ * @param[out] step                  step between bins
+ * @return status code
+ */
+int AT_histo_logarithmic_step(      const long number_of_bins,
+                                const double lowest_left_limit,
+                                const double highest_left_limit,
+                                double * step);
+
+/**
+ * Returns step for given range
+ * @param[in]  number_of_bins        number of bins in histogram
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  highest_left_limit    right (exclusive) limit of last bin
+ * @param[in] histo_type             type of histogram (linear or logarithmic)
+ * @see AT_histo_type
+ * @param[out] step                  step between bins
+ * @return status code
+ */
+int AT_histo_step(      const long number_of_bins,
+                        const double lowest_left_limit,
+                        const double highest_left_limit,
+                        const long histo_type,
+                        double * step);
+
+///////////////////////////////// Number of bin routines ////////////////////////////////////
+/**
+ * Returns number of bins for given range for linear histograms
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  highest_left_limit    right (exclusive) limit of last bin
+ * @param[in]  step                  step between bins
+ * @param[out] number_of_bins        number of bins in histogram
+ * @return status code
+ */
+int AT_histo_linear_n_bins(     const double lowest_left_limit,
+                                const double highest_left_limit,
+                                const double step,
+                                long * number_of_bins);
+
+/**
+ * Returns number of bins for given range for logarithmic histograms
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  highest_left_limit    right (exclusive) limit of last bin
+ * @param[in]  step                  step between bins
+ * @param[out] number_of_bins        number of bins in histogram
+ * @return status code
+ */
+int AT_histo_logarithmic_n_bins(     const double lowest_left_limit,
+                                const double highest_left_limit,
+                                const double step,
+                                long * number_of_bins);
+
+/**
+ * Returns number of bins for given range for logarithmic histograms
+ * @param[in]  lowest_left_limit     left limit of first bin
+ * @param[in]  highest_left_limit    right (exclusive) limit of last bin
+ * @param[in]  step                  step between bins
+ * @param[in] histo_type             type of histogram (linear or logarithmic)
+ * @see AT_histo_type
+ * @param[out] number_of_bins        number of bins in histogram
+ * @return status code
+ */
+int AT_histo_n_bins(     const double lowest_left_limit,
+    const double highest_left_limit,
+    const double step,
+    const long histo_type,
+    long * number_of_bins);
 
 ///////////////////////////////// Access routines ////////////////////////////////////
 /**
