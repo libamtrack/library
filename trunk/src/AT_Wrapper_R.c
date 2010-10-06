@@ -967,8 +967,7 @@ void  AT_SC_get_f1_array_size_R(
     const float*  rdd_parameter,
     const int*    er_model,
     const int*    N2,
-    int*          n_bins_f1,
-    float*        f1_parameters){
+    int*          n_bins_f1){
 
   /* int -> long conversion */
   const long n_long = (long)(*n);
@@ -993,9 +992,6 @@ void  AT_SC_get_f1_array_size_R(
     rdd_parameter_double[i] = (double)rdd_parameter[i];
   }
 
-  /* place for results */
-  double * f1_parameters_double = (double*)calloc( n_long * AT_SC_F1_PARAMETERS_SINGLE_LENGTH, sizeof(double));
-
   n_bins_f1_long = AT_SC_get_f1_array_size( n_long,
       E_MeV_u_double,
       particle_no_long,
@@ -1005,23 +1001,9 @@ void  AT_SC_get_f1_array_size_R(
       er_model_long,
       N2_long);
 
-  AT_RDD_f1_parameters_mixed_field( n_long,
-      E_MeV_u_double,
-      particle_no_long,
-      material_no_long,
-      rdd_model_long,
-      rdd_parameter_double,
-      er_model_long,
-      f1_parameters_double);
-
   /* long -> int conversion (results) */
   *n_bins_f1 = (int)n_bins_f1_long;
 
-  /* double -> float conversion (results) */
-  for(i = 0 ; i < n_long * AT_SC_F1_PARAMETERS_SINGLE_LENGTH ; i++){
-    f1_parameters[i] = (float)f1_parameters_double[i];
-  }
-  free(f1_parameters_double);
   free(particle_no_long);
   free(E_MeV_u_double);
 }

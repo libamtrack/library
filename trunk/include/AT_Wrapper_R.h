@@ -216,8 +216,7 @@ void  AT_SC_get_f1_array_size_R(
     const float*  rdd_parameter,
     const int*    er_model,
     const int*    N2,
-    int*          n_bins_f1,
-    float*        f1_parameters);
+    int*          n_bins_f1);
 
 
 void  AT_SC_get_f1_R(

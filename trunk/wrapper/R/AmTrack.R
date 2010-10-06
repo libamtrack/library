@@ -563,7 +563,6 @@ AT.SC.get.f1.array.size		<-	function(		E.MeV.u,
 												N2){
 											
 	n				<-	length(E.MeV.u)
-	f1.parameters	<-	numeric(8 * n)
 	n.bins.f1 <- 0
 	
 	res				<-	.C("AT_SC_get_f1_array_size_R", 	n					= as.integer(n),
@@ -574,10 +573,9 @@ AT.SC.get.f1.array.size		<-	function(		E.MeV.u,
 															RDD.parameters		= as.single(RDD.parameters),
 															ER.model			= as.integer(ER.model),
 															N2					= as.integer(N2),
-															n.bins.f1			= as.integer(n.bins.f1),
-															f1.parameters		= as.single(f1.parameters))
+															n.bins.f1			= as.integer(n.bins.f1)))
 		
-	return(list(n.bins.f1 = res$n.bins.f1, f1.parameters = res$f1.parameters))
+	return(res)
 }
 
 ############
