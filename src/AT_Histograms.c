@@ -283,13 +283,13 @@ int AT_histo_midpoints( const long number_of_bins,
   return global_status_code;
 }
 
-///////////////////////////////// Number of bin routines ////////////////////////////////////
+///////////////////////////////// Step routines ////////////////////////////////////
 int AT_histo_linear_step(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double highest_left_limit,
                                 double * step)
 {
-  if ((number_of_bins <= 0)|(highest_left_limit <= lowest_left_limit)){
+  if ((number_of_bins <= 0)||(highest_left_limit <= lowest_left_limit)){
     return EXIT_FAILURE;
   }
 
@@ -303,8 +303,8 @@ int AT_histo_logarithmic_step(      const long number_of_bins,
                                 const double highest_left_limit,
                                 double * step)
 {
-  if ((number_of_bins <= 0)|(highest_left_limit <= lowest_left_limit)
-     |(lowest_left_limit <= 0)|(highest_left_limit <= 0)){
+  if ((number_of_bins <= 0)||(highest_left_limit <= lowest_left_limit)
+     ||(lowest_left_limit <= 0)||(highest_left_limit <= 0)){
     return EXIT_FAILURE;
   }
 
@@ -319,8 +319,19 @@ int AT_histo_step(      const long number_of_bins,
                         const long histo_type,
                         double * step)
 {
-  int global_status_code = EXIT_SUCCESS;
-  return global_status_code;
+  int status_code = EXIT_FAILURE;
+  if (histo_type == AT_histo_linear){
+          status_code = AT_histo_linear_step( number_of_bins,
+              lowest_left_limit,
+              highest_left_limit,
+              step);
+  }else{
+          status_code = AT_histo_logarithmic_step( number_of_bins,
+              lowest_left_limit,
+              highest_left_limit,
+              step);
+  }
+  return status_code;
 }
 
 ///////////////////////////////// Number of bin routines ////////////////////////////////////
