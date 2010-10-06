@@ -32,6 +32,10 @@
 
 #include <math.h>
 
+#ifndef NAN
+#define NAN (0.0/0.0)
+#endif
+
 /**
  * @enum AT_histo_type
  * Histogram type enumerator
@@ -40,6 +44,7 @@ enum AT_histo_type{
   AT_histo_linear       = 0, /** Histogram with linear bins and arithmetic midpoints, step is the bin limit difference **/
   AT_histo_log          = 1  /** Histogram with logarithmic bins and geometrical midpoints, step ist the bin limit factor **/
 };
+
 
 ///////////////////////////////// Left limit routines ////////////////////////////////////
 /**
@@ -68,6 +73,7 @@ double AT_histo_logarithmic_left_limit(      const long number_of_bins,
                                 const double step,
                                 const long bin_no);
 
+
 /**
  * Returns left limit of bin with given index number
  * @param number_of_bins        number of bins in histogram
@@ -83,6 +89,7 @@ double AT_histo_left_limit( const long number_of_bins,
     const double step,
     const long histo_type,
     const long bin_no);
+
 
 /**
  * Returns vector with all left limits of a histogram
@@ -100,6 +107,7 @@ void AT_histo_left_limits( const long number_of_bins,
     const long histo_type,
     double left_limits[]);
 
+
 ///////////////////////////////// Bin widths routines ////////////////////////////////////
 /**
  * Returns width of bin with given index number for linear histograms
@@ -114,6 +122,7 @@ double AT_histo_linear_bin_width(      const long number_of_bins,
                                 const double step,
                                 const long bin_no);
 
+
 /**
  * Returns width of bin with given index number for logarithmic histograms
  * @param number_of_bins        number of bins in histogram
@@ -126,6 +135,7 @@ double AT_histo_logarithmic_bin_width(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const long bin_no);
+
 
 /**
  * Returns width of bin with given index number
@@ -143,6 +153,7 @@ double AT_histo_bin_width(      const long number_of_bins,
                                 const long histo_type,
                                 const long bin_no);
 
+
 /**
  * Returns vector with all bin widths of a histogram
  * @param[in] number_of_bins            number of bins in histogram
@@ -159,6 +170,7 @@ void AT_histo_bin_widths( const long number_of_bins,
     const long histo_type,
     double bin_widths[]);
 
+
 ///////////////////////////////// Midpoint routines ////////////////////////////////////
 /**
  * Returns midpoint of bin with given index number for linear histograms
@@ -172,6 +184,8 @@ double AT_histo_linear_midpoint(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const long bin_no);
+
+
 /**
  * Returns midpoint of bin with given index number for logarithmic histograms
  * @param number_of_bins        number of bins in histogram
@@ -184,6 +198,8 @@ double AT_histo_logarithmic_midpoint(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const long bin_no);
+
+
 /**
  * Returns midpoint of bin with given index number
  * @param number_of_bins        number of bins in histogram
@@ -199,6 +215,8 @@ double AT_histo_midpoint(      const long number_of_bins,
                                 const double step,
                                 const long histo_type,
                                 const long bin_no);
+
+
 /**
  * Returns vector with all midpoints of a histogram
  * @param[in] number_of_bins            number of bins in histogram
@@ -215,6 +233,7 @@ void AT_histo_midpoints( const long number_of_bins,
     const long histo_type,
     double midpoints[]);
 
+
 ///////////////////////////////// Access routines ////////////////////////////////////
 /**
  * Returns bin index number for a given value for linear histograms
@@ -228,8 +247,10 @@ long AT_histo_linear_bin_no(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const double value);
+
+
 /**
- * Returns bin index number for a given value for logrithmic histograms
+ * Returns bin index number for a given value for logarithmic histograms
  * @param number_of_bins        number of bins in histogram
  * @param left_limit            left limit of first bin
  * @param step                  step between bin limits
@@ -240,8 +261,10 @@ long AT_histo_logarithmic_bin_no(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const double value);
+
+
 /**
- * Returns bin index number for a given value for logrithmic histograms
+ * Returns bin index number for a given value for logarithmic histograms
  * @param number_of_bins        number of bins in histogram
  * @param left_limit            left limit of first bin
  * @param step                  step between bin limits
@@ -255,6 +278,7 @@ long AT_histo_bin_no(      const long number_of_bins,
     const double step,
     const long histo_type,
     const double value);
+
 
 /**
  * Increases bin frequency content by 'weight' for a given value
@@ -275,6 +299,7 @@ void AT_histo_add(      const long number_of_bins,
     const double value,
     const double weight,
     double frequency[]);
+
 
 /* OLD ROUTINES, KEPT FOR COMPATIBILITY */
 /**
