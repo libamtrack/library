@@ -31,6 +31,7 @@ SRCDIR    = ./src
 INCLDIR   = ./include
 RMCMD     = rm
 GCC       = gcc 
+MKDIRCMD  = mkdir -p
 GSLINCLUDE = "$(GSLPATH)/include"
 GSLLIB     = "$(GSLPATH)/lib"
 else
@@ -39,6 +40,7 @@ DSEP       = \\
 SRCDIR     = .\src
 INCLDIR    = .\include
 RMCMD      = del
+MKDIRCMD   = mkdir
 GCC        = "$(MINGWPATH)\bin\gcc.exe"
 GSLINCLUDE = "$(GSLPATH)\include"
 GSLLIB     = "$(GSLPATH)\lib"
@@ -51,7 +53,7 @@ LIBHOBJS  = $(INCLDIR)$(DSEP)AmTrack.h $(INCLDIR)$(DSEP)AT_Error.h $(INCLDIR)$(D
 LIBOBJS  = AmTrack.o AT_Error.o AT_Constants.o AT_DataLET.o AT_DataMaterial.o AT_DataParticle.o AT_ElectronRange.o AT_GammaResponse.o AT_NumericalRoutines.o AT_PhysicsRoutines.o AT_RDD.o AT_RDD_Simple.o AT_RDD_ShellAveraged.o AT_RDD_ExtendedTarget.o AT_SuccessiveConvolutions.o AT_KatzModel.o AT_Wrapper_R.o AT_Histograms.o AT_Algorithms_GSM.o
 
 all:$(LIBOBJS)
-		echo $(GSLPATH)$(DSEP)
+		$(MKDIRCMD) lib 
 		$(GCC) -L$(GSLLIB) -shared $(LIBOBJS) -o $(NAMELIB) $(LFLAGS) 
 		$(RMCMD) *.o
 
