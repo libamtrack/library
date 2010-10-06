@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief Dummy file to enable debugging, to be changed by the user anyway they like.
+ * @brief Dummy file to enable debugging...
  */
 
 /*
@@ -38,6 +38,15 @@
 
 #include "AmTrack.h"
 
+#include <assert.h>
+
 int main(){
+
+	double E_MeV_u = 60;
+	double beta = AT_beta_from_E_single( E_MeV_u );
+	double E_MeV_u_bis = AT_E_from_beta_single( beta );
+
+	assert( abs(E_MeV_u - E_MeV_u_bis) < E_MeV_u * 1e-10 );
+
 	return EXIT_SUCCESS;
 };
