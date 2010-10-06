@@ -105,7 +105,7 @@ typedef struct{
  * @param[in]  N2                  number of bins per factor of two in local dose array
  * @return number of bins to hold the f1 distribution
  */
-long  AT_n_bins_for_singe_impact_local_dose_ditrib(
+long  AT_n_bins_for_singe_impact_local_dose_distrib(
     const long   n,
     const double E_MeV_u[],
     const long   particle_no[],

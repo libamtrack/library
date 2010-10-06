@@ -992,7 +992,7 @@ void  AT_SC_get_f1_array_size_R(
     rdd_parameter_double[i] = (double)rdd_parameter[i];
   }
 
-  n_bins_f1_long = AT_n_bins_for_singe_impact_local_dose_ditrib( n_long,
+  n_bins_f1_long = AT_n_bins_for_singe_impact_local_dose_distrib( n_long,
       E_MeV_u_double,
       particle_no_long,
       material_no_long,
