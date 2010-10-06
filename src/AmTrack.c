@@ -52,7 +52,7 @@ void AT_run_SPIFF_method(  const long  n,
     double        results[])
 {
 
-  long     n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_ditrib(  n,
+  long     n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_distrib(  n,
       E_MeV_u,
       particle_no,
       material_no,
@@ -558,7 +558,7 @@ void AT_run_SPISS_method(  const long  n,
 
   // The histogram initialization and handling has been adapted to SPIFF
   // although some features are not used here
-  long    n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_ditrib(          n,
+  long    n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_distrib(          n,
       E_MeV_u,
       particle_no,
       material_no,
