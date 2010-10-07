@@ -449,6 +449,37 @@ void AT_histo_add(      const long number_of_bins,
   }
 }
 
+void AT_histo_sum(	const long number_of_bins,
+		const double lowest_left_limit,
+		const double step,
+		const long histo_type,
+		const double frequency,
+		double* sum)
+{
+	long 	i;
+	double 	midpoint, bin_width;
+	*sum	= 0.0;
+	for(i = 0; i < number_of_bins; i++){
+		AT_histo_midpoint( number_of_bins,
+				lowest_left_limit,
+				step,
+				histo_type,
+				i,
+				&midpoint);
+		AT_histo_bin_width( number_of_bins,
+				lowest_left_limit,
+				step,
+				histo_type,
+				i,
+				&bin_width);
+		*sum	+= frequency * midpoint * bin_width;
+	}
+}
+
+void AT_histo_mean();
+
+void AT_histo_variance();
+
 
 /* OLD ROUTINES, KEPT FOR COMPATIBILITY */
 double AT_histoOld_log_bin_width(	const long number_of_bins,
