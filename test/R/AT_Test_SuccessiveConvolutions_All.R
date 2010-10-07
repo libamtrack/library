@@ -130,7 +130,7 @@ res.SC$f)
 
 pdf("AT_test_successive_convolutions_All.pdf")						
 
-p1
+plot(p1)
 
 dev.off()
 
