@@ -61,7 +61,7 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.so.debug.2086359939.1204432094" name="libamtrack.so" rcbsApplicability="disable" resourcePath="libamtrack.so" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.so.debug.2086359939.1187951200" name="Makefile" rcbsApplicability="disable" resourcePath="Makefile" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="example/basic_plots/AT_plot.c|test/C/AT_test_Katz.c|test/C/AT_test_GSM.c|data/Tsuruoka_2005/run_simulation_GSM.c|test/C/AT_UI.c|test/C/AT_test.c|wrapper/R/example.c|wrapper/example.h|wrapper/example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="example/demo/AT_demo.c|example/basic_plots/AT_plot.c||test/C/AT_test.c|wrapper/R/example.c|wrapper/example.h|wrapper/example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -563,7 +563,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="example/basic_plots/AT_plot.c|test/C/AT_test_Katz.c|test/C/AT_test_GSM.c|data/Tsuruoka_2005/run_simulation_GSM.c|test/C/AT_UI.c|test/C/AT_test.c|wrapper/R/example.c|wrapper/example.h|wrapper/example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="example/demo/AT_demo.c|example/basic_plots/AT_plot.c|test/C/AT_test_Katz.c|test/C/AT_test_GSM.c|data/Tsuruoka_2005/run_simulation_GSM.c|test/C/AT_UI.c|test/C/AT_test.c|wrapper/R/example.c|wrapper/example.h|wrapper/example.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
