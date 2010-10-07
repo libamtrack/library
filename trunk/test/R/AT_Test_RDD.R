@@ -25,7 +25,7 @@
 rm( list = ls() )
 
 # load libAmTrack library
-try(dyn.load("..\..\lib\libamtrack.dll"))
+try(dyn.load("../../lib/libamtrack.dll"))
 try(dyn.load("../../lib/libamtrack.so"))
 try(dyn.load("../../lib/libamtrack.dylib"))
 

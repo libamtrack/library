@@ -4,7 +4,7 @@
 
 rm(list = ls())
 
-try(dyn.load("..\..\lib\libamtrack.dll"))
+try(dyn.load("../../lib/libamtrack.dll"))
 try(dyn.load("../../lib/libamtrack.so"))
 try(dyn.load("../../lib/libamtrack.dylib"))
 
@@ -47,15 +47,16 @@ res$f$which <- "final"
 df.plot <- data.frame(	f.d.Gy	= c(df$f.d.Gy, res$f$f.d.Gy),
 						f		= c(df$f, res$f$f),
 						which	= c(df$which, res$f$which))
-						
-pdf("AT_test_successive_convolutions.pdf")						
-xyplot(f ~ log10(f.d.Gy),
+
+p1 <- xyplot(f ~ log10(f.d.Gy),
 		df.plot,
 		type = 's',
 		groups = which,
 		auto.key = T)
-		
-dev.off()
-		
 
 						
+pdf("AT_test_successive_convolutions.pdf")						
+
+p1
+
+dev.off()

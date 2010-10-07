@@ -4,7 +4,7 @@
 
 rm(list = ls())
 
-try(dyn.load("..\..\lib\libamtrack.dll"))
+try(dyn.load("../../lib/libamtrack.dll"))
 try(dyn.load("../../lib/libamtrack.so"))
 try(dyn.load("../../lib/libamtrack.dylib"))
 
@@ -122,11 +122,15 @@ print(res.SC$n.bins.f.used)
 print(res.SC$f0)
 print(res.SC$d)
 
-xyplot(log10(f)~log10(f.d.Gy),
+p1 <- xyplot(log10(f)~log10(f.d.Gy),
 res.SC$f)
 
 #df <- read.table("SuccessiveConvolutions.log", header = TRUE, sep = ";")
-#xyplot(xyplot(log10(f)~log10(f.d.Gy)|n.convolution,
-#df))
+#p1 <- xyplot(xyplot(log10(f)~log10(f.d.Gy)|n.convolution,df))
 
+pdf("AT_test_successive_convolutions_All.pdf")						
+
+p1
+
+dev.off()
 
