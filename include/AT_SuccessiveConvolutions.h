@@ -36,7 +36,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <malloc.h>
-
+#include <assert.h>
 
 /**
  * Structure to hold all variables necessary for the SuccessiveConvolution routine
@@ -247,58 +247,94 @@ void   AT_SuccessiveConvolutions( const double  u,
 
 /**
  * Normalized the distribution resulting from last convolution
- * @param theKList
- * @return
  */
-AT_aKList  AT_SC_NORMAL(AT_aKList theKList);
-
-
-/**
- * Writes output on last convolution
- * @param theKList
- * @return
- */
-AT_aKList  AT_SC_OUTPUT(AT_aKList theKList);
-
+void AT_Kellerer_normalize(const long array_size,
+		const long MIH,
+		const long MIE,
+		const long LEH,
+		const double H0,
+		const double E[],
+		const double DE[],
+		double CM1,
+		double CM2,
+		double CM3,
+		double CM4,
+		double X,
+		double H[]);
 
 /**
  * Calculates arrays A and B to be used in quadratic extrapolation of F in AT_SC_FOLD
- * @param theKList
- * @return
  */
-AT_aKList  AT_SC_INTERP(AT_aKList theKList);
-
+void AT_Kellerer_interpolation(const long N2,
+		const long LEF,
+		const long array_size,
+		double	F[],
+		double	A[],
+		double	BI[]);
 
 /**
  * Selects a new coordinate system if F has become to narrow
- * @param theKList
- * @return
  */
-AT_aKList  AT_SC_RESET(AT_aKList theKList);
+void AT_Kellerer_reset(long N2,
+		long U,
+		long array_size,
+		long LEF,
+		long MIE,
+		long MIF,
+		const double E0,
+		double E[],
+		double DE[],
+		double F[],
+		double A[],
+		double BI[],
+		double DI[]);
 
 
 /**
  * Adds the term 2*F0*F(L) to H(L)
- * @param theKList
- * @return
  */
-AT_aKList  AT_SC_ZERO(AT_aKList theKList);
-
+void AT_Kellerer_zero(const long MIF,
+		const long array_size,
+		const long MIE,
+		const long LEF,
+		const double F0,
+		const double F[],
+		const double DE[],
+		long MIH,
+		long LEH,
+		double X,
+		double H[]);
 
 /**
  * Cuts tails of distribution that contribute less that shrink_tails_under to @<f@>
- * @param theKList
- * @return
  */
-AT_aKList  AT_SC_SHRINK(AT_aKList theKList);
-
+void AT_Kellerer_shrink(const long array_size,
+		const long MIE,
+		const double shrink_tails_under,
+		const double DE[],
+		long MIH,
+		long LEH,
+		double H[]);
 
 /**
  * Does actual convolution, makes use of the symmetry
- * @param theKList
- * @return
  */
-AT_aKList AT_SC_FOLD(AT_aKList theKList);
+void AT_Kellerer_Folding(		const long N2,
+		const long array_size,
+		const long LEF,
+		const long MIE,
+		const long MIF,
+		const double DE[],
+		const double DI[],
+		long MIH,
+		long LEH,
+		const double F0,
+		double H0,
+		double F[],
+		double H[],
+		double A[],
+		double BI[]);
+
 
 
 #endif // AT_SUCCESSIVECONVOLUTIONS_H_
