@@ -48,7 +48,7 @@ int AT_histo_logarithmic_left_limit(    const long number_of_bins,
 										const long bin_no,
 										double * left_limit){
 	if((bin_no >= 0) && (bin_no <= number_of_bins)){
-		*left_limit = lowest_left_limit * (bin_no + 1.0) * step;
+		*left_limit = lowest_left_limit * pow(step, bin_no);
 		return EXIT_SUCCESS;
 	}
 	return EXIT_FAILURE;
@@ -121,14 +121,14 @@ int AT_histo_logarithmic_bin_width(      const long number_of_bins,
   int status_code = AT_histo_logarithmic_left_limit(       number_of_bins,
                                           lowest_left_limit,
                                           step,
-                                          bin_no + 1,
+                                          bin_no,
                                           &left_limit);
   if( status_code == EXIT_FAILURE )
 	  return status_code;
   status_code = AT_histo_logarithmic_left_limit(       number_of_bins,
                                           lowest_left_limit,
                                           step,
-                                          bin_no,
+                                          bin_no + 1,
                                           &right_limit);
   if( status_code == EXIT_FAILURE )
 	  return status_code;
@@ -453,7 +453,7 @@ void AT_histo_sum(	const long number_of_bins,
 		const double lowest_left_limit,
 		const double step,
 		const long histo_type,
-		const double frequency,
+		const double frequency[],
 		double* sum)
 {
 	long 	i;
@@ -472,14 +472,34 @@ void AT_histo_sum(	const long number_of_bins,
 				histo_type,
 				i,
 				&bin_width);
-		*sum	+= frequency * midpoint * bin_width;
+		*sum	+= frequency[i] * midpoint * bin_width;
 	}
 }
 
-void AT_histo_mean();
+void AT_histo_normalize(	const long number_of_bins,
+		const double lowest_left_limit,
+		const double step,
+		const long histo_type,
+		double frequency[])
+{
+	long 	i;
+	double 	sum;
+	AT_histo_sum(	number_of_bins,
+			lowest_left_limit,
+			step,
+			histo_type,
+			frequency,
+			&sum);
 
-void AT_histo_variance();
+	for(i = 0; i < number_of_bins; i++){
+		frequency[i] /= sum;				// TODO: Replace by AT_normalize
+	}
+}
 
+/* TRANSIENT ROUTINES FOR TRANSFORMING OLD-STYLE KELLERER HISTOGRAMS INTO NEW STYLE */
+double AT_N2_to_step(double N2){
+	return(pow(2, 1.0/N2));
+}
 
 /* OLD ROUTINES, KEPT FOR COMPATIBILITY */
 double AT_histoOld_log_bin_width(	const long number_of_bins,
