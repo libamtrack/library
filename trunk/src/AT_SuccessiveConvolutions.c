@@ -365,47 +365,41 @@ void  AT_low_fluence_local_dose_distribution(  const long     n_bins_f1,
 
 
 void AT_Kellerer_normalize(const long array_size,
-		const long MIH,
-		const long MIE,
-		const long LEH,
-		const double H0,
-		const double E[],
-		const double DE[],
-		double* CM1,
-		double* CM2,
-		double H[]){
+		const long first_bin_values,
+		const long first_bin_midpoints,
+		const long n_bins_values,
+		const double zero_bin_value,
+		const double midpoints[],
+		const double bin_widths[],
+		double* mean,
+		double* variance,
+		double frequency[]){
 
-	double  Y        =  (*CM1) * 2;
-	double  Z        =  (*CM2) * 2;
-	double  CM0      =  H0;
-	*CM1     =  0;
+	double  sum			=  zero_bin_value;
+	*mean     					=  0;
 
-	long    N        =  MIH - MIE;
-	long     L;
-	for (L = 1; L <= LEH; L++){
-		long    LE     =  L + N;
-		double  S      =  H[L-1] * DE[LE-1];
-
-		CM0            =  CM0 + S;
-		*CM1   =  *CM1 + S * E[LE-1];
+	/* compute sum and mean */
+	long    bin_shift        =  first_bin_values - first_bin_midpoints;
+	long    i, j;
+	for (i = 0; i < n_bins_values; i++){
+		j		    =  i + bin_shift;
+		sum			=  sum + frequency[i] * bin_widths[j];
+		*mean		=  *mean + frequency[i] * bin_widths[j] * midpoints[j];
 	}
 
-	double  TT       =  (1.0 - H0) / (CM0 - H0);
-	*CM1     *=  TT;
-	double  R        = (*CM1) * (*CM1);
-	*CM2     =  R * H0;
+	/* normalizing factor */
+	double  norm_factor     =  (1.0 - zero_bin_value) / (sum - zero_bin_value);
 
-	for (L = 1; L <= LEH; L++){
-		long   LE        =    L + N;
-		double  EC       =    E[LE-1] - *CM1;
-		double  E2       =    EC * EC;
-		H[L-1]  =    H[L-1] * TT;
-		double  S        =    H[L-1] * DE[LE-1] * E2;
-		*CM2     +=   S;
+	/* scale mean */
+	*mean     				*=  norm_factor;
+
+	/* normalize values and compute variance */
+	*variance     			=  gsl_pow_2(*mean) * zero_bin_value;
+	for (i = 0; i < n_bins_values; i++){
+		j        		=    i + bin_shift;
+		frequency[i]  	*=    norm_factor;
+		*variance     	+=   frequency[i] * bin_widths[j] * gsl_pow_2(midpoints[j] - *mean);
 	}
-
-	Y          =  *CM1 / Y;
-	Z          =  *CM2 / Z;
 }
 
 void AT_Kellerer_interpolation(const long N2,
@@ -746,13 +740,27 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	///////////////////////////////////////
 	double   central_moment_1 = 1;
 	double   central_moment_2 = 1;
-	AT_Kellerer_normalize(array_size, first_bin_values, first_bin_midpoints, n_bins_values, value_zero_bin, midpoints, bin_widths, &central_moment_1, &central_moment_2, values);
+	AT_Kellerer_normalize(	array_size,
+			first_bin_values,
+			first_bin_midpoints,
+			n_bins_values,
+			value_zero_bin,
+			midpoints,
+			bin_widths,
+			&central_moment_1,
+			&central_moment_2,
+			values);
 
 	///////////////////////////////////////
-	// AT_SC_SHRINK distribution
+	// Cut tails of distribution
 	///////////////////////////////////////
 	if(shrink_tails){
-		AT_Kellerer_shrink(array_size, first_bin_midpoints, shrink_tails_under, bin_widths, &first_bin_values, &n_bins_values, values);
+		AT_Kellerer_shrink(	array_size,
+				first_bin_midpoints,
+				shrink_tails_under,
+				bin_widths,
+				&first_bin_values,
+				&n_bins_values, values);
 	}
 
 	///////////////////////////////////////
@@ -770,7 +778,6 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	///////////////////////////////////////
 	// Get approximation for small hit numbers
 	///////////////////////////////////////
-
 	long n_convolutions    = 0;
 	double current_mean_number_of_tracks_contrib	= final_mean_number_of_tracks_contrib;
 	while(current_mean_number_of_tracks_contrib > LOW_FLUENCE_APPROX_FOR_MEAN_NUMBER_OF_TRACKS_CONTRIB){
@@ -787,14 +794,14 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	///////////////////////////////////////
 	// Convolution loop
 	///////////////////////////////////////
-	long   j;
+	long   	j;
 	double* values_old        			= (double*)calloc(array_size, sizeof(double));
 	double  value_zero_bin_old			= 0.0;
 	long	first_bin_values_old      	= 0;
 	long	n_bins_values_old      		= 0;
 
 	for(j = 0; j < n_convolutions; j++){
-		current_mean_number_of_tracks_contrib        *= 2.0;
+		current_mean_number_of_tracks_contrib	*= 2.0;
 
 		/* Copy former distribution */
 		value_zero_bin_old         	=  value_zero_bin;
@@ -806,19 +813,69 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 
 
 		if((current_mean_number_of_tracks_contrib >= 10.0) && (adjust_N2 == true)){
-			AT_Kellerer_reset(N2, array_size, &n_bins_values_old, &first_bin_midpoints, &first_bin_values_old, lowest_left_limit, midpoints, bin_widths, values_old, A, BI, DI);
+			AT_Kellerer_reset(	N2,
+					array_size,
+					&n_bins_values_old,
+					&first_bin_midpoints,
+					&first_bin_values_old,
+					lowest_left_limit,
+					midpoints,
+					bin_widths,
+					values_old,
+					A,
+					BI,
+					DI);
 		}
 
-		AT_Kellerer_folding(*N2,array_size, n_bins_values_old, first_bin_midpoints, first_bin_values_old, bin_widths, DI, &first_bin_values, &n_bins_values, value_zero_bin_old, &value_zero_bin, values_old, values, A, BI);
+		AT_Kellerer_folding(	*N2,
+				array_size,
+				n_bins_values_old,
+				first_bin_midpoints,
+				first_bin_values_old,
+				bin_widths,
+				DI,
+				&first_bin_values,
+				&n_bins_values,
+				value_zero_bin_old,
+				&value_zero_bin,
+				values_old,
+				values,
+				A,
+				BI);
 
 		if (value_zero_bin_old >= 1e-10){
-			AT_Kellerer_zero(first_bin_values_old, array_size, first_bin_midpoints, n_bins_values_old, value_zero_bin_old, values_old, bin_widths, &first_bin_values, &n_bins_values, values);
+			AT_Kellerer_zero(	first_bin_values_old,
+					array_size,
+					first_bin_midpoints,
+					n_bins_values_old,
+					value_zero_bin_old,
+					values_old,
+					bin_widths,
+					&first_bin_values,
+					&n_bins_values,
+					values);
 		}
 
 		if(shrink_tails){
-			AT_Kellerer_shrink(array_size, first_bin_midpoints, shrink_tails_under, bin_widths, &first_bin_values, &n_bins_values, values);
+			AT_Kellerer_shrink(	array_size,
+					first_bin_midpoints,
+					shrink_tails_under,
+					bin_widths,
+					&first_bin_values,
+					&n_bins_values,
+					values);
 		}
-		AT_Kellerer_normalize(array_size, first_bin_values, first_bin_midpoints, n_bins_values, value_zero_bin, midpoints, bin_widths, &central_moment_1, &central_moment_2, values);
+
+		AT_Kellerer_normalize(	array_size,
+				first_bin_values,
+				first_bin_midpoints,
+				n_bins_values,
+				value_zero_bin,
+				midpoints,
+				bin_widths,
+				&central_moment_1,
+				&central_moment_2,
+				values);
 	}
 
 
