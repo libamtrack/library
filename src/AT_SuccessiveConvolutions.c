@@ -436,8 +436,7 @@ void AT_Kellerer_interpolation(const long N2,
 
 
 void AT_Kellerer_reset(long* N2,
-		double* U,
-		long* array_size,
+		const long array_size,
 		long* LEF,
 		long* MIE,
 		long* MIF,
@@ -449,6 +448,7 @@ void AT_Kellerer_reset(long* N2,
 		double BI[],
 		double DI[]){
 
+	double U           = log(2.0) / (double)(*N2);
 	if (*N2 <= 256){
 		if(*LEF <= 64){
 			double S              =  log(2.0);
@@ -456,12 +456,12 @@ void AT_Kellerer_reset(long* N2,
 			//      N2            =  N2 * 2;
 			*N2          +=  (long)(0.1 + exp((double)((long)(log(TT) / S - 0.99)) * S));
 			TT                   =  TT / (double)(*N2);
-			*U           =  S / (double)(*N2);
+			U           =  S / (double)(*N2);
 
 			//      theKList            =  AT_SC_INTERP(theKList);
 			AT_Kellerer_interpolation( *N2,
 					*LEF,
-					*array_size,
+					array_size,
 					F,
 					A,
 					BI);
@@ -497,25 +497,25 @@ void AT_Kellerer_reset(long* N2,
 			}
 
 			long   L;
-			for (L = *N2; L <= *array_size; L++){;
-			double S           =  (double)(L - (*N2)) * (*U);
-			double tmp         =  -1.0 * log(1.0 - 0.5 * exp(-S)) / (*U);
+			for (L = *N2; L <= array_size; L++){;
+			double S           =  (double)(L - (*N2)) * U;
+			double tmp         =  -1.0 * log(1.0 - 0.5 * exp(-S)) / U;
 			DI[L -1]  =  tmp - (double)(*N2);    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
 			}
 
 			*MIE          =  *MIF;
 
 			long   J;
-			for (J = 1; J <= *array_size; J++){
+			for (J = 1; J <= array_size; J++){
 				double S            =  (double)(J + (*MIE));
-				E[J -1]    =  exp(S * (*U)) * E0;
+				E[J -1]    =  exp(S * U) * E0;
 				///////////////////////////////////////////////////////////////////////////
 				// addition SG: not to use Kellerer's formula for new DE's, as it is     //
 				// not exact (but deviation are small)                                   //
 				///////////////////////////////////////////////////////////////////////////
-				double* high_E      =  (double*)calloc(*array_size, sizeof(double));
+				double* high_E      =  (double*)calloc(array_size, sizeof(double));
 				S                   =  (double)(J + *MIE + 1);
-				high_E[J - 1]       =  exp(S * (*U)) * E0;
+				high_E[J - 1]       =  exp(S * U) * E0;
 				DE[J -1]   =  high_E[J -1] - E[J -1];
 				free(high_E);
 			}
@@ -526,16 +526,16 @@ void AT_Kellerer_reset(long* N2,
 		*MIE          =  *MIF;
 
 		long   J;
-		for (J = 1; J <= *array_size; J++){
+		for (J = 1; J <= array_size; J++){
 			double S             =  (double)(J + *MIE);
-			E[J -1]     =  exp(S * (*U)) * E0;
+			E[J -1]     =  exp(S * U) * E0;
 			///////////////////////////////////////////////////////////////////////////
 			// addition SG: not to use Kellerer's formula for new DE's, as it is     //
 			// not exact (but deviation are small)                                   //
 			///////////////////////////////////////////////////////////////////////////
-			double* high_E       =  (double*)calloc(*array_size, sizeof(double));
+			double* high_E       =  (double*)calloc(array_size, sizeof(double));
 			S                    =  (double)(J + *MIE + 1);
-			high_E[J - 1]        =  exp(S * (*U)) * E0;
+			high_E[J - 1]        =  exp(S * U) * E0;
 			DE[J -1]    =  high_E[J -1] - E[J -1];
 			free(high_E);
 		}
@@ -708,7 +708,7 @@ void AT_Kellerer_folding(		const long N2,
 }
 
 void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_contrib,
-		const long    n_bins_f,
+		const long    array_size,
 		long*         N2,
 		long*         n_bins_f_used,
 		double        f_d_Gy[],
@@ -723,92 +723,49 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 		const double  shrink_tails_under,
 		const bool    adjust_N2)
 {
-	long     array_size;                  /**< size of function arrays F..BI */
-	double   U;                           /**< Logarithmic stepwith corresponding to N2, U = ln(2)/N2 */
-
-	double   CM1;                         /**< Central moment 1 of current distribution H, computed in AT_SC_NORMAL */
-	double   CM2;                         /**< Central moment 2 of current distribution H, computed in AT_SC_NORMAL */
-
-	double   D1;                          /**< Central moment 1 of single impact (f1) distribution */
-
-	double   F0;                          /**< Zero bin value for source distribution F (= distribution to be convoluted) */
-	double*  F;                           /**< Array holding values of source distribution F */
-	long     MIF;                         /**< Index of first bin currently used for F */
-	long     LEF;                         /**< Number of bins currently used for F */
-
-	double   H0;                          /**< Zero bin value for resulting distribution H */
-	double*  H;                           /**< Array holding values of resulting distribution H */
-	long     MIH;                         /**< Index of first bin currently used for H */
-	long     LEH;                         /**< Number of bins currently used for H */
-
-	double   E0;                          /**< Value for the LEFT limit of the first energy bin */
-	double*  E;                           /**< Array holding energy bin limits (midpoint) for distributions F, H */
-	double*  DE;                          /**< Array holding energy bin widths for distributions F, H */
-	long     MIE;                         /**< Index of first bin currently used for E */
-
-	double*  DI;                          /**< Auxiliary array that enables easy index operations */
-	double*  A;                           /**< Auxiliary array used for Kellerer's quadratic interpolation during AT_SC_FOLD */
-	double*  BI;                          /**< Auxiliary array used for Kellerer's quadratic interpolation during AT_SC_FOLD */
-
-	array_size  = n_bins_f;
-	U           = log(2.0) / (double)(*N2);
-
-	F        = (double*)calloc(array_size, sizeof(double));
-	H        = (double*)calloc(array_size, sizeof(double));
-	E        = (double*)calloc(array_size, sizeof(double));
-	DE       = (double*)calloc(array_size, sizeof(double));
-	DI       = (double*)calloc(array_size, sizeof(double));
-	A        = (double*)calloc(array_size, sizeof(double));
-	BI       = (double*)calloc(array_size, sizeof(double));
-
-	// Some other initializations
-	MIH      = 0;
-	MIE      = 0;
-	H0       = 0;
-
-	CM1      = 1;
-	CM2      = 1;
-
-	// Added by Leszek
-	MIF      = 0;
-	LEF      = 0;
+	long	i;
 
 	// Copy input data
-	E0      = f_d_Gy[0] * exp(-1.0 * U);
+	double	value_zero_bin       	= 0.0f;
+	double	lowest_left_limit       = f_d_Gy[0] * exp(-1.0 * log(2.0) / (double)(*N2));		// lowest midpoint - half bin width
+	double*	midpoints        		= (double*)calloc(array_size, sizeof(double));
+	double* bin_widths       		= (double*)calloc(array_size, sizeof(double));
+	double*	values        			= (double*)calloc(array_size, sizeof(double));
+	long	first_bin_midpoints		= 0;
+	long 	first_bin_values      	= 0;
+	long	n_bins_values      		= *n_bins_f_used;
 
-	long   L;
-	for (L = 1; L <= array_size; L++){
-		E[L -1]      = f_d_Gy[L -1];
-		DE[L -1]     = f_dd_Gy[L -1];
-		H[L -1]      = f[L -1];
+	for (i = 0; i < array_size; i++){
+		midpoints[i]	= f_d_Gy[i];
+		bin_widths[i]	= f_dd_Gy[i];
+		values[i]		= f[i];
 	}
-
-	LEH            = *n_bins_f_used;
-
-	///////////////////////////////////////
-	// Fill array for auxilary function that enables easy index operations
-	for  (L = *N2; L <= array_size; L++){
-		double S          =  (double)(L - *N2) * U;
-		double tmp        =  -1.0 * log(1.0 - 0.5 * exp(-S)) / U;
-		DI[L -1]    =  tmp - (double)(*N2);
-	}    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
 
 	///////////////////////////////////////
 	// Normalize distribution
 	///////////////////////////////////////
-	AT_Kellerer_normalize(array_size, MIH, MIE, LEH, H0, E, DE, &CM1, &CM2, H);
-
-	///////////////////////////////////////
-	// Get moments of single impact f1
-	///////////////////////////////////////
-	D1    =    CM1;
+	double   central_moment_1 = 1;
+	double   central_moment_2 = 1;
+	AT_Kellerer_normalize(array_size, first_bin_values, first_bin_midpoints, n_bins_values, value_zero_bin, midpoints, bin_widths, &central_moment_1, &central_moment_2, values);
 
 	///////////////////////////////////////
 	// AT_SC_SHRINK distribution
 	///////////////////////////////////////
 	if(shrink_tails){
-		AT_Kellerer_shrink(array_size, MIE, shrink_tails_under, DE, &MIH, &LEH, H);
+		AT_Kellerer_shrink(array_size, first_bin_midpoints, shrink_tails_under, bin_widths, &first_bin_values, &n_bins_values, values);
 	}
+
+	///////////////////////////////////////
+	// Fill array for auxilary function that enables easy index operations
+	double*	DI       = (double*)calloc(array_size, sizeof(double));
+	double*	A        = (double*)calloc(array_size, sizeof(double));
+	double*	BI       = (double*)calloc(array_size, sizeof(double));
+
+	for  (i = *N2; i <= array_size; i++){
+		double S          =  (double)(i - *N2) * log(2.0) / (double)(*N2);
+		double tmp        =  -1.0 * log(1.0 - 0.5 * exp(-S)) / (log(2.0) / (double)(*N2));
+		DI[i-1]    		  =  tmp - (double)(*N2);
+	}    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
 
 	///////////////////////////////////////
 	// Get approximation for small hit numbers
@@ -821,41 +778,47 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 		n_convolutions++;
 	}
 
-	H0         =    1.0 - current_mean_number_of_tracks_contrib;
+	value_zero_bin         =    1.0 - current_mean_number_of_tracks_contrib;
 
-	for (L = 1; L <= LEH; L++){
-		H[L -1]  *=  current_mean_number_of_tracks_contrib;
+	for (i = 0; i < n_bins_values; i++){
+		values[i]  *=  current_mean_number_of_tracks_contrib;
 	}
 
 	///////////////////////////////////////
 	// Convolution loop
 	///////////////////////////////////////
 	long   j;
+	double* values_old        			= (double*)calloc(array_size, sizeof(double));
+	double  value_zero_bin_old			= 0.0;
+	long	first_bin_values_old      	= 0;
+	long	n_bins_values_old      		= 0;
+
 	for(j = 0; j < n_convolutions; j++){
 		current_mean_number_of_tracks_contrib        *= 2.0;
 
-		for (L = 1; L <= LEH; L++){
-			F[L -1]      =  H[L -1];
+		/* Copy former distribution */
+		value_zero_bin_old         	=  value_zero_bin;
+		n_bins_values_old        	=  n_bins_values;
+		first_bin_values_old        =  first_bin_values;
+		for (i = 0; i < n_bins_values; i++){
+			values_old[i]      =  values[i];
 		}
 
-		F0         =  H0;
-		LEF        =  LEH;
-		MIF        =  MIH;
 
 		if((current_mean_number_of_tracks_contrib >= 10.0) && (adjust_N2 == true)){
-			AT_Kellerer_reset(N2, &U, &array_size, &LEF, &MIE, &MIF, E0, E, DE, F, A, BI, DI);
+			AT_Kellerer_reset(N2, array_size, &n_bins_values_old, &first_bin_midpoints, &first_bin_values_old, lowest_left_limit, midpoints, bin_widths, values_old, A, BI, DI);
 		}
 
-		AT_Kellerer_folding(*N2,array_size, LEF, MIE, MIF, DE, DI, &MIH, &LEH, F0, &H0, F, H, A, BI);
+		AT_Kellerer_folding(*N2,array_size, n_bins_values_old, first_bin_midpoints, first_bin_values_old, bin_widths, DI, &first_bin_values, &n_bins_values, value_zero_bin_old, &value_zero_bin, values_old, values, A, BI);
 
-		if (F0 >= 1e-10){
-			AT_Kellerer_zero(MIF, array_size, MIE, LEF, F0, F, DE, &MIH, &LEH, H);
+		if (value_zero_bin_old >= 1e-10){
+			AT_Kellerer_zero(first_bin_values_old, array_size, first_bin_midpoints, n_bins_values_old, value_zero_bin_old, values_old, bin_widths, &first_bin_values, &n_bins_values, values);
 		}
 
 		if(shrink_tails){
-			AT_Kellerer_shrink(array_size, MIE, shrink_tails_under, DE, &MIH, &LEH, H);
+			AT_Kellerer_shrink(array_size, first_bin_midpoints, shrink_tails_under, bin_widths, &first_bin_values, &n_bins_values, values);
 		}
-		AT_Kellerer_normalize(array_size, MIH, MIE, LEH, H0, E, DE, &CM1, &CM2, H);
+		AT_Kellerer_normalize(array_size, first_bin_values, first_bin_midpoints, n_bins_values, value_zero_bin, midpoints, bin_widths, &central_moment_1, &central_moment_2, values);
 	}
 
 
@@ -866,33 +829,33 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 
 	*d    = 0.0;
 
-	for (L = 1; L <= array_size; L++){
-		f_d_Gy[L -1]      =  0.0;
-		f_dd_Gy[L -1]     =  0.0;
-		f[L -1]           =  0.0;
-		fdd[L -1]         =  0.0;
-		dfdd[L -1]        =  0.0;
+	for (i = 0; i < array_size; i++){
+		f_d_Gy[i]      =  0.0;
+		f_dd_Gy[i]     =  0.0;
+		f[i]           =  0.0;
+		fdd[i]         =  0.0;
+		dfdd[i]        =  0.0;
 	}
 
-	long  N        = MIH - MIE;
-	for (L = 1; L <= LEH; L++){
-		long LE          =  L + N;
-		f_d_Gy[L -1]     =  E[LE -1];
-		f_dd_Gy[L -1]    =  DE[LE -1];
-		f[L -1]          =  H[L-1];
-		fdd[L -1]        =  f[L -1] * f_dd_Gy[L -1];
-		dfdd[L -1]       =  fdd[L -1] * f_d_Gy[L -1];
-		*d              +=  dfdd[L -1];
+	long  N        = first_bin_values - first_bin_midpoints;
+	for (i = 0; i < n_bins_values; i++){
+		long j          =  i + N;
+		f_d_Gy[i]     =  midpoints[j];
+		f_dd_Gy[i]    =  bin_widths[j];
+		f[i]          =  values[i];
+		fdd[i]        =  f[i] * f_dd_Gy[i];
+		dfdd[i]       =  fdd[i] * f_d_Gy[i];
+		*d              +=  dfdd[i];
 	}
 
-	*n_bins_f_used = LEH;
+	*n_bins_f_used = n_bins_values;
 
-	*f0            = H0;
+	*f0            = value_zero_bin;
 
-	free(F);
-	free(H);
-	free(E);
-	free(DE);
+	free(values_old);
+	free(values);
+	free(midpoints);
+	free(bin_widths);
 	free(DI);
 	free(A);
 	free(BI);

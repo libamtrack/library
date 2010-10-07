@@ -171,7 +171,7 @@ void  AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
  * @param[in]      adjust_N2           if true, N2 (i.e. the bin density) can be adjusted. This can be necessary esp. for high doses / fluences where f gets very narrow
  */
 void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_contrib,
-		const long    n_bins_f,
+		const long    array_size,
 		long*         N2,
 		long*         n_bins_f_used,
 		double        f_d_Gy[],
@@ -214,8 +214,7 @@ void AT_Kellerer_interpolation(const long N2,
  * Selects a new coordinate system if F has become to narrow
  */
 void AT_Kellerer_reset(long* N2,
-		double* U,
-		long* array_size,
+		const long array_size,
 		long* LEF,
 		long* MIE,
 		long* MIF,
