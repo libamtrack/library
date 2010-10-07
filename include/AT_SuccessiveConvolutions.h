@@ -170,21 +170,21 @@ void  AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
  * @param[in]      shrink_tails_under  cut threshold for tails
  * @param[in]      adjust_N2           if true, N2 (i.e. the bin density) can be adjusted. This can be necessary esp. for high doses / fluences where f gets very narrow
  */
-void   AT_SuccessiveConvolutions( const double  u,
-    const long   n_bins_f,
-    long*        N2,
-    long*        n_bins_f_used,
-    double       f_d_Gy[],
-    double       f_dd_Gy[],
-    double       f[],
-    double*      f0,
-    double       fdd[],
-    double       dfdd[],
-    double*      d,
-    const bool   write_output,
-    const bool   shrink_tails,
-    const double shrink_tails_under,
-    const bool   adjust_N2);
+void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_contrib,
+		const long    n_bins_f,
+		long*         N2,
+		long*         n_bins_f_used,
+		double        f_d_Gy[],
+		double        f_dd_Gy[],
+		double        f[],
+		double*       f0,
+		double        fdd[],
+		double        dfdd[],
+		double*       d,
+		const bool    write_output,
+		const bool    shrink_tails,
+		const double  shrink_tails_under,
+		const bool    adjust_N2);
 
 /**
  * Normalized the distribution resulting from last convolution
@@ -198,7 +198,6 @@ void AT_Kellerer_normalize(const long array_size,
 		const double DE[],
 		double* CM1,
 		double* CM2,
-		double* X,
 		double H[]);
 
 /**
@@ -241,7 +240,6 @@ void AT_Kellerer_zero(const long MIF,
 		const double DE[],
 		long* MIH,
 		long* LEH,
-		double* X,
 		double H[]);
 
 /**
