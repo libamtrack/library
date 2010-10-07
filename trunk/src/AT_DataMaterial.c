@@ -1,6 +1,5 @@
 /**
- * @file
- * @brief ...
+ * @brief Material data
  */
 
 /*
@@ -30,7 +29,7 @@
  */
 
 #include "AT_DataMaterial.h"
-#include <string.h>
+
 ///////////////////////////////////////////// SINGLE MATERIAL IMPLEMENTATION ///////////////////////////////////////////////////////
 
 
@@ -66,6 +65,8 @@ long AT_material_number_from_name(
   // find look-up index for material name in material data table
   long  match;
   const long n_tmp = 1;
+
+  assert( material_name != NULL);
 
   find_elements_char(  &material_name,
       n_tmp,

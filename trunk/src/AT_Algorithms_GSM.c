@@ -1,6 +1,5 @@
 /**
- * @file
- * @brief TODO
+ * @brief GSM algorithm
  */
 
 /*

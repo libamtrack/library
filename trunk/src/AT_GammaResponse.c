@@ -1,5 +1,4 @@
 /**
- * @file
  * @brief Gamma Response models
  */
 

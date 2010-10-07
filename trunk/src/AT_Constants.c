@@ -1,6 +1,5 @@
 /**
- * @file
- * @brief ...
+ * @brief Constants
  */
 
 

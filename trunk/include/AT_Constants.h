@@ -2,7 +2,6 @@
 #define AT_CONSTANTS_H_
 
 /**
- * @file
  * @brief This files contains physical constants and unit conversions factors
  *        used by libamtrack
  */
@@ -32,9 +31,6 @@
  */
 
 #include <stdio.h>
-
-/* debugging printouts */
-/* #define _DEBUG */
 
 static const double  proton_mass_MeV_c2    =  938.272029;                           /* proton mass */
 static const double  electron_mass_MeV_c2  =  0.510998918;                          /* electron mass */

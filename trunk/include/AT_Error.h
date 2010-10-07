@@ -2,7 +2,6 @@
 #define AT_ERROR_H_
 
 /**
- * @file
  * @brief error codes
  */
 
@@ -85,9 +84,10 @@ static const AT_error_msg error_messages[6] = {
 /**
  * TODO
  * @param error_no
+ * @param error_message
  * @return
  */
-char* AT_get_error_msg(const int error_no);
+int AT_get_error_msg(const int error_no, char * error_message);
 
 
 /**

@@ -1,5 +1,4 @@
 /**
-* @file
 * @brief Wrapper functions
 *
 * C functions which are called from R cannot have input

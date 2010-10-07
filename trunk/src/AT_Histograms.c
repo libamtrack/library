@@ -1,6 +1,5 @@
 /**
- * @file
- * @brief This files handles histograms used by libamtrack
+ * @brief Histograms handling
  */
 
 

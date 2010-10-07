@@ -2,7 +2,6 @@
 #define AT_NUMERICALROUTINES_H_
 
 /**
- * @file
  * @brief Numerical Routines
  */
 

@@ -2,7 +2,6 @@
 #define AT_ELECTRONRANGE_H_
 
 /**
- * @file
  * @brief Electron range models
  */
 
@@ -29,8 +28,10 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
+#include <assert.h>
 #include <string.h>
 #include <stdio.h>
+
 #include "gsl/gsl_pow_int.h"
 #include "gsl/gsl_sf_log.h"
 

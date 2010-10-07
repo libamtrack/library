@@ -2,7 +2,6 @@
 #define AT_PHYSICSROUTINES_H_
 
 /**
- * @file
  * @brief Physics related routines
  */
 
