@@ -31,7 +31,7 @@
 
 #include "AT_SuccessiveConvolutions.h"
 
-#define MEAN_HIT_NUMBER_LINEAR_APPROX_LIMIT  0.002
+#define LOW_FLUENCE_APPROX_FOR_MEAN_NUMBER_OF_TRACKS_CONTRIB  0.002
 #define DEBUG_INTERVALS                      8
 #define DEBUG_MEAN                           10.0
 #define DEBUG_SIGMA                          1.0
@@ -316,7 +316,7 @@ void  AT_n_bins_for_low_fluence_local_dose_distribution( const double  u,
 	*n_convolutions    = 0;
 
 	*u_start      =    d_f_Gy  / d_f1_Gy;
-	while(*u_start  > MEAN_HIT_NUMBER_LINEAR_APPROX_LIMIT){
+	while(*u_start  > LOW_FLUENCE_APPROX_FOR_MEAN_NUMBER_OF_TRACKS_CONTRIB){
 		*u_start      =    0.5 * (*u_start);
 		(*n_convolutions)++;
 	}
@@ -373,7 +373,6 @@ void AT_Kellerer_normalize(const long array_size,
 		const double DE[],
 		double* CM1,
 		double* CM2,
-		double* X,
 		double H[]){
 
 	double  Y        =  (*CM1) * 2;
@@ -405,7 +404,6 @@ void AT_Kellerer_normalize(const long array_size,
 		*CM2     +=   S;
 	}
 
-	*X      *= CM0;
 	Y          =  *CM1 / Y;
 	Z          =  *CM2 / Z;
 }
@@ -553,20 +551,19 @@ void AT_Kellerer_zero(const long MIF,
 		const double DE[],
 		long* MIH,
 		long* LEH,
-		double* X,
 		double H[]){
 
-	*X          =  0;
+	double X          =  0;
 	long N              =  *MIH - MIE;
 
 	long   L;
 	for (L = 1; L <= *LEH; L++){
 		long K            =  L + N;
-		*X        +=  H[L -1] * DE[K -1];
+		X        +=  H[L -1] * DE[K -1];
 	}
 
-	double S            =  (1.0 - F0) * (1.0 - F0) / (*X);
-	*X          =  2.0 / S;
+	double S            =  (1.0 - F0) * (1.0 - F0) / X;
+	X          =  2.0 / S;
 
 	for (L = 1; L <= *LEH; L++){;
 	H[L -1]    =  H[L -1] * S;
@@ -710,7 +707,7 @@ void AT_Kellerer_folding(		const long N2,
 	free(FDE);
 }
 
-void   AT_SuccessiveConvolutions( const double  u,
+void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_contrib,
 		const long    n_bins_f,
 		long*         N2,
 		long*         n_bins_f_used,
@@ -728,12 +725,6 @@ void   AT_SuccessiveConvolutions( const double  u,
 {
 	long     array_size;                  /**< size of function arrays F..BI */
 	double   U;                           /**< Logarithmic stepwith corresponding to N2, U = ln(2)/N2 */
-
-	double   X;                           /**< seem to not be used, TODO remove */
-	double   FINAL;                       /**< Final mean impact number * @<d@> from single impact distribution */
-
-	double   CN;                          /**< Number of contributing tracks for linearized f_start, corresp. to u_start */
-	long     N1;                          /**< Current convolution number */
 
 	double   CM1;                         /**< Central moment 1 of current distribution H, computed in AT_SC_NORMAL */
 	double   CM2;                         /**< Central moment 2 of current distribution H, computed in AT_SC_NORMAL */
@@ -773,10 +764,8 @@ void   AT_SuccessiveConvolutions( const double  u,
 	// Some other initializations
 	MIH      = 0;
 	MIE      = 0;
-	N1       = 0;
 	H0       = 0;
-	X        = 1;
-	CN       = 1;
+
 	CM1      = 1;
 	CM2      = 1;
 
@@ -807,7 +796,7 @@ void   AT_SuccessiveConvolutions( const double  u,
 	///////////////////////////////////////
 	// Normalize distribution
 	///////////////////////////////////////
-	AT_Kellerer_normalize(array_size, MIH, MIE, LEH, H0, E, DE, &CM1, &CM2, &X, H);
+	AT_Kellerer_normalize(array_size, MIH, MIE, LEH, H0, E, DE, &CM1, &CM2, H);
 
 	///////////////////////////////////////
 	// Get moments of single impact f1
@@ -825,19 +814,17 @@ void   AT_SuccessiveConvolutions( const double  u,
 	// Get approximation for small hit numbers
 	///////////////////////////////////////
 
-	FINAL        = u * D1;  // Final mean impact number
-
 	long n_convolutions    = 0;
-	CN               =    FINAL  / D1; // i.e. CN = u , TODO remove FINAL
-	while(CN > MEAN_HIT_NUMBER_LINEAR_APPROX_LIMIT){
-		CN             =    0.5 * CN;
+	double current_mean_number_of_tracks_contrib	= final_mean_number_of_tracks_contrib;
+	while(current_mean_number_of_tracks_contrib > LOW_FLUENCE_APPROX_FOR_MEAN_NUMBER_OF_TRACKS_CONTRIB){
+		current_mean_number_of_tracks_contrib             /=    2;
 		n_convolutions++;
 	}
 
-	H0         =    1.0 - CN;
+	H0         =    1.0 - current_mean_number_of_tracks_contrib;
 
 	for (L = 1; L <= LEH; L++){
-		H[L -1]  =  H[L -1] * CN;
+		H[L -1]  *=  current_mean_number_of_tracks_contrib;
 	}
 
 	///////////////////////////////////////
@@ -845,8 +832,7 @@ void   AT_SuccessiveConvolutions( const double  u,
 	///////////////////////////////////////
 	long   j;
 	for(j = 0; j < n_convolutions; j++){
-		N1        =  N1 + 1;
-		CN        =  CN * 2.0;
+		current_mean_number_of_tracks_contrib        *= 2.0;
 
 		for (L = 1; L <= LEH; L++){
 			F[L -1]      =  H[L -1];
@@ -856,22 +842,20 @@ void   AT_SuccessiveConvolutions( const double  u,
 		LEF        =  LEH;
 		MIF        =  MIH;
 
-		if((CN >= 10.0) && (adjust_N2 == true)){
+		if((current_mean_number_of_tracks_contrib >= 10.0) && (adjust_N2 == true)){
 			AT_Kellerer_reset(N2, &U, &array_size, &LEF, &MIE, &MIF, E0, E, DE, F, A, BI, DI);
 		}
 
 		AT_Kellerer_folding(*N2,array_size, LEF, MIE, MIF, DE, DI, &MIH, &LEH, F0, &H0, F, H, A, BI);
 
-		if (F0 < 1e-10){
-			X        =  2.0;
-		}else{
-			AT_Kellerer_zero(MIF, array_size, MIE, LEF, F0, F, DE, &MIH, &LEH, &X, H);
+		if (F0 >= 1e-10){
+			AT_Kellerer_zero(MIF, array_size, MIE, LEF, F0, F, DE, &MIH, &LEH, H);
 		}
 
 		if(shrink_tails){
 			AT_Kellerer_shrink(array_size, MIE, shrink_tails_under, DE, &MIH, &LEH, H);
 		}
-		AT_Kellerer_normalize(array_size, MIH, MIE, LEH, H0, E, DE, &CM1, &CM2, &X, H);
+		AT_Kellerer_normalize(array_size, MIH, MIE, LEH, H0, E, DE, &CM1, &CM2, H);
 	}
 
 
