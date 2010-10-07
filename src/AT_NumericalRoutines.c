@@ -1,5 +1,4 @@
 /**
- * @file
  * @brief Numerical routines
  */
 

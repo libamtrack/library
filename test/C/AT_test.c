@@ -1,5 +1,4 @@
 /**
- * @file
  * @brief Dummy file to enable debugging...
  */
 

@@ -1,5 +1,4 @@
 /**
- * @file
  * @brief Electron Range models
  */
 
@@ -55,11 +54,13 @@ int getERName(
 
 
 inline double AT_ER_ButtsKatz_range_g_cm2(double wmax_keV){
+  assert( (wmax_keV > 0.) && (wmax_keV < 1e6));
   return 1e-5 * wmax_keV;
 }
 
 
 inline double AT_ER_Waligorski_range_g_cm2(double wmax_keV){
+  assert( (wmax_keV > 0.) && (wmax_keV < 1e6));
   double alpha = 1.667;
   if( wmax_keV < 1. ) alpha = 1.079;
   return  6e-6 * pow( wmax_keV, alpha );
@@ -67,6 +68,7 @@ inline double AT_ER_Waligorski_range_g_cm2(double wmax_keV){
 
 
 inline double AT_ER_Edmund_range_g_cm2(double wmax_keV){
+  assert( (wmax_keV > 0.) && (wmax_keV < 1e6));
   double alpha = 1.667;
   if( wmax_keV < 1. ) alpha = 1.079;
   return 6.13*1e-6  * pow( wmax_keV, alpha );
@@ -74,22 +76,26 @@ inline double AT_ER_Edmund_range_g_cm2(double wmax_keV){
 
 
 inline double AT_ER_Geiss_range_g_cm2(double E_MeV_u){
+  assert( (E_MeV_u > 0.) && (E_MeV_u < 1e6));
   return 4e-5 * pow(E_MeV_u, 1.5);
 }
 
 
 inline double AT_ER_Scholz_range_g_cm2(double E_MeV_u){
-  return 5e-5 * pow(E_MeV_u, 1.7);
+	assert( (E_MeV_u > 0.) && (E_MeV_u < 1e6));
+	return 5e-5 * pow(E_MeV_u, 1.7);
 }
 
 
 inline double AT_ER_Tabata_range_g_cm2(double beta, double a1_g_cm2, double a2, double a3, double a4, double a5){
+  assert( (beta > 0.) && (beta < 1.0));
   double tau = 2.0 * gsl_pow_2(beta) / (1.0 - gsl_pow_2(beta));
   return (a1_g_cm2)*(((gsl_sf_log(1.0 + a2 * tau))/a2) - ((a3*tau)/(1.0 + a4*pow(tau,a5))) );
 }
 
 
 inline double AT_ER_PowerLaw_alpha( const double E_MeV_u){
+  assert( (E_MeV_u > 0.) && (E_MeV_u < 1e6));
   double wmax_MeV     =  AT_max_E_transfer_MeV_single(E_MeV_u);
   double alpha        =  1.667;
   if(wmax_MeV <= 1e-3)  // if wmax < 1keV
@@ -123,6 +129,8 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
     const int     er_model,
     double        max_electron_range_m[])
 {
+
+  assert( number_of_particles > 0);
 
   /********************************************************
    ********* CALCULATION BEFORE PARTICLE LOOP *************
@@ -188,6 +196,8 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
         break;
     }
 
+    assert ( material_density_g_cm3 > 0);
+
     // Scale maximum el. ranges with material density relative to water (1/rho) and convert cm to m
     max_electron_range_m[i]      =  1e-2 * max_electron_range_g_cm2 / material_density_g_cm3;
 
@@ -250,6 +260,8 @@ double AT_max_electron_range_m(  const double E_MeV_u,
       max_electron_range_g_cm2  =  0.0;
       break;
   }
+
+  assert ( material_density_g_cm3 > 0);
 
   // Scale maximum el. range with material density relative to water (1/rho) and convert cm to m
   double max_electron_range_m   = 1e-2 * max_electron_range_g_cm2 / material_density_g_cm3;

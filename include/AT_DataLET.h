@@ -2,7 +2,6 @@
 #define AT_DATALET_H_
 
 /**
- * @file
  * @brief LET tables and access routines
  */
 

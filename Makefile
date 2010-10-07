@@ -21,7 +21,7 @@ GSLPATH   = /usr
 MINGWPATH = 
 ############################################################
 
-CFLAGS    = -Wall -c -O3 -fPIC
+CFLAGS    = -Wall -c -O3 -fPIC -DNDEBUG
 LFLAGS    = -lm -lgsl -lgslcblas
 
 ifeq ($(OS),Linux)

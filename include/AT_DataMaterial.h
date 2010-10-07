@@ -2,7 +2,6 @@
 #define AT_DATAMATERIAL_H_
 
 /**
- * @file
  * @brief Material properties
  */
 
@@ -31,6 +30,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "AT_Error.h"
 #include "AT_NumericalRoutines.h"

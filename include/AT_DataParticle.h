@@ -2,7 +2,6 @@
 #define AT_DATAPARTICLE_H_
 
 /**
- * @file
  * @brief Particle properties
  */
 
@@ -33,6 +32,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "AT_Error.h"
 #include "AT_NumericalRoutines.h"

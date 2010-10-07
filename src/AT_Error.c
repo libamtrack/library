@@ -1,5 +1,4 @@
 /**
- * @file
  * @brief error codes
  */
 
@@ -33,8 +32,9 @@
 
 
 // TODO returning string in following way should be changed to something more appriopriate
-char* AT_get_error_msg(const int error_no){
-  return "Look up error_no in error_messages and return String.";
+int AT_get_error_msg(const int error_no, char * error_message){
+  // TODO "Look up error_no in error_messages and return String.";
+  return EXIT_SUCCESS;
 }
 
 

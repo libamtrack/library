@@ -2,8 +2,7 @@
 #define AT_HISTOGRAMS_H_
 
 /**
- * @file
- * @brief This files handels histograms used by libamtrack
+ * @brief Histograms handling
  */
 
 

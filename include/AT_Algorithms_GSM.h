@@ -2,8 +2,7 @@
 #define AT_ALGORITHMS_GSM_H_
 
 /**
- * @file
- * @brief TODO
+ * @brief GSM algorithm implementation
  */
 
 /*

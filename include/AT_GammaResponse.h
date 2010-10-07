@@ -2,7 +2,6 @@
 #define AT_GAMMARESPONSE_H_
 
 /**
- * @file
  * @brief Gamma response models
  */
 
@@ -29,6 +28,7 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

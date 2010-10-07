@@ -1,6 +1,5 @@
 /**
- * @file
- * @brief ...
+ * @brief Particle
  */
 
 
@@ -33,8 +32,10 @@
 #include "AT_DataParticle.h"
 
 inline long AT_particle_no_from_Z_and_A_single(  const long  Z,
-    const long  A){
-  return 1000 * Z + A;
+		const long  A){
+	assert((1 <= A) && (A <= 300));
+	assert((1 <= Z) && (Z <= 118));
+	return 1000 * Z + A;
 }
 
 int AT_particle_no_from_Z_and_A( const long  n,
@@ -156,6 +157,7 @@ int AT_particle_name_from_particle_no_single( const long  particle_no,
 
 
 long AT_particle_no_from_particle_name_single( const char particle_name[PARTICLE_NAME_NCHAR]){
+	assert( particle_name != NULL);
 
 	char * literal_part = 0;
 	long A = strtol(particle_name,&literal_part,10);
@@ -228,6 +230,7 @@ int AT_particle_no_from_particle_name( const long  n,
     char * particle_name[],
     long particle_no[]){
 
+  assert( particle_name != NULL);
   long i;
   for (i = 0; i < n; i++){
 	particle_no[i] = AT_particle_no_from_particle_name_single( particle_name[i] );

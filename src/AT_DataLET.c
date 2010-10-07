@@ -1,5 +1,4 @@
 /**
- * @file
  * @brief LET tables
  */
 

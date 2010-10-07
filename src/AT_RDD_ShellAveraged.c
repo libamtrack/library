@@ -1,5 +1,4 @@
 /**
- * @file
  * @brief Radial Dose Distribution models
  */
 

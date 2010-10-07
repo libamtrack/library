@@ -2,7 +2,6 @@
 #define AT_KATZMODEL_H_
 
 /**
- * @file
  * @brief Katz model algorithm
  */
 
