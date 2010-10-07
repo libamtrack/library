@@ -364,135 +364,125 @@ void  AT_low_fluence_local_dose_distribution(  const long     n_bins_f1,
 }
 
 
-AT_aKList  AT_SC_NORMAL(AT_aKList theKList){
+void AT_Kellerer_normalize(const long array_size,
+		const long MIH,
+		const long MIE,
+		const long LEH,
+		const double H0,
+		const double E[],
+		const double DE[],
+		double CM1,
+		double CM2,
+		double CM3,
+		double CM4,
+		double X,
+		double H[]){
 
-  double  Y        =  theKList.CM1 * 2;
-  double  Z        =  theKList.CM2 * 2;
-  double  CM0      =  theKList.H0;
-  theKList.CM1     =  0;
+  double  Y        =  CM1 * 2;
+  double  Z        =  CM2 * 2;
+  double  CM0      =  H0;
+  CM1     =  0;
 
-  long    N        =  theKList.MIH - theKList.MIE;
+  long    N        =  MIH - MIE;
   long     L;
-  for (L = 1; L <= theKList.LEH; L++){
+  for (L = 1; L <= LEH; L++){
     long    LE     =  L + N;
-    double  S      =  theKList.H[L-1] * theKList.DE[LE-1];
+    double  S      =  H[L-1] * DE[LE-1];
 
     CM0            =  CM0 + S;
-    theKList.CM1   =  theKList.CM1 + S * theKList.E[LE-1];
+    CM1   =  CM1 + S * E[LE-1];
   }
 
-  double  TT       =  (1.0 - theKList.H0) / (CM0 - theKList.H0);
-  theKList.CM1     =  theKList.CM1 * TT;
-  double  R        =  theKList.CM1 * theKList.CM1;
-  theKList.CM2     =  R * theKList.H0;
-  theKList.CM3     =  -1.0 * theKList.CM1 * R * theKList.H0;
-  theKList.CM4     =  R * R * theKList.H0;
+  double  TT       =  (1.0 - H0) / (CM0 - H0);
+  CM1     =  CM1 * TT;
+  double  R        =  CM1 * CM1;
+  CM2     =  R * H0;
+  CM3     =  -1.0 * CM1 * R * H0;
+  CM4     =  R * R * H0;
 
-  for (L = 1; L <= theKList.LEH; L++){
+  for (L = 1; L <= LEH; L++){
     long   LE        =    L + N;
-    double  EC       =    theKList.E[LE-1] - theKList.CM1;
+    double  EC       =    E[LE-1] - CM1;
     double  E2       =    EC * EC;
-    theKList.H[L-1]  =    theKList.H[L-1] * TT;
-    double  S        =    theKList.H[L-1] * theKList.DE[LE-1] * E2;
-    theKList.CM2     =    theKList.CM2 + S;
-    theKList.CM3     =    theKList.CM3 + S * EC;
-    theKList.CM4     =    theKList.CM4 + S * E2;
+    H[L-1]  =    H[L-1] * TT;
+    double  S        =    H[L-1] * DE[LE-1] * E2;
+    CM2     =    CM2 + S;
+    CM3     =    CM3 + S * EC;
+    CM4     =    CM4 + S * E2;
   }
 
-  theKList.X      =  theKList.X * CM0;
-  Y          =  theKList.CM1 / Y;
-  Z          =  theKList.CM2 / Z;
-
-  return(theKList);
+  X      =  X * CM0;
+  Y          =  CM1 / Y;
+  Z          =  CM2 / Z;
 }
 
+void AT_Kellerer_interpolation(const long N2,
+		const long LEF,
+		const long array_size,
+		double	F[],
+		double	A[],
+		double	BI[]){
 
-AT_aKList  AT_SC_OUTPUT(AT_aKList theKList){
-
-  //double*  SD            =  (double*)calloc(theKList.array_size, sizeof(double));
-
-  double  B             =  theKList.CM2 / (theKList.CM1 * theKList.CM1);
-  double  C             =  theKList.CM3 / sqrt(theKList.CM2 * theKList.CM2 * theKList.CM2);
-  double  D             =  theKList.CM4 / (theKList.CM2 * theKList.CM2);
-  double  S1            =  theKList.CN * theKList.D1;
-  double  S2            =  theKList.CN * theKList.D2 / (S1 * S1);
-  double  S3            =  theKList.D3 / sqrt(theKList.CN * theKList.D2 * theKList.D2 * theKList.D2);
-  double  S4            =  theKList.D4 / (theKList.D2 * theKList.D2 * theKList.CN) + 3;
-
-  if(theKList.N1 <= 0){
-    S2                =  B;
-    S3                =  C;
-    S4                =  D;
-  }
-
-  if(theKList.write_output){
-    long   L;
-    for (L = 1; L <= theKList.array_size; L++){
-      fprintf(  theKList.output_file,
-          "%ld;%e;%e;%e;%e;%e;%ld;%ld;%ld;%ld;%ld;%ld\n",
-          L,
-          theKList.E[L-1],
-          theKList.DE[L-1],
-          theKList.H[L-1],
-          theKList.H0,
-          theKList.F[L-1],
-          theKList.N1,
-          theKList.MIF,
-          theKList.LEF,
-          theKList.MIH,
-          theKList.LEH,
-          theKList.MIE);
-    }
-  }
-
-  return(theKList);
-}
-
-
-AT_aKList  AT_SC_INTERP(AT_aKList theKList){
-
-  theKList.A[0]             =  theKList.F[1] - theKList.F[0];
-  theKList.BI[0]            =  0.0;
-  theKList.F[theKList.LEF]  =  0.0;
-
-  long   K;
-  for (K = 1; K <= theKList.N2; K++){
-    long L           =  theKList.LEF + K;
-    theKList.A[L-1]  =  0.0;
-    theKList.BI[L-1] =  0.0;
+  A[0]             =  F[1] - F[0];
+  BI[0]            =  0.0;
+  assert(LEF < array_size);
+  F[LEF]  		   =  0.0;
+  long   i;
+  assert(N2 < array_size);
+  for (i = 1; i <= N2; i++){
+    long L           =  LEF + i;
+    A[L-1]  =  0.0;
+    BI[L-1] =  0.0;
   }
 
   long   L;
-  for (L = 2; L <= theKList.LEF; L++){
-    theKList.A[L -1]    =  0.5 * (theKList.F[L] - theKList.F[L - 1 -1]);
-    theKList.BI[L -1]   =  theKList.A[L-1] + theKList.F[L - 1 -1] - theKList.F[L -1];
+  for (L = 2; L <= LEF; L++){
+    A[L -1]    =  0.5 * (F[L] - F[L - 1 -1]);
+    BI[L -1]   =  A[L-1] + F[L - 1 -1] - F[L -1];
   }
-
-  return(theKList);
 }
 
 
-AT_aKList  AT_SC_RESET(AT_aKList theKList){
+void AT_Kellerer_reset(long N2,
+		long U,
+		long array_size,
+		long LEF,
+		long MIE,
+		long MIF,
+		const double E0,
+		double E[],
+		double DE[],
+		double F[],
+		double A[],
+		double BI[],
+		double DI[]){
 
-  if (theKList.N2 <= 256){
-    if(theKList.LEF <= 64){
+  if (N2 <= 256){
+    if(LEF <= 64){
       double S              =  log(2.0);
-      double TT             =  (double)theKList.N2;
-      //      theKList.N2            =  theKList.N2 * 2;
-      theKList.N2          +=  (long)(0.1 + exp((double)((long)(log(TT) / S - 0.99)) * S));
-      TT                   =  TT / (double)theKList.N2;
-      theKList.U           =  S / (double)theKList.N2;
+      double TT             =  (double)N2;
+      //      N2            =  N2 * 2;
+      N2          +=  (long)(0.1 + exp((double)((long)(log(TT) / S - 0.99)) * S));
+      TT                   =  TT / (double)N2;
+      U           =  S / (double)N2;
 
-      theKList            =  AT_SC_INTERP(theKList);
-      theKList.F[theKList.LEF]  =  0;
-      long N              =  theKList.MIF;
-      theKList.MIF          =  (long)((double)theKList.MIF / TT) + 1;    /////////////////////
-      theKList.LEF          =  (long)((double)theKList.LEF / TT) - 1;    // added (SG) : -1 //
+//      theKList            =  AT_SC_INTERP(theKList);
+      AT_Kellerer_interpolation( N2,
+    		  LEF,
+    		  array_size,
+    		  F,
+    		  A,
+    		  BI);
+
+      F[LEF]  =  0;
+      long N              =  MIF;
+      MIF          =  (long)((double)MIF / TT) + 1;    /////////////////////
+      LEF          =  (long)((double)LEF / TT) - 1;    // added (SG) : -1 //
       /////////////////////
       long   K;
-      for (K = 1; K <= theKList.LEF; K++){
-        long   L              =  theKList.LEF - K + 1;
-        double  FLF           =  (double)(L + theKList.MIF) * TT - (double)N;
+      for (K = 1; K <= LEF; K++){
+        long   L              =  LEF - K + 1;
+        double  FLF           =  (double)(L + MIF) * TT - (double)N;
         long   LFF            =  (long)(FLF + 0.5);
         double S              =  FLF - (double)LFF;
 
@@ -503,121 +493,132 @@ AT_aKList  AT_SC_RESET(AT_aKList theKList){
         // of F  and eventually systematic deviation of moments.                       //
         ////////////////////////////////////////////////////////////////////////////////
 
-        // original:  theKList.F[L -1]        =  theKList.F[LFF -1] + S * (theKList.A[LFF - 1] + S * theKList.BI[LFF - 1]);
+        // original:  F[L -1]        =  F[LFF -1] + S * (A[LFF - 1] + S * BI[LFF - 1]);
 
-        theKList.F[L -1]        =  theKList.F[LFF -1];
+        F[L -1]        =  F[LFF -1];
         if((S < 0 ) && (LFF >= 2)){
-          theKList.F[L -1]      =  pow(theKList.F[LFF - 1 -1], -1.0 * S) * pow(theKList.F[LFF -1], 1.0 + S);
+          F[L -1]      =  pow(F[LFF - 1 -1], -1.0 * S) * pow(F[LFF -1], 1.0 + S);
         }
-        if((S > 0 ) && (LFF <= theKList.LEF - 1)){
-          theKList.F[L -1]      =  pow(theKList.F[LFF -1], 1.0 - S) * pow(theKList.F[LFF], S);
+        if((S > 0 ) && (LFF <= LEF - 1)){
+          F[L -1]      =  pow(F[LFF -1], 1.0 - S) * pow(F[LFF], S);
         }
       }
 
       long   L;
-      for (L = theKList.N2; L <= theKList.array_size; L++){;
-      double S           =  (double)(L - theKList.N2) * theKList.U;
-      double tmp         =  -1.0 * log(1.0 - 0.5 * exp(-S)) / theKList.U;
-      theKList.DI[L -1]  =  tmp - (double)theKList.N2;    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
+      for (L = N2; L <= array_size; L++){;
+      double S           =  (double)(L - N2) * U;
+      double tmp         =  -1.0 * log(1.0 - 0.5 * exp(-S)) / U;
+      DI[L -1]  =  tmp - (double)N2;    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
       }
 
-      theKList.MIE          =  theKList.MIF;
+      MIE          =  MIF;
 
       long   J;
-      for (J = 1; J <= theKList.array_size; J++){
-        double S            =  (double)(J + theKList.MIE);
-        theKList.E[J -1]    =  exp(S * theKList.U) * theKList.E0;
+      for (J = 1; J <= array_size; J++){
+        double S            =  (double)(J + MIE);
+        E[J -1]    =  exp(S * U) * E0;
         ///////////////////////////////////////////////////////////////////////////
         // addition SG: not to use Kellerer's formula for new DE's, as it is     //
         // not exact (but deviation are small)                                   //
         ///////////////////////////////////////////////////////////////////////////
-        double* high_E      =  (double*)calloc(theKList.array_size, sizeof(double));
-        S                   =  (double)(J + theKList.MIE + 1);
-        high_E[J - 1]       =  exp(S * theKList.U) * theKList.E0;
-        theKList.DE[J -1]   =  high_E[J -1] - theKList.E[J -1];
+        double* high_E      =  (double*)calloc(array_size, sizeof(double));
+        S                   =  (double)(J + MIE + 1);
+        high_E[J - 1]       =  exp(S * U) * E0;
+        DE[J -1]   =  high_E[J -1] - E[J -1];
         free(high_E);
       }
     }else{
-      return(theKList);
+      return;
     }
   }else{
-    theKList.MIE          =  theKList.MIF;
+    MIE          =  MIF;
 
     long   J;
-    for (J = 1; J <= theKList.array_size; J++){
-      double S             =  (double)(J + theKList.MIE);
-      theKList.E[J -1]     =  exp(S * theKList.U) * theKList.E0;
+    for (J = 1; J <= array_size; J++){
+      double S             =  (double)(J + MIE);
+      E[J -1]     =  exp(S * U) * E0;
       ///////////////////////////////////////////////////////////////////////////
       // addition SG: not to use Kellerer's formula for new DE's, as it is     //
       // not exact (but deviation are small)                                   //
       ///////////////////////////////////////////////////////////////////////////
-      double* high_E       =  (double*)calloc(theKList.array_size, sizeof(double));
-      S                    =  (double)(J + theKList.MIE + 1);
-      high_E[J - 1]        =  exp(S * theKList.U) * theKList.E0;
-      theKList.DE[J -1]    =  high_E[J -1] - theKList.E[J -1];
+      double* high_E       =  (double*)calloc(array_size, sizeof(double));
+      S                    =  (double)(J + MIE + 1);
+      high_E[J - 1]        =  exp(S * U) * E0;
+      DE[J -1]    =  high_E[J -1] - E[J -1];
       free(high_E);
     }
   }
-
-  return(theKList);
 }
 
+void AT_Kellerer_zero(const long MIF,
+		const long array_size,
+		const long MIE,
+		const long LEF,
+		const double F0,
+		const double F[],
+		const double DE[],
+		long MIH,
+		long LEH,
+		double X,
+		double H[]){
 
-AT_aKList  AT_SC_ZERO(AT_aKList theKList){
-
-  theKList.X          =  0;
-  long N              =  theKList.MIH - theKList.MIE;
+  X          =  0;
+  long N              =  MIH - MIE;
 
   long   L;
-  for (L = 1; L <= theKList.LEH; L++){
+  for (L = 1; L <= LEH; L++){
     long K            =  L + N;
-    theKList.X        =  theKList.X + theKList.H[L -1] * theKList.DE[K -1];
+    X        =  X + H[L -1] * DE[K -1];
   }
 
-  double S            =  (1.0 - theKList.F0) * (1.0 - theKList.F0) / theKList.X;
-  theKList.X          =  2.0 / S;
+  double S            =  (1.0 - F0) * (1.0 - F0) / X;
+  X          =  2.0 / S;
 
-  for (L = 1; L <= theKList.LEH; L++){;
-  theKList.H[L -1]    =  theKList.H[L -1] * S;
+  for (L = 1; L <= LEH; L++){;
+  H[L -1]    =  H[L -1] * S;
   }
 
-  N                   =  theKList.MIH - theKList.MIF;
-  theKList.MIH        =  theKList.MIF;
-  theKList.LEH        =  theKList.LEH + N;
+  N                   =  MIH - MIF;
+  MIH        =  MIF;
+  LEH        =  LEH + N;
 
   long   LL;
-  for (LL = 1; LL <= theKList.LEH; LL++){
-    long L            =  theKList.LEH + 1 - LL;
+  for (LL = 1; LL <= LEH; LL++){
+    long L            =  LEH + 1 - LL;
     long K            =  L + N;
-    theKList.H[K -1]  =  theKList.H[L -1];
+    H[K -1]  =  H[L -1];
   }
 
   for (L = 1; L <= N; L++){
-    theKList.H[L -1]  =  0.0;
+    H[L -1]  =  0.0;
   }
 
-  S                   =  theKList.F0 * 2.0;
+  S                   =  F0 * 2.0;
 
-  for (L = 1; L <= theKList.LEF; L++){
-    theKList.H[L -1]  =  theKList.H[L -1] + theKList.F[L -1] * S;
+  for (L = 1; L <= LEF; L++){
+    H[L -1]  =  H[L -1] + F[L -1] * S;
   }
-
-  return(theKList);
 }
 
 
-AT_aKList  AT_SC_SHRINK(AT_aKList theKList){
+void AT_Kellerer_shrink(const long array_size,
+		const long MIE,
+		const double shrink_tails_under,
+		const double DE[],
+		long MIH,
+		long LEH,
+		double H[]){
 
-  double  EX          =  theKList.shrink_tails_under;
+  double  EX          =  shrink_tails_under;
   double  S           =  0.0;
-  long  N             =  theKList.MIH - theKList.MIE;
+  long  N             =  MIH - MIE;
 
   long   L;
-  for (L = 1; L <= theKList.LEH; L++){
+  for (L = 1; L <= LEH; L++){
     long K            =  L + N;
-    S                 =  S + theKList.H[L -1] * theKList.DE[K -1];
+    S                 =  S + H[L -1] * DE[K -1];
     if(S > 1000.0 * EX){
-      theKList.MIH    =  theKList.MIH + L - 1;
+      MIH    =  MIH + L - 1;
       break;}
   }
 
@@ -625,90 +626,95 @@ AT_aKList  AT_SC_SHRINK(AT_aKList theKList){
   S                   =  0;
 
   long   K;
-  for (K = 1; K <= theKList.LEH; K++){
-    L                 =  theKList.LEH + 1 - K;
+  for (K = 1; K <= LEH; K++){
+    L                 =  LEH + 1 - K;
     long KK           =  L + N;
-    S                 =  S + theKList.H[L - 1] * theKList.DE[KK - 1];
+    S                 =  S + H[L - 1] * DE[KK - 1];
     if(S > EX){
       break;
     }
   }
 
-  theKList.LEH        =  L - M;
-  for (L = 1; L <= theKList.LEH; L++){
+  LEH        =  L - M;
+  for (L = 1; L <= LEH; L++){
     K                 =  L + M;
-    theKList.H[L -1]  =  theKList.H[K -1];
+    H[L -1]  =  H[K -1];
   }
 
-  K                   =  theKList.LEH + 1;
-  long  KK            =  theKList.LEH + M;
+  K                   =  LEH + 1;
+  long  KK            =  LEH + M;
   for (L = K; L <= KK; L++){
-    theKList.H[L -1]  =  0;
+    H[L -1]  =  0;
   }
-
-  return(theKList);
-
 }
 
 
-AT_aKList AT_SC_FOLD(AT_aKList theKList){
-  double*  FDE        =  (double*)calloc(theKList.array_size, sizeof(double));
+void AT_Kellerer_Folding(		const long N2,
+		const long array_size,
+		const long LEF,
+		const long MIE,
+		const long MIF,
+		const double DE[],
+		const double DI[],
+		long MIH,
+		long LEH,
+		const double F0,
+		double H0,
+		double F[],
+		double H[],
+		double A[],
+		double BI[]){
+  double*  FDE        =  (double*)calloc(array_size, sizeof(double));
 
-  if((theKList.CN >= 10.0) && (theKList.adjust_N2 == true)){
-    theKList          =  AT_SC_RESET(theKList);
-  }
-
-  theKList.H0         =  theKList.F0 * theKList.F0;
-  theKList.MIH        =  theKList.MIF + theKList.N2;
-  theKList.LEH        =  theKList.LEF;
-  long  K             =  theKList.LEF + 1;
-  long KK             =  K + theKList.N2;
+  H0         =  F0 * F0;
+  MIH        =  MIF + N2;
+  LEH        =  LEF;
+  long  K             =  LEF + 1;
+  long KK             =  K + N2;
 
   long   L;
   for (L = K; L <= KK; L++){
-    theKList.F[L -1]  =  0;
+    F[L -1]  =  0;
   }
 
-  theKList            =  AT_SC_INTERP(theKList);
-  long N              =  theKList.MIF - theKList.MIE;
+  //theKList            =  AT_SC_INTERP(theKList);
+  AT_Kellerer_interpolation( N2,
+		  LEF,
+		  array_size,
+		  F,
+		  A,
+		  BI);
+  long N              =  MIF - MIE;
 
-  for (L = 1; L <= theKList.LEH; L++){
+  for (L = 1; L <= LEH; L++){
     K                 =  L + N;
-    FDE[L -1]         =  theKList.F[L -1] * theKList.DE[K -1];
+    FDE[L -1]         =  F[L -1] * DE[K -1];
   }
 
   long   LH;
-  for (LH = 1; LH <= theKList.LEH; LH++){
+  for (LH = 1; LH <= LEH; LH++){
     double   HLH      =  0;
-    long   LL         =  LH + theKList.N2;
+    long   LL         =  LH + N2;
     long   LF;
     for (LF = 1; LF <= LH; LF++){
       K               =  LL - LF;
-      double FLF      =  (double)LH - theKList.DI[K -1];
+      double FLF      =  (double)LH - DI[K -1];
       long LFF        =  (long)(FLF + 0.5);
       double S        =  FLF - (double)LFF;
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Modification SG: if Kellerer's quadratic interpolation fails, use simple estimate
-      double tmp      =  theKList.F[LFF -1] + S * (theKList.A[LFF -1] + S * theKList.BI[LFF -1]);
+      double tmp      =  F[LFF -1] + S * (A[LFF -1] + S * BI[LFF -1]);
       if (tmp <0){
         tmp = 0.0;        // Very crude - better to replace by interpolation as done in RESET
       }                   // which is time-consuming, however.
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////
       HLH             =  HLH + FDE[LF -1] * tmp;
     }
-    theKList.H[LH -1] =  HLH - FDE[LH -1] * theKList.F[LH -1] * 0.5;
+    H[LH -1] =  HLH - FDE[LH -1] * F[LH -1] * 0.5;
   }
 
   free(FDE);
-
-  if (theKList.F0 < 1e-10){
-    theKList.X        =  2.0;
-  }else{
-    theKList          =  AT_SC_ZERO(theKList);
-  }
-  return(theKList);
 }
-
 
 void   AT_SuccessiveConvolutions( const double  u,
     const long    n_bins_f,
@@ -799,7 +805,8 @@ void   AT_SuccessiveConvolutions( const double  u,
   ///////////////////////////////////////
   // Normalize distribution
   ///////////////////////////////////////
-  KList  = AT_SC_NORMAL(KList);
+//  KList  = AT_SC_NORMAL(KList);
+  AT_Kellerer_normalize(KList.array_size, KList.MIH, KList.MIE, KList.LEH, KList.H0, KList.E, KList.DE, KList.CM1, KList.CM2, KList.CM3, KList.CM4, KList.X, KList.H);
 
   if(KList.write_output){
     long i;
@@ -841,13 +848,9 @@ void   AT_SuccessiveConvolutions( const double  u,
   // AT_SC_SHRINK distribution
   ///////////////////////////////////////
   if(KList.shrink_tails){
-    KList  = AT_SC_SHRINK(KList);
+//	    KList  = AT_SC_SHRINK(KList);
+	AT_Kellerer_shrink(KList.array_size, KList.MIE, KList.shrink_tails_under, KList.DE, KList.MIH, KList.LEH, KList.H);
   }
-
-  ///////////////////////////////////////
-  // AT_SC_OUTPUT
-  ///////////////////////////////////////
-  KList  = AT_SC_OUTPUT(KList);
 
   ///////////////////////////////////////
   // Get approximation for small hit
@@ -884,12 +887,25 @@ void   AT_SuccessiveConvolutions( const double  u,
     KList.F0         =  KList.H0;
     KList.LEF        =  KList.LEH;
     KList.MIF        =  KList.MIH;
-    KList            =  AT_SC_FOLD(KList);
-    if(KList.shrink_tails){
-      KList          =  AT_SC_SHRINK(KList);
+
+    if((KList.CN >= 10.0) && (KList.adjust_N2 == true)){
+  	  AT_Kellerer_reset(KList.N2, KList.U, KList.array_size, KList.LEF, KList.MIE, KList.MIF, KList.E0, KList.E, KList.DE, KList.F, KList.A, KList.BI, KList.DI);
     }
-    KList            =  AT_SC_NORMAL(KList);
-    KList            =  AT_SC_OUTPUT(KList);
+
+    AT_Kellerer_Folding(KList.N2,KList.array_size, KList.LEF, KList.MIE, KList.MIF, KList.DE, KList.DI, KList.MIH, KList.LEH, KList.F0, KList.H0, KList.F, KList.H, KList.A, KList.BI);
+
+    if (KList.F0 < 1e-10){
+      KList.X        =  2.0;
+    }else{
+   	//      KList          =  AT_SC_ZERO(KList);
+      AT_Kellerer_zero(KList.MIF, KList.array_size, KList.MIE, KList.LEF, KList.F0, KList.F, KList.DE, KList.MIH, KList.LEH, KList.X, KList.H);
+    }
+
+    if(KList.shrink_tails){
+    	AT_Kellerer_shrink(KList.array_size, KList.MIE, KList.shrink_tails_under, KList.DE, KList.MIH, KList.LEH, KList.H);
+    }
+//    KList            =  AT_SC_NORMAL(KList);
+    AT_Kellerer_normalize(KList.array_size, KList.MIH, KList.MIE, KList.LEH, KList.H0, KList.E, KList.DE, KList.CM1, KList.CM2, KList.CM3, KList.CM4, KList.X, KList.H);
   }
 
 
