@@ -402,6 +402,23 @@ void AT_histo_add(      const long number_of_bins,
     double frequency[]);
 
 
+void AT_histo_sum(	const long number_of_bins,
+		const double lowest_left_limit,
+		const double step,
+		const long histo_type,
+		const double frequency[],
+		double* sum);
+
+void AT_histo_normalize(	const long number_of_bins,
+		const double lowest_left_limit,
+		const double step,
+		const long histo_type,
+		double frequency[]);
+
+/* TRANSIENT ROUTINES FOR TRANSFORMING OLD-STYLE KELLERER HISTOGRAMS INTO NEW STYLE */
+double AT_N2_to_step(double N2);
+
+
 /* OLD ROUTINES, KEPT FOR COMPATIBILITY */
 /**
  * TODO

@@ -30,6 +30,7 @@
 
 #include "AT_Constants.h"
 #include "AT_RDD.h"
+#include "AT_Histograms.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -196,8 +197,6 @@ void AT_Kellerer_normalize(const long array_size,
 		const double H0,
 		const double E[],
 		const double DE[],
-		double* CM1,
-		double* CM2,
 		double H[]);
 
 /**
