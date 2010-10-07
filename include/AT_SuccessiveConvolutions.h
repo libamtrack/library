@@ -39,61 +39,6 @@
 #include <assert.h>
 
 /**
- * Structure to hold all variables necessary for the SuccessiveConvolution routine
- * It has been defined to mimic the global variables in the original FORTRAN IV code
- * TODO replace by C variables
- */
-typedef struct{
-
-  long     array_size;                  /**< size of function arrays F..BI */
-  long     N2;                          /**< Number of bins per factor of two (applies to all arrays) */
-  double   U;                           /**< Logarithmic stepwith corresponding to N2, U = ln(2)/N2 */
-
-  double   X;                           /**< seem to not be used, TODO remove */
-  double   FINAL;                       /**< Final mean impact number * @<d@> from single impact distribution */
-
-  double   CN;                          /**< Number of contributing tracks for linearized f_start, corresp. to u_start */
-  long     N1;                          /**< Current convolution number */
-
-  double   CM1;                         /**< Central moment 1 of current distribution H, computed in AT_SC_NORMAL */
-  double   CM2;                         /**< Central moment 2 of current distribution H, computed in AT_SC_NORMAL */
-  double   CM3;                         /**< Central moment 3 of current distribution H, computed in AT_SC_NORMAL */
-  double   CM4;                         /**< Central moment 4 of current distribution H, computed in AT_SC_NORMAL */
-
-  double   D1;                          /**< Central moment 1 of single impact (f1) distribution */
-  double   D2;                          /**< Central moment 2 of single impact (f1) distribution */
-  double   D3;                          /**< Central moment 3 of single impact (f1) distribution */
-  double   D4;                          /**< Central moment 4 of single impact (f1) distribution */
-
-  double   F0;                          /**< Zero bin value for source distribution F (= distribution to be convoluted) */
-  double*  F;                           /**< Array holding values of source distribution F */
-  long     MIF;                         /**< Index of first bin currently used for F */
-  long     LEF;                         /**< Number of bins currently used for F */
-
-  double   H0;                          /**< Zero bin value for resulting distribution H */
-  double*  H;                           /**< Array holding values of resulting distribution H */
-  long     MIH;                         /**< Index of first bin currently used for H */
-  long     LEH;                         /**< Number of bins currently used for H */
-
-  double   E0;                          /**< Value for the LEFT limit of the first energy bin */
-  double*  E;                           /**< Array holding energy bin limits (midpoint) for distributions F, H */
-  double*  DE;                          /**< Array holding energy bin widths for distributions F, H */
-  long     MIE;                         /**< Index of first bin currently used for E */
-
-  double*  DI;                          /**< Auxiliary array that enables easy index operations */
-  double*  A;                           /**< Auxiliary array used for Kellerer's quadratic interpolation during AT_SC_FOLD */
-  double*  BI;                          /**< Auxiliary array used for Kellerer's quadratic interpolation during AT_SC_FOLD */
-
-  bool     write_output;                /**< if true, a verbose log file will be written */
-  FILE*    output_file;                 /**< name of log file */
-
-  bool     shrink_tails;                /**< if true, tails of F that contribute less than "shrink_tails_under" to first moment will be removed */
-  double   shrink_tails_under;          /**< threshold to cut tails, usually 1e-30 */
-  bool     adjust_N2;                   /**< if true N2 will be increased if resolution becomes inefficient */
-}     AT_aKList;
-
-
-/**
  * Computes the size of the array to hold the f1 (single impact) local dose distribution for a given field, rdd, er
  * @param[in]  n                   number of particle types in the mixed particle field
  * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
@@ -241,10 +186,6 @@ void   AT_SuccessiveConvolutions( const double  u,
     const double shrink_tails_under,
     const bool   adjust_N2);
 
-/* All following are SUBROUTINES TO AT_SuccessiveConvolutions (from FORTRAN IV code) */
-
-/* TODO: Replace by more c-like, readable function only implemented where necessary */
-
 /**
  * Normalized the distribution resulting from last convolution
  */
@@ -257,8 +198,6 @@ void AT_Kellerer_normalize(const long array_size,
 		const double DE[],
 		double CM1,
 		double CM2,
-		double CM3,
-		double CM4,
 		double X,
 		double H[]);
 
