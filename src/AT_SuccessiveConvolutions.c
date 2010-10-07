@@ -371,15 +371,15 @@ void AT_Kellerer_normalize(const long array_size,
 		const double H0,
 		const double E[],
 		const double DE[],
-		double CM1,
-		double CM2,
-		double X,
+		double* CM1,
+		double* CM2,
+		double* X,
 		double H[]){
 
-	double  Y        =  CM1 * 2;
-	double  Z        =  CM2 * 2;
+	double  Y        =  (*CM1) * 2;
+	double  Z        =  (*CM2) * 2;
 	double  CM0      =  H0;
-	CM1     =  0;
+	*CM1     =  0;
 
 	long    N        =  MIH - MIE;
 	long     L;
@@ -388,26 +388,26 @@ void AT_Kellerer_normalize(const long array_size,
 		double  S      =  H[L-1] * DE[LE-1];
 
 		CM0            =  CM0 + S;
-		CM1   =  CM1 + S * E[LE-1];
+		*CM1   =  *CM1 + S * E[LE-1];
 	}
 
 	double  TT       =  (1.0 - H0) / (CM0 - H0);
-	CM1     =  CM1 * TT;
-	double  R        =  CM1 * CM1;
-	CM2     =  R * H0;
+	*CM1     *=  TT;
+	double  R        = (*CM1) * (*CM1);
+	*CM2     =  R * H0;
 
 	for (L = 1; L <= LEH; L++){
 		long   LE        =    L + N;
-		double  EC       =    E[LE-1] - CM1;
+		double  EC       =    E[LE-1] - *CM1;
 		double  E2       =    EC * EC;
 		H[L-1]  =    H[L-1] * TT;
 		double  S        =    H[L-1] * DE[LE-1] * E2;
-		CM2     =    CM2 + S;
+		*CM2     +=   S;
 	}
 
-	X      =  X * CM0;
-	Y          =  CM1 / Y;
-	Z          =  CM2 / Z;
+	*X      *= CM0;
+	Y          =  *CM1 / Y;
+	Z          =  *CM2 / Z;
 }
 
 void AT_Kellerer_interpolation(const long N2,
@@ -437,12 +437,12 @@ void AT_Kellerer_interpolation(const long N2,
 }
 
 
-void AT_Kellerer_reset(long N2,
-		long U,
-		long array_size,
-		long LEF,
-		long MIE,
-		long MIF,
+void AT_Kellerer_reset(long* N2,
+		double* U,
+		long* array_size,
+		long* LEF,
+		long* MIE,
+		long* MIF,
 		const double E0,
 		double E[],
 		double DE[],
@@ -451,32 +451,32 @@ void AT_Kellerer_reset(long N2,
 		double BI[],
 		double DI[]){
 
-	if (N2 <= 256){
-		if(LEF <= 64){
+	if (*N2 <= 256){
+		if(*LEF <= 64){
 			double S              =  log(2.0);
-			double TT             =  (double)N2;
+			double TT             =  (double)(*N2);
 			//      N2            =  N2 * 2;
-			N2          +=  (long)(0.1 + exp((double)((long)(log(TT) / S - 0.99)) * S));
-			TT                   =  TT / (double)N2;
-			U           =  S / (double)N2;
+			*N2          +=  (long)(0.1 + exp((double)((long)(log(TT) / S - 0.99)) * S));
+			TT                   =  TT / (double)(*N2);
+			*U           =  S / (double)(*N2);
 
 			//      theKList            =  AT_SC_INTERP(theKList);
-			AT_Kellerer_interpolation( N2,
-					LEF,
-					array_size,
+			AT_Kellerer_interpolation( *N2,
+					*LEF,
+					*array_size,
 					F,
 					A,
 					BI);
 
-			F[LEF]  =  0;
-			long N              =  MIF;
-			MIF          =  (long)((double)MIF / TT) + 1;    /////////////////////
-			LEF          =  (long)((double)LEF / TT) - 1;    // added (SG) : -1 //
+			F[*LEF]  =  0;
+			long N              =  *MIF;
+			*MIF          =  (long)((double)(*MIF) / TT) + 1;    /////////////////////
+			*LEF          =  (long)((double)(*LEF) / TT) - 1;    // added (SG) : -1 //
 			/////////////////////
 			long   K;
-			for (K = 1; K <= LEF; K++){
-				long   L              =  LEF - K + 1;
-				double  FLF           =  (double)(L + MIF) * TT - (double)N;
+			for (K = 1; K <= *LEF; K++){
+				long   L              =  *LEF - K + 1;
+				double  FLF           =  (double)(L + (*MIF)) * TT - (double)N;
 				long   LFF            =  (long)(FLF + 0.5);
 				double S              =  FLF - (double)LFF;
 
@@ -493,31 +493,31 @@ void AT_Kellerer_reset(long N2,
 				if((S < 0 ) && (LFF >= 2)){
 					F[L -1]      =  pow(F[LFF - 1 -1], -1.0 * S) * pow(F[LFF -1], 1.0 + S);
 				}
-				if((S > 0 ) && (LFF <= LEF - 1)){
+				if((S > 0 ) && (LFF <= *LEF - 1)){
 					F[L -1]      =  pow(F[LFF -1], 1.0 - S) * pow(F[LFF], S);
 				}
 			}
 
 			long   L;
-			for (L = N2; L <= array_size; L++){;
-			double S           =  (double)(L - N2) * U;
-			double tmp         =  -1.0 * log(1.0 - 0.5 * exp(-S)) / U;
-			DI[L -1]  =  tmp - (double)N2;    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
+			for (L = *N2; L <= *array_size; L++){;
+			double S           =  (double)(L - (*N2)) * (*U);
+			double tmp         =  -1.0 * log(1.0 - 0.5 * exp(-S)) / (*U);
+			DI[L -1]  =  tmp - (double)(*N2);    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
 			}
 
-			MIE          =  MIF;
+			*MIE          =  *MIF;
 
 			long   J;
-			for (J = 1; J <= array_size; J++){
-				double S            =  (double)(J + MIE);
-				E[J -1]    =  exp(S * U) * E0;
+			for (J = 1; J <= *array_size; J++){
+				double S            =  (double)(J + (*MIE));
+				E[J -1]    =  exp(S * (*U)) * E0;
 				///////////////////////////////////////////////////////////////////////////
 				// addition SG: not to use Kellerer's formula for new DE's, as it is     //
 				// not exact (but deviation are small)                                   //
 				///////////////////////////////////////////////////////////////////////////
-				double* high_E      =  (double*)calloc(array_size, sizeof(double));
-				S                   =  (double)(J + MIE + 1);
-				high_E[J - 1]       =  exp(S * U) * E0;
+				double* high_E      =  (double*)calloc(*array_size, sizeof(double));
+				S                   =  (double)(J + *MIE + 1);
+				high_E[J - 1]       =  exp(S * (*U)) * E0;
 				DE[J -1]   =  high_E[J -1] - E[J -1];
 				free(high_E);
 			}
@@ -525,19 +525,19 @@ void AT_Kellerer_reset(long N2,
 			return;
 		}
 	}else{
-		MIE          =  MIF;
+		*MIE          =  *MIF;
 
 		long   J;
-		for (J = 1; J <= array_size; J++){
-			double S             =  (double)(J + MIE);
-			E[J -1]     =  exp(S * U) * E0;
+		for (J = 1; J <= *array_size; J++){
+			double S             =  (double)(J + *MIE);
+			E[J -1]     =  exp(S * (*U)) * E0;
 			///////////////////////////////////////////////////////////////////////////
 			// addition SG: not to use Kellerer's formula for new DE's, as it is     //
 			// not exact (but deviation are small)                                   //
 			///////////////////////////////////////////////////////////////////////////
-			double* high_E       =  (double*)calloc(array_size, sizeof(double));
-			S                    =  (double)(J + MIE + 1);
-			high_E[J - 1]        =  exp(S * U) * E0;
+			double* high_E       =  (double*)calloc(*array_size, sizeof(double));
+			S                    =  (double)(J + *MIE + 1);
+			high_E[J - 1]        =  exp(S * (*U)) * E0;
 			DE[J -1]    =  high_E[J -1] - E[J -1];
 			free(high_E);
 		}
@@ -551,34 +551,34 @@ void AT_Kellerer_zero(const long MIF,
 		const double F0,
 		const double F[],
 		const double DE[],
-		long MIH,
-		long LEH,
-		double X,
+		long* MIH,
+		long* LEH,
+		double* X,
 		double H[]){
 
-	X          =  0;
-	long N              =  MIH - MIE;
+	*X          =  0;
+	long N              =  *MIH - MIE;
 
 	long   L;
-	for (L = 1; L <= LEH; L++){
+	for (L = 1; L <= *LEH; L++){
 		long K            =  L + N;
-		X        =  X + H[L -1] * DE[K -1];
+		*X        +=  H[L -1] * DE[K -1];
 	}
 
-	double S            =  (1.0 - F0) * (1.0 - F0) / X;
-	X          =  2.0 / S;
+	double S            =  (1.0 - F0) * (1.0 - F0) / (*X);
+	*X          =  2.0 / S;
 
-	for (L = 1; L <= LEH; L++){;
+	for (L = 1; L <= *LEH; L++){;
 	H[L -1]    =  H[L -1] * S;
 	}
 
-	N                   =  MIH - MIF;
-	MIH        =  MIF;
-	LEH        =  LEH + N;
+	N                   =  *MIH - MIF;
+	*MIH        =  MIF;
+	*LEH        += N;
 
 	long   LL;
-	for (LL = 1; LL <= LEH; LL++){
-		long L            =  LEH + 1 - LL;
+	for (LL = 1; LL <= *LEH; LL++){
+		long L            =  *LEH + 1 - LL;
 		long K            =  L + N;
 		H[K -1]  =  H[L -1];
 	}
@@ -599,20 +599,20 @@ void AT_Kellerer_shrink(const long array_size,
 		const long MIE,
 		const double shrink_tails_under,
 		const double DE[],
-		long MIH,
-		long LEH,
+		long* MIH,
+		long* LEH,
 		double H[]){
 
 	double  EX          =  shrink_tails_under;
 	double  S           =  0.0;
-	long  N             =  MIH - MIE;
+	long  N             =  *MIH - MIE;
 
 	long   L;
-	for (L = 1; L <= LEH; L++){
+	for (L = 1; L <= *LEH; L++){
 		long K            =  L + N;
 		S                 =  S + H[L -1] * DE[K -1];
 		if(S > 1000.0 * EX){
-			MIH    =  MIH + L - 1;
+			*MIH    =  *MIH + L - 1;
 			break;}
 	}
 
@@ -620,8 +620,8 @@ void AT_Kellerer_shrink(const long array_size,
 	S                   =  0;
 
 	long   K;
-	for (K = 1; K <= LEH; K++){
-		L                 =  LEH + 1 - K;
+	for (K = 1; K <= *LEH; K++){
+		L                 =  *LEH + 1 - K;
 		long KK           =  L + N;
 		S                 =  S + H[L - 1] * DE[KK - 1];
 		if(S > EX){
@@ -629,40 +629,40 @@ void AT_Kellerer_shrink(const long array_size,
 		}
 	}
 
-	LEH        =  L - M;
-	for (L = 1; L <= LEH; L++){
+	*LEH        =  L - M;
+	for (L = 1; L <= *LEH; L++){
 		K                 =  L + M;
 		H[L -1]  =  H[K -1];
 	}
 
-	K                   =  LEH + 1;
-	long  KK            =  LEH + M;
+	K                   =  *LEH + 1;
+	long  KK            =  *LEH + M;
 	for (L = K; L <= KK; L++){
 		H[L -1]  =  0;
 	}
 }
 
 
-void AT_Kellerer_Folding(		const long N2,
+void AT_Kellerer_folding(		const long N2,
 		const long array_size,
 		const long LEF,
 		const long MIE,
 		const long MIF,
 		const double DE[],
 		const double DI[],
-		long MIH,
-		long LEH,
+		long* MIH,
+		long* LEH,
 		const double F0,
-		double H0,
+		double* H0,
 		double F[],
 		double H[],
 		double A[],
 		double BI[]){
 	double*  FDE        =  (double*)calloc(array_size, sizeof(double));
 
-	H0         =  F0 * F0;
-	MIH        =  MIF + N2;
-	LEH        =  LEF;
+	*H0         =  F0 * F0;
+	*MIH        =  MIF + N2;
+	*LEH        =  LEF;
 	long  K             =  LEF + 1;
 	long KK             =  K + N2;
 
@@ -680,13 +680,13 @@ void AT_Kellerer_Folding(		const long N2,
 			BI);
 	long N              =  MIF - MIE;
 
-	for (L = 1; L <= LEH; L++){
+	for (L = 1; L <= *LEH; L++){
 		K                 =  L + N;
 		FDE[L -1]         =  F[L -1] * DE[K -1];
 	}
 
 	long   LH;
-	for (LH = 1; LH <= LEH; LH++){
+	for (LH = 1; LH <= *LEH; LH++){
 		double   HLH      =  0;
 		long   LL         =  LH + N2;
 		long   LF;
@@ -807,7 +807,7 @@ void   AT_SuccessiveConvolutions( const double  u,
 	///////////////////////////////////////
 	// Normalize distribution
 	///////////////////////////////////////
-	AT_Kellerer_normalize(array_size, MIH, MIE, LEH, H0, E, DE, CM1, CM2, X, H);
+	AT_Kellerer_normalize(array_size, MIH, MIE, LEH, H0, E, DE, &CM1, &CM2, &X, H);
 
 	///////////////////////////////////////
 	// Get moments of single impact f1
@@ -818,7 +818,7 @@ void   AT_SuccessiveConvolutions( const double  u,
 	// AT_SC_SHRINK distribution
 	///////////////////////////////////////
 	if(shrink_tails){
-		AT_Kellerer_shrink(array_size, MIE, shrink_tails_under, DE, MIH, LEH, H);
+		AT_Kellerer_shrink(array_size, MIE, shrink_tails_under, DE, &MIH, &LEH, H);
 	}
 
 	///////////////////////////////////////
@@ -857,21 +857,21 @@ void   AT_SuccessiveConvolutions( const double  u,
 		MIF        =  MIH;
 
 		if((CN >= 10.0) && (adjust_N2 == true)){
-			AT_Kellerer_reset(*N2, U, array_size, LEF, MIE, MIF, E0, E, DE, F, A, BI, DI);
+			AT_Kellerer_reset(N2, &U, &array_size, &LEF, &MIE, &MIF, E0, E, DE, F, A, BI, DI);
 		}
 
-		AT_Kellerer_Folding(*N2,array_size, LEF, MIE, MIF, DE, DI, MIH, LEH, F0, H0, F, H, A, BI);
+		AT_Kellerer_folding(*N2,array_size, LEF, MIE, MIF, DE, DI, &MIH, &LEH, F0, &H0, F, H, A, BI);
 
 		if (F0 < 1e-10){
 			X        =  2.0;
 		}else{
-			AT_Kellerer_zero(MIF, array_size, MIE, LEF, F0, F, DE, MIH, LEH, X, H);
+			AT_Kellerer_zero(MIF, array_size, MIE, LEF, F0, F, DE, &MIH, &LEH, &X, H);
 		}
 
 		if(shrink_tails){
-			AT_Kellerer_shrink(array_size, MIE, shrink_tails_under, DE, MIH, LEH, H);
+			AT_Kellerer_shrink(array_size, MIE, shrink_tails_under, DE, &MIH, &LEH, H);
 		}
-		AT_Kellerer_normalize(array_size, MIH, MIE, LEH, H0, E, DE, CM1, CM2, X, H);
+		AT_Kellerer_normalize(array_size, MIH, MIE, LEH, H0, E, DE, &CM1, &CM2, &X, H);
 	}
 
 
