@@ -32,6 +32,7 @@
 
 
 inline double AT_beta_from_E_single( const double E_MeV_u ){ //TODO is energy per nucleon really defined like that ?
+  assert( E_MeV_u > 0.);
   return sqrt(1.0 - 1.0/gsl_pow_2(1.0 + E_MeV_u/(1.0079*proton_mass_MeV_c2)));
 }
 
@@ -50,6 +51,7 @@ int AT_beta_from_E( const long  n,
 
 inline double AT_gamma_from_E_single( const double E_MeV_u ){
   double beta 	= AT_beta_from_E_single( E_MeV_u );
+  assert( beta < 1.0);
   return (1.0 / sqrt(1.0 - beta * beta));
 }
 
@@ -67,6 +69,7 @@ int AT_gamma_from_E( const long  n,
 
 
 inline double AT_E_from_beta_single(  const double beta ){
+  assert( beta < 1.0);
   return 1.0079*proton_mass_MeV_c2 * (sqrt(1.0 / (1.0 - gsl_pow_2(beta))) - 1.0);
 }
 
@@ -156,6 +159,7 @@ inline double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u ){
 
 
 inline double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u ){
+  assert( E_MeV_u > 0);
   return 4.0 * electron_mass_MeV_c2 / proton_mass_MeV_c2 * E_MeV_u;
 }
 
@@ -189,8 +193,6 @@ int AT_max_E_transfer_MeV(  const long  n,
 inline double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u){
 	double	beta		=	AT_beta_from_E_single(E_MeV_u);
 	double	gamma		=	AT_gamma_from_E_single(E_MeV_u);
-//	long	A			=	AT_A_from_particle_no_single(particle_no);
-//	double	m_MeV_c2	=	A * 1.0079 * proton_mass_MeV_c2;
 	double	m_MeV_c2	=	1.0079 * proton_mass_MeV_c2;
 	return 	gamma * m_MeV_c2 * beta * 1.0;			// Here: c = 1
 }
@@ -211,6 +213,8 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
     const long*  material_no,
     double*  dsE2dz)
 { // TODO shall this function be defined for one or many materials ?
+  assert( n != NULL);
+  assert( *n > 0);
   long  i;
   double tmp;
   double  electron_density_m3;

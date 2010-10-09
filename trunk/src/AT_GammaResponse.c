@@ -74,6 +74,10 @@ void AT_gamma_response( const long  number_of_doses,
     const bool	   lethal_events_mode,
     double         S[]){
 
+  assert( number_of_doses > 0);
+  assert( d_Gy != NULL);
+  assert( gamma_parameter != NULL);
+
   long  i,j;
   /*
    * (0) Test model, response m*x + c
@@ -118,6 +122,8 @@ void AT_gamma_response( const long  number_of_doses,
 		  double c      =  gamma_parameter[j * 4 + 2];
 		  double m      =  gamma_parameter[j * 4 + 3];
 
+		  assert( D1 > 0);
+
 		  double tmp    =  0.0;
 
 		  for (i = 0; i < number_of_doses; i++){
@@ -138,6 +144,7 @@ void AT_gamma_response( const long  number_of_doses,
 	  }
 	  if(lethal_events_mode){
 		  for(i = 0; i < number_of_doses; i++){
+			  assert( S[i] < 1.0);
 			  S[i]	= -1.0 * log(1.0 - S[i]);
 		  }
 	  }
@@ -161,19 +168,23 @@ void AT_gamma_response( const long  number_of_doses,
 	  double D1     =  gamma_parameter[1];
 	  double chi    =  gamma_parameter[2];
 
+	  assert( chi > 0);
+	  assert( D1 > 0);
+
 	  // transform parameters
 	  double c0     =  Smax / chi;
 	  double B      =  (Smax - c0) / D1;
 
 	  for (i = 0; i < number_of_doses; i++){
 		  if(d_Gy[i]  <= D1){
-			  S[i]    =  c0 * d_Gy[i] + 0.5f * B * gsl_pow_2(d_Gy[i]);
+			  S[i]    =  c0 * d_Gy[i] + 0.5 * B * gsl_pow_2(d_Gy[i]);
 		  }else{
-			  S[i]    =  c0 * D1 + 0.5f * B * gsl_pow_2(D1) + Smax * (d_Gy[i] - D1);
+			  S[i]    =  c0 * D1 + 0.5 * B * gsl_pow_2(D1) + Smax * (d_Gy[i] - D1);
 		  }
 	  }
 	  if(lethal_events_mode){
 		  for(i = 0; i < number_of_doses; i++){
+			  assert( S[i] < 1.0);
 			  S[i]	= -1.0 * log(1.0 - S[i]);
 		  }
 	  }
@@ -188,6 +199,8 @@ void AT_gamma_response( const long  number_of_doses,
   if(gamma_model == GR_ExpSaturation){
     double  Smax  =  gamma_parameter[0];
     double  D0    =  gamma_parameter[1];
+
+    assert( D0 > 0);
 
     for (i = 0; i < number_of_doses; i++){
       if(lethal_events_mode){
@@ -211,10 +224,9 @@ void AT_gamma_response( const long  number_of_doses,
     double  beta  =  gamma_parameter[1];
     double  D0    =  gamma_parameter[2];
 
-    if( alpha < 0.0 )
-      alpha = 0.0;
-    if( beta < 0.0 )
-      beta = 0.0;
+    assert( alpha > 0. );
+    assert( beta >= 0. );
+    assert( D0 > 0. );
 
     for (i = 0; i < number_of_doses; i++){
 		if( d_Gy[i] < D0 ){
@@ -241,21 +253,22 @@ void AT_gamma_response( const long  number_of_doses,
    *                 a2 - dose prefactor for quadratic component (1e-6 for Geiss, 1997)
    **/
   if(gamma_model == GR_Geiss){
-	     double co	= gamma_parameter[0];
-	     double k1	= gamma_parameter[1];
-	     double a1	= gamma_parameter[2];
-	     double k2	= gamma_parameter[3];
-	     double a2	= gamma_parameter[4];
+	  double co	= gamma_parameter[0];
+	  double k1	= gamma_parameter[1];
+	  double a1	= gamma_parameter[2];
+	  double k2	= gamma_parameter[3];
+	  double a2	= gamma_parameter[4];
 
-	 for (i = 0; i < number_of_doses; i++){
-		 if(lethal_events_mode){
-		     // TODO: Use more efficient formula
-			 S[i]    = -1.0 * log(1.0 - k1 * (1.0 - exp(-1.0 * a1 * d_Gy[i])) - k2 * (1.0 - exp(-1.0 * a2 * d_Gy[i] * d_Gy[i])));
-		 }else{
-			 S[i]    = co * (k1 * (1.0 - exp(-1.0 * a1 * d_Gy[i])) + k2 * (1.0 - exp(-1.0 * a2 * d_Gy[i] * d_Gy[i])));
-		 }
-      }
-    }
+	  for (i = 0; i < number_of_doses; i++){
+		  if(lethal_events_mode){
+			  // TODO: Use more efficient formula
+			  assert( 1.0 - k1 * (1.0 - exp(-a1 * d_Gy[i])) - k2 * (1.0 - exp(-a2 * d_Gy[i] * d_Gy[i])) > 0. );
+			  S[i]    = -log(1.0 - k1 * (1.0 - exp(-a1 * d_Gy[i])) - k2 * (1.0 - exp(-a2 * gsl_pow_2(d_Gy[i]))));
+		  } else {
+			  S[i]    = co * (k1 * (1.0 - exp(-a1 * d_Gy[i])) + k2 * (1.0 - exp(-a2 * gsl_pow_2(d_Gy[i]))));
+		  }
+	  }
+  }
 
 }
 
@@ -326,6 +339,7 @@ double AT_get_ion_response_from_dose_distribution(  const long  number_of_bins,
 	    const double   gamma_parameter[],
 	    const bool     lethal_events_mode)
 {
+	assert( number_of_bins > 0);
 	double* ion_response_bin_frequency = (double*)calloc(sizeof(double),number_of_bins);
 
 	AT_get_response_distribution_from_dose_distribution(  number_of_bins,
@@ -371,6 +385,9 @@ double AT_get_ion_efficiency_from_dose_distribution(  const long  number_of_bins
 		  gamma_parameter,
 		  lethal_events_mode);
 
+  assert( ion_response >= 0);
+  assert( gamma_response > 0);
+
   return ion_response / gamma_response;
 }
 
@@ -389,7 +406,7 @@ double AT_get_ion_efficiency_from_response_distribution(  const long  number_of_
 		  dose_bin_frequency,
 		  ion_response_bin_frequency);
 
-  double gamma_respone = AT_get_gamma_response_for_average_dose( number_of_bins,
+  double gamma_response = AT_get_gamma_response_for_average_dose( number_of_bins,
 		  dose_Gy_bin_position,
 		  dose_Gy_bin_width,
 		  dose_bin_frequency,
@@ -397,7 +414,10 @@ double AT_get_ion_efficiency_from_response_distribution(  const long  number_of_
 		  gamma_parameter,
 		  lethal_events_mode);
 
-  return ion_response / gamma_respone;
+  assert( ion_response >= 0);
+  assert( gamma_response > 0);
+
+  return ion_response / gamma_response;
 }
 
 
@@ -438,6 +458,9 @@ void AT_get_gamma_response(  const long  number_of_bins,
       gamma_parameter,
       lethal_events_mode,
       S_gamma);
+
+  assert( *S_HCP >= 0);
+  assert( *S_gamma > 0);
 
   *efficiency    =  *S_HCP / *S_gamma;
 }
