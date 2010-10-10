@@ -482,7 +482,7 @@ void AT_histo_normalize(	const long number_of_bins,
 		const long histo_type,
 		double frequency[])
 {
-	long 	i;
+	/* get histogram sum */
 	double 	sum;
 	AT_histo_sum(	number_of_bins,
 			lowest_left_limit,
@@ -491,14 +491,21 @@ void AT_histo_normalize(	const long number_of_bins,
 			frequency,
 			&sum);
 
+	/* divide frequencies by sum */
+	assert(sum > 0.0);
+	long 	i;
 	for(i = 0; i < number_of_bins; i++){
-		frequency[i] /= sum;				// TODO: Replace by AT_normalize
+		frequency[i] /= sum;
 	}
 }
 
 /* TRANSIENT ROUTINES FOR TRANSFORMING OLD-STYLE KELLERER HISTOGRAMS INTO NEW STYLE */
 double AT_N2_to_step(double N2){
-	return(pow(2, 1.0/N2));
+	return(pow(2.0, 1.0/(double)(N2)));
+}
+
+double AT_step_to_N2(double step){
+	return(log(2.0)/log(step));
 }
 
 /* OLD ROUTINES, KEPT FOR COMPATIBILITY */

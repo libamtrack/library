@@ -31,6 +31,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <assert.h>
 
 /**
  * @enum AT_histo_type
@@ -417,6 +418,8 @@ void AT_histo_normalize(	const long number_of_bins,
 
 /* TRANSIENT ROUTINES FOR TRANSFORMING OLD-STYLE KELLERER HISTOGRAMS INTO NEW STYLE */
 double AT_N2_to_step(double N2);
+
+double AT_step_to_N2(double step);
 
 
 /* OLD ROUTINES, KEPT FOR COMPATIBILITY */
