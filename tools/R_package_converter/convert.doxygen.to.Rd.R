@@ -54,7 +54,7 @@ for(i in 1:length(functions)){
 		parameter.list <- paste(parameter.list, tmp$parameter.comment$name[ii[length(ii)]], sep = "") 
 	}
 
-	write("// Automatically created Rd file\n", file = paste(tmp$name, ".Rd", sep = ""))
+	write("// Automatically created Rd file\n", file = paste("./package/man/", tmp$name, ".Rd", sep = ""))
 
 	##############################
 	# create header
@@ -99,7 +99,7 @@ for(i in 1:length(functions)){
 	# end value
 	header <- c(header, "}")
 
-	write(c(header, "\n"), file = paste(tmp$name, ".Rd", sep = ""), append = T)
+	write(c(header, "\n"), file = paste("./package/man/", tmp$name, ".Rd", sep = ""), append = T)
 }
 
 #tmp
