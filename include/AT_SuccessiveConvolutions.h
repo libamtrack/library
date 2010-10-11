@@ -221,8 +221,6 @@ void AT_Kellerer_reset(long* N2,
 		double E[],
 		double DE[],
 		double F[],
-		double A[],
-		double BI[],
 		double DI[]);
 
 
@@ -256,21 +254,19 @@ void AT_Kellerer_shrink(const long array_size,
 /**
  * Does actual convolution, makes use of the symmetry
  */
-void AT_Kellerer_folding(		const long N2,
-		const long array_size,
-		const long LEF,
-		const long MIE,
-		const long MIF,
-		const double DE[],
-		const double DI[],
-		long* MIH,
-		long* LEH,
-		const double F0,
-		double* H0,
-		double F[],
-		double H[],
-		double A[],
-		double BI[]);
+void AT_Kellerer_folding(		const long n_bins,
+		const long bins_per_factor_2,
+		const double delta_i[],
+		const long values_first_bin,
+		const double values_bin_widths[],
+		const long frequency_n_bins_last,
+		const long frequency_first_bin_last,
+		const double frequency_zero_bin_last,
+		double frequency_last[],
+		long* frequency_n_bins,
+		long* frequency_first_bin,
+		double* frequency_zero_bin,
+		double frequency[]);
 
 
 
