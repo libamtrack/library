@@ -1,0 +1,58 @@
+% File for libamtrack manual
+% Copyright 2006, 2010 Steffen Greilich / the libamtrack team
+% This file is part of the libAmTrack project (libamtrack.dkfz.org).
+
+\chapter{Physics routines}
+
+\la{} contains a number of auxiliary routines handling the physics of ion beams needed. These routines can be used independently from the efficiency methods. They are implemented in \texttt{AT\_PhysicsRoutines.c} and are described in detail in this.
+
+\section{\texttt{AT\_beta\_from\_E}}
+
+Computes the relativistic speed $\beta=\frac{v}{c}$ from a particle's kinetic energy using
+\begin{equation}
+\beta = \sqrt{1 - \frac{1}{\frac{E}{1.0079\cdot m_p}}}
+\end{equation}
+Note that this relation is independent from the particle mass.\\
+
+Single version:\\
+\begin{tabular}{l l}
+\texttt{E\_MeV\_u} & the kinetic energy per nucleon (double) \\
+\end{tabular}\\
+
+Multi version:\\
+\begin{tabular}{l l}
+\texttt{n} & array size (long integer) \\
+\texttt{E\_MeV\_u} & the kinetic energy per nucleon (array of double, size \texttt{n}) \\
+\texttt{beta} & array for results (array of double, size \texttt{n}) \\
+\end{tabular}
+
+
+\section{\texttt{AT\_effective\_charge\_from\_beta}}
+
+Computes the effective charge of a travelling HCP as a function of its relativistic speed. Due to charge pick-up slower particle might not be fully stripped. Here, the Barkas (ref.?) equation is used:
+
+\begin{equation}
+Z_{eff}=Z\cdot(1-e^{-125\cdot\frac{\beta}{Z^{2/3}}})
+\end{equation}
+
+Single version:\\
+
+\begin{tabular}{l l}
+\texttt{beta} & relativistic speed (double) \\
+\texttt{Z} & charge (long integer) \\
+\end{tabular}
+
+Multi version:\\
+
+\begin{tabular}{l l}
+\texttt{n} & array size (integer) \\
+\texttt{beta} & relativistic speed (array of double, size \texttt{n}) \\
+\texttt{Z} & charge (array of long integer, size \texttt{n}) \\
+\texttt{effective\_charge} & relativistic speed (array of double, size \texttt{n}) \\
+\end{tabular}
+
+
+\section*{Document status}
+\begin{tabular}{l l}
+2010.05.28&Created by S. Greilich
+\end{tabular}

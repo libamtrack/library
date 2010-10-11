@@ -1,0 +1,50 @@
+% Main file for libamtrack manual
+% Copyright 2006, 2010 Steffen Greilich / the libamtrack team
+% This file is part of the libAmTrack project (libamtrack.dkfz.org).
+
+\documentclass[10pt,a4paper]{book}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage[version=3]{mhchem}
+\usepackage{lineno}
+\usepackage{tensor}
+\usepackage{graphicx}
+
+% include hyperlinks in document and gives the pdf a title
+\usepackage[pdftitle={libAmTrack Manual}]{hyperref}
+
+\newcommand{\la}{\texttt{libAmTrack}}
+
+
+
+\title{\la{} Manual}
+\author{Steffen Greilich / the \la{} team}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\include{Introduction}
+\include{Installation}
+\include{Methods}
+\include{RadialDoseDistributions}
+\include{ElectronRange}
+\include{PhotonResponse}
+\include{PhysicsRoutines}
+% desciption of the included wrapper
+\include{wrapper}
+\include{ListOfSymbols}
+
+\bibliographystyle{unsrt}
+\bibliography{libamtrackManual}
+
+\end{document}
+
+% RH:what does this command?
+\endinput

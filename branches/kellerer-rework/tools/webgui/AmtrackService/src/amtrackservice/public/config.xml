@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<config path="/path/to/folder"> <!-- please specify the path where the wrapper folder is located -->
+	<database ip="localhost" name="dbname" user="username" pass="password"/>
+	<template name="AT_D_RDD_GY" file="AT_D_RDD_GY.xml"/>
+	<template name="plot Test" file="AT_D_RDD_GY_PLOT.xml"/>
+	<template name="test2" file="AT_D_RDD_GY.xml"/>
+	<template name="test3" file="AT_D_RDD_GY.xml"/>
+</config>
