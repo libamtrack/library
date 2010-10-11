@@ -125,8 +125,6 @@ for(file in record){
 
 		# remove the first "/**" entry
 		breaks <- breaks[-1] 
-
-
 		
 		# extract the description (text before the first parameter)
 		first.parameter <- grep("@", raw.comment, fixed = T)
@@ -245,13 +243,15 @@ for(file in record){
 			parameter$name[length(breaks) + 1] <- gsub(");", "", raw.code[pos[3]])
 		}
 
-		# get the array.size from the doxgen comment
-		vectors <- grep("[]", parameter$name, fixed = T)
-		pos.array.size <- match(gsub("[]", "", parameter$name[vectors], fixed = T), current.function$parameter.comment$name)
-		parameter$length[vectors] <- current.function$parameter.comment$array.size[pos.array.size]
+		# find the vectors and remove "[x]" from the name
+		vectors <- grep("[", parameter$name, fixed = T)
+		# print(parameter$name[vectors]) # for debugging
+		parameter$name[vectors] <- unlist(strsplit(parameter$name[vectors], "[", fixed = T))[(seq(2, length(vectors)*2, by = 2) - 1)]	
+		# print(parameter$name[vectors]) # for debugging
 
-		# remove "[]" now
-		parameter$name <- gsub("[]", "", parameter$name, fixed = T)
+		# get the array.size from the doxgen comment
+		pos.array.size <- match(parameter$name[vectors], current.function$parameter.comment$name)
+		parameter$length[vectors] <- current.function$parameter.comment$array.size[pos.array.size]
 
 		# remove possible NA from parameter$length by TODO
 		parameter$length[is.na(parameter$length)] <- "TODO"
