@@ -29,7 +29,7 @@ source("type.conversion.R")
 
 load("functions.ssd")
 
-write("// Automatically created header file\n\n#include \"Amtrack.h\"\n", file = "Rwrapper.h")
+write("// Automatically created header file\n\n#include \"AmTrack.h\"\n#include <stdlib.h>\n#include <stdbool.h>\n", file = "Rwrapper.h")
 
 write("// Automatically created header and body file\n\n#include \"Rwrapper.h\"\n", file = "Rwrapper.c")
 
@@ -141,7 +141,7 @@ for(i in 1:length(functions)){
 	
 	# function call
 	body <- c(body, paste("\n  ", tmp$name, "( ", para$name[1], 
-				 get.extension(para$type[j]), ",", sep = ""))
+				 get.extension(para$type[1]), ",", sep = ""))
 	for(j in 2:(nrow(para) - 1)){
 		if(length(grep("*", para$type[j], fixed = T)) == 0)
 			body <- c(body, paste("\t", para$name[j], get.extension(para$type[j]), ",", sep = ""))
