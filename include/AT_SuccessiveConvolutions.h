@@ -258,7 +258,7 @@ void AT_Kellerer_folding(		const long n_bins,
 		const double frequency[],
 		long* n_bins_new,
 		double* new_lowest_left_limit,
-		double frequency_new[]);
+		double* frequency_new);
 
 
 

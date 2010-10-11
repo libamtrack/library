@@ -634,16 +634,18 @@ void AT_Kellerer_folding(		const long n_bins,
 		const double frequency[],
 		long* n_bins_new,
 		double* new_lowest_left_limit,
-		double frequency_new[]){
+		double* frequency_new){
 
 	long 		i, j;
 //	*new_lowest_left_limit			=  2.0 * lowest_left_limit;
 	/* As new maximum value will be twice the old one, the histogram range
 	 * has to be expanded by at least a factor 2
 	 */
-	long 		bins_per_factor_2	=  ceil(AT_step_to_N2(step));	// TODO: WRONG 19 INSTEAD OF 20
-	*n_bins_new        				=  n_bins + bins_per_factor_2;
-	realloc(frequency_new, *n_bins_new * sizeof(double));
+	*new_lowest_left_limit			=  lowest_left_limit;
+	*n_bins_new						=  n_bins;
+//	long 		bins_per_factor_2	=  ceil(AT_step_to_N2(step));	// TODO: WRONG 19 INSTEAD OF 20
+//	*n_bins_new        				=  n_bins + bins_per_factor_2;
+//	realloc(frequency_new, *n_bins_new * sizeof(double));
 
 	/* Precompute bin content (FDE) */
 	double*		bin_content        =  (double*)calloc(*n_bins_new, sizeof(double));
@@ -665,24 +667,29 @@ void AT_Kellerer_folding(		const long n_bins,
 	}
 
 	/* Precompute float index */
-	double*		delta_i        =  (double*)calloc(*n_bins_new, sizeof(double));
-	for (i = 0; i < *n_bins_new; i++){
-		delta_i[i]	=  log(1.0 - pow(step, -1.0 * i))/log(step);
+	double*		delta_i        =  (double*)calloc(*n_bins_new + 1, sizeof(double));
+	for (i = 0; i <= *n_bins_new; i++){
+		delta_i[*n_bins_new - i]	=  log(1.0 - pow(step, -1.0 * i))/log(step);
 	}
 
 	double 	k, frac_k, interp_frequency, sum;
 	long	int_k;
-	for (i = 0; i < *n_bins_new; i++){
+	for (i = 0; i < n_bins; i++){
 		sum			=  0.0;
 
 		for (j = 0; j <= i; j++){	// TODO: j <= i or j < i?
-			assert(((j - i) >= 0) && ((j- i) < *n_bins_new));
-			k					=  (double)i + delta_i[i-j];
-			int_k				=  (long)(k + 0.5);
-			frac_k				=  k - (double)int_k;
-			interp_frequency	=  frequency[int_k] + frac_k * (lin_coeff[int_k] + frac_k * qua_coeff[int_k]);
-			if (interp_frequency <0){interp_frequency = 0.0;}
-			sum         	   +=  bin_content[j] * interp_frequency;
+			assert(((i-j) >= 0) && ((i-j) < *n_bins_new));
+			k					= (double)i + delta_i[i-j];
+			frac_k				= modf(k, &k);
+			int_k				= (long)k;
+			if(k == 0.0){
+				int_k 				= 0;
+			}
+			if (int_k >= 0){
+				interp_frequency	=  frequency[int_k] + frac_k * (lin_coeff[int_k] + frac_k * qua_coeff[int_k]);
+				if (interp_frequency <0){interp_frequency = 0.0;}
+				sum         	   +=  bin_content[j] * interp_frequency;
+			}
 		}
 
 		frequency_new[i] =  sum - bin_content[i] * frequency[i] * 0.5;
