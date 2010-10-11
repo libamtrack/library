@@ -89,6 +89,17 @@ for(i in 1:length(functions)){
 	}
 	body <- c(body, "")
 
+
+	# get the length of the arrays and check for numbers (this will produce a warning!
+	para.length <- para$length
+	numbers <- !is.na(as.numeric(para.length)) 
+
+	# add "_long" to all variables that are no numbers
+	para.length[!numbers] <- paste(para.length[!numbers], "_long", sep = "")
+
+	# write changed para.length back into data.frame
+	para$length <- para.length
+
 	para.length <- unique(para$length)[unique(para$length) != 1]
 
 	for(l in para.length){
@@ -100,13 +111,13 @@ for(i in 1:length(functions)){
 				body <- c(body, paste("  ", gsub("const ", "", para$type[k]), "* ",
 						para$name[k],  get.extension(para$type[k]),
 						" = (", gsub("const ", "", para$type[k]), 
-						"*)calloc(", l, "_long", ",sizeof(", gsub("const ", "", para$type[k]),
+						"*)calloc(", l,  ",sizeof(", gsub("const ", "", para$type[k]),
 						"));", sep = ""))
 			}
 			body <- c(body, "")
 			# fill the data into the allocated space
 			body <- c(body, "\n//Fill in the input parameter.")
-			body <- c(body, paste("  for(i = 0 ; i < ", l, "_long; i++){", sep = ""))
+			body <- c(body, paste("  for(i = 0 ; i < ", l, "; i++){", sep = ""))
 			for(k in jj){
 				body <- c(body, paste("\t", para$name[k], get.extension(para$type[k]),
 						"[i] = (", gsub("const ", "", para$type[k]), ")", para$name[k],
@@ -161,7 +172,7 @@ for(i in 1:length(functions)){
 			kk <-  which(!input & vector & para$length == l)
 			if(length(kk) > 0){
 				# fill the data into the allocated space
-				body <- c(body, paste("  for(i = 0 ; i < ", l, "_long; i++){", sep = ""))
+				body <- c(body, paste("  for(i = 0 ; i < ", l, "; i++){", sep = ""))
 				for(j in kk){
 					body <- c(body, paste("\t", para$name[j],	"[i] = (", 
 							gsub("\t", "", gsub("*", "", gsub("const ", "", convert.c(para$type[j])), fixed = T), fixed = T),			
