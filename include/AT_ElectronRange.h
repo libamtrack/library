@@ -182,10 +182,10 @@ inline void AT_ER_Tabata_constants(const double average_A,
  * for vector of energies
  *
  * @param[in]  number_of_particles          number of particles in the incident field
- * @param[in]  E_MeV_u                      kinetic energy for particles in the given field (vector of length number_of_particles)
+ * @param[in]  E_MeV_u                      kinetic energy for particles in the given field (array of size number_of_particles)
  * @param[in]  material_no                  index for detector material
  * @param[in]  er_model                     index for electron-range model chosen
- * @param[out] max_electron_range_m         electron range (track diameter) in m  (vector of length number_of_particles)
+ * @param[out] max_electron_range_m         electron range (track diameter) in m  (array of size number_of_particles)
  */
 void AT_max_electron_ranges_m( const long number_of_particles ,
     const double  E_MeV_u[],

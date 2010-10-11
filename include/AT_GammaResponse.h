@@ -152,7 +152,7 @@ long AT_Gamma_number_of_parameters( const long Gamma_no);
  * @param[in]  number_of_doses  number of doses given in vector d_Gy
  * @param[in]  d_Gy             doses in Gy (array of size number_of_doses)
  * @param[in]  gamma_model      gamma response model index
- * @param[in]  gamma_parameter  vector holding necessary parameters for the chose gamma response model (array of size 10)
+ * @param[in]  gamma_parameter  vector holding necessary parameters for the chose gamma response model (array of size 4)
  * @param[in]  lethal_event_mode  TODO
  * @param[out] S                gamma responses (array of size number_of_doses)
  */
@@ -240,15 +240,15 @@ double AT_get_ion_efficiency_from_response_distribution(  const long  number_of_
  * routines in AmTrack.c
  *
  * @param[in]  number_of_bins      number of bins in given local dose distribution
- * @param[in]  d_Gy                local dose bin position in Gy (vector of length number_of_bins)
- * @param[in]  dd_Gy               local dose bin width in Gy (vector of length number_of_bins)
- * @param[in]  f                   local dose frequency (vector of length number_of_bins)
+ * @param[in]  d_Gy                local dose bin position in Gy (array of size number_of_bins)
+ * @param[in]  dd_Gy               local dose bin width in Gy (array of size number_of_bins)
+ * @param[in]  f                   local dose frequency (array of size number_of_bins)
  * @param[in]  f0                  frequency of zero local dose
  * @param[in]  gamma_model         gamma response model index
- * @param[in]  gamma_parameter     vector holding necessary parameters for the chose gamma response model
+ * @param[in]  gamma_parameter     vector holding necessary parameters for the chose gamma response model (array of size 4)
  * @param[in]  lethal_events_mode  if true, allows to do calculations for cell survival
  *    @see  AmTrack.c/AT_IGK
- * @param[out] S                   gamma responses for given bins (vector of length number_of_bins)
+ * @param[out] S                   gamma responses for given bins (array of size number_of_bins)
  * @param[out] S_HCP               HCP response for given local dose distribution (expectation value of S distribution)
  * @param[out] S_gamma             gamma response for given local dose distribution (gamma response of expectation value of d distribution)
  * @param[out] efficiency          RE = S_HCP/S_gamma for given local dose distribution

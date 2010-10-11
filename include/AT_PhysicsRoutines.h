@@ -109,8 +109,8 @@ inline double AT_beta_from_E_single( const double  E_MeV_u );
  *  Returns relativistic speed for many particles
  *
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV]
- * @param[out] beta                     vector of relative particle speed beta = v/c
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[out] beta                     vector of relative particle speed beta = v/c (array of size n)
  * @return     status code
  */
 int AT_beta_from_E( const long  n,
@@ -131,8 +131,8 @@ inline double AT_E_from_beta_single(  const double beta );
  *  Returns energy per nucleon of particle with relative speed beta
  *
  * @param[in]  n                        number of particles
- * @param[in]  beta                     vector of relative particle speed beta = v/c
- * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV]
+ * @param[in]  beta                     vector of relative particle speed beta = v/c (array of size n)
+ * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
  * @return     status code
  */
 int AT_E_from_beta(  const long  n,
@@ -151,8 +151,8 @@ inline double AT_E_MeV_u_from_momentum_single( 	const double momentum_MeV_c_u);
  *  Returns energy per nucleon of particles with given momentum per nucleon
  *
  * @param[in]  n                        number of particles
- * @param[in]  momentum_MeV_c_u         vector of particle momenta per nucleon [MeV/c], size n
- * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV], size n
+ * @param[in]  momentum_MeV_c_u         vector of particle momenta per nucleon [MeV/c], (array of size n)
+ * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV], (array of size n)
  * @return     status code
  */
 int AT_E_MeV_u_from_momentum(  const long  n,
@@ -171,8 +171,8 @@ inline double AT_gamma_from_E_single( const double E_MeV_u );
  *  Returns relativistic gamma for many particles
  *
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV]
- * @param[out] gamma                    vector of results
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[out] gamma                    vector of results (array of size n)
  * @return     status code
  */
 int AT_gamma_from_E( const long  n,
@@ -202,8 +202,8 @@ inline double AT_effective_charge_from_beta_single(  const double beta,
  * calculated for particle with given relative speed beta
  *
  * @param[in]  n                        number of particles
- * @param[in]  beta                     vector of relative particle speed beta = v/c
- * @param[in]  Z                        atomic number Z of ion
+ * @param[in]  beta                     vector of relative particle speed beta = v/c (array of size n)
+ * @param[in]  Z                        atomic number Z of ion (array of size n)
  * @param[out] effective_charge of ion
  * @return     status code
  */
@@ -247,7 +247,7 @@ double AT_effective_charge_from_E_MeV_u_single(  const double E_MeV_u,
  * calculated for particle with given energy per nucleon
  *
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV]
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
  * @param[in]  particle_no              type of the particles in the mixed particle field (array of size n)
  * @param[out] effective_charge         Effective charge according to Barkas-Bethe-approximation
  * @return     status code
@@ -338,7 +338,7 @@ double AT_dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
  * @see          AT_DataParticle.h for definition
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[out] dose_Gy         vector of size n to be allocated by the user which will be used to return the results
+ * @param[out] dose_Gy          be allocated by the user which will be used to return the results (array of size n)
  */
 void AT_dose_Gy_from_fluence_cm2(  const long  n,
     const double  E_MeV_u[],
@@ -373,7 +373,7 @@ double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
  * @see          AT_DataParticle.h for definition
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[out] fluence_cm2         vector of size n to be allocated by the user which will be used to return the results
+ * @param[out] fluence_cm2         to be allocated by the user which will be used to return the results (array of size n)
  */
 void AT_fluence_cm2(  const long  n,
     const double  E_MeV_u[],
@@ -395,8 +395,8 @@ void AT_fluence_cm2(  const long  n,
  * @param[in]      n             length of vectors for parameters
  * @param[in,out]  fluence_cm2   fluence in beam center (array of size n)
  * @param[in,out]  sigma_cm      beam width stdev (array of size n)
- * @param[in,out]  N             vector of size n to be allocated by the user which will be used to return the results (absolute particle number)
- * @param[in,out]  FWHM_mm       vector of size n to be allocated by the user which will be used to return the results (in mm)
+ * @param[in,out]  N             to be allocated by the user which will be used to return the results (absolute particle number) (array of size n)
+ * @param[in,out]  FWHM_mm       to be allocated by the user which will be used to return the results (in mm) (array of size n)
  */
 void AT_convert_beam_parameters(  const long  n,
     double fluence_cm2[],
@@ -463,7 +463,7 @@ double AT_single_impact_fluence_cm2_single( const double E_MeV_u,
  * @see          AT_DataMaterial.h for definition
  * @param[in]  er_model     index of electron-range model
  * @see          AT_ElectronRange.h for definition
- * @param[out] single_impact_fluence_cm2  results (one for each entry in the parameter vectors)
+ * @param[out] single_impact_fluence_cm2  results (one for each entry in the parameter vectors) (array of size n)
   */
 void AT_single_impact_fluence_cm2( const long n,
     const double  E_MeV_u[],
