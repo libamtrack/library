@@ -372,7 +372,7 @@ void AT_run_GSM_method(  const long  n,
     const long     nX,
     const double   voxel_size_m,
     const bool     lethal_events_mode,
-    double         results[10])
+    double         results[])
 {
 
   /** in case of debugging
