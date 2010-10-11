@@ -82,9 +82,8 @@ for(i in 1:length(functions)){
 	ii <- which(input & !vector)
 	if(length(ii) > 0){
 		for(j in ii){
-			body <- c(body, paste("  ", para$type[j], " ", para$name[j], "_", 
-					gsub("const ", "", para$type[j]), " = (",
-					gsub("const ", "", para$type[j]), ")(*",  para$name[j], 
+			body <- c(body, paste("  ", gsub("*", "", para$type[j], , fixed = T), " ", para$name[j], get.extension(para$type[j]), " = (",
+					gsub("*", "", gsub("const ", "", para$type[j]), fixed = T), ")(*",  para$name[j], 
 					");", sep = ""))
 		}
 	}
@@ -99,7 +98,7 @@ for(i in 1:length(functions)){
 			body <- c(body, "\n//Allocate space for the input parameter.")
 			for(k in jj){
 				body <- c(body, paste("  ", gsub("const ", "", para$type[k]), "* ",
-						para$name[k], "_", gsub("const ", "", para$type[k]),
+						para$name[k],  get.extension(para$type[k]),
 						" = (", gsub("const ", "", para$type[k]), 
 						"*)calloc(", l, ",sizeof(", gsub("const ", "", para$type[k]),
 						"));", sep = ""))
@@ -109,7 +108,7 @@ for(i in 1:length(functions)){
 			body <- c(body, "\n//Fill in the input parameter.")
 			body <- c(body, paste("  for(i = 0 ; i < ", l, "; i++){", sep = ""))
 			for(k in jj){
-				body <- c(body, paste("\t", para$name[k], "_", gsub("const ", "", para$type[k]),
+				body <- c(body, paste("\t", para$name[k], get.extension(para$type[k]),
 						"[i] = (", gsub("const ", "", para$type[k]), ")", para$name[k],
 						"[i];", sep = ""))
 			}
@@ -120,7 +119,7 @@ for(i in 1:length(functions)){
 			body <- c(body, "\n//Allocate space for the results.")
 			for(j in kk){
 				body <- c(body, paste("  ", gsub("const ", "", para$type[j]), "* ",
-						para$name[j], "_", gsub("const ", "", para$type[j]),
+						para$name[j], get.extension(para$type[j]),
 						" = (", gsub("const ", "", para$type[j]), 
 						"*)calloc(", l, ",sizeof(", gsub("const ", "", para$type[j]),
 						"));", sep = ""))
@@ -131,13 +130,14 @@ for(i in 1:length(functions)){
 	
 	# function call
 	body <- c(body, paste("\n  ", tmp$name, "( ", para$name[1], 
-				"_", gsub("const ", "", para$type[1]), ",", sep = ""))
+				 get.extension(para$type[j]), ",", sep = ""))
 	for(j in 2:(nrow(para) - 1)){
-		body <- c(body, paste("\t", para$name[j], "_", 
-				gsub("const ", "", para$type[j]), ",", sep = ""))
+		if(length(grep("*", para$type[j], fixed = T)) == 0)
+			body <- c(body, paste("\t", para$name[j], get.extension(para$type[j]), ",", sep = ""))
+		else
+			body <- c(body, paste("\t&", para$name[j], get.extension(para$type[j]), ",", sep = ""))
 	} 			
-	body <- c(body, paste("\t", para$name[nrow(para)], "_",
-			gsub("const ", "", para$type[nrow(para)]), ");", sep = ""))
+	body <- c(body, paste("\t", para$name[nrow(para)], get.extension(para$type[nrow(para)]), ");", sep = ""))
 
 
 	output <- grepl("out", para$in.out)
@@ -148,9 +148,8 @@ for(i in 1:length(functions)){
 	if(length(kk) > 0){
 		for(j in kk){
 			body <- c(body, paste("  *", para$name[j],	" = (", 
-					gsub("*\t\t", "", convert.c(para$type[j]), fixed = T),			
-					 ")", para$name[j], "_", 
-					gsub("const ", "", para$type[j]), 
+					gsub("\t", "", gsub("*", "", gsub("const ", "", convert.c(para$type[j])), fixed = T), fixed = T),			
+					 ")", para$name[j], get.extension(para$type[j]), 
 					";", sep = ""))
 			body <- c(body, "")
 		}
@@ -165,9 +164,8 @@ for(i in 1:length(functions)){
 				body <- c(body, paste("  for(i = 0 ; i < ", l, "; i++){", sep = ""))
 				for(j in kk){
 					body <- c(body, paste("\t", para$name[j],	"[i] = (", 
-							gsub("*\t\t", "", convert.c(para$type[j]), fixed = T),			
-							 ")", para$name[j], "_", 
-							gsub("const ", "", para$type[j]), 
+							gsub("\t", "", gsub("*", "", gsub("const ", "", convert.c(para$type[j])), fixed = T), fixed = T),			
+							 ")", para$name[j], get.extension(para$type[j]),
 							"[i];", sep = ""))
 				}
 				body <- c(body, "  }")
@@ -180,8 +178,7 @@ for(i in 1:length(functions)){
 	kk <- which(vector)	
 	if(length(kk) > 0){
 		for(j in kk){
-			body <- c(body, paste("  free(", para$name[j],  "_", 
-					gsub("const ", "", para$type[j]), ");", sep = ""))			
+			body <- c(body, paste("  free(", para$name[j], get.extension(para$type[j]), ");", sep = ""))			
 		}
 	}
 
@@ -189,4 +186,3 @@ for(i in 1:length(functions)){
 	body <- c(body, "}\n\n")
 	write(body, file = "Rwrapper.c", append = T)
 }
-

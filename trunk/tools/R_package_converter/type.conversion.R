@@ -24,16 +24,17 @@
 ################################################################################################
 
 
-types <- c("bool", "long", "int", "long", "double")
-conversion.c <- c("int*\t", "int*\t", "int*\t", "long*\t", "float*")
-conversion.R <- c("as.integer", "as.integer", "as.integer", "as.integer", "as.single")
-extension <- c("_long", "_long", "_long", "_long", "_double")
+types <- c("bool", "long", "int", "double")
+conversion.c <- c("int*\t", "int*\t", "int*\t", "float*")
+conversion.R <- c("as.integer", "as.integer", "as.integer", "as.single")
+extension <- c("_bool", "_long", "_long", "_double")
 
-conversion.table <- data.frame(	type = c(types, paste("const", types)),
+conversion.table <- data.frame(	type = c(types, paste("const", types),  paste(types, "*", sep = "")),
 						conversion.c = c(paste(conversion.c, "\t", sep = ""),
-									 paste("const", conversion.c)),
-						conversion.R = c(conversion.R, conversion.R),
-						extension = c(extension, extension),
+									paste("const", conversion.c),
+									paste(conversion.c, "\t", sep = "")),
+						conversion.R = c(conversion.R, conversion.R, conversion.R),
+						extension = c(extension, extension, extension),
 						stringsAsFactors = F
 					)
 
@@ -46,11 +47,29 @@ convert.c <- function(type){
 #				cat("type=_",type,"_ ",conversion.table$type,ii,"\n",sep="")
 				if( sum(ii) > 0 )
 					return(conversion.table$conversion.c[ii])
-				else
-					return(type)				
+				else{
+					print(paste(type, "is an unknown variable type!"))
+					return(type)
+				}				
+			}
+
+get.extension <- function(type){
+				ii <- type == conversion.table$type
+#				cat("type=_",type,"_ ",conversion.table$type,ii,"\n",sep="")
+				if( sum(ii) > 0 )
+					return(conversion.table$extension[ii])
+				else{
+					print(paste(type, "is an unknown variable type!"))
+					return(type)
+				}				
 			}
 
 convert.R <- function(type){
 				ii <- type == conversion.table$type
-				return(conversion.table$conversion.R[ii])
+				if( sum(ii) > 0 )
+					return(conversion.table$conversion.R[ii])
+				else{
+					print(paste(type, "is an unknown variable type!"))
+					return(type)
+				}
 			}
