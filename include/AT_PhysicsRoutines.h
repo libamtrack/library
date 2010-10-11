@@ -681,14 +681,14 @@ double AT_Bethe_Mass_Stopping_Power_MeV_cm2_g_single(	const double 	E_MeV_u,
  * according to ICRU49, p.6, Eq. 2.1
  * BUT WITHOUT shell or density, Bloch or Barkas correction!
  *
- * @param  	   n      		number of particles
- * @param  	   E_MeV_u      energies of particle per nucleon (array of size n)
- * @param  	   particle_no  particle indices (array of size n)
+ * @param[in]  	   n      		number of particles
+ * @param[in]  	   E_MeV_u      energies of particle per nucleon (array of size n)
+ * @param[in]  	   particle_no  particle indices (array of size n)
  * @see          AT_DataParticle.h for definition
- * @param      material_no  material index (single value)
+ * @param[in]      material_no  material index (single value)
  * @see          AT_DataMaterial.h for definition
- * @param      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping power will be computed (single value)
- * @param      Mass_Stopping_Power_MeV_cm2_g
+ * @param[in]      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping power will be computed (single value)
+ * @param[out]      Mass_Stopping_Power_MeV_cm2_g
  * @return     result
  */
 void AT_Bethe_Mass_Stopping_Power_MeV_cm2_g(	const long n,

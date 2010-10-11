@@ -64,12 +64,12 @@
  * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  rdd_model           index number for chosen radial dose distribution
- * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size 4)
  * @see          AT_RDD.h for definition
  * @param[in]  er_model            index number for chosen electron-range model
  * @see          AT_ElectronRange.h for definition
  * @param[in]  gamma_model         index number for chosen gamma response
- * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size depending on chosen model)
+ * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size 4)
  * @see          AT_GammaResponse.h for definition
  * @param[in,out]  N2      (algorithm specific) number of bins per factor of two in local dose array
  * @param[in]  fluence_factor      factor to scale the fluences given as "fluence_cm2" with
