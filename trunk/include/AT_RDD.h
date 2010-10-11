@@ -333,7 +333,7 @@ void AT_RDD_f1_parameters_single_field(
  * @param[in]  rdd_model             Radial Dose Distribution model code number
  * @param[in]  rdd_parameter         Radial Dose Distribution model parameters vector  (array of size 3)
  * @param[in]  er_model              delta electron range model code number
- * @param[out] f1_parameters\n
+ * @param[out] f1_parameters  (array of size 8)
  *     0 - LET_MeV_cm2_g \n
  *     1 - r_min_m \n
  *     2 - r_max_m \n

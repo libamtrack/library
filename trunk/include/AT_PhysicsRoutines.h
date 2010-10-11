@@ -688,8 +688,7 @@ double AT_Bethe_Mass_Stopping_Power_MeV_cm2_g_single(	const double 	E_MeV_u,
  * @param[in]      material_no  material index (single value)
  * @see          AT_DataMaterial.h for definition
  * @param[in]      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping power will be computed (single value)
- * @param[out]      Mass_Stopping_Power_MeV_cm2_g
- * @return     result
+ * @param[out]     Mass_Stopping_Power_MeV_cm2_g (array of size n)
  */
 void AT_Bethe_Mass_Stopping_Power_MeV_cm2_g(	const long n,
 		const double E_MeV_u[],
