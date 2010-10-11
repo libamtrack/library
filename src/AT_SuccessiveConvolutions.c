@@ -371,48 +371,70 @@ void AT_Kellerer_normalize(const long array_size,
 		const double zero_bin_value,
 		const double midpoints[],
 		const double bin_widths[],
+		double* mean,
+		double* variance,
 		double frequency[]){
 
 	double  sum			=  zero_bin_value;
+	*mean     					=  0;
 
-	/* compute sum */
+	/* compute sum and mean */
 	long    bin_shift        =  first_bin_values - first_bin_midpoints;
 	long    i, j;
 	for (i = 0; i < n_bins_values; i++){
 		j		    =  i + bin_shift;
 		sum			=  sum + frequency[i] * bin_widths[j];
+		*mean		=  *mean + frequency[i] * bin_widths[j] * midpoints[j];
 	}
 
 	/* normalizing factor */
 	double  norm_factor     =  (1.0 - zero_bin_value) / (sum - zero_bin_value);
 
+	/* scale mean */
+	*mean     				*=  norm_factor;
+
 	/* normalize values and compute variance */
+	*variance     			=  gsl_pow_2(*mean) * zero_bin_value;
 	for (i = 0; i < n_bins_values; i++){
+		j        		=    i + bin_shift;
 		frequency[i]  	*=    norm_factor;
+		*variance     	+=   frequency[i] * bin_widths[j] * gsl_pow_2(midpoints[j] - *mean);
 	}
 }
 
-void AT_Kellerer_interpolation(const long n_bins,
-		const double step,
-		double	frequency[],
+void AT_Kellerer_interpolation(const long N2,
+
+		const long LEF,
+		const long array_size,
+		double	F[],
 		double	A[],
 		double	BI[]){
 
-	long N2				=  AT_N2_to_step(step);
 
-	A[0]             	=  frequency[1] - frequency[0];
-	BI[0]            	=  0.0;
-	frequency[n_bins]  	=  0.0;
+
+
+	A[0]             =  F[1] - F[0];
+	BI[0]            =  0.0;
+
+	assert(LEF < array_size);
+	F[LEF]  		   =  0.0;
 	long   i;
 
-	for (i = 1; i < n_bins; i++){
-		A[i]    =  0.5 * (frequency[i-1] - frequency[i]);
-		BI[i]   =  A[i] + frequency[i-1] - frequency[i];
+	assert(N2 < array_size);
+	for (i = 1; i <= N2; i++){
+
+
+		long L           =  LEF + i;
+		A[L-1]  =  0.0;
+		BI[L-1] =  0.0;
 	}
 
-	for (i = n_bins; i < n_bins + N2; i++){
-		A[i]  	=  0.0;
-		BI[i] 	=  0.0;
+
+	long   L;
+	for (L = 2; L <= LEF; L++){
+		A[L -1]    =  0.5 * (F[L] - F[L - 1 -1]);
+
+		BI[L -1]   =  A[L-1] + F[L - 1 -1] - F[L -1];
 	}
 }
 
@@ -430,7 +452,7 @@ void AT_Kellerer_reset(long* N2,
 		double BI[],
 		double DI[]){
 
-/*	double U           = log(2.0) / (double)(*N2);
+	double U           = log(2.0) / (double)(*N2);
 	if (*N2 <= 256){
 		if(*LEF <= 64){
 			double S              =  log(2.0);
@@ -522,7 +544,8 @@ void AT_Kellerer_reset(long* N2,
 			free(high_E);
 		}
 	}
-*/}
+
+}
 
 void AT_Kellerer_zero(const long MIF,
 		const long array_size,
@@ -540,7 +563,7 @@ void AT_Kellerer_zero(const long MIF,
 
 	long   L;
 	for (L = 1; L <= *LEH; L++){
-		long K    =  L + N;
+		long K            =  L + N;
 		X        +=  H[L -1] * DE[K -1];
 	}
 
@@ -574,126 +597,212 @@ void AT_Kellerer_zero(const long MIF,
 }
 
 
-void AT_Kellerer_shrink(	long* number_of_bins,
-		double* lowest_left_limit,
-		const double step,
-		const long histo_type,
-		double frequency[],
-		const double shrink_tails_under)
-{
 
-	long i;
-	long first_bin_no, last_bin_no;
 
-	/* 1. left tail */
-	double  bin_width, sum         =  0.0;
 
-	/* sum up contributions from bins until it exceeds the set threshold */
-	for (i = 0; (i < *number_of_bins) && (sum < 1000.0 * shrink_tails_under); i++){
-		AT_histo_bin_width(*number_of_bins, *lowest_left_limit, step, histo_type, i, &bin_width);
-		sum            +=  frequency[i] * bin_width;
+
+
+
+
+
+
+
+void AT_Kellerer_shrink(const long array_size,
+		const long MIE,
+		const double shrink_tails_under,
+		const double DE[],
+		long* MIH,
+		long* LEH,
+		double H[]){
+
+
+
+	double  EX          =  shrink_tails_under;
+	double  S           =  0.0;
+	long  N             =  *MIH - MIE;
+
+
+
+
+
+
+
+
+
+
+	long   L;
+	for (L = 1; L <= *LEH; L++){
+		long K            =  L + N;
+		S                 =  S + H[L -1] * DE[K -1];
+		if(S > 1000.0 * EX){
+			*MIH    =  *MIH + L - 1;
+			break;}
 	}
-	/* If loop did stop before the last bin, there exists a left tail with contribution below threshold --> set new first bin
-	 * As it is the bin probed in the last loop run that made 'sum' cross the threshold, subtract 1 */
-	if(i <= *number_of_bins){
-		first_bin_no = i - 1;
+
+
+
+
+
+
+	long    M           =  L - 1;
+	S                   =  0;
+
+	long   K;
+	for (K = 1; K <= *LEH; K++){
+		L                 =  *LEH + 1 - K;
+		long KK           =  L + N;
+		S                 =  S + H[L - 1] * DE[KK - 1];
+		if(S > EX){
+			break;
+		}
+
+
+
+
 	}
 
-	/* 2. right tail */
-	sum                 =  0.0;
-	for (i = *number_of_bins - 1; (i >= 0) && (sum < shrink_tails_under); i--){
-		AT_histo_bin_width(*number_of_bins, *lowest_left_limit, step, histo_type, i, &bin_width);
-		sum         	+= frequency[i] * bin_width;
-	}
-	/* If loop did stop before the first bin, there exists a righttail with contribution below threshold --> set new last bin.
-	 * As it is the bin probed in the last loop run that made sum cross the threshold AND the loop is counting one further, add 2 */
-	if(i > 0){
-		last_bin_no = i + 2;
+
+
+
+
+
+
+
+
+	*LEH        =  L - M;
+	for (L = 1; L <= *LEH; L++){
+		K                 =  L + M;
+		H[L -1]  =  H[K -1];
 	}
 
-	/* Set new left limit */
-	double new_lowest_left_limit;
-	AT_histo_left_limit(*number_of_bins, *lowest_left_limit, step, histo_type, first_bin_no, &new_lowest_left_limit);
-	*lowest_left_limit = new_lowest_left_limit;
 
-	/* Set new number of bins */
-	*number_of_bins        =  last_bin_no - first_bin_no;
-	assert(*number_of_bins > 0);
 
-	/* Shift bin content to the left and reallocate new memory size */
-	for(i = 0; i < *number_of_bins ; i++){
-		frequency[i]	= frequency[first_bin_no + i];
+
+	K                   =  *LEH + 1;
+	long  KK            =  *LEH + M;
+	for (L = K; L <= KK; L++){
+		H[L -1]  =  0;
 	}
-	realloc(frequency, (*number_of_bins)*sizeof(double));
+
 }
 
 
-void AT_Kellerer_folding(		const long n_bins,
-		const double lowest_left_limit,
-		const double step,
-		const double frequency[],
-		long* n_bins_new,
-		double* new_lowest_left_limit,
-		double frequency_new[]){
+void AT_Kellerer_folding(		const long N2,
 
-	long 		i, j;
-//	*new_lowest_left_limit			=  2.0 * lowest_left_limit;
-	/* As new maximum value will be twice the old one, the histogram range
-	 * has to be expanded by at least a factor 2
-	 */
-	long 		bins_per_factor_2	=  ceil(AT_step_to_N2(step));	// TODO: WRONG 19 INSTEAD OF 20
-	*n_bins_new        				=  n_bins + bins_per_factor_2;
-	realloc(frequency_new, *n_bins_new * sizeof(double));
 
-	/* Precompute bin content (FDE) */
-	double*		bin_content        =  (double*)calloc(*n_bins_new, sizeof(double));
-	double 		bin_width;
-	const long	histo_type		= AT_histo_log;
-	for (i = 0; i < n_bins; i++){
-		AT_histo_bin_width(n_bins,lowest_left_limit, step, histo_type, i, &bin_width);
-		bin_content[i]         =  frequency[i] * bin_width;
+
+
+
+
+		const long array_size,
+		const long LEF,
+		const long MIE,
+		const long MIF,
+		const double DE[],
+		const double DI[],
+		long* MIH,
+		long* LEH,
+		const double F0,
+		double* H0,
+		double F[],
+		double H[],
+		double A[],
+		double BI[]){
+	double*  FDE        =  (double*)calloc(array_size, sizeof(double));
+
+
+
+
+
+
+
+
+
+	*H0         =  F0 * F0;
+	*MIH        =  MIF + N2;
+	*LEH        =  LEF;
+	long  K             =  LEF + 1;
+	long KK             =  K + N2;
+
+
+
+
+
+	long   L;
+	for (L = K; L <= KK; L++){
+
+
+		F[L -1]  =  0;
 	}
 
-	/* Precompute coeffiecients for quadratic interpolation */
-	double*		lin_coeff        =  (double*)calloc(*n_bins_new, sizeof(double));
-	double*		qua_coeff        =  (double*)calloc(*n_bins_new, sizeof(double));
-	lin_coeff[0]	= frequency[1] - frequency[0];
-	qua_coeff[0]	= 0.0;
-	for (i = 1; i < n_bins; i++){
-		lin_coeff[i]	=  0.5 * (frequency[i - 1] - frequency[i]);
-		qua_coeff[i]	=  lin_coeff[i] + frequency[i - 1] - frequency[i];
+
+
+
+
+
+
+
+
+
+	//theKList            =  AT_SC_INTERP(theKList);
+	AT_Kellerer_interpolation( N2,
+			LEF,
+			array_size,
+			F,
+			A,
+			BI);
+	long N              =  MIF - MIE;
+
+
+
+	for (L = 1; L <= *LEH; L++){
+
+		K                 =  L + N;
+		FDE[L -1]         =  F[L -1] * DE[K -1];
 	}
 
-	/* Precompute float index */
-	double*		delta_i        =  (double*)calloc(*n_bins_new, sizeof(double));
-	for (i = 0; i < *n_bins_new; i++){
-		delta_i[i]	=  log(1.0 - pow(step, -1.0 * i))/log(step);
-	}
 
-	double 	k, frac_k, interp_frequency, sum;
-	long	int_k;
-	for (i = 0; i < *n_bins_new; i++){
-		sum			=  0.0;
 
-		for (j = 0; j <= i; j++){	// TODO: j <= i or j < i?
-			assert(((j - i) >= 0) && ((j- i) < *n_bins_new));
-			k					=  (double)i + delta_i[i-j];
-			int_k				=  (long)(k + 0.5);
-			frac_k				=  k - (double)int_k;
-			interp_frequency	=  frequency[int_k] + frac_k * (lin_coeff[int_k] + frac_k * qua_coeff[int_k]);
-			if (interp_frequency <0){interp_frequency = 0.0;}
-			sum         	   +=  bin_content[j] * interp_frequency;
+
+
+
+
+
+	long   LH;
+	for (LH = 1; LH <= *LEH; LH++){
+		double   HLH      =  0;
+		long   LL         =  LH + N2;
+		long   LF;
+		for (LF = 1; LF <= LH; LF++){
+			K               =  LL - LF;
+			double FLF      =  (double)LH - DI[K -1];
+			long LFF        =  (long)(FLF + 0.5);
+
+
+
+
+			double S        =  FLF - (double)LFF;
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// Modification SG: if Kellerer's quadratic interpolation fails, use simple estimate
+			double tmp      =  F[LFF -1] + S * (A[LFF -1] + S * BI[LFF -1]);
+			if (tmp <0){
+				tmp = 0.0;        // Very crude - better to replace by interpolation as done in RESET
+			}                   // which is time-consuming, however.
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////
+			HLH             =  HLH + FDE[LF -1] * tmp;
 		}
 
-		frequency_new[i] =  sum - bin_content[i] * frequency[i] * 0.5;
+
+		H[LH -1] =  HLH - FDE[LH -1] * F[LH -1] * 0.5;
 	}
 
-	/* Add zero factor */
-	//*zero_bin_frequency_new         =  zero_bin_frequency * zero_bin_frequency;
 
-	free(lin_coeff);
-	free(qua_coeff);
-	free(bin_content);
+
+
+
+
+
+	free(FDE);
 }
 
 void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_contrib,
@@ -715,56 +824,84 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	long	i;
 
 	// Copy input data
-	double	frequency_zero_bin      = 0.0f;
+	double	value_zero_bin       	= 0.0f;
 	double	lowest_left_limit       = f_d_Gy[0] * exp(-1.0 * log(2.0) / (double)(*N2));		// lowest midpoint - half bin width
 	double*	midpoints        		= (double*)calloc(array_size, sizeof(double));
 	double* bin_widths       		= (double*)calloc(array_size, sizeof(double));
-	double*	frequency        		= (double*)calloc(array_size, sizeof(double));
+	double*	values        			= (double*)calloc(array_size, sizeof(double));
 	long	first_bin_midpoints		= 0;
-	long 	first_bin_frequency   	= 0;
-	long	n_bins 					= *n_bins_f_used;
+	long 	first_bin_values      	= 0;
+	long	n_bins_values      		= *n_bins_f_used;
 
 	for (i = 0; i < array_size; i++){
 		midpoints[i]	= f_d_Gy[i];
 		bin_widths[i]	= f_dd_Gy[i];
-		frequency[i]	= f[i];
+		values[i]		= f[i];
 	}
 
-	/********************* TRANSIENT ONLY ************************/
-	/* Transform to standard histo */
-	long 	sh_number_of_bins		= n_bins;
-	double 	sh_step					= AT_N2_to_step(*N2);
-	long 	sh_histo_type			= AT_histo_log;
-	long	sh_bin_shift			= first_bin_midpoints;
-	double 	sh_lowest_left_limit;
-	AT_histo_left_limit(sh_number_of_bins, lowest_left_limit, sh_step, sh_histo_type, sh_bin_shift, &sh_lowest_left_limit);
-	double*	sh_frequency			= (double*)calloc(sh_number_of_bins, sizeof(double));
-	memcpy( sh_frequency, &frequency[first_bin_frequency], n_bins* sizeof(double));
 
-	/********************* TRANSIENT ONLY ************************/
+
+
+
+
+
+
+
+
+
+
+
 
 	///////////////////////////////////////
 	// Normalize distribution
 	///////////////////////////////////////
-	AT_histo_normalize(	sh_number_of_bins,
-			sh_lowest_left_limit,
-			sh_step,
-			sh_histo_type,
-			sh_frequency);
+	double   central_moment_1 = 1;
+	double   central_moment_2 = 1;
+	AT_Kellerer_normalize(	array_size,
 
-	// TODO: Consider mean/variance as quality measures of convolution
+
+
+
+
+
+			first_bin_values,
+			first_bin_midpoints,
+			n_bins_values,
+			value_zero_bin,
+			midpoints,
+			bin_widths,
+			&central_moment_1,
+			&central_moment_2,
+			values);
 
 	///////////////////////////////////////
 	// Cut tails of distribution
 	///////////////////////////////////////
 	if(shrink_tails){
-		AT_Kellerer_shrink(	&sh_number_of_bins,
-				&sh_lowest_left_limit,
-				sh_step,
-				sh_histo_type,
-				sh_frequency,
-				shrink_tails_under);
+		AT_Kellerer_shrink(	array_size,
+
+
+
+
+
+				first_bin_midpoints,
+				shrink_tails_under,
+				bin_widths,
+				&first_bin_values,
+				&n_bins_values, values);
 	}
+
+	///////////////////////////////////////
+	// Fill array for auxilary function that enables easy index operations
+	double*	DI       = (double*)calloc(array_size, sizeof(double));
+	double*	A        = (double*)calloc(array_size, sizeof(double));
+	double*	BI       = (double*)calloc(array_size, sizeof(double));
+
+	for  (i = *N2; i <= array_size; i++){
+		double S          =  (double)(i - *N2) * log(2.0) / (double)(*N2);
+		double tmp        =  -1.0 * log(1.0 - 0.5 * exp(-S)) / (log(2.0) / (double)(*N2));
+		DI[i-1]    		  =  tmp - (double)(*N2);
+	}    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
 
 	///////////////////////////////////////
 	// Get approximation for small hit numbers
@@ -776,92 +913,161 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 		n_convolutions++;
 	}
 
-	frequency_zero_bin         =    1.0 - current_mean_number_of_tracks_contrib;
-	for (i = 0; i < n_bins; i++){
-		frequency[i]  *=  current_mean_number_of_tracks_contrib;
+
+
+	value_zero_bin         =    1.0 - current_mean_number_of_tracks_contrib;
+
+
+
+	for (i = 0; i < n_bins_values; i++){
+		values[i]  *=  current_mean_number_of_tracks_contrib;
 	}
-
-
 
 	///////////////////////////////////////
 	// Convolution loop
 	///////////////////////////////////////
 
 	long   	j;
+	double* values_old        			= (double*)calloc(array_size, sizeof(double));
+	double  value_zero_bin_old			= 0.0;
+	long	first_bin_values_old      	= 0;
+	long	n_bins_values_old      		= 0;
+
 	for(j = 0; j < n_convolutions; j++){
 		current_mean_number_of_tracks_contrib	*= 2.0;
 
-		/* Duplicate distribution */
-		long	sh_number_of_bins_old			= sh_number_of_bins;
-		double	sh_lowest_left_limit_old		= sh_lowest_left_limit;
-		long	sh_histo_type_old				= sh_histo_type;
-		double	sh_step_old						= sh_step;
-		double*	sh_frequency_old				= (double*)calloc(sh_number_of_bins_old, sizeof(double));
-		memcpy( sh_frequency_old, sh_frequency, sh_number_of_bins_old* sizeof(double));
-
-//		if((current_mean_number_of_tracks_contrib >= 10.0) && (adjust_N2 == true)){
-//			AT_Kellerer_reset(	N2,
-//					array_size,
-//					&n_bins_old,
-//					&first_bin_midpoints,
-//					&first_bin_frequency_old,
-//					lowest_left_limit,
-//					midpoints,
-//					bin_widths,
-//					frequency_old,
-//					A,
-//					BI,
-//					DI);
-//		}
-
-		AT_Kellerer_folding(	sh_number_of_bins_old,
-				sh_lowest_left_limit_old,
-				sh_step_old,
-				sh_frequency_old,
-				&sh_number_of_bins,
-				&sh_lowest_left_limit,
-				sh_frequency);
+		/* Copy former distribution */
 
 
-		//		if (frequency_zero_bin_old >= 1e-10){
-//			AT_Kellerer_zero(	first_bin_frequency_old,
-//					array_size,
-//					first_bin_midpoints,
-//					n_bins_old,
-//					frequency_zero_bin_old,
-//					frequency_old,
-//					bin_widths,
-//					&first_bin_frequency,
-//					&n_bins,
-//					frequency);
-//		}
 
-		AT_histo_normalize(	sh_number_of_bins,
-				sh_lowest_left_limit,
-				sh_step,
-				sh_histo_type,
-				sh_frequency);
 
-		// TODO: Consider mean/variance as quality measures of convolution
 
-		///////////////////////////////////////
-		// Cut tails of distribution
-		///////////////////////////////////////
-		if(shrink_tails){
-			AT_Kellerer_shrink(	&sh_number_of_bins,
-					&sh_lowest_left_limit,
-					sh_step,
-					sh_histo_type,
-					sh_frequency,
-					shrink_tails_under);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		value_zero_bin_old         	=  value_zero_bin;
+		n_bins_values_old        	=  n_bins_values;
+		first_bin_values_old        =  first_bin_values;
+		for (i = 0; i < n_bins_values; i++){
+			values_old[i]      =  values[i];
 		}
-	}
-	/********************* TRANSIENT ONLY ************************/
-	/* Write back from standard histo */
 
-	memcpy( &frequency[first_bin_frequency], sh_frequency, n_bins* sizeof(double));
-	free(sh_frequency);
-	/********************* TRANSIENT ONLY ************************/
+
+
+
+		if((current_mean_number_of_tracks_contrib >= 10.0) && (adjust_N2 == true)){
+			AT_Kellerer_reset(	N2,
+					array_size,
+
+					&n_bins_values_old,
+
+
+					&first_bin_midpoints,
+					&first_bin_values_old,
+					lowest_left_limit,
+					midpoints,
+					bin_widths,
+
+
+
+
+					values_old,
+					A,
+					BI,
+					DI);
+		}
+
+
+
+
+
+
+		AT_Kellerer_folding(	*N2,
+				array_size,
+				n_bins_values_old,
+				first_bin_midpoints,
+				first_bin_values_old,
+				bin_widths,
+				DI,
+				&first_bin_values,
+				&n_bins_values,
+				value_zero_bin_old,
+				&value_zero_bin,
+				values_old,
+				values,
+				A,
+				BI);
+
+
+		if (value_zero_bin_old >= 1e-10){
+			AT_Kellerer_zero(	first_bin_values_old,
+					array_size,
+					first_bin_midpoints,
+					n_bins_values_old,
+					value_zero_bin_old,
+					values_old,
+					bin_widths,
+					&first_bin_values,
+					&n_bins_values,
+					values);
+		}
+
+
+
+
+		if(shrink_tails){
+			AT_Kellerer_shrink(	array_size,
+
+
+
+
+
+					first_bin_midpoints,
+					shrink_tails_under,
+					bin_widths,
+					&first_bin_values,
+					&n_bins_values,
+					values);
+		}
+
+		AT_Kellerer_normalize(	array_size,
+				first_bin_values,
+				first_bin_midpoints,
+				n_bins_values,
+				value_zero_bin,
+				midpoints,
+				bin_widths,
+				&central_moment_1,
+				&central_moment_2,
+				values);
+	}
+
+
+
+
+
+
 
 	//////////////////////////////////////////
 	// Copy results back to input structure
@@ -878,22 +1084,29 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 		dfdd[i]        =  0.0;
 	}
 
-	long  N        = first_bin_frequency - first_bin_midpoints;
-	for (i = 0; i < n_bins; i++){
+	long  N        = first_bin_values - first_bin_midpoints;
+	for (i = 0; i < n_bins_values; i++){
 		long j          =  i + N;
 		f_d_Gy[i]     =  midpoints[j];
 		f_dd_Gy[i]    =  bin_widths[j];
-		f[i]          =  frequency[i];
+
+		f[i]          =  values[i];
 		fdd[i]        =  f[i] * f_dd_Gy[i];
 		dfdd[i]       =  fdd[i] * f_d_Gy[i];
 		*d              +=  dfdd[i];
 	}
 
-	*n_bins_f_used = n_bins;
+	*n_bins_f_used = n_bins_values;
 
-	*f0            = frequency_zero_bin;
+	*f0            = value_zero_bin;
 
-	free(frequency);
+
+	free(values_old);
+	free(values);
 	free(midpoints);
 	free(bin_widths);
+	free(DI);
+	free(A);
+	free(BI);
 }
+
