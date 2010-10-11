@@ -29,9 +29,9 @@ source("type.conversion.R")
 
 load("functions.ssd")
 
-write("// Automatically created header file\n", file = "Rwrapper.h")
+write("// Automatically created header file\n\n#include<Amtrack.h>\n", file = "Rwrapper.h")
 
-write("// Automatically created header and body file\n", file = "Rwrapper.c")
+write("// Automatically created header and body file\n\n#include<Rwrapper.h>\n", file = "Rwrapper.c")
 
 for(i in 1:length(functions)){
 	tmp <- functions[[i]]
