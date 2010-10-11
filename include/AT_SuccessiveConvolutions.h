@@ -190,15 +190,12 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 /**
  * Normalized the distribution resulting from last convolution
  */
-void AT_Kellerer_normalize(const long array_size,
-		const long MIH,
+void AT_Kellerer_normalize(const long MIH,
 		const long MIE,
 		const long LEH,
 		const double H0,
 		const double E[],
 		const double DE[],
-		double* CM1,
-		double* CM2,
 		double H[]);
 
 /**
