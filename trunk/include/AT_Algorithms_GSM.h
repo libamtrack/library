@@ -192,7 +192,7 @@ void AT_GSM_calculate_local_response_grid( const long      nX,
  * @param[in]  nX                  (algorithm specific) number of voxels of the grid in x (and y as the grid is quadratic)
  * @param[in]  voxel_size_m        side length of a voxel in m
  * @param[in]  lethal_events_mode  (algorithm specific) if true, allows to do calculations for cell survival
- * @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results\n
+ * @param[out]  results            to be allocated by the user which will be used to return the results (array of size 10)
  *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
  *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm\n
  *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -220,7 +220,7 @@ void AT_run_GSM_method(  const long  n,
     const long     nX,
     const double   voxel_size_m,
     const bool     lethal_events_mode,
-    double  results[10]);
+    double  results[]);
 
 
 #endif /* AT_ALGORITHMS_GSM_H_ */
