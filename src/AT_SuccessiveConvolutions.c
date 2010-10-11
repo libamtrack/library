@@ -363,23 +363,21 @@ void  AT_low_fluence_local_dose_distribution(  const long     n_bins_f1,
 	free(d_high);
 }
 
-
-void AT_Kellerer_normalize(const long first_bin_frequency,
-		const long first_bin_values,
-		const long n_bins_frequency,
-		const double frequency_zero_bin,
+void AT_Kellerer_normalize(const long values_first_bin,
 		const double value_midpoints[],
 		const double value_bin_widths[],
+		const long frequency_n_bins,
+		const double frequency_zero_bin,
+		const long frequency_first_bin,
 		double frequency[]){
-
 
 	long    i, j;
 	/* compute sum */
-	long    bin_shift	=  first_bin_frequency - first_bin_values;
+	long    bin_shift	=  frequency_first_bin - values_first_bin;
 	double  sum			=  frequency_zero_bin;
 
 	//	TODO: why not: for (i = first_bin_frequency; i < first_bin_frequency + n_bins_frequency; i++){
-	for (i = 0; i < n_bins_frequency; i++){
+	for (i = 0; i < frequency_n_bins; i++){
 		j		    =  i + bin_shift;
 		sum			=  sum + frequency[i] * value_bin_widths[j];
 	}
@@ -388,7 +386,7 @@ void AT_Kellerer_normalize(const long first_bin_frequency,
 	double  norm_factor     =  (1.0 - frequency_zero_bin) / (sum - frequency_zero_bin);
 
 	/* normalize values */
-	for (i = 0; i < n_bins_frequency; i++){
+	for (i = 0; i < frequency_n_bins; i++){
 		frequency[i]  	*=    norm_factor;
 	}
 }
@@ -798,46 +796,46 @@ void AT_Kellerer_folding(		const long N2,
 
 void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_contrib,
 		const long    n_bins, // TODO: allocate within SC routine
-		long*         N2,
-		long*         n_bins_f_used,
-		double        f_d_Gy[],
-		double        f_dd_Gy[],
-		double        f[],
-		double*       f0,
+		long*         bins_per_factor_2,
+		long*         n_bins_single_impact_local_dose_distrib,
+		double        single_impact_local_dose_Gy[],
+		double        single_impact_local_dose_bin_width_Gy[],
+		double        single_impact_frequency[],
+		double*       single_impact_frequency_zero_bin,
 		double        fdd[],
 		double        dfdd[],
 		double*       d,
 		const bool    write_output,
 		const bool    shrink_tails,
 		const double  shrink_tails_under,
-		const bool    adjust_N2)
+		const bool    adjust_dose_spacing)
 {
 	long	i;
 
 	// Copy input data
-	long 	first_bin_frequency      	= 0;
-	long	n_bins_frequency      		= *n_bins_f_used;
-	double*	frequency        			= (double*)calloc(n_bins, sizeof(double));
-	double	frequency_zero_bin       	= 0.0f;
-	memcpy(frequency, f, n_bins_frequency * sizeof(double));
+	long 	frequency_first_bin      		= 0;
+	long	frequency_n_bins      			= *n_bins_single_impact_local_dose_distrib;
+	double*	frequency        				= (double*)calloc(n_bins, sizeof(double));
+	double	frequency_zero_bin       		= 0.0f;
+	memcpy(frequency, single_impact_frequency, frequency_n_bins * sizeof(double));
 
-	long	first_bin_energy			= 0;
-	long	n_bins_energy		   		= n_bins;
-	double	energy_lowest_left_limit    = f_d_Gy[0] * exp(-1.0 * log(2.0) / (double)(*N2));		// lowest midpoint - half bin width
-	double*	energy_midpoints        	= (double*)calloc(n_bins, sizeof(double));
-	double* energy_bin_widths       	= (double*)calloc(n_bins, sizeof(double));
-	memcpy(energy_midpoints,  f_d_Gy,  n_bins_energy * sizeof(double));
-	memcpy(energy_bin_widths, f_dd_Gy, n_bins_energy * sizeof(double));
+	long	local_dose_first_bin			= 0;
+	long	local_dose_n_bins		   		= n_bins;
+	double	local_dose_lowest_left_limit    = single_impact_local_dose_Gy[0] * exp(-1.0 * log(2.0) / (double)(*bins_per_factor_2));		// lowest midpoint - half bin width
+	double*	local_dose_midpoints        	= (double*)calloc(n_bins, sizeof(double));
+	double* local_dose_bin_widths       	= (double*)calloc(n_bins, sizeof(double));
+	memcpy(local_dose_midpoints,  single_impact_local_dose_Gy,  local_dose_n_bins * sizeof(double));
+	memcpy(local_dose_bin_widths, single_impact_local_dose_bin_width_Gy, local_dose_n_bins * sizeof(double));
 
 	///////////////////////////////////////
 	// Normalize distribution
 	///////////////////////////////////////
-	AT_Kellerer_normalize(	first_bin_frequency,
-			first_bin_energy,
-			n_bins_frequency,
+	AT_Kellerer_normalize(	local_dose_first_bin,
+			local_dose_midpoints,
+			local_dose_bin_widths,
+			frequency_n_bins,
 			frequency_zero_bin,
-			energy_midpoints,
-			energy_bin_widths,
+			frequency_first_bin,
 			frequency);
 
 	///////////////////////////////////////
@@ -845,11 +843,11 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	///////////////////////////////////////
 	if(shrink_tails){
 		AT_Kellerer_shrink(	n_bins,
-				first_bin_energy,
+				local_dose_first_bin,
 				shrink_tails_under,
-				energy_bin_widths,
-				&first_bin_frequency,
-				&n_bins_frequency, frequency);
+				local_dose_bin_widths,
+				&frequency_first_bin,
+				&frequency_n_bins, frequency);
 	}
 
 	///////////////////////////////////////
@@ -858,10 +856,10 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	double*	A        = (double*)calloc(n_bins, sizeof(double));
 	double*	BI       = (double*)calloc(n_bins, sizeof(double));
 
-	for  (i = *N2; i <= n_bins; i++){
-		double S          =  (double)(i - *N2) * log(2.0) / (double)(*N2);
-		double tmp        =  -1.0 * log(1.0 - 0.5 * exp(-S)) / (log(2.0) / (double)(*N2));
-		DI[i-1]    		  =  tmp - (double)(*N2);
+	for  (i = *bins_per_factor_2; i <= n_bins; i++){
+		double S          =  (double)(i - *bins_per_factor_2) * log(2.0) / (double)(*bins_per_factor_2);
+		double tmp        =  -1.0 * log(1.0 - 0.5 * exp(-S)) / (log(2.0) / (double)(*bins_per_factor_2));
+		DI[i-1]    		  =  tmp - (double)(*bins_per_factor_2);
 	}    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
 
 	///////////////////////////////////////
@@ -875,7 +873,7 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	}
 
 	frequency_zero_bin         =    1.0 - current_mean_number_of_tracks_contrib;
-	for (i = 0; i < n_bins_frequency; i++){
+	for (i = 0; i < frequency_n_bins; i++){
 		frequency[i]  *=  current_mean_number_of_tracks_contrib;
 	}
 
@@ -923,27 +921,27 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 
 
 		value_zero_bin_old         	=  frequency_zero_bin;
-		n_bins_values_old        	=  n_bins_frequency;
-		first_bin_values_old        =  first_bin_frequency;
-		for (i = 0; i < n_bins_frequency; i++){
+		n_bins_values_old        	=  frequency_n_bins;
+		first_bin_values_old        =  frequency_first_bin;
+		for (i = 0; i < frequency_n_bins; i++){
 			values_old[i]      =  frequency[i];
 		}
 
 
 
 
-		if((current_mean_number_of_tracks_contrib >= 10.0) && (adjust_N2 == true)){
-			AT_Kellerer_reset(	N2,
+		if((current_mean_number_of_tracks_contrib >= 10.0) && (adjust_dose_spacing == true)){
+			AT_Kellerer_reset(	bins_per_factor_2,
 					n_bins,
 
 					&n_bins_values_old,
 
 
-					&first_bin_energy,
+					&local_dose_first_bin,
 					&first_bin_values_old,
-					energy_lowest_left_limit,
-					energy_midpoints,
-					energy_bin_widths,
+					local_dose_lowest_left_limit,
+					local_dose_midpoints,
+					local_dose_bin_widths,
 
 
 
@@ -959,15 +957,15 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 
 
 
-		AT_Kellerer_folding(	*N2,
+		AT_Kellerer_folding(	*bins_per_factor_2,
 				n_bins,
 				n_bins_values_old,
-				first_bin_energy,
+				local_dose_first_bin,
 				first_bin_values_old,
-				energy_bin_widths,
+				local_dose_bin_widths,
 				DI,
-				&first_bin_frequency,
-				&n_bins_frequency,
+				&frequency_first_bin,
+				&frequency_n_bins,
 				value_zero_bin_old,
 				&frequency_zero_bin,
 				values_old,
@@ -979,13 +977,13 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 		if (value_zero_bin_old >= 1e-10){
 			AT_Kellerer_zero(	first_bin_values_old,
 					n_bins,
-					first_bin_energy,
+					local_dose_first_bin,
 					n_bins_values_old,
 					value_zero_bin_old,
 					values_old,
-					energy_bin_widths,
-					&first_bin_frequency,
-					&n_bins_frequency,
+					local_dose_bin_widths,
+					&frequency_first_bin,
+					&frequency_n_bins,
 					frequency);
 		}
 
@@ -999,20 +997,20 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 
 
 
-					first_bin_energy,
+					local_dose_first_bin,
 					shrink_tails_under,
-					energy_bin_widths,
-					&first_bin_frequency,
-					&n_bins_frequency,
+					local_dose_bin_widths,
+					&frequency_first_bin,
+					&frequency_n_bins,
 					frequency);
 		}
 
-		AT_Kellerer_normalize(	first_bin_frequency,
-				first_bin_energy,
-				n_bins_frequency,
+		AT_Kellerer_normalize(	local_dose_first_bin,
+				local_dose_midpoints,
+				local_dose_bin_widths,
+				frequency_n_bins,
 				frequency_zero_bin,
-				energy_midpoints,
-				energy_bin_widths,
+				frequency_first_bin,
 				frequency);
 	}
 
@@ -1030,34 +1028,34 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	*d    = 0.0;
 
 	for (i = 0; i < n_bins; i++){
-		f_d_Gy[i]      =  0.0;
-		f_dd_Gy[i]     =  0.0;
-		f[i]           =  0.0;
+		single_impact_local_dose_Gy[i]      =  0.0;
+		single_impact_local_dose_bin_width_Gy[i]     =  0.0;
+		single_impact_frequency[i]           =  0.0;
 		fdd[i]         =  0.0;
 		dfdd[i]        =  0.0;
 	}
 
-	long  N        = first_bin_frequency - first_bin_energy;
-	for (i = 0; i < n_bins_frequency; i++){
+	long  N        = frequency_first_bin - local_dose_first_bin;
+	for (i = 0; i < frequency_n_bins; i++){
 		long j          =  i + N;
-		f_d_Gy[i]     =  energy_midpoints[j];
-		f_dd_Gy[i]    =  energy_bin_widths[j];
+		single_impact_local_dose_Gy[i]     =  local_dose_midpoints[j];
+		single_impact_local_dose_bin_width_Gy[i]    =  local_dose_bin_widths[j];
 
-		f[i]          =  frequency[i];
-		fdd[i]        =  f[i] * f_dd_Gy[i];
-		dfdd[i]       =  fdd[i] * f_d_Gy[i];
+		single_impact_frequency[i]          =  frequency[i];
+		fdd[i]        =  single_impact_frequency[i] * single_impact_local_dose_bin_width_Gy[i];
+		dfdd[i]       =  fdd[i] * single_impact_local_dose_Gy[i];
 		*d              +=  dfdd[i];
 	}
 
-	*n_bins_f_used = n_bins_frequency;
+	*n_bins_single_impact_local_dose_distrib = frequency_n_bins;
 
-	*f0            = frequency_zero_bin;
+	*single_impact_frequency_zero_bin            = frequency_zero_bin;
 
 
 	free(values_old);
 	free(frequency);
-	free(energy_midpoints);
-	free(energy_bin_widths);
+	free(local_dose_midpoints);
+	free(local_dose_bin_widths);
 	free(DI);
 	free(A);
 	free(BI);

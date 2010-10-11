@@ -190,13 +190,13 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 /**
  * Normalized the distribution resulting from last convolution
  */
-void AT_Kellerer_normalize(const long MIH,
-		const long MIE,
-		const long LEH,
-		const double H0,
-		const double E[],
-		const double DE[],
-		double H[]);
+void AT_Kellerer_normalize(const long values_first_bin,
+		const double value_midpoints[],
+		const double value_bin_widths[],
+		const long frequency_n_bins,
+		const double frequency_zero_bin,
+		const long frequency_first_bin,
+		double frequency[]);
 
 /**
  * Calculates arrays A and B to be used in quadratic extrapolation of F in AT_SC_FOLD
