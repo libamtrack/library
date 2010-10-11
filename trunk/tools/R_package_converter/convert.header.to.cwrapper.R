@@ -29,9 +29,9 @@ source("type.conversion.R")
 
 load("functions.ssd")
 
-write("// Automatically created header file\n\n#include<Amtrack.h>\n", file = "Rwrapper.h")
+write("// Automatically created header file\n\n#include \"Amtrack.h\"\n", file = "Rwrapper.h")
 
-write("// Automatically created header and body file\n\n#include<Rwrapper.h>\n", file = "Rwrapper.c")
+write("// Automatically created header and body file\n\n#include \"Rwrapper.h\"\n", file = "Rwrapper.c")
 
 for(i in 1:length(functions)){
 	tmp <- functions[[i]]
@@ -100,13 +100,13 @@ for(i in 1:length(functions)){
 				body <- c(body, paste("  ", gsub("const ", "", para$type[k]), "* ",
 						para$name[k],  get.extension(para$type[k]),
 						" = (", gsub("const ", "", para$type[k]), 
-						"*)calloc(", l, ",sizeof(", gsub("const ", "", para$type[k]),
+						"*)calloc(", l, "_long", ",sizeof(", gsub("const ", "", para$type[k]),
 						"));", sep = ""))
 			}
 			body <- c(body, "")
 			# fill the data into the allocated space
 			body <- c(body, "\n//Fill in the input parameter.")
-			body <- c(body, paste("  for(i = 0 ; i < ", l, "; i++){", sep = ""))
+			body <- c(body, paste("  for(i = 0 ; i < ", l, "_long; i++){", sep = ""))
 			for(k in jj){
 				body <- c(body, paste("\t", para$name[k], get.extension(para$type[k]),
 						"[i] = (", gsub("const ", "", para$type[k]), ")", para$name[k],
@@ -161,7 +161,7 @@ for(i in 1:length(functions)){
 			kk <-  which(!input & vector & para$length == l)
 			if(length(kk) > 0){
 				# fill the data into the allocated space
-				body <- c(body, paste("  for(i = 0 ; i < ", l, "; i++){", sep = ""))
+				body <- c(body, paste("  for(i = 0 ; i < ", l, "_long; i++){", sep = ""))
 				for(j in kk){
 					body <- c(body, paste("\t", para$name[j],	"[i] = (", 
 							gsub("\t", "", gsub("*", "", gsub("const ", "", convert.c(para$type[j])), fixed = T), fixed = T),			
