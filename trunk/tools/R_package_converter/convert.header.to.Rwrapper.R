@@ -1,5 +1,5 @@
 ################################################################################################
-# C wrapper generator
+# R wrapper generator
 ################################################################################################
 # Copyright 2006, 2010 The libamtrack team
 # 
@@ -30,7 +30,7 @@ source("type.conversion.R")
 
 load("functions.ssd")
 
-write("// Automatically created wrapper file\n", file = "wrapper.R")
+write("// Automatically created wrapper file\n", file = "./package/R/wrapper.R")
 
 
 for(i in 1:length(functions)){
@@ -119,8 +119,8 @@ for(i in 1:length(functions)){
 	}
 
 
-	write(c(header, "\n"), file = "wrapper.R", append = T)
+	write(c(header, "\n"), file = "./package/R/wrapper.R", append = T)
 
 }
-tmp
-header
+#tmp
+#header

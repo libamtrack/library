@@ -32,8 +32,9 @@ to.remove <- c("AT_GSM_calculate_dose_histogram", "AT_KatzModel_inactivation_cro
 pos.remove <- match(to.remove, namespace)
 namespace <- namespace[-pos.remove]
 
-# set the include path
-setwd(paste(cur.dir, "/include", sep = ""))
+# set the include path within libamtrack trunk
+setwd("../")
+setwd("../include")
 
 # get all header files
 record <- list.files(".")

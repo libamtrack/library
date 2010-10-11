@@ -29,9 +29,9 @@ source("type.conversion.R")
 
 load("functions.ssd")
 
-write("// Automatically created header file\n\n#include \"AmTrack.h\"\n#include <stdlib.h>\n#include <stdbool.h>\n", file = "Rwrapper.h")
+write("// Automatically created header file\n\n#include \"AmTrack.h\"\n#include <stdlib.h>\n#include <stdbool.h>\n", file = "./package/src/Rwrapper.h")
 
-write("// Automatically created header and body file\n\n#include \"Rwrapper.h\"\n", file = "Rwrapper.c")
+write("// Automatically created header and body file\n\n#include \"Rwrapper.h\"\n", file = "./package/src/Rwrapper.c")
 
 for(i in 1:length(functions)){
 	tmp <- functions[[i]]
@@ -56,7 +56,7 @@ for(i in 1:length(functions)){
 		header[length(header)] <- paste( "\t", convert.c(tmp$parameter$type[length(header)]), " ",
 							tmp$parameter$name[length(header)], ");", sep = "")
 	}
-	write(c(header, "\n"), file = "Rwrapper.h", append = T)
+	write(c(header, "\n"), file = "./package/src/Rwrapper.h", append = T)
 
 	###########################
 	# create function body
@@ -195,5 +195,5 @@ for(i in 1:length(functions)){
 
 	# close body
 	body <- c(body, "}\n\n")
-	write(body, file = "Rwrapper.c", append = T)
+	write(body, file = "./package/src/Rwrapper.c", append = T)
 }
