@@ -21,7 +21,6 @@ AT_SC_get_f1
 AT_SC_get_f_array_size
 AT_SC_get_f_start
 AT_SC_get_gamma_response
-AT_SuccessiveConvolutions
 AT_total_D_Gy
 AT_total_fluence_cm2
 AT_fluence_weighted_E_MeV_u
