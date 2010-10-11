@@ -30,7 +30,7 @@
 
 #include "AT_Constants.h"
 #include "AT_RDD.h"
-#include "AT_Histograms.h"
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -197,14 +197,18 @@ void AT_Kellerer_normalize(const long array_size,
 		const double H0,
 		const double E[],
 		const double DE[],
+		double* CM1,
+		double* CM2,
 		double H[]);
 
 /**
  * Calculates arrays A and B to be used in quadratic extrapolation of F in AT_SC_FOLD
  */
-void AT_Kellerer_interpolation(const long n_bins,
-		const double step,
-		double	frequency[],
+void AT_Kellerer_interpolation(const long N2,
+		const long LEF,
+		const long array_size,
+
+		double	F[],
 		double	A[],
 		double	BI[]);
 
@@ -242,24 +246,36 @@ void AT_Kellerer_zero(const long MIF,
 /**
  * Cuts tails of distribution that contribute less that shrink_tails_under to @<f@>
  */
-void AT_Kellerer_shrink(	long* number_of_bins,
-		double* lowest_left_limit,
-		const double step,
-		const long histo_type,
-		double frequency[],
-		const double shrink_tails_under);
+void AT_Kellerer_shrink(const long array_size,
+		const long MIE,
+		const double shrink_tails_under,
+
+		const double DE[],
+		long* MIH,
+		long* LEH,
+		double H[]);
+
 
 /**
  * Does actual convolution, makes use of the symmetry
  */
-void AT_Kellerer_folding(		const long n_bins,
-		const double lowest_left_limit,
-		const double step,
-		const double frequency[],
-		long* n_bins_new,
-		double* new_lowest_left_limit,
-		double frequency_new[]);
+void AT_Kellerer_folding(		const long N2,
+		const long array_size,
+		const long LEF,
+		const long MIE,
+		const long MIF,
+		const double DE[],
+		const double DI[],
+		long* MIH,
+		long* LEH,
+		const double F0,
+		double* H0,
+		double F[],
+		double H[],
+		double A[],
+		double BI[]);
 
 
 
 #endif // AT_SUCCESSIVECONVOLUTIONS_H_
+
