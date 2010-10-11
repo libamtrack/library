@@ -437,8 +437,6 @@ void AT_Kellerer_reset(long* N2,
 		double E[],
 		double DE[],
 		double F[],
-		double A[],
-		double BI[],
 		double DI[]){
 
 	double U           = log(2.0) / (double)(*N2);
@@ -451,7 +449,9 @@ void AT_Kellerer_reset(long* N2,
 			TT                   =  TT / (double)(*N2);
 			U           =  S / (double)(*N2);
 
-			//      theKList            =  AT_SC_INTERP(theKList);
+			/* Compute coefficients for quadratic interpolation */
+			double*	A	= (double*)calloc(array_size, sizeof(double));
+			double*	BI	= (double*)calloc(array_size, sizeof(double));
 			AT_Kellerer_interpolation( *N2,
 					*LEF,
 					array_size,
@@ -512,6 +512,8 @@ void AT_Kellerer_reset(long* N2,
 				DE[J -1]   =  high_E[J -1] - E[J -1];
 				free(high_E);
 			}
+			free(A);
+			free(BI);
 		}else{
 			return;
 		}
@@ -676,116 +678,74 @@ void AT_Kellerer_shrink(const long array_size,
 }
 
 
-void AT_Kellerer_folding(		const long N2,
-		const long array_size,
-		const long LEF,
-		const long MIE,
-		const long MIF,
-		const double DE[],
-		const double DI[],
-		long* MIH,
-		long* LEH,
-		const double F0,
-		double* H0,
-		double F[],
-		double H[],
-		double A[],
-		double BI[]){
-	double*  FDE        =  (double*)calloc(array_size, sizeof(double));
+void AT_Kellerer_folding(		const long n_bins,
+		const long bins_per_factor_2,
+		const double delta_i[],
+		const long values_first_bin,
+		const double values_bin_widths[],
+		const long frequency_n_bins_last,
+		const long frequency_first_bin_last,
+		const double frequency_zero_bin_last,
+		double frequency_last[],
+		long* frequency_n_bins,
+		long* frequency_first_bin,
+		double* frequency_zero_bin,
+		double frequency[]){
 
+	long   i, j, int_k;
+	double k, frac_k;
 
+	/* Convolution shifts support by factor of 2 while the length stays the same */
+	*frequency_first_bin	=  frequency_first_bin_last + bins_per_factor_2;
+	*frequency_n_bins		=  frequency_n_bins_last;
 
-
-
-
-
-
-
-	*H0         =  F0 * F0;
-	*MIH        =  MIF + N2;
-	*LEH        =  LEF;
-	long  K             =  LEF + 1;
-	long KK             =  K + N2;
-
-
-
-
-
-	long   L;
-	for (L = K; L <= KK; L++){
-
-
-		F[L -1]  =  0;
+	/* Clean bins above support */
+	for (i = frequency_n_bins_last; i < frequency_n_bins_last + bins_per_factor_2; i++){
+		frequency_last[i]  =  0;
 	}
 
+	/* Precompute coefficients for quadratic interpolation */
+	double*	lin_coeff	= (double*)calloc(n_bins, sizeof(double));
+	double*	qua_coeff	= (double*)calloc(n_bins, sizeof(double));
+	AT_Kellerer_interpolation( bins_per_factor_2,
+			frequency_n_bins_last,
+			n_bins,
+			frequency_last,
+			lin_coeff,
+			qua_coeff);
 
-
-
-
-
-
-
-
-
-	//theKList            =  AT_SC_INTERP(theKList);
-	AT_Kellerer_interpolation( N2,
-			LEF,
-			array_size,
-			F,
-			A,
-			BI);
-	long N              =  MIF - MIE;
-
-
-
-	for (L = 1; L <= *LEH; L++){
-
-		K                 =  L + N;
-		FDE[L -1]         =  F[L -1] * DE[K -1];
+	/* Precompute bin contents */
+	long bin_shift	=  frequency_first_bin_last - values_first_bin;
+	double*  bin_content	=  (double*)calloc(n_bins, sizeof(double));
+	for (i = 0; i < *frequency_n_bins; i++){
+		j                 =  i + bin_shift;
+		bin_content[i]    =  frequency_last[i] * values_bin_widths[j];
 	}
 
-
-
-
-
-
-
-
-	long   LH;
-	for (LH = 1; LH <= *LEH; LH++){
-		double   HLH      =  0;
-		long   LL         =  LH + N2;
-		long   LF;
-		for (LF = 1; LF <= LH; LF++){
-			K               =  LL - LF;
-			double FLF      =  (double)LH - DI[K -1];
-			long LFF        =  (long)(FLF + 0.5);
-
-
-
-
-			double S        =  FLF - (double)LFF;
-			///////////////////////////////////////////////////////////////////////////////////////////////////////////
-			// Modification SG: if Kellerer's quadratic interpolation fails, use simple estimate
-			double tmp      =  F[LFF -1] + S * (A[LFF -1] + S * BI[LFF -1]);
-			if (tmp <0){
-				tmp = 0.0;        // Very crude - better to replace by interpolation as done in RESET
-			}                   // which is time-consuming, however.
-			///////////////////////////////////////////////////////////////////////////////////////////////////////////
-			HLH             =  HLH + FDE[LF -1] * tmp;
+	/* Convolution */
+	double 	tmp, sum;
+	long	i_shift;
+	for (i = 0; i < *frequency_n_bins; i++){
+		sum      =  0;
+		i_shift  =  i + bins_per_factor_2;
+		for (j = 0; j <= i; j++){
+			k		=  (double)i - delta_i[i_shift - j - 1];
+			int_k	=  (long)(k + 0.5);
+			frac_k	=  k - (double)int_k;
+			tmp		=  frequency_last[int_k] + frac_k * (lin_coeff[int_k] + frac_k * qua_coeff[int_k]);
+			/* If quadratic interpolation fails use simple correction */
+			if (tmp <0){ tmp = 0.0;}        // TODO: Very crude - better to replace by interpolation as done in RESET which is time-consuming, however.
+			sum     += bin_content[j] * tmp;
 		}
-
-
-		H[LH -1] =  HLH - FDE[LH -1] * F[LH -1] * 0.5;
+		frequency[i] =  sum - bin_content[i] * frequency_last[i] * 0.5;
 	}
 
+	free(bin_content);
+	free(lin_coeff);
+	free(qua_coeff);
 
-
-
-
-
-
-	free(FDE);
+	/* Compute new zero bin */
+	*frequency_zero_bin		=  frequency_zero_bin_last * frequency_zero_bin_last;
 }
 
 void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_contrib,
@@ -863,10 +823,6 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 		delta_i[i-1]      =  tmp - (double)(*bins_per_factor_2);
 	}
 
-	/* Allocate arrays for quadratic interpolation of frequency */
-	double*	lin_coeff	= (double*)calloc(n_bins, sizeof(double));
-	double*	qua_coeff	= (double*)calloc(n_bins, sizeof(double));
-
 	/* Actual convolution loop */
 	double* frequency_last        			= (double*)calloc(n_bins, sizeof(double));
 	double  frequency_zero_bin_last			= 0.0;
@@ -892,26 +848,22 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 					local_dose_midpoints,
 					local_dose_bin_widths,
 					frequency_last,
-					lin_coeff,
-					qua_coeff,
 					delta_i);
 		}
 
-		AT_Kellerer_folding(	*bins_per_factor_2,
-				n_bins,
-				frequency_n_bins_last,
-				local_dose_first_bin,
-				frequency_first_bin_last,
-				local_dose_bin_widths,
+		AT_Kellerer_folding(	n_bins,
+				*bins_per_factor_2,
 				delta_i,
-				&frequency_first_bin,
-				&frequency_n_bins,
+				local_dose_first_bin,
+				local_dose_bin_widths,
+				frequency_n_bins_last,
+				frequency_first_bin_last,
 				frequency_zero_bin_last,
-				&frequency_zero_bin,
 				frequency_last,
-				frequency,
-				lin_coeff,
-				qua_coeff);
+				&frequency_n_bins,
+				&frequency_first_bin,
+				&frequency_zero_bin,
+				frequency);
 
 		if (frequency_zero_bin_last >= 1e-10){
 			AT_Kellerer_zero(	frequency_first_bin_last,
@@ -982,7 +934,5 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	free(local_dose_midpoints);
 	free(local_dose_bin_widths);
 	free(delta_i);
-	free(lin_coeff);
-	free(qua_coeff);
 }
 
