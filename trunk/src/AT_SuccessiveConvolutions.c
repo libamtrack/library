@@ -677,12 +677,6 @@ void AT_Kellerer_shrink(const long array_size,
 
 
 void AT_Kellerer_folding(		const long N2,
-
-
-
-
-
-
 		const long array_size,
 		const long LEF,
 		const long MIE,
@@ -812,7 +806,15 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 {
 	long	i;
 
-	// Copy input data
+	/* Get number of convolutions */
+	long n_convolutions    = 0;
+	double current_mean_number_of_tracks_contrib	= final_mean_number_of_tracks_contrib;
+	while(current_mean_number_of_tracks_contrib > LOW_FLUENCE_APPROX_FOR_MEAN_NUMBER_OF_TRACKS_CONTRIB){
+		current_mean_number_of_tracks_contrib             /=    2;
+		n_convolutions++;
+	}
+
+	/* Copy input data */
 	long 	frequency_first_bin      		= 0;
 	long	frequency_n_bins      			= *n_bins_single_impact_local_dose_distrib;
 	double*	frequency        				= (double*)calloc(n_bins, sizeof(double));
@@ -827,9 +829,7 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	memcpy(local_dose_midpoints,  single_impact_local_dose_Gy,  local_dose_n_bins * sizeof(double));
 	memcpy(local_dose_bin_widths, single_impact_local_dose_bin_width_Gy, local_dose_n_bins * sizeof(double));
 
-	///////////////////////////////////////
-	// Normalize distribution
-	///////////////////////////////////////
+	/* Normalize distribution */
 	AT_Kellerer_normalize(	local_dose_first_bin,
 			local_dose_midpoints,
 			local_dose_bin_widths,
@@ -838,9 +838,7 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 			frequency_first_bin,
 			frequency);
 
-	///////////////////////////////////////
-	// Cut tails of distribution
-	///////////////////////////////////////
+	/* Cut tails of distribution */
 	if(shrink_tails){
 		AT_Kellerer_shrink(	n_bins,
 				local_dose_first_bin,
@@ -850,153 +848,86 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 				&frequency_n_bins, frequency);
 	}
 
-	///////////////////////////////////////
-	// Fill array for auxilary function that enables easy index operations
-	double*	DI       = (double*)calloc(n_bins, sizeof(double));
-	double*	A        = (double*)calloc(n_bins, sizeof(double));
-	double*	BI       = (double*)calloc(n_bins, sizeof(double));
-
-	for  (i = *bins_per_factor_2; i <= n_bins; i++){
-		double S          =  (double)(i - *bins_per_factor_2) * log(2.0) / (double)(*bins_per_factor_2);
-		double tmp        =  -1.0 * log(1.0 - 0.5 * exp(-S)) / (log(2.0) / (double)(*bins_per_factor_2));
-		DI[i-1]    		  =  tmp - (double)(*bins_per_factor_2);
-	}    // type casts necessary to prevent round of errors (that will eventually yield negative H-values in AT_SC_FOLD
-
-	///////////////////////////////////////
-	// Get approximation for small hit numbers
-	///////////////////////////////////////
-	long n_convolutions    = 0;
-	double current_mean_number_of_tracks_contrib	= final_mean_number_of_tracks_contrib;
-	while(current_mean_number_of_tracks_contrib > LOW_FLUENCE_APPROX_FOR_MEAN_NUMBER_OF_TRACKS_CONTRIB){
-		current_mean_number_of_tracks_contrib             /=    2;
-		n_convolutions++;
-	}
-
+	/* Small number approximation */
 	frequency_zero_bin         =    1.0 - current_mean_number_of_tracks_contrib;
 	for (i = 0; i < frequency_n_bins; i++){
 		frequency[i]  *=  current_mean_number_of_tracks_contrib;
 	}
 
-	///////////////////////////////////////
-	// Convolution loop
-	///////////////////////////////////////
+	/* Precompute non-integer differences in dose indices */
+	double*	delta_i		= (double*)calloc(n_bins, sizeof(double));
+	double  tmp;
+	for  (i = *bins_per_factor_2; i <= n_bins; i++){
+		tmp		          =  (double)(i - *bins_per_factor_2) * log(2.0) / (double)(*bins_per_factor_2);
+		tmp			      =  -1.0 * log(1.0 - 0.5 * exp(-tmp)) / (log(2.0) / (double)(*bins_per_factor_2));
+		delta_i[i-1]      =  tmp - (double)(*bins_per_factor_2);
+	}
 
-	long   	j;
-	double* values_old        			= (double*)calloc(n_bins, sizeof(double));
-	double  value_zero_bin_old			= 0.0;
-	long	first_bin_values_old      	= 0;
-	long	n_bins_values_old      		= 0;
+	/* Allocate arrays for quadratic interpolation of frequency */
+	double*	lin_coeff	= (double*)calloc(n_bins, sizeof(double));
+	double*	qua_coeff	= (double*)calloc(n_bins, sizeof(double));
 
-	for(j = 0; j < n_convolutions; j++){
+	/* Actual convolution loop */
+	double* frequency_last        			= (double*)calloc(n_bins, sizeof(double));
+	double  frequency_zero_bin_last			= 0.0;
+	long	frequency_first_bin_last      	= 0;
+	long	frequency_n_bins_last      		= 0;
+
+	for(i = 0; i < n_convolutions; i++){
 		current_mean_number_of_tracks_contrib	*= 2.0;
 
-		/* Copy former distribution */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		value_zero_bin_old         	=  frequency_zero_bin;
-		n_bins_values_old        	=  frequency_n_bins;
-		first_bin_values_old        =  frequency_first_bin;
-		for (i = 0; i < frequency_n_bins; i++){
-			values_old[i]      =  frequency[i];
-		}
-
-
-
+		/* Copy last distribution */
+		frequency_zero_bin_last         =  frequency_zero_bin;
+		frequency_n_bins_last        	=  frequency_n_bins;
+		frequency_first_bin_last        =  frequency_first_bin;
+		memcpy(frequency_last, frequency, frequency_n_bins * sizeof(double));
 
 		if((current_mean_number_of_tracks_contrib >= 10.0) && (adjust_dose_spacing == true)){
 			AT_Kellerer_reset(	bins_per_factor_2,
 					n_bins,
-
-					&n_bins_values_old,
-
-
+					&frequency_n_bins_last,
 					&local_dose_first_bin,
-					&first_bin_values_old,
+					&frequency_first_bin_last,
 					local_dose_lowest_left_limit,
 					local_dose_midpoints,
 					local_dose_bin_widths,
-
-
-
-
-					values_old,
-					A,
-					BI,
-					DI);
+					frequency_last,
+					lin_coeff,
+					qua_coeff,
+					delta_i);
 		}
-
-
-
-
-
 
 		AT_Kellerer_folding(	*bins_per_factor_2,
 				n_bins,
-				n_bins_values_old,
+				frequency_n_bins_last,
 				local_dose_first_bin,
-				first_bin_values_old,
+				frequency_first_bin_last,
 				local_dose_bin_widths,
-				DI,
+				delta_i,
 				&frequency_first_bin,
 				&frequency_n_bins,
-				value_zero_bin_old,
+				frequency_zero_bin_last,
 				&frequency_zero_bin,
-				values_old,
+				frequency_last,
 				frequency,
-				A,
-				BI);
+				lin_coeff,
+				qua_coeff);
 
-
-		if (value_zero_bin_old >= 1e-10){
-			AT_Kellerer_zero(	first_bin_values_old,
+		if (frequency_zero_bin_last >= 1e-10){
+			AT_Kellerer_zero(	frequency_first_bin_last,
 					n_bins,
 					local_dose_first_bin,
-					n_bins_values_old,
-					value_zero_bin_old,
-					values_old,
+					frequency_n_bins_last,
+					frequency_zero_bin_last,
+					frequency_last,
 					local_dose_bin_widths,
 					&frequency_first_bin,
 					&frequency_n_bins,
 					frequency);
 		}
 
-
-
-
 		if(shrink_tails){
 			AT_Kellerer_shrink(	n_bins,
-
-
-
-
-
 					local_dose_first_bin,
 					shrink_tails_under,
 					local_dose_bin_widths,
@@ -1013,12 +944,6 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 				frequency_first_bin,
 				frequency);
 	}
-
-
-
-
-
-
 
 	//////////////////////////////////////////
 	// Copy results back to input structure
@@ -1052,12 +977,12 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	*single_impact_frequency_zero_bin            = frequency_zero_bin;
 
 
-	free(values_old);
+	free(frequency_last);
 	free(frequency);
 	free(local_dose_midpoints);
 	free(local_dose_bin_widths);
-	free(DI);
-	free(A);
-	free(BI);
+	free(delta_i);
+	free(lin_coeff);
+	free(qua_coeff);
 }
 
