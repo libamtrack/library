@@ -23,7 +23,7 @@ public abstract class AbstractDBConnection {
 		}
 
 		if (conn == null) {
-			System.out.println("Can't connect to MyDatabase");
+			System.out.println("Can't connect to Database");
 		}
 
 		return conn;

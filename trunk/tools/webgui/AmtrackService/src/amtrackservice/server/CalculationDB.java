@@ -13,12 +13,12 @@ public class CalculationDB extends AbstractDBConnection {
 	private String pass = null;
 
 	public CalculationDB(String dbIP, String dbName, String username, String password) {
-		this.url = "jdbc:mysql://" + dbIP + "/";
+		this.url = "jdbc:sqlite:";
 		this.db = dbName;
-		this.driver = "com.mysql.jdbc.Driver";
+		this.driver = "org.sqlite.JDBC";
 		this.user = username;
 		this.pass = password;
-		this.url = this.url + this.db;
+		this.url = this.url + "test.db";
 		
 	}
 	public CalculationData getCalculation(long id) {
@@ -27,7 +27,7 @@ public class CalculationDB extends AbstractDBConnection {
 		String functionName = "";
 		boolean calculated = false;
 
-		String query = "SELECT Path,running,function FROM `calculations` where `ID` = ?";
+		String query = "SELECT Path,running,function FROM calculations where ID = ?";
 		try {
 			Connection connection = getConn(url,user,pass,driver);
 			PreparedStatement prep = connection.prepareStatement(query);
@@ -55,7 +55,7 @@ public class CalculationDB extends AbstractDBConnection {
 	
 	public CalculationData[] getAllCalculations() {
 
-		String query = "SELECT * FROM  `calculations`";
+		String query = "SELECT * FROM calculations";
 
 		// prepare for rpc transport
 		CalculationData[] calcs = null;
@@ -94,8 +94,8 @@ public class CalculationDB extends AbstractDBConnection {
 	
 	public void insertCalculation(long id, String path, String name) {
 
-		String query = "INSERT INTO `calculations` ( `ID` , `Path`, `function` ) VALUES ( ?, ?, ? );";
-		try {
+		String query = "INSERT INTO calculations ( ID , Path, function ) VALUES ( ?, ?, ? );";
+		try {			
 			Connection connection = getConn(url,user,pass,driver);
 			PreparedStatement prep = connection.prepareStatement(query);
 			prep.setLong(1,id);
@@ -112,7 +112,7 @@ public class CalculationDB extends AbstractDBConnection {
 	
 	public void finishCalculation(long id) {
 
-		String query = "UPDATE  `calculations` SET  `running` =  0 WHERE  `calculations`.`ID` = ?;";
+		String query = "UPDATE calculations SET running =  0 WHERE  ID = ?;";
 
 		try {
 			Connection connection = getConn(url,user,pass,driver);

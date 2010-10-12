@@ -53,7 +53,7 @@ all:AT_D_RDD_GY.o
 		$(GCC) -L$(GSLLIB) -L$(LIBDIR) AT_D_RDD_GY.o $(LFLAGS) -lamtrack -o AT_D_RDD_GY.exe
 
 static:AT_D_RDD_GY.c
-		$(GCC) -I$(INCLDIR) -L$(GSLLIB) AT_D_RDD_GY.c $(LIBDIR)$(STATICLIB) $(LFLAGS) -o AT_D_RDD_GY.exe
+		$(GCC) -fno-stack-protector -I$(INCLDIR) -L$(GSLLIB) AT_D_RDD_GY.c $(LIBDIR)$(STATICLIB) $(LFLAGS) -o AT_D_RDD_GY.exe
 
 clean:
 		- $(RMCMD) *.o
