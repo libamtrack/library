@@ -106,7 +106,7 @@ for(i in 1:length(functions)){
 		header <- c(header, paste("\t\t\t", gsub("_", ".", para$name[j]), " = ", convert.R(para$type[j]), "(",  gsub("_", ".", para$name[j]), "),", sep = ""))
 	}
 	
-	header <- c(header, paste("\t\t\t", gsub("_", ".", para$name[nrow(para)]), " = ", convert.R(para$type[nrow(para)]), "(",  gsub("_", ".", para$name[nrow(para)]), "))", sep = ""))
+	header <- c(header, paste("\t\t\t", gsub("_", ".", para$name[nrow(para)]), " = ", convert.R(para$type[nrow(para)]), "(",  gsub("_", ".", para$name[nrow(para)]), "),PACKAGE=\"libamtrack\")", sep = ""))
 
 	header <- c(header, "")
 
