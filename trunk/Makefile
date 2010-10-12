@@ -21,11 +21,12 @@ GSLPATH   = /usr
 MINGWPATH = 
 ############################################################
 
-CFLAGS    = -Wall -c -O3 -fPIC -DNDEBUG
+CFLAGS    = -Wall -c -O3 -DNDEBUG
 LFLAGS    = -lm -lgsl -lgslcblas
 
 ifeq ($(OS),Linux)
-NAMELIB   = lib/libamtrack.so
+SHAREDLIB   = lib/libamtrack.so
+STATICLIB   = lib/libamtrack.a
 DSEP      = /
 SRCDIR    = ./src
 INCLDIR   = ./include
@@ -35,7 +36,8 @@ MKDIRCMD  = mkdir -p
 GSLINCLUDE = "$(GSLPATH)/include"
 GSLLIB     = "$(GSLPATH)/lib"
 else
-NAMELIB    = lib\libamtrack.dll
+SHAREDLIB    = lib\libamtrack.dll
+STATICLIB    = lib\libamtrack.lib
 DSEP       = \\
 SRCDIR     = .\src
 INCLDIR    = .\include
@@ -54,12 +56,19 @@ LIBOBJS  = AmTrack.o AT_Error.o AT_Constants.o AT_DataLET.o AT_DataMaterial.o AT
 
 all:$(LIBOBJS)
 		$(MKDIRCMD) lib 
-		$(GCC) -L$(GSLLIB) -shared $(LIBOBJS) -o $(NAMELIB) $(LFLAGS) 
+		$(GCC) -L$(GSLLIB) -shared $(LIBOBJS) -o $(SHAREDLIB) $(LFLAGS) 
+		$(RMCMD) *.o
+
+static:$(LIBCOBJS) $(LIBHOBJS)
+		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) $(LIBCOBJS)
+		$(MKDIRCMD) lib 
+		ar -cvq $(STATICLIB) $(LIBOBJS) 
 		$(RMCMD) *.o
 
 clean:
 		- $(RMCMD) *.o
-		- $(RMCMD) $(NAMELIB)
+		- $(RMCMD) $(SHAREDLIB)
+		- $(RMCMD) $(STATICLIB)
 
 $(LIBOBJS):$(LIBCOBJS) $(LIBHOBJS)
-		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) $(LIBCOBJS)
+		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) -fPIC $(LIBCOBJS)
