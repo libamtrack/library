@@ -21,7 +21,7 @@
 	<output>
 		<element type="plot" label="E" datatype="double">
 			<description>Energy [MeV/u]</description>
-			<data x= "beta_input" y="E" />
+			<data x= "beta_input" y="AT_E_from_beta" />
 		</element>
 	</output>
 </root>
