@@ -4,7 +4,7 @@ R package creator for libamtrack
 Created 2010/10/13 by F. Klein
 
 REQUIREMENTS:
-- R (>2.11.1) has to be installed
+- R (>2.10.1) has to be installed
 - Under Windows make sure that your R installation is included in the PATH environment variable.
 - GSL (+devel) has to be installed
 
@@ -30,12 +30,10 @@ a file "wrapper.R" under "/tools/R_package_converter/package/R".
 
 7. Create documentation in RD format by "R CMD BATCH convert.doxygen.to.Rd.R". This will create *.Rd documentation files under "/tools/R_package_converter/package/man".
 
-#SG: NOT TESTED FROM HERE ON ####################################################################
-
-8. Optionally a Makevars file or Makefile for compiling and linking against a shared object has to provided in "/tools/R_package_converter/package".  
-
-9. Test the makefile with "R CMD SHLIB" by creating a shared library and load it into R
+8. A Makevars file for compiling and linking against a shared object is provided in "/tools/R_package_converter/package/src".  
 	
-10. Run the command "R CMD check package" to check for possible errors
+9. Run the command "R CMD check package" to check for possible errors
 
-11. If all errors are fixed, use "R CMD build package" to build package
+# till now it works (LG)
+
+10. If all errors are fixed, use "R CMD build package" to build package
