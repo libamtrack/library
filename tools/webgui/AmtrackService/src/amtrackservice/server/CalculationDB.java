@@ -18,7 +18,7 @@ public class CalculationDB extends AbstractDBConnection {
 		this.driver = "org.sqlite.JDBC";
 		this.user = username;
 		this.pass = password;
-		this.url = this.url + "test.db";
+		this.url = this.url + this.db;
 		
 	}
 	public CalculationData getCalculation(long id) {
