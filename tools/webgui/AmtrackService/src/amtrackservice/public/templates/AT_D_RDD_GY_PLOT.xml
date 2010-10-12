@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root name="at_d_rdd_gy plot" wrapper="AT_D_RDD_GY">
+<root name="at_d_rdd_gy plot" wrapper="AT_D_RDD_GY.exe">
 	<description>
 		[b]AT_D_RDD_GY[/b]
 		Returns RDD as a function of distance r_m
