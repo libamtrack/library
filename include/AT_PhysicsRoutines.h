@@ -557,7 +557,7 @@ double AT_fluence_weighted_E_MeV_u( const long    n,
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @return     doseweighted_E_MeV_u  result
+ * @return     result
  */
 double AT_dose_weighted_E_MeV_u( const long   n,
     const double  E_MeV_u[],
@@ -578,7 +578,7 @@ double AT_dose_weighted_E_MeV_u( const long   n,
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @return     fluenceweighted_LET_MeV_cm2_g  result
+ * @return     result
  */
 double AT_fluence_weighted_LET_MeV_cm2_g( const long     n,
     const double  E_MeV_u[],
@@ -599,8 +599,7 @@ double AT_fluence_weighted_LET_MeV_cm2_g( const long     n,
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
- * @return     doseweighted_LET_MeV_cm2_g  result
+ * @return     result
  */
 double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
     const double  E_MeV_u[],
@@ -608,6 +607,18 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
     const double  fluence_cm2[],
     const long    material_no);
 
+
+/**
+ * TODO
+ * @param[in]  n            length of vectors for parameters
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  particle_no  particle index (array of size n)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]  reference_material_no  TODO
+ */
 double AT_fluence_weighted_stopping_power_ratio( const long     n,
     const double  E_MeV_u[],
     const long    particle_no[],
@@ -620,7 +631,6 @@ double AT_fluence_weighted_stopping_power_ratio( const long     n,
  *
  * For one component this is: u_single = dose_Gy / single_impact_dose_Gy
  * For n components this is:  fluence_cm2 * u_single / total_fluence_cm2
- *
  * @param[in]  n            length of vectors for parameters
  * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no  particle index (array of size n)
@@ -640,16 +650,15 @@ double AT_total_u(    const long n,
                 const long er_model);
 
 /**
- * Computes the stopping number to be used with the Bethe formular
+ * Computes the stopping number to be used with the Bethe formula
  * according to ICRU49, p.6, Eq. 2.3
  * BUT WITHOUT shell or density correction!
- *
- * @param  	   E_MeV_u      energy of particle per nucleon
- * @param  	   particle_no  particle index
+ * @param[in]  	   E_MeV_u      energy of particle per nucleon
+ * @param[in]  	   particle_no  particle index
  * @see          AT_DataParticle.h for definition
- * @param      material_no  material index
+ * @param[in]      material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping number will be computed
+ * @param[in]      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping number will be computed
  * @return     result
  */
 double AT_Bethe_Stopping_Number_single(	const double 	E_MeV_u,
@@ -658,16 +667,15 @@ double AT_Bethe_Stopping_Number_single(	const double 	E_MeV_u,
 										const double	E_restricted_keV);
 
 /**
- * Computes the mass stopping power using the Bethe formular
+ * Computes the mass stopping power using the Bethe formula
  * according to ICRU49, p.6, Eq. 2.1
  * BUT WITHOUT shell or density, Bloch or Barkas correction!
- *
- * @param  	   E_MeV_u      energy of particle per nucleon
- * @param  	   particle_no  particle index
+ * @param[in]  	   E_MeV_u      energy of particle per nucleon
+ * @param[in]  	   particle_no  particle index
  * @see          AT_DataParticle.h for definition
- * @param      material_no  material index
+ * @param[in]      material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping power will be computed
+ * @param[in]      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping power will be computed
  * @return     result
  */
 double AT_Bethe_Mass_Stopping_Power_MeV_cm2_g_single(	const double 	E_MeV_u,
@@ -676,11 +684,9 @@ double AT_Bethe_Mass_Stopping_Power_MeV_cm2_g_single(	const double 	E_MeV_u,
 														const double	E_restricted_keV);
 
 /**
- * Computes the mass stopping power using the Bethe formular
- * for many particles
- * according to ICRU49, p.6, Eq. 2.1
+ * Computes the mass stopping power using the Bethe formula
+ * for many particles according to ICRU49, p.6, Eq. 2.1
  * BUT WITHOUT shell or density, Bloch or Barkas correction!
- *
  * @param[in]  	   n      		number of particles
  * @param[in]  	   E_MeV_u      energies of particle per nucleon (array of size n)
  * @param[in]  	   particle_no  particle indices (array of size n)

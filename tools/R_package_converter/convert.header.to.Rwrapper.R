@@ -99,7 +99,7 @@ for(i in 1:length(functions)){
 	header <- c(header, "")
 
 	# function call
-	header <- c(header, paste("\tres <- .c(\"", tmp$name, "_R\", n = as.integer(n),", sep = ""))
+	header <- c(header, paste("\tres <- .C(\"", tmp$name, "_R\", n = as.integer(n),", sep = ""))
 
 	if(nrow(para) > 2)
 	for(j in 2:(nrow(para) - 1)){
