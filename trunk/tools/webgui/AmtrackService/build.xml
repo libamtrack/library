@@ -4,7 +4,7 @@
   <property name="gwt.args" value="" />
 
   <!-- Configure path to GWT SDK -->
-  <property name="gwt.sdk" location="/home/grzanka/tmp/gwt" />
+  <property name="gwt.sdk" location="/path/to/gwt/installation" /><!-- !!!!!!!!!!!!!!!!!!!!!!!!!!! please specify the path GWT is installed -->
 
   <path id="project.class.path">
     <pathelement location="war/WEB-INF/classes"/>
@@ -66,7 +66,7 @@
     <javac srcdir="test" includes="**" encoding="utf-8"
       source="1.5" target="1.5" nowarn="true"
       debug="true" debuglevel="lines,vars,source">
-      <classpath location="/usr/share/java/ant-junit.jar"/>
+      <classpath location="/path/to/junit.jar"/><!-- !!!!!!!!!!!!!!!!!!!!!!!!!!! please specify the path junit.jar is installed -->
       <classpath refid="project.class.path"/>
     </javac>
   </target>
@@ -81,7 +81,7 @@
         <pathelement location="src" />
         <pathelement location="test" />
         <path refid="project.class.path" />
-        <pathelement location="/usr/share/java/ant-junit.jar" />
+        <pathelement location="/path/to/junit.jar" /><!-- !!!!!!!!!!!!!!!!!!!!!!!!!!! please specify the path junit.jar is installed -->
       </classpath>
       <batchtest todir="reports/htmlunit.dev" >
         <fileset dir="test" >
@@ -103,7 +103,7 @@
         <pathelement location="src" />
         <pathelement location="test" />
         <path refid="project.class.path" />
-        <pathelement location="/usr/share/java/ant-junit.jar" />
+        <pathelement location="/path/to/junit.jar" /><!-- !!!!!!!!!!!!!!!!!!!!!!!!!!! please specify the path junit.jar is installed -->
       </classpath>
       <batchtest todir="reports/htmlunit.prod" >
         <fileset dir="test" >
