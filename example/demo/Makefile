@@ -21,36 +21,35 @@ GSLPATH   = /usr
 MINGWPATH = 
 ############################################################
 
-CFLAGS    = -Wall -c -O3 -fPIC
+CFLAGS    = -Wall -c -O3
 LFLAGS    = -lm -lgsl -lgslcblas
 
 ifeq ($(OS),Linux)
-NAMELIB   = libamtrack.so
-LIBDIR    = ../../lib
-DSEP      = /
-INCLDIR   = ../../include
+STATICLIB = libamtrack.a
+LIBDIR    = ../../lib/
+INCLDIR   = ../../include/
 RMCMD     = rm
 GCC       = gcc 
-GSLINCLUDE = "$(GSLPATH)/include"
-GSLLIB     = "$(GSLPATH)/lib"
+GSLINCLUDE = "$(GSLPATH)/include/"
+GSLLIB     = "$(GSLPATH)/lib/"
 else
-NAMELIB    = libamtrack.dll
-LIBDIR    = ..\..\lib
-DSEP       = \\
-INCLDIR    = ..\..\include
+STATICLIB = libamtrack.lib
+LIBDIR    = ..\..\lib\
+INCLDIR    = ..\..\include\
 RMCMD      = del
 GCC        = "$(MINGWPATH)\bin\gcc.exe"
 GSLINCLUDE = "$(GSLPATH)\include"
 GSLLIB     = "$(GSLPATH)\lib"
 endif
 
-
 AT_demo.o:AT_demo.c 
-		$(GCC) -I$(GSLINCLUDE) -I$(INCLDIR) $(CFLAGS) AT_demo.c
-
+		$(GCC) -I$(GSLINCLUDE) -I$(INCLDIR) $(CFLAGS) -fPIC AT_demo.c
 
 all:AT_demo.o
 		$(GCC) -L$(GSLLIB) -L$(LIBDIR) AT_demo.o $(LFLAGS) -lamtrack -o AT_demo.exe
+
+static:AT_demo.c
+		$(GCC) -I$(INCLDIR) -L$(GSLLIB) AT_demo.c $(LIBDIR)$(STATICLIB) $(LFLAGS)  -o AT_demo.exe
 
 
 clean:
