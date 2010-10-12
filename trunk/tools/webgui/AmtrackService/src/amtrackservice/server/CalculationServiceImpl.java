@@ -23,10 +23,12 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 	public long startCalculation(HashMap<String, String> input,
 			String wrapperPath, String functionName)
 			throws IllegalArgumentException {
+		
 		String db_ip="localhost";
 		String db_name=getServletContext().getInitParameter("dbname");
 		String db_user=getServletContext().getInitParameter("dbuser");
 		String db_pass=getServletContext().getInitParameter("dbpass");
+		
 		CalculationDB db = new CalculationDB(db_ip, db_name, db_user, db_pass);
 		cal = new GregorianCalendar();
 
@@ -60,10 +62,12 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public HashMap<String, String> requestResult(long id)
 			throws IllegalArgumentException {
+		
 		String db_ip="localhost";
 		String db_name=getServletContext().getInitParameter("dbname");
 		String db_user=getServletContext().getInitParameter("dbuser");
 		String db_pass=getServletContext().getInitParameter("dbpass");
+		
 		HashMap<String, String> result = new HashMap<String, String>();
 		CalculationDB db = new CalculationDB(db_ip, db_name, db_user, db_pass);
 		String calcPath = db.getCalculation(id).getFilePath();
@@ -82,10 +86,12 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public HashMap<Long, String> getCalculations()
 			throws IllegalArgumentException {
+		
 		String db_ip="localhost";
 		String db_name=getServletContext().getInitParameter("dbname");
 		String db_user=getServletContext().getInitParameter("dbuser");
 		String db_pass=getServletContext().getInitParameter("dbpass");
+		
 		CalculationDB db = new CalculationDB(db_ip, db_name, db_user, db_pass);
 		CalculationData[] data = db.getAllCalculations();
 		HashMap<Long, String> calculations = new HashMap<Long, String>();

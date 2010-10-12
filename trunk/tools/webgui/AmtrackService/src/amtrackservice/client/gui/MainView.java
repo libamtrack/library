@@ -37,13 +37,7 @@ public class MainView {
 		menubar = new MenuBar();
 		menuNew = new MenuBar(true);
 		menubar.addItem("New", menuNew);
-//		menubar.addItem("Load", new Command() {
-//			@Override
-//			public void execute() {
-//				MainView.this.service.openCalculations();
-//				
-//			}
-//		});
+
 		tabPanel = new TabLayoutPanel(10, Unit.MM);
 		
 		SplitLayoutPanel rootPanel = new SplitLayoutPanel();

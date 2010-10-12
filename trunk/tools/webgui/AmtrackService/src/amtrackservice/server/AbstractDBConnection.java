@@ -18,12 +18,12 @@ public abstract class AbstractDBConnection {
 			conn = DriverManager.getConnection(url, user, pass);
 
 		} catch (Exception e) {
-			System.err.println("Mysql Connection Error: ");
+			System.err.println("Connection Error: ");
 			e.printStackTrace();
 		}
 
 		if (conn == null) {
-			System.out.println("Can't connect to MySQL Database");
+			System.out.println("Can't connect to MyDatabase");
 		}
 
 		return conn;
