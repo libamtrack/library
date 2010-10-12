@@ -150,13 +150,19 @@ for(i in 1:length(functions)){
 
 	body <- c(body, paste("\n  ", return.var.txt, tmp$name, "( ", para$name[1], 
 				 get.extension(para$type[1]), ",", sep = ""))
-	for(j in 2:(nrow(para) - 1)){
+	if(tmp$type != "void"){
+		para.max	<-	nrow(para) - 1
+	}else{
+		para.max	<-	nrow(para)
+	}
+
+	for(j in 2:(para.max - 1)){
 		if(length(grep("*", para$type[j], fixed = T)) == 0)
 			body <- c(body, paste("\t", para$name[j], get.extension(para$type[j]), ",", sep = ""))
 		else
 			body <- c(body, paste("\t&", para$name[j], get.extension(para$type[j]), ",", sep = ""))
 	} 			
-	body <- c(body, paste("\t", para$name[nrow(para)], get.extension(para$type[nrow(para)]), ");", sep = ""))
+	body <- c(body, paste("\t", para$name[para.max], get.extension(para$type[para.max]), ");", sep = ""))
 
 
 	output <- grepl("out", para$in.out) 
