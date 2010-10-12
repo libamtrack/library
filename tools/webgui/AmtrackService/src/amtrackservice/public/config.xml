@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <config path="/path/to/folder"> <!-- please specify the path where the wrapper folder is located -->
-	<database ip="localhost" name="test.db" user="username" pass="password"/>
 	<template name="RDD from distance table" file="AT_D_RDD_GY.xml"/>
 	<template name="RDD from distance plot" file="AT_D_RDD_GY_PLOT.xml"/>
 	<template name="E from beta plot" file="AT_E_from_beta.xml"/>
