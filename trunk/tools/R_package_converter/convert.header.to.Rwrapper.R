@@ -30,7 +30,7 @@ source("type.conversion.R")
 
 load("functions.ssd")
 
-write("// Automatically created wrapper file\n", file = "./package/R/wrapper.R")
+write("# Automatically created wrapper file\n", file = "./package/R/wrapper.R")
 
 
 for(i in 1:length(functions)){
