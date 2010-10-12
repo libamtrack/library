@@ -12,8 +12,7 @@ public class CalculationDB extends AbstractDBConnection {
 	private String user = null;
 	private String pass = null;
 
-	public CalculationDB(String dbIP, String dbName, String username,
-			String password) {
+	public CalculationDB(String dbIP, String dbName, String username, String password) {
 		this.url = "jdbc:mysql://" + dbIP + "/";
 		this.db = dbName;
 		this.driver = "com.mysql.jdbc.Driver";
@@ -28,7 +27,7 @@ public class CalculationDB extends AbstractDBConnection {
 		String functionName = "";
 		boolean calculated = false;
 
-		String query = "SELECT Path,running,function FROM `"+db+"`.`calculations` where `ID` = ?";
+		String query = "SELECT Path,running,function FROM `calculations` where `ID` = ?";
 		try {
 			Connection connection = getConn(url,user,pass,driver);
 			PreparedStatement prep = connection.prepareStatement(query);
@@ -37,7 +36,10 @@ public class CalculationDB extends AbstractDBConnection {
 
 			result.next();
 			resultPath = result.getString(1);
-			calculated = result.getBoolean(2);
+			if( result.getLong(2) == 0 )
+				calculated = false;
+			else
+				calculated = true;
 			functionName = result.getString(3);
 
 			result.close();
@@ -53,7 +55,7 @@ public class CalculationDB extends AbstractDBConnection {
 	
 	public CalculationData[] getAllCalculations() {
 
-		String query = "SELECT * FROM  `amtrack`.`calculations`";
+		String query = "SELECT * FROM  `calculations`";
 
 		// prepare for rpc transport
 		CalculationData[] calcs = null;
@@ -67,7 +69,13 @@ public class CalculationDB extends AbstractDBConnection {
 
 			int i = 0;
 			while (result.next()) {
-				calcs[i] = new CalculationData(result.getLong(1),result.getString(2),result.getBoolean(3),result.getString(4));
+				boolean calculated;
+				if( result.getLong(3) == 0 ){
+					calculated = false;
+				} else {
+					calculated = true;
+				}
+				calcs[i] = new CalculationData(result.getLong(1),result.getString(2),calculated,result.getString(4));
 				i++;
 			}
 
@@ -86,7 +94,7 @@ public class CalculationDB extends AbstractDBConnection {
 	
 	public void insertCalculation(long id, String path, String name) {
 
-		String query = "INSERT INTO `amtrack`.`calculations` ( `ID` , `Path`, `function` ) VALUES ( ?, ?, ? );";
+		String query = "INSERT INTO `calculations` ( `ID` , `Path`, `function` ) VALUES ( ?, ?, ? );";
 		try {
 			Connection connection = getConn(url,user,pass,driver);
 			PreparedStatement prep = connection.prepareStatement(query);
@@ -104,7 +112,7 @@ public class CalculationDB extends AbstractDBConnection {
 	
 	public void finishCalculation(long id) {
 
-		String query = "UPDATE  `amtrack`.`calculations` SET  `running` =  0 WHERE  `calculations`.`ID` = ?;";
+		String query = "UPDATE  `calculations` SET  `running` =  0 WHERE  `calculations`.`ID` = ?;";
 
 		try {
 			Connection connection = getConn(url,user,pass,driver);
