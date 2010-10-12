@@ -2,9 +2,7 @@ package amtrackservice.server;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-
 import java.sql.PreparedStatement;
-
 
 public class CalculationDB extends AbstractDBConnection {
 	
@@ -46,10 +44,8 @@ public class CalculationDB extends AbstractDBConnection {
 			connection.close();
 
 		} catch (Exception e) {
-
-			System.err.println("Mysql Statement Error: " + query);
+			System.err.println("Statement Error: " + query);
 			e.printStackTrace();
-
 		}
 
 		return new CalculationData(id, resultPath, calculated,functionName);
@@ -80,10 +76,8 @@ public class CalculationDB extends AbstractDBConnection {
 			connection.close();
 
 		} catch(Exception e) {
-
-			System.err.println("Mysql Statement Error: " + query);
+			System.err.println("Statement Error: " + query);
 			e.printStackTrace();
-
 		}
 
 		// return the array
@@ -93,22 +87,18 @@ public class CalculationDB extends AbstractDBConnection {
 	public void insertCalculation(long id, String path, String name) {
 
 		String query = "INSERT INTO `amtrack`.`calculations` ( `ID` , `Path`, `function` ) VALUES ( ?, ?, ? );";
-		//CREATE TABLE calculations()
-
 		try {
 			Connection connection = getConn(url,user,pass,driver);
 			PreparedStatement prep = connection.prepareStatement(query);
-			prep.setLong(1, id);
+			prep.setLong(1,id);
 			prep.setString(2, path);
 			prep.setString(3,name);
 			prep.executeUpdate();
 			connection.close();
 
 		} catch(Exception e) {
-
-			System.err.println("Mysql Statement Error: " + query);
+			System.err.println("Statement Error: " + query);
 			e.printStackTrace();
-
 		}
 	}
 	
@@ -124,10 +114,8 @@ public class CalculationDB extends AbstractDBConnection {
 			connection.close();
 
 		} catch(Exception e) {
-
-			System.err.println("Mysql Statement Error: " + query);
+			System.err.println("Statement Error: " + query);
 			e.printStackTrace();
-
 		}
 	}
 	

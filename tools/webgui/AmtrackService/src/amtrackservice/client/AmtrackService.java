@@ -72,19 +72,6 @@ public class AmtrackService implements EntryPoint {
 				new String[0]));
 	}
 
-//	public void openCalculations() {
-//		CalculationControl.getInstance().getCalculations(this);
-//	}
-//
-//	public void openCalculations(String[] data) {
-//		new ProcessView(this, data).show();
-//
-//	}
-//
-//	public void openCalculation(long id) {
-//		serviceCtrl.fetchCalculation(CalculationControl.getInstance()
-//				.getRunning().get(id), id);
-//	}
 	
 	public void fetchTemplate(String templateName) {
 		String file = GWT.getModuleBaseURL() + URL_TEMPLATES + config.getTemplates().get(templateName);
