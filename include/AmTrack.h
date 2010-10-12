@@ -123,17 +123,17 @@ void AT_run_SPIFF_method(  const long  n,
  * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  RDD_model           index number for chosen radial dose distribution
- * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size 4)
  * @see          AT_RDD.h for definition
  * @param[in]  ER_model            index number for chosen electron-range model
  * @see          AT_ElectronRange.h for definition
  * @param[in]  gamma_model         index number for chosen gamma response
- * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size depending on chosen model)
+ * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size 4)
  * @see          AT_GammaResponse.h for definition
  * @param[in]  saturation_cross_section_factor  (algorithm specific)  scaling factor for the saturation cross section
  * @see          Waligorski, 1988
  * @param[in]  write_output        if true, a protocol is written to a file in the working directory
- * @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results\n
+ * @param[out]  results            to be allocated by the user which will be used to return the results (array of size 10)
  *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
  *    results[1]    d_check         (algorithm independent)  not available with IGK\n
  *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -143,8 +143,7 @@ void AT_run_SPIFF_method(  const long  n,
  *    results[6]    gamma_dose_Gy   (algorithm specific)     dose contribution from gamma kills\n
  *    results[7]    P_I             (algorithm specific)     ion kill probability\n
  *    results[8]    P_G             (algorithm specific)     gamma kill probability\n
- *    results[9]    not used        (algorithm specific)\n
- * @return  none
+ *    results[9]    not used        (algorithm specific)
  */
 void AT_run_IGK_method(  const long  n,
     const double  E_MeV_u[],

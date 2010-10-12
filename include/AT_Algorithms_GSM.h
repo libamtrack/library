@@ -180,12 +180,12 @@ void AT_GSM_calculate_local_response_grid( const long      nX,
  * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  RDD_model           index number for chosen radial dose distribution
- * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size 4)
  * @see          AT_RDD.h for definition
  * @param[in]  ER_model            index number for chosen electron-range model
  * @see          AT_ElectronRange.h for definition
  * @param[in]  gamma_model         index number for chosen gamma response
- * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size depending on chosen model)
+ * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size 4)
  * @see          AT_GammaResponse.h for definition
  * @param[in]  N_runs              (algorithm specific) number of runs within which track positions will be resampled
  * @param[in]  write_output        if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory
@@ -202,8 +202,7 @@ void AT_GSM_calculate_local_response_grid( const long      nX,
  *    results[6]    sd_d_check      (algorithm specific)     standard deviation for results[1]\n
  *    results[7]    sd_S_HCP        (algorithm specific)     standard deviation for results[2]\n
  *    results[8]    sd_S_gamma      (algorithm specific)     standard deviation for results[3]\n
- *    results[9]    sd_n_particles  (algorithm specific)     standard deviation for results[4]\n
- * @return  none
+ *    results[9]    sd_n_particles  (algorithm specific)     standard deviation for results[4]
  */
 void AT_run_GSM_method(  const long  n,
     const double   E_MeV_u[],
