@@ -34,6 +34,7 @@ write("// Automatically created header file\n\n#include \"AmTrack.h\"\n#include 
 write("// Automatically created header and body file\n\n#include \"Rwrapper.h\"\n", file = "./package/src/Rwrapper.c")
 
 for(i in 1:length(functions)){
+	# i <- 7
 	tmp <- functions[[i]]
 	
 	##############################
@@ -41,7 +42,8 @@ for(i in 1:length(functions)){
 	##############################
 	header <- character(nrow(tmp$parameter))
 	
-	header[1] <- paste(tmp$type, " ", tmp$name, "_R( ", 
+#SG:	header[1] <- paste(tmp$type, " ", tmp$name, "_R( ", 
+	header[1] <- paste("void ", tmp$name, "_R( ", 
 					convert.c(tmp$parameter$type[1]), "\t",
 					tmp$parameter$name[1], ",", sep = "")
 
@@ -140,7 +142,13 @@ for(i in 1:length(functions)){
 	}
 	
 	# function call
-	body <- c(body, paste("\n  ", tmp$name, "( ", para$name[1], 
+	if(tmp$type != "void"){
+		return.var.txt	<-	paste(tmp$type, "returnValue_internal = \t")
+	}else{
+		return.var.txt	<-	""
+	}
+
+	body <- c(body, paste("\n  ", return.var.txt, tmp$name, "( ", para$name[1], 
 				 get.extension(para$type[1]), ",", sep = ""))
 	for(j in 2:(nrow(para) - 1)){
 		if(length(grep("*", para$type[j], fixed = T)) == 0)
@@ -151,10 +159,13 @@ for(i in 1:length(functions)){
 	body <- c(body, paste("\t", para$name[nrow(para)], get.extension(para$type[nrow(para)]), ");", sep = ""))
 
 
-	output <- grepl("out", para$in.out)
-
+	output <- grepl("out", para$in.out) 
 
 	body <- c(body, paste("\n//Results:"))
+	if(tmp$type != "void"){
+		body <- c(body, paste("\n\t*returnValue = (", gsub("*", "", gsub("\t", "", convert.c(para$type[nrow(para)]), fixed = T), fixed = T), ")returnValue_internal;"), sep = "")
+	}
+	
 	kk <-  which(output & !vector)
 	if(length(kk) > 0){
 		for(j in kk){

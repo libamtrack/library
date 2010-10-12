@@ -34,6 +34,7 @@ write("# Automatically created wrapper file\n", file = "./package/R/wrapper.R")
 
 
 for(i in 1:length(functions)){
+	#i<-7
 	tmp <- functions[[i]]
 
 	##############################
@@ -91,6 +92,10 @@ for(i in 1:length(functions)){
 		}
 	}
 	
+	# add return variable if existing
+	if(tmp$type != "void"){
+		header <- c(header, paste( "\t", "returnValue = numeric(1)", sep = ""))
+	}
 	header <- c(header, "")
 
 	# function call
@@ -101,18 +106,27 @@ for(i in 1:length(functions)){
 		header <- c(header, paste("\t\t\t", gsub("_", ".", para$name[j]), " = ", convert.R(para$type[j]), "(",  gsub("_", ".", para$name[j]), "),", sep = ""))
 	}
 	
-	header <- c(header, paste("\t\t\t", gsub("_", ".", para$name[nrow(para)]), " = ", convert.R(para$type[j]), "(",  gsub("_", ".", para$name[nrow(para)]), "))", sep = ""))
+	header <- c(header, paste("\t\t\t", gsub("_", ".", para$name[nrow(para)]), " = ", convert.R(para$type[nrow(para)]), "(",  gsub("_", ".", para$name[nrow(para)]), "))", sep = ""))
 
 	header <- c(header, "")
 
-	# create list to return, if more than one parameter is returned
-	if(length(pos.out) == 1){
-		header <- c(header, paste("\t return(res$", para$name[pos.out[length(pos.out)]], ")", sep = ""))
-		header <- c(header, "}")
-	} else if (length(pos.out) > 1){
+	# SG: always return list
+	if (tmp$type != "void"){
+		n.return.elements	<- 1
+	}else{
+		n.return.elements	<- 0
+	}
+	n.return.elements	<-	 n.return.elements + length(pos.out)
+	if(n.return.elements>= 1){
 		header <- c(header, "\t return.list <- NULL")
-		for(j in 1:length(pos.out)){
-			header <- c(header, paste("\t return.list[[", j, "]] <- res$", para$name[pos.out[j]], "", sep = ""))
+		j <- 0
+		if(length(pos.out) > 0){
+			for(j in 1:length(pos.out)){
+				header <- c(header, paste("\t return.list[[", j, "]] <- res$", para$name[pos.out[j]], "", sep = ""))
+			}
+		}
+		if(tmp$type != "void"){
+			header <- c(header, paste("\t return.list[[", j+1, "]] <- res$returnValue", sep = ""))
 		}
 		header <- c(header, "\t return(return.list)")
 		header <- c(header, "}")
