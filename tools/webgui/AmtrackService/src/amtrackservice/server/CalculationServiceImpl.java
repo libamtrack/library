@@ -17,18 +17,17 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class CalculationServiceImpl extends RemoteServiceServlet implements
 		CalculationService {
-
-	private static final String DB_IP="localhost";
-	private static final String DB_NAME="";
-	private static final String DB_USER="";
-	private static final String DB_PASS="";
 	
 	private GregorianCalendar cal;
 
 	public long startCalculation(HashMap<String, String> input,
 			String wrapperPath, String functionName)
 			throws IllegalArgumentException {
-		CalculationDB db = new CalculationDB(DB_IP, DB_NAME, DB_USER, DB_PASS);
+		String db_ip="localhost";
+		String db_name=getServletContext().getInitParameter("dbname");
+		String db_user=getServletContext().getInitParameter("dbuser");
+		String db_pass=getServletContext().getInitParameter("dbpass");
+		CalculationDB db = new CalculationDB(db_ip, db_name, db_user, db_pass);
 		cal = new GregorianCalendar();
 
 		long time = cal.getTimeInMillis();
@@ -61,8 +60,12 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public HashMap<String, String> requestResult(long id)
 			throws IllegalArgumentException {
+		String db_ip="localhost";
+		String db_name=getServletContext().getInitParameter("dbname");
+		String db_user=getServletContext().getInitParameter("dbuser");
+		String db_pass=getServletContext().getInitParameter("dbpass");
 		HashMap<String, String> result = new HashMap<String, String>();
-		CalculationDB db = new CalculationDB(DB_IP, DB_NAME, DB_USER, DB_PASS);
+		CalculationDB db = new CalculationDB(db_ip, db_name, db_user, db_pass);
 		String calcPath = db.getCalculation(id).getFilePath();
 		try {
 			result.putAll(CalculationFile.dateiAuslesen(calcPath));
@@ -79,7 +82,11 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public HashMap<Long, String> getCalculations()
 			throws IllegalArgumentException {
-		CalculationDB db = new CalculationDB(DB_IP, DB_NAME, DB_USER, DB_PASS);
+		String db_ip="localhost";
+		String db_name=getServletContext().getInitParameter("dbname");
+		String db_user=getServletContext().getInitParameter("dbuser");
+		String db_pass=getServletContext().getInitParameter("dbpass");
+		CalculationDB db = new CalculationDB(db_ip, db_name, db_user, db_pass);
 		CalculationData[] data = db.getAllCalculations();
 		HashMap<Long, String> calculations = new HashMap<Long, String>();
 		for (CalculationData d : data) {
