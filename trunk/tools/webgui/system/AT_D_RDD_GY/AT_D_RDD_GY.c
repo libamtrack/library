@@ -1,11 +1,31 @@
+/**
+ * @brief AT_D_RDD_GY wrapper
+ */
+
 /*
- ============================================================================
- Name        : AT_D_RDD_GY.c
- Author      : Christoph Kolb
- Version     :
- Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
- ============================================================================
+ *    AT_D_RDD_GY.c
+ *    ===================
+ *
+ *    Created on: 2010-10-11
+ *    Creator: christophkolb
+ *
+ *    Copyright 2006, 2010 The libamtrack team
+ *
+ *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+ *
+ *    AmTrack is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    AmTrack is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with AmTrack (file: copying.txt).
+ *    If not, see <http://www.gnu.org/licenses/>
  */
 
 #include <stdio.h>
@@ -48,7 +68,7 @@ int main(int argc, char *argv[]) {
 			do {
 				r_m[n] = atof(nToken);
 				n++;
-			} while (nToken = strtok(NULL, " "));
+			} while ((nToken = strtok(NULL, " ")));
 		}
 		if (strstr(Text, "rdd_parameter")) {
 			strtok(Text, ":");
@@ -58,7 +78,7 @@ int main(int argc, char *argv[]) {
 			do {
 				rdd_parameter[rn] = atof(nToken);
 				rn++;
-			} while (nToken = strtok(NULL, " "));
+			} while ((nToken = strtok(NULL, " ")));
 		}
 		if (strstr(Text, "E_Mev_u")) {
 			strtok(Text, ":");
@@ -89,8 +109,7 @@ int main(int argc, char *argv[]) {
 
 	double D_RDD_Gy[n];
 
-	AT_D_RDD_Gy(n, r_m, E_MeV_u, particle_no, material_no, rdd_model,
-			rdd_parameter, er_model, D_RDD_Gy);
+	AT_D_RDD_Gy(n, r_m, E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, D_RDD_Gy);
 	char str[] = { "D_RDD_Gy:" };
 	int i;
 	for (i = 0; i < n; i++) {
