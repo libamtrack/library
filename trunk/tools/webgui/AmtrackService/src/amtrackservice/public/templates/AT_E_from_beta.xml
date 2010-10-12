@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root name="AT_E_from_beta plot" wrapper="AT_E_from_beta">
+<root name="AT_E_from_beta plot" wrapper="AT_E_from_beta.exe">
 	<description>
 		[b]AT_E_from_beta[/b]
 		Returns E as a function of beta
