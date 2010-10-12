@@ -32,7 +32,7 @@ a file "wrapper.R" under "/tools/R_package_converter/package/R".
 
 #SG: NOT TESTED FROM HERE ON ####################################################################
 
-8. Optionally a Makevars file or Makefile for compiling and linking against a shared object has to provided in "/fools/R_package_converter/package".  
+8. Optionally a Makevars file or Makefile for compiling and linking against a shared object has to provided in "/tools/R_package_converter/package".  
 
 9. Test the makefile with "R CMD SHLIB" by creating a shared library and load it into R
 	

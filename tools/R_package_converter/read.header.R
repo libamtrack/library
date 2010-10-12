@@ -58,7 +58,7 @@ function.no <- 1
 
 
 for(file in record){
-
+# file <- record[8]
 	# read the complete *.h file
 	include <- scan(file, what = "character", strip.white = T)
 	print(paste("Read: ", file))
@@ -103,6 +103,7 @@ for(file in record){
 	current.function.end <- grep(";", include)
 
 	for (i in 1:length(comment.start)){
+		# i <- 1
 		pos.comment <- comment.start[i]:comment.end[i] 
 		pos.code <- (comment.end[i]+1):current.function.end[i]
 
@@ -270,10 +271,23 @@ for(file in record){
 		pos.out.para <- match(current.function$parameter.comment$name[pos.out & !pos.in], current.function$parameter$name)
 		pos.in.out.para <- match(current.function$parameter.comment$name[pos.in & pos.out], current.function$parameter$name)
 
+
 		current.function$parameter$in.out <- "TODO"
 		current.function$parameter$in.out[pos.in.para] <- "in" 
 		current.function$parameter$in.out[pos.out.para] <- "out" 
 		current.function$parameter$in.out[pos.in.out.para] <- "in.out" 
+
+		# SG: add return parameters if existing
+		if(current.function$type != "void"){
+			if(length(grep("return", current.function$parameter$name))>0){
+				print("!ERROR: name conflict with return variable!")
+			}
+			current.function$parameter	<-	rbind.data.frame(	current.function$parameter,
+												data.frame(	type	=  include[pos.code[1]],
+														name	=  "returnValue",
+														length = 1,
+														in.out = "return"))
+		}
 
 		functions[[function.no]] <- current.function
 		processed.functions <- c(processed.functions, name)
