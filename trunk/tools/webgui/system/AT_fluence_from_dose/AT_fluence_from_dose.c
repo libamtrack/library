@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	while (fgets(Text, sizeof(Text), f) != 0) {
-		if (strstr(Text, "E_Mev_u")) {
+		if (strstr(Text, "E_MeV_u")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			E_MeV_u_single = atof(token);

@@ -44,6 +44,11 @@ int main(int argc, char *argv[]) {
 	long n = 0;
 	double beta[500];
 
+	double beta_start;
+	double beta_end;
+	long n_points;
+	long x_axis_type;
+
 	FILE *f;
 	fflush(stdin);
 	f = fopen(path, "a+");
@@ -53,34 +58,57 @@ int main(int argc, char *argv[]) {
 	}
 
 	while (fgets(Text, sizeof(Text), f) != 0) {
-		if (strstr(Text, "beta_input")) {
+		if (strstr(Text, "beta_start")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
-			char* nToken;
-			nToken = strtok(token, " ");
-			do {
-				beta[n] = atof(nToken);
-				n++;
-			} while ((nToken = strtok(NULL, " ")));
+			beta_start = atof(token);
+		}
+		if (strstr(Text, "beta_end")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			beta_end = atof(token);
+		}
+		if (strstr(Text, "n_points")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			n_points = atol(token);
+		}
+		if (strstr(Text, "x_axis_type")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			x_axis_type = atol(token);
 		}
 	}
 
 	double E[500];
-
-	AT_E_from_beta(n, beta, E);
-	char str[] = { "E_output:" };
 	int i;
-	for (i = 0; i < n; i++) {
-		char text[1024];
-		sprintf(text, " %f", E[i]);
-		strcat(str, text);
+	if( x_axis_type == 2){
+		for (i = 0; i < n_points; i++) {
+			beta[i] = beta_start + (i/(double)(n_points-1)) * (beta_end - beta_start);
+		}
+	} else if( x_axis_type == 1){
+		for (i = 0; i < n_points; i++) {
+			double logbeta = log(beta_start) + (i/(double)(n_points-1)) * (log(beta_end) - log(beta_start));
+			beta[i] = exp(logbeta);
+		}
+	} else {
+		return EXIT_FAILURE;
 	}
-	strcat(str, "\n");
-	fputs(str, f);
 
-	if (f) {
-		fclose(f);
+	AT_E_from_beta(n_points, beta, E);
+
+	fprintf(f , "beta:");
+	for (i = 0; i < n_points; i++) {
+		fprintf(f, " %g", beta[i]);
 	}
+	fprintf(f, "\n");
+
+	fprintf(f , "E:");
+	for (i = 0; i < n_points; i++) {
+		fprintf(f, " %g", E[i]);
+	}
+	fprintf(f, "\n");
+	fclose(f);
 
 	return EXIT_SUCCESS;
 }
