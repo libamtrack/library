@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root name="AT_E_from_beta plot" wrapper="AT_E_from_beta.exe">
+<root name="E from beta" wrapper="AT_E_from_beta.exe">
 	<description>
-		[b]AT_E_from_beta[/b]
-		Returns E as a function of beta
+		[b]Returns E as a function of beta[/b]		
 	</description>
 	<input>
-		<element type="inputlist" label="beta input" datatype="double">
-			<description>beta (array of size n)</description>
+		<element type="inputlist" label="beta" datatype="double">
+			<description>beta</description>
 			<preset>
 				<item value="0.1" />
 				<item value="0.2" />
@@ -19,9 +18,9 @@
 	</input>
 
 	<output>
-		<element type="plot" label="E" datatype="double">
+		<element type="plot" label="particle energy" datatype="double">
 			<description>Energy [MeV/u]</description>
-			<data x= "beta_input" y="AT_E_from_beta" />
+			<data x= "beta_input" y="E_output" />
 		</element>
 	</output>
 </root>

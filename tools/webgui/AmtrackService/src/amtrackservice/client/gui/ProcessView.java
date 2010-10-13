@@ -13,7 +13,7 @@ public class ProcessView extends DialogBox {
 
 	public ProcessView(final AmtrackService service, final String[] data) {
 		// Set the dialog box's caption.
-		setText("My First Dialog");
+		setText("Dialog");
 
 		// Enable animation.
 		setAnimationEnabled(true);
