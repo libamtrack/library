@@ -16,8 +16,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class CalculationControl {
 
 	/**
-	 * Create a remote service proxy to talk to the server-side Greeting
-	 * service.
+	 * Create a remote service proxy to talk to the server-side service.
 	 */
 	private final CalculationServiceAsync calculationService = GWT
 			.create(CalculationService.class);
