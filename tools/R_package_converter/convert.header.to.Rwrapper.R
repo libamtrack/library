@@ -44,7 +44,7 @@ for(i in 1:length(functions)){
 
 	# create header out of the para[in] parameter without length n (works every where???)
 	const <- grepl("in", tmp$parameter.comment$type) 
-	pos.in <- which(const & tmp$parameter.comment$name != "n")
+	pos.in <- which(const) # SG: & tmp$parameter.comment$name != "n")
 	# get the position of the parameters from the position in the comments
 	pos.in <- match(tmp$parameter.comment$name[pos.in], para$name)
 	# replace "_" with "."
@@ -67,12 +67,12 @@ for(i in 1:length(functions)){
 	# create wrapper body
 	###########################
 
-	# assign length n of vectors
-	if(sum(para$name == "n") > 0){
-		ii <- which(para$length == "n")
-		header <- c(header, paste("\tn\t<- length(", para$name[ii[1]], 
-						")", sep = ""))
-	}
+	# SG: commented out: assign length n of vectors
+	#if(sum(para$name == "n") > 0){
+	#	ii <- which(para$length == "n")
+	#	header <- c(header, paste("\tn\t<- length(", para$name[ii[1]], 
+	#					")", sep = ""))
+	#}
 
 
 	# assign the results (from para["out"])
@@ -100,10 +100,10 @@ for(i in 1:length(functions)){
 	header <- c(header, "")
 
 	# function call
-	header <- c(header, paste("\tres <- .C(\"", tmp$name, "_R\", n = as.integer(n),", sep = ""))
+	header <- c(header, paste("\tres <- .C(\"", tmp$name, "_R\", ", sep = ""))
 
-	if(nrow(para) > 2)
-	for(j in 2:(nrow(para) - 1)){
+	if(nrow(para) > 1)
+	for(j in 1:(nrow(para) - 1)){
 		header <- c(header, paste("\t\t\t", gsub("_", ".", para$name[j]), " = ", convert.R(para$type[j]), "(",  gsub("_", ".", para$name[j]), "),", sep = ""))
 	}
 	
