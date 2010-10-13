@@ -58,7 +58,7 @@
 	<output>
 		<element type="list" label="fluence [1/cm2]" datatype="double">
 			<description>fluence [1/cm2]</description>
-			<data x="dose_input" y="fluence" />
+			<data x="fluence" />
 		</element>
 	</output>
 </root>

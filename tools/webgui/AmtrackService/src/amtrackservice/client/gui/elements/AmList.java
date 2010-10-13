@@ -39,6 +39,7 @@ public class AmList extends AmWidget  {
 
 	@Override
 	public void setValue(HashMap<String, String> valueMap) {
+		listbox.clear();
 		String str = valueMap.get(data);
 		if (str != null) {
 			String[] s = str.split(" ");
