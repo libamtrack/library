@@ -97,6 +97,13 @@ public class Calculation {
 		Grid input = new Grid(inputWidgets.size() + 1, 2);
 		Grid output = new Grid(outputWidgets.size() + 1, 2);
 		StackLayoutPanel descriptions = new StackLayoutPanel(Unit.MM);
+		Button defaults = new Button("load defaults");
+		defaults.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				loadDefaults();
+			}
+		});
 		Button refresh = new Button("fetch result");
 		refresh.addClickHandler(new ClickHandler() {
 			@Override
@@ -105,17 +112,17 @@ public class Calculation {
 
 			}
 		});
-		Button calculate = new Button("calculate");
+		Button calculate = new Button("start calculation");
 		calculate.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				calculate();
-
 			}
 		});
 
-		buttons.add(refresh);
+		buttons.add(defaults);
 		buttons.add(calculate);
+		buttons.add(refresh);
 
 		head.add(description);
 		head.add(buttons);
@@ -155,6 +162,10 @@ public class Calculation {
 		return panel;
 	}
 
+	private void loadDefaults() {
+		// TODO CalculationControl.getInstance().loadDefaults(this);
+	}
+	
 	private void calculate() {
 		CalculationControl.getInstance().calculate(this);
 	}
