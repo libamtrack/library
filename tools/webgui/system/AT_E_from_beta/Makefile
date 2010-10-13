@@ -53,7 +53,7 @@ all:AT_E_from_beta.o
 		$(GCC) -L$(GSLLIB) -L$(LIBDIR) AT_E_from_beta.o $(LFLAGS) -lamtrack -o AT_E_from_beta.exe
 
 static:AT_E_from_beta.c
-		$(GCC) -fno-stack-protector -I$(INCLDIR) -L$(GSLLIB) AT_E_from_beta.c $(LIBDIR)$(STATICLIB) $(LFLAGS) -o AT_E_from_beta.exe
+		$(GCC) -I$(INCLDIR) -L$(GSLLIB) AT_E_from_beta.c $(LIBDIR)$(STATICLIB) $(LFLAGS) -o AT_E_from_beta.exe
 
 clean:
 		- $(RMCMD) *.o
