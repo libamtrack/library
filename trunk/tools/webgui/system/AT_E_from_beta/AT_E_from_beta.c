@@ -65,10 +65,10 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	double E[n];
+	double E[500];
 
 	AT_E_from_beta(n, beta, E);
-	char str[] = { "AT_E_from_beta:" };
+	char str[] = { "E_output:" };
 	int i;
 	for (i = 0; i < n; i++) {
 		char text[1024];
