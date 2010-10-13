@@ -53,7 +53,7 @@ all:AT_LET_from_E.o
 		$(GCC) -L$(GSLLIB) -L$(LIBDIR) AT_LET_from_E.o $(LFLAGS) -lamtrack -o AT_LET_from_E.exe
 
 static:AT_LET_from_E.c
-		$(GCC) -fno-stack-protector -I$(INCLDIR) -L$(GSLLIB) AT_LET_from_E.c $(LIBDIR)$(STATICLIB) $(LFLAGS) -o AT_LET_from_E.exe
+		$(GCC) -I$(INCLDIR) -L$(GSLLIB) AT_LET_from_E.c $(LIBDIR)$(STATICLIB) $(LFLAGS) -o AT_LET_from_E.exe
 
 clean:
 		- $(RMCMD) *.o
