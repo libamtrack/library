@@ -31,6 +31,7 @@ source("type.conversion.R")
 load("functions.ssd")
 
 for(i in 1:length(functions)){
+	# i <- 8
 	tmp <- functions[[i]]
 
 	# replace "_" by "."
@@ -77,7 +78,7 @@ for(i in 1:length(functions)){
 	header <- c(header, "\\arguments{")
 
 	para <- tmp$parameter.comment
-	para.in <- which(grepl("in", para$type) & para$name != "n")
+	para.in <- which(grepl("in", para$type)) # SG commented out: & para$name != "n")
 	if(length(para.in) > 0){
 		for(i in para.in){
 			header <- c(header, paste("  \\item{", para$name[i], "}{", para$comment[i], "}", sep = ""))
@@ -87,10 +88,7 @@ for(i in 1:length(functions)){
 	header <- c(header, "}")
 
 	# start value
-	header <- c(header, "% TODO proper return definition of lists!!!)")
-#	if(tmp$type != "void"){
-#		header <- c(header, "\\value{")
-#	}
+	header <- c(header, "\\value{\n% TODO proper return definition of lists!!!)")
 
 	para.out <- grep("out", para$type)
 	if(length(para.out) > 0){
@@ -98,6 +96,16 @@ for(i in 1:length(functions)){
 			header <- c(header, paste("  \\item{", para$name[i], "}{", para$comment[i], "}", sep = ""))
 		}
 	}
+
+	if(tmp$type != "void"){
+		para.return <- grep("return", para$type)
+		if(length(para.return) > 0){
+			for(i in para.return){
+				header <- c(header, paste("  \\item{", para$name[i], "}{", para$name[i], "}", sep = ""))
+			}
+		}
+	}
+
 	# end value
 	header <- c(header, "}")
 
