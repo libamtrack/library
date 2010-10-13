@@ -63,7 +63,7 @@ for(i in 1:length(functions)){
 
 	header <- paste("% TODO File path/", tmp$name, ".Rd", sep = "")
 
-	header <- c(header, paste("\\name{LibAmTrack}", sep = ""))
+	header <- c(header, paste("\\name{", tmp$name, "}", sep = ""))
 
 	header <- c(header, paste("\\alias{", tmp$name, "}", sep = ""))
 
