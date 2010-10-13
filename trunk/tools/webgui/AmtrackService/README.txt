@@ -1,10 +1,16 @@
 SHORT VERSION:
 ==============
 
+REQUIREMENTS:
+
+- Local installation of Google Web Toolkit (GWT). IMPORTANT: You should use GWT SDK directly downloaded from Google's webpage instead of GWT from you distributions repository.
+- Installation of packages 'ant' and 'junit'
+
+
 1. Compile all wrappers (see README.txt file in system directory).
 
 2. Go to directory containing ant configuration (build.xml file)
-Adjust paths in  build.xml file (GWT installation and junit).
+Adjust paths in  build.xml file (GWT installation (1x) and junit (3x!)).
 
 Clean workspace by typing:
 
