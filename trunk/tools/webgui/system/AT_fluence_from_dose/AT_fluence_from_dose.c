@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 
 	fprintf(f , "fluence:");
 	for (i = 0; i < n; i++) {
-		fprintf(f, " %f", fluence_cm2[i]);
+		fprintf(f, " %g", fluence_cm2[i]);
 	}
 	fprintf(f, "\n");
 	fclose(f);
