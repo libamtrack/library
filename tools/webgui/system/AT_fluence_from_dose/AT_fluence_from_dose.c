@@ -99,18 +99,13 @@ int main(int argc, char *argv[]) {
 	    D_Gy,
 	    material_no,
 	    fluence_cm2);
-	char str[] = { "fluence_output:" };
-	for (i = 0; i < n; i++) {
-		char text[1024];
-		sprintf(text, " %f", fluence_cm2[i]);
-		strcat(str, text);
-	}
-	strcat(str, "\n");
-	fputs(str, f);
 
-	if (f) {
-		fclose(f);
+	fprintf(f , "fluence:");
+	for (i = 0; i < n; i++) {
+		fprintf(f, " %f", fluence_cm2[i]);
 	}
+	fprintf(f, "\n");
+	fclose(f);
 
 	return EXIT_SUCCESS;
 }

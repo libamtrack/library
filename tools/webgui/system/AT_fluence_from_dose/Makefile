@@ -53,7 +53,7 @@ all:AT_fluence_from_dose.o
 		$(GCC) -L$(GSLLIB) -L$(LIBDIR) AT_fluence_from_dose.o $(LFLAGS) -lamtrack -o AT_fluence_from_dose.exe
 
 static:AT_fluence_from_dose.c
-		$(GCC) -fno-stack-protector -I$(INCLDIR) -L$(GSLLIB) AT_fluence_from_dose.c $(LIBDIR)$(STATICLIB) $(LFLAGS) -o AT_fluence_from_dose.exe
+		$(GCC) -I$(INCLDIR) -L$(GSLLIB) AT_fluence_from_dose.c $(LIBDIR)$(STATICLIB) $(LFLAGS) -o AT_fluence_from_dose.exe
 
 clean:
 		- $(RMCMD) *.o
