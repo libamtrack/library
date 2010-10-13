@@ -19,6 +19,8 @@ public abstract class AmWidget {
 	public abstract String getValue();
 
 	public abstract void setValue(HashMap<String, String> valueMap);
+	
+	public abstract void setDefault();
 
 	public HTML getDescription() {
 		return description;

@@ -163,7 +163,9 @@ public class Calculation {
 	}
 
 	private void loadDefaults() {
-		// TODO CalculationControl.getInstance().loadDefaults(this);
+		for (AmWidget widget : inputWidgets) {
+			widget.setDefault();
+		}
 	}
 	
 	private void calculate() {

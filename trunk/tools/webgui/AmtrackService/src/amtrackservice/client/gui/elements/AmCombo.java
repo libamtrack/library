@@ -20,6 +20,7 @@ public class AmCombo extends AmWidget {
 		super(label, datatype, description);
 		this.entry = entry;
 		this.amCombo = new ListBox(false);
+		this.preset = preset;
 		for(String item : entry.getKeys()){
 			String value = entry.getValue(item);
 			amCombo.addItem(item, value);
@@ -47,6 +48,16 @@ public class AmCombo extends AmWidget {
 	@Override
 	public String getDataLink() {
 		return data;
+	}
+
+	@Override
+	public void setDefault() {
+		for( int index = 0; index < amCombo.getItemCount() ; index++){
+			String value = amCombo.getValue(index); 
+			if( value.equals(this.preset.getValues().get(0)) ){
+				amCombo.setSelectedIndex(index);
+			}			
+		}
 	}
 
 }

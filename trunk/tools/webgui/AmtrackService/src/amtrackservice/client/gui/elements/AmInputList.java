@@ -28,6 +28,11 @@ public class AmInputList extends AmWidget {
 		listbox = new ListBox();
 		textbox = new TextBox();
 		this.preset = preset;
+		
+		for (String s : preset.getKeys()) {
+			this.listbox.addItem(preset.getValue(s));
+		}
+		
 		data = dataX;
 		textbox.addKeyUpHandler(new KeyUpHandler() {
 
@@ -45,9 +50,6 @@ public class AmInputList extends AmWidget {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_DELETE) {
 					listbox.removeItem(listbox.getSelectedIndex());
 				}
-				// else if (event.getNativeKeyCode() == KeyCodes.KEY_UP) {
-				// listbox.
-				// }
 			}
 		});
 		listbox.setVisibleItemCount(5);
@@ -59,11 +61,6 @@ public class AmInputList extends AmWidget {
 
 	@Override
 	public String getValue() {
-		if (listbox.getItemCount() == 0) {
-			for (String s : preset.getKeys()) {
-				this.listbox.addItem(preset.getValue(s));
-			}
-		}
 		String s = "";
 		for (int i = 0; i < listbox.getItemCount(); i++) {
 			s += " " + listbox.getItemText(i);
@@ -91,6 +88,14 @@ public class AmInputList extends AmWidget {
 	@Override
 	public String getDataLink() {
 		return data;
+	}
+
+	@Override
+	public void setDefault() {
+		this.listbox.clear();
+		for (String s : this.preset.getKeys()) {
+			this.listbox.addItem(this.preset.getValue(s));
+		}
 	}
 
 }

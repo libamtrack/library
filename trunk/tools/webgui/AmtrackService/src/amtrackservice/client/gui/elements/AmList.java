@@ -20,6 +20,7 @@ public class AmList extends AmWidget  {
 		this.listbox = new ListBox();
 		listbox.setVisibleItemCount(5);
 		this.data = dataX;
+		this.preset = preset;
 	}
 
 	@Override
@@ -53,6 +54,14 @@ public class AmList extends AmWidget  {
 	@Override
 	public String getDataLink() {
 		return data;
+	}
+
+	@Override
+	public void setDefault() {
+		this.listbox.clear();
+		for (String s : this.preset.getKeys()) {
+			this.listbox.addItem(this.preset.getValue(s));
+		}
 	}
 
 }

@@ -36,7 +36,7 @@ public class MainView {
 		
 		menubar = new MenuBar();
 		menuNew = new MenuBar(true);
-		menubar.addItem("New", menuNew);
+		menubar.addItem("New calculation", menuNew);
 
 		tabPanel = new TabLayoutPanel(10, Unit.MM);
 		

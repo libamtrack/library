@@ -120,4 +120,10 @@ public class AmPlot extends AmWidget {
 
 	}
 
+	@Override
+	public void setDefault() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

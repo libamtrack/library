@@ -18,15 +18,14 @@ public class AmTextField extends AmWidget  {
 			MapList<String, String> preset, String dataX) {
 		super(label, datatype, description);
 		textbox = new TextBox();
+		textbox.setText(preset.getValues().get(0));
 		this.preset = preset;
 		this.data = dataX;
 	}
 
 	@Override
 	public String getValue() {
-		if (textbox.getText().equals("")){
-			textbox.setText(preset.getValues().get(0));
-		} return textbox.getValue();
+		return textbox.getValue();
 	}
 
 	@Override
@@ -43,6 +42,11 @@ public class AmTextField extends AmWidget  {
 	@Override
 	public String getDataLink() {
 		return data;
+	}
+
+	@Override
+	public void setDefault() {
+		this.textbox.setText(this.preset.getValues().get(0));	
 	}
 
 
