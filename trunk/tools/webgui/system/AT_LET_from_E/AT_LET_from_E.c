@@ -48,6 +48,11 @@ int main(int argc, char *argv[]) {
 	long particle_no[500];
 	long particle_no_single;
 
+	double E_start;
+	double E_end;
+	long n_points;
+	long x_axis_type;
+
 	FILE *f;
 	fflush(stdin);
 	f = fopen(path, "a+");
@@ -57,15 +62,25 @@ int main(int argc, char *argv[]) {
 	}
 
 	while (fgets(Text, sizeof(Text), f) != 0) {
-		if (strstr(Text, "E_input")) {
+		if (strstr(Text, "E_start")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
-			char* nToken;
-			nToken = strtok(token, " ");
-			do {
-				E_MeV_u[n] = atof(nToken);
-				n++;
-			} while ((nToken = strtok(NULL, " ")));
+			E_start = atof(token);
+		}
+		if (strstr(Text, "E_end")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			E_end = atof(token);
+		}
+		if (strstr(Text, "n_points")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			n_points = atol(token);
+		}
+		if (strstr(Text, "x_axis_type")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			x_axis_type = atol(token);
 		}
 		if (strstr(Text, "material_no")) {
 			strtok(Text, ":");
@@ -80,28 +95,41 @@ int main(int argc, char *argv[]) {
 	}
 
 	int i;
-	for( i = 0 ; i < n ; i++){
+	for( i = 0 ; i < n_points ; i++){
 		particle_no[i] = particle_no_single;
 	}
 
-	AT_LET_keV_um(  n,
+	if( x_axis_type == 2){
+		for (i = 0; i < n_points; i++) {
+			E_MeV_u[i] = E_start + (i/(double)(n_points-1)) * (E_end - E_start);
+		}
+	} else if( x_axis_type == 1){
+		for (i = 0; i < n_points; i++) {
+			double logE = log(E_start) + (i/(double)(n_points-1)) * (log(E_end) - log(E_start));
+			E_MeV_u[i] = exp(logE);
+		}
+	} else {
+		return EXIT_FAILURE;
+	}
+
+	AT_LET_keV_um(  n_points,
 	    E_MeV_u,
 	    particle_no,
 	    material_no,
 	    LET_keV_um);
 
-	char str[] = { "LET_output:" };
-	for (i = 0; i < n; i++) {
-		char text[1024];
-		sprintf(text, " %f", LET_keV_um[i]);
-		strcat(str, text);
+	fprintf(f , "E:");
+	for (i = 0; i < n_points; i++) {
+		fprintf(f, " %g", E_MeV_u[i]);
 	}
-	strcat(str, "\n");
-	fputs(str, f);
+	fprintf(f, "\n");
 
-	if (f) {
-		fclose(f);
+	fprintf(f , "LET:");
+	for (i = 0; i < n_points; i++) {
+		fprintf(f, " %g", LET_keV_um[i]);
 	}
+	fprintf(f, "\n");
+	fclose(f);
 
 	return EXIT_SUCCESS;
 }
