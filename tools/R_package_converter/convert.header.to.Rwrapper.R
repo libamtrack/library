@@ -34,7 +34,7 @@ write("# Automatically created wrapper file\n", file = "./package/R/wrapper.R")
 
 
 for(i in 1:length(functions)){
-	#i<-7
+	#i<-4
 	tmp <- functions[[i]]
 
 	##############################
@@ -85,9 +85,10 @@ for(i in 1:length(functions)){
 	pos.only.out <- pos.out[is.na(check)]
 	
 	if(length(pos.only.out) > 0){
+		# j <- 1
 		for(j in 1:(length(pos.only.out))){
 			header <- c(header, paste( "\t", para$name[pos.only.out[j]], 
-								" = numeric(", para$length[pos.only.out[j]],
+								" = numeric(", gsub("_", ".", para$length[pos.only.out[j]], fixed = T),
 								")", sep = ""))
 		}
 	}
