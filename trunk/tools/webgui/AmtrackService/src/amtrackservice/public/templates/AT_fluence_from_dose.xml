@@ -27,23 +27,32 @@
 			<entry>
 				<item key="Hydrogen" value="1001" />
 				<item key="Helium" value="2004" />
-				<item key="Lithium" value="1014" />
-				<item key="Beryllium" value="32044" />
+				<item key="Carbon" value="6012" />
+				<item key="Uranium" value="92238" />
 			</entry>
-			<description>particle code number[br]Default value is set to Hydrogen</description>
+			<description>particle[br]Default value is set to Hydrogen</description>
 			<preset>
 				<item value="1001" />
 			</preset>
 			<data x="particle_no" />
 		</element>
 
-		<element type="field" label="material" datatype="long">
+		<element type="combo" label="material" datatype="long">
 			<description>material code number</description>
+			<entry>
+				<item key="Liquid Water" value="1" />
+				<item key="Aluminum Oxide" value="2" />
+				<item key="Aluminum" value="3" />
+				<item key="PMMA" value="4" />
+				<item key="Alanine" value="5" />
+				<item key="LiF" value="6" />
+				<item key="Air" value="7" />
+			</entry>
 			<preset>
 				<item value="1" />
 			</preset>
 			<data x="material_no" />
-		</element>
+		</element>		
 	</input>
 
 	<output>
