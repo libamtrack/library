@@ -1,9 +1,9 @@
 /**
- * @brief AT_D_RDD_GY wrapper
+ * @brief AT_LET_from_E wrapper
  */
 
 /*
- *    AT_D_RDD_GY.c
+ *    AT_LET_from_E.c
  *    ===================
  *
  *    Created on: 2010-10-11
@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "AmTrack.h"
+#include "AT_DataLET.h"
 
 int main(int argc, char *argv[]) {
 	if (argc != 2) {
@@ -42,14 +42,11 @@ int main(int argc, char *argv[]) {
 	char Text[600];
 
 	long n = 0;
-	double r_m[500];
-	double E_MeV_u=0;
-	long particle_no=0;
-	long material_no=0;
-	long rdd_model=0;
-	long rn = 0;
-	double rdd_parameter[500];
-	long er_model=0;
+	double E_MeV_u[500];
+	double LET_keV_um[500];
+	long material_no;
+	long particle_no[500];
+	long particle_no_single;
 
 	FILE *f;
 	fflush(stdin);
@@ -60,40 +57,15 @@ int main(int argc, char *argv[]) {
 	}
 
 	while (fgets(Text, sizeof(Text), f) != 0) {
-		if (strstr(Text, "r_m_input")) {
+		if (strstr(Text, "E_input")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			char* nToken;
 			nToken = strtok(token, " ");
 			do {
-				r_m[n] = atof(nToken);
+				E_MeV_u[n] = atof(nToken);
 				n++;
 			} while ((nToken = strtok(NULL, " ")));
-		}
-		if (strstr(Text, "rdd_parameter")) {
-			strtok(Text, ":");
-			char* token = strtok(NULL, ":");
-			char* nToken;
-			nToken = strtok(token, " ");
-			do {
-				rdd_parameter[rn] = atof(nToken);
-				rn++;
-			} while ((nToken = strtok(NULL, " ")));
-		}
-		if (strstr(Text, "E_Mev_u")) {
-			strtok(Text, ":");
-			char* token = strtok(NULL, ":");
-			E_MeV_u = atof(token);
-		}
-		if (strstr(Text, "er_model")) {
-			strtok(Text, ":");
-			char* token = strtok(NULL, ":");
-			er_model = atol(token);
-		}
-		if (strstr(Text, "rdd_model")) {
-			strtok(Text, ":");
-			char* token = strtok(NULL, ":");
-			rdd_model = atol(token);
 		}
 		if (strstr(Text, "material_no")) {
 			strtok(Text, ":");
@@ -103,18 +75,25 @@ int main(int argc, char *argv[]) {
 		if (strstr(Text, "particle_no")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
-			particle_no = atol(token);
+			particle_no_single = atol(token);
 		}
 	}
 
-	double D_RDD_Gy[500];
-
-	AT_D_RDD_Gy(n, r_m, E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, D_RDD_Gy);
-	char str[] = { "D_RDD_Gy:" };
 	int i;
+	for( i = 0 ; i < n ; i++){
+		particle_no[i] = particle_no_single;
+	}
+
+	AT_LET_keV_um(  n,
+	    E_MeV_u,
+	    particle_no,
+	    material_no,
+	    LET_keV_um);
+
+	char str[] = { "LET_output:" };
 	for (i = 0; i < n; i++) {
 		char text[1024];
-		sprintf(text, " %f", D_RDD_Gy[i]);
+		sprintf(text, " %f", LET_keV_um[i]);
 		strcat(str, text);
 	}
 	strcat(str, "\n");
