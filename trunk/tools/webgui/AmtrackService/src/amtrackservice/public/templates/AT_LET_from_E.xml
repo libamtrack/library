@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root name="LET from E" wrapper="AT_LET_from_E.exe">
+	<description>
+		[b]Returns LET as a function of E[/b]
+	</description>
+	<input>
+		<element type="inputlist" label="E [MeV/amu]" datatype="double">
+			<description>E</description>
+			<preset>
+				<item value="0.1" />
+				<item value="1" />
+				<item value="10" />
+				<item value="100" />
+				<item value="400" />
+			</preset>
+			<data x="E_input" />
+		</element>
+		
+		<element type="combo" label="particle" datatype="long">
+			<entry>
+				<item key="Hydrogen" value="1001" />
+				<item key="Helium" value="2004" />
+				<item key="Lithium" value="1014" />
+				<item key="Beryllium" value="32044" />
+			</entry>
+			<description>particle code number[br]Default value is set to Hydrogen</description>
+			<preset>
+				<item value="1001" />
+			</preset>
+			<data x="particle_no" />
+		</element>
+
+		<element type="field" label="material" datatype="long">
+			<description>material code number</description>
+			<preset>
+				<item value="1" />
+			</preset>
+			<data x="material_no" />
+		</element>		
+	</input>
+
+	<output>
+		<element type="plot" label="LET [keV/um]" datatype="double">
+			<description>LET [keV/um]</description>
+			<data x= "E_input" y="LET_output" />
+		</element>
+	</output>
+</root>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root name="fluence from dose" wrapper="AT_fluence_from_dose.exe">
+	<description>
+		[b]Returns fluence as a function of dose[b]
+	</description>
+	<input>
+		<element type="inputlist" label="dose input" datatype="double">
+			<description>dose (array of size n)</description>
+			<preset>
+				<item value="0.1" />
+				<item value="1" />
+				<item value="5" />
+				<item value="10" />
+			</preset>
+			<data x="dose_input" />
+		</element>
+		
+		<element type="combo" label="particle" datatype="long">
+			<entry>
+				<item key="Hydrogen" value="1001" />
+				<item key="Helium" value="2004" />
+				<item key="Lithium" value="1014" />
+				<item key="Beryllium" value="32044" />
+			</entry>
+			<description>particle code number[br]Default value is set to Hydrogen</description>
+			<preset>
+				<item value="1001" />
+			</preset>
+			<data x="particle_no" />
+		</element>
+
+		<element type="field" label="material" datatype="long">
+			<description>material code number</description>
+			<preset>
+				<item value="1" />
+			</preset>
+			<data x="material_no" />
+		</element>
+	</input>
+
+	<output>
+		<element type="list" label="fluence [1/cm2]" datatype="double">
+			<description>fluence [1/cm2]</description>
+			<data x="dose_input" y="fluence_output" />
+		</element>
+	</output>
+</root>
