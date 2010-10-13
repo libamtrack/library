@@ -1,26 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root name="E from beta" wrapper="AT_E_from_beta.exe">
 	<description>
-		[b]Returns E as a function of beta[/b]		
+		[b]Returns particle energy as a function of beta[/b]		
 	</description>
 	<input>
-		<element type="inputlist" label="beta" datatype="double">
-			<description>beta</description>
+		<element type="field" label="beta left limit" datatype="double">
+			<description>beta left limit</description>
 			<preset>
 				<item value="0.1" />
-				<item value="0.2" />
-				<item value="0.3" />
-				<item value="0.6" />
+			</preset>
+			<data x="beta_start" />
+		</element>
+		<element type="field" label="beta right limit" datatype="double">
+			<description>beta right limit</description>
+			<preset>
 				<item value="0.9" />
 			</preset>
-			<data x="beta_input" />
+			<data x="beta_end" />
+		</element>
+		<element type="field" label="number of points" datatype="long">
+			<description>number of points</description>
+			<preset>
+				<item value="30" />
+			</preset>
+			<data x="n_points" />
+		</element>
+		<element type="combo" label="X axis spacing" datatype="long">
+			<entry>
+				<item key="Logarithmic" value="1" />
+				<item key="Linear" value="2" />
+			</entry>
+			<description>X axis spacing</description>
+			<preset>
+				<item value="1" />
+			</preset>
+			<data x="x_axis_type" />
 		</element>
 	</input>
 
 	<output>
 		<element type="plot" label="particle energy" datatype="double">
 			<description>Energy [MeV/u]</description>
-			<data x= "beta_input" y="E_output" />
+			<data x="beta" y="E" />
 		</element>
 	</output>
 </root>

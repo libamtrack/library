@@ -15,6 +15,14 @@
 			<data x="dose_input" />
 		</element>
 		
+		<element type="field" label="E [MeV/u]" datatype="double">
+			<description>E [MeV/u]</description>
+			<preset>
+				<item value="60" />
+			</preset>
+			<data x="E_MeV_u" />
+		</element>
+		
 		<element type="combo" label="particle" datatype="long">
 			<entry>
 				<item key="Hydrogen" value="1001" />
