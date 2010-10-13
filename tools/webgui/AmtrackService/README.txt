@@ -16,15 +16,21 @@ Clean workspace by typing:
 
 ant clean
 
-3. Compile project:
+2. Locate file with configuration of XML templates and path to wrapper.
+It should be in src/amtrackservice/public/config.xml
+
+Adjust path to directory containing wrapper file (on shield machine this should
+be "/home/libamtrack/tmp/system/" - remember about backslash at the end).
+
+
+4. Compile project:
 
 and build
 
 New files should appear in war directory.
 
 
-
-4. Login to the server where jetty is running:
+5. Login to the server where jetty is running:
 
 ssh USERNAME@shield
 
