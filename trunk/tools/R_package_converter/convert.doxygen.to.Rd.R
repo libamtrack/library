@@ -41,7 +41,7 @@ for(i in 1:length(functions)){
 	tmp$parameter.comment$name <- gsub("[]", "", tmp$parameter.comment$name, fixed = T)
 
 	# paste all input parameters together
-	ii <- which(grepl("in", tmp$parameter.comment$type) & tmp$parameter.comment$name != "n")
+	ii <- which(grepl("in", tmp$parameter.comment$type)) # SG commented out: & tmp$parameter.comment$name != "n")
 	parameter.list <- character(0)
 	if(length(ii) > 0){ 
 		if(length(ii) > 1){ 
@@ -88,7 +88,9 @@ for(i in 1:length(functions)){
 
 	# start value
 	header <- c(header, "% TODO proper return definition of lists!!!)")
-	header <- c(header, "\\value{")
+#	if(tmp$type != "void"){
+#		header <- c(header, "\\value{")
+#	}
 
 	para.out <- grep("out", para$type)
 	if(length(para.out) > 0){
