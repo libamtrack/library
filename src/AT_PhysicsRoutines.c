@@ -280,22 +280,10 @@ void AT_fluence_cm2(  const long  n,
     const long    material_no,
     double        fluence_cm2[])
 {
-  // Get LET (write already into fluence_cm2)
-  AT_LET_MeV_cm2_g(n,
-      E_MeV_u,
-      particle_no,
-      material_no,
-      fluence_cm2);
-  // Divide by dose, convert from Gy to MeV/g
-  long  i;
+  long i;
   for (i = 0; i < n; i++){
-    fluence_cm2[i]     =    (D_Gy[i] / MeV_g_to_J_kg) / fluence_cm2[i];
+    fluence_cm2[i] =  AT_fluence_cm2_from_dose_Gy_single(  E_MeV_u[i], particle_no[i], D_Gy[i], material_no );
   }
-
-  // TODO can't it be replaced by following code:
-  //for (i = 0; i < n; i++){
-  //  fluence_cm2[i] =  AT_fluence_cm2_from_dose_Gy_single(  E_MeV_u[i], particle_no[i], D_Gy[i], AT_material_no );
-  //}
 }
 
 
