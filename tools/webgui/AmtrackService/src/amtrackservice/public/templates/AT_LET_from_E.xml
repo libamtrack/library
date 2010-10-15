@@ -5,14 +5,14 @@
 	</description>
 	<input>
 		<element type="field" label="E left limit [MeV/amu]" datatype="double">
-			<description>E [MeV/amu] left limit</description>
+			<description>E [MeV/amu] minimum</description>
 			<preset>
 				<item value="0.01" />
 			</preset>
 			<data x="E_start" />
 		</element>
 		<element type="field" label="E right limit [MeV/amu]" datatype="double">
-			<description>E [MeV/amu] right limit</description>
+			<description>E [MeV/amu] maximum</description>
 			<preset>
 				<item value="1" />
 			</preset>
@@ -52,7 +52,7 @@
 		</element>
 
 		<element type="combo" label="material" datatype="long">
-			<description>material code number</description>
+			<description>material</description>
 			<entry>
 				<item key="Liquid Water" value="1" />
 				<item key="Aluminum Oxide" value="2" />
