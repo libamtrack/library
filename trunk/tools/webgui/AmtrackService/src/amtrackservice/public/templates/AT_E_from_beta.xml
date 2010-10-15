@@ -5,14 +5,14 @@
 	</description>
 	<input>
 		<element type="field" label="beta left limit" datatype="double">
-			<description>beta left limit</description>
+			<description>beta minimum</description>
 			<preset>
 				<item value="0.1" />
 			</preset>
 			<data x="beta_start" />
 		</element>
 		<element type="field" label="beta right limit" datatype="double">
-			<description>beta right limit</description>
+			<description>beta maximum</description>
 			<preset>
 				<item value="0.9" />
 			</preset>
