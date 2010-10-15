@@ -96,7 +96,7 @@ public class Calculation {
 		VerticalPanel head = new VerticalPanel();
 		Grid input = new Grid(inputWidgets.size() + 1, 2);
 		Grid output = new Grid(outputWidgets.size() + 1, 2);
-		StackLayoutPanel descriptions = new StackLayoutPanel(Unit.MM);
+		//StackLayoutPanel descriptions = new StackLayoutPanel(Unit.MM);
 		Button defaults = new Button("load defaults");
 		defaults.addClickHandler(new ClickHandler() {
 			@Override
@@ -119,6 +119,7 @@ public class Calculation {
 				calculate();
 			}
 		});
+	
 
 		buttons.add(defaults);
 		buttons.add(calculate);
@@ -132,7 +133,7 @@ public class Calculation {
 		forms.add(output);
 		scroll.add(forms);
 
-		panel.addWest(descriptions, 40);
+		//panel.addWest(descriptions, 40);
 		panel.addNorth(head, 30);
 		panel.add(scroll);
 
@@ -144,8 +145,8 @@ public class Calculation {
 			input.setWidget(inputRow, 0, new HTML("<p align=\"right\">"
 					+ widget.getLabel().getText() + "</p>"));
 			input.setWidget(inputRow, 1, widget.getWidget());
-			descriptions.add(widget.getDescription(), widget.getLabel()
-					.getText(), 10);
+			//descriptions.add(widget.getDescription(), widget.getLabel()
+			//		.getText(), 10);
 			inputRow++;
 		}
 
@@ -154,8 +155,8 @@ public class Calculation {
 			output.setWidget(outputRow, 0, new HTML("<p align=\"right\">"
 					+ widget.getLabel().getText() + "</p>"));
 			output.setWidget(outputRow, 1, widget.getWidget());
-			descriptions.add(widget.getDescription(), widget.getLabel()
-					.getText(), 10);
+			//descriptions.add(widget.getDescription(), widget.getLabel()
+			//		.getText(), 10);
 			outputRow++;
 		}
 

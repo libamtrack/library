@@ -10,11 +10,13 @@ import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+
 /**
  * 
- * This Represents the GUI of <code>LibService</code>
+ * This Represents the GUI 
  * @author Christoph Kolb, 2010 Hochschule Heilbronn
  */
 public class MainView {
@@ -37,6 +39,8 @@ public class MainView {
 		menubar = new MenuBar();
 		menuNew = new MenuBar(true);
 		menubar.addItem("New calculation", menuNew);
+		menubar.addSeparator();
+		menubar.addItem("Close current calculation", new CalculationClose());
 
 		tabPanel = new TabLayoutPanel(10, Unit.MM);
 		
@@ -61,6 +65,7 @@ public class MainView {
 	 */
 	public void addTabPanel(Widget input, String name){
 		tabPanel.add(input,name);
+		tabPanel.selectTab(input);		
 	}
 	
 	/**
@@ -83,6 +88,16 @@ public class MainView {
 		public void execute() {
 			service.openCalculation(method);
 			
+		}
+		
+	}
+	
+	private class CalculationClose implements Command{
+		
+		@Override
+		public void execute() {
+			int index = tabPanel.getSelectedIndex();
+			tabPanel.remove(index);
 		}
 		
 	}
