@@ -4,7 +4,7 @@ Date: 2010-10-03
 Title: libamtrack package
 Author: Felix Klein <f.klein@dkfz.de>. 
 Maintainer: Felix Klein <f.klein@dkfz.de> 
-Depends: R (>= 2.10.1)
+Depends: R (>= 2.7.1)
 Description: libamtrack is a test package,
   that provides two functions and automatically created R wrapper
 License: GPL (version 3 or later)
