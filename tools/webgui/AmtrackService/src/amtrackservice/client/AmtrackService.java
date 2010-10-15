@@ -15,6 +15,8 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.PieChart;
 import com.google.gwt.xml.client.impl.DOMParseException;
 
 /**
@@ -39,6 +41,11 @@ public class AmtrackService implements EntryPoint {
 		gui = new MainView(this);
 		initConfig();
 		Logger.info("Service ready...");
+
+//		Runnable onLoadCallback = new Runnable() {
+//			public void run() {}
+//		};
+//		VisualizationUtils.loadVisualizationApi(onLoadCallback, PieChart.PACKAGE);
 	}
 
 	/**
