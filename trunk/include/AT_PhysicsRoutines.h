@@ -502,7 +502,7 @@ void AT_single_impact_dose_Gy( const long n,
  * @see          AT_DataMaterial.h for definition
  * @return     total_dose_Gy  result
   */
-double  AT_total_D_Gy( const long  n,
+double AT_total_D_Gy( const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
