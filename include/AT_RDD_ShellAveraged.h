@@ -83,7 +83,7 @@
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] average radial dose distribution between r1 and r2
  */
-inline double   AT_RDD_Katz_LinearER_Daverage_Gy(  const double r1_m,
+inline double AT_RDD_Katz_LinearER_Daverage_Gy(  const double r1_m,
     const double r2_m,
     const double max_electron_range_m,
     const double Katz_point_coeff_Gy);
@@ -116,7 +116,7 @@ inline double   AT_RDD_Katz_LinearER_Daverage_Gy(  const double r1_m,
  * @param[in] alpha                  parameter of ER model
  * @return                           calculated kernel
  */
-double   AT_RDD_Katz_PowerLawER_DaverageKernel(  const double x1,
+double AT_RDD_Katz_PowerLawER_DaverageKernel(  const double x1,
     const double x2,
     const double alpha);
 
@@ -150,7 +150,7 @@ double   AT_RDD_Katz_PowerLawER_DaverageKernel(  const double x1,
  * @param[in] alpha                  parameter of ER model
  * @return kernel                    calculated kernel
  */
-double   AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const double x1,
+double AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const double x1,
     const double x2,
     const double alpha);
 
@@ -182,7 +182,7 @@ double   AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const double x1,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] average radial dose distribution between r1 and r2
  */
-double   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const double r1_m,
+double AT_RDD_Katz_PowerLawER_Daverage_Gy(  const double r1_m,
     const double r2_m,
     const double max_electron_range_m,
     const double alpha,
@@ -235,7 +235,7 @@ double AT_RDD_Cucinotta_Ddelta_average_integrand_m(  double r_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] average radial dose distribution between r1 and r2
  */
-double  AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
+double AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
     const double r2_m,
     const double max_electron_range_m,
     const double beta,
@@ -274,7 +274,7 @@ double  AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] average radial dose distribution between r1 and r2
  */
-double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
+double AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
     const double r2_m,
     const double max_electron_range_m,
     const double beta,
@@ -313,7 +313,7 @@ double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return C norm
  */
-double   AT_RDD_Cucinotta_Cnorm( const double r_min_m,
+double AT_RDD_Cucinotta_Cnorm( const double r_min_m,
     const double max_electron_range_m,
     const double beta,
     const double material_density_kg_m3,
@@ -330,7 +330,7 @@ double   AT_RDD_Cucinotta_Cnorm( const double r_min_m,
  * @param norm_Gy
  * @return
  */
-double   AT_RDD_Geiss_average_Gy(  const double r1_m,
+double AT_RDD_Geiss_average_Gy(  const double r1_m,
     const double r2_m,
     const double a0_m,
     const double max_electron_range_m,
@@ -356,7 +356,7 @@ double   AT_RDD_Geiss_average_Gy(  const double r1_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return dEdx [J/m] energy delivered to shell between radius a_0 and r_max
  */
-double   AT_RDD_Katz_LinearER_dEdx_J_m(  const double a0_m,
+double AT_RDD_Katz_LinearER_dEdx_J_m(  const double a0_m,
     const double max_electron_range_m,
     const double material_density_kg_m3,
     const double Katz_point_coeff_Gy);
@@ -380,7 +380,7 @@ double   AT_RDD_Katz_LinearER_dEdx_J_m(  const double a0_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return dEdx [J/m] energy delivered to shell between radius a_0 and r_max
  */
-double   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const double a0_m,
+double AT_RDD_Katz_PowerLawER_dEdx_J_m(  const double a0_m,
     const double max_electron_range_m,
     const double material_density_kg_m3,
     const double alpha,
@@ -406,7 +406,7 @@ double   AT_RDD_Katz_PowerLawER_dEdx_J_m(  const double a0_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return dEdx [J/m] energy delivered to shell between radius a_0 and r_max
  */
-double   AT_RDD_Katz_LinearER_DSite_Gy( const double r_m,
+double AT_RDD_Katz_LinearER_DSite_Gy( const double r_m,
     const double a0_m,
     const double max_electron_range_m,
     const double material_density_kg_m3,
@@ -432,7 +432,7 @@ double   AT_RDD_Katz_LinearER_DSite_Gy( const double r_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return dEdx [J/m] energy delivered to shell between radius a_0 and r_max
  */
-double   AT_RDD_Katz_PowerLawER_DSite_Gy( const double r_m,
+double AT_RDD_Katz_PowerLawER_DSite_Gy( const double r_m,
     const double a0_m,
     const double max_electron_range_m,
     const double material_density_kg_m3,
@@ -455,7 +455,7 @@ double   AT_RDD_Katz_PowerLawER_DSite_Gy( const double r_m,
  * @param Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return
  */
-inline double  AT_RDD_KatzSite_Gy( const double r_m,
+inline double AT_RDD_KatzSite_Gy( const double r_m,
     const double r_min_m,
     const double max_electron_range_m,
     const double a0_m,
@@ -479,7 +479,7 @@ inline double  AT_RDD_KatzSite_Gy( const double r_m,
  * @param Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return
  */
-double  AT_inverse_RDD_KatzSite_m( const double D_Gy,
+double AT_inverse_RDD_KatzSite_m( const double D_Gy,
     const double r_min_m,
     const double max_electron_range_m,
     const double a0_m,
