@@ -56,9 +56,16 @@ functions <- NULL
 processed.functions <- NULL
 function.no <- 1
 
+# replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
+grep.bool	<-	function(pattern, x, ...){
+	results	<-	grep(pattern, x, ...)
+	indices	<-	1:length(x)
+	bool.res	<-	is.element(indices, results)
+}
 
 for(file in record){
-# file <- record[8]
+	# file <- record[1]
+	
 	# read the complete *.h file
 	include <- scan(file, what = "character", strip.white = T)
 	print(paste("Read: ", file))
@@ -262,8 +269,10 @@ for(file in record){
 		current.function$parameter <- parameter
 
 		# add input output information from doxygen file 
-		pos.in <- grepl("in", current.function$parameter.comment$type) 
-		pos.out <- grepl("out", current.function$parameter.comment$type) 
+#		pos.in <- grepl(pattern = "in", x = current.function$parameter.comment$type) 
+#		pos.out <- grepl(pattern = "out", x = current.function$parameter.comment$type) 
+		pos.in <- grep.bool(pattern = "in", x = current.function$parameter.comment$type) 
+		pos.out <- grep.bool(pattern = "out", x = current.function$parameter.comment$type) 
 
 
 		# get the position of the parameters from the position in the comments

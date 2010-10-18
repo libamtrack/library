@@ -33,6 +33,13 @@ write("// Automatically created header file\n\n#include \"AmTrack.h\"\n#include 
 
 write("// Automatically created header and body file\n\n#include \"Rwrapper.h\"\n", file = "./package/src/Rwrapper.c")
 
+# replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
+grep.bool	<-	function(pattern, x, ...){
+	results	<-	grep(pattern, x, ...)
+	indices	<-	1:length(x)
+	bool.res	<-	is.element(indices, results)
+}
+
 for(i in 1:length(functions)){
 	# i <- 7
 	tmp <- functions[[i]]
@@ -72,7 +79,7 @@ for(i in 1:length(functions)){
 	# conversion and allocation of input parameters
 	para <- functions[[i]]$parameter
 
-	input <- grepl("in", para$in.out)
+	input <- grep.bool(pattern = "in", x = para$in.out)
 	vector <- (para$length != 1)
 
 	# create count variable i, if sum(vector) > 0
@@ -165,7 +172,7 @@ for(i in 1:length(functions)){
 	body <- c(body, paste("\t", para$name[para.max], get.extension(para$type[para.max]), ");", sep = ""))
 
 
-	output <- grepl("out", para$in.out) 
+	output <- grep.bool(pattern = "out", x = para$in.out) 
 
 	body <- c(body, paste("\n//Results:"))
 	if(tmp$type != "void"){

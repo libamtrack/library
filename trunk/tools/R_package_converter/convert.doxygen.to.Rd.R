@@ -30,6 +30,13 @@ source("type.conversion.R")
 
 load("functions.ssd")
 
+# replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
+grep.bool	<-	function(pattern, x, ...){
+	results	<-	grep(pattern, x, ...)
+	indices	<-	1:length(x)
+	bool.res	<-	is.element(indices, results)
+}
+
 for(i in 1:length(functions)){
 	# i <- 8
 	tmp <- functions[[i]]
@@ -42,7 +49,7 @@ for(i in 1:length(functions)){
 	tmp$parameter.comment$name <- gsub("[]", "", tmp$parameter.comment$name, fixed = T)
 
 	# paste all input parameters together
-	ii <- which(grepl("in", tmp$parameter.comment$type)) # SG commented out: & tmp$parameter.comment$name != "n")
+	ii <- which(grep.bool(pattern = "in", x = tmp$parameter.comment$type)) # SG commented out: & tmp$parameter.comment$name != "n")
 	parameter.list <- character(0)
 	if(length(ii) > 0){ 
 		if(length(ii) > 1){ 
@@ -78,7 +85,7 @@ for(i in 1:length(functions)){
 	header <- c(header, "\\arguments{")
 
 	para <- tmp$parameter.comment
-	para.in <- which(grepl("in", para$type)) # SG commented out: & para$name != "n")
+	para.in <- which(grep.bool(pattern = "in", x = para$type)) # SG commented out: & para$name != "n")
 	if(length(para.in) > 0){
 		for(i in para.in){
 			header <- c(header, paste("  \\item{", para$name[i], "}{", para$comment[i], "}", sep = ""))
