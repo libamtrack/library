@@ -3,11 +3,7 @@
  print("This is libamtrack 0.2 (2010-10-18).")
 }
 
-.Last.lib <- function(lib, pkg){
- library.dynam.unload("libamtrack", pkg, lib)
- pos <- match("package:lattice", search())
- if(! is.na(pos)){
-  detach(pos = pos)
- }
+.Last.lib <- function(libpath){
+ try(library.dynam.unload("libamtrack", libpath))
 }
 
