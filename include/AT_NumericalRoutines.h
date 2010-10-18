@@ -149,7 +149,7 @@ int vvla_(  double *va, double *x, double *pv);
  * @param b
  * @return
  */
-inline double  d_sign( const double a, const double b);
+inline double d_sign( const double a, const double b);
 
 
 /**

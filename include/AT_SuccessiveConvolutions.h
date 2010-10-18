@@ -51,7 +51,7 @@
  * @param[in]  N2                  number of bins per factor of two in local dose array
  * @return number of bins to hold the f1 distribution
  */
-long  AT_n_bins_for_singe_impact_local_dose_distrib(
+long AT_n_bins_for_singe_impact_local_dose_distrib(
     const long   n,
     const double E_MeV_u[],
     const long   particle_no[],
@@ -80,7 +80,7 @@ long  AT_n_bins_for_singe_impact_local_dose_distrib(
  * @param[out] f1_dd_Gy              bin widths for f1, array of size n_bins_f1
  * @param[out] f1                    f1 values, array of size n_bins_f1
  */
-void  AT_single_impact_local_dose_distrib(
+void AT_single_impact_local_dose_distrib(
     const long   n,
     const double E_MeV_u[],
     const long   particle_no[],
@@ -137,7 +137,7 @@ void AT_n_bins_for_low_fluence_local_dose_distribution(  const double   u,
  * @param[out] f_dd_Gy             bin widths for f, array of size n_bins_f
  * @param[out] f_start             f values to start with, array of size n_bins_f
  */
-void  AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
+void AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
     const long    N2,
     const double  f1_d_Gy[],
     const double  f1_dd_Gy[],
@@ -171,7 +171,7 @@ void  AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
  * @param[in]      shrink_tails_under  cut threshold for tails
  * @param[in]      adjust_N2           if true, N2 (i.e. the bin density) can be adjusted. This can be necessary esp. for high doses / fluences where f gets very narrow
  */
-void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_contrib,
+void AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_contrib,
 		const long    array_size,
 		long*         N2,
 		long*         n_bins_f_used,
