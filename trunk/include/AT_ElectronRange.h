@@ -84,7 +84,7 @@ static const AT_ER_data_struct AT_ER_Data = {
  * @param[out]  ER_name  string containing the electron-range model name
  * @return      Status code
  */
-int  getERName(  const int ER_no,
+int getERName(  const int ER_no,
     char* ER_name);
 
 
