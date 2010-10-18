@@ -4,7 +4,7 @@ R package creator for libamtrack
 Created 2010/10/13 by F. Klein
 
 REQUIREMENTS:
-- R (>2.10.1) has to be installed
+- R has to be installed. We recommend the latest version. Compiling on (>2.10.1) was successful. 
 - Under Windows make sure that your R installation is included in the PATH environment variable.
 - Also under Windows, some additional tools have to be installed. They are collected and provided here: http://www.murdoch-sutherland.com/Rtools/
 - Again under Windows, check if the required paths have been added to your PATH variable.
@@ -12,6 +12,7 @@ REQUIREMENTS:
 
 More general information on the creation of R package can be found here: http://cran.r-project.org/doc/manuals/R-exts.pdf
 A very helpful description on how to deal with R package creation under Windows has been provided by P. Rossi:  http://gsbwww.uchicago.edu/fac/peter.rossi/research/bayes%20book/bayesm/Making%20R%20Packages%20Under%20Windows.pdf)
+Please note that the R command are case-sensitive, also under Windows!
 
 USAGE:
 1. Download the latest version of libamtrack from https://libamtrack.sourceforge.net/svnroot/libamtrack/trunk. At least the folders "/include", "/src" 
@@ -39,3 +40,5 @@ a file "wrapper.R" under "/tools/R_package_converter/package/R".
 10. Run the command "R CMD check package" to check for possible errors
 
 11. If all errors are fixed, use "R CMD build package" to build package
+
+12. After built you can install the package using "R CMD INSTALL package".

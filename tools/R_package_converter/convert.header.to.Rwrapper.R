@@ -23,7 +23,6 @@
 # If not, see <http://www.gnu.org/licenses/>
 ################################################################################################
 
-
 rm(list = ls())
 
 source("type.conversion.R")
@@ -32,6 +31,12 @@ load("functions.ssd")
 
 write("# Automatically created wrapper file\n", file = "./package/R/wrapper.R")
 
+# replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
+grep.bool	<-	function(pattern, x, ...){
+	results	<-	grep(pattern, x, ...)
+	indices	<-	1:length(x)
+	bool.res	<-	is.element(indices, results)
+}
 
 for(i in 1:length(functions)){
 	#i<-4
@@ -43,7 +48,7 @@ for(i in 1:length(functions)){
 	para <- tmp$parameter
 
 	# create header out of the para[in] parameter without length n (works every where???)
-	const <- grepl("in", tmp$parameter.comment$type) 
+	const <- grep.bool(pattern = "in", x = tmp$parameter.comment$type) 
 	pos.in <- which(const) # SG: & tmp$parameter.comment$name != "n")
 	# get the position of the parameters from the position in the comments
 	pos.in <- match(tmp$parameter.comment$name[pos.in], para$name)
