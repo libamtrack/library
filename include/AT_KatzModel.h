@@ -271,21 +271,21 @@ double AT_KatzModel_single_field_survival(
 /**
  * TODO
  */
-double         AT_P_RDD(                    double  r_m,
+double AT_P_RDD(                    double  r_m,
     void* params);
 
 
 /**
  * TODO
  */
-double         AT_sI_int(                   double  r_m,
+double AT_sI_int(                   double  r_m,
     void* params);
 
 
 /**
  * TODO
  */
-double         AT_D_RDD_Gy_int(             double  r_m,
+double AT_D_RDD_Gy_int(             double  r_m,
     void* params);
 
 
