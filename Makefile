@@ -9,13 +9,13 @@
 #  OS        = Linux (or)
 #  OS        = Windows
 #  OS        = Mac
-OS        = Mac
+OS        = Linux
 ## Please set the correct path to your GSL installation here:
 #  most likely:
 #  GSLPATH   = /usr (Linux)
 #  GSLPATH   = /usr/local (Mac)
 #  GSLPATH   = C:\Program Files\GnuWin32 (Windows)
-GSLPATH   = /usr/local
+GSLPATH   = /usr
 ## Under Windows please specify the path to your MinGW installation
 #  leave empty under Linux/Mac: MINGWPATH = 
 #  for Windows most likely:
