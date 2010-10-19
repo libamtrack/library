@@ -84,7 +84,7 @@ static const AT_ER_data_struct AT_ER_Data = {
  * @param[out]  ER_name  string containing the electron-range model name
  * @return      Status code
  */
-int getERName(  const int ER_no,
+int getERName( const int ER_no,
     char* ER_name);
 
 
@@ -93,7 +93,7 @@ int getERName(  const int ER_no,
  * @param wmax_keV
  * @return
  */
- double AT_ER_ButtsKatz_range_g_cm2(double wmax_keV);
+double AT_ER_ButtsKatz_range_g_cm2( double wmax_keV);
 
 
 /**
@@ -101,7 +101,7 @@ int getERName(  const int ER_no,
  * @param wmax_keV
  * @return
  */
- double AT_ER_Waligorski_range_g_cm2(double wmax_keV);
+double AT_ER_Waligorski_range_g_cm2( double wmax_keV);
 
 
 /**
@@ -109,7 +109,7 @@ int getERName(  const int ER_no,
  * @param wmax_keV
  * @return
  */
- double AT_ER_Edmund_range_g_cm2(double wmax_keV);
+double AT_ER_Edmund_range_g_cm2( double wmax_keV);
 
 
 /**
@@ -117,7 +117,7 @@ int getERName(  const int ER_no,
  * @param E_MeV_u
  * @return
  */
- double AT_ER_Geiss_range_g_cm2(double E_MeV_u);
+double AT_ER_Geiss_range_g_cm2( double E_MeV_u);
 
 
 /**
@@ -125,7 +125,7 @@ int getERName(  const int ER_no,
  * @param E_MeV_u
  * @return
  */
- double AT_ER_Scholz_range_g_cm2(double E_MeV_u);
+double AT_ER_Scholz_range_g_cm2( double E_MeV_u);
 
 
 /**
@@ -140,7 +140,7 @@ int getERName(  const int ER_no,
  * @param a5
  * @return
  */
- double AT_ER_Tabata_range_g_cm2(double beta,
+double AT_ER_Tabata_range_g_cm2( double beta,
     double a1_g_cm2,
     double a2,
     double a3,
@@ -149,13 +149,14 @@ int getERName(  const int ER_no,
 
 
 /**
- * Alpha exponent in power law ER models. It is defined as follows:\n
+ * Alpha exponent in power law ER models. It is defined as follows:
  * alpha = 1.667   when energy of ejected delta electron wmax is higher than 1keV
  * alpha = 1.079   when energy of ejected delta electron wmax is less or equal than 1keV
- * @param E_MeV_u
+ *
+ * @param E_MeV_u  kinetic energy for particle [in MeV/u]
  * @return
  */
- double AT_ER_PowerLaw_alpha( const double E_MeV_u);
+double AT_ER_PowerLaw_alpha( const double E_MeV_u);
 
 
 /**
@@ -168,7 +169,7 @@ int getERName(  const int ER_no,
  * @param a4
  * @param a5
  */
- void AT_ER_Tabata_constants(const double average_A,
+void AT_ER_Tabata_constants( const double average_A,
     const double average_Z,
     double * a1_g_cm2,
     double * a2,
