@@ -1,2 +1,2 @@
-PKG_CFLAGS=-I../../../../include -std=gnu89
+PKG_CFLAGS=-I../../../../include
 PKG_LIBS=-L../../../../lib -lamtrack -lgsl -lgslcblas
