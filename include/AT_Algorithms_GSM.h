@@ -117,8 +117,14 @@ void AT_GSM_calculate_dose_pattern( const long  number_of_field_components,
 
 
 /**
- * Computes histogram
- * TODO - to be tested
+ * Computes histogram from given grid
+ *
+ * @param[in]   nX                 number of cells on one grid side
+ * @param[in]   number_of_bins     number of bins for resulting histogram
+ * @param[in]   bin_centers_Gy     midpoints of bins for resulting histogram
+ * @param[out]  zero_fraction      zero bin content - frequency of value zero
+ * @param[out]  frequency          frequency vector for resulting histogram
+ * @length number_of_bins
  */
 void AT_GSM_calculate_histogram_from_grid( const long     nX,
     const double** grid,
@@ -129,8 +135,20 @@ void AT_GSM_calculate_histogram_from_grid( const long     nX,
 
 
 /**
- * Computes dose histogram for given binning
- * TODO
+ * Computes local dose histogram for given mixed field
+ *
+ * @param[in]  number_of_field_components                number of particle types in the mixed particle field
+ * @param[in]  E_MeV_u                                   energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  fluence_cm2                               fluences for the given particles (array of size number_of_field_components)
+ * @param[in]  particle_no                               type of the particles in the mixed particle field (array of size number_of_field_components)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  material_no                               index number for detector material
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]  rdd_model                                 index number for chosen radial dose distribution
+ * @param[in]  rdd_parameter                             parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @see          AT_RDD.h for definition
+ * @param[in]  er_model                                  index number for chosen electron-range model
+ * @see          AT_ElectronRange.h for definition
  */
 void AT_GSM_calculate_dose_histogram( const long  number_of_field_components,
     const double   E_MeV_u[],
