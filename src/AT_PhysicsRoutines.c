@@ -31,7 +31,7 @@
 #include "AT_PhysicsRoutines.h"
 
 
-inline double AT_beta_from_E_single( const double E_MeV_u ){ //TODO is energy per nucleon really defined like that ?
+ double AT_beta_from_E_single( const double E_MeV_u ){ //TODO is energy per nucleon really defined like that ?
   assert( E_MeV_u > 0.);
   return sqrt(1.0 - 1.0/gsl_pow_2(1.0 + E_MeV_u/(1.0079*proton_mass_MeV_c2)));
 }
@@ -49,7 +49,7 @@ int AT_beta_from_E( const long  n,
   return 0;
 }
 
-inline double AT_gamma_from_E_single( const double E_MeV_u ){
+ double AT_gamma_from_E_single( const double E_MeV_u ){
   double beta 	= AT_beta_from_E_single( E_MeV_u );
   assert( beta < 1.0);
   return (1.0 / sqrt(1.0 - beta * beta));
@@ -68,7 +68,7 @@ int AT_gamma_from_E( const long  n,
 }
 
 
-inline double AT_E_from_beta_single(  const double beta ){
+ double AT_E_from_beta_single(  const double beta ){
   assert( beta < 1.0);
   return 1.0079*proton_mass_MeV_c2 * (sqrt(1.0 / (1.0 - gsl_pow_2(beta))) - 1.0);
 }
@@ -86,7 +86,7 @@ int AT_E_from_beta(  const long  n,
   return 0;
 }
 
-inline double AT_E_MeV_u_from_momentum_single( 	const double momentum_MeV_c_u){
+ double AT_E_MeV_u_from_momentum_single( 	const double momentum_MeV_c_u){
 	double total_E_MeV_u = sqrt(momentum_MeV_c_u * momentum_MeV_c_u + 1.0079 * 1.0079 * proton_mass_MeV_c2 * proton_mass_MeV_c2);
 	return (total_E_MeV_u - 1.0079 * proton_mass_MeV_c2);
 }
@@ -103,7 +103,7 @@ int AT_E_MeV_u_from_momentum(  const long  n,
   return 0;
 }
 
-inline double AT_effective_charge_from_beta_single(  const double beta,
+ double AT_effective_charge_from_beta_single(  const double beta,
     const long Z){
   // Return effective charge according to Barkas-Bethe-approximation
   if (Z!=1){
@@ -150,7 +150,7 @@ int AT_effective_charge_from_E_MeV_u( const  long  n,
 }
 
 
-inline double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u ){
+ double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u ){
   const double beta = AT_beta_from_E_single(E_MeV_u);
   // TODO what does it mean MeV_c2, are units correct ?
   // TODO add m/M terms (ICRU49, p. 6, eq. 2.4
@@ -158,13 +158,13 @@ inline double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u ){
 }
 
 
-inline double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u ){
+ double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u ){
   assert( E_MeV_u > 0);
   return 4.0 * electron_mass_MeV_c2 / proton_mass_MeV_c2 * E_MeV_u;
 }
 
 
-inline double AT_max_E_transfer_MeV_single( const double E_MeV_u){
+ double AT_max_E_transfer_MeV_single( const double E_MeV_u){
   /**
    * if E_MeV_u < 0:    use non-relativistic formula
    * if E_MeV_u > 0:    use relativistic formula
@@ -190,7 +190,7 @@ int AT_max_E_transfer_MeV(  const long  n,
   return 0;
 }
 
-inline double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u){
+ double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u){
 	double	beta		=	AT_beta_from_E_single(E_MeV_u);
 	double	gamma		=	AT_gamma_from_E_single(E_MeV_u);
 	double	m_MeV_c2	=	1.0079 * proton_mass_MeV_c2;
@@ -349,7 +349,7 @@ void AT_inv_interparticleDistance_Gy(  const long   n,
 }
 
 
-inline double AT_single_impact_fluence_cm2_single( const double E_MeV_u,
+ double AT_single_impact_fluence_cm2_single( const double E_MeV_u,
     const long material_no,
     const long er_model){
 
@@ -370,7 +370,7 @@ void AT_single_impact_fluence_cm2( const long n,
 }
 
 
-inline double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
+ double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
     const double single_impact_fluence_cm2){
   return LET_MeV_cm2_g * MeV_g_to_J_kg * single_impact_fluence_cm2;        // LET * fluence
 }

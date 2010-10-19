@@ -61,7 +61,7 @@
  * @param norm_constant_Gy
  * @return
  */
-inline double AT_RDD_Test_Gy( const double r_m,
+ double AT_RDD_Test_Gy( const double r_m,
     const double r_min_m,
     const double r_max_m,
     const double norm_constant_Gy);
@@ -72,7 +72,7 @@ inline double AT_RDD_Test_Gy( const double r_m,
  * @param r_max_m                  delta electron maximum range rmax [m]
  * @return
  */
-inline double AT_inverse_RDD_Test_m( const double D_Gy,
+ double AT_inverse_RDD_Test_m( const double D_Gy,
     const double r_max_m);
 
 /* --------------------------------------------------- GEISS RDD ---------------------------------------------------*/
@@ -86,7 +86,7 @@ inline double AT_inverse_RDD_Test_m( const double D_Gy,
  * @param norm_constant_Gy
  * @return
  */
-inline double AT_RDD_Geiss_Gy( const double r_m,
+ double AT_RDD_Geiss_Gy( const double r_m,
     const double r_min_m,
     const double max_electron_range_m,
     const double a0_m,
@@ -102,7 +102,7 @@ inline double AT_RDD_Geiss_Gy( const double r_m,
  * @param norm_constant_Gy
  * @return
  */
-inline double AT_inverse_RDD_Geiss_m( const double D_Gy,
+ double AT_inverse_RDD_Geiss_m( const double D_Gy,
     const double d_min_Gy,
     const double d_max_Gy,
     const double a0_m,
@@ -142,7 +142,7 @@ static const double AT_Katz_C1_J_m2 = \
  * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
  * @return coeff [Gy]                  calculated coefficient
  */
-inline double AT_RDD_Katz_coeff_Gy( const double Z_eff,
+ double AT_RDD_Katz_coeff_Gy( const double Z_eff,
     const double beta,
     const double density_kg_m3,
     const double electron_density_m3,
@@ -157,7 +157,7 @@ inline double AT_RDD_Katz_coeff_Gy( const double Z_eff,
  * @param er_model
  * @return
  */
-inline double AT_RDD_Katz_coeff_Gy_general(     const double  E_MeV_u,
+ double AT_RDD_Katz_coeff_Gy_general(     const double  E_MeV_u,
     const long    particle_no,
     const long    material_no,
     const long    er_model);
@@ -185,7 +185,7 @@ inline double AT_RDD_Katz_coeff_Gy_general(     const double  E_MeV_u,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] radial dose distribution at distance r
  */
-inline double AT_RDD_Katz_LinearER_Dpoint_Gy(        const double r_m,
+ double AT_RDD_Katz_LinearER_Dpoint_Gy(        const double r_m,
     const double max_electron_range_m,
     const double Katz_point_coeff_Gy);
 
@@ -209,7 +209,7 @@ inline double AT_RDD_Katz_LinearER_Dpoint_Gy(        const double r_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy] radial dose distribution at distance r
  */
-inline double AT_RDD_Katz_PowerLawER_Dpoint_Gy(        const double r_m,
+ double AT_RDD_Katz_PowerLawER_Dpoint_Gy(        const double r_m,
     const double alpha,
     const double max_electron_range_m,
     const double Katz_point_coeff_Gy);
@@ -225,7 +225,7 @@ inline double AT_RDD_Katz_PowerLawER_Dpoint_Gy(        const double r_m,
  * @param Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return
  */
-inline double AT_RDD_KatzPoint_Gy( const double r_m,
+ double AT_RDD_KatzPoint_Gy( const double r_m,
     const double r_min_m,
     const double max_electron_range_m,
     const long   er_model,
@@ -299,7 +299,7 @@ double AT_inverse_RDD_KatzPoint_m( const double D_Gy,
  * @param[in] beta                     relative ion speed beta = v/c
  * @return fS(r)
  */
-inline double AT_RDD_Cucinotta_f_shortRange( const double r_m,
+ double AT_RDD_Cucinotta_f_shortRange( const double r_m,
     const double beta);
 
 
@@ -313,7 +313,7 @@ inline double AT_RDD_Cucinotta_f_shortRange( const double r_m,
  * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
  * @return fL(r)
  */
-inline double AT_RDD_Cucinotta_f_longRange( const double r_m,
+ double AT_RDD_Cucinotta_f_longRange( const double r_m,
     const double max_electron_range_m);
 
 
@@ -337,7 +337,7 @@ inline double AT_RDD_Cucinotta_f_longRange( const double r_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return Ddelta(r) [Gy]
  */
-inline double AT_RDD_Cucinotta_Ddelta_Gy( const double r_m,
+ double AT_RDD_Cucinotta_Ddelta_Gy( const double r_m,
     const double max_electron_range_m,
     const double beta,
     const double Katz_point_coeff_Gy);
@@ -397,7 +397,7 @@ double AT_RDD_Cucinotta_Dexc_Gy( const double r_m,
  * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return D(r) [Gy]
  */
-inline double AT_RDD_CucinottaPoint_Gy( const double r_m,
+ double AT_RDD_CucinottaPoint_Gy( const double r_m,
     const double r_min_m,
     const double max_electron_range_m,
     const double beta,
