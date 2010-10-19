@@ -8,14 +8,16 @@
 ## Please specify your OS here
 #  OS        = Linux (or)
 #  OS        = Windows
-OS        = Linux
+#  OS        = Mac
+OS        = Mac
 ## Please set the correct path to your GSL installation here:
 #  most likely:
 #  GSLPATH   = /usr (Linux)
+#  GSLPATH   = /usr/local (Mac)
 #  GSLPATH   = C:\Program Files\GnuWin32 (Windows)
-GSLPATH   = /usr
+GSLPATH   = /usr/local
 ## Under Windows please specify the path to your MinGW installation
-#  leave empty under Linux: MINGWPATH = 
+#  leave empty under Linux/Mac: MINGWPATH = 
 #  for Windows most likely:
 #  MINGWPATH = C:\Program Files\MinGW (Windows)
 MINGWPATH = 
@@ -30,22 +32,40 @@ STATICLIB   = lib/libamtrack.a
 DSEP      = /
 SRCDIR    = ./src
 INCLDIR   = ./include
+ADDFLAGS  = 
 RMCMD     = rm
 GCC       = gcc 
 MKDIRCMD  = mkdir -p
 GSLINCLUDE = "$(GSLPATH)/include"
 GSLLIB     = "$(GSLPATH)/lib"
-else
+endif
+
+ifeq ($(OS),Windows)
 SHAREDLIB    = lib\libamtrack.dll
 STATICLIB    = lib\libamtrack.lib
 DSEP       = \\
 SRCDIR     = .\src
 INCLDIR    = .\include
+ADDFLAGS   = 
 RMCMD      = del
 MKDIRCMD   = mkdir
 GCC        = "$(MINGWPATH)\bin\gcc.exe"
 GSLINCLUDE = "$(GSLPATH)\include"
 GSLLIB     = "$(GSLPATH)\lib"
+endif
+
+ifeq ($(OS),Mac)
+SHAREDLIB    = lib/libamtrack.dylib
+STATICLIB    = lib/libamtrack.a
+DSEP       = /
+SRCDIR     = ./src
+INCLDIR    = ./include
+ADDFLAGS   = -arch i386 -I/usr/include/sys
+RMCMD      = rm
+MKDIRCMD   = mkdir -p
+GCC        = gcc
+GSLINCLUDE = "$(GSLPATH)/include"
+GSLLIB     = "$(GSLPATH)/lib"
 endif
 
 LIBCOBJS  = $(SRCDIR)$(DSEP)AmTrack.c $(SRCDIR)$(DSEP)AT_Error.c $(SRCDIR)$(DSEP)AT_Constants.c $(SRCDIR)$(DSEP)AT_GammaResponse.c $(SRCDIR)$(DSEP)AT_DataLET.c $(SRCDIR)$(DSEP)AT_DataMaterial.c $(SRCDIR)$(DSEP)AT_DataParticle.c $(SRCDIR)$(DSEP)AT_ElectronRange.c $(SRCDIR)$(DSEP)AT_GammaResponse.c $(SRCDIR)$(DSEP)AT_NumericalRoutines.c $(SRCDIR)$(DSEP)AT_PhysicsRoutines.c $(SRCDIR)$(DSEP)AT_RDD.c $(SRCDIR)$(DSEP)AT_RDD_Simple.c $(SRCDIR)$(DSEP)AT_RDD_ShellAveraged.c $(SRCDIR)$(DSEP)AT_RDD_ExtendedTarget.c $(SRCDIR)$(DSEP)AT_KatzModel.c $(SRCDIR)$(DSEP)AT_SuccessiveConvolutions.c $(SRCDIR)$(DSEP)AT_Wrapper_R.c $(SRCDIR)$(DSEP)AT_Histograms.c $(SRCDIR)$(DSEP)AT_Algorithms_GSM.c
@@ -56,11 +76,11 @@ LIBOBJS  = AmTrack.o AT_Error.o AT_Constants.o AT_DataLET.o AT_DataMaterial.o AT
 
 all:$(LIBOBJS)
 		$(MKDIRCMD) lib 
-		$(GCC) -L$(GSLLIB) -shared $(LIBOBJS) -o $(SHAREDLIB) $(LFLAGS) 
+		$(GCC) -L$(GSLLIB) -shared $(LIBOBJS) -o $(SHAREDLIB) $(LFLAGS) $(ADDFLAGS) 
 		$(RMCMD) *.o
 
 static:$(LIBCOBJS) $(LIBHOBJS)
-		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) $(LIBCOBJS)
+		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(ADDFLAGS) $(CFLAGS) $(LIBCOBJS)
 		$(MKDIRCMD) lib 
 		ar -cvq $(STATICLIB) $(LIBOBJS) 
 		$(RMCMD) *.o
@@ -71,4 +91,4 @@ clean:
 		- $(RMCMD) $(STATICLIB)
 
 $(LIBOBJS):$(LIBCOBJS) $(LIBHOBJS)
-		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(CFLAGS) -fPIC $(LIBCOBJS)
+		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(ADDFLAGS) $(CFLAGS) -fPIC $(LIBCOBJS)
