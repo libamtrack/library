@@ -138,7 +138,7 @@ static const AT_particle_data_struct AT_Particle_Data = {
 
 /**
  */
-inline long AT_particle_no_from_Z_and_A_single(  const long  Z,
+ long AT_particle_no_from_Z_and_A_single(  const long  Z,
     const long  A);
 
 /**
@@ -156,7 +156,7 @@ int AT_particle_no_from_Z_and_A( const long  n,
  * @param particle_no
  * @return A
  */
-inline long AT_A_from_particle_no_single(  const long  particle_no );
+ long AT_A_from_particle_no_single(  const long  particle_no );
 
 
 /**
@@ -176,7 +176,7 @@ int AT_A_from_particle_no(  const long  n,
  * @param particle_no
  * @return Z
  */
-inline long AT_Z_from_particle_no_single(  const long  particle_no );
+ long AT_Z_from_particle_no_single(  const long  particle_no );
 
 
 /**

@@ -31,7 +31,7 @@
 
 #include "AT_DataParticle.h"
 
-inline long AT_particle_no_from_Z_and_A_single(  const long  Z,
+ long AT_particle_no_from_Z_and_A_single(  const long  Z,
 		const long  A){
 	assert((1 <= A) && (A <= 300));
 	assert((1 <= Z) && (Z <= 118));
@@ -50,7 +50,7 @@ int AT_particle_no_from_Z_and_A( const long  n,
   return AT_Success;
 }
 
-inline long AT_A_from_particle_no_single(  const long  particle_no ){
+ long AT_A_from_particle_no_single(  const long  particle_no ){
   long A = particle_no % 1000;
   if( (1 <= A) && (A <= 300)){
     return A;
@@ -76,7 +76,7 @@ int AT_A_from_particle_no( const long  n,
 }
 
 
-inline long AT_Z_from_particle_no_single(  const long  particle_no ){
+ long AT_Z_from_particle_no_single(  const long  particle_no ){
   long Z = particle_no / 1000;
   if( (1 <= Z) && (Z <= 118) ){
     return Z;

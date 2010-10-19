@@ -32,7 +32,7 @@
 
 /* --------------------------------------------------- SHELL AVERAGE DOSE ---------------------------------------------------*/
 
-inline double   AT_RDD_Katz_LinearER_Daverage_Gy(  const double r1_m,
+ double   AT_RDD_Katz_LinearER_Daverage_Gy(  const double r1_m,
     const double r2_m,
     const double max_electron_range_m,
     const double Katz_point_coeff_Gy){
@@ -279,7 +279,7 @@ double   AT_RDD_Katz_PowerLawER_DSite_Gy( const double r_m,
 }
 
 
-inline double  AT_RDD_KatzSite_Gy( const double r_m,
+ double  AT_RDD_KatzSite_Gy( const double r_m,
     const double r_min_m,
     const double max_electron_range_m,
     const double a0_m,

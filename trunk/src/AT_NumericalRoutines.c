@@ -223,7 +223,7 @@ int pbdv_(double *v,
 } /* pbdv_ */
 
 
-inline double d_sign(const double a, const double b)
+ double d_sign(const double a, const double b)
 {
   double x = (a >= 0 ? a : - a);
   return( b >= 0 ? x : -x);
@@ -586,7 +586,7 @@ void is_element_int(const long element, const long set[], const long n_set, bool
 }
 
 
-inline double AT_sum(     const long n,
+ double AT_sum(     const long n,
               const double data[])
 {
   long i;
@@ -598,7 +598,7 @@ inline double AT_sum(     const long n,
 }
 
 
-inline void AT_normalize(     const long n,
+ void AT_normalize(     const long n,
                     const double data[],
                     double normalized_data[])
 {

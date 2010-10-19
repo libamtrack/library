@@ -149,7 +149,7 @@ int vvla_(  double *va, double *x, double *pv);
  * @param b
  * @return
  */
-inline double d_sign( const double a, const double b);
+ double d_sign( const double a, const double b);
 
 
 /**
@@ -255,7 +255,7 @@ void is_element_int(const long element, const long set[], const long n_set, bool
  * @param  data             data to sum
  * @return  sum of all elements
  */
-inline double AT_sum(     const long n,
+ double AT_sum(     const long n,
               const double data[]);
 
 
@@ -265,7 +265,7 @@ inline double AT_sum(     const long n,
  * @param[in]  data             data to normalize
  * @param[out] normalized_data  results
  */
-inline void AT_normalize(     const long n,
+ void AT_normalize(     const long n,
                     const double data[],
                     double normalized_data[]);
 

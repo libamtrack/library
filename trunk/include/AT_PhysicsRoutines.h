@@ -102,7 +102,7 @@ typedef struct {
  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
  * @return     beta                     relative particle speed beta = v/c
  */
-inline double AT_beta_from_E_single( const double  E_MeV_u );
+ double AT_beta_from_E_single( const double  E_MeV_u );
 
 
 /**
@@ -124,7 +124,7 @@ int AT_beta_from_E( const long  n,
  * @param[in]  beta                     relative particle speed beta = v/c
  * @return                              energy of particle per nucleon [MeV]
  */
-inline double AT_E_from_beta_single(  const double beta );
+ double AT_E_from_beta_single(  const double beta );
 
 
 /**
@@ -145,7 +145,7 @@ int AT_E_from_beta(  const long  n,
  * @param[in]  momentum_MeV_c_u         momentum per particle [MeV/c]
  * @return                              energy of particle per nucleon [MeV]
  */
-inline double AT_E_MeV_u_from_momentum_single( 	const double momentum_MeV_c_u);
+ double AT_E_MeV_u_from_momentum_single( 	const double momentum_MeV_c_u);
 
 /**
  *  Returns energy per nucleon of particles with given momentum per nucleon
@@ -165,7 +165,7 @@ int AT_E_MeV_u_from_momentum(  const long  n,
  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
  * @return     gamma
  */
-inline double AT_gamma_from_E_single( const double E_MeV_u );
+ double AT_gamma_from_E_single( const double E_MeV_u );
 
 /**
  *  Returns relativistic gamma for many particles
@@ -190,7 +190,7 @@ int AT_gamma_from_E( const long  n,
  * @param[in]  Z                        atomic number Z of ion
  * @return     effective_charge of ion
  */
-inline double AT_effective_charge_from_beta_single(  const double beta,
+ double AT_effective_charge_from_beta_single(  const double beta,
     const long Z);
 
 
@@ -263,7 +263,7 @@ int AT_effective_charge_from_E_MeV_u(  const long  n,
  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
  * @return max_E_transfer_MeV
  */
-inline double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u );
+ double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u );
 
 
 /**
@@ -271,7 +271,7 @@ inline double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u );
  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
  * @return max_E_transfer_MeV
  */
-inline double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u );
+ double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u );
 
 
 /**
@@ -279,7 +279,7 @@ inline double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u );
  * @param[in]  E_MeV_u                  TODO
  * @return     max_E_transfer_MeV
  */
-inline double AT_max_E_transfer_MeV_single( const double E_MeV_u);
+ double AT_max_E_transfer_MeV_single( const double E_MeV_u);
 
 
 /**
@@ -299,7 +299,7 @@ int AT_max_E_transfer_MeV(  const long  n,
  * @param	  	E_MeV_u                 kinetic Energy per nucleon
  * @return                              momentum [MeV/c]
  */
-inline double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u);
+ double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u);
 
 /**
  *  Returns relativistic momenta per nucleon for many particles
@@ -478,7 +478,7 @@ void AT_single_impact_fluence_cm2( const long n,
  * @param single_impact_fluence_cm2
  * @return
  */
-inline double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
+ double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
     const double single_impact_fluence_cm2);
 
 void AT_single_impact_dose_Gy( const long n,

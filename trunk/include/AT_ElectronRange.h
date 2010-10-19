@@ -93,7 +93,7 @@ int getERName(  const int ER_no,
  * @param wmax_keV
  * @return
  */
-inline double AT_ER_ButtsKatz_range_g_cm2(double wmax_keV);
+ double AT_ER_ButtsKatz_range_g_cm2(double wmax_keV);
 
 
 /**
@@ -101,7 +101,7 @@ inline double AT_ER_ButtsKatz_range_g_cm2(double wmax_keV);
  * @param wmax_keV
  * @return
  */
-inline double AT_ER_Waligorski_range_g_cm2(double wmax_keV);
+ double AT_ER_Waligorski_range_g_cm2(double wmax_keV);
 
 
 /**
@@ -109,7 +109,7 @@ inline double AT_ER_Waligorski_range_g_cm2(double wmax_keV);
  * @param wmax_keV
  * @return
  */
-inline double AT_ER_Edmund_range_g_cm2(double wmax_keV);
+ double AT_ER_Edmund_range_g_cm2(double wmax_keV);
 
 
 /**
@@ -117,7 +117,7 @@ inline double AT_ER_Edmund_range_g_cm2(double wmax_keV);
  * @param E_MeV_u
  * @return
  */
-inline double AT_ER_Geiss_range_g_cm2(double E_MeV_u);
+ double AT_ER_Geiss_range_g_cm2(double E_MeV_u);
 
 
 /**
@@ -125,7 +125,7 @@ inline double AT_ER_Geiss_range_g_cm2(double E_MeV_u);
  * @param E_MeV_u
  * @return
  */
-inline double AT_ER_Scholz_range_g_cm2(double E_MeV_u);
+ double AT_ER_Scholz_range_g_cm2(double E_MeV_u);
 
 
 /**
@@ -140,7 +140,7 @@ inline double AT_ER_Scholz_range_g_cm2(double E_MeV_u);
  * @param a5
  * @return
  */
-inline double AT_ER_Tabata_range_g_cm2(double beta,
+ double AT_ER_Tabata_range_g_cm2(double beta,
     double a1_g_cm2,
     double a2,
     double a3,
@@ -155,7 +155,7 @@ inline double AT_ER_Tabata_range_g_cm2(double beta,
  * @param E_MeV_u
  * @return
  */
-inline double AT_ER_PowerLaw_alpha( const double E_MeV_u);
+ double AT_ER_PowerLaw_alpha( const double E_MeV_u);
 
 
 /**
@@ -168,7 +168,7 @@ inline double AT_ER_PowerLaw_alpha( const double E_MeV_u);
  * @param a4
  * @param a5
  */
-inline void AT_ER_Tabata_constants(const double average_A,
+ void AT_ER_Tabata_constants(const double average_A,
     const double average_Z,
     double * a1_g_cm2,
     double * a2,

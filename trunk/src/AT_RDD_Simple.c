@@ -32,7 +32,7 @@
 
 /* --------------------------------------------------- TEST RDD ---------------------------------------------------*/
 
-inline double  AT_RDD_Test_Gy( const double r_m,
+ double  AT_RDD_Test_Gy( const double r_m,
     const double r_min_m,
     const double r_max_m,
     const double norm_constant_Gy){
@@ -45,7 +45,7 @@ inline double  AT_RDD_Test_Gy( const double r_m,
 }
 
 
-inline double  AT_inverse_RDD_Test_m( const double D_Gy,
+ double  AT_inverse_RDD_Test_m( const double D_Gy,
     const double r_max_m){
   if( D_Gy > 0)
     return r_max_m;
@@ -55,7 +55,7 @@ inline double  AT_inverse_RDD_Test_m( const double D_Gy,
 /* --------------------------------------------------- GEISS RDD ---------------------------------------------------*/
 
 
-inline double  AT_RDD_Geiss_Gy( const double r_m,
+ double  AT_RDD_Geiss_Gy( const double r_m,
     const double r_min_m,
     const double max_electron_range_m,
     const double a0_m,
@@ -71,7 +71,7 @@ inline double  AT_RDD_Geiss_Gy( const double r_m,
 }
 
 
-inline double  AT_inverse_RDD_Geiss_m( const double D_Gy,
+ double  AT_inverse_RDD_Geiss_m( const double D_Gy,
     const double d_min_Gy,
     const double d_max_Gy,
     const double a0_m,
@@ -87,7 +87,7 @@ inline double  AT_inverse_RDD_Geiss_m( const double D_Gy,
 /* --------------------------------------------------- KATZ RDD ---------------------------------------------------*/
 
 
-inline double AT_RDD_Katz_coeff_Gy( const double Z_eff,
+ double AT_RDD_Katz_coeff_Gy( const double Z_eff,
     const double beta,
     const double density_kg_m3,
     const double electron_density_m3,
@@ -99,7 +99,7 @@ inline double AT_RDD_Katz_coeff_Gy( const double Z_eff,
 }
 
 
-inline double AT_RDD_Katz_coeff_Gy_general(     const double  E_MeV_u,
+ double AT_RDD_Katz_coeff_Gy_general(     const double  E_MeV_u,
     const long    particle_no,
     const long    material_no,
     const long    er_model){
@@ -125,7 +125,7 @@ inline double AT_RDD_Katz_coeff_Gy_general(     const double  E_MeV_u,
 }
 
 
-inline double   AT_RDD_Katz_LinearER_Dpoint_Gy(        const double r_m,
+ double   AT_RDD_Katz_LinearER_Dpoint_Gy(        const double r_m,
     const double max_electron_range_m,
     const double Katz_point_coeff_Gy){
 
@@ -134,7 +134,7 @@ inline double   AT_RDD_Katz_LinearER_Dpoint_Gy(        const double r_m,
 }
 
 
-inline double AT_RDD_Katz_PowerLawER_Dpoint_Gy(const double r_m,
+ double AT_RDD_Katz_PowerLawER_Dpoint_Gy(const double r_m,
     const double alpha,
     const double max_electron_range_m,
     const double Katz_point_coeff_Gy){
@@ -147,7 +147,7 @@ inline double AT_RDD_Katz_PowerLawER_Dpoint_Gy(const double r_m,
 }
 
 
-inline double  AT_RDD_KatzPoint_Gy( const double r_m,
+ double  AT_RDD_KatzPoint_Gy( const double r_m,
     const double r_min_m,
     const double max_electron_range_m,
     const long   er_model,
@@ -224,7 +224,7 @@ double  AT_inverse_RDD_KatzPoint_m( const double D_Gy,
 /* --------------------------------------------------- CUCINOTTA RDD ---------------------------------------------------*/
 
 
-inline double   AT_RDD_Cucinotta_f_shortRange( const double r_m,
+ double   AT_RDD_Cucinotta_f_shortRange( const double r_m,
     const double beta){
 
   // fS(r) = 1.0/( r0/r + 0.6 + 1.7 beta + 1.1 beta^2)           [here r0 = 10^(-9) [m]]
@@ -232,7 +232,7 @@ inline double   AT_RDD_Cucinotta_f_shortRange( const double r_m,
 }
 
 
-inline double   AT_RDD_Cucinotta_f_longRange( const double r_m,
+ double   AT_RDD_Cucinotta_f_longRange( const double r_m,
     const double max_electron_range_m){
 
   //fL(r) = exp( -(r/(0.37rmax))^2 )
@@ -240,7 +240,7 @@ inline double   AT_RDD_Cucinotta_f_longRange( const double r_m,
 }
 
 
-inline double AT_RDD_Cucinotta_Ddelta_Gy( const double r_m,
+ double AT_RDD_Cucinotta_Ddelta_Gy( const double r_m,
     const double max_electron_range_m,
     const double beta,
     const double Katz_point_coeff_Gy){
@@ -263,7 +263,7 @@ double   AT_RDD_Cucinotta_Dexc_Gy( const double r_m,
 }
 
 
-inline double   AT_RDD_CucinottaPoint_Gy( const double r_m,
+ double   AT_RDD_CucinottaPoint_Gy( const double r_m,
     const double r_min_m,
     const double max_electron_range_m,
     const double beta,

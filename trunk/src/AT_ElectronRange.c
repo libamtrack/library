@@ -53,13 +53,13 @@ int getERName(
 }
 
 
-inline double AT_ER_ButtsKatz_range_g_cm2(double wmax_keV){
+ double AT_ER_ButtsKatz_range_g_cm2(double wmax_keV){
   assert( (wmax_keV > 0.) && (wmax_keV < 1e6));
   return 1e-5 * wmax_keV;
 }
 
 
-inline double AT_ER_Waligorski_range_g_cm2(double wmax_keV){
+ double AT_ER_Waligorski_range_g_cm2(double wmax_keV){
   assert( (wmax_keV > 0.) && (wmax_keV < 1e6));
   double alpha = 1.667;
   if( wmax_keV < 1. ) alpha = 1.079;
@@ -67,7 +67,7 @@ inline double AT_ER_Waligorski_range_g_cm2(double wmax_keV){
 }
 
 
-inline double AT_ER_Edmund_range_g_cm2(double wmax_keV){
+ double AT_ER_Edmund_range_g_cm2(double wmax_keV){
   assert( (wmax_keV > 0.) && (wmax_keV < 1e6));
   double alpha = 1.667;
   if( wmax_keV < 1. ) alpha = 1.079;
@@ -75,26 +75,26 @@ inline double AT_ER_Edmund_range_g_cm2(double wmax_keV){
 }
 
 
-inline double AT_ER_Geiss_range_g_cm2(double E_MeV_u){
+ double AT_ER_Geiss_range_g_cm2(double E_MeV_u){
   assert( (E_MeV_u > 0.) && (E_MeV_u < 1e6));
   return 4e-5 * pow(E_MeV_u, 1.5);
 }
 
 
-inline double AT_ER_Scholz_range_g_cm2(double E_MeV_u){
+ double AT_ER_Scholz_range_g_cm2(double E_MeV_u){
 	assert( (E_MeV_u > 0.) && (E_MeV_u < 1e6));
 	return 5e-5 * pow(E_MeV_u, 1.7);
 }
 
 
-inline double AT_ER_Tabata_range_g_cm2(double beta, double a1_g_cm2, double a2, double a3, double a4, double a5){
+ double AT_ER_Tabata_range_g_cm2(double beta, double a1_g_cm2, double a2, double a3, double a4, double a5){
   assert( (beta > 0.) && (beta < 1.0));
   double tau = 2.0 * gsl_pow_2(beta) / (1.0 - gsl_pow_2(beta));
   return (a1_g_cm2)*(((gsl_sf_log(1.0 + a2 * tau))/a2) - ((a3*tau)/(1.0 + a4*pow(tau,a5))) );
 }
 
 
-inline double AT_ER_PowerLaw_alpha( const double E_MeV_u){
+ double AT_ER_PowerLaw_alpha( const double E_MeV_u){
   assert( (E_MeV_u > 0.) && (E_MeV_u < 1e6));
   double wmax_MeV     =  AT_max_E_transfer_MeV_single(E_MeV_u);
   double alpha        =  1.667;
@@ -104,7 +104,7 @@ inline double AT_ER_PowerLaw_alpha( const double E_MeV_u){
 }
 
 
-inline void AT_ER_Tabata_constants(const double average_A, const double average_Z, double * a1_g_cm2, double * a2, double * a3, double * a4, double * a5){
+ void AT_ER_Tabata_constants(const double average_A, const double average_Z, double * a1_g_cm2, double * a2, double * a3, double * a4, double * a5){
   const double b1_g_cm2 = 0.2335;
   const double b2 = 1.209;
   const double b3 = 1.78e-4;
