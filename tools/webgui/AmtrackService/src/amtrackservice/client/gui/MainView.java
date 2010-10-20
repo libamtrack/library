@@ -45,8 +45,8 @@ public class MainView {
 		tabPanel = new TabLayoutPanel(10, Unit.MM);
 		
 		SplitLayoutPanel rootPanel = new SplitLayoutPanel();
-		rootPanel.addSouth(console,200);
-		console.setSize("100%", "90%");
+		//rootPanel.addSouth(console,200);
+		//console.setSize("100%", "90%");
 		DockLayoutPanel main = new DockLayoutPanel(Unit.MM);
 		main.addNorth(menubar, 5);
 		main.add(tabPanel);
