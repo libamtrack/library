@@ -35,6 +35,10 @@ Compilation schema is following:
 AT_demo.c + libamtrack header files (*.h) + gsl header files (*.h) ---(compiling)---->  AT_demo.o 
 AT_demo.o + libamtrack library (*.dll or *.so) + gsl libraries (*.dll or *.so) ---(linking)---->  AT_demo.exe
 
+You can also compile against static version of the library using command:
+
+$ make static
+
 2. Run
 
 When you will have AT_demo.exe file and want to run it under Windows, copy to the same
@@ -46,3 +50,6 @@ $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../../lib
 First let us try to run:
 
 $ ./AT_demo.exe
+
+In case of static compilation you do not need to adjust LD_LIBRARY_PATH variable,
+neither copy libamtrack dll files to the same directory.

@@ -37,6 +37,10 @@ Compilation schema is following:
 AT_plot.c + libamtrack header files (*.h) + gsl header files (*.h) ---(compiling)---->  AT_plot.o 
 AT_plot.o + libamtrack library (*.dll or *.so) + gsl libraries (*.dll or *.so) ---(linking)---->  AT_plot.exe
 
+You can also compile against static version of the library using command:
+
+$ make static
+
 2. Run
 
 When you will have AT_plot.exe file and want to run it under Windows, copy to the same
@@ -44,6 +48,9 @@ directory as .exe file all libraries (3 dll files for GSL and libamtrack).
 Under Linux, adjust LD_LIBRARY_PATH variable:
 
 $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../../lib
+
+In case of static compilation you do not need to adjust LD_LIBRARY_PATH variable,
+neither copy libamtrack dll files to the same directory.
 
 First let us try to run without any switches:
 
