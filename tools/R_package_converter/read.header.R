@@ -3,7 +3,7 @@
 ################################################################################################
 # Copyright 2006, 2010 The libamtrack team
 # 
-# This file is part of the AmTrack program (libamtrack.sourceforge.net).
+# This header.file.name is part of the AmTrack program (libamtrack.sourceforge.net).
 #
 #    Created on: 13.09.2010
 #    Creator: kleinf
@@ -19,7 +19,7 @@
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# long with AmTrack (file: copying.txt).
+# long with AmTrack (header.file.name: copying.txt).
 # If not, see <http://www.gnu.org/licenses/>
 ################################################################################################
 
@@ -27,265 +27,336 @@
 rm(list = ls())
 
 # Save current working directory
-cur.dir <- getwd()
+cur.dir           <- getwd()
 
-# Read in namespace file
-namespace <- scan(file = "NAMESPACE", what = "character")
+# Read in namespace header.file.name
+namespace         <- scan(file = "NAMESPACE", what = "character")
 
 # Navigate to include path within libamtrack trunk. Stop if this fails
 if(try(setwd("../../include")) == FALSE){
      stop("Please start script from /tools/R_package_converter")
 }
 
-# Read in all header files
-record <- list.files(".")
-record <- record[grep(".h", record)]
+# Read in all header file names
+header.file.names <- list.files(".")
+header.file.names <- header.file.names[grep(".h", header.file.names)]
 
 # Remove the old style R-wrappers from the list of header files - they are obsolete here
-to.remove <- c("AT_Wrapper_R.h")
-pos.remove <- match(to.remove, record)
-pos.remove <- c(pos.remove, grep("Data", record))
-record <- record[-pos.remove]
+to.remove         <- c("AT_Wrapper_R.h")
+pos.remove        <- match(to.remove, header.file.names)
+pos.remove        <- c(pos.remove, grep("Data", header.file.names))
+header.file.names <- header.file.names[-pos.remove]
 
 # Initialize vectors to hold extracted information
-current.function <- NULL
-functions <- NULL
-processed.functions <- NULL
-function.no <- 1
+functions             <- NULL
+processed.functions   <- NULL
+function.no           <- 1
 
 # Replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
 grep.bool     <-     function(pattern, x, ...){
      results     <-     grep(pattern, x, ...)
      indices     <-     1:length(x)
-     bool.res     <-     is.element(indices, results)
+     bool.res    <-     is.element(indices, results)
 }
 
-for(file in record){
-     # DEBUG: file <- record[4]
+for(header.file.name in header.file.names){
+     # DEBUG: header.file.name <- header.file.names[4]
      
-     # read the complete *.h file
-     include <- scan(file, what = "character", strip.white = T)
-     print(paste("Read: ", file))
+     #####################################################
+     # A. Extract doxygen comment and function declaration
+     #####################################################
 
-     # just keep the code of current.functions passed to R
-     start.current.functions <- grep("/**", include, fixed = T)
-     end.current.functions <- grep (");", include, fixed = T)
+     # Read the current header file (separated into 'words' (=chunks of strings that were separated by whitespaces, line
+     # break etc. All whitespaces are removed during read in
+     header.file.text                 <- scan(header.file.name, what = "character", strip.white = T)
+     print(paste("Read: ", header.file.name))
 
-     # break and process next file in case no function are found
-     if(length(start.current.functions) == 0 | length(end.current.functions) == 0){
-          print("Skipping file - no functions found.")
+     # Find the start of doxygen comments ("/**") and the end of a declaration (");")
+     # They should embrase a function declaration (but also others, like enumerators etc.)
+     pos.start.doxygen.comment        <- grep("/**", header.file.text, fixed = T)
+     pos.end.function.declaration     <- grep (");", header.file.text, fixed = T)
+
+     # Break and process next header file in case no function are found
+     if(length(pos.start.doxygen.comment) == 0 | length(pos.end.function.declaration) == 0){
+          print("Skipping header file - no functions found.")
           next
      }
 
-     # remove the first entry of start.curent.functions from the doxygen file comment
-     start.current.functions <- start.current.functions[2:length(start.current.functions)]
+     # Remove the first entry of pos.start.doxygen.comment as this is (most likely!) the
+     # brief description of the header file itself (@brief)
+     # TODO: replace by more robust statement which looks for "@brief"
+     pos.start.doxygen.comment <- pos.start.doxygen.comment[-1]
      
-     # check if start.funtions has same length as end.current.functions
-     keep <- NULL
-     if(length(start.current.functions) == length(end.current.functions)){
-          for(i in 1:length(start.current.functions)){
-               keep <- c(keep, (start.current.functions[i]):(end.current.functions[i])) 
+     # Check whether both vectors have same length
+     # If not, remove all those comment-starts that do not correlate with 
+     # a function-end
+     # first, initialize keep-variable which will contain all element indices of header.file.text to keep
+     idx.keep <- NULL
+     # If both vectors have the same length, keep everything but reformat
+     if(length(pos.start.doxygen.comment) == length(pos.end.function.declaration)){
+          for(i in 1:length(pos.start.doxygen.comment)){
+               idx.keep <- c(idx.keep, (pos.start.doxygen.comment[i]):(pos.end.function.declaration[i])) 
           }     
-     } else if (length(start.current.functions) < length(end.current.functions)){
-          # go through "/**" and just select the next ");" 
-          j = 1
-          for(i in 1:length(start.current.functions)){
-               while(start.current.functions[i] > end.current.functions[j]) j = j+1
-               keep <- c(keep, (start.current.functions[i]):(end.current.functions[j])) 
-          }
+     # if more function ends, just select those that correspond to a comment-start
+     } else if (length(pos.start.doxygen.comment) < length(pos.end.function.declaration)){
+          j <- 1
+          for(i in 1:length(pos.start.doxygen.comment)){
+               while(pos.start.doxygen.comment[i] > pos.end.function.declaration[j]){
+                    j = j+1
+               }
+               idx.keep <- c(idx.keep, (pos.start.doxygen.comment[i]):(pos.end.function.declaration[j]))
+          } 
+     # if more comment starts, just select those that correspond to a function end
      } else {
-          # go through ");" and select the previous "/**" 
-          j = length(start.current.functions)
-          for(i in length(end.current.functions):1){
-               while(end.current.functions[i] < start.current.functions[j]) j = j-1
-               keep <- c(keep, (start.current.functions[j]):(end.current.functions[i])) 
+          j <- length(pos.start.doxygen.comment)
+          for(i in length(pos.end.function.declaration):1){
+               while(pos.end.function.declaration[i] < pos.start.doxygen.comment[j]){
+                    j = j-1
+               }
+               idx.keep <- c(idx.keep, (pos.start.doxygen.comment[j]):(pos.end.function.declaration[i])) 
           }
      }
-     include <- include[keep]
 
-     #############################################
-     # separate the doxygen comment and the code
-     #############################################
+     # Now, only the comment and declaration text of suitable functions are left
+     reduced.header.file.text           <- header.file.text[idx.keep]
 
-     # all vectors should be of same length
-     comment.start <- grep("/**", include, fixed = T)
-     comment.end <- grep("*/", include, fixed = T)
-     current.function.end <- grep(";", include)
 
-     for (i in 1:length(comment.start)){
-          # DEBUG: i <- 1
+     #####################################################
+     # B. Process doxygen comment and function declaration
+     #####################################################
 
-          pos.comment <- comment.start[i]:comment.end[i] 
-          pos.code <- (comment.end[i]+1):current.function.end[i]
+     # Find start and end of doxygen comments in reduced header file
+     # as well as end of declarations
+     pos.start.doxygen.comment           <- grep("/**", reduced.header.file.text, fixed = T)
+     pos.end.doxygen.comment             <- grep("*/", reduced.header.file.text, fixed = T)
+     pos.end.function.declaration        <- grep(";", reduced.header.file.text)
 
-          # extract the name, comment and the code
-          name <- gsub("(", "", include[pos.code[2]], fixed = T)
+     # If length are different comments are corrupted, skip file and process next
+     if((length(pos.start.doxygen.comment) != length(pos.end.doxygen.comment))|(length(pos.start.doxygen.comment) != length(pos.end.function.declaration))){
+          print("Comments corrupted, skipping file.")
+          next
+     }
+
+     # Loop through all functions found
+     for (i in 1:length(pos.start.doxygen.comment)){
+          # DEBUG: i <- 4
+          current.function    <- NULL
+          
+          # Indices for reduced.header.file.text that hold comment and declaration
+          idx.comment         <- pos.start.doxygen.comment[i]:pos.end.doxygen.comment[i] 
+          idx.declaration     <- (pos.end.doxygen.comment[i]+1):pos.end.function.declaration[i]
+
+          # Extract the function name (which is on second position of the declaration, opening bracket has to be removed
+          name                <- gsub("(", "", reduced.header.file.text[idx.declaration[2]], fixed = T)
           print(paste("Processing:", name))
 
-          # check if name is in namespace before processing
+          # Check if name is in namespace otherwise skip
           if(name %in% namespace){
 
-               raw.comment <- include[pos.comment]
-               raw.code <- include[pos.code]
+               # Extract comment and declaration text
+               raw.comment.text        <- reduced.header.file.text[idx.comment]
+               raw.declaration.text    <- reduced.header.file.text[idx.declaration]
           
-               ########################
-               # process the comment
-               ########################
-               current.function$name <- name     
+               # Function name
+               current.function$name   <- name     
 
-               # get the "*" position
-               breaks <- grep("*", raw.comment, fixed = T)
+               ########################################
+               # B1. Process doxygen parameter comments
+               ########################################
 
-               # remove the first "/**" entry
-               breaks <- breaks[-1] 
+               # Get start positions of doyxgen comment lines in comment text
+               # by grepping "*" 
+               pos.comment.lines       <- grep("*", raw.comment.text, fixed = T)
+
+               # Remove the first line ("/**")
+               pos.comment.lines       <- pos.comment.lines[-1] 
           
-               # extract the description (text before the first parameter)
-               first.parameter <- grep("@", raw.comment, fixed = T)
+               # Find start positions of doxygen entries ("@")
+               pos.doxygen.entries     <- grep("@", raw.comment.text, fixed = T)
 
-               if(length(first.parameter) > 0){
-                    pos.description <- (3:(first.parameter[1]-2))
-          
-                    tmp <- raw.comment[pos.description[1]]
-                    if(length(pos.description) >= 2){
-                         for(k in 2:(length(pos.description))){
-                              # DEBUG: k <- 2
-                              if(raw.comment[pos.description[k]] != "*"){
-                                   tmp <- paste(tmp, raw.comment[pos.description[k]])
+               # If no entries found, skip processing and store empty parameter comments
+               # TODO: Check whether these are "@param" entries
+               # TODO: The function comment should be processed even if there is no @ entry
+               if(length(pos.doxygen.entries) > 0){
+
+                    # The description of the function itself is located 
+                    idx.doxygen.parameter.description    <- (3:(pos.doxygen.entries[1]-2))
+                    # Walk through function description text and remove comment indicators ("*") but keep line breaks
+                    function.description                 <- raw.comment.text[idx.doxygen.parameter.description[1]]
+                    if(length(idx.doxygen.parameter.description) >= 2){
+                         for(idx in 2:(length(idx.doxygen.parameter.description))){
+                              if(raw.comment.text[idx.doxygen.parameter.description[idx]] != "*"){
+                                   function.description <- paste(  function.description, 
+                                                                   raw.comment.text[idx.doxygen.parameter.description[idx]])
                               }else{
-                                   tmp <- paste(tmp, "\n", sep = "")}
+                                   function.description <- paste(  function.description, 
+                                                                   "\n", sep = "")}
                          }
                     }
- 
-                    current.function$description <- tmp          
+                    # Store the description
+                    current.function$description <- function.description          
 
-                    # extract the parameters
-                    breaks <- breaks[breaks > (first.parameter[1] - 2)]
 
-                    # create data.frame to hold the parameter data
-                    parameter <- data.frame( type = character(length(breaks) - 1),
-                                             name = character(length(breaks) - 1),
-                                             comment = character(length(breaks) - 1),
-                                             array.size = 1,
-                                             stringsAsFactors = F)          
+                    # Extract the parameter comments
+                    pos.parameter.comment.lines  <- pos.comment.lines[pos.comment.lines > (pos.doxygen.entries[1] - 2)]
 
-                    for(j in 1:(length(breaks)-1)){
-                         pos <- (breaks[j] + 1):(breaks[j+1] - 1)
-                         parameter$type[j] <- raw.comment[pos[1]]
-                         parameter$name[j] <- raw.comment[pos[2]]     
+                    # Create data.frame to hold the parameter information from doxygen comment
+                    # As last entry is "@return", subtract one position
+                    # TODO: Replace guess work on @doxygen entries by clear names (@param, @return, etc.)
+                    parameter                    <- data.frame( type              = character(length(pos.parameter.comment.lines) - 1),
+                                                                name              = character(length(pos.parameter.comment.lines) - 1),
+                                                                comment           = character(length(pos.parameter.comment.lines) - 1),
+                                                                array.size        = 1,
+                                                                stringsAsFactors  = F)          
 
-                         if(length(pos) > 2){
-                              # paste the comment together
-                              tmp <- NULL
-                                   for(k in pos[3]:pos[length(pos)]){
-                                   tmp <- paste(tmp, raw.comment[k])
+                    # Only process if number of parameter comments is >= 2 (i.e. one @param and one @return (always there))
+                    # TODO: Awkward
+                    if(length(pos.parameter.comment.lines) >= 2){
+                         
+                         # Loop through all @param comments, leave out @return (last one)
+                         for(j in 1:(length(pos.parameter.comment.lines)-1)){
+                              # DEBUG: j <- 1
+                              
+                              # Vector with all indices in raw.comment.text that belong to current @param comment
+                              idx.param.comment <- (pos.parameter.comment.lines[j] + 1):(pos.parameter.comment.lines[j+1] - 1)
+                              # Comment type (@param etc.) is first entry
+                              parameter$type[j] <- raw.comment.text[idx.param.comment[1]]
+                              # Parameter name is second entry
+                              # TODO: MAYBE SECOND ENTRY...
+                              parameter$name[j] <- raw.comment.text[idx.param.comment[2]]     
+
+                              # Extract the actual comment (third to last position), paste together from text chunks
+                              # Enter loop only if comment exists
+                              if(length(idx.param.comment) > 2){
+                                   parameter.comment <- NULL
+                                   for(k in idx.param.comment[3]:idx.param.comment[length(idx.param.comment)]){
+                                        parameter.comment <- paste(parameter.comment, raw.comment.text[k])
+                                   }
+                                   # Store comment
+                                   parameter$comment[j] <- parameter.comment
                               }
-                              parameter$comment[j] <- tmp     
-                              }
 
-                         if("array" %in% raw.comment[pos] | "(array" %in% raw.comment[pos]) {
-                              array.size.pos1 <- grep("array", raw.comment[pos])
-                              array.size.pos2 <- grep("size", raw.comment[pos])
-                              if((array.size.pos1 +2) %in% array.size.pos2)      parameter$array.size[j] <- gsub(")", "", raw.comment[pos][array.size.pos2 + 1])
-                         }
+                              # If key-word array appears in parameter comment
+                              # try to find size information
+                              if(("array" %in% raw.comment.text[idx.param.comment])|("(array" %in% raw.comment.text[idx.param.comment])){
+                                   array.size.pos1       <- grep("array", raw.comment.text[idx.param.comment])
+                                   array.size.pos2       <- grep("size", raw.comment.text[idx.param.comment])
+                                   if((array.size.pos1 + 2) %in% array.size.pos2){
+                                        parameter$array.size[j] <- gsub(")", "", raw.comment.text[idx.param.comment][array.size.pos2 + 1])
+                                   }
+                              }
+                         } # @param loop
+                         current.function$parameter.comment <- parameter
+                    }else{ # length(pos.parameter.comment.lines) >= 2
+                         current.function$parameter.comment <- "empty" # no parameter comments
                     }
-                    current.function$parameter.comment <- parameter
-               } else current.function$parameter.comment <- "empty"
+               }else{ #length(pos.doxygen.entries) > 0
+                    current.function$parameter.comment <- "empty"
+               }
 
-               ####################################
-               # process the code
-               ####################################
+               ######################################
+               # B2. Process the function declaration
+               ######################################
 
-               current.function$type <- raw.code[1]
+               # Return parameter type, first position of declaration text
+               current.function$type              <- raw.declaration.text[1]
           
-               # remove the first 2 entries
-               raw.code <- raw.code[-c(1,2)]
+               # remove the first 2 entries, i.e. return type and function name
+               raw.declaration.text               <- raw.declaration.text[-c(1,2)]
 
-               # get the line breaks
-               breaks <- grep(",", raw.code, fixed = T)
+               # Extract positions of declaration line breaks
+               pos.declaration.line.breaks        <- grep(",", raw.declaration.text, fixed = T)
 
                # remove additional comments in the code "//...."
-               to.remove <- grep("//", raw.code, fixed = T)
-               if(length(to.remove) > 0)
-                    for(k in 1:length(to.remove)){
-                         remove <- to.remove[k]:((breaks[breaks > to.remove[k]])[1] - 2)
-                         if(raw.code[length(remove)] == "const") remove <- remove[1:(length(remove)-1)]
-                         check <- raw.code[remove]
-                         raw.code <- raw.code[-remove]
-
-                    # adjust breaks by shifting of length(remove)
-                    breaks[breaks > to.remove[k]] <- breaks[breaks > to.remove[k]] - length(remove)
-               } # hier weiter
-
-               # remove "," 
-               raw.code <- gsub(",", "", raw.code)
-
-               # create data.frame to hold the parameter data
-               parameter <- data.frame(type = character(length(breaks) + 1),
-                                   name = character(length(breaks) + 1),
-                                   length = rep(1, length(breaks) + 1),
-                                   stringsAsFactors = F )          
-
-
-               # first position
-               pos <- 1:(breaks[1])
-               if(length(pos) == 2){
-                    parameter$type[1] <- raw.code[pos[1]]
-                    parameter$name[1] <- raw.code[pos[2]]
-               } else if(length(pos) > 2) {
-                    parameter$type[1] <- paste(raw.code[pos[1]], raw.code[pos[2]])
-                    parameter$name[1] <- raw.code[pos[3]]
-               }
-
-               # second to second to last position
-               if(length(breaks) >= 2) for(j in 2:(length(breaks))){
-                    pos <- (breaks[j - 1] + 1):(breaks[j])
-                    if(length(pos) == 2){
-                         parameter$type[j] <- raw.code[pos[1]]
-                         parameter$name[j] <- raw.code[pos[2]]
-                    } else if(length(pos) > 2) {
-                         parameter$type[j] <- paste(raw.code[pos[1]], raw.code[pos[2]])
-                         parameter$name[j] <- raw.code[pos[3]]
+               if(length(pos.declaration.line.breaks) > 0){
+                    to.remove                          <- grep("//", raw.declaration.text, fixed = T)
+                    if(length(to.remove) > 0){
+                         for(k in 1:length(to.remove)){
+                              remove                        <- to.remove[k]:((pos.declaration.line.breaks[pos.declaration.line.breaks > to.remove[k]])[1] - 2)
+                              if(raw.declaration.text[length(remove)] == "const"){
+                                   remove <- remove[1:(length(remove)-1)]
+                              }
+                              check                         <- raw.declaration.text[remove]
+                              raw.declaration.text          <- raw.declaration.text[-remove]
+                         }
+                         # adjust pos.declaration.line.breaks by shifting of length(remove)
+                        pos.declaration.line.breaks[pos.declaration.line.breaks > to.remove[k]] <- pos.declaration.line.breaks[pos.declaration.line.breaks > to.remove[k]] - length(remove)
                     }
                }
 
-               # last position
-               pos <- (breaks[length(breaks)] + 1):length(raw.code)
-               if(length(pos) == 2){
-                    parameter$type[length(breaks) + 1] <- raw.code[pos[1]]
-                    parameter$name[length(breaks) + 1] <- gsub(");", "", raw.code[pos[2]])
-               } else if(length(pos) == 3) {
-                    parameter$type[length(breaks) + 1] <- paste(raw.code[pos[1]], raw.code[pos[2]])
-                    parameter$name[length(breaks) + 1] <- gsub(");", "", raw.code[pos[3]])
+               # remove line breaks (",")
+               raw.declaration.text <- gsub(",", "", raw.declaration.text)
+
+               # create data.frame to hold the parameter data
+               parameter            <- data.frame(type             = character(length(pos.declaration.line.breaks) + 1),
+                                                  name             = character(length(pos.declaration.line.breaks) + 1),
+                                                  length           = rep(1, length(pos.declaration.line.breaks) + 1),
+                                                  stringsAsFactors = F )          
+
+               # a. First parameter
+               if(length(pos.declaration.line.breaks) > 0){
+                    pos <- 1:(pos.declaration.line.breaks[1])
+                    if(length(pos) == 2){
+                         parameter$type[1] <- raw.declaration.text[pos[1]]
+                         parameter$name[1] <- raw.declaration.text[pos[2]]
+                    } else if(length(pos) > 2) {
+                         parameter$type[1] <- paste(raw.declaration.text[pos[1]], raw.declaration.text[pos[2]])
+                         parameter$name[1] <- raw.declaration.text[pos[3]]
+                    }
+
+                    # b. Second to second to last parameter
+                    if(length(pos.declaration.line.breaks) >= 2) for(j in 2:(length(pos.declaration.line.breaks))){
+                         pos <- (pos.declaration.line.breaks[j - 1] + 1):(pos.declaration.line.breaks[j])
+                         if(length(pos) == 2){
+                              parameter$type[j] <- raw.declaration.text[pos[1]]
+                              parameter$name[j] <- raw.declaration.text[pos[2]]
+                         } else if(length(pos) > 2) {
+                              parameter$type[j] <- paste(raw.declaration.text[pos[1]], raw.declaration.text[pos[2]])
+                              parameter$name[j] <- raw.declaration.text[pos[3]]
+                         }
+                    }
+
+                    # c. Last parameter
+                    pos <- (pos.declaration.line.breaks[length(pos.declaration.line.breaks)] + 1):length(raw.declaration.text)
+                    if(length(pos) == 2){
+                         parameter$type[length(pos.declaration.line.breaks) + 1] <- raw.declaration.text[pos[1]]
+                         parameter$name[length(pos.declaration.line.breaks) + 1] <- gsub(");", "", raw.declaration.text[pos[2]])
+                    } else if(length(pos) == 3) {
+                         parameter$type[length(pos.declaration.line.breaks) + 1] <- paste(raw.declaration.text[pos[1]], raw.declaration.text[pos[2]])
+                         parameter$name[length(pos.declaration.line.breaks) + 1] <- gsub(");", "", raw.declaration.text[pos[3]])
+                    }
+               }else{ # if no line break, the second last entry *should* be the type, the last the name
+                    parameter$name[1] <-raw.declaration.text[length(raw.declaration.text)-1]
+                    parameter$type[1] <- gsub(");", "", raw.declaration.text[length(raw.declaration.text)])
                }
 
                # find the vectors and remove "[x]" from the name
-               vectors <- grep("[", parameter$name, fixed = T)
+               vectors        <- grep("[", parameter$name, fixed = T)
                if(length(vectors) > 0){               
-                    parameter$name[vectors] <- unlist(strsplit(parameter$name[vectors], "[", fixed = T))[(seq(2, length(vectors)*2, by = 2) - 1)]     
-               
+                    parameter$name[vectors]   <- unlist(strsplit(parameter$name[vectors], "[", fixed = T))[(seq(2, length(vectors)*2, by = 2) - 1)]     
                     # get the array.size from the doxgen comment
-                    pos.array.size <- match(parameter$name[vectors], current.function$parameter.comment$name)
+                    pos.array.size            <- match(parameter$name[vectors], current.function$parameter.comment$name)
                     parameter$length[vectors] <- current.function$parameter.comment$array.size[pos.array.size]
                }
                
                # remove possible NA from parameter$length by TODO
-               parameter$length[is.na(parameter$length)] <- "TODO"
+               parameter$length[is.na(parameter$length)]          <- "TODO"
 
                # add parameters to list
-               current.function$parameter <- parameter
+               current.function$parameter  <- parameter
 
-               # add input output information from doxygen file 
-               pos.in <- grep.bool(pattern = "in", x = current.function$parameter.comment$type) 
-               pos.out <- grep.bool(pattern = "out", x = current.function$parameter.comment$type) 
+               # add input output information from doxygen header.file.name 
+               pos.in                      <- grep.bool(pattern = "in", x = current.function$parameter.comment$type) 
+               pos.out                     <- grep.bool(pattern = "out", x = current.function$parameter.comment$type) 
 
                # get the position of the parameters from the position in the comments
-               pos.in.para <- match(current.function$parameter.comment$name[pos.in & !pos.out], current.function$parameter$name)
-               pos.out.para <- match(current.function$parameter.comment$name[pos.out & !pos.in], current.function$parameter$name)
-               pos.in.out.para <- match(current.function$parameter.comment$name[pos.in & pos.out], current.function$parameter$name)
+               pos.in.para                 <- match(current.function$parameter.comment$name[pos.in & !pos.out], current.function$parameter$name)
+               pos.out.para                <- match(current.function$parameter.comment$name[pos.out & !pos.in], current.function$parameter$name)
+               pos.in.out.para             <- match(current.function$parameter.comment$name[pos.in & pos.out], current.function$parameter$name)
 
-               current.function$parameter$in.out <- "TODO"
-               current.function$parameter$in.out[pos.in.para] <- "in" 
-               current.function$parameter$in.out[pos.out.para] <- "out" 
+               current.function$parameter$in.out                  <- "TODO"
+               current.function$parameter$in.out[pos.in.para]     <- "in" 
+               current.function$parameter$in.out[pos.out.para]    <- "out" 
                current.function$parameter$in.out[pos.in.out.para] <- "in.out" 
 
                # SG: add return parameters if existing
@@ -294,23 +365,23 @@ for(file in record){
                          print("!ERROR: name conflict with return variable!")
                     }
                     current.function$parameter     <-     rbind.data.frame(     current.function$parameter,
-                                                                 data.frame(     type     =  include[pos.code[1]],
-                                                                           name     =  "returnValue",
-                                                                           length = 1,
-                                                                           in.out = "return"))
+                                                                                data.frame(  type     =  reduced.header.file.text[idx.declaration[1]],
+                                                                                             name     =  "returnValue",
+                                                                                             length   = 1,
+                                                                                             in.out   = "return"))
                }
 
-               functions[[function.no]] <- current.function
-               processed.functions <- c(processed.functions, name)
-               function.no <- function.no + 1
-
-          }else{ # name %in% namespace
+               functions[[function.no]]    <- current.function
+               processed.functions         <- c(processed.functions, name)
+               function.no                 <- function.no + 1
+        }else{ # name %in% namespace
                print(paste("Skipped as not in namespace.", name))
-          }
-     }
-}     
+        }
+     } # end function loop --- for (i in 1:length(pos.start.doxygen.comment)
+} # end header file loop --- for(header.file.name in header.file.names)   
 
 # restore working directory
 setwd(cur.dir)
 
 save(functions, file = "functions.ssd")
+
