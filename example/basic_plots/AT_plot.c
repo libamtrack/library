@@ -294,7 +294,7 @@ int main( int argc, char* argv[]){
 		long rdd_model = modeltype;
 		char rdd_name[200];
 		AT_RDD_name_from_number(rdd_model, rdd_name);
-		long  index = AT_RDD_index_from_material_number( rdd_model );
+		long  index = AT_RDD_index_from_RDD_number( (const long)rdd_model );
 		double rdd_parameter[RDD_MAX_NUMBER_OF_PARAMETERS];
 		int i;
 		for( i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++)
