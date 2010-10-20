@@ -23,7 +23,7 @@ GSLPATH   = /usr
 MINGWPATH = 
 ############################################################
 
-CFLAGS    = -Wall -c -O3 -DNDEBUG
+CFLAGS    = -Wall -c -O3 -DNDEBUG -std=gnu99
 LFLAGS    = -lm -lgsl -lgslcblas
 
 ifeq ($(OS),Linux)
@@ -36,8 +36,8 @@ ADDFLAGS  =
 RMCMD     = rm
 GCC       = gcc 
 MKDIRCMD  = mkdir -p
-GSLINCLUDE = "$(GSLPATH)/include"
-GSLLIB     = "$(GSLPATH)/lib"
+GSLINCLUDE = $(GSLPATH)/include
+GSLLIB     = $(GSLPATH)/lib
 endif
 
 ifeq ($(OS),Windows)
@@ -82,7 +82,7 @@ all:$(LIBOBJS)
 static:$(LIBCOBJS) $(LIBHOBJS)
 		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(ADDFLAGS) $(CFLAGS) $(LIBCOBJS)
 		$(MKDIRCMD) lib 
-		ar -cvq $(STATICLIB) $(LIBOBJS) 
+		ar rcs $(STATICLIB) $(LIBOBJS) 
 		$(RMCMD) *.o
 
 clean:
