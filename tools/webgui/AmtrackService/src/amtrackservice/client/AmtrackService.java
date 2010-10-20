@@ -16,7 +16,8 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.visualization.client.VisualizationUtils;
-import com.google.gwt.visualization.client.visualizations.PieChart;
+import com.google.gwt.visualization.client.visualizations.ScatterChart;
+import com.google.gwt.visualization.client.visualizations.ScatterChart.Options;
 import com.google.gwt.xml.client.impl.DOMParseException;
 
 /**
@@ -34,6 +35,7 @@ public class AmtrackService implements EntryPoint {
 
 	private ArrayList<Calculation> openCalculations = new ArrayList<Calculation>();
 
+	
 	/**
 	 * This is the entry point method.
 	 */
@@ -42,10 +44,11 @@ public class AmtrackService implements EntryPoint {
 		initConfig();
 		Logger.info("Service ready...");
 
-//		Runnable onLoadCallback = new Runnable() {
-//			public void run() {}
-//		};
-//		VisualizationUtils.loadVisualizationApi(onLoadCallback, PieChart.PACKAGE);
+		Runnable onLoadCallback = new Runnable() {
+			public void run() {}
+		};
+		
+		VisualizationUtils.loadVisualizationApi(onLoadCallback, "corechart");
 	}
 
 	/**
