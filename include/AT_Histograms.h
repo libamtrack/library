@@ -424,21 +424,23 @@ double AT_step_to_N2(double step);
 
 /* OLD ROUTINES, KEPT FOR COMPATIBILITY */
 /**
- * TODO
- * @param number_of_bins
- * @param bin_centers
- * @return
+ * Returns bin width
+ *
+ * @param[in] number_of_bins               number of bin in histogram
+ * @param[in] bin_centers                  bin centers (array of size number_of_bins)
+ * @return bin_width
  */
 double AT_histoOld_log_bin_width(	const long number_of_bins,
 								const double bin_centers[]);
 
 
 /**
- * TODO
- * @param number_of_bins
- * @param bin_centers
- * @param bin_no
- * @return
+ * Returns lower bin limit for single bin
+ *
+ * @param[in] number_of_bins               number of bin in histogram
+ * @param[in] bin_centers                  bin centers (array of size number_of_bins)
+ * @param[in] bin_no                       index of bin (zero based)
+ * @return lower_left_limit
  */
 double AT_histoOld_lower_bin_limit(const long number_of_bins,
 								const double bin_centers[],
@@ -446,11 +448,12 @@ double AT_histoOld_lower_bin_limit(const long number_of_bins,
 
 
 /**
- * TODO
- * @param number_of_bins
- * @param bin_centers
- * @param bin_no
- * @return
+ * Returns lower bin limit for single bin
+ *
+ * @param[in] number_of_bins               number of bin in histogram
+ * @param[in] bin_centers                  bin centers (array of size number_of_bins)
+ * @param[in] bin_no                       index of bin (zero based)
+ * @return upper_left_limit
  */
 double AT_histoOld_upper_bin_limit(const long number_of_bins,
 								const double bin_centers[],
@@ -458,11 +461,12 @@ double AT_histoOld_upper_bin_limit(const long number_of_bins,
 
 
 /**
- * TODO
- * @param number_of_bins
- * @param bin_centers
- * @param bin_no
- * @return
+ * Returns bin width for single bin
+ *
+ * @param[in] number_of_bins               number of bin in histogram
+ * @param[in] bin_centers                  bin centers (array of size number_of_bins)
+ * @param[in] bin_no                       index of bin (zero based)
+ * @return bin width
  */
 double AT_histoOld_get_bin_width(	const long number_of_bins,
 								const double bin_centers[],
@@ -470,10 +474,11 @@ double AT_histoOld_get_bin_width(	const long number_of_bins,
 
 
 /**
- * TODO
- * @param number_of_bins
- * @param bin_centers
- * @param bin_widths
+ * Returns bin widths
+ *
+ * @param[in] number_of_bins               number of bin in histogram
+ * @param[in] bin_centers                  bin centers (array of size number_of_bins)
+ * @param[out] bin_width                   resulting bin widths (array of size number_of_bins)
  */
 void AT_histoOld_get_bin_widths(	const long number_of_bins,
 								const double bin_centers[],
@@ -481,11 +486,12 @@ void AT_histoOld_get_bin_widths(	const long number_of_bins,
 
 
 /**
- * TODO
- * @param number_of_bins
- * @param bin_centers
- * @param value
- * @return
+ * Returns bin index number for a value
+ *
+ * @param[in] number_of_bins               number of bin in histogram
+ * @param[in] bin_centers                  bin centers (array of size number_of_bins)
+ * @param[in] value                        value to put into histogram
+ * @return bin_no
  */
 long AT_histoOld_bin_no(	const long number_of_bins,
 						const double bin_centers[],
