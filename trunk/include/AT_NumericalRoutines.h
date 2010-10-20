@@ -91,7 +91,8 @@ double AT_range_straggling_convolution(  const double z,
  *  param[in]   y       order of Dy(x)
  *  return  Dyx
  */
-double AT_Dyx(  double  y,  double  x);
+double AT_Dyx(  double  y,
+		double  x);
 
 
 /**
@@ -106,7 +107,12 @@ double AT_Dyx(  double  y,  double  x);
  *  param[out]  pdf     Dv(x)
  *  param[out]  pdd     Dv'(x)
  */
-int pbdv_(  double *v, double *x, double *dv, double *dp, double *pdf, double *pdd);
+int pbdv_(  double *v,
+		double *x,
+		double *dv,
+		double *dp,
+		double *pdf,
+		double *pdd);
 
 
 /**
@@ -116,7 +122,9 @@ int pbdv_(  double *v, double *x, double *dv, double *dp, double *pdf, double *p
  * @param va order
  * @param pd output Dv(x)
  */
-int dvsa_(  double *va, double *x, double *pd);
+int dvsa_(  double *va,
+		double *x,
+		double *pd);
 
 
 /**
@@ -128,7 +136,9 @@ int dvsa_(  double *va, double *x, double *pd);
  * @param va order
  * @param pd output Dv(x)
  */
-int dvla_(  double *va, double *x, double *pd);
+int dvla_(  double *va,
+		double *x,
+		double *pd);
 
 
 /**
@@ -140,7 +150,9 @@ int dvla_(  double *va, double *x, double *pd);
  * @param va order
  * @param pv output Vv(x)
  */
-int vvla_(  double *va, double *x, double *pv);
+int vvla_(  double *va,
+		double *x,
+		double *pv);
 
 
 /**
@@ -149,7 +161,8 @@ int vvla_(  double *va, double *x, double *pv);
  * @param b
  * @return
  */
- double d_sign( const double a, const double b);
+ double d_sign( const double a,
+		 const double b);
 
 
 /**
@@ -157,7 +170,8 @@ int vvla_(  double *va, double *x, double *pv);
  * @param x argument (x is not equal to 0,-1,-2,...)
  * @param ga output
  */
-int gamma_( const double *x, double *ga);
+int gamma_( const double *x,
+		double *ga);
 
 
 /* TODO it is logarithm of which gamma function ? it is not used */
@@ -188,7 +202,11 @@ void nrerror(const char error_text[]);
  * @param xacc
  * @return
  */
-double zriddr(double (*func)(double,void*), void * params, const double x1, const double x2, const double xacc);
+double zriddr(double (*func)(double,void*),
+		void * params,
+		const double x1,
+		const double x2,
+		const double xacc);
 
 
 /**
@@ -200,7 +218,11 @@ double zriddr(double (*func)(double,void*), void * params, const double x1, cons
  * @param n_set
  * @param matches
  */
-void are_elements_int(const int elements[], const int n_elements, const int set[], const int n_set, int matches[]);
+void are_elements_int(const int elements[],
+		const int n_elements,
+		const int set[],
+		const int n_set,
+		int matches[]);
 
 
 /**

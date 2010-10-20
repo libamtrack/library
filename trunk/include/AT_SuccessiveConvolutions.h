@@ -152,6 +152,7 @@ void AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
  * Routine to perform the convolutions from initial linearized local dose distribution f_start to resulting f
  * as described by Kellerer, 1969. This is a to most extend a reimplementation of Kellerer's original FORTRAN IV code.
  * Usually step 5 of the CPP-SC method
+ *
  * @param[in]      u                   value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from AT_SC_get_f_array_size)
  * @param[in]      n_bins_f            number of bins holding the resulting f local dose distribution (from AT_SC_get_f_array_size)
  * @param[in,out]  N2                  number of bins per factor of two in local dose array f_start, will return new value in case it was adjusted by the routine (higher resolution in case of high fluences)
@@ -189,8 +190,16 @@ void AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_contri
 
 /**
  * Normalized the distribution resulting from last convolution
+ *
+ * @param[in]      values_first_bin    TODO
+ * @param[in]      value_midpoints    TODO (array of size frequency_n_bins)
+ * @param[in]      value_bin_widths    TODO (array of size frequency_n_bins)
+ * @param[in]      frequency_n_bins    TODO
+ * @param[in]      frequency_zero_bin    TODO
+ * @param[in]      frequency_first_bin    TODO
+ * @param[out]     frequency               TODO (array of size frequency_n_bins)
  */
-void AT_Kellerer_normalize(const long values_first_bin,
+void AT_Kellerer_normalize( const long values_first_bin,
 		const double value_midpoints[],
 		const double value_bin_widths[],
 		const long frequency_n_bins,
@@ -200,19 +209,37 @@ void AT_Kellerer_normalize(const long values_first_bin,
 
 /**
  * Calculates arrays A and B to be used in quadratic extrapolation of F in AT_SC_FOLD
+ *
+ * @param[in]       N2             TODO
+ * @param[in]       LEF             TODO
+ * @param[in]       array_size             TODO
+ * @param[in]       F             TODO (array of size array_size)
+ * @param[out]       A             TODO (array of size array_size)
+ * @param[out]       BI             TODO (array of size array_size)
  */
-void AT_Kellerer_interpolation(const long N2,
+void AT_Kellerer_interpolation( const long N2,
 		const long LEF,
 		const long array_size,
-
-		double	F[],
+		const double	F[],
 		double	A[],
 		double	BI[]);
 
+
 /**
  * Selects a new coordinate system if F has become to narrow
+ *
+ * @param[in]       N2             TODO
+ * @param[in]       array_size             TODO
+ * @param[in/out]       LEF             TODO
+ * @param[in/out]       MIE             TODO
+ * @param[in/out]       MIF             TODO
+ * @param[in]       E0             TODO
+ * @param[in/out]       E             TODO (array of size array_size)
+ * @param[in/out]       DE             TODO (array of size array_size)
+ * @param[in/out]       F             TODO (array of size array_size)
+ * @param[in/out]       DI             TODO (array of size array_size)
  */
-void AT_Kellerer_reset(long* N2,
+void AT_Kellerer_reset( long* N2,
 		const long array_size,
 		long* LEF,
 		long* MIE,
@@ -226,8 +253,19 @@ void AT_Kellerer_reset(long* N2,
 
 /**
  * Adds the term 2*F0*F(L) to H(L)
+ *
+ * @param[in]       MIF             TODO
+ * @param[in]       array_size             TODO
+ * @param[in]       MIE             TODO
+ * @param[in]       LEF             TODO
+ * @param[in]       F0             TODO
+ * @param[in]       F             TODO (array of size array_size)
+ * @param[in]       DE             TODO (array of size array_size)
+ * @param[in/out]       MIH             TODO
+ * @param[in/out]       LEH             TODO
+ * @param[in/out]       H             TODO (array of size array_size)
  */
-void AT_Kellerer_zero(const long MIF,
+void AT_Kellerer_zero( const long MIF,
 		const long array_size,
 		const long MIE,
 		const long LEF,
@@ -240,11 +278,18 @@ void AT_Kellerer_zero(const long MIF,
 
 /**
  * Cuts tails of distribution that contribute less that shrink_tails_under to @<f@>
+ *
+ * @param[in]       array_size             TODO
+ * @param[in]       MIE             TODO
+ * @param[in]       shrink_tails_under             TODO
+ * @param[in]       DE             TODO (array of size array_size)
+ * @param[in/out]       MIH             TODO
+ * @param[in/out]       LEH             TODO
+ * @param[in/out]       H             TODO (array of size array_size)
  */
-void AT_Kellerer_shrink(const long array_size,
+void AT_Kellerer_shrink( const long array_size,
 		const long MIE,
 		const double shrink_tails_under,
-
 		const double DE[],
 		long* MIH,
 		long* LEH,
@@ -253,8 +298,22 @@ void AT_Kellerer_shrink(const long array_size,
 
 /**
  * Does actual convolution, makes use of the symmetry
+ *
+ * @param[in]       n_bins             TODO
+ * @param[in]       bins_per_factor_2             TODO
+ * @param[in]       delta_i             TODO (array of size array_size)
+ * @param[in]       values_first_bin             TODO
+ * @param[in]       values_bin_widths             TODO (array of size array_size)
+ * @param[in]       frequency_n_bins_last             TODO
+ * @param[in]       frequency_first_bin_last             TODO
+ * @param[in]       frequency_zero_bin_last             TODO
+ * @param[in/out]   frequency_last             TODO (array of size array_size)
+ * @param[in/out]   frequency_n_bins             TODO
+ * @param[in/out]   frequency_first_bin             TODO
+ * @param[in/out]   frequency_zero_bin             TODO
+ * @param[in/out]   frequency             TODO (array of size array_size)
  */
-void AT_Kellerer_folding(		const long n_bins,
+void AT_Kellerer_folding( const long n_bins,
 		const long bins_per_factor_2,
 		const double delta_i[],
 		const long values_first_bin,
