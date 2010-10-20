@@ -6,8 +6,11 @@ import amtrackservice.client.MapList;
 import amtrackservice.client.gui.elements.ScatterChartLogAxis.AxisOptions;
 import amtrackservice.client.gui.elements.ScatterChartLogAxis.Options;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
@@ -18,6 +21,7 @@ public class AmPlot extends AmWidget {
 	private String dataX;
 	private String dataY;
 	private FlowPanel widget = new FlowPanel();
+	private ScatterChartLogAxis chart;
 	
 	private HashMap<Double, Double> values = new HashMap<Double, Double>();
 
@@ -27,7 +31,6 @@ public class AmPlot extends AmWidget {
 		super(label, datatype, description);
 		this.dataX = dataX;
 		this.dataY = dataY;
-		widget.add(new HTML("No data"));
 	}
 
 	@Override
@@ -52,6 +55,28 @@ public class AmPlot extends AmWidget {
 			this.values.put(x, y);
 		}
 		this.widget.clear();
+		final ToggleButton tbxaxis = new ToggleButton("switch X axis to logarithmic scale","switch X axis to linear scale");
+		tbxaxis.addClickHandler(new ClickHandler() {			
+			public void onClick(ClickEvent event) {
+				if( tbxaxis.isDown() ){
+					setXAxisLogScale(true);
+				} else {
+					setXAxisLogScale(false);
+				}
+			}
+		});
+		widget.add(tbxaxis);
+		final ToggleButton tbyaxis = new ToggleButton("switch Y axis to logarithmic scale","switch Y axis to linear scale");
+		tbyaxis.addClickHandler(new ClickHandler() {			
+			public void onClick(ClickEvent event) {
+				if( tbyaxis.isDown() ){
+					setYAxisLogScale(true);
+				} else {
+					setYAxisLogScale(false);
+				}
+			}
+		});
+		widget.add(tbyaxis);
 		this.widget.add(createPlot());
 	}
 
@@ -59,12 +84,28 @@ public class AmPlot extends AmWidget {
 	public String getDataLink() {
 		return null; // unimplemented
 	}
+	
+	public void setXAxisLogScale(boolean logscale){
+		Options options = createOptions();
+		AxisOptions axisopt = AxisOptions.create();
+		axisopt.setIsLogScale(logscale);
+		options.setHAxisOptions(axisopt);
+		this.chart.draw(createTable(), options);
+	}
+	
+	public void setYAxisLogScale(boolean logscale){
+		Options options = createOptions();
+		AxisOptions axisopt = AxisOptions.create();
+		axisopt.setIsLogScale(logscale);
+		options.setVAxisOptions(axisopt);
+		this.chart.draw(createTable(), options);
+	}
 		
 	private Widget createPlot() {
         FlowPanel panel = new FlowPanel();        
-        ScatterChartLogAxis line = new ScatterChartLogAxis(createTable(), createOptions() );
+        this.chart = new ScatterChartLogAxis(createTable(), createOptions() );
         panel.clear();
-        panel.add(line);
+        panel.add(this.chart);
         return panel;
 
 	}		
@@ -75,11 +116,6 @@ public class AmPlot extends AmWidget {
 		options.setHeight(480);
 		options.setTitle(this.getLabel().getText());
 		options.setLineSize(1);
-		
-		AxisOptions axisopt = AxisOptions.create();
-		axisopt.setIsLogScale(true);
-		options.setHAxisOptions(axisopt);
-		
 		options.setTitleX(this.dataX);
 		options.setTitleY(this.dataY);
 		return options;
