@@ -4,14 +4,14 @@
 		[b]Returns particle energy as a function of beta[/b]		
 	</description>
 	<input>
-		<element type="field" label="beta left limit" datatype="double">
+		<element type="field" label="beta minimum" datatype="double">
 			<description>beta minimum</description>
 			<preset>
 				<item value="0.1" />
 			</preset>
 			<data x="beta_start" />
 		</element>
-		<element type="field" label="beta right limit" datatype="double">
+		<element type="field" label="beta maximum" datatype="double">
 			<description>beta maximum</description>
 			<preset>
 				<item value="0.9" />
@@ -39,8 +39,8 @@
 	</input>
 
 	<output>
-		<element type="plot" label="particle energy [MeV/u]" datatype="double">
-			<description>Energy [MeV/u]</description>
+		<element type="plot" label="particle energy [MeV/amu]" datatype="double">
+			<description>Energy [MeV/amu]</description>
 			<data x="beta" y="E" />
 		</element>
 	</output>

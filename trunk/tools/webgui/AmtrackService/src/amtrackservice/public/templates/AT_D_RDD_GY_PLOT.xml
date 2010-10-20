@@ -17,7 +17,7 @@
 		</element>
 
 		<element type="field" label="E_Mev_u" datatype="double">
-			<description>particle (ion) energy per nucleon [MeV/u]</description>
+			<description>particle (ion) energy per nucleon [MeV/amu]</description>
 			<preset>
 				<item value="10" />
 			</preset>

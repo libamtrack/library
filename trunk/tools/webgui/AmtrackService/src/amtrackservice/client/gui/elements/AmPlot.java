@@ -56,26 +56,34 @@ public class AmPlot extends AmWidget {
 		}
 		this.widget.clear();
 		final ToggleButton tbxaxis = new ToggleButton("switch X axis to logarithmic scale","switch X axis to linear scale");
+		final ToggleButton tbyaxis = new ToggleButton("switch Y axis to logarithmic scale","switch Y axis to linear scale");
 		tbxaxis.addClickHandler(new ClickHandler() {			
 			public void onClick(ClickEvent event) {
+				boolean yaxis = false;
+				if( tbyaxis.isDown() )
+					yaxis = true;
+				
 				if( tbxaxis.isDown() ){
-					setXAxisLogScale(true);
+					setAxisLogScales(true,yaxis);
 				} else {
-					setXAxisLogScale(false);
+					setAxisLogScales(false,yaxis);
+				}
+			}
+		});
+		tbyaxis.addClickHandler(new ClickHandler() {			
+			public void onClick(ClickEvent event) {
+				boolean xaxis = false;
+				if( tbxaxis.isDown() )
+					xaxis = true;
+				
+				if( tbyaxis.isDown() ){
+					setAxisLogScales(xaxis,true);
+				} else {
+					setAxisLogScales(xaxis,false);
 				}
 			}
 		});
 		widget.add(tbxaxis);
-		final ToggleButton tbyaxis = new ToggleButton("switch Y axis to logarithmic scale","switch Y axis to linear scale");
-		tbyaxis.addClickHandler(new ClickHandler() {			
-			public void onClick(ClickEvent event) {
-				if( tbyaxis.isDown() ){
-					setYAxisLogScale(true);
-				} else {
-					setYAxisLogScale(false);
-				}
-			}
-		});
 		widget.add(tbyaxis);
 		this.widget.add(createPlot());
 	}
@@ -85,19 +93,14 @@ public class AmPlot extends AmWidget {
 		return null; // unimplemented
 	}
 	
-	public void setXAxisLogScale(boolean logscale){
+	public void setAxisLogScales(boolean logscaleX, boolean logscaleY){
 		Options options = createOptions();
-		AxisOptions axisopt = AxisOptions.create();
-		axisopt.setIsLogScale(logscale);
-		options.setHAxisOptions(axisopt);
-		this.chart.draw(createTable(), options);
-	}
-	
-	public void setYAxisLogScale(boolean logscale){
-		Options options = createOptions();
-		AxisOptions axisopt = AxisOptions.create();
-		axisopt.setIsLogScale(logscale);
-		options.setVAxisOptions(axisopt);
+		AxisOptions axisoptX = AxisOptions.create();
+		AxisOptions axisoptY = AxisOptions.create();
+		axisoptX.setIsLogScale(logscaleX);
+		options.setHAxisOptions(axisoptX);
+		axisoptY.setIsLogScale(logscaleY);
+		options.setVAxisOptions(axisoptY);
 		this.chart.draw(createTable(), options);
 	}
 		
