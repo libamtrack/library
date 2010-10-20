@@ -153,7 +153,7 @@ long AT_Gamma_number_of_parameters( const long Gamma_no);
  * @param[in]  d_Gy             doses in Gy (array of size number_of_doses)
  * @param[in]  gamma_model      gamma response model index
  * @param[in]  gamma_parameter  vector holding necessary parameters for the chose gamma response model (array of size 4)
- * @param[in]  lethal_event_mode  TODO
+ * @param[in]  lethal_event_mode  if true computation is done in lethal event mode
  * @param[out] S                gamma responses (array of size number_of_doses)
  */
 void AT_gamma_response( const long  number_of_doses,
@@ -165,7 +165,16 @@ void AT_gamma_response( const long  number_of_doses,
 
 
 /**
- * TODO
+ * Returns the detector / cell gamma response for dose distribution
+ *
+ * @param[in]  number_of_bins            number of bins in the dose histogram
+ * @param[in]  dose_Gy_bin_position      midpoint doses for histogram in Gy (array of size number_of_bins)
+ * @param[in]  dose_Gy_bin_width         bin widths for histogram in Gy (array of size number_of_bins)
+ * @param[in]  dose_bin_frequency        dose frequencies for histogram (array of size number_of_bins)
+ * @param[in]  gamma_model               gamma response model index
+ * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size 4)
+ * @param[in]  lethal_event_mode         if true computation is done in lethal event mode
+ * @return     response
  */
 double AT_get_gamma_response_for_average_dose(  const long  number_of_bins,
     const double   dose_Gy_bin_position[],
@@ -177,7 +186,15 @@ double AT_get_gamma_response_for_average_dose(  const long  number_of_bins,
 
 
 /**
- * TODO
+ * Returns the detector / cell gamma response for dose distribution
+ *
+ * @param[in]  number_of_bins            number of bins in the dose histogram
+ * @param[in]  dose_Gy_bin_position      midpoint doses for histogram in Gy (array of size number_of_bins)
+ * @param[in]  dose_bin_frequency        dose frequencies for histogram (array of size number_of_bins)
+ * @param[in]  gamma_model               gamma response model index
+ * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size 4)
+ * @param[in]  lethal_event_mode         if true computation is done in lethal event mode
+ * @param[out] response_bin_frequency    resulting response frequencies (array of size number_of_bins)
  */
 void AT_get_response_distribution_from_dose_distribution(  const long  number_of_bins,
     const double   dose_Gy_bin_position[],
@@ -189,7 +206,13 @@ void AT_get_response_distribution_from_dose_distribution(  const long  number_of
 
 
 /**
- * TODO
+ * Returns the ion response from an ion response distribution
+ *
+ * @param[in]  number_of_bins                number of bins in the dose histogram
+ * @param[in]  dose_Gy_bin_width             bin widths for histogram in Gy (array of size number_of_bins)
+ * @param[in]  dose_bin_frequency            dose frequencies for histogram (array of size number_of_bins)
+ * @param[in]  ion_response_bin_frequency    ion response frequencies (array of size number_of_bins)
+ * @return     response
  */
 double AT_get_ion_response_from_response_distribution(  const long  number_of_bins,
 	const double   dose_Gy_bin_width[],
@@ -198,7 +221,15 @@ double AT_get_ion_response_from_response_distribution(  const long  number_of_bi
 
 
 /**
- * TODO
+ * Returns ion response for dose distribution
+ *
+ * @param[in]  number_of_bins            number of bins in the dose histogram
+ * @param[in]  dose_Gy_bin_position      midpoint doses for histogram in Gy (array of size number_of_bins)
+ * @param[in]  dose_bin_frequency        dose frequencies for histogram (array of size number_of_bins)
+ * @param[in]  gamma_model               gamma response model index
+ * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size 4)
+ * @param[in]  lethal_event_mode         if true computation is done in lethal event mode
+ * @return     resulting ion response
  */
 double AT_get_ion_response_from_dose_distribution(  const long  number_of_bins,
 	    const double   dose_Gy_bin_position[],
@@ -210,7 +241,15 @@ double AT_get_ion_response_from_dose_distribution(  const long  number_of_bins,
 
 
 /**
- * TODO
+ * Returns relative efficiency for dose distribution
+ *
+ * @param[in]  number_of_bins            number of bins in the dose histogram
+ * @param[in]  dose_Gy_bin_position      midpoint doses for histogram in Gy (array of size number_of_bins)
+ * @param[in]  dose_bin_frequency        dose frequencies for histogram (array of size number_of_bins)
+ * @param[in]  gamma_model               gamma response model index
+ * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size 4)
+ * @param[in]  lethal_event_mode         if true computation is done in lethal event mode
+ * @return     relative efficiency
  */
 double AT_get_ion_efficiency_from_dose_distribution(  const long  number_of_bins,
 	    const double   dose_Gy_bin_position[],
@@ -222,7 +261,15 @@ double AT_get_ion_efficiency_from_dose_distribution(  const long  number_of_bins
 
 
 /**
- * TODO
+ * Returns relative efficiency from ion response distribution
+ *
+ * @param[in]  number_of_bins            number of bins in the dose histogram
+ * @param[in]  dose_Gy_bin_position      midpoint doses for histogram in Gy (array of size number_of_bins)
+ * @param[in]  dose_bin_frequency        dose frequencies for histogram (array of size number_of_bins)
+ * @param[in]  ion_response_bin_frequency    ion response frequencies (array of size number_of_bins)
+ * @param[in]  gamma_model               gamma response model index
+ * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size 4)
+ * @param[in]  lethal_event_mode         if true computation is done in lethal event mode
  */
 double AT_get_ion_efficiency_from_response_distribution(  const long  number_of_bins,
 	    const double   dose_Gy_bin_position[],
