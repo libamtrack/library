@@ -33,7 +33,7 @@ DSEP      = /
 SRCDIR    = ./src
 INCLDIR   = ./include
 ADDFLAGS  = 
-RMCMD     = rm
+RMCMD     = rm -rf
 GCC       = gcc 
 MKDIRCMD  = mkdir -p
 GSLINCLUDE = $(GSLPATH)/include
@@ -84,11 +84,37 @@ static:$(LIBCOBJS) $(LIBHOBJS)
 		$(MKDIRCMD) lib 
 		ar rcs $(STATICLIB) $(LIBOBJS) 
 		$(RMCMD) *.o
+		
+binary-linux:$(LIBCOBJS) $(LIBHOBJS)
+		- $(RMCMD) bin
+		$(MKDIRCMD) bin$(DSEP)dynamic$(DSEP)lib
+		$(MKDIRCMD) bin$(DSEP)static$(DSEP)lib
+		cp README.txt bin$(DSEP)dynamic
+		cp README.txt bin$(DSEP)static
+		cp -r include bin$(DSEP)dynamic
+		cp -r include bin$(DSEP)static
+		cp -r example bin$(DSEP)dynamic
+		cp -r example bin$(DSEP)static
+		cp -r $(SHAREDLIB) bin$(DSEP)dynamic$(DSEP)lib
+		cp -r $(STATICLIB) bin$(DSEP)static$(DSEP)lib
+		find bin -name ".svn" | xargs rm -Rf
+		cd bin$(DSEP)static$(DSEP)example$(DSEP)demo; make clean; cd - 
+		cd bin$(DSEP)static$(DSEP)example$(DSEP)demo; make static; cd -
+		cd bin$(DSEP)static$(DSEP)example$(DSEP)basic_plots; make clean; cd - 
+		cd bin$(DSEP)static$(DSEP)example$(DSEP)basic_plots; make static; cd -
+		cd bin$(DSEP)dynamic$(DSEP)example$(DSEP)demo; make clean; cd - 
+		cd bin$(DSEP)dynamic$(DSEP)example$(DSEP)demo; make all; cd -
+		cd bin$(DSEP)dynamic$(DSEP)example$(DSEP)basic_plots; make clean; cd - 
+		cd bin$(DSEP)dynamic$(DSEP)example$(DSEP)basic_plots; make all; cd -
+		cd bin$(DSEP)dynamic; tar -zcvf ..$(DSEP)libamtrack-dynamic.tar.gz *; cd -
+		- $(RMCMD) bin$(DSEP)dynamic
+		cd bin$(DSEP)static; tar -zcvf ..$(DSEP)libamtrack-static.tar.gz *; cd -
+		- $(RMCMD) bin$(DSEP)static
 
 clean:
 		- $(RMCMD) *.o
 		- $(RMCMD) $(SHAREDLIB)
-		- $(RMCMD) $(STATICLIB)
+		- $(RMCMD) $(STATICLIB) 
 
 $(LIBOBJS):$(LIBCOBJS) $(LIBHOBJS)
 		$(GCC) -I$(INCLDIR) -I$(GSLINCLUDE) $(ADDFLAGS) $(CFLAGS) -fPIC $(LIBCOBJS)
