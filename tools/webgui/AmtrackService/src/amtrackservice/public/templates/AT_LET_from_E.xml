@@ -4,14 +4,14 @@
 		[b]Returns LET as a function of particle energy[/b]
 	</description>
 	<input>
-		<element type="field" label="E left limit [MeV/amu]" datatype="double">
+		<element type="field" label="E minimum [MeV/amu]" datatype="double">
 			<description>E [MeV/amu] minimum</description>
 			<preset>
 				<item value="0.01" />
 			</preset>
 			<data x="E_start" />
 		</element>
-		<element type="field" label="E right limit [MeV/amu]" datatype="double">
+		<element type="field" label="E maximum [MeV/amu]" datatype="double">
 			<description>E [MeV/amu] maximum</description>
 			<preset>
 				<item value="1" />

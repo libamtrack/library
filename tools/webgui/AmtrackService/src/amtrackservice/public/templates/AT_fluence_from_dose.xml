@@ -15,8 +15,8 @@
 			<data x="dose_input" />
 		</element>
 		
-		<element type="field" label="E [MeV/u]" datatype="double">
-			<description>E [MeV/u]</description>
+		<element type="field" label="E [MeV/amu]" datatype="double">
+			<description>E [MeV/amu]</description>
 			<preset>
 				<item value="60" />
 			</preset>
