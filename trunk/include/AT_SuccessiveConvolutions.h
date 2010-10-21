@@ -220,7 +220,7 @@ void AT_Kellerer_normalize( const long values_first_bin,
 void AT_Kellerer_interpolation( const long N2,
 		const long LEF,
 		const long array_size,
-		const double	F[],
+		double	F[],
 		double	A[],
 		double	BI[]);
 

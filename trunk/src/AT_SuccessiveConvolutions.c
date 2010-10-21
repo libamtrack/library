@@ -899,7 +899,6 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 
 	//////////////////////////////////////////
 	// Copy results back to input structure
-	// and adjust according to MIH, MIE
 	//////////////////////////////////////////
 
 	*d    = 0.0;
