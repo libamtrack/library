@@ -2,7 +2,7 @@
 #define AmTrack_H_
 
 /**
- * @brief libamtrack main file holding the amorphous track routines for RE/RBE calculation
+ * @brief libamtrack main file holding the amorphous track methods for RE/RBE calculation
  */
 
 /*
@@ -53,33 +53,33 @@
 
 
 /**
- * Computes HCP response and RE/RBE using compound Poison process and
+ * Computes HCP response and relative efficiency/RBE using compound Poison processes and
  * successive convolutions (CPP_SC, the 'SPIFF' algorithm)
  *
- * @param[in]  n                   number of particle types in the mixed particle field
- * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
- * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
- * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
- * @param[in]  material_no         index number for detector material
- * @see          AT_DataMaterial.h for definition
- * @param[in]  rdd_model           index number for chosen radial dose distribution
- * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size 4)
- * @see          AT_RDD.h for definition
- * @param[in]  er_model            index number for chosen electron-range model
- * @see          AT_ElectronRange.h for definition
- * @param[in]  gamma_model         index number for chosen gamma response
- * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size 4)
- * @see          AT_GammaResponse.h for definition
- * @param[in,out]  N2      (algorithm specific) number of bins per factor of two in local dose array
- * @param[in]  fluence_factor      factor to scale the fluences given as "fluence_cm2" with
- * @param[in]  write_output        if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory
- * @param[in]  shrink_tails        (algorithm specific) if true, tails of the local dose distribution, contributing less than "shrink_tails_under" are cut
- * @param[in]  shrink_tails_under  (algorithm specific) limit for tail cutting in local dose distribution
- * @param[in]  adjust_N2           (algorithm specific) if true, "N2" will be increase if necessary at high fluence to ensure sufficient binning resolution
- * @param[in]  lethal_events_mode  (algorithm specific) if true, allows to do calculations for cell survival
- * @param[out]  results            to be allocated by the user which will be used to return the results (array of size 10) @n
- *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D @n
+ * @param[in]      n                              number of components in the mixed particle field
+ * @param[in]      E_MeV_u                        particle energy for each component in the mixed particle field [MeV/u] (array of size n)
+ * @param[in]      particle_no                    particle type for each component in the mixed particle field (array of size n)
+ * @see AT_DataParticle.h for definition
+ * @param[in]      fluence_cm2_or_dose_Gy         if positive, particle fluence for each component in the mixed particle field [1/cm2]; if negative, particle dose for each component in the mixed particle field [Gy] (array of size n)
+ * @param[in]      material_no                    index number for detector material
+ * @see AT_DataMaterial.h for definition
+ * @param[in]      rdd_model                      index number for chosen radial dose distribution
+ * @param[in]      rdd_parameters                 parameters for chosen radial dose distribution (array of size 4)
+ * @see AT_RDD.h for definition
+ * @param[in]      er_model                       index number for chosen electron-range model
+ * @see AT_ElectronRange.h for definition
+ * @param[in]      gamma_model                    index number for chosen gamma response
+ * @param[in]      gamma_parameters               parameters for chosen gamma response (array of size 4)
+ * @see AT_GammaResponse.h for definition
+ * @param[in,out]  N2                             number of bins per factor of two for the dose scale of local dose histogram
+ * @param[in]      fluence_factor                 factor to scale the fluences / doses given in "fluence_cm2_or_dose_Gy" with
+ * @param[in]      write_output                   if true, a log-file is written to "SuccessiveConvolutions.txt" in the working directory
+ * @param[in]      shrink_tails                   if true, tails of the local dose distribution, contributing less than "shrink_tails_under" are cut
+ * @param[in]      shrink_tails_under             limit for tail cutting in local dose distribution
+ * @param[in]      adjust_N2                      if true, "N2" will be increase if necessary at high fluence to ensure sufficient local dose histogram resolution
+ * @param[in]      lethal_events_mode             if true, computations are done for dependent subtargets
+ * @param[out]     results                        results (array of size 10) @n
+ *    results[0]    efficiency      (algorithm independent)  HCP response at dose D / gamma response at dose D @n
  *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm @n
  *    results[2]    S_HCP           (algorithm independent)  absolute particle response @n
  *    results[3]    S_gamma         (algorithm independent)  absolute gamma response @n
