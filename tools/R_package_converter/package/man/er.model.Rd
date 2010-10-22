@@ -14,6 +14,7 @@
 
 \details{
 	\tabular{rl}{
+		\bold{\code{er.model}} \tab \bold{description}\cr
 		1 \tab A simple test function (constant range)\cr
 		2 \tab Parametrization proposed by Butts and Katz (Butts & Katz, 1972)\cr
 		3 \tab Parametrization proposed by M. Waligorski (Waligorski, 1985)\cr
