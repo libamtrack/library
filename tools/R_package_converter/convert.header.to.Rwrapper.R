@@ -39,7 +39,7 @@ grep.bool	<-	function(pattern, x, ...){
 }
 
 for(i in 1:length(functions)){
-	#i<-4
+	#i<-1
 	tmp <- functions[[i]]
 
 	##############################
@@ -126,15 +126,28 @@ for(i in 1:length(functions)){
 	if(n.return.elements>= 1){
 		header <- c(header, "\t return.list <- NULL")
 		j <- 0
-		if(length(pos.out) > 0){
+            names.in.return.list   <- "c("
+            if(length(pos.out) > 0){
 			for(j in 1:length(pos.out)){
-				header <- c(header, paste("\t return.list[[", j, "]] <- res$", para$name[pos.out[j]], "", sep = ""))
+			# j <- 1
+                        header                <- c(header, paste("\t return.list[[", j, "]] <- res$", para$name[pos.out[j]], "", sep = ""))
+                        names.in.return.list  <- paste(names.in.return.list, "\"", para$name[pos.out[j]], "\"", sep = "")
+                        if (j < length(pos.out)){
+                             names.in.return.list  <- paste(names.in.return.list, ",", sep = "")
+                        }
 			}
 		}
 		if(tmp$type != "void"){
-			header <- c(header, paste("\t return.list[[", j+1, "]] <- res$returnValue", sep = ""))
+			header                <- c(header, paste("\t return.list[[", j+1, "]] <- res$returnValue", sep = ""))
+                  names.in.return.list  <- paste(names.in.return.list, "returnValue", sep = "")
 		}
-		header <- c(header, "\t return(return.list)")
+
+            names.in.return.list  <- paste(names.in.return.list, ")", sep = "")
+		
+            # Add names to return list            
+            header   <- c(header, paste("\t names(return.list) <- ", names.in.return.list, sep = ""))
+            # Add "return" statement
+            header <- c(header, "\t return(return.list)")
 		header <- c(header, "}")
 	}
 

@@ -37,6 +37,10 @@ grep.bool	<-	function(pattern, x, ...){
 	bool.res	<-	is.element(indices, results)
 }
 
+# list of hard-coded Rd files for variable descriptions
+hardcoded.variable.descriptions    <- c("particle.no", "material.no", "er.model", "rdd.model")
+
+
 for(i in 1:length(functions)){
 	# i <- 8
 	tmp <- functions[[i]]
@@ -87,8 +91,13 @@ for(i in 1:length(functions)){
 	para <- tmp$parameter.comment
 	para.in <- which(grep.bool(pattern = "in", x = para$type)) # SG commented out: & para$name != "n")
 	if(length(para.in) > 0){
-		for(i in para.in){
-			header <- c(header, paste("  \\item{", para$name[i], "}{", para$comment[i], "}", sep = ""))
+            for(i in para.in){
+		      line.to.add    <- NULL
+                  if (tolower(para$name[i]) %in% hardcoded.variable.descriptions){
+                       header         <- c(header, paste("  \\item{", para$name[i], "}{", para$comment[i], " (see also \\code{\\link{", tolower(para$name[i]), "}}).}", sep = ""))
+                  }else{
+                       header         <- c(header, paste("  \\item{", para$name[i], "}{", para$comment[i], ".}", sep = ""))
+                  }
 		}
 	}
 	# end arguments

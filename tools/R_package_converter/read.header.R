@@ -61,7 +61,7 @@ grep.bool     <-     function(pattern, x, ...){
 }
 
 for(header.file.name in header.file.names){
-     # DEBUG: header.file.name <- header.file.names[4]
+     # DEBUG: header.file.name <- header.file.names[1]
      
      #####################################################
      # A. Extract doxygen comment and function declaration
@@ -130,7 +130,7 @@ for(header.file.name in header.file.names){
      # as well as end of declarations
      pos.start.doxygen.comment           <- grep("/**", reduced.header.file.text, fixed = T)
      pos.end.doxygen.comment             <- grep("*/", reduced.header.file.text, fixed = T)
-     pos.end.function.declaration        <- grep(";", reduced.header.file.text)
+     pos.end.function.declaration        <- grep(");", reduced.header.file.text, fixed = T)
 
      # If length are different comments are corrupted, skip file and process next
      if((length(pos.start.doxygen.comment) != length(pos.end.doxygen.comment))|(length(pos.start.doxygen.comment) != length(pos.end.function.declaration))){
@@ -140,7 +140,7 @@ for(header.file.name in header.file.names){
 
      # Loop through all functions found
      for (i in 1:length(pos.start.doxygen.comment)){
-          # DEBUG: i <- 4
+          # DEBUG: i <- 1
           current.function    <- NULL
           
           # Indices for reduced.header.file.text that hold comment and declaration
