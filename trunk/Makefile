@@ -41,17 +41,17 @@ GSLLIB     = $(GSLPATH)/lib
 endif
 
 ifeq ($(OS),Windows)
-SHAREDLIB    = lib\libamtrack.dll
-STATICLIB    = lib\libamtrack.lib
+SHAREDLIB    = lib\\libamtrack.dll
+STATICLIB    = lib\\libamtrack.dll
 DSEP       = \\
-SRCDIR     = .\src
-INCLDIR    = .\include
-ADDFLAGS   = 
+SRCDIR     = .\\src
+INCLDIR    = .\\include
+ADDFLAGS   = -I"C:\Program Files\MinGW\include"
 RMCMD      = del
 MKDIRCMD   = mkdir
-GCC        = "$(MINGWPATH)\bin\gcc.exe"
-GSLINCLUDE = "$(GSLPATH)\include"
-GSLLIB     = "$(GSLPATH)\lib"
+GCC        = "gcc"
+GSLINCLUDE = "$(GSLPATH)\\include"
+GSLLIB     = "$(GSLPATH)\\lib"
 endif
 
 ifeq ($(OS),Mac)
