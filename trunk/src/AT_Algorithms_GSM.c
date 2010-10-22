@@ -356,6 +356,121 @@ void AT_GSM_calculate_local_response_grid( const long      nX,
 
 }
 
+void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_components,
+    const double   	E_MeV_u[],
+    const double   	fluence_cm2[],
+    const long     	particle_no[],
+    const long     	material_no,
+    const long     	rdd_model,
+    const double   	rdd_parameter[],
+    const long     	er_model,
+    const long     	nX,
+    const double   	pixel_size_m,
+    const long		N_runs,
+    const long		N_repetitions,
+    const long     	number_of_bins,
+    const double   	dose_bin_centers_Gy[],
+    double    		dose_bin_width_Gy[],
+    double *       	mean_d_check_Gy,
+    double *       	sd_d_check_Gy,
+    double *       	mean_zero_dose_fraction,
+    double *       	sd_zero_dose_fraction,
+    double        	mean_dose_frequency_Gy[],
+    double        	sd_dose_frequency_Gy[]){
+
+	long i,j,k;
+
+	AT_histoOld_get_bin_widths(	number_of_bins,
+								dose_bin_centers_Gy,
+								dose_bin_width_Gy);
+
+	*mean_d_check_Gy	= 0.0;
+	*sd_d_check_Gy	= 0.0;
+
+	for (i = 0; i < number_of_bins; i++){
+		mean_dose_frequency_Gy[i]	= 0.0;
+		sd_dose_frequency_Gy[i]		= 0.0;
+	}
+
+	double	zero_dose_fraction, zero_dose_fraction_run;
+	double*	dose_frequency_Gy		= (double*)calloc(number_of_bins, sizeof(double));
+	double*	dose_frequency_Gy_run	= (double*)calloc(number_of_bins, sizeof(double));
+
+	/* Create and initialize random number generator */
+	gsl_rng * rng  								= gsl_rng_alloc(gsl_rng_taus);
+	gsl_rng_set(rng, 137);
+	unsigned long  random_number_generator_seed	= gsl_rng_get(rng);
+
+
+	for (i = 0; i < N_repetitions; i++){
+		zero_dose_fraction		= 0.0;
+		for (j = 0; j < number_of_bins; j++){
+			dose_frequency_Gy[j]		= 0.0;
+		}
+
+		for (j = 0; j < N_runs; j++){
+			zero_dose_fraction_run		= 0.0;
+			for (k = 0; k < number_of_bins; k++){
+				dose_frequency_Gy_run[k]		= 0.0;
+			}
+
+			AT_GSM_calculate_dose_histogram( number_of_field_components,
+					E_MeV_u,
+					fluence_cm2,
+					particle_no,
+					material_no,
+					rdd_model,
+					rdd_parameter,
+					er_model,
+					nX,
+					pixel_size_m,
+					number_of_bins,
+					dose_bin_centers_Gy,
+					&random_number_generator_seed,
+					&zero_dose_fraction_run,
+					dose_frequency_Gy_run);
+
+			zero_dose_fraction		+= zero_dose_fraction_run;
+
+			for (k = 0; k < number_of_bins; k++){
+				dose_frequency_Gy[k] += dose_frequency_Gy_run[k];
+			}
+		}
+
+		zero_dose_fraction			/= (double)N_runs;
+
+		for(j = 0 ; j < number_of_bins; j++){
+			dose_frequency_Gy[j]     		/=  (double)N_runs;
+		}
+
+
+		/* compute <d> */
+		float cur_d_check_Gy	=	0.0;
+		for (j = 0; j < number_of_bins; j++){
+			cur_d_check_Gy		+=	dose_bin_centers_Gy[j] * dose_frequency_Gy[j]; // * dose_bin_width_Gy[j];
+		}
+
+		*mean_d_check_Gy		+=	cur_d_check_Gy;
+		*sd_d_check_Gy			+=	cur_d_check_Gy * cur_d_check_Gy;
+	}
+
+	/* Effective calculation of running mean and stdev of x in n runs: */
+	/* (1) add x and x^2 in every run (--> sum_x and sum_x2)           */
+	/* (2) mean  = sum_x / n                                           */
+	/* (3) stdev = sqrt((sum_x2 - sum_x * sum_x)/(n-1))                */
+
+	*mean_d_check_Gy		/= 	(double)N_repetitions;
+
+	if(N_repetitions > 1){
+		*sd_d_check_Gy		= sqrt(*sd_d_check_Gy/((double)N_repetitions) - (*mean_d_check_Gy)*(*mean_d_check_Gy));
+	}else{
+		*sd_d_check_Gy		= 0.0f;
+	}
+
+	free(dose_frequency_Gy);
+	free(dose_frequency_Gy_run);
+}
+
 
 void AT_run_GSM_method(  const long  n,
     const double   E_MeV_u[],

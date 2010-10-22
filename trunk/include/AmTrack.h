@@ -112,28 +112,28 @@ void AT_run_SPIFF_method(  const long  n,
 
 
 /**
- * Computes HCP response and RE/RBE using Katz' Ion-Gamma-Kill approach
+ * Computes HCP response and relative efficiency/RBE using Katz' Ion-Gamma-Kill approach
  * according to Waligorski, 1988
  *
- * @param[in]  n                   number of particle types in the mixed particle field
- * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
- * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
- * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
- * @param[in]  material_no         index number for detector material
- * @see          AT_DataMaterial.h for definition
- * @param[in]  RDD_model           index number for chosen radial dose distribution
- * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size 4)
- * @see          AT_RDD.h for definition
- * @param[in]  ER_model            index number for chosen electron-range model
- * @see          AT_ElectronRange.h for definition
- * @param[in]  gamma_model         index number for chosen gamma response
- * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size 4)
- * @see          AT_GammaResponse.h for definition
- * @param[in]  saturation_cross_section_factor  (algorithm specific)  scaling factor for the saturation cross section
- * @see          Waligorski, 1988
- * @param[in]  write_output        if true, a protocol is written to a file in the working directory
- * @param[out]  results            to be allocated by the user which will be used to return the results (array of size 10)
+ * @param[in]      n                                number of components in the mixed particle field
+ * @param[in]      E_MeV_u                          particle energy for each component in the mixed particle field [MeV/u] (array of size n)
+ * @param[in]      particle_no                      particle type for each component in the mixed particle field (array of size n)
+ * @see AT_DataParticle.h for definition
+ * @param[in]      fluence_cm2_or_dose_Gy           if positive, particle fluence for each component in the mixed particle field [1/cm2]; if negative, particle dose for each component in the mixed particle field [Gy] (array of size n)
+ * @param[in]      material_no                      index number for detector material
+ * @see AT_DataMaterial.h for definition
+ * @param[in]      rdd_model                        index number for chosen radial dose distribution
+ * @param[in]      rdd_parameters                   parameters for chosen radial dose distribution (array of size 4)
+ * @see AT_RDD.h for definition
+ * @param[in]      er_model                         index number for chosen electron-range model
+ * @see AT_ElectronRange.h for definition
+ * @param[in]      gamma_model                      index number for chosen gamma response
+ * @param[in]      gamma_parameters                 parameters for chosen gamma response (array of size 4)
+ * @see AT_GammaResponse.h for definition
+ * @param[in]      saturation_cross_section_factor  scaling factor for the saturation cross section
+ * @see Waligórski, 1988
+ * @param[in]      write_output                     if true, a protocol is written to a file in the working directory
+ * @param[out]     results                          to be allocated by the user which will be used to return the results (array of size 10)
  *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
  *    results[1]    d_check         (algorithm independent)  not available with IGK\n
  *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
@@ -150,9 +150,9 @@ void AT_run_IGK_method(  const long  n,
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
     const long    material_no,
-    const long    RDD_model,
-    const double  RDD_parameters[],
-    const long    ER_model,
+    const long    rdd_model,
+    const double  rdd_parameters[],
+    const long    er_model,
     const long    gamma_model,
     const double  gamma_parameters[],
     const double  saturation_cross_section_factor,
@@ -214,50 +214,5 @@ void AT_run_SPISS_method(  const long  n,
     double        results[]);
 
 
-/**
- * TODO
- * @param number_of_field_components
- * @param E_MeV_u
- * @param fluence_cm2
- * @param particle_no
- * @param material_no
- * @param rdd_model
- * @param rdd_parameter
- * @param er_model
- * @param nX
- * @param pixel_size_m
- * @param N_runs
- * @param N_repetitions
- * @param number_of_bins
- * @param dose_bin_centers_Gy
- * @param dose_bin_width_Gy
- * @param mean_d_check_Gy
- * @param sd_d_check_Gy
- * @param mean_zero_dose_fraction
- * @param sd_zero_dose_fraction
- * @param mean_dose_frequency_Gy
- * @param sd_dose_frequency_Gy
- */
-void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_components,
-    const double   	E_MeV_u[],
-    const double   	fluence_cm2[],
-    const long     	particle_no[],
-    const long     	material_no,
-    const long     	rdd_model,
-    const double   	rdd_parameter[],
-    const long     	er_model,
-    const long     	nX,
-    const double   	pixel_size_m,
-    const long		N_runs,
-    const long		N_repetitions,
-    const long     	number_of_bins,
-    const double   	dose_bin_centers_Gy[],
-    double    		dose_bin_width_Gy[],
-    double *       	mean_d_check_Gy,
-    double *       	sd_d_check_Gy,
-    double *       	mean_zero_dose_fraction,
-    double *       	sd_zero_dose_fraction,
-    double        	mean_dose_frequency_Gy[],
-    double        	sd_dose_frequency_Gy[]);
 
 #endif /* AmTrack_H_ */
