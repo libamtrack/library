@@ -31,7 +31,7 @@
 #include "AmTrack.h"
 #include <math.h>
 
-void AT_run_SPIFF_method(  const long  n,
+void AT_run_SPIFF_method(  const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
@@ -51,7 +51,7 @@ void AT_run_SPIFF_method(  const long  n,
     double        results[])
 {
 
-  long     n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_distrib(  n,
+  long     n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_distrib(  number_of_field_components,
       E_MeV_u,
       particle_no,
       material_no,
@@ -60,9 +60,9 @@ void AT_run_SPIFF_method(  const long  n,
       er_model,
       N2);
 
-  double*  f1_parameters      =  (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * n, sizeof(double));
+  double*  f1_parameters      =  (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * number_of_field_components, sizeof(double));
 
-  AT_RDD_f1_parameters_mixed_field( n,
+  AT_RDD_f1_parameters_mixed_field( number_of_field_components,
       E_MeV_u,
       particle_no,
       material_no,
@@ -76,7 +76,7 @@ void AT_run_SPIFF_method(  const long  n,
   double*  f1_dd_Gy      =  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1            =  (double*)calloc(n_bins_f1, sizeof(double));
 
-  AT_single_impact_local_dose_distrib(  n,
+  AT_single_impact_local_dose_distrib(  number_of_field_components,
       E_MeV_u,
       particle_no,
       fluence_cm2_or_dose_Gy,
@@ -91,17 +91,17 @@ void AT_run_SPIFF_method(  const long  n,
       f1_dd_Gy,
       f1);
 
-  double*  fluence_cm2    =  (double*)calloc(n, sizeof(double));
+  double*  fluence_cm2    =  (double*)calloc(number_of_field_components, sizeof(double));
 
   long i;
 
   if(fluence_cm2_or_dose_Gy[0] < 0){
-    double*  dose_Gy      =  (double*)calloc(n, sizeof(double));
-    for (i = 0; i < n; i++){
+    double*  dose_Gy      =  (double*)calloc(number_of_field_components, sizeof(double));
+    for (i = 0; i < number_of_field_components; i++){
       dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
     // convert dose to fluence
-    AT_fluence_cm2(  n,
+    AT_fluence_cm2(  number_of_field_components,
         E_MeV_u,
         particle_no,
         dose_Gy,
@@ -109,12 +109,12 @@ void AT_run_SPIFF_method(  const long  n,
         fluence_cm2);
     free( dose_Gy );
   }else{
-    for (i = 0; i < n; i++){
+    for (i = 0; i < number_of_field_components; i++){
       fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
     }
   }
 
-  const double u  =       AT_total_u(     n,
+  const double u  =       AT_total_u(     number_of_field_components,
       E_MeV_u,
       particle_no,
       fluence_cm2,
@@ -278,7 +278,7 @@ void AT_run_SPIFF_method(  const long  n,
 
 
 
-void AT_run_IGK_method(  const long  n,
+void AT_run_IGK_method(  const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
@@ -299,24 +299,24 @@ void AT_run_IGK_method(  const long  n,
   // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
   // only the first entry will be check
   long   i;
-  double*  fluence_cm2    =  (double*)calloc(n, sizeof(double));
-  double*  dose_Gy        =  (double*)calloc(n, sizeof(double));
+  double*  fluence_cm2    =  (double*)calloc(number_of_field_components, sizeof(double));
+  double*  dose_Gy        =  (double*)calloc(number_of_field_components, sizeof(double));
 
   if(fluence_cm2_or_dose_Gy[0] < 0){
-    for (i = 0; i < n; i++){
+    for (i = 0; i < number_of_field_components; i++){
       dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
-    AT_fluence_cm2(  n,
+    AT_fluence_cm2(  number_of_field_components,
         E_MeV_u,
         particle_no,
         dose_Gy,
         material_no,
         fluence_cm2);
   }else{
-    for (i = 0; i < n; i++){
+    for (i = 0; i < number_of_field_components; i++){
       fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
     }
-    AT_dose_Gy_from_fluence_cm2(  n,
+    AT_dose_Gy_from_fluence_cm2(  number_of_field_components,
         E_MeV_u,
         particle_no,
         fluence_cm2,
@@ -327,7 +327,7 @@ void AT_run_IGK_method(  const long  n,
   double total_dose_Gy = 0.0;
   double total_fluence_cm2    = 0.0;
 
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
     total_dose_Gy      +=  dose_Gy[i];
     total_fluence_cm2  +=  fluence_cm2[i];
   }
@@ -336,11 +336,11 @@ void AT_run_IGK_method(  const long  n,
 
   double u_single;
 
-  double*  norm_fluence          =  (double*)calloc(n, sizeof(double));
-  double*  dose_contribution_Gy  =  (double*)calloc(n, sizeof(double));
+  double*  norm_fluence          =  (double*)calloc(number_of_field_components, sizeof(double));
+  double*  dose_contribution_Gy  =  (double*)calloc(number_of_field_components, sizeof(double));
 
   /* TODO: Replace by explicit functions */
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
         double LET_MeV_cm2_g = AT_LET_MeV_cm2_g_single(E_MeV_u[i], particle_no[i], material_no);
         double single_impact_fluence_cm2 = AT_single_impact_fluence_cm2_single(E_MeV_u[i], material_no, er_model);
     norm_fluence[i]          =  fluence_cm2[i] / total_fluence_cm2;
@@ -352,10 +352,10 @@ void AT_run_IGK_method(  const long  n,
   free( fluence_cm2 );
 
   // Get accumulated normalized fluence for later sampling of particle type
-  double*  accu_fluence          =  (double*)calloc(n, sizeof(double));
+  double*  accu_fluence          =  (double*)calloc(number_of_field_components, sizeof(double));
   accu_fluence[0]            =  norm_fluence[0];
-  if(n > 1){
-    for (i = 1; i < n; i++){
+  if(number_of_field_components > 1){
+    for (i = 1; i < number_of_field_components; i++){
       accu_fluence[i] += accu_fluence[i-1] + norm_fluence[i];
     }
   }
@@ -527,7 +527,7 @@ void AT_run_IGK_method(  const long  n,
 }
 
 
-void AT_run_SPISS_method(  const long  n,
+void AT_run_SPISS_method(  const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
@@ -557,7 +557,7 @@ void AT_run_SPISS_method(  const long  n,
 
   // The histogram initialization and handling has been adapted to SPIFF
   // although some features are not used here
-  long    n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_distrib(          n,
+  long    n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_distrib(          number_of_field_components,
       E_MeV_u,
       particle_no,
       material_no,
@@ -566,9 +566,9 @@ void AT_run_SPISS_method(  const long  n,
       er_model,
       N2);
 
-  double* f1_parameters        = (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * n, sizeof(double));
+  double* f1_parameters        = (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * number_of_field_components, sizeof(double));
 
-  AT_RDD_f1_parameters_mixed_field( n,
+  AT_RDD_f1_parameters_mixed_field( number_of_field_components,
       E_MeV_u,
       particle_no,
       material_no,
@@ -582,7 +582,7 @@ void AT_run_SPISS_method(  const long  n,
   double*  f1_dd_Gy                                     =  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1                                           =  (double*)calloc(n_bins_f1, sizeof(double));
 
-  AT_single_impact_local_dose_distrib(           n,
+  AT_single_impact_local_dose_distrib(           number_of_field_components,
       E_MeV_u,
       particle_no,
       fluence_cm2_or_dose_Gy,
@@ -598,39 +598,39 @@ void AT_run_SPISS_method(  const long  n,
       f1_dd_Gy,
       f1);
 
-  double*  fluence_cm2    =  (double*)calloc(n, sizeof(double));
-  double*  dose_Gy        =  (double*)calloc(n, sizeof(double));
+  double*  fluence_cm2    =  (double*)calloc(number_of_field_components, sizeof(double));
+  double*  dose_Gy        =  (double*)calloc(number_of_field_components, sizeof(double));
 
   long i;
   if(fluence_cm2_or_dose_Gy[0] < 0){
-    for (i = 0; i < n; i++){
+    for (i = 0; i < number_of_field_components; i++){
       dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
-    AT_fluence_cm2(  n,
+    AT_fluence_cm2(  number_of_field_components,
         E_MeV_u,
         particle_no,
         dose_Gy,
         material_no,
         fluence_cm2);
   }else{
-    for (i = 0; i < n; i++){
+    for (i = 0; i < number_of_field_components; i++){
       fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
     }
-    AT_dose_Gy_from_fluence_cm2(  n,
+    AT_dose_Gy_from_fluence_cm2(  number_of_field_components,
         E_MeV_u,
         particle_no,
         fluence_cm2,
         material_no,
         dose_Gy);
   }
-  double*  norm_fluence                                 =  (double*)calloc(n, sizeof(double));
+  double*  norm_fluence                                 =  (double*)calloc(number_of_field_components, sizeof(double));
 
   // Normalize fluence vector
-  AT_normalize(    n,
+  AT_normalize(    number_of_field_components,
                 fluence_cm2,
                 norm_fluence);
 
-  const double u  =       AT_total_u(     n,
+  const double u  =       AT_total_u(     number_of_field_components,
       E_MeV_u,
       particle_no,
       fluence_cm2,
@@ -640,13 +640,13 @@ void AT_run_SPISS_method(  const long  n,
   free( fluence_cm2 );
   free( dose_Gy );
 
-  double*  accu_fluence                                 =  (double*)calloc(n, sizeof(double));
+  double*  accu_fluence                                 =  (double*)calloc(number_of_field_components, sizeof(double));
 
   // Get accumulated normalized fluence for later sampling of particle type
   accu_fluence[0]   =   norm_fluence[0];
 
-  if(n > 1){
-    for (i = 1; i < n; i++){
+  if(number_of_field_components > 1){
+    for (i = 1; i < number_of_field_components; i++){
       accu_fluence[i] +=  accu_fluence[i-1] + norm_fluence[i];
     }
   }
@@ -727,7 +727,7 @@ void AT_run_SPISS_method(  const long  n,
       // (1) draw random number 0..1 and sample particle type
       F                 = gsl_rng_uniform (rng1);
       long k;
-      for (k = 0; k < n; k++){
+      for (k = 0; k < number_of_field_components; k++){
         if (accu_fluence[k] >= F){
           break;
         }

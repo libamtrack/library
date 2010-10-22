@@ -472,7 +472,7 @@ void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_comp
 }
 
 
-void AT_run_GSM_method(  const long  n,
+void AT_run_GSM_method(  const long  number_of_field_components,
     const double   E_MeV_u[],
     const long     particle_no[],
     const double   fluence_cm2_or_dose_Gy[],
@@ -515,15 +515,15 @@ void AT_run_GSM_method(  const long  n,
     results[i] = 0.0;
   }
 
-  double*  fluence_cm2    =  (double*)calloc(n, sizeof(double));
+  double*  fluence_cm2    =  (double*)calloc(number_of_field_components, sizeof(double));
 
   if(fluence_cm2_or_dose_Gy[0] < 0){
-    double*  dose_Gy        =  (double*)calloc(n, sizeof(double));
-    for (i = 0; i < n; i++){
+    double*  dose_Gy        =  (double*)calloc(number_of_field_components, sizeof(double));
+    for (i = 0; i < number_of_field_components; i++){
       dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
     // dose to fluence
-    AT_fluence_cm2(  n,
+    AT_fluence_cm2(  number_of_field_components,
         E_MeV_u,
         particle_no,
         dose_Gy,
@@ -531,23 +531,23 @@ void AT_run_GSM_method(  const long  n,
         fluence_cm2);
     free( dose_Gy );
   }else{
-    for (i = 0; i < n; i++){
+    for (i = 0; i < number_of_field_components; i++){
       fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
     }
   }
 
   /* find maximum of maximal delta-electron ranges */
   double max_r_max_m = 0.0;
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
     max_r_max_m    =   GSL_MAX(max_r_max_m, AT_max_electron_range_m(E_MeV_u[i], material_no, er_model));
   }
 
   /* largest r.max --> calculate size of sample area */
   double sample_grid_size_m    = voxel_size_m * nX + 2.01 * max_r_max_m;
 
-  long*  number_of_particles_in_field_component   =  (long*)calloc(n, sizeof(double));
-  double** x_position = (double**)calloc(n, sizeof(double*));
-  double** y_position = (double**)calloc(n, sizeof(double*));
+  long*  number_of_particles_in_field_component   =  (long*)calloc(number_of_field_components, sizeof(double));
+  double** x_position = (double**)calloc(number_of_field_components, sizeof(double*));
+  double** y_position = (double**)calloc(number_of_field_components, sizeof(double*));
 
   /* linearly allocated 2-D arrays, see http://c-faq.com/aryptr/dynmuldimary.html */
   double** grid_D_Gy = (double**)calloc(nX, sizeof(double*));
@@ -570,7 +570,7 @@ void AT_run_GSM_method(  const long  n,
     /* find random positions of particles on grid
      * allocate xy_position tables */
 
-	AT_GSM_shoot_particles_on_grid( n,
+	AT_GSM_shoot_particles_on_grid( number_of_field_components,
                     fluence_cm2,
                     sample_grid_size_m,
                     &random_number_generator_seed,
@@ -580,12 +580,12 @@ void AT_run_GSM_method(  const long  n,
 
     /* find total number of particles */
     long n_particles = 0;
-    for (i = 0; i < n; i++){
+    for (i = 0; i < number_of_field_components; i++){
       n_particles  += number_of_particles_in_field_component[i];
     }
 
     /* calculate dose deposition pattern in grid cells */
-    AT_GSM_calculate_dose_pattern( n,
+    AT_GSM_calculate_dose_pattern( number_of_field_components,
         E_MeV_u,
         particle_no,
         material_no,
@@ -599,7 +599,7 @@ void AT_run_GSM_method(  const long  n,
         voxel_size_m,
         grid_D_Gy);
 
-    for (i = 0; i < n; i++){
+    for (i = 0; i < number_of_field_components; i++){
       free( x_position[i] );
       free( y_position[i] );
     }

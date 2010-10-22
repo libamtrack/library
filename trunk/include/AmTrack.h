@@ -56,7 +56,7 @@
  * Computes HCP response and relative efficiency/RBE using compound Poison processes and
  * successive convolutions (CPP_SC, the 'SPIFF' algorithm)
  *
- * @param[in]      n                              number of components in the mixed particle field
+ * @param[in]      number_of_field_components     number of components in the mixed particle field
  * @param[in]      E_MeV_u                        particle energy for each component in the mixed particle field [MeV/u] (array of size n)
  * @param[in]      particle_no                    particle type for each component in the mixed particle field (array of size n)
  * @see AT_DataParticle.h for definition
@@ -91,7 +91,7 @@
  *    results[9]    not used        (algorithm specific)
  * @return  none
  */
-void AT_run_SPIFF_method(  const long  n,
+void AT_run_SPIFF_method(  const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
@@ -115,7 +115,7 @@ void AT_run_SPIFF_method(  const long  n,
  * Computes HCP response and relative efficiency/RBE using Katz' Ion-Gamma-Kill approach
  * according to Waligorski, 1988
  *
- * @param[in]      n                                number of components in the mixed particle field
+ * @param[in]      number_of_field_components       number of components in the mixed particle field
  * @param[in]      E_MeV_u                          particle energy for each component in the mixed particle field [MeV/u] (array of size n)
  * @param[in]      particle_no                      particle type for each component in the mixed particle field (array of size n)
  * @see AT_DataParticle.h for definition
@@ -145,7 +145,7 @@ void AT_run_SPIFF_method(  const long  n,
  *    results[8]    P_G             (algorithm specific)     gamma kill probability\n
  *    results[9]    not used        (algorithm specific)
  */
-void AT_run_IGK_method(  const long  n,
+void AT_run_IGK_method(  const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
@@ -164,7 +164,7 @@ void AT_run_IGK_method(  const long  n,
  * Computes HCP response and RE/RBE using compound Poison process and
  * statistical sampling (CPP_SS, the 'SPISS' algorithm)
  *
- * @param[in]  n                   number of particle types in the mixed particle field
+ * @param[in]  number_of_field_components  number of particle types in the mixed particle field
  * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
@@ -196,7 +196,7 @@ void AT_run_IGK_method(  const long  n,
  *    results[8]    not used        (algorithm specific)\n
  *    results[9]    not used        (algorithm specific)\n
  */
-void AT_run_SPISS_method(  const long  n,
+void AT_run_SPISS_method(  const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
