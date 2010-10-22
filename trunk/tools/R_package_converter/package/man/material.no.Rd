@@ -17,6 +17,7 @@
 \details{
 	The predefined materials in libamtrack are:
 	\tabular{rl}{
+		\bold{\code{material.no}} \tab \bold{material}\cr
 		1 \tab Water, Liquid \cr
 		2 \tab Aluminum Oxide (Al2O3) \cr
 		3 \tab Aluminum \cr

@@ -11,34 +11,16 @@ This package is the R interface to the open-source, ANSI C library libamtrack (h
 \details{
 \tabular{ll}{
 Package: \tab libamtrack\cr
-Version: \tab 0.2\cr
-Date: \tab 2010-10-18\cr
+Version: \tab 0.3\cr
+Date: \tab 2010-10-22\cr
 Depends: \tab R (>= 2.2.0)\cr
 License: \tab GPL (version 3 or later)\cr
-Built: \tab R 2.10.1; i386-pc-mingw32; 2010-10-18 06:09:24 UTC; windows\cr
+Built: \tab R 2.10.1; i386-pc-mingw32; 2010-10-22 12:00:00 UTC; windows\cr
 }
 
 Index:
 \preformatted{
-AT.Bethe.Mass.Stopping.Power.MeV.cm2.g
-                        AT.Bethe.Mass.Stopping.Power.MeV.cm2.g
-AT.D.RDD.Gy             AT.D.RDD.Gy
-AT.RDD.f1.parameters.mixed.field
-                        AT.RDD.f1.parameters.mixed.field
-AT.dose.weighted.E.MeV.u
-                        AT.dose.weighted.E.MeV.u
-AT.fluence.weighted.E.MeV.u
-                        AT.fluence.weighted.E.MeV.u
-AT.fluence.weighted.LET.MeV.cm2.g
-                        AT.fluence.weighted.LET.MeV.cm2.g
-AT.gamma.response       AT.gamma.response
-AT.max.electron.ranges.m
-                        AT.max.electron.ranges.m
-AT.run.GSM.method       AT.run.GSM.method
-AT.run.IGK.method       AT.run.IGK.method
 AT.run.SPIFF.method     AT.run.SPIFF.method
-AT.total.D.Gy           AT.total.D.Gy
-AT.total.fluence.cm2    AT.total.fluence.cm2
 }
 
 }
@@ -60,5 +42,14 @@ http://libamtrack.dkfz.org
 }
 
 \examples{
-TODO
+
+#######################################################################
+############################ 1. LET ###################################
+print("Compute the LET (in keV/um) of a 270 MeV/u carbon ion in Aluminum:")
+
+AT.LET.keV.um( n           = 1,
+               E.MeV.u     = 270,
+			   particle.no = 6012,
+			   material.no = 3)
+
 }
