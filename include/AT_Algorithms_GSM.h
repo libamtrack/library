@@ -236,10 +236,10 @@ void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_comp
  * an a Cartesian grid (the 'GSM' algorithm)
  *
  * @param[in]      number_of_field_components     number of components in the mixed particle field
- * @param[in]      E_MeV_u                        particle energy for each component in the mixed particle field [MeV/u] (array of size n)
- * @param[in]      particle_no                    particle type for each component in the mixed particle field (array of size n)
+ * @param[in]      E_MeV_u                        particle energy for each component in the mixed particle field [MeV/u] (array of size number_of_field_components)
+ * @param[in]      particle_no                    particle type for each component in the mixed particle field (array of size number_of_field_components)
  * @see AT_DataParticle.h for definition
- * @param[in]      fluence_cm2_or_dose_Gy         if positive, particle fluence for each component in the mixed particle field [1/cm2]; if negative, particle dose for each component in the mixed particle field [Gy] (array of size n)
+ * @param[in]      fluence_cm2_or_dose_Gy         if positive, particle fluence for each component in the mixed particle field [1/cm2]; if negative, particle dose for each component in the mixed particle field [Gy] (array of size number_of_field_components)
  * @param[in]      material_no                    index number for detector material
  * @see AT_DataMaterial.h for definition
  * @param[in]      rdd_model                      index number for chosen radial dose distribution
@@ -272,9 +272,9 @@ void AT_run_GSM_method(  const long  number_of_field_components,
     const long     particle_no[],
     const double   fluence_cm2_or_dose_Gy[],
     const long     material_no,
-    const long     RDD_model,
-    const double   RDD_parameters[],
-    const long     ER_model,
+    const long     rdd_model,
+    const double   rdd_parameters[],
+    const long     er_model,
     const long     gamma_model,
     const double   gamma_parameters[],
     const long     N_runs,

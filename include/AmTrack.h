@@ -57,10 +57,10 @@
  * successive convolutions (CPP_SC, the 'SPIFF' algorithm)
  *
  * @param[in]      number_of_field_components     number of components in the mixed particle field
- * @param[in]      E_MeV_u                        particle energy for each component in the mixed particle field [MeV/u] (array of size n)
- * @param[in]      particle_no                    particle type for each component in the mixed particle field (array of size n)
+ * @param[in]      E_MeV_u                        particle energy for each component in the mixed particle field [MeV/u] (array of size number_of_field_components)
+ * @param[in]      particle_no                    particle type for each component in the mixed particle field (array of size number_of_field_components)
  * @see AT_DataParticle.h for definition
- * @param[in]      fluence_cm2_or_dose_Gy         if positive, particle fluence for each component in the mixed particle field [1/cm2]; if negative, particle dose for each component in the mixed particle field [Gy] (array of size n)
+ * @param[in]      fluence_cm2_or_dose_Gy         if positive, particle fluence for each component in the mixed particle field [1/cm2]; if negative, particle dose for each component in the mixed particle field [Gy] (array of size number_of_field_components)
  * @param[in]      material_no                    index number for detector material
  * @see AT_DataMaterial.h for definition
  * @param[in]      rdd_model                      index number for chosen radial dose distribution
@@ -116,10 +116,10 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
  * according to Waligorski, 1988
  *
  * @param[in]      number_of_field_components       number of components in the mixed particle field
- * @param[in]      E_MeV_u                          particle energy for each component in the mixed particle field [MeV/u] (array of size n)
- * @param[in]      particle_no                      particle type for each component in the mixed particle field (array of size n)
+ * @param[in]      E_MeV_u                          particle energy for each component in the mixed particle field [MeV/u] (array of size number_of_field_components)
+ * @param[in]      particle_no                      particle type for each component in the mixed particle field (array of size number_of_field_components)
  * @see AT_DataParticle.h for definition
- * @param[in]      fluence_cm2_or_dose_Gy           if positive, particle fluence for each component in the mixed particle field [1/cm2]; if negative, particle dose for each component in the mixed particle field [Gy] (array of size n)
+ * @param[in]      fluence_cm2_or_dose_Gy           if positive, particle fluence for each component in the mixed particle field [1/cm2]; if negative, particle dose for each component in the mixed particle field [Gy] (array of size number_of_field_components)
  * @param[in]      material_no                      index number for detector material
  * @see AT_DataMaterial.h for definition
  * @param[in]      rdd_model                        index number for chosen radial dose distribution
@@ -165,10 +165,10 @@ void AT_run_IGK_method(  const long  number_of_field_components,
  * statistical sampling (CPP_SS, the 'SPISS' algorithm)
  *
  * @param[in]  number_of_field_components  number of particle types in the mixed particle field
- * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
- * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
+ * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  particle_no         type of the particles in the mixed particle field (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size n)
+ * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size number_of_field_components)
  * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  RDD_model           index number for chosen radial dose distribution
