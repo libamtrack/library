@@ -235,7 +235,7 @@ void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_comp
  * Computes HCP response and relative efficiency/RBE using summation of tracks
  * an a Cartesian grid (the 'GSM' algorithm)
  *
- * @param[in]      n                              number of components in the mixed particle field
+ * @param[in]      number_of_field_components     number of components in the mixed particle field
  * @param[in]      E_MeV_u                        particle energy for each component in the mixed particle field [MeV/u] (array of size n)
  * @param[in]      particle_no                    particle type for each component in the mixed particle field (array of size n)
  * @see AT_DataParticle.h for definition
@@ -267,7 +267,7 @@ void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_comp
  *    results[8]    sd_S_gamma      (algorithm specific)     standard deviation for results[3]\n
  *    results[9]    sd_n_particles  (algorithm specific)     standard deviation for results[4]
  */
-void AT_run_GSM_method(  const long  n,
+void AT_run_GSM_method(  const long  number_of_field_components,
     const double   E_MeV_u[],
     const long     particle_no[],
     const double   fluence_cm2_or_dose_Gy[],
