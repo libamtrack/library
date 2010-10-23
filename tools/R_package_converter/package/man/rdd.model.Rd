@@ -10,7 +10,7 @@
 
 \description{In libamtrack, there are currently seven parametrizations of distribution of local dose around particle track as a function of the primary particle's energy and type. They are referred to using sequential positive integer numbers (see details).}
 
-\seealso{More information on the radial dose distributin models, especially the explicit formulas used, valid energy ranges and references to literature are found in the libamtrack reference manual (http://libamtrack.dkfz.org/libamtrack/images/3/31/LibamtrackReferenceManual.pdf).}
+\seealso{More information on the radial dose distributin models, especially the explicit formulas used, valid energy ranges and references to literature are found in the libamtrack reference manual (\url{http://libamtrack.dkfz.org/libamtrack/images/3/31/LibamtrackReferenceManual.pdf}).}
 
 \details{
 	The implemented rdd models are:
