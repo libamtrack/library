@@ -10,7 +10,7 @@
 
 \description{In libamtrack, there are currently seven parametrizations of the maximal distance electrons travel from the center of a particle track as a function of the primary particle's energy. They are referred to using sequential positive integer numbers (see details).}
 
-\seealso{More information on the electron-range models, especially the explicit formulas used, valid energy ranges and references to literature are found in the libamtrack reference manual (http://libamtrack.dkfz.org/libamtrack/images/3/31/LibamtrackReferenceManual.pdf).}
+\seealso{More information on the electron-range models, especially the explicit formulas used, valid energy ranges and references to literature are found in the libamtrack reference manual (\url{http://libamtrack.dkfz.org/libamtrack/images/3/31/LibamtrackReferenceManual.pdf}).}
 
 \details{
 	\tabular{rl}{

@@ -38,7 +38,7 @@ grep.bool	<-	function(pattern, x, ...){
 }
 
 # list of hard-coded Rd files for variable descriptions
-hardcoded.variable.descriptions    <- c("particle.no", "material.no", "er.model", "rdd.model")
+hardcoded.variable.descriptions    <- c("E.MeV.u", "particle.no", "material.no", "er.model", "rdd.model", "fluence.cm2.or.dose.Gy", "number.of.field.components")
 
 
 for(i in 1:length(functions)){
@@ -93,8 +93,8 @@ for(i in 1:length(functions)){
 	if(length(para.in) > 0){
             for(i in para.in){
 		      line.to.add    <- NULL
-                  if (tolower(para$name[i]) %in% hardcoded.variable.descriptions){
-                       header         <- c(header, paste("  \\item{", para$name[i], "}{", para$comment[i], " (see also \\code{\\link{", tolower(para$name[i]), "}}).}", sep = ""))
+                  if (para$name[i] %in% hardcoded.variable.descriptions){
+                       header         <- c(header, paste("  \\item{", para$name[i], "}{", para$comment[i], " (see also \\code{\\link{", para$name[i], "}}).}", sep = ""))
                   }else{
                        header         <- c(header, paste("  \\item{", para$name[i], "}{", para$comment[i], ".}", sep = ""))
                   }
