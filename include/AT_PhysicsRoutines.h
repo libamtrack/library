@@ -259,33 +259,37 @@ int AT_effective_charge_from_E_MeV_u(  const long  n,
 
 
 /**
- * Max relativistic energy transfer for single particle TODO
- * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
+ * Max relativistic energy transfer for single particle
+ *
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
  * @return max_E_transfer_MeV
  */
  double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u );
 
 
 /**
- * Max classic energy transfer for single particle TODO
- * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
+ * Max classic energy transfer for single particle
+ *
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
  * @return max_E_transfer_MeV
  */
  double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u );
 
 
 /**
- * Max energy transfer for single particle TODO
- * @param[in]  E_MeV_u                  TODO
+ * Max energy transfer for single particle
+ *
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
  * @return     max_E_transfer_MeV
  */
  double AT_max_E_transfer_MeV_single( const double E_MeV_u);
 
 
 /**
- * Max energy transfer TODO
+ * Max energy transfer
+ *
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV/u] (array of size n)
  * @param[out] max_E_transfer_MeV       (array of size n)
  * @return     status code
  */
@@ -406,7 +410,8 @@ void AT_convert_beam_parameters(  const long  n,
 
 
 /**
- * Interparticle distance TODO
+ * Interparticle distance
+ *
  * @param[in]      n               length of vectors for parameters
  * @param[in]      LET_MeV_cm2_g   LET for each particle type (array of size n)
  * @param[in]      fluence_cm2     fluence for each particle type (array of size n)
@@ -420,11 +425,12 @@ void AT_interparticleDistance_m(       const long   n,
 
 
 /**
- * Inverse interparticle distance TODO
+ * Inverse interparticle distance
+ *
  * @param[in]      n               length of vectors for parameters
  * @param[in]      LET_MeV_cm2_g   LET for each particle type (array of size n)
  * @param[in]      distance_m      interparticle distance for each particle type (array of size n)
- * @param[out]     results_Gy      TODO
+ * @param[out]     results_Gy
  */
 void AT_inv_interparticleDistance_Gy(  const long   n,
     const double   LET_MeV_cm2_g[],
@@ -473,14 +479,25 @@ void AT_single_impact_fluence_cm2( const long n,
 
 
 /**
- * TODO
- * @param LET_MeV_cm2_g
- * @param single_impact_fluence_cm2
- * @return
+ * Dose for the fluence at a single impact
+ *
+ * @param[in] LET_MeV_cm2_g              LET of particle
+ * @param[in] single_impact_fluence_cm2  the fluence corresponing to a single impact
+ * @return    single impact dose
  */
- double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
+double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
     const double single_impact_fluence_cm2);
 
+/**
+ * Doses for the fluences at a single impact
+ *
+ * @param[in]  n                          number of particles
+ * @param[in]  E_MeV_i                    Energy
+ * @param[in]  particle_no                particle type
+ * @param[in]  material_no                material
+ * @param[in]  er_model                   electron-range model
+ * @param[out] single_impact_dose_Gy      resulting single impact doses
+ */
 void AT_single_impact_dose_Gy( const long n,
     const double  E_MeV_u[],
     const long    particle_no[],
@@ -610,6 +627,7 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
 
 /**
  * TODO
+ *
  * @param[in]  n            length of vectors for parameters
  * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no  particle index (array of size n)
@@ -617,7 +635,7 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[in]  reference_material_no  TODO
+ * @param[in]  reference_material_no  material index of reference material
  */
 double AT_fluence_weighted_stopping_power_ratio( const long     n,
     const double  E_MeV_u[],
