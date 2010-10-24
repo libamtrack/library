@@ -73,7 +73,7 @@ AT.LET.keV.um( n           = 1,
 			   material.no = 3)
 			   
 #####################################################################
-#################### 3. DETECTOR EFFICIENCY #########################
+#################### 2. DETECTOR EFFICIENCY #########################
 print("Compute the relative efficiency of Alanine in 10 MeV protons")
 print("Waligorskis version of the Katz' model")
 
