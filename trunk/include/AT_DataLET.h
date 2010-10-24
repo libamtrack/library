@@ -36,13 +36,14 @@
 #include "AT_DataMaterial.h"
 
 /**
- * Total number of elements in data table
+ * Defines the total number of data entries in PSTAR structure below
  */
 #define PSTAR_DATA_N_PER_MATERIAL       132
 #define PSTAR_DATA_N                    PSTAR_DATA_N_PER_MATERIAL * MATERIAL_DATA_N
 
-// TODO implement method for getting LET of one particle
-
+/**
+ * Enumerator for the LET data source
+ */
 enum AT_LET_data_source{
   User_Defined_Data    = 0, /**< To be defined by the user during runtime >**/
   PowerLaw             = 1, /**< Liquid water */
@@ -50,9 +51,7 @@ enum AT_LET_data_source{
 };
 
 /**
- * PSTAR data, based on ICRU Report 49
- * Tabulated data for protons with energies between 1keV and 10GeV (132 kinetic energies)
- * See http://physics.nist.gov/PhysRefData/Star/Text/intro.html
+ * Structure definition for PSTAR stopping power data
  */
 typedef struct {
   const long     n;                                     /** number of items in local PSTAR data table */
@@ -66,15 +65,15 @@ typedef struct {
   const long     material_no[PSTAR_DATA_N];             /** Material number (see AT_DataMaterial.h) */
 } AT_pstar_data_struct;
 
-
-
-//TODO needs to be moved to external file
+/**
+ * Structure to hold PSTAR stopping power data
+ * Tabulated data for protons with energies between 1keV and 10GeV (132 kinetic energies),
+ * based on ICRU Report 49
+ * See http://physics.nist.gov/PhysRefData/Star/Text/intro.html
+ * TODO Should be moved to external file
+*/
 static const AT_pstar_data_struct AT_PSTAR_Data = {
     PSTAR_DATA_N,
-
-    ///////////////////////////////////////////////////////////////////////
-    // ENTER RESULTS FROM S-SCRIPT "FORMAT_PSTAR.DATA.BASE_FOR_C.SSC" HERE
-    // (and remove last comma!)
     {
         1.0000e-3f,    1.5000e-3f,    2.0000e-3f,    2.5000e-3f,    3.0000e-3f,    4.0000e-3f,    5.0000e-3f,    6.0000e-3f,    7.0000e-3f,    8.0000e-3f,
         9.0000e-3f,    1.0000e-2f,    1.2500e-2f,    1.5000e-2f,    1.7500e-2f,    2.0000e-2f,    2.2500e-2f,    2.5000e-2f,    2.7500e-2f,    3.0000e-2f,
@@ -851,11 +850,7 @@ static const AT_pstar_data_struct AT_PSTAR_Data = {
         Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
         Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
         Air,    Air
-}
-
-
-    // END OF RESULTS FROM S-SCRIPT "FORMAT_PSTAR.DATA.BASE_FOR_C.SSC
-    ///////////////////////////////////////////////////////////////////////
+    }
 };
 
 /**
@@ -996,31 +991,49 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
     const long    material_no,
     double        E_MeV[]);
 
-
-/////////////////////////////////////////////////////////
-/* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
+/**
+ * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
+ */
 long AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
     const double        E_MeV_u[],
     const long          particle_no[],
     AT_single_material_data_struct         material,
     double              LET_MeV_cm2_g[]);
+
+/**
+ * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
+ */
 double AT_new_LET_MeV_cm2_g_single(  const double        E_MeV_u,
     const long          particle_no,
     AT_single_material_data_struct         material);
+
+/**
+ * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
+ */
 double get_table_value_new( const double  x,
     const long    n,
     const double  x_table[],
     const double  y_table[]);
+
+/**
+ * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
+ */
 int AT_establish_LET_data( AT_single_material_data_struct*  material);
+
+/**
+ * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
+ */
 double AT_CDSA_range_g_cm2_from_power_law_single(  const double E_MeV_u,
      const long particle_no,
      const double p_MeV,
      const double alpha_g_cm2_MeV);
+
+/**
+ * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
+ */
 double AT_LET_MeV_cm2_g_from_power_law_single(  const double E_MeV_u,
      const long particle_no,
      const double p_MeV,
      const double alpha_g_cm2_MeV);
-/* END OF TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
-////////////////////////////////////////////////////////////////
 
 #endif /* AT_DATALET_H_ */
