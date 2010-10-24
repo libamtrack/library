@@ -684,95 +684,95 @@ void AT_material_number_from_name_R( const char** material_name,
 	  *material_no = (int)material_no_long;
 }
 
-void AT_run_GSM_method_R(  const int*  n,
-    const float*  E_MeV_u,
-    const int*    particle_no,
-    const float*  fluence_cm2_or_dose_Gy,
-    const int*    material_no,
-    const int*    rdd_model,
-    const float*  rdd_parameters,
-    const int*    er_model,
-    const int*    gamma_model,
-    const float*  gamma_parameters,
-    const int*    N_runs,
-    const int*    write_output,
-    const int*    nX,
-    const float*  voxel_size_m,
-    const int*    lethal_events_mode,
-    float*        results){
-
-  /* int -> long conversion */
-  const long n_long = (long)(*n);
-  const long rdd_model_long = (long)(*rdd_model);
-  const long er_model_long = (long)(*er_model);
-  const long gamma_model_long = (long)(*gamma_model);
-  const long material_no_long = (long)(*material_no);
-  long * particle_no_long = (long*)calloc(n_long,sizeof(long));
-  long i;
-  for(i = 0 ; i < n_long ; i++){
-    particle_no_long[i] = (long)particle_no[i];
-  }
-  const long N_runs_long = (long)(*N_runs);
-  const long nX_long = (long)(*nX);
-
-  /* int -> bool conversion */
-  const bool write_output_bool = (bool)(*write_output);
-  const bool lethal_events_mode_bool = (bool)(*lethal_events_mode);
-
-  /* float -> double conversion */
-  double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
-  double * fluence_cm2_or_dose_Gy_double = (double*)calloc(n_long,sizeof(double));
-  for(i = 0 ; i < n_long ; i++){
-    E_MeV_u_double[i] = (double)E_MeV_u[i];
-    fluence_cm2_or_dose_Gy_double[i] = (double)fluence_cm2_or_dose_Gy[i];
-  }
-  double rdd_parameter_double[RDD_MAX_NUMBER_OF_PARAMETERS];
-  for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
-    rdd_parameter_double[i] = (double)rdd_parameters[i];
-  }
-  long number_of_gamma_parameters = 0;
-  if ( gamma_model_long == GR_GeneralTarget ){
-    while  (gamma_parameters[number_of_gamma_parameters] != 0){
-      number_of_gamma_parameters  += 4;
-    }
-    number_of_gamma_parameters++; /* to include also trailing zero */
-  } else {
-    number_of_gamma_parameters = AT_Gamma_number_of_parameters( gamma_model_long );
-  }
-  double * gamma_parameter_double  = (double*)calloc(number_of_gamma_parameters,sizeof(double));
-  for(i = 0 ; i < number_of_gamma_parameters ; i++){
-    gamma_parameter_double[i] = (double)gamma_parameters[i];
-  }
-  double voxel_size_m_double = (double)(*voxel_size_m);
-
-  /* place for results */
-  double results_double[10];
-
-  AT_run_GSM_method(n_long,
-      E_MeV_u_double,
-      particle_no_long,
-      fluence_cm2_or_dose_Gy_double,
-      material_no_long,
-      rdd_model_long,
-      rdd_parameter_double,
-      er_model_long,
-      gamma_model_long,
-      gamma_parameter_double,
-      N_runs_long,
-      write_output_bool,
-      nX_long,
-      voxel_size_m_double,
-      lethal_events_mode_bool,
-      results_double);
-
-  /* double -> float conversion (results) */
-  for(i = 0 ; i < 10 ; i++){
-    results[i] = (float)results_double[i];
-  }
-  free(particle_no_long);
-  free(E_MeV_u_double);
-  free(fluence_cm2_or_dose_Gy_double);
-}
+//void AT_run_GSM_method_R(  const int*  n,
+//    const float*  E_MeV_u,
+//    const int*    particle_no,
+//    const float*  fluence_cm2_or_dose_Gy,
+//    const int*    material_no,
+//    const int*    rdd_model,
+//    const float*  rdd_parameters,
+//    const int*    er_model,
+//    const int*    gamma_model,
+//    const float*  gamma_parameters,
+//    const int*    N_runs,
+//    const int*    write_output,
+//    const int*    nX,
+//    const float*  voxel_size_m,
+//    const int*    lethal_events_mode,
+//    float*        results){
+//
+//  /* int -> long conversion */
+//  const long n_long = (long)(*n);
+//  const long rdd_model_long = (long)(*rdd_model);
+//  const long er_model_long = (long)(*er_model);
+//  const long gamma_model_long = (long)(*gamma_model);
+//  const long material_no_long = (long)(*material_no);
+//  long * particle_no_long = (long*)calloc(n_long,sizeof(long));
+//  long i;
+//  for(i = 0 ; i < n_long ; i++){
+//    particle_no_long[i] = (long)particle_no[i];
+//  }
+//  const long N_runs_long = (long)(*N_runs);
+//  const long nX_long = (long)(*nX);
+//
+//  /* int -> bool conversion */
+//  const bool write_output_bool = (bool)(*write_output);
+//  const bool lethal_events_mode_bool = (bool)(*lethal_events_mode);
+//
+//  /* float -> double conversion */
+//  double * E_MeV_u_double = (double*)calloc(n_long,sizeof(double));
+//  double * fluence_cm2_or_dose_Gy_double = (double*)calloc(n_long,sizeof(double));
+//  for(i = 0 ; i < n_long ; i++){
+//    E_MeV_u_double[i] = (double)E_MeV_u[i];
+//    fluence_cm2_or_dose_Gy_double[i] = (double)fluence_cm2_or_dose_Gy[i];
+//  }
+//  double rdd_parameter_double[RDD_MAX_NUMBER_OF_PARAMETERS];
+//  for(i = 0 ; i < RDD_MAX_NUMBER_OF_PARAMETERS ; i++){
+//    rdd_parameter_double[i] = (double)rdd_parameters[i];
+//  }
+//  long number_of_gamma_parameters = 0;
+//  if ( gamma_model_long == GR_GeneralTarget ){
+//    while  (gamma_parameters[number_of_gamma_parameters] != 0){
+//      number_of_gamma_parameters  += 4;
+//    }
+//    number_of_gamma_parameters++; /* to include also trailing zero */
+//  } else {
+//    number_of_gamma_parameters = AT_Gamma_number_of_parameters( gamma_model_long );
+//  }
+//  double * gamma_parameter_double  = (double*)calloc(number_of_gamma_parameters,sizeof(double));
+//  for(i = 0 ; i < number_of_gamma_parameters ; i++){
+//    gamma_parameter_double[i] = (double)gamma_parameters[i];
+//  }
+//  double voxel_size_m_double = (double)(*voxel_size_m);
+//
+//  /* place for results */
+//  double results_double[10];
+//
+//  AT_run_GSM_method(n_long,
+//      E_MeV_u_double,
+//      particle_no_long,
+//      fluence_cm2_or_dose_Gy_double,
+//      material_no_long,
+//      rdd_model_long,
+//      rdd_parameter_double,
+//      er_model_long,
+//      gamma_model_long,
+//      gamma_parameter_double,
+//      N_runs_long,
+//      write_output_bool,
+//      nX_long,
+//      voxel_size_m_double,
+//      lethal_events_mode_bool,
+//      results_double);
+//
+//  /* double -> float conversion (results) */
+//  for(i = 0 ; i < 10 ; i++){
+//    results[i] = (float)results_double[i];
+//  }
+//  free(particle_no_long);
+//  free(E_MeV_u_double);
+//  free(fluence_cm2_or_dose_Gy_double);
+//}
 
 
 void AT_run_SPIFF_method_R(  const int*  n,

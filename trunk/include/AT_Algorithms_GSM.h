@@ -233,7 +233,11 @@ void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_comp
 
 /**
  * Computes HCP response and relative efficiency/RBE using summation of tracks
- * an a Cartesian grid (the 'GSM' algorithm)
+ * an a Cartesian grid (the 'GSM' algorithm).
+ *
+ * Be aware that this routine can take considerable time to compute depending on
+ * the arguments, esp. for higher energy (>10 MeV/u) particles. It is therefore
+ * advantageous to test your settings with a low number of runs first.
  *
  * @param[in]      number_of_field_components     number of components in the mixed particle field
  * @param[in]      E_MeV_u                        particle energy for each component in the mixed particle field [MeV/u] (array of size number_of_field_components)
@@ -255,17 +259,16 @@ void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_comp
  * @param[in]      nX                             number of voxels of the grid in x (and y as the grid is quadratic)
  * @param[in]      voxel_size_m                   side length of a voxel in m
  * @param[in]      lethal_events_mode             if true, allows to do calculations for cell survival
- * @param[out]     results                        results (array of size 10)
- *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
- *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm\n
- *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
- *    results[3]    S_gamma         (algorithm independent)  absolute gamma response\n
- *    results[4]    n_particles     (algorithm independent)  average number of particle tracks on the detector grid\n
- *    results[5]    sd_efficiency   (algorithm specific)     standard deviation for results[0]\n
- *    results[6]    sd_d_check      (algorithm specific)     standard deviation for results[1]\n
- *    results[7]    sd_S_HCP        (algorithm specific)     standard deviation for results[2]\n
- *    results[8]    sd_S_gamma      (algorithm specific)     standard deviation for results[3]\n
- *    results[9]    sd_n_particles  (algorithm specific)     standard deviation for results[4]
+ * @param[out]     relative_efficiency            particle response at dose D / gamma response at dose D
+ * @param[out]     d_check                        sanity check:  total dose (in Gy) as returned by the algorithm
+ * @param[out]     S_HCP                          absolute particle response
+ * @param[out]     S_gamma                        absolute gamma response
+ * @param[out]     n_particles                    average number of particle tracks on the detector grid
+ * @param[out]     sd_efficiency                  standard deviation for relative_efficiency
+ * @param[out]     sd_d_check                     standard deviation for d_check
+ * @param[out]     sd_S_HCP                       standard deviation for S_HCP
+ * @param[out]     sd_S_gamma                     standard deviation for S_gamma
+ * @param[out]     sd_n_particles                 standard deviation for n_particles
  */
 void AT_run_GSM_method(  const long  number_of_field_components,
     const double   E_MeV_u[],
@@ -282,7 +285,16 @@ void AT_run_GSM_method(  const long  number_of_field_components,
     const long     nX,
     const double   voxel_size_m,
     const bool     lethal_events_mode,
-    double  results[]);
+    double*        relative_efficiency,
+    double*        d_check,
+    double*        S_HCP,
+    double*        S_gamma,
+    double*        n_particles,
+    double*        sd_relative_efficiency,
+    double*        sd_d_check,
+    double*        sd_S_HCP,
+    double*        sd_S_gamma,
+    double*        sd_n_particles);
 
 
 #endif /* AT_ALGORITHMS_GSM_H_ */
