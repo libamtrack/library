@@ -41,7 +41,7 @@ grep.bool	<-	function(pattern, x, ...){
 }
 
 for(i in 1:length(functions)){
-	# i <- 4
+	# i <- 3
 	tmp <- functions[[i]]
 	
 	##############################
@@ -71,24 +71,24 @@ for(i in 1:length(functions)){
 	# create function body
 	###########################
 
-	body <- gsub("\n", "", gsub(";", "", header), fixed = T)
-	
-	# open body
-	body <- c(body, "{")
+	# get parameter information for current functions
+	para         <- functions[[i]]$parameter
 
-	# conversion and allocation of input parameters
-	para <- functions[[i]]$parameter
+	# function declaration
+	body         <- gsub("\n", "", gsub(";", "", header), fixed = T)
+	body         <- c(body, "{")
 
-	input <- grep.bool(pattern = "in", x = para$in.out)
-	vector <- (para$length != 1)
+	# select input parameters and arrays (vectors)
+      input        <- grep.bool(pattern = "in", x = para$in.out)
+	vector       <- (para$length != 1)
 
 	# create count variable i, if sum(vector) > 0
 	if(sum(vector) > 0){
-		body <- c(body, "  long i;")
+		body        <- c(body, "  long i;")
 	}
 
 	# add the input parameters	
-	ii <- which(input & !vector)
+	ii           <- which(input & !vector)
 	if(length(ii) > 0){
 		for(j in ii){
 			body <- c(body, paste("  ", gsub("*", "", para$type[j], , fixed = T), " ", para$name[j], get.extension(para$type[j]), " = (",
@@ -96,20 +96,18 @@ for(i in 1:length(functions)){
 					");", sep = ""))
 		}
 	}
-	body <- c(body, "")
-
+	body         <- c(body, "")
 
 	# get the length of the arrays and check for numbers (this will produce a warning!
-	para.length <- para$length
-	numbers <- !is.na(as.numeric(para.length)) 
+	para.length           <- para$length
+	numbers               <- !is.na(as.numeric(para.length)) 
 
 	# add "_long" to all variables that are no numbers
 	para.length[!numbers] <- paste(para.length[!numbers], "_long", sep = "")
 
 	# write changed para.length back into data.frame
-	para$length <- para.length
-
-	para.length <- unique(para$length)[unique(para$length) != 1]
+	para$length           <- para.length
+	para.length           <- unique(para$length)[unique(para$length) != 1]
 
 	for(l in para.length){
 		
@@ -145,10 +143,30 @@ for(i in 1:length(functions)){
 						"));", sep = ""))
 			}
 		}
-
 	}
-	
-	# function call
+      
+      # Add definition of non-array pointers that are used as output variables
+      idx.output.pointers     <- grep.bool(pattern = "out", x = para$in.out) & para$length == 1 & !grep.bool(pattern = "in.out", x = para$in.out)
+      if(sum(idx.output.pointers) > 0){
+      output.pointers         <- para[idx.output.pointers, ]
+      body                    <- c(body, "\n//Define type-casted output variables")
+      for (i in 1:nrow(output.pointers)){
+	     # DEBUG: i <- 1
+           output.pointers$type[i] <- gsub("*", "", output.pointers$type[i], fixed = T)
+           body                    <- c( body, 
+                                         paste( "\t", 
+                                                output.pointers$type[i], 
+                                                " ", 
+                                                output.pointers$name[i], 
+                                                get.extension(output.pointers$type[i]),
+						            " = 0;", 
+                                                sep = ""))
+      }
+	}
+
+	########################
+      # Generate function call
+	########################
 	if(tmp$type != "void"){
 		return.var.txt	<-	paste(tmp$type, "returnValue_internal = \t")
 	}else{
@@ -169,8 +187,11 @@ for(i in 1:length(functions)){
 		else
 			body <- c(body, paste("\t&", para$name[j], get.extension(para$type[j]), ",", sep = ""))
 	} 			
-	body <- c(body, paste("\t", para$name[para.max], get.extension(para$type[para.max]), ");", sep = ""))
-
+	if(length(grep("*", para$type[para.max], fixed = T)) == 0){
+	      body <- c(body, paste("\t", para$name[para.max], get.extension(para$type[para.max]), ");", sep = ""))
+      }else{
+	      body <- c(body, paste("\t&", para$name[para.max], get.extension(para$type[para.max]), ");", sep = ""))
+      }
 
 	output <- grep.bool(pattern = "out", x = para$in.out) 
 
