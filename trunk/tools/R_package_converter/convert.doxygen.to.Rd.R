@@ -51,6 +51,17 @@ names.examples                     <- substring( hardcoded.examples[pos.start.ex
                                                  3,
                                                  nchar(hardcoded.examples[pos.start.examples]) - 2)
 
+# Read in links to sources
+links.to.sources                   <- scan( "package\\man\\links.to.sources.txt", 
+                                            what  = "character",
+                                            sep   = "\n") 
+
+# Find first line of links and read the names
+idx.links.to.sources               <- grep("::", links.to.sources) + 1
+names.links                        <- substring( links.to.sources[idx.links.to.sources - 1],
+                                                 3,
+                                                 nchar(links.to.sources[idx.links.to.sources - 1]) - 2)
+
 # Read in type conversion table for C to R
 source("type.conversion.R")
 
@@ -127,7 +138,16 @@ for(i in 1:length(functions)){
 	}
 	cur.description <- c(cur.description, "}")
 
-      # Add example(s) if exists
+    # Add link to source if exists
+      if(cur.function$name %in% names.links){
+           idx.link              <- idx.links.to.sources[grep(cur.function$name, names.links)]
+           cur.description       <- c(cur.description, "\\seealso{\nView the C source code here:\n")
+           cur.description       <- c(cur.description, paste("\\url{", links.to.sources[idx.link]), "}", sep = "")
+           cur.description       <- c(cur.description, "}")
+           
+      }
+
+	  # Add example(s) if exists
       if(cur.function$name %in% names.examples){
            idx.start.example         <- pos.start.examples[grep(cur.function$name, names.examples)] + 1
            # if last example do not try to find end index but set it to last index
@@ -144,7 +164,7 @@ for(i in 1:length(functions)){
            
       }
      
-      # Write current description to file
+    # Write current description to file
 	write(c(cur.description, "\n"), file = paste("./package/man/", cur.function$name, ".Rd", sep = ""), append = T)
 }
 
