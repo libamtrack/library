@@ -355,7 +355,7 @@ for(header.file.name in header.file.names){
                pos.out.para                <- match(current.function$parameter.comment$name[pos.out & !pos.in], current.function$parameter$name)
                pos.in.out.para             <- match(current.function$parameter.comment$name[pos.in & pos.out], current.function$parameter$name)
 
-               current.function$parameter$in.out                  <- "TODO"
+               current.function$parameter$in.out                  <- "out"
                current.function$parameter$in.out[pos.in.para]     <- "in" 
                current.function$parameter$in.out[pos.out.para]    <- "out" 
                current.function$parameter$in.out[pos.in.out.para] <- "in.out" 
