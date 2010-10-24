@@ -487,33 +487,30 @@ void AT_run_GSM_method(  const long  number_of_field_components,
     const long     nX,
     const double   voxel_size_m,
     const bool     lethal_events_mode,
-    double         results[])
+    double*        relative_efficiency,
+    double*        d_check,
+    double*        S_HCP,
+    double*        S_gamma,
+    double*        average_n_particles,
+    double*        sd_relative_efficiency,
+    double*        sd_d_check,
+    double*        sd_S_HCP,
+    double*        sd_S_gamma,
+    double*        sd_n_particles)
 {
-
-  /** in case of debugging
-  printf("n = %ld\n", n);
-  printf("E_MeV_u[] = %g, %g, %g\n", E_MeV_u[0], E_MeV_u[1], E_MeV_u[2]);
-  printf("particle_no[] = %ld, %ld, %ld\n", particle_no[0], particle_no[1], particle_no[2]);
-  printf("fluence_cm2[] = %g, %g, %g\n", fluence_cm2[0], fluence_cm2[1], fluence_cm2[2]);
-  printf("AT_material_no = %ld\n", AT_material_no);
-  printf("rdd_model = %ld\n", rdd_model);
-  printf("rdd_parameters[] = %g\n", rdd_parameters[0]);
-  printf("er_model = %ld\n", er_model);
-  printf("gamma_model = %ld\n", gamma_model);
-  printf("gamma_parameters[] = %g, %g, %g, %g, %g\n", gamma_parameters[0], gamma_parameters[1], gamma_parameters[2], gamma_parameters[3], gamma_parameters[4]);
-  printf("N_runs = %ld\n", N_runs);
-  printf("write_output = %d\n", write_output);
-  printf("nX = %ld\n", nX);
-  printf("voxel_size_m = %g\n", voxel_size_m);
-  printf("lethal_events_mode = %d\n", lethal_events_mode);
-  */
-
   long    i, j, k;
 
   /* Zero results */
-  for (i = 0; i < 10; i++){
-    results[i] = 0.0;
-  }
+  *relative_efficiency    = 0.0;
+  *d_check                = 0.0;
+  *S_HCP                  = 0.0;
+  *S_gamma                = 0.0;
+  *average_n_particles    = 0.0;
+  *sd_relative_efficiency = 0.0;
+  *sd_d_check             = 0.0;
+  *sd_S_HCP               = 0.0;
+  *sd_S_gamma             = 0.0;
+  *sd_n_particles         = 0.0;
 
   double*  fluence_cm2    =  (double*)calloc(number_of_field_components, sizeof(double));
 
@@ -673,58 +670,51 @@ void AT_run_GSM_method(  const long  number_of_field_components,
     }
 
     /* add to results */
-    results[0]      += efficiency;
-    results[1]      += total_dose_on_grid_ions_Gy;
-    results[2]      += average_grid_response_ions;
-    results[3]      += gamma_response;
-    results[4]      += n_particles;
+    *relative_efficiency     += efficiency;
+    *d_check                 += total_dose_on_grid_ions_Gy;
+    *S_HCP                   += average_grid_response_ions;
+    *S_gamma                 += gamma_response;
+    *average_n_particles     += n_particles;
 
-    results[5]      += gsl_pow_2(efficiency);
-    results[6]      += gsl_pow_2(total_dose_on_grid_ions_Gy);
-    results[7]      += gsl_pow_2(average_grid_response_ions);
-    results[8]      += gsl_pow_2(gamma_response);
-    results[9]      += gsl_pow_2(n_particles);
-
-    /* Write intermediate results to file */
-
-//    FILE*    output_file = NULL;
-//    output_file    =  fopen("GSMdoseGrid.csv","w");
-//    if (output_file == NULL) return;                      // File error
-//    fprintf(output_file, "x.m;y.m;d.Gy\n");
-
+    *sd_relative_efficiency  += gsl_pow_2(efficiency);
+    *sd_d_check              += gsl_pow_2(total_dose_on_grid_ions_Gy);
+    *sd_S_HCP                += gsl_pow_2(average_grid_response_ions);
+    *sd_S_gamma              += gsl_pow_2(gamma_response);
+    *sd_n_particles          += gsl_pow_2(n_particles);
   }// end run loop
 
   /* average over number of runs */
-  results[0]  /= N_runs;
-  results[1]  /= N_runs;
-  results[2]  /= N_runs;
-  results[3]  /= N_runs;
-  results[4]  /= N_runs;
+  *relative_efficiency     /= N_runs;
+  *d_check                 /= N_runs;
+  *S_HCP                   /= N_runs;
+  *S_gamma                 /= N_runs;
+  *average_n_particles     /= N_runs;
 
-  results[5]  /= N_runs;
-  results[6]  /= N_runs;
-  results[7]  /= N_runs;
-  results[8]  /= N_runs;
-  results[9]  /= N_runs;
+  *sd_relative_efficiency  /= N_runs;
+  *sd_d_check              /= N_runs;
+  *sd_S_HCP                /= N_runs;
+  *sd_S_gamma              /= N_runs;
+  *sd_n_particles          /= N_runs;
 
-  results[5]  -= gsl_pow_2(results[0]);
-  results[6]  -= gsl_pow_2(results[1]);
-  results[7]  -= gsl_pow_2(results[2]);
-  results[8]  -= gsl_pow_2(results[3]);
-  results[9]  -= gsl_pow_2(results[4]);
+  /* compute standard deviations from running estimators */
+  *sd_relative_efficiency  -= gsl_pow_2(*relative_efficiency);
+  *sd_d_check              -= gsl_pow_2(*d_check);
+  *sd_S_HCP                -= gsl_pow_2(*S_HCP);
+  *sd_S_gamma              -= gsl_pow_2(*S_gamma);
+  *sd_n_particles          -= gsl_pow_2(*average_n_particles);
 
-  results[5]  = GSL_MAX(0., results[5]);
-  results[6]  = GSL_MAX(0., results[6]);
-  results[7]  = GSL_MAX(0., results[7]);
-  results[8]  = GSL_MAX(0., results[8]);
-  results[9]  = GSL_MAX(0., results[9]);
+  *sd_relative_efficiency  = GSL_MAX(0., *sd_relative_efficiency);
+  *sd_d_check              = GSL_MAX(0., *sd_d_check);
+  *sd_S_HCP                = GSL_MAX(0., *sd_S_HCP);
+  *sd_S_gamma              = GSL_MAX(0., *sd_S_gamma);
+  *sd_n_particles          = GSL_MAX(0., *sd_n_particles);
 
   if( N_runs > 1 ){
-          results[5]  = sqrt(results[5] / (N_runs - 1.));
-          results[6]  = sqrt(results[6] / (N_runs - 1.));
-          results[7]  = sqrt(results[7] / (N_runs - 1.));
-          results[8]  = sqrt(results[8] / (N_runs - 1.));
-          results[9]  = sqrt(results[9] / (N_runs - 1.));
+	  *sd_relative_efficiency  = sqrt(*sd_relative_efficiency / (N_runs - 1.));
+	  *sd_d_check              = sqrt(*sd_d_check / (N_runs - 1.));
+	  *sd_S_HCP                = sqrt(*sd_S_HCP / (N_runs - 1.));
+	  *sd_S_gamma              = sqrt(*sd_S_gamma / (N_runs - 1.));
+	  *sd_n_particles          = sqrt(*sd_n_particles / (N_runs - 1.));
   }
 
   /* free memory */
