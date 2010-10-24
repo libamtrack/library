@@ -907,15 +907,15 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
     double         LET_MeV_cm2_g[]);
 
 /**
- * Calculates LET [keV/um] scaled by density for set of particles with given energies
+ * Returns LET [keV/um] scaled by density for set of particles with given energies
  *
  * @param[in]   number_of_particles      number of particle types in the mixed particle field
  * @param[in]   E_MeV_u                  energy of particles in the mixed particle field (array of size number_of_particles)
  * @param[in]   particle_no              type of the particles in the mixed particle field (array of size number_of_particles)
- * @see          AT_DataParticle.h for definition
+ * @see AT_DataParticle.h for definition
  * @param[in]   material_no              material index
- * @see          AT_DataMaterial.h for definition
- * @param[out] LET_keV_um
+ * @see AT_DataMaterial.h for definition
+ * @param[out]  LET_keV_um               LET [keV/um] (array of size number_of_particles)
  */
 void AT_LET_keV_um(  const long  number_of_particles,
     const double  E_MeV_u[],
