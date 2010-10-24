@@ -41,7 +41,7 @@ grep.bool	<-	function(pattern, x, ...){
 }
 
 for(i in 1:length(functions)){
-	# i <- 7
+	# i <- 4
 	tmp <- functions[[i]]
 	
 	##############################

@@ -161,7 +161,6 @@ for(i in 1:length(functions)){
            cur.description       <- c(cur.description, "\\examples{")
            cur.description       <- c(cur.description, paste(hardcoded.examples[idx.start.example:idx.end.example]))
            cur.description       <- c(cur.description, "}")
-           
       }
      
     # Write current description to file
