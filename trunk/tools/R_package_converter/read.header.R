@@ -45,7 +45,7 @@ header.file.names <- header.file.names[grep(".h", header.file.names)]
 # Additionally header files fow which doxygen comments are not ready yet can be excluded
 to.remove         <- c("AT_Wrapper_R.h", "AT_KatzModel.h", "AT_NumericalRoutines.h")
 pos.remove        <- match(to.remove, header.file.names)
-pos.remove        <- c(pos.remove, grep("Data", header.file.names))
+#pos.remove        <- c(pos.remove, grep("Data", header.file.names))
 header.file.names <- header.file.names[-pos.remove]
 
 # Initialize vectors to hold extracted information
@@ -61,7 +61,7 @@ grep.bool     <-     function(pattern, x, ...){
 }
 
 for(header.file.name in header.file.names){
-     # DEBUG: header.file.name <- header.file.names[1]
+     # DEBUG: header.file.name <- header.file.names[4]
      
      #####################################################
      # A. Extract doxygen comment and function declaration
@@ -375,6 +375,7 @@ for(header.file.name in header.file.names){
                functions[[function.no]]    <- current.function
                processed.functions         <- c(processed.functions, name)
                function.no                 <- function.no + 1
+               print(paste("Successfully done.", name))
         }else{ # name %in% namespace
                print(paste("Skipped as not in namespace.", name))
         }

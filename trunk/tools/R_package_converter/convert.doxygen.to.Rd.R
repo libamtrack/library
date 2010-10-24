@@ -24,112 +24,130 @@
 ################################################################################################
 
 
+# Clean workspace
 rm(list = ls())
 
-source("type.conversion.R")
-
+# Load the function information extracted by 'read.cur.description.R'
 load("functions.ssd")
 
-# replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
+# Replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
 grep.bool	<-	function(pattern, x, ...){
 	results	<-	grep(pattern, x, ...)
 	indices	<-	1:length(x)
 	bool.res	<-	is.element(indices, results)
 }
 
-# list of hard-coded Rd files for variable descriptions
+# List of hard-coded Rd files for variable descriptions
 hardcoded.variable.descriptions    <- c("E.MeV.u", "particle.no", "material.no", "er.model", "rdd.model", "fluence.cm2.or.dose.Gy", "number.of.field.components")
+
+# Read in hard-coded examples
+hardcoded.examples                 <- scan( "package\\man\\examples.txt", 
+                                            what  = "character",
+                                            sep   = "\n") 
+
+# Find first line of examples and read the names
+pos.start.examples                 <- grep("::", hardcoded.examples)
+names.examples                     <- substring( hardcoded.examples[pos.start.examples],
+                                                 3,
+                                                 nchar(hardcoded.examples[pos.start.examples]) - 2)
+
+# Read in type conversion table for C to R
+source("type.conversion.R")
 
 
 for(i in 1:length(functions)){
-	# i <- 8
-	tmp <- functions[[i]]
+	# i <- 3
+	cur.function <- functions[[i]]
 
 	# replace "_" by "."
-	tmp$name <- gsub("_", ".", tmp$name)
-	tmp$parameter.comment$name <- gsub("_", ".", tmp$parameter.comment$name)
+	cur.function$name <- gsub("_", ".", cur.function$name)
+	cur.function$parameter.comment$name <- gsub("_", ".", cur.function$parameter.comment$name)
 
 	# remove "[]"
-	tmp$parameter.comment$name <- gsub("[]", "", tmp$parameter.comment$name, fixed = T)
+	cur.function$parameter.comment$name <- gsub("[]", "", cur.function$parameter.comment$name, fixed = T)
 
 	# paste all input parameters together
-	ii <- which(grep.bool(pattern = "in", x = tmp$parameter.comment$type)) # SG commented out: & tmp$parameter.comment$name != "n")
+	ii <- which(grep.bool(pattern = "in", x = cur.function$parameter.comment$type)) # SG commented out: & cur.function$parameter.comment$name != "n")
 	parameter.list <- character(0)
 	if(length(ii) > 0){ 
 		if(length(ii) > 1){ 
 			for(i in ii[1:(length(ii) - 1)]){
-				parameter.list <- paste(parameter.list, tmp$parameter.comment$name[i], ", ", sep = "") 
+				parameter.list <- paste(parameter.list, cur.function$parameter.comment$name[i], ", ", sep = "") 
 				if(which(i == ii)%%5 == 0) parameter.list <- paste(parameter.list, "\n\t", sep = "") 
 
 			}
 		}
-		parameter.list <- paste(parameter.list, tmp$parameter.comment$name[ii[length(ii)]], sep = "") 
+		parameter.list <- paste(parameter.list, cur.function$parameter.comment$name[ii[length(ii)]], sep = "") 
 	}
 
-	write("% Automatically created Rd file\n", file = paste("./package/man/", tmp$name, ".Rd", sep = ""))
+	write("% Automatically created Rd file\n", file = paste("./package/man/", cur.function$name, ".Rd", sep = ""))
 
-	##############################
-	# create header
-	##############################
-	header <- character(0)
+	# Create Rd description
+      cur.description   <- character(0)
+	cur.description   <- paste("% TODO File path/", cur.function$name, ".Rd", sep = "")
+	cur.description   <- c(cur.description, paste("\\name{", cur.function$name, "}", sep = ""))
+	cur.description   <- c(cur.description, paste("\\alias{", cur.function$name, "}", sep = ""))
+	cur.description   <- c(cur.description, paste("\\title{", cur.function$name, "}", sep = ""))
+	cur.description   <- c(cur.description, paste("\\description{", cur.function$description, "}", sep = ""))
+	cur.description   <- c(cur.description, paste("\\usage{", cur.function$name, "(", parameter.list, ")\n}", sep = ""))
 
-	header <- paste("% TODO File path/", tmp$name, ".Rd", sep = "")
-
-	header <- c(header, paste("\\name{", tmp$name, "}", sep = ""))
-
-	header <- c(header, paste("\\alias{", tmp$name, "}", sep = ""))
-
-	header <- c(header, paste("\\title{", tmp$name, "}", sep = ""))
-
-	header <- c(header, paste("\\description{", tmp$description, "}", sep = ""))
-
-	header <- c(header, paste("\\usage{", tmp$name, "(", parameter.list, ")\n}", sep = ""))
-
-	# start arguments
-	header <- c(header, "\\arguments{")
-
-	para <- tmp$parameter.comment
+	# Add arguments
+	cur.description   <- c(cur.description, "\\arguments{")
+	para              <- cur.function$parameter.comment
 	para.in <- which(grep.bool(pattern = "in", x = para$type)) # SG commented out: & para$name != "n")
 	if(length(para.in) > 0){
             for(i in para.in){
 		      line.to.add    <- NULL
                   if (para$name[i] %in% hardcoded.variable.descriptions){
-                       header         <- c(header, paste("  \\item{", para$name[i], "}{", para$comment[i], " (see also \\code{\\link{", para$name[i], "}}).}", sep = ""))
+                       cur.description         <- c(cur.description, paste("  \\item{", para$name[i], "}{", para$comment[i], " (see also \\code{\\link{", para$name[i], "}}).}", sep = ""))
                   }else{
-                       header         <- c(header, paste("  \\item{", para$name[i], "}{", para$comment[i], ".}", sep = ""))
+                       cur.description         <- c(cur.description, paste("  \\item{", para$name[i], "}{", para$comment[i], ".}", sep = ""))
                   }
 		}
 	}
-	# end arguments
-	header <- c(header, "}")
+	cur.description <- c(cur.description, "}")
 
-	# start value
-	header <- c(header, "\\value{\n% TODO proper return definition of lists!!!)")
+	# Values
+	cur.description <- c(cur.description, "\\value{\n% TODO proper return definition of lists!!!)")
 
 	para.out <- grep("out", para$type)
 	if(length(para.out) > 0){
 		for(i in para.out){
-			header <- c(header, paste("  \\item{", para$name[i], "}{", para$comment[i], "}", sep = ""))
+			cur.description <- c(cur.description, paste("  \\item{", para$name[i], "}{", para$comment[i], "}", sep = ""))
 		}
 	}
 
-	if(tmp$type != "void"){
+	if(cur.function$type != "void"){
 		para.return <- grep("return", para$type)
 		if(length(para.return) > 0){
 			for(i in para.return){
-				header <- c(header, paste("  \\item{", para$name[i], "}{", para$name[i], "}", sep = ""))
+				cur.description <- c(cur.description, paste("  \\item{", para$name[i], "}{", para$name[i], "}", sep = ""))
 			}
 		}
 	}
+	cur.description <- c(cur.description, "}")
 
-	# end value
-	header <- c(header, "}")
+      # Add example(s) if exists
+      if(cur.function$name %in% names.examples){
+           idx.start.example         <- pos.start.examples[grep(cur.function$name, names.examples)] + 1
+           # if last example do not try to find end index but set it to last index
+           if(grep(cur.function$name, names.examples) == length(pos.start.examples)){
+               idx.end.example            <- length(hardcoded.examples)
+           }else{
+               idx.end.example            <- pos.start.examples[grep(cur.function$name, names.examples) + 1] - 1
+           }
 
-	write(c(header, "\n"), file = paste("./package/man/", tmp$name, ".Rd", sep = ""), append = T)
+           # extract example text and paste into Rd description
+           cur.description       <- c(cur.description, "\\examples{")
+           cur.description       <- c(cur.description, paste(hardcoded.examples[idx.start.example:idx.end.example]))
+           cur.description       <- c(cur.description, "}")
+           
+      }
+     
+      # Write current description to file
+	write(c(cur.description, "\n"), file = paste("./package/man/", cur.function$name, ".Rd", sep = ""), append = T)
 }
 
-#tmp
-#header
 
 
 
