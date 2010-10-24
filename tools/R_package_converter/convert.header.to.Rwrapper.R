@@ -139,7 +139,7 @@ for(i in 1:length(functions)){
 		}
 		if(tmp$type != "void"){
 			header                <- c(header, paste("\t return.list[[", j+1, "]] <- res$returnValue", sep = ""))
-                  names.in.return.list  <- paste(names.in.return.list, "returnValue", sep = "")
+                  names.in.return.list  <- paste(names.in.return.list, ", \"returnValue\"", sep = "")
 		}
 
             names.in.return.list  <- paste(names.in.return.list, ")", sep = "")
