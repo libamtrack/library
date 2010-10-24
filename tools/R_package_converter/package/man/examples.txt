@@ -1,0 +1,65 @@
+::AT.run.GSM.method::
+# Compute the relative efficiency of an Alanine detector in a mixed
+# carbon / proton field
+AT.run.GSM.method( number.of.field.components           = 1,                           # one component only
+                   particle.no                          = 1001,                        # namely protons with
+                   E.MeV.u                              = 10,                          # 10 MeV/u
+                   fluence.cm2.or.dose.Gy               = c(-1.0),                     # delivering 1 Gy
+                   material.no                          = 5,                           # i.e. Alanine
+                   rdd.model                            = 3,                           # simple 'Geiﬂ' parametrization of radial dose distribution
+                   rdd.parameter                        = 50e-9,                       # with 50 nm core radius
+                   er.model                             = 4,                           # M. Scholz' parametrization of track radius
+                   gamma.model                          = 2,                           # General hit/target X ray response, but
+                   gamma.parameters                     = c(1,500,1,1,0),              # as simple single exponential saturation (one hit, one target), saturation dose 500 Gy
+                   N.runs                               = 1000,                        # resample 1000 times
+                   write.output                         = T,                           # write a log file
+                   nX                                   = 10,                          # use a 10x10 grid
+                   voxel.size.m                         = 5e-9,                        # with 5 nm voxel size
+                   lethal.events.mode                   = F)                           # use independent subtargets
+AT.run.IGK.method::
+# Compute the relative efficiency of an Alanine detector in a mixed
+# carbon / proton field
+AT.run.IGK.method( number.of.field.components           = 1,                           # one component only
+                   particle.no                          = 1001,                        # namely protons with
+                   E.MeV.u                              = 10,                          # 10 MeV/u
+                   fluence.cm2.or.dose.Gy               = c(-1.0),                     # delivering 1 Gy
+                   material.no                          = 5,                           # i.e. Alanine
+                   rdd.model                            = 4,                           # Katz parametrization of radial dose distribution with simplified extended targets
+                   rdd.parameter                        = c(5e-8,1e-10)                # with 50 nm target size and 1e-10 dose minimum
+                   er.model                             = 2,                           # Butts&Katz parametrization of track radius
+                   gamma.model                          = 2,                           # General hit/target X ray response, but
+                   gamma.parameters                     = c(1,500,1,1,0),              # as simple single exponential saturation (one hit, one target), saturation dose 500 Gy
+                   saturation.cross.section.factor      = 1.4,                         # factor to take 'brush' around track into account
+				   write.output                         = T)                           # write a log file
+AT.run.SPIFF.method::
+# Compute the relative efficiency of an Alanine detector in a mixed
+# carbon / proton field
+AT.run.SPIFF.method( number.of.field.components           = 3,                           # three components contributing
+                     particle.no                          = c(6012, 1001, 1001),         # namely carbon, protons, and protons with
+                     E.MeV.u                              = c(270, 270, 5),              # 270 MeV/u (primary Carbon, 270 MeV/u and 5 MeV/u (fast and slow proton component) 
+                     fluence.cm2.or.dose.Gy               = c(1e8, 1e9, 1e7),            # and their corresponding fluences
+                     material.no                          = 5,                           # i.e. Alanine
+                     rdd.model                            = 3,                           # simple 'Geiﬂ' parametrization of radial dose distribution
+                     rdd.parameter                        = 50e-9,                       # with 50 nm core radius
+                     er.model                             = 4,                           # M. Scholz' parametrization of track radius
+                     gamma.model                          = 2,                           # General hit/target X ray response, but
+                     gamma.parameters                     = c(1,500,1,1,0),              # as simple single exponential saturation (one hit, one target), saturation dose 500 Gy
+                     N2                                   = 10,                          # ten bins per factor 2 for internal local dose histogramming
+                     fluence.factor                       = 1.0,                         # can be used to easily scale total fluence (historical)
+					 write.output                         = T,                           # write a log file
+                     shrink.tails                         = T,                           # cut tails of local dose distribution, if...
+                     shrink.tails.under                   = 1e-30,                       # ... they contribute less then 1e-30 to first moment of histogram
+                     adjust.N2                            = T,                           # perform rebinning if local dose distribution becomes too narrow
+                     lethal.events.mode                   = F)                           # use independent subtargets
+::AT.beta.from.E::
+# Compute beta between 1 and 1000 MeV/u:
+AT.beta.from.E( n           = 4,
+                E.MeV.u     = c(1,10,100,1000))
+::AT.LET.keV.um::
+# Compute the LET (in keV/um) of a 270 MeV/u carbon ion in Aluminum:
+AT.LET.keV.um( n           = 1,
+               E.MeV.u     = 270,
+			   particle.no = 6012,
+			   material.no = 3)
+::Was anderes::
+LALALALA
