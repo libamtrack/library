@@ -131,7 +131,7 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
  * @param[in]      gamma_parameters                 parameters for chosen gamma response (array of size 4)
  * @see AT_GammaResponse.h for definition
  * @param[in]      saturation_cross_section_factor  scaling factor for the saturation cross section
- * @see Waligórski, 1988
+ * @see Waligorski, 1988
  * @param[in]      write_output                     if true, a protocol is written to a file in the working directory
  * @param[out]     results                          to be allocated by the user which will be used to return the results (array of size 10)
  *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
