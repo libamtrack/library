@@ -264,7 +264,7 @@ void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_comp
  * @param[out]     S_HCP                          absolute particle response
  * @param[out]     S_gamma                        absolute gamma response
  * @param[out]     n_particles                    average number of particle tracks on the detector grid
- * @param[out]     sd_efficiency                  standard deviation for relative_efficiency
+ * @param[out]     sd_relative_efficiency         standard deviation for relative_efficiency
  * @param[out]     sd_d_check                     standard deviation for d_check
  * @param[out]     sd_S_HCP                       standard deviation for S_HCP
  * @param[out]     sd_S_gamma                     standard deviation for S_gamma
