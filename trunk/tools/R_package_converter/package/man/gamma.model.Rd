@@ -22,7 +22,7 @@
 		3 \tab Radioluminescence response\cr
 		4 \tab Simple exponential saturation (special case of 2: one hit / one target)\cr
 		5 \tab Linear-quadratic model\cr
-		6 \tab Mejdahl's TLD response for LiF as used by Geiﬂ et al. (1998)\cr
+		6 \tab Mejdahl's TLD response for LiF as used by Geiss et al. (1998)\cr
 		
 	}
 

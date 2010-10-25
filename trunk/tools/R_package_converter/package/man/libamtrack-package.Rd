@@ -52,7 +52,7 @@ Package maintainer: Steffen Greilich \email{s.greilich@dkfz.de}
 }
 
 \references{
-\cite{Greilich, Grzanka, Bassler, Andersen and Jäkel, Amorphous track models: A numerical comparison study, doi:10.1016/j.radmeas.2010.05.039}
+\cite{Greilich, Grzanka, Bassler, Andersen and Jakel, Amorphous track models: A numerical comparison study, doi:10.1016/j.radmeas.2010.05.039}
 }
 
 \keyword{ package }
