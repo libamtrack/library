@@ -39,7 +39,7 @@ grep.bool	<-	function(pattern, x, ...){
 }
 
 for(i in 1:length(functions)){
-	#i<-1
+	#i<-3
 	tmp <- functions[[i]]
 
 	##############################
@@ -90,10 +90,10 @@ for(i in 1:length(functions)){
 	pos.only.out <- pos.out[is.na(check)]
 	
 	if(length(pos.only.out) > 0){
-		# j <- 1
+		# j <- 6
 		for(j in 1:(length(pos.only.out))){
 			header <- c(header, paste( "\t", para$name[pos.only.out[j]], 
-								" = numeric(", gsub("_", ".", para$length[pos.only.out[j]], fixed = T),
+								" <- numeric(", gsub("_", ".", para$length[pos.only.out[j]], fixed = T),
 								")", sep = ""))
 		}
 	}
