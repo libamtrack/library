@@ -1,5 +1,5 @@
 ################################################################################################
-# C wrapper generator
+# Rd wrapper generator
 ################################################################################################
 # Copyright 2006, 2010 The libamtrack team
 # 
@@ -30,7 +30,7 @@ rm(list = ls())
 # Load the function information extracted by 'read.cur.description.R'
 load("functions.ssd")
 
-# Replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
+# Replacement for "grepl" function to ensure compatibility with R <= 2.9.0
 grep.bool	<-	function(pattern, x, ...){
 	results	<-	grep(pattern, x, ...)
 	indices	<-	1:length(x)
@@ -41,7 +41,7 @@ grep.bool	<-	function(pattern, x, ...){
 hardcoded.variable.descriptions    <- c("E.MeV.u", "particle.no", "material.no", "er.model", "rdd.model", "fluence.cm2.or.dose.Gy", "number.of.field.components")
 
 # Read in hard-coded examples
-hardcoded.examples                 <- scan( "package\\man\\examples.txt", 
+hardcoded.examples                 <- scan( "./package/man/examples.txt", 
                                             what  = "character",
                                             sep   = "\n") 
 
@@ -52,7 +52,7 @@ names.examples                     <- substring( hardcoded.examples[pos.start.ex
                                                  nchar(hardcoded.examples[pos.start.examples]) - 2)
 
 # Read in links to sources
-links.to.sources                   <- scan( "package\\man\\links.to.sources.txt", 
+links.to.sources                   <- scan( "./package/man/links.to.sources.txt", 
                                             what  = "character",
                                             sep   = "\n") 
 
