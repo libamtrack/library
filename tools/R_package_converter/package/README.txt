@@ -9,7 +9,7 @@ Installation instructions for downloaded R packages
 
 * For installation using root privileges:
 ** From the folder you downloaded the package into, run (in the console) 'R CMD INSTALL ./libamtrack.tar.gz'
-** This will install libamtrack into a system folder so any user can deploy it using 'library(libamtrack,)' during an R session.
+** This will install libamtrack into a system folder so any user can deploy it using 'library(libamtrack)' during an R session.
 ** To uninstall the package again run (in the console) 'R CMD REMOVE libamtrack '
 
 

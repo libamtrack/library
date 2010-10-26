@@ -31,7 +31,7 @@ These functions compute the relative efficiency / RBE of a mixed particle field 
 \tabular{ll}{
 \code{\link{AT.run.GSM.method}} \tab Grid-summation ('checkerboard') method \cr
 \code{\link{AT.run.IGK.method}} \tab Ion-gamma-kill ('Katz') method \cr
-\code{\link{AT.run.SPIFF.method}} \tab Compund-Poison process with successive convolutions (CPP-SC, 'SPIFF') method \cr
+\code{\link{AT.run.CPPSC.method}} \tab Compund-Poison process with successive convolutions (CPP-SC, 'SPIFF') method \cr
 }
 
 \bold{Physics routines:}
@@ -83,7 +83,7 @@ AT.run.IGK.method( number.of.field.components           = 1,                    
                    fluence.cm2.or.dose.Gy               = c(-1.0),                     # delivering 1 Gy
                    material.no                          = 5,                           # i.e. Alanine
                    rdd.model                            = 4,                           # Katz parametrization of radial dose distribution with simplified extended targets
-                   rdd.parameter                        = c(5e-8,1e-10)                # with 50 nm target size and 1e-10 dose minimum
+                   rdd.parameter                        = c(5e-8,1e-10),               # with 50 nm target size and 1e-10 dose minimum
                    er.model                             = 2,                           # Butts&Katz parametrization of track radius
                    gamma.model                          = 2,                           # General hit/target X ray response, but
                    gamma.parameters                     = c(1,500,1,1,0),              # as simple single exponential saturation (one hit, one target), saturation dose 500 Gy

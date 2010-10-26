@@ -31,7 +31,7 @@
 #include "AmTrack.h"
 #include <math.h>
 
-void AT_run_SPIFF_method(  const long  number_of_field_components,
+void AT_run_CPPSC_method(  const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
@@ -48,8 +48,18 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
     const double  shrink_tails_under,
     const bool    adjust_N2,
     const bool    lethal_events_mode,
-    double        results[])
+    double*       relative_efficiency,
+    double*       d_check,
+    double*       S_HCP,
+    double*       S_gamma,
+    double*       mean_number_of_tracks_contrib,
+    double*       start_number_of_tracks_contrib,
+    long*         n_convolutions,
+    double*		  lower_Jensen_bound,
+    double*       upper_Jensen_bound)
 {
+  long i;
+
 
   long     n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_distrib(  number_of_field_components,
       E_MeV_u,
@@ -93,8 +103,6 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
 
   double*  fluence_cm2    =  (double*)calloc(number_of_field_components, sizeof(double));
 
-  long i;
-
   if(fluence_cm2_or_dose_Gy[0] < 0){
     double*  dose_Gy      =  (double*)calloc(number_of_field_components, sizeof(double));
     for (i = 0; i < number_of_field_components; i++){
@@ -114,7 +122,7 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
     }
   }
 
-  const double u  =       AT_total_u(     number_of_field_components,
+  *mean_number_of_tracks_contrib  =       AT_total_u(     number_of_field_components,
       E_MeV_u,
       particle_no,
       fluence_cm2,
@@ -124,10 +132,8 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
   free( fluence_cm2 );
 
   long      n_bins_f;
-  double    u_start;
-  long      n_convolutions;
 
-  AT_n_bins_for_low_fluence_local_dose_distribution(  u,
+  AT_n_bins_for_low_fluence_local_dose_distribution(  *mean_number_of_tracks_contrib,
       fluence_factor,
       N2,
       n_bins_f1,
@@ -136,8 +142,8 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
       f1,
       // from here: return values
       &n_bins_f,
-      &u_start,
-      &n_convolutions);
+      start_number_of_tracks_contrib,
+      n_convolutions);
 
   double*  f_d_Gy       =  (double*)calloc(n_bins_f, sizeof(double));
   double*  f_dd_Gy      =  (double*)calloc(n_bins_f, sizeof(double));
@@ -145,7 +151,6 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
   double*  fdd          =  (double*)calloc(n_bins_f, sizeof(double));
   double*  dfdd         =  (double*)calloc(n_bins_f, sizeof(double));
   double   f0           =  0.0;
-  double   d_check      =  0.0;
 
   AT_low_fluence_local_dose_distribution(  n_bins_f1,
       N2,
@@ -157,7 +162,7 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
       f_dd_Gy,
       f);
 
-  AT_SuccessiveConvolutions(  u,
+  AT_SuccessiveConvolutions(  *mean_number_of_tracks_contrib,
       n_bins_f,
       &N2,
       // input + return values
@@ -169,16 +174,14 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
       &f0,
       fdd,
       dfdd,
-      &d_check,
+      d_check,
       write_output,
       shrink_tails,
       shrink_tails_under,
       adjust_N2);
 
-  long     n_bins_f_used  = n_bins_f1;
-
-  double*  S            =  (double*)calloc(n_bins_f_used, sizeof(double));
-  double   S_HCP, S_gamma, efficiency;
+  long     n_bins_f_used  	= n_bins_f1;
+  double*  S            	= (double*)calloc(n_bins_f_used, sizeof(double));
 
   AT_get_response_distribution_from_dose_distribution(  n_bins_f_used,
       f_d_Gy,
@@ -188,12 +191,12 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
       lethal_events_mode,
       S);
 
-  S_HCP = AT_get_ion_response_from_response_distribution( n_bins_f_used,
+  *S_HCP = AT_get_ion_response_from_response_distribution( n_bins_f_used,
 		  f_dd_Gy,
 		  f,
 		  S);
 
-  S_gamma = AT_get_gamma_response_for_average_dose( n_bins_f_used,
+  *S_gamma = AT_get_gamma_response_for_average_dose( n_bins_f_used,
 		  f_d_Gy,
 		  f_dd_Gy,
 		  f,
@@ -201,24 +204,8 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
 		  gamma_parameters,
 		  lethal_events_mode);
 
-  efficiency = S_HCP / S_gamma;
+  *relative_efficiency = *S_HCP / *S_gamma;
 
-//  AT_get_gamma_response(  n_bins_f_used,
-//
-//      f_d_Gy,
-//      f_dd_Gy,
-//
-//      f,
-//      f0,
-//      gamma_model,
-//      gamma_parameters,
-//      lethal_events_mode,
-//      // return
-//
-//      S,
-//      &S_HCP,
-//      &S_gamma,
-//      &efficiency);
 
   /* Get zero-dose reponse and its ln */
   double		s0 = 0.0, log_s0 = 0.0;
@@ -238,31 +225,21 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
   }
 
   /* Compute lower bound */
-  double lower_Jensen_bound = f0*log_s0;
+  *lower_Jensen_bound = f0*log_s0;
   for (i = 0; i < n_bins_f_used; i++){
 	  double	log_s	= 0.0;
 	  if (S[i] > 0){
 		  log_s 	= log(S[i]);
 	  }
-	  lower_Jensen_bound 	+= f[i] * log_s * f_dd_Gy[i];
+	  *lower_Jensen_bound 	+= f[i] * log_s * f_dd_Gy[i];
   }
-  lower_Jensen_bound	=	exp(lower_Jensen_bound);
+  *lower_Jensen_bound	=	exp(*lower_Jensen_bound);
 
   /* Compute upper bound */
-  double upper_Jensen_bound = f0*s0;
+  *upper_Jensen_bound = f0*s0;
   for (i = 0; i < n_bins_f_used; i++){
-	  upper_Jensen_bound 	+= f[i] * S[i] * f_dd_Gy[i];
+	  *upper_Jensen_bound 	+= f[i] * S[i] * f_dd_Gy[i];
   }
-
-  results[0]      =  efficiency;        // 0 - 4: algo independent results
-  results[1]      =  d_check;
-  results[2]      =  S_HCP;
-  results[3]      =  S_gamma;
-  results[5]      =  u;                 // 5 - 9: algo specific: u
-  results[6]      =  u_start;
-  results[7]      =  n_convolutions;
-  results[8]	  =  lower_Jensen_bound;
-  results[9]	  =  upper_Jensen_bound;
 
   free(f1_parameters);
   free(f1_d_Gy);
@@ -277,7 +254,6 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
 }
 
 
-
 void AT_run_IGK_method(  const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
@@ -290,21 +266,24 @@ void AT_run_IGK_method(  const long  number_of_field_components,
     const double  gamma_parameters[],
     const double  saturation_cross_section_factor,
     const bool    write_output,
-    double  results[])
+    double*       relative_efficiency,
+    double*       S_HCP,
+    double*       S_gamma,
+    double*       sI_cm2,
+    double*       gamma_dose_Gy,
+    double*       P_I,
+    double*       P_g)
 {
+  long   i;
 
   ////////////////////////////////////////////////////////////////////////////////////////////
-  // 1. normalize fluence, get total fluence and dose
-
-  // if fluence_cm2 < 0 the user gave doses in Gy rather than fluences, so in that case convert them first
-  // only the first entry will be check
-  long   i;
+  // normalize fluences, get total fluence and dose
   double*  fluence_cm2    =  (double*)calloc(number_of_field_components, sizeof(double));
   double*  dose_Gy        =  (double*)calloc(number_of_field_components, sizeof(double));
 
   if(fluence_cm2_or_dose_Gy[0] < 0){
     for (i = 0; i < number_of_field_components; i++){
-      dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
+      dose_Gy[i]               = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
     AT_fluence_cm2(  number_of_field_components,
         E_MeV_u,
@@ -314,7 +293,7 @@ void AT_run_IGK_method(  const long  number_of_field_components,
         fluence_cm2);
   }else{
     for (i = 0; i < number_of_field_components; i++){
-      fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
+      fluence_cm2[i]          = fluence_cm2_or_dose_Gy[i];
     }
     AT_dose_Gy_from_fluence_cm2(  number_of_field_components,
         E_MeV_u,
@@ -324,7 +303,7 @@ void AT_run_IGK_method(  const long  number_of_field_components,
         dose_Gy);
   }
 
-  double total_dose_Gy = 0.0;
+  double total_dose_Gy        = 0.0;
   double total_fluence_cm2    = 0.0;
 
   for (i = 0; i < number_of_field_components; i++){
@@ -408,15 +387,10 @@ void AT_run_IGK_method(  const long  number_of_field_components,
   params->gamma_parameters[0]  = 1; // No multiple components
   params->gamma_parameters[4]  = 0;
 
-  double   S_HCP                = 0.0;
-  double   S_gamma              = 0.0;
-
   double   sI_m2                = 0.0;
-  double   sI_cm2               = 0.0;
-  double   P_I                  = 0.0;
-  double   P_g                  = 0.0;
-  double   gamma_contribution   = 0.0;
   double   cross_section_ratio  = 0.0;
+  double   gamma_contribution   = 0.0;
+  *S_HCP = 0.0;
 
   for(i = 0; i < n_components; i++){
     long j;
@@ -452,7 +426,7 @@ void AT_run_IGK_method(  const long  number_of_field_components,
     }
 
     sI_m2  *= 2.0 * M_PI;
-    sI_cm2  = sI_m2 * 10000.0;
+    *sI_cm2  = sI_m2 * 10000.0;
 
     gsl_integration_workspace_free (w1);
 
@@ -475,27 +449,27 @@ void AT_run_IGK_method(  const long  number_of_field_components,
     double   D_Gy         = dose_contribution_Gy[0];                // dose by particle i
 
     cross_section_ratio  = sI_m2 / s0_m2;
-    double S_HCP_component;
+    double S_HCP_component, gamma_D_Gy;
 
     if( (cross_section_ratio < 1) & (cross_section_ratio >= 0) & (params->gamma_parameters[2] > 1)){
-      P_I                = exp(-1.0 * sI_cm2 * fluence_cm2); // prob of being activated by ion kill mode
-      gamma_contribution = 1.0 - cross_section_ratio;
-      double   gamma_D_Gy = gamma_contribution * D_Gy;
+      *P_I                = exp(-1.0 * (*sI_cm2) * fluence_cm2); // prob of being activated by ion kill mode
+      gamma_contribution  = 1.0 - cross_section_ratio;
+      gamma_D_Gy          = gamma_contribution * D_Gy;
       AT_gamma_response(  n_tmp,
           &gamma_D_Gy,
           gamma_model,
           params->gamma_parameters,
           false,
           // return
-          &P_g);
-      P_g             = 1.0 - P_g;                                  // prob of being activated by gamma kill mode
-      S_HCP_component = gamma_parameters[i*4] * (1.0 - P_I * P_g);  // activation prob, weighted by S0 for ith component
+          P_g);
+      *P_g            = 1.0 - *P_g;                                       // prob of being activated by gamma kill mode
+      S_HCP_component = gamma_parameters[i*4] * (1.0 - (*P_I) * (*P_g));  // activation prob, weighted by S0 for ith component
     }else{
-      P_I             = 1.0 - exp(-1.0 * sI_cm2 * fluence_cm2);     // prob of being activated by ion kill mode
-      S_HCP_component = gamma_parameters[i*4] * P_I;                // activation prob, weighted by S0 for ith component
+      *P_I             = 1.0 - exp(-1.0 * (*sI_cm2) * fluence_cm2);     // prob of being activated by ion kill mode
+      S_HCP_component = gamma_parameters[i*4] * (*P_I);                // activation prob, weighted by S0 for ith component
     }
 
-    S_HCP += S_HCP_component;
+    *S_HCP += S_HCP_component;
 
   }
 
@@ -505,19 +479,10 @@ void AT_run_IGK_method(  const long  number_of_field_components,
       gamma_parameters,
       false,
       // return
-      &S_gamma);
+      S_gamma);
 
-  results[0]              =       S_HCP / S_gamma;
-  results[1]              =       0.0;
-  results[2]              =       S_HCP;
-  results[3]              =       S_gamma;
-  results[4]              =       0.0;
-  results[5]              =       sI_cm2;
-  results[6]              =       gamma_contribution * dose_contribution_Gy[0];
-  results[7]              =       P_I;
-  results[8]              =       P_g;
-  results[9]              =       0.0;
-
+  *relative_efficiency      =       *S_HCP / *S_gamma;
+  *gamma_dose_Gy            =       gamma_contribution * dose_contribution_Gy[0];
 
   free(norm_fluence);
   free(dose_contribution_Gy);
