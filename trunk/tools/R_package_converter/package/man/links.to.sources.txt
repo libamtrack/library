@@ -2,7 +2,7 @@
 http://sourceforge.net/apps/trac/libamtrack/browser/trunk/src/AT_Algorithms_GSM.c#L475
 ::AT.run.IGK.method::
 http://sourceforge.net/apps/trac/libamtrack/browser/trunk/src/AmTrack.c#L281
-::AT.run.SPIFF.method::
+::AT.run.CPPSC.method::
 http://sourceforge.net/apps/trac/libamtrack/browser/trunk/src/AmTrack.c#L34
 ::AT.beta.from.E::
 http://sourceforge.net/apps/trac/libamtrack/browser/trunk/src/AT_PhysicsRoutines.c#L40
