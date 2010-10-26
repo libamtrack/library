@@ -12,10 +12,10 @@ AT.run.GSM.method( number.of.field.components           = 1,                    
                    gamma.model                          = 2,                           # General hit/target X ray response, but
                    gamma.parameters                     = c(1,500,1,1,0),              # as simple single exponential saturation (one hit, one target), saturation dose 500 Gy
                    N.runs                               = 1000,                        # resample 1000 times
-                   write.output                         = T,                           # write a log file
+                   write.output                         = TRUE,                        # write a log file
                    nX                                   = 10,                          # use a 10x10 grid
                    voxel.size.m                         = 5e-9,                        # with 5 nm voxel size
-                   lethal.events.mode                   = F)                           # use independent subtargets
+                   lethal.events.mode                   = FALSE)                       # use independent subtargets
 ::AT.run.IGK.method::
 # Compute the relative efficiency of an Alanine detector in a mixed
 # carbon / proton field
@@ -30,7 +30,7 @@ AT.run.IGK.method( number.of.field.components           = 1,                    
                    gamma.model                          = 2,                           # General hit/target X ray response, but
                    gamma.parameters                     = c(1,500,1,1,0),              # as simple single exponential saturation (one hit, one target), saturation dose 500 Gy
                    saturation.cross.section.factor      = 1.4,                         # factor to take 'brush' around track into account
-				   write.output                         = T)                           # write a log file
+				   write.output                         = TRUE)                        # write a log file
 ::AT.run.SPIFF.method::
 # Compute the relative efficiency of an Alanine detector in a mixed
 # carbon / proton field
@@ -46,11 +46,11 @@ AT.run.SPIFF.method( number.of.field.components           = 3,                  
                      gamma.parameters                     = c(1,500,1,1,0),              # as simple single exponential saturation (one hit, one target), saturation dose 500 Gy
                      N2                                   = 10,                          # ten bins per factor 2 for internal local dose histogramming
                      fluence.factor                       = 1.0,                         # can be used to easily scale total fluence (historical)
-					 write.output                         = T,                           # write a log file
-                     shrink.tails                         = T,                           # cut tails of local dose distribution, if...
+					 write.output                         = TRUE,                        # write a log file
+                     shrink.tails                         = TRUE,                        # cut tails of local dose distribution, if...
                      shrink.tails.under                   = 1e-30,                       # ... they contribute less then 1e-30 to first moment of histogram
-                     adjust.N2                            = T,                           # perform rebinning if local dose distribution becomes too narrow
-                     lethal.events.mode                   = F)                           # use independent subtargets
+                     adjust.N2                            = TRUE,                        # perform rebinning if local dose distribution becomes too narrow
+                     lethal.events.mode                   = FALSE)                       # use independent subtargets
 ::AT.beta.from.E::
 # Compute beta between 1 and 1000 MeV/u:
 AT.beta.from.E( n           = 4,

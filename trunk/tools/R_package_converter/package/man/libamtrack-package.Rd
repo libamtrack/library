@@ -88,5 +88,5 @@ AT.run.IGK.method( number.of.field.components           = 1,                    
                    gamma.model                          = 2,                           # General hit/target X ray response, but
                    gamma.parameters                     = c(1,500,1,1,0),              # as simple single exponential saturation (one hit, one target), saturation dose 500 Gy
                    saturation.cross.section.factor      = 1.4,                         # factor to take 'brush' around track into account
-				   write.output                         = T) 
+				   write.output                         = TRUE) 
 }
