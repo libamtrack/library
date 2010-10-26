@@ -69,7 +69,7 @@
  * @param[in]      er_model                       index number for chosen electron-range model
  * @see AT_ElectronRange.h for definition
  * @param[in]      gamma_model                    index number for chosen gamma response
- * @param[in]      gamma_parameters               parameters for chosen gamma response (array of size 4)
+ * @param[in]      gamma_parameters               parameters for chosen gamma response (array of size 9)
  * @see AT_GammaResponse.h for definition
  * @param[in,out]  N2                             number of bins per factor of two for the dose scale of local dose histogram
  * @param[in]      fluence_factor                 factor to scale the fluences / doses given in "fluence_cm2_or_dose_Gy" with
@@ -78,20 +78,17 @@
  * @param[in]      shrink_tails_under             limit for tail cutting in local dose distribution
  * @param[in]      adjust_N2                      if true, "N2" will be increase if necessary at high fluence to ensure sufficient local dose histogram resolution
  * @param[in]      lethal_events_mode             if true, computations are done for dependent subtargets
- * @param[out]     results                        results (array of size 10) @n
- *    results[0]    efficiency      (algorithm independent)  HCP response at dose D / gamma response at dose D @n
- *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm @n
- *    results[2]    S_HCP           (algorithm independent)  absolute particle response @n
- *    results[3]    S_gamma         (algorithm independent)  absolute gamma response @n
- *    results[4]    not used        (algorithm independent) @n
- *    results[5]    u               (algorithm specific)     mean number of tracks contributing to representative point @n
- *    results[6]    u_start         (algorithm specific)     low starting value for mean number of tracks, where linearisation is applied @n
- *    results[7]    n_convolutions  (algorithm specific)     number of convolutions performed @n
- *    results[8]    not used        (algorithm specific) @n
- *    results[9]    not used        (algorithm specific)
- * @return  none
+ * @param[out]     relative_efficiency            particle response at dose D / gamma response at dose D
+ * @param[out]     d_check                        sanity check:  total dose (in Gy) as returned by the algorithm
+ * @param[out]     S_HCP                          absolute particle response
+ * @param[out]     S_gamma                        absolute gamma response
+ * @param[out]     mean_number_of_tracks_contrib  mean number of tracks contributing to representative point
+ * @param[out]     start_number_of_tracks_contrib low fluence approximation for mean number of tracks contributing to representative point (start value for successive convolutions)
+ * @param[out]     n_convolutions                 number of convolutions performed to reach requested dose/fluence
+ * @param[out]     lower_Jensen_bound             lower bound for Jensen's inequity
+ * @param[out]     upper_Jensen_bound             upper bound for Jensen's inequity
  */
-void AT_run_SPIFF_method(  const long  number_of_field_components,
+void AT_run_CPPSC_method(  const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
@@ -108,8 +105,15 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
     const double  shrink_tails_under,
     const bool    adjust_N2,
     const bool    lethal_events_mode,
-    double        results[]);
-
+    double*       relative_efficiency,
+    double*       d_check,
+    double*       S_HCP,
+    double*       S_gamma,
+    double*       mean_number_of_tracks_contrib,
+    double*       start_number_of_tracks_contrib,
+    long*         n_convolutions,
+    double*		  lower_Jensen_bound,
+    double*       upper_Jensen_bound);
 
 /**
  * Computes HCP response and relative efficiency/RBE using Katz' Ion-Gamma-Kill approach
@@ -133,17 +137,13 @@ void AT_run_SPIFF_method(  const long  number_of_field_components,
  * @param[in]      saturation_cross_section_factor  scaling factor for the saturation cross section
  * @see Waligorski, 1988
  * @param[in]      write_output                     if true, a protocol is written to a file in the working directory
- * @param[out]     results                          to be allocated by the user which will be used to return the results (array of size 10)
- *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
- *    results[1]    d_check         (algorithm independent)  not available with IGK\n
- *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
- *    results[3]    S_gamma         (algorithm independent)  absolute gamma response\n
- *    results[4]    n_particles     (algorithm independent)  not available with IGK\n
- *    results[5]    sI_cm2          (algorithm specific)     resulting ion saturation cross section in cm2\n
- *    results[6]    gamma_dose_Gy   (algorithm specific)     dose contribution from gamma kills\n
- *    results[7]    P_I             (algorithm specific)     ion kill probability\n
- *    results[8]    P_G             (algorithm specific)     gamma kill probability\n
- *    results[9]    not used        (algorithm specific)
+ * @param[out]     relative_efficiency              particle response at dose D / gamma response at dose D
+ * @param[out]     S_HCP                            absolute particle response
+ * @param[out]     S_gamma                          absolute gamma response
+ * @param[out]     sI_cm2                           resulting ion saturation cross section in cm2
+ * @param[out]     gamma_dose_Gy                    dose contribution from gamma kills
+ * @param[out]     P_I                              ion kill probability
+ * @param[out]     P_g                              gamma kill probability
  */
 void AT_run_IGK_method(  const long  number_of_field_components,
     const double  E_MeV_u[],
@@ -157,7 +157,13 @@ void AT_run_IGK_method(  const long  number_of_field_components,
     const double  gamma_parameters[],
     const double  saturation_cross_section_factor,
     const bool    write_output,
-    double  results[]);
+    double*       relative_efficiency,
+    double*       S_HCP,
+    double*       S_gamma,
+    double*       sI_cm2,
+    double*       gamma_dose_Gy,
+    double*       P_I,
+    double*       P_g);
 
 
 /**
