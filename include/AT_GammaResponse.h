@@ -58,8 +58,8 @@ enum AT_GammaResponseModels{
 
 #define GR_DATA_N    6
 
-#define GR_MAX_NUMBER_OF_PARAMETERS  5
-
+#define GR_MAX_NUMBER_OF_PARAMETERS  9
+//TODO Find better solution for array size of parameters
 
 /**
  * @struct AT_GR_data_struct
