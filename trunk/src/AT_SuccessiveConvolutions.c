@@ -109,7 +109,7 @@ void  AT_single_impact_local_dose_distrib(
 		for (i = 0; i < n; i++){
 			dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
 		}
-		AT_fluence_cm2(  n,
+		AT_fluence_cm2_from_dose_Gy(  n,
 				E_MeV_u,
 				particle_no,
 				dose_Gy,
