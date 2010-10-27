@@ -85,8 +85,8 @@ AT.run.IGK.method( number.of.field.components           = 1,                    
                    rdd.model                            = 4,                           # Katz parametrization of radial dose distribution with simplified extended targets
                    rdd.parameter                        = c(5e-8,1e-10),               # with 50 nm target size and 1e-10 dose minimum
                    er.model                             = 2,                           # Butts&Katz parametrization of track radius
-                   gamma.model                          = 2,                           # General hit/target X ray response, but
-                   gamma.parameters                     = c(1,500,1,1,0),              # as simple single exponential saturation (one hit, one target), saturation dose 500 Gy
+                   gamma.model                          = 2,                           # Use general target/hit model but here...
+                   gamma.parameters                     = c(1,500,1,1,0),              # ...as exponential saturation with characteristic dose 500 Gy
                    saturation.cross.section.factor      = 1.4,                         # factor to take 'brush' around track into account
-				   write.output                         = TRUE) 
+				   write.output                         = TRUE)                        # write a log file
 }
