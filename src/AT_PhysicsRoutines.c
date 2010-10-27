@@ -273,7 +273,7 @@ double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
 }
 
 
-void AT_fluence_cm2(  const long  n,
+void AT_fluence_cm2_from_dose_Gy(  const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  D_Gy[],
@@ -428,7 +428,7 @@ double AT_total_fluence_cm2( const long n,
 
   double*  single_fluences_cm2        =  (double*)calloc(n, sizeof(double));
 
-  AT_fluence_cm2(      n,
+  AT_fluence_cm2_from_dose_Gy(      n,
       E_MeV_u,
       particle_no,
       D_Gy,

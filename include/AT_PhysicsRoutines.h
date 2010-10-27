@@ -379,7 +379,7 @@ double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
  * @see          AT_DataMaterial.h for definition
  * @param[out] fluence_cm2         to be allocated by the user which will be used to return the results (array of size n)
  */
-void AT_fluence_cm2(  const long  n,
+void AT_fluence_cm2_from_dose_Gy(  const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  D_Gy[],

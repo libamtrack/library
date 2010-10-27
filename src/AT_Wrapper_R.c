@@ -211,7 +211,7 @@ void AT_fluence_cm2_R( const int* n,
     D_Gy_double[i]               	= (double)D_Gy[i];
   }
 
-  AT_fluence_cm2( 	n_long,
+  AT_fluence_cm2_from_dose_Gy( 	n_long,
 					E_MeV_u_double,
 					particle_no_long,
 					D_Gy_double,
@@ -1693,7 +1693,7 @@ void AT_total_u_R(    const int * n,
       dose_Gy_local[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
     // convert dose to fluence
-    AT_fluence_cm2(  n_long,
+    AT_fluence_cm2_from_dose_Gy(  n_long,
         E_MeV_u_double,
         particle_no_long,
         dose_Gy_local,

@@ -520,7 +520,7 @@ void AT_run_GSM_method(  const long  number_of_field_components,
       dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
     // dose to fluence
-    AT_fluence_cm2(  number_of_field_components,
+    AT_fluence_cm2_from_dose_Gy(  number_of_field_components,
         E_MeV_u,
         particle_no,
         dose_Gy,

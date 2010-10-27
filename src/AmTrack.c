@@ -109,7 +109,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
     // convert dose to fluence
-    AT_fluence_cm2(  number_of_field_components,
+    AT_fluence_cm2_from_dose_Gy(  number_of_field_components,
         E_MeV_u,
         particle_no,
         dose_Gy,
@@ -296,7 +296,7 @@ void AT_run_IGK_method(  const long  number_of_field_components,
     for (i = 0; i < number_of_field_components; i++){
       dose_Gy[i]               = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
-    AT_fluence_cm2(  number_of_field_components,
+    AT_fluence_cm2_from_dose_Gy(  number_of_field_components,
         E_MeV_u,
         particle_no,
         dose_Gy,
@@ -377,6 +377,7 @@ void AT_run_IGK_method(  const long  number_of_field_components,
    * gamma response model is used as the
    * Katz model is inheritely linked to it
    */
+  // TODO: accept also GR_ExpSaturation
   if (gamma_model != GR_GeneralTarget ||
       rdd_model   == RDD_Test){
 	  if( write_output ){
@@ -623,7 +624,7 @@ void AT_run_SPISS_method(  const long  number_of_field_components,
     for (i = 0; i < number_of_field_components; i++){
       dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
-    AT_fluence_cm2(  number_of_field_components,
+    AT_fluence_cm2_from_dose_Gy(  number_of_field_components,
         E_MeV_u,
         particle_no,
         dose_Gy,
