@@ -172,11 +172,11 @@ void AT_GSM_calculate_dose_histogram( const long  number_of_field_components,
  *
  * @param[in]  nX                                        number of cells on grid side
  * @param[in]  gamma_model                               index number for chosen gamma response
- * @param[in]  gamma_parameters                          parameters for chosen gamma response (array of size depending on chosen model)
+ * @param[in]  gamma_parameters                          parameters for chosen gamma response (array of size GR_MAX_NUMBER_OF_PARAMETERS)
  * @see          AT_GammaResponse.h for definition
- * @param[in]  grid_D_Gy                                 grid dose pattern (2-D array of dimensions nX x nX)
+ * @param[in]  grid_D_Gy                                 grid dose pattern (array of size nX*nX)
  * @param[in]  lethal_events_mode                        if true, allows to do calculations for cell survival
- * @param[out] grid_response                             response pattern (2-D array of dimensions nX x nX)
+ * @param[out] grid_response                             response pattern (array of size nX*nX)
  */
 void AT_GSM_calculate_local_response_grid( const long      nX,
                 const long      gamma_model,
@@ -252,7 +252,7 @@ void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_comp
  * @param[in]      er_model                       index number for chosen electron-range model
  * @see AT_ElectronRange.h for definition
  * @param[in]      gamma_model                    index number for chosen gamma response
- * @param[in]      gamma_parameters               parameters for chosen gamma response (array of size 9)
+ * @param[in]      gamma_parameters               parameters for chosen gamma response (array of size GR_MAX_NUMBER_OF_PARAMETERS)
  * @see AT_GammaResponse.h for definition
  * @param[in]      N_runs                         number of runs within which track positions will be resampled
  * @param[in]      write_output                   if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory
