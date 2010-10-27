@@ -12,10 +12,10 @@ del package\src\AT_Wrapper_R.c
 del package\src\AT_Wrapper_R.h
 
 REM *** Auto-generate wrappers and documentation ***
-R --no-save < read.header.R
-R --no-save < convert.header.to.cwrapper.R
-R --no-save < convert.header.to.Rwrapper.R
-R --no-save < convert.doxygen.to.Rd.R
+R CMD BATCH read.header.R
+R CMD BATCH convert.header.to.cwrapper.R
+R CMD BATCH convert.header.to.Rwrapper.R
+R CMD BATCH convert.doxygen.to.Rd.R
 
 REM *** Build test package ***
 R CMD check ./package
@@ -29,3 +29,10 @@ cd package.Rcheck
 zip -r libamtrack.zip libamtrack
 move libamtrack.zip ..
 cd ..
+
+REM Delete temporary files
+del package\R\wrapper.R
+del package\src\*.o
+del package\src\*.c
+del package\src\*.h
+del package\src\*.dll
