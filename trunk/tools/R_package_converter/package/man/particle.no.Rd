@@ -14,11 +14,11 @@
 
 \details{
 	\itemize{
-		\item{}{For a proton (Z=1,A=1) \code{particle.no} is 1001.}
-		\item{}{For deuterium (Z=1, A=2) \code{particle.no} is 1002.}
-		\item{}{For He-4 (Z=2, A=4) \code{particle.no} is 2004.}
-		\item{}{For C-12 (Z=6, A=12) \code{particle.no} is 6012.}
-		\item{}{For a U-238 (Z=92, A=238) \code{particle.no} is 92238.}
+		\item{For a proton (Z=1,A=1) \code{particle.no} is 1001.}
+		\item{For deuterium (Z=1, A=2) \code{particle.no} is 1002.}
+		\item{For He-4 (Z=2, A=4) \code{particle.no} is 2004.}
+		\item{For C-12 (Z=6, A=12) \code{particle.no} is 6012.}
+		\item{For a U-238 (Z=92, A=238) \code{particle.no} is 92238.}
 	}
 }
 
