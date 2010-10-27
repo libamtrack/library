@@ -252,7 +252,7 @@ void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_comp
  * @param[in]      er_model                       index number for chosen electron-range model
  * @see AT_ElectronRange.h for definition
  * @param[in]      gamma_model                    index number for chosen gamma response
- * @param[in]      gamma_parameters               parameters for chosen gamma response (array of size 4)
+ * @param[in]      gamma_parameters               parameters for chosen gamma response (array of size 9)
  * @see AT_GammaResponse.h for definition
  * @param[in]      N_runs                         number of runs within which track positions will be resampled
  * @param[in]      write_output                   if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory
