@@ -52,16 +52,16 @@ All methods need in addition an array to return their results:\\
 \begin{center}\cite{Waligorski_and_Katz_1980}\end{center}\\
 
 \begin{center}Grid summation (GSM)\end{center}&
-\footnotesize{‚Throw‘ of particle tracks on a Cartesian grid for local dose, apply photon response for local response, then average response.}&
+\footnotesize{,,Throw'' of particle tracks on a Cartesian grid for local dose, apply photon response for local response, then average response.}&
 \begin{center}\cite{Geiss_et_al_1997}\end{center}\\
 
-\begin{center}Compound Poisson processes using successive convolution (CPP-SC, SPIFF)\end{center}&
-\footnotesize{Derive local dose frequency distribution analytically from RDD for single particle case, assume ‚none or one-impact situation for low fluence, convolute resulting distribution with itself until desired high fluence / dose is reached, apply photon response.}&
-\begin{center}\cite{Greilich_et_al_SPIFF}\end{center}\\
+\begin{center}Compound Poisson processes using successive convolution (CPP-SC)\end{center}&
+\footnotesize{Derive local dose frequency distribution analytically from RDD for single particle case, assume ï¿½none or one-impact situation for low fluence, convolute resulting distribution with itself until desired high fluence / dose is reached, apply photon response.}&
+\begin{center}\cite{Greilich_et_al_CPPSC}\end{center}\\
 
 \begin{center}Compound Poisson processes using statistical sampling (CPP-SS, SPISS)\end{center}&
-\footnotesize{Derive local dose frequency distribution analytically from RDD for single particle case – as for SPIFF. But then use statistical sampling to add single impact doses according to relative fluences in the particle field.} &
-\begin{center}\cite{Greilich_et_al_SPIFF}\end{center}\\
+\footnotesize{Derive local dose frequency distribution analytically from RDD for single particle case ï¿½ as for CPPSC. But then use statistical sampling to add single impact doses according to relative fluences in the particle field.} &
+\begin{center}\cite{Greilich_et_al_CPPSC}\end{center}\\
 
 \hline
 \end{tabular}
@@ -145,7 +145,7 @@ and
 	\begin{equation}
 		\hat{f}_1 \mbox{ by } 2\cdot\hat{f}_0\cdot\hat{f}_1 + \hat{f}_1*\hat{f}_1
 	\end{equation}
-will eventually yield $f(d)$. For obscure reasons, the implementation of this approach in \la{} is named SPIFF.
+will eventually yield $f(d)$. For obscure reasons, the implementation of this approach in \la{} is named CPPSC.
 
 
 

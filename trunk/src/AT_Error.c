@@ -56,7 +56,7 @@ int AT_check_energy_range_single_particle( const double E_MeV_u,
     E_min_MeV_u     = 0.1;
     E_max_MeV_u     = 1000;
     break;
-  case AT_energy_range_for_SPIFF_method:
+  case AT_energy_range_for_CPPSC_method:
     E_min_MeV_u     = 3;
     E_max_MeV_u     = 300.0;
     break;

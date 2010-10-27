@@ -520,7 +520,7 @@ void AT_run_SPISS_method(  const long  number_of_field_components,
     if (output_file == NULL) return;                      // File error
   }
 
-  // The histogram initialization and handling has been adapted to SPIFF
+  // The histogram initialization and handling has been adapted to CPPSC
   // although some features are not used here
   long    n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_distrib(          number_of_field_components,
       E_MeV_u,

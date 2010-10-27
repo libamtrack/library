@@ -1,4 +1,4 @@
-SPIFF		<-	function(	E.MeV.u,
+CPPSC		<-	function(	E.MeV.u,
 						particle.no,
 						fluence.cm2.or.dose.Gy,
 						material.no,

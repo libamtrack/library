@@ -388,7 +388,7 @@ double AT_RDD_Katz_PowerLawER_dEdx_J_m(  const double a0_m,
 
 /* --------------------------------------------------- SITE RDD ---------------------------------------------------*/
 
-// TODO check why in SPIFF KatzSite and Edmund are not reproducing dose
+// TODO check why in CPPSC KatzSite and Edmund are not reproducing dose
 
 /**
  * Calculates Site RDD, which is LET-normalized

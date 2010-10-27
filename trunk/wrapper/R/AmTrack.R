@@ -1,4 +1,4 @@
-################o G################################################################################
+################################################################################################
 # S/R wrapping function interfacing libamtrack library
 ################################################################################################
 # This script replaces (together with the libamtrack.dll) the old S-Plus or mixed S-Plus/C-versions
@@ -235,7 +235,7 @@ AT.run.GSM.method	<-	function(	E.MeV.u,
 }
 											
 ##################
-AT.run.SPIFF.method	<-	function(	E.MeV.u,
+AT.run.CPPSC.method	<-	function(	E.MeV.u,
 									particle.no,
 									fluence.cm2.or.dose.Gy,
 									material.no,
@@ -255,7 +255,7 @@ AT.run.SPIFF.method	<-	function(	E.MeV.u,
 		results			<-	numeric(10)
 		N2.tmp			<-	numeric(1)
 		N2.tmp			<-	N2
-		res				<-	.C(	"AT_run_SPIFF_method_R",	n					= 	as.integer(length(E.MeV.u)),
+		res				<-	.C(	"AT_run_CPPSC_method_R",	n					= 	as.integer(length(E.MeV.u)),
 															E.MeV.u				=	as.single(E.MeV.u),
 															particle.no			=	as.integer(particle.no),
 															fluence.cm2.or.dose.Gy			=	as.single(fluence.cm2.or.dose.Gy),

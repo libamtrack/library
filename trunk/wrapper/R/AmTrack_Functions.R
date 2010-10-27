@@ -1,11 +1,11 @@
-run.SPIFF.data.frame	<-	function(	df,
+run.CPPSC.data.frame	<-	function(	df,
 							grouping.variable	= "",
 							E.MeV.u.col,
 							particle.no.col,
 							fluence.cm2.or.dose.Gy.col,
 							...){
 #	sink("optim.log", append = T)
-#	print(paste(Sys.time(), "> run.SPIFF.data.frame: new entry <<"))
+#	print(paste(Sys.time(), "> run.CPPSC.data.frame: new entry <<"))
 
 	col.index	<-	function(name){
 		return(match(name, names(df)))
@@ -37,7 +37,7 @@ run.SPIFF.data.frame	<-	function(	df,
 			ii			<-	rep(T, nrow(df))
 		}
 
-		res	<-	run.SPIFF( 	E.MeV.u			=	df[ii,col.index(E.MeV.u.col)],
+		res	<-	run.CPPSC( 	E.MeV.u			=	df[ii,col.index(E.MeV.u.col)],
 						particle.no			=	df[ii,col.index(particle.no.col)],
 						fluence.cm2.or.dose.Gy	=	df[ii,col.index(fluence.cm2.or.dose.Gy.col)],
 						verbose			=	F,
@@ -64,7 +64,7 @@ run.SPIFF.data.frame	<-	function(	df,
 
 
 
-run.SPIFF		<-	function(	E.MeV.u,
+run.CPPSC		<-	function(	E.MeV.u,
 					particle.no,
 					fluence.cm2.or.dose.Gy,
 					material.no				=	1,				# Liquid water
@@ -191,7 +191,7 @@ if(verbose){
 					# S.gamma = results.6$S.gamma,
 					# efficiency = results.6$efficiency))
 	}else{
-		return(AT.run.SPIFF.method(	E.MeV.u 		= E.MeV.u,
+		return(AT.run.CPPSC.method(	E.MeV.u 		= E.MeV.u,
 							particle.no 	= particle.no,
 							fluence.cm2.or.dose.Gy 	= fluence.cm2.or.dose.Gy,
 							material.no 	= material.no,
