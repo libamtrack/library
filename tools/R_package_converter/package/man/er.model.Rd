@@ -21,7 +21,7 @@
 		4 \tab Parametrization proposed by O. Geiss (Geiss, 1997)\cr
 		5 \tab Parametrization proposed by M. Scholz (Scholz, 1997)\cr
 		6 \tab Parametrization proposed by J. Edmund (Edmund et al., 2007)\cr
-		7 \tab Parametrization proposed by Tabata (Tabata, 1972)\cr
+		7 \tab Parametrization proposed by Tabata (Tabata, 1972)
 	}
 }
 

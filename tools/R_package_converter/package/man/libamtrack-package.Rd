@@ -19,7 +19,7 @@ Package: \tab libamtrack\cr
 Version: \tab 0.3\cr
 Date: \tab 2010-10-25\cr
 Depends: \tab R (>= 2.2.0)\cr
-License: \tab GPL (version 3 or later)\cr
+License: \tab GPL (version 3 or later)
 }
 
 \bold{FUNCTION INDEX:}
@@ -31,7 +31,7 @@ These functions compute the relative efficiency / RBE of a mixed particle field 
 \tabular{ll}{
 \code{\link{AT.run.GSM.method}} \tab Grid-summation ('checkerboard') method \cr
 \code{\link{AT.run.IGK.method}} \tab Ion-gamma-kill ('Katz') method \cr
-\code{\link{AT.run.CPPSC.method}} \tab Compund-Poison process with successive convolutions (CPP-SC, 'SPIFF') method \cr
+\code{\link{AT.run.CPPSC.method}} \tab Compund-Poison process with successive convolutions (CPP-SC, 'SPIFF') method
 }
 
 \bold{Physics routines:}
@@ -40,7 +40,7 @@ These functions handle the physics of proton and ion beams needed in libamtrack:
 
 \tabular{ll}{
 \code{\link{AT.beta.from.E}} \tab Relativistic beta of an ion \cr
-\code{\link{AT.LET.keV.um}} \tab Unrestricted LET / Stopping power \cr
+\code{\link{AT.LET.keV.um}} \tab Unrestricted LET / Stopping power
 }
 
 }
