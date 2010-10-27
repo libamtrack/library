@@ -37,7 +37,7 @@ source("../../wrapper/R/AmTrack.R")
 # necessary library for plotting
 library("lattice")
 
-####################### GSM and SPIFF function test #########################################
+####################### GSM and CPPSC function test #########################################
 
 # Mixed field of 3 particles:
 
@@ -66,9 +66,9 @@ df1 <- expand.grid( factor = factor, ER.model = ER.model, RDD.model = RDD.model 
 df1$ER.model.name	<- as.character(ER.model.names[df1$ER.model])
 df1$RDD.model.name	<- as.character(RDD.model.names[df1$RDD.model])
 
-df1$SPIFF.ion	<- numeric(nrow(df1))
-df1$SPIFF.gamma	<- numeric(nrow(df1))
-df1$SPIFF.check	<- numeric(nrow(df1))
+df1$CPPSC.ion	<- numeric(nrow(df1))
+df1$CPPSC.gamma	<- numeric(nrow(df1))
+df1$CPPSC.check	<- numeric(nrow(df1))
 
 df1$GSM.ion   <- numeric(nrow(df1))
 df1$GSM.gamma <- numeric(nrow(df1))
@@ -88,7 +88,7 @@ for( i in ER.model) {
  	    
  	    cat( "Fluences ", current.fluence.cm2.or.dose.Gy , "\n")
  	        
- 	    SPIFF.res <- AT.run.SPIFF.method( E.MeV.u = E.MeV.u,
+ 	    CPPSC.res <- AT.run.CPPSC.method( E.MeV.u = E.MeV.u,
 									particle.no = particle.no,
 									fluence.cm2.or.dose.Gy = current.fluence.cm2.or.dose.Gy,
 									material.no = material.no,
@@ -104,10 +104,10 @@ for( i in ER.model) {
 									shrink.tails.under = 1e-30,
 									adjust.N2 = T,
 									lethal.events.mode = F)
-         cat( "SPIFF results ", SPIFF.res , "\n")
-         df1$SPIFF.ion[kk] <- SPIFF.res[3]
-         df1$SPIFF.gamma[kk] <- SPIFF.res[4]
-         df1$SPIFF.check[kk] <- SPIFF.res[2]
+         cat( "CPPSC results ", CPPSC.res , "\n")
+         df1$CPPSC.ion[kk] <- CPPSC.res[3]
+         df1$CPPSC.gamma[kk] <- CPPSC.res[4]
+         df1$CPPSC.check[kk] <- CPPSC.res[2]
          
          GSM.res <- AT.run.GSM.method( E.MeV.u = E.MeV.u,
                                     particle.no = particle.no,
@@ -135,9 +135,9 @@ df1
 
 # plots...
 
-p1 <- xyplot( SPIFF.ion + GSM.ion ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Response", auto.key = list(title = "ion response",points = FALSE, lines = TRUE), scales = list(log = 10))
-p2 <- xyplot( SPIFF.gamma + GSM.gamma ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Response", auto.key = list(title = "gamma response",points = FALSE, lines = TRUE), scales = list(log = 10))
-p3 <- xyplot( SPIFF.check + GSM.check ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Dose check", auto.key = list(title = "SPIFF dose check",points = FALSE, lines = TRUE), scales = list(log = 10))
+p1 <- xyplot( CPPSC.ion + GSM.ion ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Response", auto.key = list(title = "ion response",points = FALSE, lines = TRUE), scales = list(log = 10))
+p2 <- xyplot( CPPSC.gamma + GSM.gamma ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Response", auto.key = list(title = "gamma response",points = FALSE, lines = TRUE), scales = list(log = 10))
+p3 <- xyplot( CPPSC.check + GSM.check ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Dose check", auto.key = list(title = "CPPSC dose check",points = FALSE, lines = TRUE), scales = list(log = 10))
 
 
 pdf("Models.pdf")

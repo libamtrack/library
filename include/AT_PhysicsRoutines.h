@@ -62,7 +62,7 @@ typedef struct {
 
 /**
  * Structure to carry derived single, monoenergetic particle field information, e.g. needed for array building
- * in AT_GSM, AT_SPIFF, ...
+ * in AT_GSM, AT_CPPSC, ...
  *
  * This structure replaces the f1_parameter array
  */
@@ -81,7 +81,7 @@ typedef struct {
 
 /**
  * Structure to carry derived mixed particle field information, e.g. needed for array building
- * in AT_GSM, AT_SPIFF, ...
+ * in AT_GSM, AT_CPPSC, ...
  *
  * This structure replaces the f_parameter array
  */
@@ -92,7 +92,7 @@ typedef struct {
   double   doseweighted_E_MeV_u;             /** dose-weighted average energy (in MeV/u) */
   double   fluenceweighted_LET_MeV_cm2_g;    /** fluence-weighted average LET (in MeV*cm2/g) */
   double   doseweighted_LET_MeV_cm2_g;       /** dose-weighted average LET (in MeV*cm2/g) */
-  double   u;                                /** average number of track contributing to a detector voxel, needed by AT_SPIFF, AT_SPISS */
+  double   u;                                /** average number of track contributing to a detector voxel, needed by AT_CPPSC, AT_SPISS */
 } AT_mixed_field_information;
 
 

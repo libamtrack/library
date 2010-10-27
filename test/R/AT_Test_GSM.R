@@ -116,7 +116,7 @@ df1
 
 p1 <- xyplot( GSM.ion ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Response", auto.key = list(title = "ion response",points = FALSE, lines = TRUE), scales = list(log = 10))
 p2 <- xyplot( GSM.gamma ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Response", auto.key = list(title = "gamma response",points = FALSE, lines = TRUE), scales = list(log = 10))
-p3 <- xyplot( GSM.check ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Dose check", auto.key = list(title = "SPIFF dose check",points = FALSE, lines = TRUE), scales = list(log = 10))
+p3 <- xyplot( GSM.check ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Dose check", auto.key = list(title = "CPPSC dose check",points = FALSE, lines = TRUE), scales = list(log = 10))
 
 
 pdf("GSM.pdf")

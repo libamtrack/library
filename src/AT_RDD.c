@@ -498,8 +498,8 @@ int AT_D_RDD_Gy( const long  n,
       for (i = 0; i < n; i++){
         D_RDD_Gy[i]     =  AT_RDD_KatzPoint_Gy(r_m[i], r_min_m, max_electron_range_m, er_model, alpha, Katz_point_coeff_Gy);
         if( D_RDD_Gy[i] > 0.0)
-          D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
-        // TODO maybe this cutoff can be moved to SPIFF implementation, in a place where it is needed
+          D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in CPPSC
+        // TODO maybe this cutoff can be moved to CPPSC implementation, in a place where it is needed
       } // end for
     } else {
       for (i = 0; i < n; i++){
@@ -523,7 +523,7 @@ int AT_D_RDD_Gy( const long  n,
       for (i = 0; i < n; i++){
         D_RDD_Gy[i]     =  AT_RDD_KatzSite_Gy(r_m[i], 0.0, max_electron_range_m, a0_m, er_model, alpha, density_kg_m3, LET_J_m, dEdx_J_m, Katz_point_coeff_Gy);
         if( D_RDD_Gy[i] > 0.0)
-          D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+          D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in CPPSC
       } // end for
     } else {
       for (i = 0; i < n; i++){
@@ -553,7 +553,7 @@ int AT_D_RDD_Gy( const long  n,
     for (i = 0; i < n; i++){
       D_RDD_Gy[i]     =  AT_RDD_CucinottaPoint_Gy(r_m[i], r_min_m, max_electron_range_m, beta, precalculated_constant_Gy, Katz_point_coeff_Gy);
       if( D_RDD_Gy[i] > 0.0)
-        D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+        D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in CPPSC
     }
   }// end RDD_CucinottaPoint
 
@@ -569,7 +569,7 @@ int AT_D_RDD_Gy( const long  n,
       for (i = 0; i < n; i++){
         D_RDD_Gy[i]     =  AT_RDD_ExtendedTarget_KatzPoint_Gy(r_m[i], a0_m, er_model, Katz_point_r_min_m, max_electron_range_m, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy);
         if( D_RDD_Gy[i] > 0.0)
-          D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+          D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in CPPSC
       }
     } else {
       for (i = 0; i < n; i++){
@@ -594,7 +594,7 @@ int AT_D_RDD_Gy( const long  n,
     for (i = 0; i < n; i++){
       D_RDD_Gy[i]     =  AT_RDD_ExtendedTarget_CucinottaPoint_Gy( r_m[i], a0_m, Katz_point_r_min_m, max_electron_range_m, beta, Katz_point_coeff_Gy, C_norm, Cucinotta_plateau_Gy);
       if( D_RDD_Gy[i] > 0.0)
-        D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+        D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in CPPSC
     }
   } // end RDD_CucinottaExtTarget
 

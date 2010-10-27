@@ -55,7 +55,7 @@ enum AT_energy_ranges{
   AT_energy_range_for_PSTAR_data,
   AT_energy_range_for_PowerLaw_data,
   AT_energy_range_for_Katz_method,
-  AT_energy_range_for_SPIFF_method
+  AT_energy_range_for_CPPSC_method
 };
 
 

@@ -69,7 +69,7 @@ class AmTrack(object):
     def __init__ (self):
         print '\npyamtrack\n-----\n'
 
-    def AT_SPIFF (self,
+    def AT_CPPSC (self,
                   n, E_MeV_u,
                   particle_no,
                   fluence_cm2,
@@ -177,9 +177,9 @@ class AmTrack(object):
         tenfloats = ctypes.c_double*10
         results = tenfloats(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
         
-        c_at_spiff = libamtrack.AT_run_SPIFF_method
-        c_at_spiff.restype = ctypes.c_float *10
-        c_at_spiff_output = c_at_spiff(n_ctype,
+        c_at_cppsc = libamtrack.AT_run_CPPSC_method
+        c_at_cppsc.restype = ctypes.c_float *10
+        c_at_cppsc_output = c_at_cppsc(n_ctype,
                                        E_MeV_u_ctype,
                                        particle_no_ctype,
                                        fluence_cm2_ctype,
@@ -197,10 +197,10 @@ class AmTrack(object):
                                        adjust_N2_ctype,
                                        lethal_events_mode_ctype,
                                        results)
-        AT_SPIFF_output = []
+        AT_CPPSC_output = []
         for item in results:
-            AT_SPIFF_output.append(item)
-        return AT_SPIFF_output
+            AT_CPPSC_output.append(item)
+        return AT_CPPSC_output
 
 
     def AT_SPISS (self,
@@ -597,9 +597,9 @@ class AmTrack(object):
             csda_return.append(item)
         return csda_return
 
-class AmSpiffRun(AmTrack):
+class AmCppscRun(AmTrack):
     '''
-    AmSpiffRun object.
+    AmCppscRun object.
     '''
     def __init__ (self,
                   n = 1,
@@ -620,7 +620,7 @@ class AmSpiffRun(AmTrack):
                   shrink_tails_under= 1e-30,
                   adjust_N2 = True,
                   lethal_events_mode = False,
-                  name= 'spiff_run'):
+                  name= 'cppsc_run'):
         self.name = name
         self.number_particles = n
         self.E_MeV_u = E_MeV_u
@@ -654,9 +654,9 @@ class AmSpiffRun(AmTrack):
 
     def run(self):
         '''
-        runs AT_SPIFF algorithm
+        runs AT_CPPSC algorithm
         '''
-        self.results = self.AT_SPIFF(self.number_particles, self.E_MeV_u, self.particle_no, self.fluence_cm2, self.material_no, self.RDD_model, self.RDD_parameters, self.ER_model, self.ER_parameters, self.gamma_model, self.gamma_parameters, self.N2, self.fluence_factor, self.write_output, self.shrink_tails, self.shrink_tails_under, self.adjust_N2, self.lethal_events_mode)
+        self.results = self.AT_CPPSC(self.number_particles, self.E_MeV_u, self.particle_no, self.fluence_cm2, self.material_no, self.RDD_model, self.RDD_parameters, self.ER_model, self.ER_parameters, self.gamma_model, self.gamma_parameters, self.N2, self.fluence_factor, self.write_output, self.shrink_tails, self.shrink_tails_under, self.adjust_N2, self.lethal_events_mode)
         self.efficency = self.results[0]
         self.d_check= self.results[1]
         self.hcp_response = self.results[2]
@@ -878,7 +878,7 @@ def test_suite():
     '''
     print'\n----------\n- pyamtrack test run\n----------\n\n'
     #TODO: extra file 'test_pyamtrack.py'
-    test_run = AmSpiffRun()
+    test_run = AmCppscRun()
     print test_run.particle_no
     test_run.run()
     print 'Efficency: %.4f\n'%test_run.efficency
