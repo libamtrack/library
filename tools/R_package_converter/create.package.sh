@@ -9,7 +9,7 @@ R --no-save < convert.header.to.cwrapper.R
 R --no-save < convert.header.to.Rwrapper.R
 R --no-save < convert.doxygen.to.Rd.R
 R CMD build package
-R CMD check libamtrack_0.3.tar.gz
+R CMD check libamtrack_0.3.tar.gz --no-latex
 rm package/src/*.h
 rm package/src/*.c
 cd ../..
