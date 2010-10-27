@@ -132,7 +132,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
  * @param[in]      er_model                         index number for chosen electron-range model
  * @see AT_ElectronRange.h for definition
  * @param[in]      gamma_model                      index number for chosen gamma response
- * @param[in]      gamma_parameters                 parameters for chosen gamma response (array of size 4)
+ * @param[in]      gamma_parameters                 parameters for chosen gamma response (array of size 9)
  * @see AT_GammaResponse.h for definition
  * @param[in]      saturation_cross_section_factor  scaling factor for the saturation cross section
  * @see Waligorski, 1988
