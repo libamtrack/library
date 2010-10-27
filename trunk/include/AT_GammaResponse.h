@@ -59,6 +59,7 @@ enum AT_GammaResponseModels{
 #define GR_DATA_N    6
 
 #define GR_MAX_NUMBER_OF_PARAMETERS  9
+#define GR_MAX_NUMBER_OF_PARAMETERS_long  9  // just to trick R wrapper generator
 //TODO Find better solution for array size of parameters
 
 /**
@@ -152,7 +153,7 @@ long AT_Gamma_number_of_parameters( const long Gamma_no);
  * @param[in]  number_of_doses  number of doses given in vector d_Gy
  * @param[in]  d_Gy             doses in Gy (array of size number_of_doses)
  * @param[in]  gamma_model      gamma response model index
- * @param[in]  gamma_parameter  vector holding necessary parameters for the chose gamma response model (array of size 4)
+ * @param[in]  gamma_parameter  vector holding necessary parameters for the chose gamma response model (array of size GR_MAX_NUMBER_OF_PARAMETERS)
  * @param[in]  lethal_event_mode  if true computation is done in lethal event mode
  * @param[out] S                gamma responses (array of size number_of_doses)
  */
@@ -172,7 +173,7 @@ void AT_gamma_response( const long  number_of_doses,
  * @param[in]  dose_Gy_bin_width         bin widths for histogram in Gy (array of size number_of_bins)
  * @param[in]  dose_bin_frequency        dose frequencies for histogram (array of size number_of_bins)
  * @param[in]  gamma_model               gamma response model index
- * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size 4)
+ * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size GR_MAX_NUMBER_OF_PARAMETERS)
  * @param[in]  lethal_event_mode         if true computation is done in lethal event mode
  * @return     response
  */
@@ -192,7 +193,7 @@ double AT_get_gamma_response_for_average_dose(  const long  number_of_bins,
  * @param[in]  dose_Gy_bin_position      midpoint doses for histogram in Gy (array of size number_of_bins)
  * @param[in]  dose_bin_frequency        dose frequencies for histogram (array of size number_of_bins)
  * @param[in]  gamma_model               gamma response model index
- * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size 4)
+ * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size GR_MAX_NUMBER_OF_PARAMETERS)
  * @param[in]  lethal_event_mode         if true computation is done in lethal event mode
  * @param[out] response_bin_frequency    resulting response frequencies (array of size number_of_bins)
  */
@@ -227,7 +228,7 @@ double AT_get_ion_response_from_response_distribution(  const long  number_of_bi
  * @param[in]  dose_Gy_bin_position      midpoint doses for histogram in Gy (array of size number_of_bins)
  * @param[in]  dose_bin_frequency        dose frequencies for histogram (array of size number_of_bins)
  * @param[in]  gamma_model               gamma response model index
- * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size 4)
+ * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size GR_MAX_NUMBER_OF_PARAMETERS)
  * @param[in]  lethal_event_mode         if true computation is done in lethal event mode
  * @return     resulting ion response
  */
@@ -247,7 +248,7 @@ double AT_get_ion_response_from_dose_distribution(  const long  number_of_bins,
  * @param[in]  dose_Gy_bin_position      midpoint doses for histogram in Gy (array of size number_of_bins)
  * @param[in]  dose_bin_frequency        dose frequencies for histogram (array of size number_of_bins)
  * @param[in]  gamma_model               gamma response model index
- * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size 4)
+ * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size GR_MAX_NUMBER_OF_PARAMETERS)
  * @param[in]  lethal_event_mode         if true computation is done in lethal event mode
  * @return     relative efficiency
  */
@@ -268,7 +269,7 @@ double AT_get_ion_efficiency_from_dose_distribution(  const long  number_of_bins
  * @param[in]  dose_bin_frequency        dose frequencies for histogram (array of size number_of_bins)
  * @param[in]  ion_response_bin_frequency    ion response frequencies (array of size number_of_bins)
  * @param[in]  gamma_model               gamma response model index
- * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size 4)
+ * @param[in]  gamma_parameter           vector holding necessary parameters for the chose gamma response model (array of size GR_MAX_NUMBER_OF_PARAMETERS)
  * @param[in]  lethal_event_mode         if true computation is done in lethal event mode
  */
 double AT_get_ion_efficiency_from_response_distribution(  const long  number_of_bins,
@@ -292,7 +293,7 @@ double AT_get_ion_efficiency_from_response_distribution(  const long  number_of_
  * @param[in]  f                   local dose frequency (array of size number_of_bins)
  * @param[in]  f0                  frequency of zero local dose
  * @param[in]  gamma_model         gamma response model index
- * @param[in]  gamma_parameter     vector holding necessary parameters for the chose gamma response model (array of size 4)
+ * @param[in]  gamma_parameter     vector holding necessary parameters for the chose gamma response model (array of size GR_MAX_NUMBER_OF_PARAMETERS)
  * @param[in]  lethal_events_mode  if true, allows to do calculations for cell survival
  *    @see  AmTrack.c/AT_IGK
  * @param[out] S                   gamma responses for given bins (array of size number_of_bins)
