@@ -3,3 +3,5 @@ AT_run_IGK_method
 AT_run_GSM_method
 AT_beta_from_E
 AT_LET_keV_um
+AT_D_RDD_Gy
+AT_max_electron_ranges_m

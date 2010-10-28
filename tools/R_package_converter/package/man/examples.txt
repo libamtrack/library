@@ -95,6 +95,11 @@ xyplot( log10(D.Gy) ~ log10(r.m)|particle.name,                              # P
 		df,
 		type      = 'l',
 		groups    = E.MeV.u,
-		auto.key  = T)[c(2,1)]
+		auto.key  = TRUE)[c(2,1)]
+::AT.max.electron.ranges.m::
+# Compute the electron range in PMMA for the Tabata parametrization between 0.3 keV and 30 MeV
+AT.max.electron.ranges.m( E.MeV.u     = 0.3 * 10^(-4:2),
+			              material.no = 4,
+                          er.model    = 7)
 ::Was anderes::
 LALALALA
