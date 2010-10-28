@@ -152,16 +152,16 @@ int AT_RDD_number_of_parameters( const long RDD_model);
 //////////////////////////////////////////////////////// GENERAL FUNCTIONS ////////////////////////////////////////////////////////
 
 /**
- * Returns RDD as a function of distance r_m
+ * Returns local dose as a function of distance r_m for a given radial dose distribution model
  *
  * @param[in]   n              number of particles (length of r_m vector)
  * @param[in]   r_m            distance [m] (array of size n)
- * @param[in]   E_MeV_u        particle (ion) energy per nucleon [MeV/u]
- * @param[in]   particle_no    particle code number
- * @param[in]   material_no    material code number
- * @param[in]   rdd_model      Radial Dose Distribution model code number
- * @param[in]   rdd_parameter  Radial Dose Distribution model parameters vector  (array of size 3)
- * @param[in]   er_model       delta electron range model code number
+ * @param[in]   E_MeV_u        particle (ion) energy per nucleon [MeV/u] (single number, no mixed fields)
+ * @param[in]   particle_no    particle code number (single number, no mixed fields)
+ * @param[in]   material_no    material code number (single number, no mixed fields)
+ * @param[in]   rdd_model      radial dose distribution model index
+ * @param[in]   rdd_parameter  radial dose distribution model parameters (array of size 4)
+ * @param[in]   er_model       electron range / track with model index
  * @param[out]  D_RDD_Gy       dose [Gy] (array of size n)
  * @return status code
  */
