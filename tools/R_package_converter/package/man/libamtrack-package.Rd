@@ -67,8 +67,7 @@ Package maintainer: Steffen Greilich \email{s.greilich@dkfz.de}
 ############################ 1. LET #######################################
 print("Compute the LET (in keV/um) of a 270 MeV/u carbon ion in Aluminum:")
 
-AT.LET.keV.um( n           = 1,
-               E.MeV.u     = 270,
+AT.LET.keV.um( E.MeV.u     = 270,
 			   particle.no = 6012,
 			   material.no = 3)
 			   
@@ -77,8 +76,7 @@ AT.LET.keV.um( n           = 1,
 print("Compute the relative efficiency of Alanine in 10 MeV protons")
 print("Waligorskis version of the Katz' model")
 
-AT.run.IGK.method( number.of.field.components           = 1,                           # one component only
-                   particle.no                          = 1001,                        # namely protons with
+AT.run.IGK.method( particle.no                          = 1001,                        # namely protons with
                    E.MeV.u                              = 10,                          # 10 MeV/u
                    fluence.cm2.or.dose.Gy               = c(-1.0),                     # delivering 1 Gy
                    material.no                          = 5,                           # i.e. Alanine
