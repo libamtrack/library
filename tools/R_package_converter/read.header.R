@@ -399,6 +399,25 @@ for(header.file.name in header.file.names){
                   }
                }
 
+               ################################
+               # Detect input array that should 
+               # have a fixed size > 1
+               ################################
+
+               current.function$parameter$fixed.size.array   <- FALSE
+
+               for(j in 1:nrow(current.function$parameter)){
+                  # j <- 1
+                  if(regexpr("[[:alpha:]]", current.function$parameter$length[j]) == -1){                   # only length with digits
+				if(as.numeric(current.function$parameter$length[j])>1){
+                             if(current.function$parameter$in.out[j] == "in"){
+                                  current.function$parameter$fixed.size.array[j]     <- TRUE
+                             }
+                        }
+                  }
+               }
+ 
+
                # Store processed function data
                functions[[function.no]]    <- current.function
                processed.functions         <- c(processed.functions, name)
