@@ -39,7 +39,8 @@ These functions compute the relative efficiency / RBE of a mixed particle field 
 These functions handle underlying physic used in amorphous track modeling:
 
 \tabular{ll}{
-\code{\link{AT.D.RDD.Gy}} \tab Dose distribution around a particle track
+\code{\link{AT.D.RDD.Gy}} \tab Dose distribution around a particle track \cr
+\code{\link{AT.max.electron.ranges.m}} \tab Maximum electron range / track width
 }
 
 
@@ -112,7 +113,7 @@ xyplot( log10(D.Gy) ~ log10(r.m)|particle.name,                              # P
 		df,
 		type      = 'l',
 		groups    = E.MeV.u,
-		auto.key  = T)[c(2,1)]
+		auto.key  = TRUE)[c(2,1)]
 		
 #####################################################################
 #################### 3. DETECTOR EFFICIENCY #########################
