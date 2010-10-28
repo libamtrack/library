@@ -39,26 +39,36 @@ grep.bool	<-	function(pattern, x, ...){
 }
 
 for(i in 1:length(functions)){
-	#i<-3
+	#i<-4
 	tmp <- functions[[i]]
 
 	##############################
 	# create header
 	##############################
-	para <- tmp$parameter
+	para          <- tmp$parameter
 
-	# create header out of the para[in] parameter without length n (works every where???)
-	const <- grep.bool(pattern = "in", x = tmp$parameter.comment$type) 
-	pos.in <- which(const) # SG: & tmp$parameter.comment$name != "n")
+	# Create header with the para[in] parameter, skip array sizes that can be derived from
+      # given arrays
+
+	const                    <- grep.bool(pattern = "in", x = tmp$parameter.comment$type) 
+	pos.in                   <- which(const) 
+      pos.in                   <- pos.in[!(pos.in %in% para$array.size.defined.by.variable.no)]
+
 	# get the position of the parameters from the position in the comments
-	pos.in <- match(tmp$parameter.comment$name[pos.in], para$name)
+	pos.in        <- match(tmp$parameter.comment$name[pos.in], para$name)
 	# replace "_" with "."
-	para$name <- gsub("_", ".", para$name, fixed = T)
+	para$name     <- gsub("_", ".", para$name, fixed = T)
 
 	header <- character(length(pos.in))
-	header[1] <- paste(gsub("_", ".", tmp$name), " <- function( ", 
-					para$name[pos.in[1]], ",", sep = "")
-	if(length(header) > 2){
+	if(length(header) == 1){
+           header[1] <- paste(gsub("_", ".", tmp$name), " <- function( ", 
+                                   para$name[pos.in[1]], "){\n", sep = "")
+	}else{
+           header[1] <- paste(gsub("_", ".", tmp$name), " <- function( ", 
+                                   para$name[pos.in[1]], ",", sep = "")
+      }
+
+      if(length(header) > 2){
 		for(j in 2:(length(header)-1)){
 			header[j] <- paste( "\t\t\t", para$name[pos.in[j]], ",", sep = "")
 		}
@@ -71,13 +81,40 @@ for(i in 1:length(functions)){
 	###########################
 	# create wrapper body
 	###########################
-
-	# SG: commented out: assign length n of vectors
-	#if(sum(para$name == "n") > 0){
-	#	ii <- which(para$length == "n")
-	#	header <- c(header, paste("\tn\t<- length(", para$name[ii[1]], 
-	#					")", sep = ""))
-	#}
+      
+  	# Derive array sizes
+      if(sum(para$derivable.array.size.variable) > 0){
+           for(j in 1:length(para$derivable.array.size.variable)){
+                # DEBUG: j <- 1
+                if(para$derivable.array.size.variable[j]){
+                     idx     <- grep(j, para$array.size.defined.by.variable.no)
+                     header  <- c( header, 
+                                   paste( "\t",
+                                          para$name[j], 
+                                          "\t<- length(", 
+                                          para$name[idx[1]], 
+						                  ")", 
+                                          sep = ""))
+                     if(length(idx) > 1){
+                          for(k in 2:length(idx)){
+                               # DEBUG: k <- 2
+                               header  <- c( header, 
+                                             paste( "\tif(",
+                                                    para$name[j], 
+                                                    " != length(", 
+                                                    para$name[idx[k]], 
+		          		                      ")){cat(\"",
+                                                    paste(  "Array size mismatch for \'", 
+                                                            para$name[j],
+                                                            "\'!\\n",
+                                                            sep = ""),
+                                                    "\")\n\t\treturn}\n",
+                                                    sep = ""))
+                          }
+                     }
+                }
+           }
+	}
 
 
 	# assign the results (from para["out"])

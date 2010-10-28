@@ -372,6 +372,34 @@ for(header.file.name in header.file.names){
                                                                                              in.out   = "return"))
                }
 
+               ##############################
+               # Detect array size variables
+               # for automatic array size
+               # definition in R wrapper
+               ##############################
+
+               current.function$parameter$array.size.defined.by.variable.no     <- 0
+               current.function$parameter$derivable.array.size.variable         <- FALSE
+
+               for(j in 1:nrow(current.function$parameter)){
+                  # j <- 1
+                  if(length(regexpr("[[:alpha:]]", current.function$parameter$length[j]))>0){                   # only if non-digit character in length: numbers can never be variables
+                     idx <- grep(paste( "^", current.function$parameter$length[j], "$", sep = ""), 
+                                        current.function$parameter$name)                                        # look for exact match of length name in variable list
+                     if(length(idx) == 1 & (current.function$parameter$in.out[j] == "in" | current.function$parameter$in.out[j] == "in.out")){
+                          current.function$parameter$array.size.defined.by.variable.no[j] <- idx
+                     }
+                  }
+               }
+               for(j in 1:nrow(current.function$parameter)){
+                  # j <- 2
+                  idx    <- grep(current.function$parameter$name[j], current.function$parameter$length)
+                  if(length(idx) > 0){
+                       current.function$parameter$derivable.array.size.variable[j] <- TRUE
+                  }
+               }
+
+               # Store processed function data
                functions[[function.no]]    <- current.function
                processed.functions         <- c(processed.functions, name)
                function.no                 <- function.no + 1
