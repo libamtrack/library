@@ -36,3 +36,6 @@ del package\src\*.o
 del package\src\*.c
 del package\src\*.h
 del package\src\*.dll
+del *.Rout
+
+echo "Done."
