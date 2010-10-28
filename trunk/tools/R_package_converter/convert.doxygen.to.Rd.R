@@ -141,7 +141,7 @@ for(i in 1:length(functions)){
                        name.match      <- regexpr(para$name[k], para.comment)
                        if(name.match > 0 & (para$name[k] %in% hardcoded.variable.descriptions)){          # if hardcoded description exists for an argument mentioned in another argument's description
                             para.comment       <- paste( substring(para.comment, 1, name.match - 1),      # paste a link to it into the description
-                                                         paste("\\code\\link{", para$name[k], "}", sep = ""),
+                                                         paste("\\code{\\link{", para$name[k], "}}", sep = ""),
                                                          substring(para.comment, name.match + attr(name.match, "match.length"), nchar(para.comment)),
                                                          sep = "")
                        }

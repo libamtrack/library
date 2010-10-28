@@ -39,7 +39,7 @@ grep.bool	<-	function(pattern, x, ...){
 }
 
 for(i in 1:length(functions)){
-	#i<-4
+	#i<-3
 	tmp <- functions[[i]]
 
 	##############################
@@ -116,6 +116,24 @@ for(i in 1:length(functions)){
            }
 	}
 
+      # Add missing zeros to arrays that should have a defined number of elements
+      idx.fixed.arrays    <- which(!para$derivable.array.size.variable & para$fixed.size.array)
+      if(length(idx.fixed.arrays) > 0){
+           # DEBUG: j <- 1
+           for(j in 1:length(idx.fixed.arrays)){
+                header  <- c( header, 
+                              paste( "\t",
+                                     para$name[idx.fixed.arrays[j]],
+                                     " <- c(",
+                                     para$name[idx.fixed.arrays[j]],
+                                     ", rep(0, ",
+                                     para$length[idx.fixed.arrays[j]],
+                                     " - length(",
+                                     para$name[idx.fixed.arrays[j]],
+                                     ")))\n",
+                                     sep = ""))                                     
+           }
+      }
 
 	# assign the results (from para["out"])
 	pos.out <- grep("out", tmp$parameter.comment$type)
