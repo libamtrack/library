@@ -16,8 +16,8 @@ Please note that libamtrack is still under heavy development and so is the R int
 \details{
 \tabular{ll}{
 Package: \tab libamtrack\cr
-Version: \tab 0.3\cr
-Date: \tab 2010-10-25\cr
+Version: \tab 0.4.0\cr
+Date: \tab 2010-10-29\cr
 Depends: \tab R (>= 2.2.0)\cr
 License: \tab GPL (version 3 or later)
 }
@@ -33,6 +33,15 @@ These functions compute the relative efficiency / RBE of a mixed particle field 
 \code{\link{AT.run.IGK.method}} \tab Ion-gamma-kill ('Katz') method \cr
 \code{\link{AT.run.CPPSC.method}} \tab Compund-Poison process with successive convolutions (CPP-SC, 'SPIFF') method
 }
+
+\bold{Track-structure routines:}
+
+These functions handle underlying physic used in amorphous track modeling:
+
+\tabular{ll}{
+\code{\link{AT.D.RDD.Gy}} \tab Dose distribution around a particle track
+}
+
 
 \bold{Physics routines:}
 
@@ -65,16 +74,50 @@ Package maintainer: Steffen Greilich \email{s.greilich@dkfz.de}
 
 ###########################################################################
 ############################ 1. LET #######################################
-print("Compute the LET (in keV/um) of a 270 MeV/u carbon ion in Aluminum:")
+cat("Compute the LET (in keV/um) of a 270 MeV/u carbon ion in Aluminum:\n")
 
 AT.LET.keV.um( E.MeV.u     = 270,
 			   particle.no = 6012,
 			   material.no = 3)
-			   
+
+########################################################################################
+########################### 2. DOSE AROUND A TRACK #####################################
+cat("Compare the Geiss parametrization for protons and Carbon at different energies:\n")
+
+require(lattice)
+df	<-	expand.grid(	E.MeV.u	       = 10^seq(0, 3, length.out = 4),       # from 1 to 1000 MeV/u in 4 steps
+                        particle.no	   = c(1001,6012),                       # protons and carbons
+                        r.m		       = 10^seq(-9, -2, length.out = 100),   # from 1 nm to 1 cm in 100 steps
+                        material.no    = 2,                                  # Aluminium Oxide
+                        rdd.model	   = 3,                                  # Geiss parametrization
+                        rdd.parameter  = 5e-8,                               # Fixed core size of 50 nm
+                        er.model	   = 4,                                  # Geiss track width parametrization
+                        D.Gy		   = 0)                                  # For later use
+
+ii                   <-  df$particle.no == 1001                              # Add particle names
+df$particle.name     <-  "Carbon-12"
+df$particle.name[ii] <-  "Protons"
+
+for (i in 1:nrow(df)){                                                       # Loop through particles/energies
+	df$D.Gy[i]	<-	AT.D.RDD.Gy( 	r.m		      = df$r.m[i],
+                                    E.MeV.u	      = df$E.MeV.u[i],
+                                    particle.no	  = df$particle.no[i],
+                                    material.no	  = df$material.no[i],
+                                    rdd.model	  = df$rdd.model[i],
+                                    rdd.parameter = df$rdd.parameter[i],
+                                    er.model	  = df$er.model[i])[[1]]
+}
+
+xyplot( log10(D.Gy) ~ log10(r.m)|particle.name,                              # Plot
+		df,
+		type      = 'l',
+		groups    = E.MeV.u,
+		auto.key  = T)[c(2,1)]
+		
 #####################################################################
-#################### 2. DETECTOR EFFICIENCY #########################
-print("Compute the relative efficiency of Alanine in 10 MeV protons")
-print("Waligorskis version of the Katz' model")
+#################### 3. DETECTOR EFFICIENCY #########################
+cat("Compute the relative efficiency of Alanine in 10 MeV protons\n")
+cat("Waligorskis version of the Katz' model\n")
 
 AT.run.IGK.method( particle.no                          = 1001,                        # namely protons with
                    E.MeV.u                              = 10,                          # 10 MeV/u
