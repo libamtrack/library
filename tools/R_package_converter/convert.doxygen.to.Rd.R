@@ -35,6 +35,7 @@ grep.bool	<-	function(pattern, x, ...){
 	results	<-	grep(pattern, x, ...)
 	indices	<-	1:length(x)
 	bool.res	<-	is.element(indices, results)
+      return(bool.res)
 }
 
 # List of hard-coded Rd files for variable descriptions
@@ -67,7 +68,7 @@ source("type.conversion.R")
 
 
 for(i in 1:length(functions)){
-	# i <- 3
+	# i <- 4
 	cur.function <- functions[[i]]
 
 	# replace "_" by "."
@@ -77,8 +78,20 @@ for(i in 1:length(functions)){
 	# remove "[]"
 	cur.function$parameter.comment$name <- gsub("[]", "", cur.function$parameter.comment$name, fixed = T)
 
+      # Remove derivable array.size arguments from in-list
+	ii <- which(grep.bool(pattern = "in", x = cur.function$parameter.comment$type)) 
+      if(length(ii) > 0){
+           derivable.array.size.names <- gsub("_", ".", cur.function$parameter$name[which(cur.function$parameter$derivable.array.size.variable)])
+           for (j in 1:length(ii)){
+                #DEBUG: j <- 1
+                if(cur.function$parameter.comment$name[j] %in% derivable.array.size.names){
+                     ii[j]  <- 0
+                }
+           }
+           ii    <- ii[ii!=0]
+      }
+
 	# paste all input parameters together
-	ii <- which(grep.bool(pattern = "in", x = cur.function$parameter.comment$type)) # SG commented out: & cur.function$parameter.comment$name != "n")
 	parameter.list <- character(0)
 	if(length(ii) > 0){ 
 		if(length(ii) > 1){ 
@@ -105,21 +118,45 @@ for(i in 1:length(functions)){
 	# Add arguments
 	cur.description   <- c(cur.description, "\\arguments{")
 	para              <- cur.function$parameter.comment
-	para.in <- which(grep.bool(pattern = "in", x = para$type)) # SG commented out: & para$name != "n")
+	para.in           <- which(grep.bool(pattern = "in", x = para$type)) 
+      # TODO: produce common code for skipping derivable array sizes here and above
 	if(length(para.in) > 0){
-            for(i in para.in){
-		      line.to.add    <- NULL
-                  if (para$name[i] %in% hardcoded.variable.descriptions){
-                       cur.description         <- c(cur.description, paste("  \\item{", para$name[i], "}{", para$comment[i], " (see also \\code{\\link{", para$name[i], "}}).}", sep = ""))
+           for (j in 1:length(para.in)){
+                #DEBUG: j <- 1
+                if(cur.function$parameter.comment$name[j] %in% derivable.array.size.names){
+                     para.in[j]  <- 0
+                }
+           }
+           para.in <- para.in[para.in!=0]
+      }
+
+	if(length(para.in) > 0){
+            for(j in para.in){
+		      # DEBUG: j <- para.in[1]
+                  line.to.add    <- NULL
+                  # Check if domuented arguments are found in comment. If so, cross-reference to them
+                  para.comment   <- gsub("_", ".", para$comment[j], fixed = T)
+                  for (k in 1:length(para$name)){
+                       # DEBUG: k <- 1
+                       name.match      <- regexpr(para$name[k], para.comment)
+                       if(name.match > 0 & (para$name[k] %in% hardcoded.variable.descriptions)){          # if hardcoded description exists for an argument mentioned in another argument's description
+                            para.comment       <- paste( substring(para.comment, 1, name.match - 1),      # paste a link to it into the description
+                                                         paste("\\code\\link{", para$name[k], "}", sep = ""),
+                                                         substring(para.comment, name.match + attr(name.match, "match.length"), nchar(para.comment)),
+                                                         sep = "")
+                       }
+                  }
+                  if (para$name[j] %in% hardcoded.variable.descriptions){
+                       cur.description         <- c(cur.description, paste("  \\item{", para$name[j], "}{", para.comment, " (see also \\code{\\link{", para$name[j], "}}).}", sep = ""))
                   }else{
-                       cur.description         <- c(cur.description, paste("  \\item{", para$name[i], "}{", para$comment[i], ".}", sep = ""))
+                       cur.description         <- c(cur.description, paste("  \\item{", para$name[j], "}{", para.comment, ".}", sep = ""))
                   }
 		}
 	}
 	cur.description <- c(cur.description, "}")
 
 	# Values
-	cur.description <- c(cur.description, "\\value{\n% TODO proper return definition of lists!!!)")
+	cur.description <- c(cur.description, "\\value{\n% TODO proper return definition of lists!!! ADD NUMBER_OF_FIELD_COMPONENT_DESCRIBTION AGAIN!!!)")
 
 	para.out <- grep("out", para$type)
 	if(length(para.out) > 0){
