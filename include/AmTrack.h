@@ -69,7 +69,7 @@
  * @param[in]      er_model                       index number for chosen electron-range model
  * @see AT_ElectronRange.h for definition
  * @param[in]      gamma_model                    index number for chosen gamma response
- * @param[in]      gamma_parameters               parameters for chosen gamma response (array of size GR_MAX_NUMBER_OF_PARAMETERS)
+ * @param[in]      gamma_parameters               parameters for chosen gamma response (array of size 9)
  * @see AT_GammaResponse.h for definition
  * @param[in,out]  N2                             number of bins per factor of two for the dose scale of local dose histogram
  * @param[in]      fluence_factor                 factor to scale the fluences / doses given in "fluence_cm2_or_dose_Gy" with
@@ -132,7 +132,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
  * @param[in]      er_model                         index number for chosen electron-range model
  * @see AT_ElectronRange.h for definition
  * @param[in]      gamma_model                      index number for chosen gamma response
- * @param[in]      gamma_parameters                 parameters for chosen gamma response (array of size GR_MAX_NUMBER_OF_PARAMETERS)
+ * @param[in]      gamma_parameters                 parameters for chosen gamma response (array of size 9)
  * @see AT_GammaResponse.h for definition
  * @param[in]      saturation_cross_section_factor  scaling factor for the saturation cross section
  * @see Waligorski, 1988
@@ -183,7 +183,7 @@ void AT_run_IGK_method(  const long  number_of_field_components,
  * @param[in]  ER_model            index number for chosen electron-range model
  * @see          AT_ElectronRange.h for definition
  * @param[in]  gamma_model         index number for chosen gamma response
- * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size GR_MAX_NUMBER_OF_PARAMETERS)
+ * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size 9)
  * @see          AT_GammaResponse.h for definition
  * @param[in] n_runs               (algorithm specific) number of points sampled for local dose distribution
  * @param[in]  N2                  (algorithm specific) number of bins per factor of two in local dose array
