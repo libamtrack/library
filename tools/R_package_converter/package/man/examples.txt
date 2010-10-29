@@ -51,6 +51,12 @@ AT.run.CPPSC.method( particle.no                          = c(6012, 1001, 1001),
 ::AT.beta.from.E::
 # Compute beta between 1 and 1000 MeV/u:
 AT.beta.from.E( E.MeV.u     = c(1,10,100,1000))
+::AT.E.from.beta::
+# Compute energies for betas between 0.1 and 0.99:
+AT.E.from.beta( beta = c(0.1, 0.1*(1:9), 0.99))
+::AT.gamma.from.E::
+# Compute mass in MeV/c2 for a proton with 1-1000 MeV kinetic energy:
+938.3 * AT.gamma.from.E( E.MeV.u = 10^(0:3))$gamma
 ::AT.LET.keV.um::
 # Compute the LET (in keV/um) of a 270 MeV/u carbon ion in Aluminum:
 AT.LET.keV.um( E.MeV.u     = 270,
@@ -101,5 +107,87 @@ xyplot( log10(D.Gy) ~ log10(r.m)|particle.name,                              # P
 AT.max.electron.ranges.m( E.MeV.u     = 0.3 * 10^(-4:2),
 			              material.no = 4,
                           er.model    = 7)
+::AT.gamma.response::
+# Show the gamma response of two Al2O3 detectors (A & B) and two protocols ('peak' and 'total')
+# parametrized in two components (single hit/single target and two hit/single target)
+# as measured and published by Edmund et al., NIM B 262 (2007), 261–275
+require(lattice)
+
+d.Gy						<-	10^seq(from = log10(0.1), to = log10(25), length.out = 100)     # Compute 100 points between 0.1 and 25 Gy
+gamma.model					<-	2                                                               # General hit/target model
+
+R							<-	1                                                               # Probe A, 'peak'
+Smax						<-	0.81e6
+k1							<-	Smax * (R / 100)
+k2							<-	Smax * (1 - R / 100)
+gamma.parameter.peak.A		<-	c(	k1 = k1, D01 = 0.36, c1 = 1, m1 = 1,
+								    k2 = k2, D02 = 3.06, c2 = 2, m2 = 1,
+								    0)
+
+R							<-	33                                                              # Probe A, 'total'
+Smax						<-	6.2e6
+k1							<-	Smax * (R / 100)
+k2							<-	Smax * (1 - R / 100)
+gamma.parameter.total.A	    <-	c(	k1 = k1, D01 = 1.13, c1 = 1, m1 = 1,
+								    k2 = k2, D02 = 1.77, c2 = 2, m2 = 1,
+								    0)
+
+R							<-	13                                                              # Probe B, 'peak'
+Smax						<-	2.84e6
+k1							<-	Smax * (R / 100)
+k2							<-	Smax * (1 - R / 100)
+gamma.parameter.peak.B	    <-	c(	k1 = k1, D01 = 4.15, c1 = 1, m1 = 1,
+								    k2 = k2, D02 = 5.14, c2 = 2, m2 = 1,
+								    0)
+
+R							<-	44                                                              # Probe B, 'total'
+Smax						<-	27.6e6
+k1							<-	Smax * (R / 100)
+k2							<-	Smax * (1 - R / 100)
+gamma.parameter.total.B	    <-	c(	k1 = k1, D01 = 2.90, c1 = 1, m1 = 1,
+								    k2 = k2, D02 = 4.66, c2 = 2, m2 = 1,
+								    0)
+
+df			<-	data.frame(	d.Gy 		= rep(	d.Gy, 2),                                       # Compose data frame
+							S 			= c(	AT.gamma.response(	d.Gy              = d.Gy,
+																	gamma.model       = gamma.model,
+																	gamma.parameter   = gamma.parameter.peak.A,
+                                                                    lethal.event.mode = FALSE)$S,
+											 	AT.gamma.response(	d.Gy              = d.Gy,
+																	gamma.model       = gamma.model,
+																	gamma.parameter   = gamma.parameter.total.A,
+                                                                    lethal.event.mode = FALSE)$S,
+												AT.gamma.response(	d.Gy              = d.Gy,
+																	gamma.model       = gamma.model,
+																	gamma.parameter   = gamma.parameter.peak.B,
+                                                                    lethal.event.mode = FALSE)$S,
+												AT.gamma.response(	d.Gy              = d.Gy,
+																	gamma.model       = gamma.model,
+																	gamma.parameter   = gamma.parameter.total.B,
+                                                                    lethal.event.mode = FALSE)$S),
+								which 		= rep(	c(	rep("peak", length(d.Gy)),
+														rep("total", length(d.Gy))), 2),
+								probe		= c(	rep("probe A", 2 * length(d.Gy)),
+													rep("probe B", 2 * length(d.Gy))))
+
+xyplot(	log10(S) ~ log10(d.Gy)|probe,                                                           # Plot
+            df,
+			groups	= which,
+			type	= 'l',
+			lwd		= 2,
+			ylim	= log10(c(1e3, 4e7)),
+			ylab	= list(	"OSL response",
+								cex = 1.2),
+			xlim	= log10(c(0.1, 25)),
+			xlab	= list(	"dose / Gy",
+								cex = 1.2),
+			scales	= list(	x = list(	at 		= log10(c(1,10,20)),
+											labels	= as.character(c(1,10,20))),
+								y =	 list(	at		= c(4,5,6,7),
+											labels	= sprintf("%1.0e",10^(c(4,5,6,7))))),
+			aspect	= 2.5)
+::AT_E_MeV_u_from_momentum_MeV_c_u::
+# Get kinetic energy for a 502 MeV/c antiproton beam (CERN AD/ACE experiment):
+AT_E_MeV_u_from_momentum_MeV_c_u( E.MeV.u = 502)
 ::Was anderes::
 LALALALA
