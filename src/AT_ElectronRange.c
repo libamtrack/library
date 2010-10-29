@@ -143,6 +143,9 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
   AT_get_material_data( (long)material_no, &material_density_g_cm3,
       NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
+  assert( average_A > 0);
+  assert( average_Z > 0);
+
   // Get beta from energy
   double* beta     =  (double*)calloc(number_of_particles, sizeof(double));
 
@@ -171,6 +174,7 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
   long  i;
   for (i = 0; i < number_of_particles; i++){
     double wmax_keV = wmax_MeV[i] * 1000.0;
+    assert( wmax_keV > 0.0);
 
     switch( er_model ){
       case ER_ButtsKatz :
@@ -217,8 +221,13 @@ double AT_max_electron_range_m(  const double E_MeV_u,
   AT_get_material_data( (long)material_no, &material_density_g_cm3,
       NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
+  assert( average_A > 0);
+  assert( average_Z > 0);
+
   // Get energy of delta-electron from energy of ion
   double wmax_keV = AT_max_E_transfer_MeV_single(E_MeV_u) * 1000.0;
+
+  assert( wmax_keV > 0);
 
   // a1,..a5 needed in Tabata ER model
   double a1_g_cm2 = 0.0;
