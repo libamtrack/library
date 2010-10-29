@@ -128,7 +128,7 @@ int AT_beta_from_E( const long  n,
 
 
 /**
- *  Returns energy per nucleon of particle with relative speed beta
+ *  Returns energy per nucleon of particle with relativistic speed beta
  *
  * @param[in]  n                        number of particles
  * @param[in]  beta                     vector of relative particle speed beta = v/c (array of size n)
@@ -148,14 +148,14 @@ int AT_E_from_beta(  const long  n,
  double AT_E_MeV_u_from_momentum_single( 	const double momentum_MeV_c_u);
 
 /**
- *  Returns energy per nucleon of particles with given momentum per nucleon
+ *  Returns energy per nucleon for particles with given momentum per nucleon
  *
  * @param[in]  n                        number of particles
  * @param[in]  momentum_MeV_c_u         vector of particle momenta per nucleon [MeV/c], (array of size n)
  * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV], (array of size n)
  * @return     status code
  */
-int AT_E_MeV_u_from_momentum(  const long  n,
+int AT_E_MeV_u_from_momentum_MeV_c_u(  const long  n,
     const double  momentum_MeV_c_u[],
     double        E_MeV_u[]);
 
@@ -168,7 +168,7 @@ int AT_E_MeV_u_from_momentum(  const long  n,
  double AT_gamma_from_E_single( const double E_MeV_u );
 
 /**
- *  Returns relativistic gamma for many particles
+ *  Returns relativistic gamma
  *
  * @param[in]  n                        number of particles
  * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
@@ -306,14 +306,14 @@ int AT_max_E_transfer_MeV(  const long  n,
  double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u);
 
 /**
- *  Returns relativistic momenta per nucleon for many particles
+ *  Returns relativistic momenta per nucleon for particles with given kinetic energy
  *
  * @param[in]	n						number of particles
  * @param[in]  	E_MeV_u                 kinetic Energy per nucleon [array of size n]
  * @param[out]	momentum_MeV_c  		results [array of size n]
  * @return                              return code
  */
-int AT_momentum_from_E_MeV_c_u( const long  n,
+int AT_momentum_MeV_c_u_from_E_MeV_u( const long  n,
     const double  E_MeV_u[],
     double        momentum_MeV_c[]);
 

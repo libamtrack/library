@@ -147,7 +147,7 @@ long AT_Gamma_number_of_parameters( const long Gamma_no);
 
 
 /**
- * Returns the detector / cell gamma response for a vector of given doses
+ * Returns the detector / cell gamma response for given doses
  * according to the chosen gamma response model
  *
  * @param[in]  number_of_doses  number of doses given in vector d_Gy
