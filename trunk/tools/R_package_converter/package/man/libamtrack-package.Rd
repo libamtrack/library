@@ -40,17 +40,27 @@ These functions handle underlying physic used in amorphous track modeling:
 
 \tabular{ll}{
 \code{\link{AT.D.RDD.Gy}} \tab Dose distribution around a particle track \cr
-\code{\link{AT.max.electron.ranges.m}} \tab Maximum electron range / track width
+\code{\link{AT.max.electron.ranges.m}} \tab Maximum electron range / track width \cr
+\code{\link{AT.gamma.response}} \tab Gamma / X ray response of a system
 }
 
 
 \bold{Physics routines:}
 
-These functions handle the physics of proton and ion beams needed in libamtrack:
+These functions handle the physics of proton and ion beams needed in libamtrack.
+
+Stopping-power routines:
 
 \tabular{ll}{
-\code{\link{AT.beta.from.E}} \tab Relativistic beta of an ion \cr
 \code{\link{AT.LET.keV.um}} \tab Unrestricted LET / Stopping power
+}
+
+These functions handle the physics of proton and ion beams needed in libamtrack.
+
+\tabular{ll}{
+\code{\link{AT.beta.from.E}} \tab Relativistic beta of an ion with \cr
+\code{\link{AT.E.from.beta}} \tab Kinetic energy for given beta \cr
+\code{\link{AT.gamma.from.E}} \tab Relativistic gamma of an ion \cr
 }
 
 }
