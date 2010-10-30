@@ -91,7 +91,7 @@ int AT_E_from_beta(  const long  n,
 	return (total_E_MeV_u - 1.0079 * proton_mass_MeV_c2);
 }
 
-int AT_E_MeV_u_from_momentum(  const long  n,
+int AT_E_MeV_u_from_momentum_MeV_c_u(  const long  n,
     const double  momentum_MeV_c_u[],
     double        E_MeV_u[])
 {
@@ -197,7 +197,7 @@ int AT_max_E_transfer_MeV(  const long  n,
 	return 	gamma * m_MeV_c2 * beta * 1.0;			// Here: c = 1
 }
 
-int AT_momentum_from_E_MeV_c_u( const long  n,
+int AT_momentum_MeV_c_u_from_E_MeV_u( const long  n,
     const double  E_MeV_u[],
     double        momentum_MeV_c_u[])
 {
@@ -393,16 +393,16 @@ void AT_single_impact_dose_Gy( const long n,
   }
 }
 
-double  AT_total_D_Gy( const long  n,
+double  AT_total_D_Gy( const long  number_of_field_components,
     const double  E_MeV_u[],
     const long   particle_no[],
     const double  fluence_cm2[],
     const long   material_no)
 {
   double   total_dose_Gy    =  0.0;
-  double*  single_doses_Gy  =  (double*)calloc(n, sizeof(double));
+  double*  single_doses_Gy  =  (double*)calloc(number_of_field_components, sizeof(double));
 
-  AT_dose_Gy_from_fluence_cm2(      n,
+  AT_dose_Gy_from_fluence_cm2(      number_of_field_components,
       E_MeV_u,
       particle_no,
       fluence_cm2,
@@ -410,7 +410,7 @@ double  AT_total_D_Gy( const long  n,
       single_doses_Gy);
 
   long i;
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
     total_dose_Gy       += single_doses_Gy[i];
   }
   free(single_doses_Gy);
@@ -419,16 +419,16 @@ double  AT_total_D_Gy( const long  n,
 }
 
 
-double AT_total_fluence_cm2( const long n,
+double AT_total_fluence_cm2( const long number_of_field_components,
     const double   E_MeV_u[],
     const long    particle_no[],
     const double   D_Gy[],
     const long    material_no)
 {
 
-  double*  single_fluences_cm2        =  (double*)calloc(n, sizeof(double));
+  double*  single_fluences_cm2        =  (double*)calloc(number_of_field_components, sizeof(double));
 
-  AT_fluence_cm2_from_dose_Gy(      n,
+  AT_fluence_cm2_from_dose_Gy(      number_of_field_components,
       E_MeV_u,
       particle_no,
       D_Gy,
@@ -437,7 +437,7 @@ double AT_total_fluence_cm2( const long n,
 
   double  total_fluence_cm2 = 0.0;
   long i;
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
     total_fluence_cm2       += single_fluences_cm2[i];
   }
   free(single_fluences_cm2);

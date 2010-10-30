@@ -217,7 +217,7 @@ int AT_effective_charge_from_beta(  const long  n,
  * Get Bohr's energy spread (Wilson, 1947, Phys Rev 71, 385)
  * @param[in]  n                        number of particles
  * @param[in]  material_no              index number for detector material
- * @param[out] dsE2dz                   Increase of energy spread (variance s_E^2) with thickness of material: d(s_E^2)/dz
+ * @param[out] dsE2dz                   Increase of energy spread (variance s_E**2) with thickness of material: d(s_E**2) per dz
  */
 void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
     const long*  material_no,
@@ -225,11 +225,8 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
 
 
 /**
- * Effective charge according to Barkas-Bethe-approximation:
- *
- * Zeff = Z *[1- exp( -125 * beta / Z^(2/3) )]
- *
- * calculated for particle with given energy per nucleon
+ * Effective charge according to Barkas-Bethe-approximation
+ * for particle with given energy per nucleon
  *
  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
  * @param[in]  particle_no              type of the particles in the mixed particle field
@@ -241,10 +238,7 @@ double AT_effective_charge_from_E_MeV_u_single(  const double E_MeV_u,
 
 /**
  * Effective charge according to Barkas-Bethe-approximation:
- *
- * Zeff = Z * [1-exp( -125 * beta / Z^(2/3) )]
- *
- * calculated for particle with given energy per nucleon
+ * for particles with given kinetic energy per nucleon
  *
  * @param[in]  n                        number of particles
  * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
@@ -286,11 +280,12 @@ int AT_effective_charge_from_E_MeV_u(  const long  n,
 
 
 /**
- * Max energy transfer
+ * Kinetic energy maximally transferred from an ion to an electron
+ * in a collision - relativistic or non-relativistic
  *
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV/u] (array of size n)
- * @param[out] max_E_transfer_MeV       (array of size n)
+ * @param[in]  E_MeV_u                  energies of particle per nucleon [MeV/u]; if positive, the computation will be relativistic; if negative, the classic formular will be used (array of size n)
+ * @param[out] max_E_transfer_MeV       maximal energies transferred (array of size n)
  * @return     status code
  */
 int AT_max_E_transfer_MeV(  const long  n,
@@ -309,8 +304,8 @@ int AT_max_E_transfer_MeV(  const long  n,
  *  Returns relativistic momenta per nucleon for particles with given kinetic energy
  *
  * @param[in]	n						number of particles
- * @param[in]  	E_MeV_u                 kinetic Energy per nucleon [array of size n]
- * @param[out]	momentum_MeV_c  		results [array of size n]
+ * @param[in]  	E_MeV_u                 kinetic energy per nucleon (array of size n)
+ * @param[out]	momentum_MeV_c  		momentum per nucleon (array of size n)
  * @return                              return code
  */
 int AT_momentum_MeV_c_u_from_E_MeV_u( const long  n,
@@ -506,20 +501,18 @@ void AT_single_impact_dose_Gy( const long n,
     double        single_impact_dose_Gy[]);
 
 /**
- * Computes the total dose of a particle field
+ * Computes the total dose of a mixed particle field
  *
- * Needed by SuccessiveConvolutions
- *
- * @param[in]  n            length of vectors for parameters
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
- * @param[in]  particle_no  particle index (array of size n)
- * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
- * @param[in]  material_no  material index
- * @see          AT_DataMaterial.h for definition
- * @return     total_dose_Gy  result
+ * @param[in]  number_of_field_components            number of components in the mixed field
+ * @param[in]  E_MeV_u                               energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  particle_no                           particle index (array of size number_of_field_components)
+ * @see AT_DataParticle.h for definition
+ * @param[in]  fluence_cm2                           fluences of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  material_no                           material index
+ * @see AT_DataMaterial.h for definition
+ * @return     total_dose_Gy                         result
   */
-double AT_total_D_Gy( const long  n,
+double AT_total_D_Gy( const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
@@ -527,20 +520,18 @@ double AT_total_D_Gy( const long  n,
 
 
 /**
- * Computes the total fluence of a particle field
+ * Computes the total fluence of a mixed particle field
  *
- * Needed by SuccessiveConvolutions
- *
- * @param[in]  n            length of vectors for parameters
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
- * @param[in]  particle_no  particle index (array of size n)
- * @see          AT_DataParticle.h for definition
- * @param[in]  D_Gy  doses of particles in the mixed particle field (array of size n)
- * @param[in]  material_no  material index
- * @see          AT_DataMaterial.h for definition
- * @return       total_fluence_cm  result
+ * @param[in]  number_of_field_components            number of components in the mixed field
+ * @param[in]  E_MeV_u                               energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  particle_no                           particle index (array of size number_of_field_components)
+ * @see AT_DataParticle.h for definition
+ * @param[in]  D_Gy                                  doses of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  material_no                           material index
+ * @see AT_DataMaterial.h for definition
+ * @return     total_fluence_cm                      result
   */
-double AT_total_fluence_cm2( const long n,
+double AT_total_fluence_cm2( const long number_of_field_components,
     const double   E_MeV_u[],
     const long     particle_no[],
     const double   D_Gy[],
