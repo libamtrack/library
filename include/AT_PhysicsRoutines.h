@@ -543,12 +543,12 @@ double AT_total_fluence_cm2( const long number_of_field_components,
  *
  * Needed by SuccessiveConvolutions
  *
- * @param[in]  n            length of vectors for parameters
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
- * @return     average_E_MeV_u  result
+ * @param[in]  number_of_field_components            number of components in mixed particle field
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
+ * @return     average_E_MeV_u  fluence-weighted mean energy
  */
-double AT_fluence_weighted_E_MeV_u( const long    n,
+double AT_fluence_weighted_E_MeV_u( const long    number_of_field_components,
     const double E_MeV_u[],
     const double fluence_cm2[]);
 
@@ -558,16 +558,16 @@ double AT_fluence_weighted_E_MeV_u( const long    n,
  *
  * Needed by SuccessiveConvolutions
  *
- * @param[in]  n            length of vectors for parameters
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
- * @param[in]  particle_no  particle index (array of size n)
+ * @param[in]  number_of_field_components            number of components in mixed particle field
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  particle_no  particle index (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @return     result
+ * @return     dose-weighted mean energy
  */
-double AT_dose_weighted_E_MeV_u( const long   n,
+double AT_dose_weighted_E_MeV_u( const long   number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
@@ -577,18 +577,16 @@ double AT_dose_weighted_E_MeV_u( const long   n,
 /**
  * Computes the fluence-weighted average LET of a particle field
  *
- * Needed by SuccessiveConvolutions
- *
- * @param[in]  n            length of vectors for parameters
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
- * @param[in]  particle_no  particle index (array of size n)
+ * @param[in]  number_of_field_components            number of components in mixed particle field
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  particle_no  particle index (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @return     result
+ * @return     fluence-weighted LET
  */
-double AT_fluence_weighted_LET_MeV_cm2_g( const long     n,
+double AT_fluence_weighted_LET_MeV_cm2_g( const long     number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
@@ -598,18 +596,16 @@ double AT_fluence_weighted_LET_MeV_cm2_g( const long     n,
 /**
  * Computes the dose-weighted average LET of a particle field
  *
- * Needed by SuccessiveConvolutions
- *
- * @param[in]  n            length of vectors for parameters
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
- * @param[in]  particle_no  particle index (array of size n)
+ * @param[in]  number_of_field_components            number of components in mixed particle field
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  particle_no  particle index (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @return     result
+ * @return     dose-weighted LET
  */
-double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
+double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
@@ -619,16 +615,16 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
 /**
  * TODO
  *
- * @param[in]  n            length of vectors for parameters
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
- * @param[in]  particle_no  particle index (array of size n)
+ * @param[in]  number_of_field_components            number of components in mixed field
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  particle_no  particle index (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[in]  reference_material_no  material index of reference material
  */
-double AT_fluence_weighted_stopping_power_ratio( const long     n,
+double AT_fluence_weighted_stopping_power_ratio( const long     number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],

@@ -16,8 +16,8 @@ Please note that libamtrack is still under heavy development and so is the R int
 \details{
 \tabular{ll}{
 Package: \tab libamtrack\cr
-Version: \tab 0.4.1\cr
-Date: \tab 2010-10-30\cr
+Version: \tab 0.4.1 (Blue Ocelot)\cr
+Date: \tab 2010-10-31\cr
 Depends: \tab R (>= 2.2.0)\cr
 License: \tab GPL (version 3 or later)
 }
@@ -52,7 +52,26 @@ These functions handle the physics of proton and ion beams needed in libamtrack.
 Stopping-power routines:
 
 \tabular{ll}{
-\code{\link{AT.LET.keV.um}} \tab Unrestricted LET / Stopping power
+\code{\link{AT.LET.keV.um}} \tab Unrestricted LET / Stopping power\cr
+\code{\link{AT.LET.MeV.cm2.g}} \tab Unrestricted LET per mass / mass stopping power\cr
+\code{\link{AT_E_MeV_from_LET}} \tab Inverse routine: energy from LET (cave!)\cr
+\code{\link{AT.fluence.weighted.stopping.power.ratio}} \tab Computes stopping power ratios, also for mixed fields\cr
+
+\code{\link{AT.CSDA.range.m}} \tab CSDA range in m\cr
+\code{\link{AT.CSDA.range.g.cm2}} \tab CSDA range in mass thickness\cr
+\code{\link{AT.E.MeV.from.CDSA.range}} \tab Inverse routine: energy from CSDA range\cr
+
+\code{\link{AT.Bethe.Mass.Stopping.Power.MeV.cm2.g}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formular
+}
+
+Mean LET / energy in mixed fields routines:
+
+\tabular{ll}{
+\code{\link{AT.fluence.weighted.LET.MeV.cm2.g}} \tab Computes fluence-weighted LET\cr
+\code{\link{AT.dose.weighted.LET.MeV.cm2.g}} \tab Computes dose-weighted LET \cr
+
+\code{\link{AT.fluence.weighted.E.MeV.u}} \tab Computes fluence-weighted mean energy\cr
+\code{\link{AT.dose.weighted.E.MeV.u}} \tab Computes dose-weighted mean energy
 }
 
 

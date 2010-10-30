@@ -4,6 +4,17 @@ AT_run_GSM_method
 AT_D_RDD_Gy
 AT_max_electron_ranges_m
 AT_LET_keV_um
+AT_LET_MeV_cm2_g
+AT_fluence_weighted_stopping_power_ratio
+AT_CSDA_range_g_cm2
+AT_CSDA_range_m
+AT_E_MeV_from_CDSA_range
+AT_E_MeV_from_LET
+AT_Bethe_Mass_Stopping_Power_MeV_cm2_g
+AT_fluence_weighted_E_MeV_u
+AT_dose_weighted_E_MeV_u
+AT_fluence_weighted_LET_MeV_cm2_g
+AT_dose_weighted_LET_MeV_cm2_g
 AT_dose_Gy_from_fluence_cm2
 AT_fluence_cm2_from_dose_Gy
 AT_total_D_Gy
