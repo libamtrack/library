@@ -16,8 +16,8 @@ Please note that libamtrack is still under heavy development and so is the R int
 \details{
 \tabular{ll}{
 Package: \tab libamtrack\cr
-Version: \tab 0.4.0\cr
-Date: \tab 2010-10-29\cr
+Version: \tab 0.4.1\cr
+Date: \tab 2010-10-30\cr
 Depends: \tab R (>= 2.2.0)\cr
 License: \tab GPL (version 3 or later)
 }
@@ -40,8 +40,8 @@ These functions handle underlying physic used in amorphous track modeling:
 
 \tabular{ll}{
 \code{\link{AT.D.RDD.Gy}} \tab Dose distribution around a particle track \cr
-\code{\link{AT.max.electron.ranges.m}} \tab Maximum electron range / track width \cr
-\code{\link{AT.gamma.response}} \tab Gamma / X ray response of a system
+\code{\link{AT.max.electron.ranges.m}} \tab Maximum electron range / track width
+%\code{\link{AT.gamma.response}} \tab Gamma / X ray response of a system
 }
 
 
@@ -55,12 +55,29 @@ Stopping-power routines:
 \code{\link{AT.LET.keV.um}} \tab Unrestricted LET / Stopping power
 }
 
-These functions handle the physics of proton and ion beams needed in libamtrack.
+
+Dose / fluence conversions:
 
 \tabular{ll}{
+\code{\link{AT.dose.Gy.from.fluence.cm2}} \tab Compute dose(s) for given fluence(s) and particle(s)\cr
+\code{\link{AT.fluence.cm2.from.dose.Gy}} \tab Compute fluence(s) given dose(s) and particle(s)\cr
+\code{\link{AT.total.D.Gy}} \tab Computes total dose for a mixed field\cr
+\code{\link{AT.total.fluence.cm2}} \tab Computes total fluence for a mixed field
+}
+
+
+Misc physics routines:
+
+\tabular{ll}{
+\code{\link{AT.momentum.MeV.c.u.from.E.MeV.u}} \tab Momentum from kinetic energy \cr
+\code{\link{AT.E.MeV.u.from.momentum.MeV.c.u}} \tab Kinetic energy from momentum \cr
+%\code{\link{AT.effective.charge.from.E.MeV.u}} \tab Effective charge of an ion depending on its kinetic energy \cr
+\code{\link{AT.max.E.transfer.MeV}} \tab Max energy transfered from an ion to secondary electrons\cr
+%\code{\link{AT.Bohr.Energy.Straggling.g.cm2}} \tab Bohr's straggling power \cr
+
 \code{\link{AT.beta.from.E}} \tab Relativistic beta of an ion with \cr
 \code{\link{AT.E.from.beta}} \tab Kinetic energy for given beta \cr
-\code{\link{AT.gamma.from.E}} \tab Relativistic gamma of an ion \cr
+\code{\link{AT.gamma.from.E}} \tab Relativistic gamma of an ion
 }
 
 }

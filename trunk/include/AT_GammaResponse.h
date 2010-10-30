@@ -59,7 +59,6 @@ enum AT_GammaResponseModels{
 #define GR_DATA_N    6
 
 #define GR_MAX_NUMBER_OF_PARAMETERS  9
-#define GR_MAX_NUMBER_OF_PARAMETERS_long  9  // just to trick R wrapper generator
 //TODO Find better solution for array size of parameters
 
 /**
@@ -147,13 +146,13 @@ long AT_Gamma_number_of_parameters( const long Gamma_no);
 
 
 /**
- * Returns the detector / cell gamma response for given doses
+ * Returns a system's (detector or cells) response for given doses
  * according to the chosen gamma response model
  *
  * @param[in]  number_of_doses  number of doses given in vector d_Gy
  * @param[in]  d_Gy             doses in Gy (array of size number_of_doses)
  * @param[in]  gamma_model      gamma response model index
- * @param[in]  gamma_parameter  vector holding necessary parameters for the chose gamma response model (array of size GR_MAX_NUMBER_OF_PARAMETERS)
+ * @param[in]  gamma_parameter  vector holding necessary parameters for the chose gamma response model (array of size 9)
  * @param[in]  lethal_event_mode  if true computation is done in lethal event mode
  * @param[out] S                gamma responses (array of size number_of_doses)
  */
