@@ -20,8 +20,6 @@ R CMD BATCH convert.doxygen.to.Rd.R
 REM *** Build test package ***
 R CMD check ./package
 
-REM goto :eof
-
 REM *** Copy GSL to libs ***
 copy C:\Programme\GnuWin32\bin\libgsl.dll package.Rcheck\libamtrack\libs
 copy C:\Programme\GnuWin32\bin\libgslcblas.dll package.Rcheck\libamtrack\libs

@@ -898,7 +898,7 @@ double AT_LET_MeV_cm2_g_single(  const double  E_MeV_u,
  * @see          AT_DataParticle.h for definition
  * @param[in]   material_no              material index
  * @see          AT_DataMaterial.h for definition
- * @param[out] LET_MeV_cm2_g
+ * @param[out]  LET_MeV_cm2_g            LET returned (array of size number_of_particles)
  */
 void AT_LET_MeV_cm2_g(  const long  number_of_particles,
     const double   E_MeV_u[],
@@ -963,12 +963,12 @@ void AT_CSDA_range_m(  const long  number_of_particles,
  * Inverse function to CSDA range. Calculates energy for given CSDA range.
  *
  * @param[in]   number_of_particles      number of particle types in the mixed particle field
- * @param[in]   CSDA_range_g_cm2         CSDA range
+ * @param[in]   CSDA_range_g_cm2         CSDA range (array of size number_of_particles)
  * @param[in]   particle_no              type of the particles in the mixed particle field (array of size number_of_particles)
  * @see          AT_DataParticle.h for definition
  * @param[in]   material_no              material index
  * @see          AT_DataMaterial.h for definition
- * @param[out]  E_MeV energy (array of size number_of_particles)
+ * @param[out]  E_MeV                    energy (array of size number_of_particles)
  */
 void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
     const double  CSDA_range_g_cm2[],
@@ -977,19 +977,25 @@ void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
     double        E_MeV[]);
 
 /**
- * TODO correct implementation - Zeff correction
+ * Inverse function to LET. Calculates energy for given LET. N.B. as multiple
+ * energy values can yield the same LET the result of this function might not
+ * be unique. It should only be used on the falling part of the LET/E curve
+ * between approx. 1 and 500 MeV/u.
  *
- * @param number_of_particles
- * @param LET_MeV_cm2_g
- * @param particle_no
- * @param material_no
- * @param E_MeV
+ * @param[in]   number_of_particles      number of particle types in the mixed particle field
+ * @param[in]   LET_MeV_cm2_g            LET [MeV cm2/g] (array of size number_of_particles)
+ * @param[in]   particle_no              type of the particles in the mixed particle field (array of size number_of_particles)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]   material_no              material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[out]  E_MeV                    energy (array of size number_of_particles)
  */
 void AT_E_MeV_from_LET(  const long  number_of_particles,
     const double  LET_MeV_cm2_g[],
     const long    particle_no[],
     const long    material_no,
     double        E_MeV[]);
+//TODO: include zeff correction!
 
 /**
  * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING

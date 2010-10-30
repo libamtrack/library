@@ -446,19 +446,19 @@ double AT_total_fluence_cm2( const long number_of_field_components,
 }
 
 
-double AT_fluence_weighted_E_MeV_u( const long    n,
+double AT_fluence_weighted_E_MeV_u( const long    number_of_field_components,
     const double E_MeV_u[],
     const double fluence_cm2[])
  {
   long i;
 
   double total_fluence_cm2 = 0.0;
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
     total_fluence_cm2 += fluence_cm2[i];
   }
 
   double average_E_MeV_u      = 0.0;
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
      average_E_MeV_u += fluence_cm2[i] * E_MeV_u[i];
    }
 
@@ -468,7 +468,7 @@ double AT_fluence_weighted_E_MeV_u( const long    n,
  }
 
 
-double AT_dose_weighted_E_MeV_u( const long   n,
+double AT_dose_weighted_E_MeV_u( const long   number_of_field_components,
     const double  E_MeV_u[],
     const long   particle_no[],
     const double  fluence_cm2[],
@@ -476,9 +476,9 @@ double AT_dose_weighted_E_MeV_u( const long   n,
  {
   long i;
 
-  double*  single_doses_Gy        =  (double*)calloc(n, sizeof(double));
+  double*  single_doses_Gy        =  (double*)calloc(number_of_field_components, sizeof(double));
 
-  AT_dose_Gy_from_fluence_cm2(      n,
+  AT_dose_Gy_from_fluence_cm2(      number_of_field_components,
       E_MeV_u,
       particle_no,
       fluence_cm2,
@@ -487,12 +487,12 @@ double AT_dose_weighted_E_MeV_u( const long   n,
 
   double total_dose_Gy = 0.0;
 
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
     total_dose_Gy       += single_doses_Gy[i];
   }
 
   double  doseweighted_E_MeV_u      = 0.0;
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
      doseweighted_E_MeV_u += single_doses_Gy[i] * E_MeV_u[i];
    }
 
@@ -503,7 +503,7 @@ double AT_dose_weighted_E_MeV_u( const long   n,
    return doseweighted_E_MeV_u;
 }
 
-double AT_fluence_weighted_LET_MeV_cm2_g( const long     n,
+double AT_fluence_weighted_LET_MeV_cm2_g( const long     number_of_field_components,
     const double  E_MeV_u[],
     const long   particle_no[],
     const double  fluence_cm2[],
@@ -511,21 +511,21 @@ double AT_fluence_weighted_LET_MeV_cm2_g( const long     n,
  {
   long i;
 
-  double*  single_LETs_MeV_cm2_g        =  (double*)calloc(n, sizeof(double));
+  double*  single_LETs_MeV_cm2_g        =  (double*)calloc(number_of_field_components, sizeof(double));
 
   double total_fluence_cm2 = 0.0;
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
     total_fluence_cm2 += fluence_cm2[i];
   }
 
-  AT_LET_MeV_cm2_g(  n,
+  AT_LET_MeV_cm2_g(  number_of_field_components,
       E_MeV_u,
       particle_no,
       material_no,
       single_LETs_MeV_cm2_g);
 
   double average_LET_MeV_cm2_g      = 0.0;
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
      average_LET_MeV_cm2_g += fluence_cm2[i] * single_LETs_MeV_cm2_g[i];
    }
 
@@ -537,7 +537,7 @@ double AT_fluence_weighted_LET_MeV_cm2_g( const long     n,
 }
 
 
-double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
+double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
     const double  E_MeV_u[],
     const long   particle_no[],
     const double  fluence_cm2[],
@@ -545,16 +545,16 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
  {
   long i;
 
-  double*  single_LETs_MeV_cm2_g  =  (double*)calloc(n, sizeof(double));
-  double*  single_doses_Gy        =  (double*)calloc(n, sizeof(double));
+  double*  single_LETs_MeV_cm2_g  =  (double*)calloc(number_of_field_components, sizeof(double));
+  double*  single_doses_Gy        =  (double*)calloc(number_of_field_components, sizeof(double));
 
-  AT_LET_MeV_cm2_g(  n,
+  AT_LET_MeV_cm2_g(  number_of_field_components,
       E_MeV_u,
       particle_no,
       material_no,
       single_LETs_MeV_cm2_g);
 
-  AT_dose_Gy_from_fluence_cm2(      n,
+  AT_dose_Gy_from_fluence_cm2(      number_of_field_components,
       E_MeV_u,
       particle_no,
       fluence_cm2,
@@ -563,12 +563,12 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
 
   double total_dose_Gy = 0.0;
 
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
     total_dose_Gy       += single_doses_Gy[i];
   }
 
   double doseweighted_LET_MeV_cm2_g      = 0.0;
-  for (i = 0; i < n; i++){
+  for (i = 0; i < number_of_field_components; i++){
      doseweighted_LET_MeV_cm2_g += single_doses_Gy[i] * single_LETs_MeV_cm2_g[i];
    }
 
@@ -580,23 +580,23 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  n,
    return doseweighted_LET_MeV_cm2_g;
  }
 
-double AT_fluence_weighted_stopping_power_ratio( const long     n,
+double AT_fluence_weighted_stopping_power_ratio( const long     number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
     const long    material_no,
     const long	  reference_material_no){
 
-	double* LET_MeV_cm2_g			= (double*)calloc(n, sizeof(double));
-	double* reference_LET_MeV_cm2_g	= (double*)calloc(n, sizeof(double));
+	double* LET_MeV_cm2_g			= (double*)calloc(number_of_field_components, sizeof(double));
+	double* reference_LET_MeV_cm2_g	= (double*)calloc(number_of_field_components, sizeof(double));
 
-	AT_LET_MeV_cm2_g(  n,
+	AT_LET_MeV_cm2_g(  number_of_field_components,
 	    E_MeV_u,
 	    particle_no,
 	    material_no,
 	    LET_MeV_cm2_g);
 
-	AT_LET_MeV_cm2_g(  n,
+	AT_LET_MeV_cm2_g(  number_of_field_components,
 	    E_MeV_u,
 	    particle_no,
 	    reference_material_no,
@@ -606,7 +606,7 @@ double AT_fluence_weighted_stopping_power_ratio( const long     n,
 	double	stopping_power_ratio	= 0.0;
 	double	total_fluence_cm2		= 0.0;
 
-	for (i = 0; i < n; i++){
+	for (i = 0; i < number_of_field_components; i++){
 		if(reference_LET_MeV_cm2_g[i] != 0){
 			stopping_power_ratio	+=	fluence_cm2[i] * LET_MeV_cm2_g[i] / reference_LET_MeV_cm2_g[i];
 		}
