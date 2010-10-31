@@ -122,7 +122,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
     }
   }
 
-  *mean_number_of_tracks_contrib  =       AT_total_u(     number_of_field_components,
+  *mean_number_of_tracks_contrib  =       AT_mean_number_of_tracks_contrib(     number_of_field_components,
       E_MeV_u,
       particle_no,
       fluence_cm2,
@@ -648,7 +648,7 @@ void AT_run_SPISS_method(  const long  number_of_field_components,
                 fluence_cm2,
                 norm_fluence);
 
-  const double u  =       AT_total_u(     number_of_field_components,
+  const double u  =       AT_mean_number_of_tracks_contrib(     number_of_field_components,
       E_MeV_u,
       particle_no,
       fluence_cm2,

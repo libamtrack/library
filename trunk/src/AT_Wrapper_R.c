@@ -1714,7 +1714,7 @@ void AT_total_u_R(    const int * n,
 
   free( fluence_cm2_local );
 
-  *u = (float)AT_total_u(   n_long,
+  *u = (float)AT_mean_number_of_tracks_contrib(   n_long,
                   E_MeV_u_double,
                   particle_no_long,
                   fluence_cm2_double,
