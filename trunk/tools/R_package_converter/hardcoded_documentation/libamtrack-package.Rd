@@ -111,6 +111,10 @@ Misc physics routines:
 Other routines:
 
 \tabular{ll}{
+\code{\link{AT.particle.name.from.particle.no}} \tab Converts particle index numbers into particle names\cr
+\code{\link{AT.particle.no.from.particle.name}} \tab Converts particle names into particle index numbers\cr
+\code{\link{AT.material.name.from.material.no}} \tab Converts material index numbers into material names\cr
+\code{\link{AT.material.no.from.material.name}} \tab Converts material names into material index numbers\cr
 \code{\link{AT.get.material.data}} \tab Returns properties of pre-defined material
 }
 
@@ -138,9 +142,9 @@ Package maintainer: Steffen Greilich \email{s.greilich@dkfz.de}
 ############################ 1. LET #######################################
 cat("Compute the LET (in keV/um) of a 270 MeV/u carbon ion in Aluminum:\n")
 
-AT.LET.keV.um( E.MeV.u     = 270,
-			   particle.no = 6012,
-			   material.no = 3)
+#AT.LET.keV.um( E.MeV.u     = 270,
+#			   particle.no = AT.particle.no.from.particle.name("12C"),
+#			   material.no = AT.material.no.from.material.name("Aluminum"))
 
 ########################################################################################
 ########################### 2. DOSE AROUND A TRACK #####################################
