@@ -304,36 +304,32 @@ void AT_interparticleDistance_m(       const long   n,
   }
 }
 
-// TODO shall it be split into separate functions, like FWHM_to_sigma_cm and so on... ?
-void AT_convert_beam_parameters(  const long  n,
-    double fluence_cm2[],
-    double sigma_cm[],
+void AT_beam_par_physical_to_technical(  const long  n,
+    const double fluence_cm2[],
+    const double sigma_cm[],
     double N[],
     double FWHM_mm[])
 {
   long  i;
-  if(sigma_cm[0] == 0.0){
-    for (i = 0; i < n; i++){
-      sigma_cm[i]    = FWHM_mm[i] / (2.354820046 * cm_to_mm);                                // 2 * sqrt(2*ln(2))
-    }
-  }else{
-    for (i = 0; i < n; i++){
-      FWHM_mm[i]     = sigma_cm[i] * (2.354820046 * cm_to_mm);
-    }
-  }
-
-  if(fluence_cm2[0] == 0.0){
-    for (i = 0; i < n; i++){
-      if(sigma_cm[i] != 0.0){
-        fluence_cm2[i] = N[i] / (gsl_pow_2(sigma_cm[i]) * 2.0 * M_PI);
-      }
-    }
-  }else{
-    for (i = 0; i < n; i++){
+  for (i = 0; i < n; i++){
       N[i]           = fluence_cm2[i] * gsl_pow_2(sigma_cm[i]) * 2.0 * M_PI;
-    }
+      FWHM_mm[i]     = sigma_cm[i] * (2.354820046 * cm_to_mm);
   }
 }
+
+void AT_beam_par_technical_to_physical(  const long  n,
+    const double N[],
+    const double FWHM_mm[],
+    double fluence_cm2[],
+    double sigma_cm[])
+{
+  long  i;
+  for (i = 0; i < n; i++){
+      sigma_cm[i]    = FWHM_mm[i] / (2.354820046 * cm_to_mm);                                // 2 * sqrt(2*ln(2))
+      fluence_cm2[i] = N[i] / (gsl_pow_2(sigma_cm[i]) * 2.0 * M_PI);
+  }
+}
+
 
 void AT_inv_interparticleDistance_Gy(  const long   n,
     const double   LET_MeV_cm2_g[],

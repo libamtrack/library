@@ -383,26 +383,40 @@ void AT_fluence_cm2_from_dose_Gy(  const long  n,
 
 
 /**
- * Converts pair-wise physical beam parameters of a symmetric, double Gaussian shape beam (lateral), i.e.
- * central (peak) fluence / width (std.dev.)
- * and accelerator parameters, i.e.
- * total number of particle / FWHM
- *
- * The routine completes the missing data, e.g. FWHM if sigma given, fluence_cm2 (if set 0) if N given etc.
- * If both sigma_cm and FWHM or fluence_cm2 and N are given the physical parameters are taken and the acc. reevaluated
+ * Converts physical beam parameters of a symmetric, double lateral Gaussian shape beam, i.e.
+ * central (=peak) fluence and width (= 1 standard deviation)
+ * to technical, accelerator parameters, i.e.
+ * total number of particles and FWHM
  *
  * @param[in]      n             length of vectors for parameters
- * @param[in,out]  fluence_cm2   fluence in beam center (array of size n)
- * @param[in,out]  sigma_cm      beam width stdev (array of size n)
- * @param[in,out]  N             to be allocated by the user which will be used to return the results (absolute particle number) (array of size n)
- * @param[in,out]  FWHM_mm       to be allocated by the user which will be used to return the results (in mm) (array of size n)
+ * @param[in]      fluence_cm2   fluence in beam center (array of size n)
+ * @param[in]      sigma_cm      beam width stdev (array of size n)
+ * @param[out]     N             resulting absolute particle numbers (array of size n)
+ * @param[out]     FWHM_mm       resulting FWHMs (in mm) (array of size n)
  */
-void AT_convert_beam_parameters(  const long  n,
-    double fluence_cm2[],
-    double sigma_cm[],
+void AT_beam_par_physical_to_technical(  const long  n,
+    const double fluence_cm2[],
+    const double sigma_cm[],
     double N[],
     double FWHM_mm[]);
 
+/**
+ * Converts technical, accelerator parameters of a symmetric, double lateral Gaussian shape beam, i.e.
+ * total number of particles and FWHM to
+ * physical beam parameters, i.e.
+ * central (=peak) fluence and width (= 1 standard deviation)
+ *
+ * @param[in]      n             length of vectors for parameters
+ * @param[in]      N             absolute particle numbers (array of size n)
+ * @param[in]      FWHM_mm       FWHMs (in mm) (array of size n)
+ * @param[out]     fluence_cm2   resulting fluence in beam center (array of size n)
+ * @param[out]     sigma_cm      resulting beam width stdev (array of size n)
+ */
+void AT_beam_par_technical_to_physical(  const long  n,
+    const double N[],
+    const double FWHM_mm[],
+    double fluence_cm2[],
+    double sigma_cm[]);
 
 /**
  * Interparticle distance
