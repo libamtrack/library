@@ -340,6 +340,7 @@ int AT_histo_linear_n_bins(     const double lowest_left_limit,
                                 const double step,
                                 long * number_of_bins)
 {
+	// TODO to be implemented
   int global_status_code = EXIT_SUCCESS;
   return global_status_code;
 }
@@ -350,6 +351,7 @@ int AT_histo_logarithmic_n_bins(     const double lowest_left_limit,
                                 const double step,
                                 long * number_of_bins)
 {
+	// TODO to be implemented
   int global_status_code = EXIT_SUCCESS;
   return global_status_code;
 }
@@ -361,6 +363,7 @@ int AT_histo_n_bins(     const double lowest_left_limit,
     const long histo_type,
     long * number_of_bins)
 {
+ // TODO to be implemented
   int global_status_code = EXIT_SUCCESS;
   return global_status_code;
 }
@@ -376,6 +379,8 @@ long AT_histo_linear_bin_no(      const long number_of_bins,
   if (difference < 0){
     return (-1);
   }
+
+  assert( step > 0.0 );
   long bin_no = floor(difference / step);
 
   if (bin_no > number_of_bins - 1){
@@ -449,6 +454,8 @@ void AT_histo_add(      const long number_of_bins,
   }
 }
 
+
+//TODO rewrite in such way that it has return type "double"
 void AT_histo_sum(	const long number_of_bins,
 		const double lowest_left_limit,
 		const double step,
@@ -457,7 +464,8 @@ void AT_histo_sum(	const long number_of_bins,
 		double* sum)
 {
 	long 	i;
-	double 	midpoint, bin_width;
+	double midpoint = 0.0;
+	double bin_width = 0.0;
 	*sum	= 0.0;
 	for(i = 0; i < number_of_bins; i++){
 		AT_histo_midpoint( number_of_bins,
@@ -475,6 +483,7 @@ void AT_histo_sum(	const long number_of_bins,
 		*sum	+= frequency[i] * midpoint * bin_width;
 	}
 }
+
 
 void AT_histo_normalize(	const long number_of_bins,
 		const double lowest_left_limit,

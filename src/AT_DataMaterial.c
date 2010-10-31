@@ -30,6 +30,8 @@
 
 #include "AT_DataMaterial.h"
 
+extern int AT_establish_LET_data( AT_single_material_data_struct* material);
+
 ///////////////////////////////////////////// SINGLE MATERIAL IMPLEMENTATION ///////////////////////////////////////////////////////
 
 
@@ -40,7 +42,7 @@ long AT_material_index_from_material_number( const long material_number ){
       number_of_materials,
       AT_Material_Data.material_no,
       AT_Material_Data.n,
-      &index);   // TODO replace call to pmatchi by call to simpler function which will find the index
+      &index);   // TODO replace call to find_elements_int by call to simpler function which will find the index
   return index;
 }
 
