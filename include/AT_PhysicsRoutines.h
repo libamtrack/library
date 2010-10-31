@@ -214,10 +214,10 @@ int AT_effective_charge_from_beta(  const long  n,
 
 
 /**
- * Get Bohr's energy spread (Wilson, 1947, Phys Rev 71, 385)
+ * Get energy spread with depth according to Bohr (Wilson, 1947, Phys Rev 71, 385)
  * @param[in]  n                        number of particles
  * @param[in]  material_no              index number for detector material
- * @param[out] dsE2dz                   Increase of energy spread (variance s_E**2) with thickness of material: d(s_E**2) per dz
+ * @param[out] dsE2dz                   Increase of energy spread (variance s_E2) with thickness of material, i.e. d(s_E2) per dz
  */
 void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
     const long*  material_no,
@@ -243,7 +243,7 @@ double AT_effective_charge_from_E_MeV_u_single(  const double E_MeV_u,
  * @param[in]  n                        number of particles
  * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
  * @param[in]  particle_no              type of the particles in the mixed particle field (array of size n)
- * @param[out] effective_charge         Effective charge according to Barkas-Bethe-approximation
+ * @param[out] effective_charge         Effective charge according to Barkas-Bethe-approximation (array of size n)
  * @return     status code
  */
 int AT_effective_charge_from_E_MeV_u(  const long  n,
