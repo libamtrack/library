@@ -247,15 +247,15 @@ double AT_average_Z_from_material_no( const long   material_no );
 
 /**
  * Returns material data for single material
- * @param[in]  material_no
- * @param[out] density_g_cm3
- * @param[out] electron_density_m3
- * @param[out] I_eV
- * @param[out] alpha_g_cm2_MeV
- * @param[out] p_MeV
- * @param[out] m_g_cm2
- * @param[out] average_A
- * @param[out] average_Z
+ * @param[in]  material_no           index number of material
+ * @param[out] density_g_cm3         physical density [g/cm3]
+ * @param[out] electron_density_m3   electron density [1/m3]
+ * @param[out] I_eV                  mean ionization potential [eV]
+ * @param[out] alpha_g_cm2_MeV       fit parameter for power-law representation of stopping-power (Bortfeld, 1997)
+ * @param[out] p_MeV                 fit parameter for power-law representation of stopping-power (Bortfeld, 1997)
+ * @param[out] m_g_cm2               fit parameter for linear representation of proton nuclear interactions (Bortfeld, 1997)
+ * @param[out] average_A             average mass number
+ * @param[out] average_Z             average atomic number
  */
 void AT_get_material_data(     const long  material_no,
     double*  density_g_cm3,

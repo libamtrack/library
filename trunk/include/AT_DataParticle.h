@@ -208,26 +208,30 @@ int AT_atomic_weight_from_particle_no(  const long  n,
  */
 #define PARTICLE_NAME_NCHAR 6
 
-
 /**
- * TODO
+ * Returns particle index name for given particle index number
+ * @param[in]  particle index number
+ * @param[out] corresponding particle name
+ * @return status
  */
 int AT_particle_name_from_particle_no_single( const long  particle_no,
     char * particle_name);
 
-
 /**
- * TODO
+ * Returns particle index number for given particle name
+ * @param[in]  particle index name
+ * @param[out] corresponding particle number
+ * @return status
  */
 long AT_particle_no_from_particle_name_single( const char particle_name[PARTICLE_NAME_NCHAR]);
 
 
 /**
- * TODO
+ * Returns particle index numbers for given particle names
  * @param[in]  n
- * @param[in]  particle_no
- * @param[out] particle_name
- * @return
+ * @param[in]  particle index numbers (array of size n)
+ * @param[out] corresponding particle names (array of size n)
+ * @return status
  */
 int AT_particle_name_from_particle_no(const long  n,
     const long  particle_no[],
@@ -235,7 +239,11 @@ int AT_particle_name_from_particle_no(const long  n,
 
 
 /**
- * TODO
+ * Returns particle names for given particle numbers
+ * @param[in]  n
+ * @param[in]  particle names (array of size n)
+ * @param[out] corresponding particle names (array of size n)
+ * @return status
  */
 int AT_particle_no_from_particle_name( const long  n,
     char * particle_name[],
