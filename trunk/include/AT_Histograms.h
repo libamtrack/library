@@ -403,6 +403,15 @@ void AT_histo_add(      const long number_of_bins,
     double frequency[]);
 
 
+/**
+ * TODO
+ * @param number_of_bins
+ * @param lowest_left_limit
+ * @param step
+ * @param histo_type
+ * @param frequency
+ * @param sum
+ */
 void AT_histo_sum(	const long number_of_bins,
 		const double lowest_left_limit,
 		const double step,
@@ -410,6 +419,15 @@ void AT_histo_sum(	const long number_of_bins,
 		const double frequency[],
 		double* sum);
 
+
+/**
+ * TODO
+ * @param number_of_bins
+ * @param lowest_left_limit
+ * @param step
+ * @param histo_type
+ * @param frequency
+ */
 void AT_histo_normalize(	const long number_of_bins,
 		const double lowest_left_limit,
 		const double step,

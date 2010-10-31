@@ -459,7 +459,7 @@ double AT_KatzModel_single_field_survival(
 	double gamma_kill_dose = (1. - ion_kill_mode_fraction) * dose_Gy;
 
 	/* single particle inactivation cross section calculation */
-	double inactivation_cross_section_m2;
+	double inactivation_cross_section_m2 = 0.0;
 	double gamma_parameters[5] = {1.,D0_characteristic_dose_Gy,1.,m_number_of_targets,0.};
 	AT_KatzModel_inactivation_cross_section_m2(
 	    1,
