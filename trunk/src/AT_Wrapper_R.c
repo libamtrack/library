@@ -1747,7 +1747,7 @@ void AT_convert_beam_parameters_R(  const int*  n,
 		  FWHM_mm_double[i]     		=  (double)FWHM_mm[i];
 	  }
 
-	AT_convert_beam_parameters(  n_long,
+	AT_beam_par_physical_to_technical(  n_long,
 			fluence_cm2_double,
 			sigma_cm_double,
 			N_double,
