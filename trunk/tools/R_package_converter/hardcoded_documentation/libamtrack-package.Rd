@@ -54,7 +54,7 @@ Stopping-power routines:
 \tabular{ll}{
 \code{\link{AT.LET.keV.um}} \tab Unrestricted LET / Stopping power\cr
 \code{\link{AT.LET.MeV.cm2.g}} \tab Unrestricted LET per mass / mass stopping power\cr
-\code{\link{AT_E_MeV_from_LET}} \tab Inverse routine: energy from LET (cave!)\cr
+\code{\link{AT.E.MeV.from.LET}} \tab Inverse routine: energy from LET (cave!)\cr
 \code{\link{AT.fluence.weighted.stopping.power.ratio}} \tab Computes stopping power ratios, also for mixed fields\cr
 
 \code{\link{AT.CSDA.range.m}} \tab CSDA range in m\cr
@@ -85,18 +85,33 @@ Dose / fluence conversions:
 }
 
 
+Beam related routines:
+
+\tabular{ll}{
+\code{\link{AT.beam.par.technical.to.physical}} \tab For double Gaussian beam, converts FWHM and particle number into fluence and sigma width\cr
+\code{\link{AT.beam.par.physical.to.technical}} \tab Inverse, converts fluence and sigma width into FWHM and particle number
+}
+
+
 Misc physics routines:
 
 \tabular{ll}{
 \code{\link{AT.momentum.MeV.c.u.from.E.MeV.u}} \tab Momentum from kinetic energy \cr
 \code{\link{AT.E.MeV.u.from.momentum.MeV.c.u}} \tab Kinetic energy from momentum \cr
-%\code{\link{AT.effective.charge.from.E.MeV.u}} \tab Effective charge of an ion depending on its kinetic energy \cr
+\code{\link{AT.effective.charge.from.E.MeV.u}} \tab Effective charge of an ion depending on its kinetic energy \cr
 \code{\link{AT.max.E.transfer.MeV}} \tab Max energy transfered from an ion to secondary electrons\cr
-%\code{\link{AT.Bohr.Energy.Straggling.g.cm2}} \tab Bohr's straggling power \cr
+\code{\link{AT.mean.number.of.tracks.contrib}} \tab Mean number of tracks that desposite dose in a representative point\cr
 
 \code{\link{AT.beta.from.E}} \tab Relativistic beta of an ion with \cr
 \code{\link{AT.E.from.beta}} \tab Kinetic energy for given beta \cr
 \code{\link{AT.gamma.from.E}} \tab Relativistic gamma of an ion
+}
+
+
+Other routines:
+
+\tabular{ll}{
+\code{\link{AT.get.material.data}} \tab Returns properties of pre-defined material
 }
 
 }
