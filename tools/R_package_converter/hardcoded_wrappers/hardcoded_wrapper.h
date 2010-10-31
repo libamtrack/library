@@ -1,0 +1,18 @@
+#ifndef AT_HARDCODED_WRAPPER_H_
+#define AT_HARDCODED_WRAPPER_H_
+
+#include "AmTrack.h"
+
+void AT_particle_name_from_particle_no_R(const int* particle_no,
+    char** particle_name);
+
+void AT_particle_no_from_particle_name_R(const char** particle_name,
+    int* particle_no);
+
+void AT_material_name_from_material_no_R( const int* material_no,
+    char** material_name);
+
+void AT_material_no_from_material_name_R( const char** material_name,
+	int* material_no);
+
+#endif /* AT_HARDCODED_WRAPPER_H_ */

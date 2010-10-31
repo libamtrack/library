@@ -273,5 +273,8 @@ plot2 <- xyplot( log10(max.E.keV.classical) ~ log10(max.E.keV.relativistic),
                                 panel.grid(-1, -1)
                                 panel.abline(a = 0, b = 1, lty = 2, col = 'grey')
                                 panel.xyplot(...)})
+::AT.get.material.data::
+# Get material data for water found in libamtrack
+#AT.get.material.data( material.no = AT.material.no.from.material.name( "Water, Liquid"))
 ::Was anderes::
 LALALALA
