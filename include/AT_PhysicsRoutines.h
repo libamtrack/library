@@ -648,20 +648,17 @@ double AT_fluence_weighted_stopping_power_ratio( const long     number_of_field_
 /**
  * Computes the number of track contributing to a representative point in a mixed field
  *
- * For one component this is: u_single = dose_Gy / single_impact_dose_Gy
- * For n components this is:  fluence_cm2 * u_single / total_fluence_cm2
- * @param[in]  n            length of vectors for parameters
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
- * @param[in]  particle_no  particle index (array of size n)
+ * @param[in]  number_of_field_components            number of components in mixed particle field
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  particle_no  particle index (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
+ * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size n)
  * @param[in]  er_model     chosen electron-range-model
- * @return     result
+ * @return     resulting mean number of tracks contributing
  */
-double AT_total_u(    const long n,
+double AT_mean_number_of_tracks_contrib(    const long number_of_field_components,
                 const double E_MeV_u[],
                 const long particle_no[],
                 const double fluence_cm2[],

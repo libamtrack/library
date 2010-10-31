@@ -19,9 +19,12 @@ AT_dose_Gy_from_fluence_cm2
 AT_fluence_cm2_from_dose_Gy
 AT_total_D_Gy
 AT_total_fluence_cm2
+AT_beam_par_technical_to_physical
+AT_beam_par_physical_to_technical
 AT_momentum_MeV_c_u_from_E_MeV_u
 AT_E_MeV_u_from_momentum_MeV_c_u
 AT_max_E_transfer_MeV
+AT_mean_number_of_tracks_contrib
 AT_beta_from_E
 AT_E_from_beta
 AT_gamma_from_E
