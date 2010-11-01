@@ -91,7 +91,7 @@ xyplot( log10(LET.keV.um) ~ log10(E.MeV.u)|material.name,
                           panel.grid(-1, -1)
                           panel.xyplot(...)
                      },
-        ylab       = list('LET / (keV/µm)', font = 4),
+        ylab       = list('LET / (keV/um)', font = 4),
         xlab       = list('kinetic energy / (MeV/u)', font = 4),
         scales     = list( x       = list( at      = -1:3,
                                            labels  = c("0.1", "1", "10", "100", "1000")),
@@ -145,7 +145,7 @@ AT.max.electron.ranges.m( E.MeV.u     = 0.3 * 10^(-4:2),
 ::AT.gamma.response::
 # Show the gamma response of two Al2O3 detectors (A & B) and two protocols ('peak' and 'total')
 # parametrized in two components (single hit/single target and two hit/single target)
-# as measured and published by Edmund et al., NIM B 262 (2007), 261–275
+# as measured and published by Edmund et al., NIM B 262 (2007), 261-275
 require(lattice)
 
 d.Gy						<-	10^seq(from = log10(0.1), to = log10(25), length.out = 100)     # Compute 100 points between 0.1 and 25 Gy
@@ -187,19 +187,19 @@ df			<-	data.frame(	d.Gy 		= rep(	d.Gy, 2),                                     
 							S 			= c(	AT.gamma.response(	d.Gy              = d.Gy,
 																	gamma.model       = gamma.model,
 																	gamma.parameter   = gamma.parameter.peak.A,
-                                                                    lethal.event.mode = FALSE)$S,
+                                                                    lethal.event.mode = FALSE)$response,
 											 	AT.gamma.response(	d.Gy              = d.Gy,
 																	gamma.model       = gamma.model,
 																	gamma.parameter   = gamma.parameter.total.A,
-                                                                    lethal.event.mode = FALSE)$S,
+                                                                    lethal.event.mode = FALSE)$response,
 												AT.gamma.response(	d.Gy              = d.Gy,
 																	gamma.model       = gamma.model,
 																	gamma.parameter   = gamma.parameter.peak.B,
-                                                                    lethal.event.mode = FALSE)$S,
+                                                                    lethal.event.mode = FALSE)$response,
 												AT.gamma.response(	d.Gy              = d.Gy,
 																	gamma.model       = gamma.model,
 																	gamma.parameter   = gamma.parameter.total.B,
-                                                                    lethal.event.mode = FALSE)$S),
+                                                                    lethal.event.mode = FALSE)$response),
 								which 		= rep(	c(	rep("peak", length(d.Gy)),
 														rep("total", length(d.Gy))), 2),
 								probe		= c(	rep("probe A", 2 * length(d.Gy)),
@@ -308,7 +308,7 @@ plot2 <- xyplot( log10(max.E.keV.classical) ~ log10(max.E.keV.relativistic),
                                 panel.abline(a = 0, b = 1, lty = 2, col = 'grey')
                                 panel.xyplot(...)})
 plot(plot1, split = c(1, 1, 2, 1))
-plot(plot2, split = c(2, 1, 2, 1), newpage = F)
+plot(plot2, split = c(2, 1, 2, 1), newpage = FALSE)
 ::AT.get.material.data::
 # Get material data for water found in libamtrack
 AT.get.material.data( material.no = AT.material.no.from.material.name( "Water, Liquid"))
@@ -319,7 +319,7 @@ AT.LET.MeV.cm2.g( E.MeV.u     = 270,
 			      material.no = 3)
 ::AT.E.MeV.from.LET::
 # At which kinetic energy do proton and carbon ions have
-# the same LET in water (e.g. 15 keV/µm)?
+# the same LET in water (e.g. 15 keV/um)?
 AT.E.MeV.from.LET( LET.MeV.cm2.g = c(150.0, 150.0), 
                    particle.no   = AT.particle.no.from.particle.name(c("1H", "12C")),
                    material.no   = AT.material.no.from.material.name("Water, Liquid"))
@@ -391,7 +391,7 @@ xyplot(	log10(CSDA.range.m) ~ log10(particle.energy.MeV.u)|"CSDA ranges in water
 						panel.xyplot(...)
 					    },
 		scales	    =	list( y	=	list(	at		=	-6:0,
-									labels	=	c("1 µm", "10 µm", "0.1 mm", "1 mm", "1 cm", "10 cm", "1 m"),
+									labels	=	c("1 ï¿½m", "10 ï¿½m", "0.1 mm", "1 mm", "1 cm", "10 cm", "1 m"),
 									cex		=	1.0),
                                     x	=	list(	at		=	log10(c(.1, .3, 1, 3, 10, 30, 100, 300, 1000)),
 									labels	=	c("0.1", "0.3", "1", "3", "10", "30", "100", "300", "1000"),
