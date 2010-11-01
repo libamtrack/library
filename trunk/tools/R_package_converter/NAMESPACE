@@ -5,7 +5,7 @@ AT_D_RDD_Gy
 AT_max_electron_ranges_m
 AT_LET_keV_um
 AT_LET_MeV_cm2_g
-AT_fluence_weighted_stopping_power_ratio
+AT_stopping_power_ratio
 AT_CSDA_range_g_cm2
 AT_CSDA_range_m
 AT_E_MeV_from_CDSA_range
@@ -23,8 +23,10 @@ AT_beam_par_technical_to_physical
 AT_beam_par_physical_to_technical
 AT_momentum_MeV_c_u_from_E_MeV_u
 AT_E_MeV_u_from_momentum_MeV_c_u
+AT_effective_charge_from_E_MeV_u
 AT_max_E_transfer_MeV
 AT_mean_number_of_tracks_contrib
 AT_beta_from_E
 AT_E_from_beta
 AT_gamma_from_E
+AT_get_material_data

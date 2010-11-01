@@ -576,7 +576,7 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
    return doseweighted_LET_MeV_cm2_g;
  }
 
-double AT_fluence_weighted_stopping_power_ratio( const long     number_of_field_components,
+double AT_stopping_power_ratio( const long     number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],

@@ -2007,7 +2007,7 @@ void AT_fluence_weighted_stopping_power_ratio_R( const int*     n,
 	const long		material_no_long			= (const long)(*material_no);
 	const long		reference_material_no_long	= (const long)(*reference_material_no);
 
-	double fluence_weighted_stopping_power_ratio_double = AT_fluence_weighted_stopping_power_ratio( n_long,
+	double fluence_weighted_stopping_power_ratio_double = AT_stopping_power_ratio( n_long,
 	    E_MeV_u_double,
 	    particle_no_long,
 	    fluence_cm2_double,
