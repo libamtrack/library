@@ -950,7 +950,6 @@ void AT_CSDA_range_g_cm2(  const long  number_of_particles,
  * @param[in]   material_no              material index
  * @see          AT_DataMaterial.h for definition
  * @param[out]  CSDA_range_m            (array of size number_of_particles) to be allocated by the user which will be used to return the results
- * @return  none
  */
 void AT_CSDA_range_m(  const long  number_of_particles,
     const double  E_MeV_u[],
