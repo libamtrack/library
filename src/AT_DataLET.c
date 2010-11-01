@@ -234,12 +234,59 @@ void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
     const long   material_no,
     double        E_MeV[])
 {
-  // scaled energies
-  double*  sE  =  (double*)calloc(number_of_particles, sizeof(double));
+	  long  i;
 
-  get_table_value(number_of_particles, CSDA_range_g_cm2, material_no, AT_PSTAR_Data.range_cdsa_g_cm2, AT_PSTAR_Data.kin_E_MeV, sE);
+	  long*    Z             =  (long*)calloc(number_of_particles, sizeof(long));
+	  double*  Z_eff         =  (double*)calloc(number_of_particles, sizeof(double));
+	  long*    A             =  (long*)calloc(number_of_particles, sizeof(long));
+	  AT_Z_from_particle_no(        number_of_particles,
+	      particle_no,
+	      Z);
+	  AT_A_from_particle_no(        number_of_particles,
+	      particle_no,
+	      A);
 
-  free( sE );
+	  // 1. find approx. energy to compute effective charge
+	  double*       CSDA_range_cm2_g_copy = (double*)calloc(number_of_particles,sizeof(double));
+	  for(i = 0; i < number_of_particles; i++){
+	    CSDA_range_cm2_g_copy[i] = CSDA_range_g_cm2[i] / ((double)A[i] / ((double)Z[i] * (double)Z[i]));
+	  }
+
+	  // 2. Do 10 rounds of approximation
+	  long j;
+	  for (j = 0; j < 10; j++){
+	    get_table_value(        number_of_particles,
+	                          CSDA_range_cm2_g_copy,
+	                          material_no,
+	                          AT_PSTAR_Data.range_cdsa_g_cm2,
+	                          AT_PSTAR_Data.kin_E_MeV,
+	                          E_MeV);
+
+	    // 2a. Compute effective charge from approx. energies
+	    AT_effective_charge_from_E_MeV_u(  number_of_particles,
+	        E_MeV,
+	        particle_no,
+	        Z_eff);
+
+	    // 2b. find more accurate energy by using the computed effective charge
+	    for(i = 0; i < number_of_particles; i++){
+	      CSDA_range_cm2_g_copy[i] = CSDA_range_g_cm2[i] / ((double)A[i] / ((double)Z_eff[i] * (double)Z_eff[i]));
+	    }
+	  }
+
+	  // 3. find eventual energy
+	  get_table_value(        number_of_particles,
+	                        CSDA_range_cm2_g_copy,
+	                        material_no,
+	                        AT_PSTAR_Data.range_cdsa_g_cm2,
+	                        AT_PSTAR_Data.kin_E_MeV,
+	                        E_MeV);
+
+
+	  free( Z );
+	  free( A );
+	  free( Z_eff );
+	  free( CSDA_range_cm2_g_copy );
 }
 
 

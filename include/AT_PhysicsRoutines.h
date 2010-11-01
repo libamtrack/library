@@ -627,7 +627,11 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
 
 
 /**
- * TODO
+ * Computes the stopping power ratio for a material and a reference material.
+ *
+ * In case of mixed particle fields, the stopping power ratios of individual components are
+ * weighted by their respective fluences. Thus, this routines computes the ration of fluence-weighted
+ * stopping powers, NOT of dose-weighted stopping powers.
  *
  * @param[in]  number_of_field_components            number of components in mixed field
  * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
@@ -637,8 +641,9 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[in]  reference_material_no  material index of reference material
+ * @return     stopping power ratio
  */
-double AT_fluence_weighted_stopping_power_ratio( const long     number_of_field_components,
+double AT_stopping_power_ratio( const long     number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],

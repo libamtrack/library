@@ -3,6 +3,13 @@
 
 #include "AmTrack.h"
 
+void AT_gamma_response_R( const int*  n,
+    const float*  d_Gy,
+    const int*    gamma_model,
+    const float*  gamma_parameter,
+    const int*	  lethal_events_mode,
+    float*        S);
+
 void AT_particle_name_from_particle_no_R(const int* particle_no,
     char** particle_name);
 

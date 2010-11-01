@@ -1,3 +1,27 @@
+AT.gamma.response <- function( d.Gy,
+			gamma.model,
+			gamma.parameter,
+			lethal.event.mode){
+
+	number.of.doses	<- length(d.Gy)
+	gamma.parameter <- c(gamma.parameter, rep(0, 9 - length(gamma.parameter)))
+
+	response <- numeric(number.of.doses)
+
+	res <- .C("AT_gamma_response_R", 
+			number.of.doses = as.integer(number.of.doses),
+			d.Gy = as.single(d.Gy),
+			gamma.model = as.integer(gamma.model),
+			gamma.parameter = as.single(gamma.parameter),
+			lethal.event.mode = as.integer(lethal.event.mode),
+			response = as.single(response),PACKAGE="libamtrack")
+
+	 return.list <- NULL
+	 return.list[[1]] <- res$response
+	 names(return.list) <- c("response")
+	 return(return.list)
+}
+
 AT.particle.name.from.particle.no <- function(particle.no){
 
      n                   <- length(particle.no)

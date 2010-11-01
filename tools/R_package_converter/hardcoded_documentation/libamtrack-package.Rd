@@ -55,7 +55,7 @@ Stopping-power routines:
 \code{\link{AT.LET.keV.um}} \tab Unrestricted LET / Stopping power\cr
 \code{\link{AT.LET.MeV.cm2.g}} \tab Unrestricted LET per mass / mass stopping power\cr
 \code{\link{AT.E.MeV.from.LET}} \tab Inverse routine: energy from LET (cave!)\cr
-\code{\link{AT.fluence.weighted.stopping.power.ratio}} \tab Computes stopping power ratios, also for mixed fields\cr
+\code{\link{AT.stopping.power.ratio}} \tab Computes stopping power ratios, also for mixed fields\cr
 
 \code{\link{AT.CSDA.range.m}} \tab CSDA range in m\cr
 \code{\link{AT.CSDA.range.g.cm2}} \tab CSDA range in mass thickness\cr
@@ -138,13 +138,19 @@ Package maintainer: Steffen Greilich \email{s.greilich@dkfz.de}
 
 \examples{
 
-###########################################################################
-############################ 1. LET #######################################
-cat("Compute the LET (in keV/um) of a 270 MeV/u carbon ion in Aluminum:\n")
+##############################################################################
+############################ 1. LET ##########################################
+cat("Compute the LET (in MeV*cm2/g) of a 270 MeV/u carbon ion in Aluminum:\n")
 
-#AT.LET.keV.um( E.MeV.u     = 270,
-#			   particle.no = AT.particle.no.from.particle.name("12C"),
-#			   material.no = AT.material.no.from.material.name("Aluminum"))
+AT.LET.MeV.cm2.g( E.MeV.u     = 270,
+			      particle.no = AT.particle.no.from.particle.name("12C"),
+			      material.no = AT.material.no.from.material.name("Aluminum"))
+				  
+cat("... and in water:\n")
+
+AT.LET.MeV.cm2.g( E.MeV.u     = 270,
+			      particle.no = AT.particle.no.from.particle.name("12C"),
+			      material.no = AT.material.no.from.material.name("Water, Liquid"))
 
 ########################################################################################
 ########################### 2. DOSE AROUND A TRACK #####################################
