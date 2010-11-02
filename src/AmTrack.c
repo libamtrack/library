@@ -60,7 +60,19 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
 {
   long i;
 
+  /* Clear results */
+  *relative_efficiency             = 0.0;
+  *d_check                         = 0.0;
+  *S_HCP                           = 0.0;
+  *S_gamma                         = 0.0;
+  *mean_number_of_tracks_contrib   = 0.0;
+  *start_number_of_tracks_contrib  = 0.0;
+  *n_convolutions                  = 0.0;
+  *lower_Jensen_bound              = 0.0;
+  *upper_Jensen_bound              = 0.0;
 
+  /* Get array size for single impact dose
+   * distribution for later memory allocation */
   long     n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_distrib(  number_of_field_components,
       E_MeV_u,
       particle_no,
@@ -70,8 +82,11 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       er_model,
       N2);
 
+  /* Get f1 parameters - containing the most
+   * relevant information on the tracks of
+   * the mixed field, such as min/max local
+   * dose, track radius etc. */
   double*  f1_parameters      =  (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * number_of_field_components, sizeof(double));
-
   AT_RDD_f1_parameters_mixed_field( number_of_field_components,
       E_MeV_u,
       particle_no,
@@ -82,10 +97,11 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       f1_parameters
   );
 
+  /* Get local dose dictribution for the
+   * impact of a single particle */
   double*  f1_d_Gy       =  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1_dd_Gy      =  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1            =  (double*)calloc(n_bins_f1, sizeof(double));
-
   AT_single_impact_local_dose_distrib(  number_of_field_components,
       E_MeV_u,
       particle_no,
@@ -101,14 +117,14 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       f1_dd_Gy,
       f1);
 
+  /* Depending on user's input, convert
+   * dose to fluence or vice versa */
   double*  fluence_cm2    =  (double*)calloc(number_of_field_components, sizeof(double));
-
   if(fluence_cm2_or_dose_Gy[0] < 0){
     double*  dose_Gy      =  (double*)calloc(number_of_field_components, sizeof(double));
     for (i = 0; i < number_of_field_components; i++){
       dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
-    // convert dose to fluence
     AT_fluence_cm2_from_dose_Gy(  number_of_field_components,
         E_MeV_u,
         particle_no,
@@ -122,6 +138,9 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
     }
   }
 
+  /* Compute the mean number of tracks that
+   * deposit dose in a representative point
+   * of the detector/cell */
   *mean_number_of_tracks_contrib  =       AT_mean_number_of_tracks_contrib(     number_of_field_components,
       E_MeV_u,
       particle_no,
@@ -131,8 +150,9 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
 
   free( fluence_cm2 );
 
+  /* Get array size for low fluence local dose
+   * distribution for later memory allocation */
   long      n_bins_f;
-
   AT_n_bins_for_low_fluence_local_dose_distribution(  *mean_number_of_tracks_contrib,
       fluence_factor,
       N2,
@@ -140,18 +160,17 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       f1_d_Gy,
       f1_dd_Gy,
       f1,
-      // from here: return values
       &n_bins_f,
       start_number_of_tracks_contrib,
       n_convolutions);
 
+  /* Get low fluence local dose distribution */
   double*  f_d_Gy       =  (double*)calloc(n_bins_f, sizeof(double));
   double*  f_dd_Gy      =  (double*)calloc(n_bins_f, sizeof(double));
   double*  f            =  (double*)calloc(n_bins_f, sizeof(double));
   double*  fdd          =  (double*)calloc(n_bins_f, sizeof(double));
   double*  dfdd         =  (double*)calloc(n_bins_f, sizeof(double));
   double   f0           =  0.0;
-
   AT_low_fluence_local_dose_distribution(  n_bins_f1,
       N2,
       f1_d_Gy,
@@ -162,15 +181,16 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       f_dd_Gy,
       f);
 
+  /* Convolute this low fluence distribution
+   * n_convolution times with itself to
+   * get to the desired dose/fluence */
   AT_SuccessiveConvolutions(  *mean_number_of_tracks_contrib,
       n_bins_f,
       &N2,
-      // input + return values
       &n_bins_f1,
       f_d_Gy,
       f_dd_Gy,
       f,
-      // return values
       &f0,
       fdd,
       dfdd,
@@ -180,9 +200,11 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       shrink_tails_under,
       adjust_N2);
 
+  /* For the resulting local dose distribution
+   * compute the response applying the gamma
+   * response function first to each bin */
   long     n_bins_f_used  	= n_bins_f1;
   double*  S            	= (double*)calloc(n_bins_f_used, sizeof(double));
-
   AT_get_response_distribution_from_dose_distribution(  n_bins_f_used,
       f_d_Gy,
       f,
@@ -191,11 +213,15 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       lethal_events_mode,
       S);
 
+  /* Then get the particle response by getting
+   * the expected response value */
   *S_HCP = AT_get_ion_response_from_response_distribution( n_bins_f_used,
 		  f_dd_Gy,
 		  f,
 		  S);
 
+  /* Get the gamma response from the
+   * expected dose value */
   *S_gamma = AT_get_gamma_response_for_average_dose( n_bins_f_used,
 		  f_d_Gy,
 		  f_dd_Gy,
@@ -204,10 +230,12 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
 		  gamma_parameters,
 		  lethal_events_mode);
 
+  /* Relative efficiency */
   *relative_efficiency = *S_HCP / *S_gamma;
 
 
-  /* Get zero-dose reponse and its ln */
+  /* For Jensen's bounds:
+   * get zero-dose reponse and its log */
   double		s0 = 0.0, log_s0 = 0.0;
   const long 	number_of_bins = 1;
   const double	d0 = 0.0;
@@ -241,6 +269,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
 	  *upper_Jensen_bound 	+= f[i] * S[i] * f_dd_Gy[i];
   }
 
+  /* Free allocated memory and return*/
   free(f1_parameters);
   free(f1_d_Gy);
   free(f1_dd_Gy);

@@ -512,14 +512,15 @@ void AT_run_GSM_method(  const long  number_of_field_components,
   *sd_S_gamma             = 0.0;
   *sd_n_particles         = 0.0;
 
+  /* Convert dose to fluence or
+   * vice versa depending on
+   * user's input */
   double*  fluence_cm2    =  (double*)calloc(number_of_field_components, sizeof(double));
-
   if(fluence_cm2_or_dose_Gy[0] < 0){
     double*  dose_Gy        =  (double*)calloc(number_of_field_components, sizeof(double));
     for (i = 0; i < number_of_field_components; i++){
       dose_Gy[i] = -1.0 * fluence_cm2_or_dose_Gy[i];
     }
-    // dose to fluence
     AT_fluence_cm2_from_dose_Gy(  number_of_field_components,
         E_MeV_u,
         particle_no,
@@ -533,20 +534,22 @@ void AT_run_GSM_method(  const long  number_of_field_components,
     }
   }
 
-  /* find maximum of maximal delta-electron ranges */
+  /* Find maximum of track radius in mixed field */
   double max_r_max_m = 0.0;
   for (i = 0; i < number_of_field_components; i++){
     max_r_max_m    =   GSL_MAX(max_r_max_m, AT_max_electron_range_m(E_MeV_u[i], material_no, er_model));
   }
 
-  /* largest r.max --> calculate size of sample area */
-  double sample_grid_size_m    = voxel_size_m * nX + 2.01 * max_r_max_m;
-
+  /* From the largest radius, calculate size
+   * of sample area (grid) */
+  double sample_grid_size_m                       = voxel_size_m * nX + 2.01 * max_r_max_m;
   long*  number_of_particles_in_field_component   =  (long*)calloc(number_of_field_components, sizeof(double));
   double** x_position = (double**)calloc(number_of_field_components, sizeof(double*));
   double** y_position = (double**)calloc(number_of_field_components, sizeof(double*));
 
-  /* linearly allocated 2-D arrays, see http://c-faq.com/aryptr/dynmuldimary.html */
+  /* Prepare linearly allocated 2-D arrays for
+   * dose on grid and response on grid, see
+   * http://c-faq.com/aryptr/dynmuldimary.html */
   double** grid_D_Gy = (double**)calloc(nX, sizeof(double*));
   grid_D_Gy[0] = (double*)calloc(nX * nX, sizeof(double));
   for(i = 1; i < nX; i++)
@@ -557,16 +560,21 @@ void AT_run_GSM_method(  const long  number_of_field_components,
   for(i = 1; i < nX; i++)
     grid_response[i] = grid_response[0] + i * nX;
 
+  /* Initialize random number generator */
   gsl_rng * rng  =  gsl_rng_alloc(gsl_rng_taus);
   gsl_rng_set(rng, 137);
   unsigned long random_number_generator_seed = gsl_rng_get(rng);
 
-  /* start loop over N_runs */
+  /* Main loop
+   * Run simulation of throwing particles on the
+   * grid as many time as needed to achieve
+   * the requested statistical uncertainty
+   * (not yet implemented) or for as many times
+   * as requested by user */
   for (k = 0; k < N_runs; k++){
 
-    /* find random positions of particles on grid
-     * allocate xy_position tables */
-
+    /* Find random positions of particles on sample grid
+     * and store in tables */
 	AT_GSM_shoot_particles_on_grid( number_of_field_components,
                     fluence_cm2,
                     sample_grid_size_m,
@@ -575,13 +583,13 @@ void AT_run_GSM_method(  const long  number_of_field_components,
                     x_position,
                     y_position);
 
-    /* find total number of particles */
+    /* Get the total number of particles in this run*/
     long n_particles = 0;
     for (i = 0; i < number_of_field_components; i++){
       n_particles  += number_of_particles_in_field_component[i];
     }
 
-    /* calculate dose deposition pattern in grid cells */
+    /* Calculate dose deposition pattern in grid cells */
     AT_GSM_calculate_dose_pattern( number_of_field_components,
         E_MeV_u,
         particle_no,
@@ -596,12 +604,15 @@ void AT_run_GSM_method(  const long  number_of_field_components,
         voxel_size_m,
         grid_D_Gy);
 
+    /* After doing so, the position grid
+     * can be freed again */
     for (i = 0; i < number_of_field_components; i++){
       free( x_position[i] );
       free( y_position[i] );
     }
 
-    /* For debugging: write grid to disk */
+    /* For debugging/illustration: write
+     * grid of first run to disk */
     if(k == 0){
     	  FILE*    output_file = NULL;
     	  output_file    =  fopen("GSMdoseGrid.csv","w");
@@ -621,7 +632,9 @@ void AT_run_GSM_method(  const long  number_of_field_components,
    	       fclose(output_file);
     }
 
-    /* calculate response pattern in grid cells, knowing dose pattern */
+    /* Calculate response pattern on grid
+	 * from known dose pattern. In case
+	 * of lethal event mode use survival */
     AT_GSM_calculate_local_response_grid( nX,
         gamma_model,
         gamma_parameters,
@@ -629,7 +642,8 @@ void AT_run_GSM_method(  const long  number_of_field_components,
         lethal_events_mode,
         grid_response);
 
-    /* find average dose and average response */
+    /* Compute particle dose and response
+     * by averaging all entries on grid */
     double total_dose_on_grid_ions_Gy = 0.0;
     double average_grid_response_ions = 0.0;
 
@@ -643,6 +657,8 @@ void AT_run_GSM_method(  const long  number_of_field_components,
     total_dose_on_grid_ions_Gy  /= gsl_pow_2(nX);
     average_grid_response_ions  /= gsl_pow_2(nX);
 
+    /* In case of lethal event mode
+     * compute survival */
     if( lethal_events_mode ){
     	average_grid_response_ions  = exp(-1.0 * average_grid_response_ions);
 
@@ -654,7 +670,7 @@ void AT_run_GSM_method(  const long  number_of_field_components,
     	}
     }
 
-    /* calculate gamma response for total grid dose */
+    /* Calculate gamma response for total grid dose */
     double gamma_response  = 0.0;
     AT_gamma_response(  1,
         &total_dose_on_grid_ions_Gy,
@@ -663,13 +679,14 @@ void AT_run_GSM_method(  const long  number_of_field_components,
         false,
         &gamma_response);
 
-    /* finally calculate efficiency */
+    /* Calculate relative efficiency */
     double efficiency  = 0.0;
     if(gamma_response > 0){
       efficiency = average_grid_response_ions / gamma_response;
     }
 
-    /* add to results */
+    /* Add run results to overall
+     * results (running mean and variance) */
     *relative_efficiency     += efficiency;
     *d_check                 += total_dose_on_grid_ions_Gy;
     *S_HCP                   += average_grid_response_ions;
@@ -681,9 +698,9 @@ void AT_run_GSM_method(  const long  number_of_field_components,
     *sd_S_HCP                += gsl_pow_2(average_grid_response_ions);
     *sd_S_gamma              += gsl_pow_2(gamma_response);
     *sd_n_particles          += gsl_pow_2(n_particles);
-  }// end run loop
+  }/* End of main loop */
 
-  /* average over number of runs */
+  /* Normalize results to number of runs */
   *relative_efficiency     /= N_runs;
   *d_check                 /= N_runs;
   *S_HCP                   /= N_runs;
@@ -696,19 +713,21 @@ void AT_run_GSM_method(  const long  number_of_field_components,
   *sd_S_gamma              /= N_runs;
   *sd_n_particles          /= N_runs;
 
-  /* compute standard deviations from running estimators */
+  /* Compute errors (standard deviations)
+   * from running estimators */
   *sd_relative_efficiency  -= gsl_pow_2(*relative_efficiency);
   *sd_d_check              -= gsl_pow_2(*d_check);
   *sd_S_HCP                -= gsl_pow_2(*S_HCP);
   *sd_S_gamma              -= gsl_pow_2(*S_gamma);
   *sd_n_particles          -= gsl_pow_2(*average_n_particles);
 
+  /* Only report if more then
+   * one run */
   *sd_relative_efficiency  = GSL_MAX(0., *sd_relative_efficiency);
   *sd_d_check              = GSL_MAX(0., *sd_d_check);
   *sd_S_HCP                = GSL_MAX(0., *sd_S_HCP);
   *sd_S_gamma              = GSL_MAX(0., *sd_S_gamma);
   *sd_n_particles          = GSL_MAX(0., *sd_n_particles);
-
   if( N_runs > 1 ){
 	  *sd_relative_efficiency  = sqrt(*sd_relative_efficiency / (N_runs - 1.));
 	  *sd_d_check              = sqrt(*sd_d_check / (N_runs - 1.));
@@ -717,18 +736,15 @@ void AT_run_GSM_method(  const long  number_of_field_components,
 	  *sd_n_particles          = sqrt(*sd_n_particles / (N_runs - 1.));
   }
 
-  /* free memory */
+  /* Free allocated memory
+   * and return */
   gsl_rng_free( rng );
-
   free( grid_D_Gy[0] );
   free( grid_D_Gy );
-
   free( grid_response[0] );
   free( grid_response );
-
   free( fluence_cm2 );
   free( number_of_particles_in_field_component );
-
   free( x_position );
   free( y_position );
 }
