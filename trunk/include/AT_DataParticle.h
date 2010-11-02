@@ -142,8 +142,13 @@ static const AT_particle_data_struct AT_Particle_Data = {
     const long  A);
 
 /**
- * TODO
- * @return
+ * Returns particle index number from given A and Z
+ *
+ * @param[in]  n            array sizes
+ * @param[in]  Z            atomic numbers (array of size n)
+ * @param[in]  A            mass number (array of size n)
+ * @param[out] particle_no  corresponding particle index numbers (array of size n)
+ * @return status code
  */
 int AT_particle_no_from_Z_and_A( const long  n,
     const long  Z[],
