@@ -1,7 +1,7 @@
 ################################################################################################
 # S/R test script for implemented submodels: RDDs, ERs, gamma response
 ################################################################################################
-# Copyright 2006, 2010 The libamtrack team
+# Copyright 2006, 2009 Steffen Greilich / the libamtrack team
 # 
 # This file is part of the AmTrack program (libamtrack.sourceforge.net).
 #
@@ -18,15 +18,16 @@
 # You should have received a copy of the GNU General Public License
 # long with AmTrack (file: copying.txt).
 # If not, see <http://www.gnu.org/licenses/>
+#
+# 2009-09-29: sgre, combined single test scripts to this new script
+#
 ################################################################################################
 
 # clear workspace
 rm( list = ls() )
 
 # load libAmTrack library
-try(dyn.load("../../lib/libamtrack.dll"))
-try(dyn.load("../../lib/libamtrack.so"))
-try(dyn.load("../../lib/libamtrack.dylib"))
+dyn.load("../../AT_Release/libAmTrack.dll")
 
 # load wrapping scripts
 source("../../wrapper/R/AmTrack.R")
@@ -161,8 +162,7 @@ for(cur.M in unique(df.GR$GR.model)){
 	ii					<-	cur.M == df.GR$GR.model
 	df.GR$S[ii] 		<- 	AT.gamma.response(	d.Gy	 			= df.GR$D.Gy[ii], 
 													gamma.model		= unique(df.GR$GR.model[ii]),
-													gamma.parameters	= GR.parameters[[unique(df.GR$GR.model[ii])]],
-													lethal.events.mode = F)
+													gamma.parameters	= GR.parameters[[unique(df.GR$GR.model[ii])]])
 }
 
 p4 <- xyplot(		data = df.GR,

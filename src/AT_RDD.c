@@ -1,4 +1,5 @@
 /**
+ * @file
  * @brief Radial Dose Distribution models
  */
 
@@ -7,9 +8,9 @@
  *    ========
  *
  *    Created on: 28.07.2009
- *    Creator: greilich
+ *    Author: greilich
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -30,8 +31,7 @@
 
 #include "AT_RDD.h"
 
-
-long AT_RDD_index_from_RDD_number( const long RDD_number ){
+long AT_RDD_index_from_material_number( const long RDD_number ){
   long  index           =  -1;
   long  number_of_RDDs  =  1;
   find_elements_int(  &RDD_number,
@@ -42,17 +42,14 @@ long AT_RDD_index_from_RDD_number( const long RDD_number ){
   return index;
 }
 
-
-int AT_RDD_name_from_number(const long RDD_no, char* RDD_name){
-  long  index = AT_RDD_index_from_RDD_number( RDD_no );
+void AT_RDD_name_from_number(const long RDD_no, char* RDD_name){
+  long  index = AT_RDD_index_from_material_number( RDD_no );
 
   if( index != -1){
     strcpy(RDD_name, AT_RDD_Data.RDD_name[index]);
   } else {
     strcpy(RDD_name,"*** invalid choice of RDD ***");
-    return -1;
   }
-  return AT_Success;
 }
 
 
@@ -76,7 +73,7 @@ long AT_RDD_number_from_name(const char* RDD_name){
 
 
 int AT_RDD_number_of_parameters( const long RDD_model){
-  long  index = AT_RDD_index_from_RDD_number( RDD_model );
+  long  index = AT_RDD_index_from_material_number( RDD_model );
   if( index == -1){
     printf("RDD no %ld not found\n", RDD_model);
     return 0;
@@ -357,7 +354,7 @@ double AT_RDD_d_max_Gy(
 }
 
 
-void AT_RDD_f1_parameters_single_field(
+void AT_RDD_f1_parameters(
     const double  E_MeV_u,
     const long    particle_no,
     const long    material_no,
@@ -418,28 +415,66 @@ void AT_RDD_f1_parameters_single_field(
   f1_parameters[7]  =  single_impact_dose_Gy;
 }
 
-
-void AT_RDD_f1_parameters_mixed_field(
-    const long    n,
+void AT_RDD_f_parameters( const long n,
     const double  E_MeV_u[],
     const long    particle_no[],
+    const double  fluence_cm2[],
     const long    material_no,
-    const long    rdd_model,
-    const double  rdd_parameter[],
     const long    er_model,
-    double        f1_parameters[]){
+    double        f_parameters[])
+{
+  double u                              =  0.0;
+  double total_fluence_cm2              =  0.0;
+  double total_dose_Gy                  =  0.0;
+  double fluence_weighted_E_MeV_u       =  0.0;
+  double dose_weighted_E_MeV_u          =  0.0;
+  double fluence_weighted_LET_MeV_cm2_g =  0.0;
+  double dose_weighted_LET_MeV_cm2_g    =  0.0;
 
-  long  i;
-  for (i = 0; i < n; i++){
-    /* get RDD parameters for all particles and energies */
-    AT_RDD_f1_parameters_single_field(  E_MeV_u[i],
-        particle_no[i],
-        material_no,
-        rdd_model,
-        rdd_parameter,
-        er_model,
-        &f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH]);
-  }
+
+  u                                   =       AT_total_u(     n,
+                                                        E_MeV_u,
+                                                        particle_no,
+                                                        fluence_cm2,
+                                                        material_no,
+                                                        er_model);
+
+  total_dose_Gy                       =       AT_total_D_Gy(    n,
+                                                        E_MeV_u,
+                                                        particle_no,
+                                                        fluence_cm2,
+                                                        material_no);
+
+  total_fluence_cm2                   =       AT_sum(   n,
+                                                  fluence_cm2);
+
+  fluence_weighted_E_MeV_u            =       AT_fluence_weighted_E_MeV_u(    n,
+                                                                        E_MeV_u,
+                                                                        fluence_cm2);
+  dose_weighted_E_MeV_u               =       AT_dose_weighted_E_MeV_u(       n,
+                                                                        E_MeV_u,
+                                                                        particle_no,
+                                                                        fluence_cm2,
+                                                                        material_no);
+  fluence_weighted_LET_MeV_cm2_g      =       AT_fluence_weighted_LET_MeV_cm2_g(    n,
+                                                                        E_MeV_u,
+                                                                        particle_no,
+                                                                        fluence_cm2,
+                                                                        material_no);
+  dose_weighted_LET_MeV_cm2_g         =       AT_dose_weighted_LET_MeV_cm2_g(       n,
+                                                                        E_MeV_u,
+                                                                        particle_no,
+                                                                        fluence_cm2,
+                                                                        material_no);
+
+  // write data to output table
+  f_parameters[0]  =  u;
+  f_parameters[1]  =  total_fluence_cm2;
+  f_parameters[2]  =  total_dose_Gy;
+  f_parameters[3]  =  fluence_weighted_E_MeV_u;
+  f_parameters[4]  =  dose_weighted_E_MeV_u;
+  f_parameters[5]  =  fluence_weighted_LET_MeV_cm2_g;
+  f_parameters[6]  =  dose_weighted_LET_MeV_cm2_g;
 }
 
 
@@ -498,8 +533,8 @@ int AT_D_RDD_Gy( const long  n,
       for (i = 0; i < n; i++){
         D_RDD_Gy[i]     =  AT_RDD_KatzPoint_Gy(r_m[i], r_min_m, max_electron_range_m, er_model, alpha, Katz_point_coeff_Gy);
         if( D_RDD_Gy[i] > 0.0)
-          D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in CPPSC
-        // TODO maybe this cutoff can be moved to CPPSC implementation, in a place where it is needed
+          D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
+        // TODO maybe this cutoff can be moved to SPIFF implementation, in a place where it is needed
       } // end for
     } else {
       for (i = 0; i < n; i++){
@@ -523,7 +558,7 @@ int AT_D_RDD_Gy( const long  n,
       for (i = 0; i < n; i++){
         D_RDD_Gy[i]     =  AT_RDD_KatzSite_Gy(r_m[i], 0.0, max_electron_range_m, a0_m, er_model, alpha, density_kg_m3, LET_J_m, dEdx_J_m, Katz_point_coeff_Gy);
         if( D_RDD_Gy[i] > 0.0)
-          D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in CPPSC
+          D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
       } // end for
     } else {
       for (i = 0; i < n; i++){
@@ -553,7 +588,7 @@ int AT_D_RDD_Gy( const long  n,
     for (i = 0; i < n; i++){
       D_RDD_Gy[i]     =  AT_RDD_CucinottaPoint_Gy(r_m[i], r_min_m, max_electron_range_m, beta, precalculated_constant_Gy, Katz_point_coeff_Gy);
       if( D_RDD_Gy[i] > 0.0)
-        D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in CPPSC
+        D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
     }
   }// end RDD_CucinottaPoint
 
@@ -569,7 +604,7 @@ int AT_D_RDD_Gy( const long  n,
       for (i = 0; i < n; i++){
         D_RDD_Gy[i]     =  AT_RDD_ExtendedTarget_KatzPoint_Gy(r_m[i], a0_m, er_model, Katz_point_r_min_m, max_electron_range_m, alpha, Katz_plateau_Gy, Katz_point_coeff_Gy);
         if( D_RDD_Gy[i] > 0.0)
-          D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in CPPSC
+          D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
       }
     } else {
       for (i = 0; i < n; i++){
@@ -594,7 +629,7 @@ int AT_D_RDD_Gy( const long  n,
     for (i = 0; i < n; i++){
       D_RDD_Gy[i]     =  AT_RDD_ExtendedTarget_CucinottaPoint_Gy( r_m[i], a0_m, Katz_point_r_min_m, max_electron_range_m, beta, Katz_point_coeff_Gy, C_norm, Cucinotta_plateau_Gy);
       if( D_RDD_Gy[i] > 0.0)
-        D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in CPPSC
+        D_RDD_Gy[i]   =  GSL_MAX(D_RDD_Gy[i], d_min_Gy);          // Cut-off low doses, necessary in SPIFF
     }
   } // end RDD_CucinottaExtTarget
 

@@ -1,5 +1,6 @@
 /**
- * @brief Constants
+ * @file
+ * @brief ...
  */
 
 
@@ -8,9 +9,9 @@
  *    ==============
  *
  *    Created on: 28.07.2009
- *    Creator: greilich
+ *    Author: greilich
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *

@@ -2,6 +2,7 @@
 #define AT_ELECTRONRANGE_H_
 
 /**
+ * @file
  * @brief Electron range models
  */
 
@@ -9,7 +10,7 @@
  *    AT_ElectronRange.h
  *    ==============
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -28,10 +29,8 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
-#include <assert.h>
 #include <string.h>
 #include <stdio.h>
-
 #include "gsl/gsl_pow_int.h"
 #include "gsl/gsl_sf_log.h"
 
@@ -39,12 +38,11 @@
 #include "AT_DataMaterial.h"
 #include "AT_DataParticle.h"
 #include "AT_PhysicsRoutines.h"
-#include "AT_Error.h"
 
 /**
  * Electron range models code numbers
  */
-enum AT_ERModels{
+enum ERModels{
   ER_Test                  = 1,     /**< dummy electron range models */
       ER_ButtsKatz         = 2,     /**< Butts&Katz(?) electron range model, R = k * w, valid for ?? < w < 2keV , TODO ref needed [Katz et al., 1972] */
       ER_Waligorski        = 3,     /**< Waligorski(?) electron range model, R = k * w ^ alpha, valid for ?? < w < ? TODO ref needed*/
@@ -64,13 +62,13 @@ typedef struct {
   int     n;
   int     ER_no[ER_DATA_N];
   char*   ER_name[ER_DATA_N];
-} AT_ER_data_struct;
+} er_data;
 
 
 /**
  * TODO
  */
-static const AT_ER_data_struct AT_ER_Data = {
+static const er_data AT_ER_Data = {
     ER_DATA_N,
     {  ER_Test,                 ER_ButtsKatz,                       ER_Waligorski,                             ER_Geiss,                         ER_Scholz,                       ER_Edmund,                          ER_Tabata },
     {  "simple test ER model",  "Butts & Katz' ER model (linear)",  "Waligorski's ER model (power-law wmax)",  "Geiss' ER model (power-law E)", "Scholz' ER model (power-law E)", "Edmund' ER model (power-law wmax)","Tabata  ER model"}
@@ -81,10 +79,9 @@ static const AT_ER_data_struct AT_ER_Data = {
  * Returns name of the electron model from index
  *
  * @param[in]   ER_no    electron-range-model index
- * @param[out]  ER_name  string containing the electron-range model name
- * @return      Status code
+ * @param[out]  Er_name  string containing the electron-range model name
  */
-int getERName( const int ER_no,
+void  getERName(  const int ER_no,
     char* ER_name);
 
 
@@ -93,7 +90,7 @@ int getERName( const int ER_no,
  * @param wmax_keV
  * @return
  */
-double AT_ER_ButtsKatz_range_g_cm2( double wmax_keV);
+inline double AT_ER_ButtsKatz_range_g_cm2(double wmax_keV);
 
 
 /**
@@ -101,7 +98,7 @@ double AT_ER_ButtsKatz_range_g_cm2( double wmax_keV);
  * @param wmax_keV
  * @return
  */
-double AT_ER_Waligorski_range_g_cm2( double wmax_keV);
+inline double AT_ER_Waligorski_range_g_cm2(double wmax_keV);
 
 
 /**
@@ -109,7 +106,7 @@ double AT_ER_Waligorski_range_g_cm2( double wmax_keV);
  * @param wmax_keV
  * @return
  */
-double AT_ER_Edmund_range_g_cm2( double wmax_keV);
+inline double AT_ER_Edmund_range_g_cm2(double wmax_keV);
 
 
 /**
@@ -117,7 +114,7 @@ double AT_ER_Edmund_range_g_cm2( double wmax_keV);
  * @param E_MeV_u
  * @return
  */
-double AT_ER_Geiss_range_g_cm2( double E_MeV_u);
+inline double AT_ER_Geiss_range_g_cm2(double E_MeV_u);
 
 
 /**
@@ -125,7 +122,7 @@ double AT_ER_Geiss_range_g_cm2( double E_MeV_u);
  * @param E_MeV_u
  * @return
  */
-double AT_ER_Scholz_range_g_cm2( double E_MeV_u);
+inline double AT_ER_Scholz_range_g_cm2(double E_MeV_u);
 
 
 /**
@@ -140,7 +137,7 @@ double AT_ER_Scholz_range_g_cm2( double E_MeV_u);
  * @param a5
  * @return
  */
-double AT_ER_Tabata_range_g_cm2( double beta,
+inline double AT_ER_Tabata_range_g_cm2(double beta,
     double a1_g_cm2,
     double a2,
     double a3,
@@ -149,14 +146,13 @@ double AT_ER_Tabata_range_g_cm2( double beta,
 
 
 /**
- * Alpha exponent in power law ER models. It is defined as follows:
+ * Alpha exponent in power law ER models. It is defined as follows:\n
  * alpha = 1.667   when energy of ejected delta electron wmax is higher than 1keV
  * alpha = 1.079   when energy of ejected delta electron wmax is less or equal than 1keV
- *
- * @param E_MeV_u  kinetic energy for particle [in MeV/u]
+ * @param E_MeV_u
  * @return
  */
-double AT_ER_PowerLaw_alpha( const double E_MeV_u);
+inline double AT_ER_PowerLaw_alpha( const double E_MeV_u);
 
 
 /**
@@ -169,7 +165,7 @@ double AT_ER_PowerLaw_alpha( const double E_MeV_u);
  * @param a4
  * @param a5
  */
-void AT_ER_Tabata_constants( const double average_A,
+inline void AT_ER_Tabata_constants(const double average_A,
     const double average_Z,
     double * a1_g_cm2,
     double * a2,
@@ -179,14 +175,14 @@ void AT_ER_Tabata_constants( const double average_A,
 
 
 /**
- * Returns the maximum electron range (track radius) in m
- * for a given parametrization
+ * Returns the maximum electron range (track diameter) in m
+ * for vector of energies
  *
  * @param[in]  number_of_particles          number of particles in the incident field
- * @param[in]  E_MeV_u                      kinetic energy for particles in the given field (array of size number_of_particles)
- * @param[in]  material_no                  material index
- * @param[in]  er_model                     electron-range model index
- * @param[out] max_electron_range_m         electron range (track radius) in m  (array of size number_of_particles)
+ * @param[in]  E_MeV_u                      kinetic energy for particles in the given field (vector of length number_of_particles)
+ * @param[in]  material_no                  index for detector material
+ * @param[in]  er_model                     index for electron-range model chosen
+ * @param[out] max_electron_range_m         electron range (track diameter) in m  (vector of length number_of_particles)
  */
 void AT_max_electron_ranges_m( const long number_of_particles ,
     const double  E_MeV_u[],

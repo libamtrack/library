@@ -1,4 +1,5 @@
 /**
+ * @file
  * @brief Electron Range models
  */
 
@@ -7,9 +8,9 @@
  *    ==============
  *
  *    Created on: 08.01.2010
- *    Creator: kongruencja
+ *    Author: kongruencja
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -30,7 +31,7 @@
 
 #include "AT_ElectronRange.h"
 
-int getERName(
+void getERName(
     const int ER_no,
     char* ER_name){
 
@@ -47,55 +48,46 @@ int getERName(
     strcpy(ER_name, AT_ER_Data.ER_name[match]);
   } else {
     strcpy(ER_name,"*** invalid choice ***");
-    return -1;
   }
-  return AT_Success;
 }
 
 
- double AT_ER_ButtsKatz_range_g_cm2(double wmax_keV){
-  assert( (wmax_keV > 0.) && (wmax_keV < 1e6));
+inline double AT_ER_ButtsKatz_range_g_cm2(double wmax_keV){
   return 1e-5 * wmax_keV;
 }
 
 
- double AT_ER_Waligorski_range_g_cm2(double wmax_keV){
-  assert( (wmax_keV > 0.) && (wmax_keV < 1e6));
+inline double AT_ER_Waligorski_range_g_cm2(double wmax_keV){
   double alpha = 1.667;
   if( wmax_keV < 1. ) alpha = 1.079;
   return  6e-6 * pow( wmax_keV, alpha );
 }
 
 
- double AT_ER_Edmund_range_g_cm2(double wmax_keV){
-  assert( (wmax_keV > 0.) && (wmax_keV < 1e6));
+inline double AT_ER_Edmund_range_g_cm2(double wmax_keV){
   double alpha = 1.667;
   if( wmax_keV < 1. ) alpha = 1.079;
   return 6.13*1e-6  * pow( wmax_keV, alpha );
 }
 
 
- double AT_ER_Geiss_range_g_cm2(double E_MeV_u){
-  assert( (E_MeV_u > 0.) && (E_MeV_u < 1e6));
+inline double AT_ER_Geiss_range_g_cm2(double E_MeV_u){
   return 4e-5 * pow(E_MeV_u, 1.5);
 }
 
 
- double AT_ER_Scholz_range_g_cm2(double E_MeV_u){
-	assert( (E_MeV_u > 0.) && (E_MeV_u < 1e6));
-	return 5e-5 * pow(E_MeV_u, 1.7);
+inline double AT_ER_Scholz_range_g_cm2(double E_MeV_u){
+  return 5e-5 * pow(E_MeV_u, 1.7);
 }
 
 
- double AT_ER_Tabata_range_g_cm2(double beta, double a1_g_cm2, double a2, double a3, double a4, double a5){
-  assert( (beta > 0.) && (beta < 1.0));
+inline double AT_ER_Tabata_range_g_cm2(double beta, double a1_g_cm2, double a2, double a3, double a4, double a5){
   double tau = 2.0 * gsl_pow_2(beta) / (1.0 - gsl_pow_2(beta));
   return (a1_g_cm2)*(((gsl_sf_log(1.0 + a2 * tau))/a2) - ((a3*tau)/(1.0 + a4*pow(tau,a5))) );
 }
 
 
- double AT_ER_PowerLaw_alpha( const double E_MeV_u){
-  assert( (E_MeV_u > 0.) && (E_MeV_u < 1e6));
+inline double AT_ER_PowerLaw_alpha( const double E_MeV_u){
   double wmax_MeV     =  AT_max_E_transfer_MeV_single(E_MeV_u);
   double alpha        =  1.667;
   if(wmax_MeV <= 1e-3)  // if wmax < 1keV
@@ -104,7 +96,7 @@ int getERName(
 }
 
 
- void AT_ER_Tabata_constants(const double average_A, const double average_Z, double * a1_g_cm2, double * a2, double * a3, double * a4, double * a5){
+inline void AT_ER_Tabata_constants(const double average_A, const double average_Z, double * a1_g_cm2, double * a2, double * a3, double * a4, double * a5){
   const double b1_g_cm2 = 0.2335;
   const double b2 = 1.209;
   const double b3 = 1.78e-4;
@@ -130,21 +122,16 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
     double        max_electron_range_m[])
 {
 
-  assert( number_of_particles > 0);
-
   /********************************************************
    ********* CALCULATION BEFORE PARTICLE LOOP *************
    *******************************************************/
 
-  // Get density and average A/Z matching to AT_material_no
+  // Get density and average A/Z matching to material_no
   double material_density_g_cm3        =  0.0;
   double average_A                     =  0.0;
   double average_Z                     =  0.0;
   AT_get_material_data( (long)material_no, &material_density_g_cm3,
       NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
-
-  assert( average_A > 0);
-  assert( average_Z > 0);
 
   // Get beta from energy
   double* beta     =  (double*)calloc(number_of_particles, sizeof(double));
@@ -174,7 +161,6 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
   long  i;
   for (i = 0; i < number_of_particles; i++){
     double wmax_keV = wmax_MeV[i] * 1000.0;
-    assert( wmax_keV > 0.0);
 
     switch( er_model ){
       case ER_ButtsKatz :
@@ -200,8 +186,6 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
         break;
     }
 
-    assert ( material_density_g_cm3 > 0);
-
     // Scale maximum el. ranges with material density relative to water (1/rho) and convert cm to m
     max_electron_range_m[i]      =  1e-2 * max_electron_range_g_cm2 / material_density_g_cm3;
 
@@ -214,20 +198,15 @@ double AT_max_electron_range_m(  const double E_MeV_u,
     const int    material_no,
     const int    er_model){
 
-  // Get density and average A/Z matching to AT_material_no
+  // Get density and average A/Z matching to material_no
   double material_density_g_cm3        = 0.0;
   double average_A                     = 0.0;
   double average_Z                     = 0.0;
   AT_get_material_data( (long)material_no, &material_density_g_cm3,
       NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
-  assert( average_A > 0);
-  assert( average_Z > 0);
-
   // Get energy of delta-electron from energy of ion
   double wmax_keV = AT_max_E_transfer_MeV_single(E_MeV_u) * 1000.0;
-
-  assert( wmax_keV > 0);
 
   // a1,..a5 needed in Tabata ER model
   double a1_g_cm2 = 0.0;
@@ -269,8 +248,6 @@ double AT_max_electron_range_m(  const double E_MeV_u,
       max_electron_range_g_cm2  =  0.0;
       break;
   }
-
-  assert ( material_density_g_cm3 > 0);
 
   // Scale maximum el. range with material density relative to water (1/rho) and convert cm to m
   double max_electron_range_m   = 1e-2 * max_electron_range_g_cm2 / material_density_g_cm3;

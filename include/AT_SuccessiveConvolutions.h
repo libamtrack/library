@@ -2,6 +2,7 @@
 #define AT_SUCCESSIVECONVOLUTIONS_H_
 
 /**
+ * @file
  * @brief Successive Convolution algorithm
  */
 
@@ -9,7 +10,7 @@
  *    AT_SuccessiveConvolutions.h
  *    ===========================
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -31,27 +32,92 @@
 #include "AT_Constants.h"
 #include "AT_RDD.h"
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
 #include <malloc.h>
-#include <assert.h>
+
+
+/**
+ * Structure to hold all variables necessary for the SuccessiveConvolution routine
+ * It has been defined to mimic the global variables in the origial FORTRAN IV code
+ * TODO replace by C variables
+ */
+typedef struct{
+
+  long     array_size;                  /**< size of function arrays F..BI */
+  long     N2;                          /**< Number of bins per factor of two (applies to all arrays) */
+  double   U;                           /**< Logarithmic stepwith corresponding to N2, U = ln(2)/N2 */
+
+  double   X;                           /**< seem to not be used, TODO remove */
+  double   FINAL;                       /**< Final mean impact number * <d> from single impact distribution */
+
+  double   CN;                          /**< Number of contributing tracks for linearized f_start, corresp. to u_start */
+  long     N1;                          /**< Current convolution number */
+
+  double   CM1;                         /**< Central moment 1 of current distribution H, computed in AT_SC_NORMAL */
+  double   CM2;                         /**< Central moment 2 of current distribution H, computed in AT_SC_NORMAL */
+  double   CM3;                         /**< Central moment 3 of current distribution H, computed in AT_SC_NORMAL */
+  double   CM4;                         /**< Central moment 4 of current distribution H, computed in AT_SC_NORMAL */
+
+  double   D1;                          /**< Central moment 1 of single impact (f1) distribution */
+  double   D2;                          /**< Central moment 2 of single impact (f1) distribution */
+  double   D3;                          /**< Central moment 3 of single impact (f1) distribution */
+  double   D4;                          /**< Central moment 4 of single impact (f1) distribution */
+
+  double   F0;                          /**< Zero bin value for source distribution F (= distribution to be convoluted) */
+  double*  F;                           /**< Array holding values of source distribution F */
+  long     MIF;                         /**< Index of first bin currently used for F */
+  long     LEF;                         /**< Number of bins currently used for F */
+
+  double   H0;                          /**< Zero bin value for resulting distribution H */
+  double*  H;                           /**< Array holding values of resulting distribution H */
+  long     MIH;                         /**< Index of first bin currently used for H */
+  long     LEH;                         /**< Number of bins currently used for H */
+
+  double   E0;                          /**< Value for the LEFT limit of the first energy bin */
+  double*  E;                           /**< Array holding energy bin limits (midpoint) for distributions F, H */
+  double*  DE;                          /**< Array holding energy bin widths for distributions F, H */
+  long     MIE;                         /**< Index of first bin currently used for E */
+
+  double*  DI;                          /**< Auxilary array that enables easy index operations */
+  double*  A;                           /**< Auxilary array used for Kellerer's quadratic interpolation during AT_SC_FOLD */
+  double*  BI;                          /**< Auxilary array used for Kellerer's quadratic interpolation during AT_SC_FOLD */
+
+  bool     write_output;                /**< if true, a verbose log file will be written */
+  FILE*    output_file;                 /**< name of log file */
+
+  bool     shrink_tails;                /**< if true, tails of F that contribute less than "shrink_tails_under" to first moment will be removed */
+  double   shrink_tails_under;          /**< threshold to cut tails, usually 1e-30 */
+  bool     adjust_N2;                   /**< if true N2 will be increased if resolution becomes inefficient */
+}     aKList;
+
 
 /**
  * Computes the size of the array to hold the f1 (single impact) local dose distribution for a given field, rdd, er
+ * Usually step 1 of the CPP-SC method
  * @param[in]  n                   number of particle types in the mixed particle field
  * @param[in]  E_MeV_u             energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @param[in]  material_no         index number for detector material
  * @param[in]  rdd_model           index number for chosen radial dose distribution
- * @param[in]  rdd_parameter       parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  rdd_parameters      parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @param[in]  er_model            index number for chosen electron-range model
  * @param[in]  N2                  number of bins per factor of two in local dose array
- * @return number of bins to hold the f1 distribution
+ * @param[out] n_bins_f1           number of bins to hold the f1 distribution
+ * @param[out] f1_parameters       array with numbers describing characteristics of the single particle components composing the mixed field
+ *                                 the array is of size n * 8, the characteristics being:\n
+ *                                      0 - LET_MeV_cm2_g \n
+ *                                      1 - r_min_m \n
+ *                                      2 - r_max_m \n
+ *                                      3 - d_min_Gy \n
+ *                                      4 - d_max_Gy \n
+ *                                      5 - normalization constant [Gy] \n
+ *                                      6 - single_impact_fluence_cm2 \n
+ *                                      7 - single_impact_dose_Gy
  */
-long AT_n_bins_for_singe_impact_local_dose_distrib(
+void  AT_SC_get_f1_array_size(
     const long   n,
     const double E_MeV_u[],
     const long   particle_no[],
@@ -59,8 +125,12 @@ long AT_n_bins_for_singe_impact_local_dose_distrib(
     const long   rdd_model,
     const double rdd_parameter[],
     const long   er_model,
-    const long   N2);
+    const long   N2,
+    long *       n_bins_f1,
+    double       f1_parameters[]);
 
+#define AT_SC_F_PARAMETERS_LENGTH 7             /**< Length of the mixed-energy field characteristics */
+#define AT_SC_F1_PARAMETERS_SINGLE_LENGTH 8     /**< Length of the single particle component characteristics, length of f1_parameters array is AT_SC_F1_PARAMETERS_SINGLE_LENGTH * number of particle components in the field */
 
 /**
  * Computes the f1 (single impact) local dose distribution for a given field, rdd, er
@@ -68,23 +138,33 @@ long AT_n_bins_for_singe_impact_local_dose_distrib(
  * @param[in]  n                     number of particle types in the mixed particle field
  * @param[in]  E_MeV_u               energy of particles in the mixed particle field (array of size n)
  * @param[in]  particle_no           type of the particles in the mixed particle field (array of size n)
- * @param[in]  fluence_cm2_or_dose_Gy           fluences for the given particles, doses in Gy if negative (array of size n)
+ * @param[in]  fluence_cm2           fluences for the given particles, doses in Gy if negative (array of size n)
  * @param[in]  material_no           index number for detector material
  * @param[in]  rdd_model             index number for chosen radial dose distribution
- * @param[in]  rdd_parameter         parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  rdd_parameters        parameters for chosen radial dose distribution (array of size depending on chosen model)
  * @param[in]  er_model              index number for chosen electron-range model
  * @param[in]  N2                    number of bins per factor of two in local dose array
  * @param[in]  f1_parameters         array of size n * 8 with n field component characteristics (from AT_SC_get_f1_array_size)
  * @param[in]  n_bins_f1             number of bins holding the f1 distribution (from AT_SC_get_f1_array_size)
+ * @param[out] norm_fluence          relative fluences for field components (array of size n)
+ * @param[out] dose_contribution_Gy  absolute dose contribution from each field component (array of size n)
+ * @param[out] f_parameters          array of size 7 (AT_SC_F_PARAMETERS_LENGTH) holding numbers describing the characteristics of the composed fields:\n
+ *                                      0 - u (mean number of tracks contributing)\n
+ *                                      1 - total fluence_cm2\n
+ *                                      2 - total_dose_Gy\n
+ *                                      3 - ave_E_MeV\n
+ *                                      4 - dw_E_MeV\n
+ *                                      5 - ave_LET_MeV_cm2_g\n
+ *                                      6 - dw_LET_MeV_cm2_g
  * @param[out] f1_d_Gy               bin midpoints for f1, array of size n_bins_f1
  * @param[out] f1_dd_Gy              bin widths for f1, array of size n_bins_f1
  * @param[out] f1                    f1 values, array of size n_bins_f1
  */
-void AT_single_impact_local_dose_distrib(
+void  AT_SC_get_f1(
     const long   n,
     const double E_MeV_u[],
     const long   particle_no[],
-    const double fluence_cm2_or_dose_Gy[],
+    const double fluence_cm2[],
     const long   material_no,
     const long   rdd_model,
     const double rdd_parameter[],
@@ -92,6 +172,9 @@ void AT_single_impact_local_dose_distrib(
     const long   N2,
     const long   n_bins_f1,
     const double f1_parameters[],
+    double       norm_fluence[],
+    double       dose_contribution_Gy[],
+    double       f_parameters[],
     double       f1_d_Gy[],
     double       f1_dd_Gy[],
     double       f1[]);
@@ -111,7 +194,7 @@ void AT_single_impact_local_dose_distrib(
  * @param[out] u_start             value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid
  * @param[out] n_convolutions      number of convolutions necessary to get from u_start to u (u = 2^n_convolutions * u_start)
  */
-void AT_n_bins_for_low_fluence_local_dose_distribution(  const double   u,
+void AT_SC_get_f_array_size(  const double   u,
     const double  fluence_factor,
     const long    N2,
     const long    n_bins_f1,
@@ -137,7 +220,7 @@ void AT_n_bins_for_low_fluence_local_dose_distribution(  const double   u,
  * @param[out] f_dd_Gy             bin widths for f, array of size n_bins_f
  * @param[out] f_start             f values to start with, array of size n_bins_f
  */
-void AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
+void  AT_SC_get_f_start(  const long    n_bins_f1,
     const long    N2,
     const double  f1_d_Gy[],
     const double  f1_dd_Gy[],
@@ -152,8 +235,7 @@ void AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
  * Routine to perform the convolutions from initial linearized local dose distribution f_start to resulting f
  * as described by Kellerer, 1969. This is a to most extend a reimplementation of Kellerer's original FORTRAN IV code.
  * Usually step 5 of the CPP-SC method
- *
- * @param[in]      u                   value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from AT_SC_get_f_array_size)
+ * @param[in]      u_start             value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from AT_SC_get_f_array_size)
  * @param[in]      n_bins_f            number of bins holding the resulting f local dose distribution (from AT_SC_get_f_array_size)
  * @param[in,out]  N2                  number of bins per factor of two in local dose array f_start, will return new value in case it was adjusted by the routine (higher resolution in case of high fluences)
  * @param[in,out]  n_bins_f_used       in: number of bins used for f_start, \n
@@ -166,168 +248,86 @@ void AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
  * @param[out]     f0                  zero-dose f value (as bins are log this has to be separated)
  * @param[out]     fdd                 frequency:          H * DE        (f * dd), size n_bins_f, used: n_bins_f_used
  * @param[out]     dfdd                dose contribution:  H * E * DE    (f * d * dd), size n_bins_f, used: n_bins_f_used
- * @param[out]     d                   first moment:       (@<d@>)         provides check on convolution quality
+ * @param[out]     d                   first moment:       (<d>)         provides check on convolution quality
  * @param[in]      write_output        if true, a very verbose log file will be written ("SuccessiveConvolutions.log") with results from each convolution
- * @param[in]      shrink_tails        if true, the upper and lower tail of f will be cut after every convolution (bins that contribute less than "shrink_tails_under" to the first moment @<d@>)
+ * @param[in]      shrink_tails        if true, the upper and lower tail of f will be cut after every convolution (bins that contribute less than "shrink_tails_under" to the first moment <d>)
  * @param[in]      shrink_tails_under  cut threshold for tails
  * @param[in]      adjust_N2           if true, N2 (i.e. the bin density) can be adjusted. This can be necessary esp. for high doses / fluences where f gets very narrow
  */
-void AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_contrib,
-		const long    array_size,
-		long*         N2,
-		long*         n_bins_f_used,
-		double        f_d_Gy[],
-		double        f_dd_Gy[],
-		double        f[],
-		double*       f0,
-		double        fdd[],
-		double        dfdd[],
-		double*       d,
-		const bool    write_output,
-		const bool    shrink_tails,
-		const double  shrink_tails_under,
-		const bool    adjust_N2);
+void   AT_SuccessiveConvolutions( const double  u,
+    const long   n_bins_f,
+    long*        N2,
+    long*        n_bins_f_used,
+    double       f_d_Gy[],
+    double       f_dd_Gy[],
+    double       f[],
+    double*      f0,
+    double       fdd[],
+    double       dfdd[],
+    double*      d,
+    const bool   write_output,
+    const bool   shrink_tails,
+    const double shrink_tails_under,
+    const bool   adjust_N2);
+
+/* All following are SUBROUTINES TO AT_SuccessiveConvolutions (from FORTRAN IV code) */
+
+/* TODO: Replace by more c-like, readable function only implemented where necessary */
 
 /**
  * Normalized the distribution resulting from last convolution
- *
- * @param[in]      values_first_bin    TODO
- * @param[in]      value_midpoints    TODO (array of size frequency_n_bins)
- * @param[in]      value_bin_widths    TODO (array of size frequency_n_bins)
- * @param[in]      frequency_n_bins    TODO
- * @param[in]      frequency_zero_bin    TODO
- * @param[in]      frequency_first_bin    TODO
- * @param[out]     frequency               TODO (array of size frequency_n_bins)
+ * @param theKList
+ * @return
  */
-void AT_Kellerer_normalize( const long values_first_bin,
-		const double value_midpoints[],
-		const double value_bin_widths[],
-		const long frequency_n_bins,
-		const double frequency_zero_bin,
-		const long frequency_first_bin,
-		double frequency[]);
+aKList  AT_SC_NORMAL(aKList theKList);
+
+
+/**
+ * Writes output on last convolution
+ * @param theKList
+ * @return
+ */
+aKList  AT_SC_OUTPUT(aKList theKList);
+
 
 /**
  * Calculates arrays A and B to be used in quadratic extrapolation of F in AT_SC_FOLD
- *
- * @param[in]       N2             TODO
- * @param[in]       LEF             TODO
- * @param[in]       array_size             TODO
- * @param[in]       F             TODO (array of size array_size)
- * @param[out]       A             TODO (array of size array_size)
- * @param[out]       BI             TODO (array of size array_size)
+ * @param theKList
+ * @return
  */
-void AT_Kellerer_interpolation( const long N2,
-		const long LEF,
-		const long array_size,
-		double	F[],
-		double	A[],
-		double	BI[]);
+aKList  AT_SC_INTERP(aKList theKList);
 
 
 /**
  * Selects a new coordinate system if F has become to narrow
- *
- * @param[in]       N2             TODO
- * @param[in]       array_size             TODO
- * @param[in/out]       LEF             TODO
- * @param[in/out]       MIE             TODO
- * @param[in/out]       MIF             TODO
- * @param[in]       E0             TODO
- * @param[in/out]       E             TODO (array of size array_size)
- * @param[in/out]       DE             TODO (array of size array_size)
- * @param[in/out]       F             TODO (array of size array_size)
- * @param[in/out]       DI             TODO (array of size array_size)
+ * @param theKList
+ * @return
  */
-void AT_Kellerer_reset( long* N2,
-		const long array_size,
-		long* LEF,
-		long* MIE,
-		long* MIF,
-		const double E0,
-		double E[],
-		double DE[],
-		double F[],
-		double DI[]);
+aKList  AT_SC_RESET(aKList theKList);
 
 
 /**
  * Adds the term 2*F0*F(L) to H(L)
- *
- * @param[in]       MIF             TODO
- * @param[in]       array_size             TODO
- * @param[in]       MIE             TODO
- * @param[in]       LEF             TODO
- * @param[in]       F0             TODO
- * @param[in]       F             TODO (array of size array_size)
- * @param[in]       DE             TODO (array of size array_size)
- * @param[in/out]       MIH             TODO
- * @param[in/out]       LEH             TODO
- * @param[in/out]       H             TODO (array of size array_size)
+ * @param theKList
+ * @return
  */
-void AT_Kellerer_zero( const long MIF,
-		const long array_size,
-		const long MIE,
-		const long LEF,
-		const double F0,
-		const double F[],
-		const double DE[],
-		long* MIH,
-		long* LEH,
-		double H[]);
+aKList  AT_SC_ZERO(aKList theKList);
+
 
 /**
- * Cuts tails of distribution that contribute less that shrink_tails_under to @<f@>
- *
- * @param[in]       array_size             TODO
- * @param[in]       MIE             TODO
- * @param[in]       shrink_tails_under             TODO
- * @param[in]       DE             TODO (array of size array_size)
- * @param[in/out]       MIH             TODO
- * @param[in/out]       LEH             TODO
- * @param[in/out]       H             TODO (array of size array_size)
+ * Cuts tails of distribution that contribute less that shrink_tails_under to <f>
+ * @param theKList
+ * @return
  */
-void AT_Kellerer_shrink( const long array_size,
-		const long MIE,
-		const double shrink_tails_under,
-		const double DE[],
-		long* MIH,
-		long* LEH,
-		double H[]);
+aKList  AT_SC_SHRINK(aKList theKList);
 
 
 /**
  * Does actual convolution, makes use of the symmetry
- *
- * @param[in]       n_bins             TODO
- * @param[in]       bins_per_factor_2             TODO
- * @param[in]       delta_i             TODO (array of size array_size)
- * @param[in]       values_first_bin             TODO
- * @param[in]       values_bin_widths             TODO (array of size array_size)
- * @param[in]       frequency_n_bins_last             TODO
- * @param[in]       frequency_first_bin_last             TODO
- * @param[in]       frequency_zero_bin_last             TODO
- * @param[in/out]   frequency_last             TODO (array of size array_size)
- * @param[in/out]   frequency_n_bins             TODO
- * @param[in/out]   frequency_first_bin             TODO
- * @param[in/out]   frequency_zero_bin             TODO
- * @param[in/out]   frequency             TODO (array of size array_size)
+ * @param theKList
+ * @return
  */
-void AT_Kellerer_folding( const long n_bins,
-		const long bins_per_factor_2,
-		const double delta_i[],
-		const long values_first_bin,
-		const double values_bin_widths[],
-		const long frequency_n_bins_last,
-		const long frequency_first_bin_last,
-		const double frequency_zero_bin_last,
-		double frequency_last[],
-		long* frequency_n_bins,
-		long* frequency_first_bin,
-		double* frequency_zero_bin,
-		double frequency[]);
-
+aKList AT_SC_FOLD(aKList theKList);
 
 
 #endif // AT_SUCCESSIVECONVOLUTIONS_H_
-

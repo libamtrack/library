@@ -2,6 +2,7 @@
 #define AT_NUMERICALROUTINES_H_
 
 /**
+ * @file
  * @brief Numerical Routines
  */
 
@@ -10,7 +11,7 @@
  *    AT_NumericalRoutines.h
  *    ==================
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -91,8 +92,7 @@ double AT_range_straggling_convolution(  const double z,
  *  param[in]   y       order of Dy(x)
  *  return  Dyx
  */
-double AT_Dyx(  double  y,
-		double  x);
+double AT_Dyx(  double  y,  double  x);
 
 
 /**
@@ -107,12 +107,7 @@ double AT_Dyx(  double  y,
  *  param[out]  pdf     Dv(x)
  *  param[out]  pdd     Dv'(x)
  */
-int pbdv_(  double *v,
-		double *x,
-		double *dv,
-		double *dp,
-		double *pdf,
-		double *pdd);
+int pbdv_(  double *v, double *x, double *dv, double *dp, double *pdf, double *pdd);
 
 
 /**
@@ -122,9 +117,7 @@ int pbdv_(  double *v,
  * @param va order
  * @param pd output Dv(x)
  */
-int dvsa_(  double *va,
-		double *x,
-		double *pd);
+int dvsa_(  double *va, double *x, double *pd);
 
 
 /**
@@ -136,9 +129,7 @@ int dvsa_(  double *va,
  * @param va order
  * @param pd output Dv(x)
  */
-int dvla_(  double *va,
-		double *x,
-		double *pd);
+int dvla_(  double *va, double *x, double *pd);
 
 
 /**
@@ -150,9 +141,7 @@ int dvla_(  double *va,
  * @param va order
  * @param pv output Vv(x)
  */
-int vvla_(  double *va,
-		double *x,
-		double *pv);
+int vvla_(  double *va, double *x, double *pv);
 
 
 /**
@@ -161,8 +150,7 @@ int vvla_(  double *va,
  * @param b
  * @return
  */
- double d_sign( const double a,
-		 const double b);
+inline double  d_sign( const double a, const double b);
 
 
 /**
@@ -170,8 +158,7 @@ int vvla_(  double *va,
  * @param x argument (x is not equal to 0,-1,-2,...)
  * @param ga output
  */
-int gamma_( const double *x,
-		double *ga);
+int gamma_( const double *x, double *ga);
 
 
 /* TODO it is logarithm of which gamma function ? it is not used */
@@ -202,11 +189,7 @@ void nrerror(const char error_text[]);
  * @param xacc
  * @return
  */
-double zriddr(double (*func)(double,void*),
-		void * params,
-		const double x1,
-		const double x2,
-		const double xacc);
+double zriddr(double (*func)(double,void*), void * params, const double x1, const double x2, const double xacc);
 
 
 /**
@@ -218,11 +201,7 @@ double zriddr(double (*func)(double,void*),
  * @param n_set
  * @param matches
  */
-void are_elements_int(const int elements[],
-		const int n_elements,
-		const int set[],
-		const int n_set,
-		int matches[]);
+void are_elements_int(const int elements[], const int n_elements, const int set[], const int n_set, int matches[]);
 
 
 /**
@@ -270,16 +249,14 @@ void is_element_char(const char element[], const char* const * set, const long n
  */
 void is_element_int(const long element, const long set[], const long n_set, bool matches[]);
 
-
 /**
  * Sums all elements in a data array
  * @param  n                number of array elements
  * @param  data             data to sum
  * @return  sum of all elements
  */
- double AT_sum(     const long n,
+double AT_sum(     const long n,
               const double data[]);
-
 
 /**
  * Normalizes a data array by dividing each element by the sum of all elements
@@ -287,10 +264,9 @@ void is_element_int(const long element, const long set[], const long n_set, bool
  * @param[in]  data             data to normalize
  * @param[out] normalized_data  results
  */
- void AT_normalize(     const long n,
+void AT_normalize(     const long n,
                     const double data[],
                     double normalized_data[]);
-
 
 /**
  * interpolation on a table: code (w/ adapted indices) from Numerical Recipes, 2rd ed., chapter 3.1

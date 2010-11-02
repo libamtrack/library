@@ -1,6 +1,6 @@
-CPPSC		<-	function(	E.MeV.u,
+SPIFF		<-	function(	E.MeV.u,
 						particle.no,
-						fluence.cm2.or.dose.Gy,
+						fluence.cm2,
 						material.no,
 						RDD.model,
 						RDD.parameters,
@@ -15,24 +15,17 @@ CPPSC		<-	function(	E.MeV.u,
 
 results.1	<-	AT.SC.get.f1.array.size(E.MeV.u = E.MeV.u,
 							particle.no = particle.no,
-							fluence.cm2.or.dose.Gy = fluence.cm2.or.dose.Gy,
+							fluence.cm2 = fluence.cm2,
 							material.no = material.no,
 							RDD.model = RDD.model,
 							RDD.parameters = RDD.parameters,
 							ER.model = ER.model,
 							ER.parameters = ER.parameters,
 							N2 = N2)
-						
-							
-results.u    <-  AT.total.u( E.MeV.u = E.MeV.u,
-                            particle.no = particle.no,
-                            fluence.cm2.or.dose.Gy = fluence.cm2.or.dose.Gy,  # AT.total.u takes as an argument only fluence, not dose !
-                            material.no = material.no,  
-                            er.model = ER.model)
-                                    
+
 results.2	<-	AT.SC.get.f1(	E.MeV.u = E.MeV.u,
 						particle.no = particle.no,
-						fluence.cm2.or.dose.Gy = fluence.cm2.or.dose.Gy,
+						fluence.cm2 = fluence.cm2,
 						material.no = material.no,
 						RDD.model = RDD.model,
 						RDD.parameters = RDD.parameters,
@@ -42,7 +35,7 @@ results.2	<-	AT.SC.get.f1(	E.MeV.u = E.MeV.u,
 						n.bins.f1 = results.1$n.bins.f1,
 						f1.parameters = results.1$f1.parameters)
 
-results.3	<-	AT.SC.get.f.array.size(	u = results.u,
+results.3	<-	AT.SC.get.f.array.size(	u = results.2$f.parameters[1],
 							fluence.factor = fluence.factor,
 							N2 = N2,
 							n.bins.f1 = results.1$n.bins.f1,
@@ -50,7 +43,7 @@ results.3	<-	AT.SC.get.f.array.size(	u = results.u,
 							f1.dd.Gy = results.2$f1$f1.dd.Gy,
 							f1 = results.2$f1$f1)
 
-results.4	<-	AT.SC.get.f.start(	u = results.u,
+results.4	<-	AT.SC.get.f.start(	u = results.2$f.parameters[1],
 							N2 = N2,
 							n.bins.f1 = results.1$n.bins.f1,
 							f1.d.Gy = results.2$f1$f1.d.Gy,
@@ -58,7 +51,7 @@ results.4	<-	AT.SC.get.f.start(	u = results.u,
 							f1 = results.2$f1$f1,
 							n.bins.f = results.3$n.bins.f)
 
-results.5	<-	AT.SC.SuccessiveConvolutions(	u = results.u,
+results.5	<-	AT.SC.SuccessiveConvolutions(	u = results.2$f.parameters[1],
 								n.bins.f = results.3$n.bins.f,
 								N2 = N2,
 								n.bins.f.used = results.1$n.bins.f1,
@@ -72,7 +65,9 @@ results.5	<-	AT.SC.SuccessiveConvolutions(	u = results.u,
 
 return(	list(		E.MeV.u = E.MeV.u,
 					particle.no = particle.no,
-					fluence.cm2.or.dose.Gy = fluence.cm2.or.dose.Gy,
+					fluence.cm2 = fluence.cm2,
+					norm.fluence = results.2$norm.fluence,
+					dose.contribution.Gy = results.2$dose.contribution.Gy,
 					material.no = material.no,
 					RDD.model = RDD.model,
 					RDD.parameters = RDD.parameters,
@@ -81,6 +76,7 @@ return(	list(		E.MeV.u = E.MeV.u,
 					N2.set = N2,
 					N2 = results.5$N2,
 					f1.parameters = results.1$f1.parameters,
+					f.parameters = results.2$f.parameters,
 					n.bins.f1 = results.2$n.bins.f1,
 					n.bins.f = results.3$n.bins.f,
 					n.bins.f.used = results.5$n.bins.f.used,

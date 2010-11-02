@@ -1,5 +1,6 @@
 /**
- * @brief Particle
+ * @file
+ * @brief ...
  */
 
 
@@ -8,9 +9,9 @@
  *    ==============
  *
  *    Created on: 09.01.2010
- *    Creator: kongruencja
+ *    Author: kongruencja
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -31,11 +32,9 @@
 
 #include "AT_DataParticle.h"
 
- long AT_particle_no_from_Z_and_A_single(  const long  Z,
-		const long  A){
-	assert((1 <= A) && (A <= 300));
-	assert((1 <= Z) && (Z <= 118));
-	return 1000 * Z + A;
+inline long AT_particle_no_from_Z_and_A_single(  const long  Z,
+    const long  A){
+  return 1000 * Z + A;
 }
 
 int AT_particle_no_from_Z_and_A( const long  n,
@@ -47,10 +46,10 @@ int AT_particle_no_from_Z_and_A( const long  n,
   for (i = 0; i < n; i++){
     particle_no[i]  =  AT_particle_no_from_Z_and_A_single(Z[i], A[i]);
   }
-  return AT_Success;
+  return 0;
 }
 
- long AT_A_from_particle_no_single(  const long  particle_no ){
+inline long AT_A_from_particle_no_single(  const long  particle_no ){
   long A = particle_no % 1000;
   if( (1 <= A) && (A <= 300)){
     return A;
@@ -68,21 +67,17 @@ int AT_A_from_particle_no( const long  n,
   long i;
   for (i = 0; i < n; i++){
     A[i]  =  AT_A_from_particle_no_single(particle_no[i]);
-    if( A[i] < 0 ){
-      return AT_Particle_Not_Defined;
-    }
   }
-  return AT_Success;
+  return 0;
 }
 
 
- long AT_Z_from_particle_no_single(  const long  particle_no ){
+inline long AT_Z_from_particle_no_single(  const long  particle_no ){
   long Z = particle_no / 1000;
   if( (1 <= Z) && (Z <= 118) ){
     return Z;
   } else {
-    printf( "Wrong particle number %ld, please provide it in correct format \n(XXXYYY, where XXX is Z (from 1 to 118) and YYY is A (from 1 to 300)\n", particle_no);
-    return -1;
+    printf( "Wrong particle number %ld, please provide it in correct format \n(XXXYYY, where XXX is Z (from 1 to 118) and YYY is A (from 1 to 300)\n", particle_no);    return -1;
   }
 }
 
@@ -94,11 +89,8 @@ int AT_Z_from_particle_no( const long  n,
   long i;
   for (i = 0; i < n; i++){
     Z[i]  =  AT_Z_from_particle_no_single(particle_no[i]);
-    if( Z[i] < 0){
-      return AT_Particle_Not_Defined;
-    }
   }
-  return AT_Success;
+  return 0;
 }
 
 
@@ -126,63 +118,9 @@ int AT_atomic_weight_from_particle_no( const long  n,
 
   free(Z);
   free(matches);
-  return AT_Success;
+  return 0;
 }
 
-
-int AT_particle_name_from_particle_no_single( const long  particle_no,
-    char * particle_name){
-
-	  long  Z = AT_Z_from_particle_no_single(  particle_no );
-	  long  A = AT_A_from_particle_no_single(  particle_no );
-
-	  long  match;
-
-	  find_elements_int(  &Z,
-			  1,
-			  AT_Particle_Data.Z,
-			  AT_Particle_Data.n,
-			  &match);
-
-	  sprintf(particle_name, "%ld", A);
-	  if( match >= 0 ){
-		  strcat(particle_name, AT_Particle_Data.element_acronym[match]);
-	  } else {
-		  const char * unknown_acronym = "??";
-		  strcat(particle_name, unknown_acronym);
-	  }
-
-	  return AT_Success;
-}
-
-
-long AT_particle_no_from_particle_name_single( const char particle_name[PARTICLE_NAME_NCHAR]){
-	assert( particle_name != NULL);
-
-	char * literal_part = 0;
-	long A = strtol(particle_name,&literal_part,10);
-	if( (A == 0) && (*literal_part != 0)){
-		return -1;
-	}
-	if( A == 0){
-		return -1;
-	}
-
-	long match;
-	find_elements_char( (const char**)(&literal_part),
-			1,
-			AT_Particle_Data.element_acronym,
-			PARTICLE_DATA_N,
-			&match);
-
-	if( match == -1){
-		return -1;
-	}
-
-	long Z = AT_Particle_Data.Z[match];
-
-	return AT_particle_no_from_Z_and_A_single(Z, A);
-}
 
 
 int AT_particle_name_from_particle_no( const long  n,
@@ -221,21 +159,44 @@ int AT_particle_name_from_particle_no( const long  n,
   free(A);
   free(Z);
   free(matches);
-  return AT_Success;
+  return 0;
 }
 
 
+// TODO single particle method needed
 // TODO some comments needed
 int AT_particle_no_from_particle_name( const long  n,
     char * particle_name[],
     long particle_no[]){
 
-  assert( particle_name != NULL);
   long i;
+  char   any_character[30] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   for (i = 0; i < n; i++){
-	particle_no[i] = AT_particle_no_from_particle_name_single( particle_name[i] );
-	if( particle_no[i] < 0)
-		return AT_Particle_Not_Defined;
+    long split_pos = strcspn(particle_name[i], any_character);
+
+    char A_str[4] = "\0\0\0\0";
+    strncpy(A_str, particle_name[i], split_pos);
+    long A        = atol(A_str);
+
+    char element_acronym_str[1][PARTICLE_NAME_NCHAR];
+    strncpy(element_acronym_str[0], &particle_name[i][split_pos], PARTICLE_NAME_NCHAR - split_pos);
+    long  match = 0;
+    char** test = (char**)malloc(sizeof(char*));
+    *test = (char*)element_acronym_str[0];
+
+    find_elements_char( (const char**)test,
+        1,
+        AT_Particle_Data.element_acronym,
+        PARTICLE_DATA_N,
+        &match);
+
+    // TODO check if match != -1 !
+
+    long Z = AT_Particle_Data.Z[match];
+
+    particle_no[i] = AT_particle_no_from_Z_and_A_single(Z, A);
+
+    free(test);
   }
-  return AT_Success;
+  return 0;
 }

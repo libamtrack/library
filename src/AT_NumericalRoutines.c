@@ -1,4 +1,5 @@
 /**
+ * @file
  * @brief Numerical routines
  */
 
@@ -7,9 +8,9 @@
  *    ==============
  *
  *    Created on: 8.01.2010
- *    Creator: kongruencja
+ *    Author: kongruencja
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -70,6 +71,7 @@ double AT_Dyx(  double  y,  double  x)
 
   return Dyx;
 }
+
 
 int pbdv_(double *v,
     double *x,
@@ -223,7 +225,7 @@ int pbdv_(double *v,
 } /* pbdv_ */
 
 
- double d_sign(const double a, const double b)
+inline double d_sign(const double a, const double b)
 {
   double x = (a >= 0 ? a : - a);
   return( b >= 0 ? x : -x);
@@ -549,12 +551,12 @@ void find_elements_char(const char** elements, const long n_elements, const char
   for (i = 0; i < n_elements; i++){
     matches[i] = 0;
 
-    while ( strcmp( set[matches[i]], elements[i]) != 0 ){
+    while ((strcmp( set[matches[i]], elements[i]) != 0) && (matches[i] < n_set)){
       matches[i]++;
-      if( matches[i] == n_set ){
-    	  matches[i] = -1;
-    	  break;
-      }
+    }
+
+    if (matches[i] == n_set) {
+      matches[i] = -1;
     }
   }
 }
@@ -585,20 +587,18 @@ void is_element_int(const long element, const long set[], const long n_set, bool
   }
 }
 
-
- double AT_sum(     const long n,
+double AT_sum(     const long n,
               const double data[])
 {
   long i;
-  double sum = 0.0;
+  double sum = 0.0f;
   for (i = 0; i < n; i++){
     sum += data[i];
   }
-  return sum;
+  return(sum);
 }
 
-
- void AT_normalize(     const long n,
+void AT_normalize(     const long n,
                     const double data[],
                     double normalized_data[])
 {

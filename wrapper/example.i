@@ -16,6 +16,8 @@
  
  /* If you need to interface new function, add it here */
  
+ extern void AT_PrintName(  void);
+ extern int AT_GetNumber(  void);
 
 /************************ R ******************************/
 /* SWIG does not support (yet) passing of arrays between */

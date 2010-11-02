@@ -2,6 +2,7 @@
 #define AT_DATALET_H_
 
 /**
+ * @file
  * @brief LET tables and access routines
  */
 
@@ -9,7 +10,7 @@
  *    AT_DataLET.h
  *    ==================
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -30,28 +31,20 @@
 
 #include <stdlib.h>
 
-#include "AT_Error.h"
 #include "AT_DataParticle.h"
 #include "AT_PhysicsRoutines.h"
-#include "AT_DataMaterial.h"
 
 /**
- * Defines the total number of data entries in PSTAR structure below
+ * Total number of elements in data table
  */
-#define PSTAR_DATA_N_PER_MATERIAL       132
-#define PSTAR_DATA_N                    PSTAR_DATA_N_PER_MATERIAL * MATERIAL_DATA_N
+#define PSTAR_DATA_N    792                             /* number of materials * 132 */
+
+// TODO implement method for getting LET of one particle
 
 /**
- * Enumerator for the LET data source
- */
-enum AT_LET_data_source{
-  User_Defined_Data    = 0, /**< To be defined by the user during runtime >**/
-  PowerLaw             = 1, /**< Liquid water */
-  PSTAR                = 2  /**< Aluminium oxide */
-};
-
-/**
- * Structure definition for PSTAR stopping power data
+ * PSTAR data, based on ICRU Report 49
+ * Tabulated data for protons with energies between 1keV and 10GeV (132 kinetic energies)
+ * See http://physics.nist.gov/PhysRefData/Star/Text/intro.html
  */
 typedef struct {
   const long     n;                                     /** number of items in local PSTAR data table */
@@ -63,17 +56,16 @@ typedef struct {
   const double   range_proj_g_cm2[PSTAR_DATA_N];        /** Projected range */
   const double   detour_factor[PSTAR_DATA_N];           /** Detour factor (ratio of projected range to CSDA range) */
   const long     material_no[PSTAR_DATA_N];             /** Material number (see AT_DataMaterial.h) */
-} AT_pstar_data_struct;
+} pstar_data;
 
-/**
- * Structure to hold PSTAR stopping power data
- * Tabulated data for protons with energies between 1keV and 10GeV (132 kinetic energies),
- * based on ICRU Report 49
- * See http://physics.nist.gov/PhysRefData/Star/Text/intro.html
- * TODO Should be moved to external file
-*/
-static const AT_pstar_data_struct AT_PSTAR_Data = {
+
+//TODO needs to be moved to external file
+static const pstar_data AT_PSTAR_Data = {
     PSTAR_DATA_N,
+
+    ///////////////////////////////////////////////////////////////////////
+    // ENTER RESULTS FROM S-SCRIPT "FORMAT_PSTAR.DATA.BASE_FOR_C.SSC" HERE
+    // (and remove last comma!)
     {
         1.0000e-3f,    1.5000e-3f,    2.0000e-3f,    2.5000e-3f,    3.0000e-3f,    4.0000e-3f,    5.0000e-3f,    6.0000e-3f,    7.0000e-3f,    8.0000e-3f,
         9.0000e-3f,    1.0000e-2f,    1.2500e-2f,    1.5000e-2f,    1.7500e-2f,    2.0000e-2f,    2.2500e-2f,    2.5000e-2f,    2.7500e-2f,    3.0000e-2f,
@@ -155,22 +147,7 @@ static const AT_pstar_data_struct AT_PSTAR_Data = {
         1.500e+02f,             1.750e+02f,             2.000e+02f,             2.250e+02f,             2.500e+02f,             2.750e+02f,             3.000e+02f,             3.500e+02f,             4.000e+02f,             4.500e+02f,
         5.000e+02f,             5.500e+02f,             6.000e+02f,             6.500e+02f,             7.000e+02f,             7.500e+02f,             8.000e+02f,             8.500e+02f,             9.000e+02f,             9.500e+02f,
         1.000e+03f,             1.500e+03f,             2.000e+03f,             2.500e+03f,             3.000e+03f,             4.000e+03f,             5.000e+03f,             6.000e+03f,             7.000e+03f,             8.000e+03f,
-        9.000e+03f,             1.000e+04f,
-		1.000e-03f,		1.500e-03f,		2.000e-03f,		2.500e-03f,		3.000e-03f,		4.000e-03f,		5.000e-03f,		6.000e-03f,		7.000e-03f,		8.000e-03f, 
-		9.000e-03f,		1.000e-02f,		1.250e-02f,		1.500e-02f,		1.750e-02f,		2.000e-02f,		2.250e-02f,		2.500e-02f,		2.750e-02f,		3.000e-02f, 
-		3.500e-02f,		4.000e-02f,		4.500e-02f,		5.000e-02f,		5.500e-02f,		6.000e-02f,		6.500e-02f,		7.000e-02f,		7.500e-02f,		8.000e-02f, 
-		8.500e-02f,		9.000e-02f,		9.500e-02f,		1.000e-01f,		1.250e-01f,		1.500e-01f,		1.750e-01f,		2.000e-01f,		2.250e-01f,		2.500e-01f, 
-		2.750e-01f,		3.000e-01f,		3.500e-01f,		4.000e-01f,		4.500e-01f,		5.000e-01f,		5.500e-01f,		6.000e-01f,		6.500e-01f,		7.000e-01f, 
-		7.500e-01f,		8.000e-01f,		8.500e-01f,		9.000e-01f,		9.500e-01f,		1.000e+00f,		1.250e+00f,		1.500e+00f,		1.750e+00f,		2.000e+00f, 
-		2.250e+00f,		2.500e+00f,		2.750e+00f,		3.000e+00f,		3.500e+00f,		4.000e+00f,		4.500e+00f,		5.000e+00f,		5.500e+00f,		6.000e+00f, 
-		6.500e+00f,		7.000e+00f,		7.500e+00f,		8.000e+00f,		8.500e+00f,		9.000e+00f,		9.500e+00f,		1.000e+01f,		1.250e+01f,		1.500e+01f, 
-		1.750e+01f,		2.000e+01f,		2.500e+01f,		2.750e+01f,		3.000e+01f,		3.500e+01f,		4.000e+01f,		4.500e+01f,		5.000e+01f,		5.500e+01f, 
-		6.000e+01f,		6.500e+01f,		7.000e+01f,		7.500e+01f,		8.000e+01f,		8.500e+01f,		9.000e+01f,		9.500e+01f,		1.000e+02f,		1.250e+02f, 
-		1.500e+02f,		1.750e+02f,		2.000e+02f,		2.250e+02f,		2.500e+02f,		2.750e+02f,		3.000e+02f,		3.500e+02f,		4.000e+02f,		4.500e+02f, 
-		5.000e+02f,		5.500e+02f,		6.000e+02f,		6.500e+02f,		7.000e+02f,		7.500e+02f,		8.000e+02f,		8.500e+02f,		9.000e+02f,		9.500e+02f, 
-		1.000e+03f,		1.500e+03f,		2.000e+03f,		2.500e+03f,		3.000e+03f,		4.000e+03f,		5.000e+03f,		6.000e+03f,		7.000e+03f,		8.000e+03f, 
-		9.000e+03f,		1.000e+04f 
-
+        9.000e+03f,             1.000e+04f
     },
     {
         1.3370e2f,    1.6380e2f,    1.8910e2f,    2.1140e2f,    2.3160e2f,    2.6750e2f,    2.9900e2f,    3.2760e2f,    3.5380e2f,    3.7820e2f,
@@ -253,21 +230,7 @@ static const AT_pstar_data_struct AT_PSTAR_Data = {
         4.411e+00f,             3.974e+00f,             3.642e+00f,             3.382e+00f,             3.173e+00f,             3.001e+00f,             2.858e+00f,             2.632e+00f,             2.463e+00f,             2.332e+00f,
         2.228e+00f,             2.144e+00f,             2.075e+00f,             2.017e+00f,             1.968e+00f,             1.927e+00f,             1.891e+00f,             1.860e+00f,             1.833e+00f,             1.810e+00f,
         1.789e+00f,             1.674e+00f,             1.635e+00f,             1.622e+00f,             1.621e+00f,             1.631e+00f,             1.648e+00f,             1.665e+00f,             1.682e+00f,             1.697e+00f,
-        1.712e+00f,             1.726e+00f,
-		1.197e+02f,		1.467e+02f,		1.693e+02f,		1.893e+02f,		2.074e+02f,		2.395e+02f,		2.678e+02f,		2.933e+02f,		3.168e+02f,		3.387e+02f, 
-		3.592e+02f,		3.787e+02f,		4.170e+02f,		4.504e+02f,		4.801e+02f,		5.067e+02f,		5.307e+02f,		5.526e+02f,		5.724e+02f,		5.905e+02f, 
-		6.221e+02f,		6.483e+02f,		6.700e+02f,		6.877e+02f,		7.020e+02f,		7.132e+02f,		7.217e+02f,		7.278e+02f,		7.319e+02f,		7.341e+02f, 
-		7.348e+02f,		7.340e+02f,		7.320e+02f,		7.290e+02f,		7.029e+02f,		6.672e+02f,		6.291e+02f,		5.922e+02f,		5.583e+02f,		5.278e+02f, 
-		5.006e+02f,		4.763e+02f,		4.349e+02f,		4.012e+02f,		3.733e+02f,		3.498e+02f,		3.297e+02f,		3.121e+02f,		2.964e+02f,		2.824e+02f, 
-		2.699e+02f,		2.587e+02f,		2.485e+02f,		2.391e+02f,		2.306e+02f,		2.227e+02f,		1.911e+02f,		1.682e+02f,		1.508e+02f,		1.370e+02f, 
-		1.258e+02f,		1.164e+02f,		1.085e+02f,		1.017e+02f,		9.063e+01f,		8.192e+01f,		7.488e+01f,		6.905e+01f,		6.414e+01f,		5.994e+01f, 
-		5.630e+01f,		5.312e+01f,		5.031e+01f,		4.781e+01f,		4.557e+01f,		4.355e+01f,		4.171e+01f,		4.004e+01f,		3.349e+01f,		2.892e+01f, 
-		2.554e+01f,		2.293e+01f,		1.914e+01f,		1.773e+01f,		1.652e+01f,		1.460e+01f,		1.312e+01f,		1.194e+01f,		1.098e+01f,		1.019e+01f, 
-		9.514e+00f,		8.938e+00f,		8.440e+00f,		8.003e+00f,		7.618e+00f,		7.275e+00f,		6.968e+00f,		6.691e+00f,		6.441e+00f,		5.474e+00f, 
-		4.815e+00f,		4.337e+00f,		3.975e+00f,		3.690e+00f,		3.462e+00f,		3.274e+00f,		3.117e+00f,		2.870e+00f,		2.686e+00f,		2.544e+00f, 
-		2.431e+00f,		2.340e+00f,		2.265e+00f,		2.203e+00f,		2.151e+00f,		2.107e+00f,		2.069e+00f,		2.036e+00f,		2.008e+00f,		1.984e+00f, 
-		1.962e+00f,		1.850e+00f,		1.820e+00f,		1.818e+00f,		1.828e+00f,		1.861e+00f,		1.898e+00f,		1.933e+00f,		1.967e+00f,		1.998e+00f, 
-		2.026e+00f,		2.052e+00f 
+        1.712e+00f,             1.726e+00f
     },
     {
         4.3150e1f,    3.4600e1f,    2.9270e1f,    2.5570e1f,    2.2810e1f,    1.8940e1f,    1.6310e1f,    1.4390e1f,    1.2920e1f,    1.1750e1f,
@@ -350,21 +313,7 @@ static const AT_pstar_data_struct AT_PSTAR_Data = {
         1.270e-03f,             1.097e-03f,             9.661e-04f,             8.637e-04f,             7.814e-04f,             7.137e-04f,             6.571e-04f,             5.675e-04f,             4.999e-04f,             4.470e-04f,
         4.045e-04f,             3.695e-04f,             3.403e-04f,             3.154e-04f,             2.940e-04f,             2.754e-04f,             2.591e-04f,             2.446e-04f,             2.318e-04f,             2.202e-04f,
         2.098e-04f,             1.431e-04f,             1.091e-04f,             8.845e-05f,             7.453e-05f,             5.690e-05f,             4.616e-05f,             3.892e-05f,             3.369e-05f,             2.973e-05f,
-        2.663e-05f,             2.413e-05f,
-		2.163e+01f,		1.840e+01f,		1.614e+01f,		1.446e+01f,		1.314e+01f,		1.120e+01f,		9.825e+00f,		8.786e+00f,		7.970e+00f,		7.310e+00f, 
-		6.762e+00f,		6.300e+00f,		5.404e+00f,		4.751e+00f,		4.253e+00f,		3.858e+00f,		3.536e+00f,		3.269e+00f,		3.042e+00f,		2.848e+00f, 
-		2.531e+00f,		2.282e+00f,		2.082e+00f,		1.917e+00f,		1.777e+00f,		1.659e+00f,		1.556e+00f,		1.466e+00f,		1.387e+00f,		1.316e+00f, 
-		1.253e+00f,		1.196e+00f,		1.145e+00f,		1.098e+00f,		9.142e-01f,		7.861e-01f,		6.914e-01f,		6.183e-01f,		5.600e-01f,		5.124e-01f, 
-		4.727e-01f,		4.390e-01f,		3.850e-01f,		3.435e-01f,		3.105e-01f,		2.836e-01f,		2.612e-01f,		2.423e-01f,		2.261e-01f,		2.119e-01f, 
-		1.995e-01f,		1.885e-01f,		1.787e-01f,		1.699e-01f,		1.620e-01f,		1.548e-01f,		1.270e-01f,		1.080e-01f,		9.404e-02f,		8.340e-02f, 
-		7.500e-02f,		6.818e-02f,		6.254e-02f,		5.778e-02f,		5.021e-02f,		4.444e-02f,		3.989e-02f,		3.621e-02f,		3.317e-02f,		3.061e-02f, 
-		2.843e-02f,		2.654e-02f,		2.490e-02f,		2.345e-02f,		2.217e-02f,		2.102e-02f,		1.999e-02f,		1.905e-02f,		1.547e-02f,		1.304e-02f, 
-		1.128e-02f,		9.953e-03f,		8.066e-03f,		7.372e-03f,		6.790e-03f,		5.870e-03f,		5.173e-03f,		4.627e-03f,		4.187e-03f,		3.826e-03f, 
-		3.523e-03f,		3.265e-03f,		3.043e-03f,		2.850e-03f,		2.681e-03f,		2.531e-03f,		2.397e-03f,		2.277e-03f,		2.169e-03f,		1.754e-03f, 
-		1.475e-03f,		1.274e-03f,		1.122e-03f,		1.003e-03f,		9.075e-04f,		8.289e-04f,		7.631e-04f,		6.591e-04f,		5.806e-04f,		5.191e-04f, 
-		4.697e-04f,		4.291e-04f,		3.951e-04f,		3.663e-04f,		3.414e-04f,		3.198e-04f,		3.009e-04f,		2.841e-04f,		2.691e-04f,		2.557e-04f, 
-		2.436e-04f,		1.661e-04f,		1.267e-04f,		1.027e-04f,		8.655e-05f,		6.608e-05f,		5.362e-05f,		4.520e-05f,		3.913e-05f,		3.453e-05f, 
-		3.093e-05f,		2.803e-05f 
+        2.663e-05f,             2.413e-05f
     },
     {
         1.7690e2f,    1.9840e2f,    2.1840e2f,    2.3700e2f,    2.5440e2f,    2.8640e2f,    3.1530e2f,    3.4200e2f,    3.6670e2f,    3.9000e2f,
@@ -447,21 +396,7 @@ static const AT_pstar_data_struct AT_PSTAR_Data = {
          4.412e+00f,             3.975e+00f,             3.643e+00f,             3.383e+00f,             3.174e+00f,             3.002e+00f,             2.858e+00f,             2.633e+00f,             2.464e+00f,             2.333e+00f,
          2.229e+00f,             2.144e+00f,             2.075e+00f,             2.017e+00f,             1.968e+00f,             1.927e+00f,             1.891e+00f,             1.860e+00f,             1.833e+00f,             1.810e+00f,
          1.789e+00f,             1.675e+00f,             1.635e+00f,             1.622e+00f,             1.621e+00f,             1.631e+00f,             1.648e+00f,             1.665e+00f,             1.682e+00f,             1.697e+00f,
-         1.712e+00f,             1.726e+00f,
-		1.414e+02f,		1.651e+02f,		1.855e+02f,		2.038e+02f,		2.206e+02f,		2.507e+02f,		2.776e+02f,		3.021e+02f,		3.248e+02f,		3.460e+02f, 
-		3.660e+02f,		3.850e+02f,		4.224e+02f,		4.552e+02f,		4.843e+02f,		5.106e+02f,		5.343e+02f,		5.558e+02f,		5.755e+02f,		5.934e+02f, 
-		6.246e+02f,		6.506e+02f,		6.721e+02f,		6.897e+02f,		7.038e+02f,		7.149e+02f,		7.233e+02f,		7.293e+02f,		7.333e+02f,		7.355e+02f, 
-		7.360e+02f,		7.352e+02f,		7.332e+02f,		7.301e+02f,		7.038e+02f,		6.680e+02f,		6.298e+02f,		5.928e+02f,		5.589e+02f,		5.284e+02f, 
-		5.011e+02f,		4.767e+02f,		4.353e+02f,		4.015e+02f,		3.736e+02f,		3.501e+02f,		3.300e+02f,		3.123e+02f,		2.967e+02f,		2.826e+02f, 
-		2.701e+02f,		2.589e+02f,		2.486e+02f,		2.393e+02f,		2.308e+02f,		2.229e+02f,		1.912e+02f,		1.683e+02f,		1.509e+02f,		1.371e+02f, 
-		1.258e+02f,		1.165e+02f,		1.086e+02f,		1.018e+02f,		9.068e+01f,		8.197e+01f,		7.492e+01f,		6.909e+01f,		6.417e+01f,		5.997e+01f, 
-		5.633e+01f,		5.315e+01f,		5.033e+01f,		4.783e+01f,		4.559e+01f,		4.357e+01f,		4.173e+01f,		4.006e+01f,		3.351e+01f,		2.894e+01f, 
-		2.555e+01f,		2.294e+01f,		1.915e+01f,		1.773e+01f,		1.653e+01f,		1.460e+01f,		1.312e+01f,		1.194e+01f,		1.099e+01f,		1.019e+01f, 
-		9.517e+00f,		8.942e+00f,		8.443e+00f,		8.006e+00f,		7.620e+00f,		7.277e+00f,		6.970e+00f,		6.693e+00f,		6.443e+00f,		5.475e+00f, 
-		4.816e+00f,		4.338e+00f,		3.976e+00f,		3.691e+00f,		3.462e+00f,		3.275e+00f,		3.118e+00f,		2.871e+00f,		2.687e+00f,		2.544e+00f, 
-		2.431e+00f,		2.340e+00f,		2.266e+00f,		2.203e+00f,		2.151e+00f,		2.107e+00f,		2.069e+00f,		2.037e+00f,		2.008e+00f,		1.984e+00f, 
-		1.963e+00f,		1.850e+00f,		1.820e+00f,		1.818e+00f,		1.828e+00f,		1.861e+00f,		1.898e+00f,		1.934e+00f,		1.967e+00f,		1.998e+00f, 
-		2.026e+00f,		2.052e+00f 
+         1.712e+00f,             1.726e+00f
    },
     {
         0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,
@@ -544,21 +479,7 @@ static const AT_pstar_data_struct AT_PSTAR_Data = {
         1.951e+01f,             2.549e+01f,             3.207e+01f,             3.920e+01f,             4.684e+01f,             5.494e+01f,             6.348e+01f,             8.174e+01f,             1.014e+02f,             1.223e+02f,
         1.442e+02f,             1.671e+02f,             1.908e+02f,             2.153e+02f,             2.404e+02f,             2.660e+02f,             2.922e+02f,             3.189e+02f,             3.460e+02f,             3.734e+02f,
         4.012e+02f,             6.918e+02f,             9.945e+02f,             1.302e+03f,             1.610e+03f,             2.226e+03f,             2.836e+03f,             3.439e+03f,             4.037e+03f,             4.629e+03f,
-        5.215e+03f,             5.797e+03f,
-		9.857e-06f,		1.310e-05f,		1.595e-05f,		1.852e-05f,		2.088e-05f,		2.512e-05f,		2.891e-05f,		3.236e-05f,		3.555e-05f,		3.853e-05f, 
-		4.134e-05f,		4.400e-05f,		5.019e-05f,		5.588e-05f,		6.120e-05f,		6.623e-05f,		7.101e-05f,		7.560e-05f,		8.002e-05f,		8.430e-05f, 
-		9.250e-05f,		1.003e-04f,		1.079e-04f,		1.152e-04f,		1.224e-04f,		1.295e-04f,		1.364e-04f,		1.433e-04f,		1.501e-04f,		1.569e-04f, 
-		1.637e-04f,		1.705e-04f,		1.773e-04f,		1.842e-04f,		2.190e-04f,		2.554e-04f,		2.940e-04f,		3.349e-04f,		3.783e-04f,		4.244e-04f, 
-		4.730e-04f,		5.241e-04f,		6.340e-04f,		7.538e-04f,		8.830e-04f,		1.021e-03f,		1.169e-03f,		1.324e-03f,		1.489e-03f,		1.661e-03f, 
-		1.842e-03f,		2.032e-03f,		2.229e-03f,		2.434e-03f,		2.646e-03f,		2.867e-03f,		4.082e-03f,		5.479e-03f,		7.051e-03f,		8.792e-03f, 
-		1.070e-02f,		1.276e-02f,		1.499e-02f,		1.737e-02f,		2.258e-02f,		2.839e-02f,		3.478e-02f,		4.173e-02f,		4.925e-02f,		5.731e-02f, 
-		6.592e-02f,		7.506e-02f,		8.474e-02f,		9.493e-02f,		1.056e-01f,		1.169e-01f,		1.286e-01f,		1.408e-01f,		2.094e-01f,		2.899e-01f, 
-		3.820e-01f,		4.855e-01f,		7.252e-01f,		8.609e-01f,		1.007e+00f,		1.330e+00f,		1.691e+00f,		2.091e+00f,		2.528e+00f,		3.001e+00f, 
-		3.509e+00f,		4.052e+00f,		4.628e+00f,		5.236e+00f,		5.876e+00f,		6.548e+00f,		7.250e+00f,		7.983e+00f,		8.744e+00f,		1.297e+01f, 
-		1.786e+01f,		2.334e+01f,		2.937e+01f,		3.590e+01f,		4.290e+01f,		5.033e+01f,		5.816e+01f,		7.490e+01f,		9.293e+01f,		1.121e+02f, 
-		1.322e+02f,		1.532e+02f,		1.749e+02f,		1.973e+02f,		2.203e+02f,		2.437e+02f,		2.677e+02f,		2.921e+02f,		3.168e+02f,		3.418e+02f, 
-		3.672e+02f,		6.311e+02f,		9.041e+02f,		1.179e+03f,		1.454e+03f,		1.996e+03f,		2.528e+03f,		3.050e+03f,		3.563e+03f,		4.067e+03f, 
-		4.564e+03f,		5.054e+03f 
+        5.215e+03f,             5.797e+03f
     },
     {
         0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,    0.0000e0f,
@@ -641,21 +562,7 @@ static const AT_pstar_data_struct AT_PSTAR_Data = {
         1.948e+01f,             2.545e+01f,             3.203e+01f,             3.915e+01f,             4.677e+01f,             5.487e+01f,             6.340e+01f,             8.164e+01f,             1.013e+02f,             1.221e+02f,
         1.441e+02f,             1.669e+02f,             1.906e+02f,             2.150e+02f,             2.401e+02f,             2.658e+02f,             2.920e+02f,             3.186e+02f,             3.457e+02f,             3.731e+02f,
         4.009e+02f,             6.912e+02f,             9.939e+02f,             1.301e+03f,             1.609e+03f,             2.224e+03f,             2.834e+03f,             3.438e+03f,             4.035e+03f,             4.627e+03f,
-        5.214e+03f,             5.795e+03f,
-		3.257e-06f,		4.925e-06f,		6.577e-06f,		8.189e-06f,		9.759e-06f,		1.277e-05f,		1.563e-05f,		1.834e-05f,		2.094e-05f,		2.342e-05f, 
-		2.580e-05f,		2.810e-05f,		3.356e-05f,		3.869e-05f,		4.356e-05f,		4.822e-05f,		5.269e-05f,		5.701e-05f,		6.120e-05f,		6.527e-05f, 
-		7.313e-05f,		8.069e-05f,		8.800e-05f,		9.513e-05f,		1.021e-04f,		1.090e-04f,		1.158e-04f,		1.226e-04f,		1.293e-04f,		1.360e-04f, 
-		1.426e-04f,		1.493e-04f,		1.561e-04f,		1.628e-04f,		1.972e-04f,		2.333e-04f,		2.715e-04f,		3.121e-04f,		3.553e-04f,		4.010e-04f, 
-		4.493e-04f,		5.002e-04f,		6.095e-04f,		7.287e-04f,		8.573e-04f,		9.951e-04f,		1.142e-03f,		1.297e-03f,		1.461e-03f,		1.633e-03f, 
-		1.813e-03f,		2.002e-03f,		2.198e-03f,		2.402e-03f,		2.614e-03f,		2.834e-03f,		4.046e-03f,		5.438e-03f,		7.006e-03f,		8.742e-03f, 
-		1.064e-02f,		1.270e-02f,		1.492e-02f,		1.730e-02f,		2.250e-02f,		2.829e-02f,		3.466e-02f,		4.161e-02f,		4.910e-02f,		5.715e-02f, 
-		6.574e-02f,		7.486e-02f,		8.452e-02f,		9.469e-02f,		1.054e-01f,		1.166e-01f,		1.283e-01f,		1.405e-01f,		2.089e-01f,		2.893e-01f, 
-		3.813e-01f,		4.845e-01f,		7.238e-01f,		8.593e-01f,		1.005e+00f,		1.327e+00f,		1.688e+00f,		2.088e+00f,		2.524e+00f,		2.996e+00f, 
-		3.504e+00f,		4.045e+00f,		4.620e+00f,		5.228e+00f,		5.867e+00f,		6.538e+00f,		7.239e+00f,		7.970e+00f,		8.731e+00f,		1.295e+01f, 
-		1.783e+01f,		2.330e+01f,		2.933e+01f,		3.585e+01f,		4.284e+01f,		5.026e+01f,		5.809e+01f,		7.481e+01f,		9.282e+01f,		1.119e+02f, 
-		1.320e+02f,		1.530e+02f,		1.747e+02f,		1.971e+02f,		2.200e+02f,		2.435e+02f,		2.674e+02f,		2.918e+02f,		3.165e+02f,		3.415e+02f, 
-		3.668e+02f,		6.306e+02f,		9.035e+02f,		1.178e+03f,		1.453e+03f,		1.995e+03f,		2.527e+03f,		3.049e+03f,		3.561e+03f,		4.066e+03f, 
-		4.563e+03f,		5.053e+03f 
+        5.214e+03f,             5.795e+03f
     },
     {
         4.5550e-1f,    4.9060e-1f,    5.1970e-1f,    5.4400e-1f,    5.6470e-1f,    5.9860e-1f,    6.2540e-1f,    6.4730e-1f,    6.6560e-1f,    6.8130e-1f,
@@ -738,119 +645,95 @@ static const AT_pstar_data_struct AT_PSTAR_Data = {
         9.985e-01f,             9.986e-01f,             9.986e-01f,             9.986e-01f,             9.987e-01f,             9.987e-01f,             9.987e-01f,             9.988e-01f,             9.988e-01f,             9.988e-01f,
         9.989e-01f,             9.989e-01f,             9.989e-01f,             9.989e-01f,             9.990e-01f,             9.990e-01f,             9.990e-01f,             9.990e-01f,             9.991e-01f,             9.991e-01f,
         9.991e-01f,             9.992e-01f,             9.993e-01f,             9.994e-01f,             9.994e-01f,             9.995e-01f,             9.996e-01f,             9.996e-01f,             9.996e-01f,             9.997e-01f,
-        9.997e-01f,             9.997e-01f,
-		3.304e-01f,		3.760e-01f,		4.123e-01f,		4.421e-01f,		4.674e-01f,		5.084e-01f,		5.406e-01f,		5.669e-01f,		5.889e-01f,		6.078e-01f, 
-		6.242e-01f,		6.387e-01f,		6.686e-01f,		6.923e-01f,		7.118e-01f,		7.281e-01f,		7.420e-01f,		7.542e-01f,		7.648e-01f,		7.743e-01f, 
-		7.906e-01f,		8.041e-01f,		8.156e-01f,		8.256e-01f,		8.343e-01f,		8.420e-01f,		8.490e-01f,		8.553e-01f,		8.611e-01f,		8.664e-01f, 
-		8.712e-01f,		8.758e-01f,		8.800e-01f,		8.839e-01f,		9.005e-01f,		9.133e-01f,		9.236e-01f,		9.320e-01f,		9.390e-01f,		9.450e-01f, 
-		9.500e-01f,		9.544e-01f,		9.614e-01f,		9.668e-01f,		9.710e-01f,		9.743e-01f,		9.770e-01f,		9.793e-01f,		9.812e-01f,		9.827e-01f, 
-		9.841e-01f,		9.852e-01f,		9.862e-01f,		9.871e-01f,		9.879e-01f,		9.886e-01f,		9.910e-01f,		9.926e-01f,		9.936e-01f,		9.943e-01f, 
-		9.949e-01f,		9.953e-01f,		9.956e-01f,		9.959e-01f,		9.963e-01f,		9.966e-01f,		9.968e-01f,		9.969e-01f,		9.971e-01f,		9.972e-01f, 
-		9.973e-01f,		9.973e-01f,		9.974e-01f,		9.975e-01f,		9.975e-01f,		9.976e-01f,		9.976e-01f,		9.976e-01f,		9.978e-01f,		9.979e-01f, 
-		9.979e-01f,		9.980e-01f,		9.981e-01f,		9.981e-01f,		9.981e-01f,		9.982e-01f,		9.982e-01f,		9.983e-01f,		9.983e-01f,		9.983e-01f, 
-		9.983e-01f,		9.984e-01f,		9.984e-01f,		9.984e-01f,		9.984e-01f,		9.984e-01f,		9.984e-01f,		9.985e-01f,		9.985e-01f,		9.985e-01f, 
-		9.986e-01f,		9.986e-01f,		9.986e-01f,		9.987e-01f,		9.987e-01f,		9.987e-01f,		9.987e-01f,		9.988e-01f,		9.988e-01f,		9.989e-01f, 
-		9.989e-01f,		9.989e-01f,		9.990e-01f,		9.990e-01f,		9.990e-01f,		9.990e-01f,		9.990e-01f,		9.991e-01f,		9.991e-01f,		9.991e-01f, 
-		9.991e-01f,		9.992e-01f,		9.993e-01f,		9.994e-01f,		9.994e-01f,		9.995e-01f,		9.996e-01f,		9.996e-01f,		9.997e-01f,		9.997e-01f, 
-		9.997e-01f,		9.997e-01f 
+        9.997e-01f,             9.997e-01f
     },
     {
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,    Water_Liquid,
-        Water_Liquid,    Water_Liquid,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,
-        Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum_Oxide,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,
-        Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    Aluminum,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,    PMMA,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,    Alanine,
-        Alanine,    Alanine,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,    LiF,
-        LiF,    LiF,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,    Air,
-        Air,    Air
-    }
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
+        2,    2,    2,    2,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
+        6,    6
+}
+
+
+    // END OF RESULTS FROM S-SCRIPT "FORMAT_PSTAR.DATA.BASE_FOR_C.SSC
+    ///////////////////////////////////////////////////////////////////////
 };
 
 /**
@@ -860,15 +743,15 @@ static const AT_pstar_data_struct AT_PSTAR_Data = {
  *
  * @param[in]  n             number of points to interpolate
  * @param[in]  x             array of x values for which interpolation is done
- * @param[in]  subset_no     TODO
+ * @param[in]  material_no
  * @param[in]  x_table       x part of data table
  * @param[in]  y_table       y part of data table
  * @param[out] y             array of interpolated y values
  */
-void get_table_value(
+void getPSTARvalue(
     const long    n,
     const double  x[],
-    const long    subset_no,
+    const long    material_no,
     const double  x_table[],
     const double  y_table[],
     double        y[]);
@@ -898,7 +781,7 @@ double AT_LET_MeV_cm2_g_single(  const double  E_MeV_u,
  * @see          AT_DataParticle.h for definition
  * @param[in]   material_no              material index
  * @see          AT_DataMaterial.h for definition
- * @param[out]  LET_MeV_cm2_g            LET returned (array of size number_of_particles)
+ * @param[out] LET_MeV_cm2_g
  */
 void AT_LET_MeV_cm2_g(  const long  number_of_particles,
     const double   E_MeV_u[],
@@ -906,16 +789,17 @@ void AT_LET_MeV_cm2_g(  const long  number_of_particles,
     const long     material_no,
     double         LET_MeV_cm2_g[]);
 
+
 /**
- * Returns LET [keV/um] scaled by density for set of particles with given energies
+ * Calculates LET [keV/um] scaled by density for set of particles with given energies
  *
  * @param[in]   number_of_particles      number of particle types in the mixed particle field
  * @param[in]   E_MeV_u                  energy of particles in the mixed particle field (array of size number_of_particles)
  * @param[in]   particle_no              type of the particles in the mixed particle field (array of size number_of_particles)
- * @see AT_DataParticle.h for definition
+ * @see          AT_DataParticle.h for definition
  * @param[in]   material_no              material index
- * @see AT_DataMaterial.h for definition
- * @param[out]  LET_keV_um               LET [keV/um] (array of size number_of_particles)
+ * @see          AT_DataMaterial.h for definition
+ * @param[out] LET_keV_um
  */
 void AT_LET_keV_um(  const long  number_of_particles,
     const double  E_MeV_u[],
@@ -932,7 +816,7 @@ void AT_LET_keV_um(  const long  number_of_particles,
  * @see          AT_DataParticle.h for definition
  * @param[in]   material_no              material index
  * @see          AT_DataMaterial.h for definition
- * @param[out]  CSDA_range_g_cm2         (array of size number_of_particles) to be allocated by the user which will be used to return the results
+ * @param[out]  CSDA_range_g_cm2         vector of size number_of_particles to be allocated by the user which will be used to return the results
  */
 void AT_CSDA_range_g_cm2(  const long  number_of_particles,
     const double   E_MeV_u[],
@@ -949,7 +833,8 @@ void AT_CSDA_range_g_cm2(  const long  number_of_particles,
  * @see          AT_DataParticle.h for definition
  * @param[in]   material_no              material index
  * @see          AT_DataMaterial.h for definition
- * @param[out]  CSDA_range_m            (array of size number_of_particles) to be allocated by the user which will be used to return the results
+ * @param[out]  CSDA_range_g_cm2         vector of size number_of_particles to be allocated by the user which will be used to return the results
+ * @return  none
  */
 void AT_CSDA_range_m(  const long  number_of_particles,
     const double  E_MeV_u[],
@@ -962,12 +847,12 @@ void AT_CSDA_range_m(  const long  number_of_particles,
  * Inverse function to CSDA range. Calculates energy for given CSDA range.
  *
  * @param[in]   number_of_particles      number of particle types in the mixed particle field
- * @param[in]   CSDA_range_g_cm2         CSDA range (array of size number_of_particles)
+ * @param[in]   CSDA_range_g_cm2         CSDA range
  * @param[in]   particle_no              type of the particles in the mixed particle field (array of size number_of_particles)
  * @see          AT_DataParticle.h for definition
  * @param[in]   material_no              material index
  * @see          AT_DataMaterial.h for definition
- * @param[out]  E_MeV                    energy (array of size number_of_particles)
+ * @param[out]  E_MeV energy (array of size number_of_particles)
  */
 void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
     const double  CSDA_range_g_cm2[],
@@ -976,69 +861,18 @@ void AT_E_MeV_from_CDSA_range(  const long  number_of_particles,
     double        E_MeV[]);
 
 /**
- * Inverse function to LET. Calculates energy for given LET. N.B. as multiple
- * energy values can yield the same LET the result of this function might not
- * be unique. It should only be used on the falling part of the LET/E curve
- * between approx. 1 and 500 MeV/u.
+ * TODO correct implementation - Zeff correction
  *
- * @param[in]   number_of_particles      number of particle types in the mixed particle field
- * @param[in]   LET_MeV_cm2_g            LET [MeV cm2/g] (array of size number_of_particles)
- * @param[in]   particle_no              type of the particles in the mixed particle field (array of size number_of_particles)
- * @see          AT_DataParticle.h for definition
- * @param[in]   material_no              material index
- * @see          AT_DataMaterial.h for definition
- * @param[out]  E_MeV                    energy (array of size number_of_particles)
+ * @param number_of_particles
+ * @param LET_MeV_cm2_g
+ * @param particle_no
+ * @param material_no
+ * @param E_MeV
  */
 void AT_E_MeV_from_LET(  const long  number_of_particles,
     const double  LET_MeV_cm2_g[],
     const long    particle_no[],
     const long    material_no,
     double        E_MeV[]);
-//TODO: include zeff correction!
-
-/**
- * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
- */
-long AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
-    const double        E_MeV_u[],
-    const long          particle_no[],
-    AT_single_material_data_struct         material,
-    double              LET_MeV_cm2_g[]);
-
-/**
- * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
- */
-double AT_new_LET_MeV_cm2_g_single(  const double        E_MeV_u,
-    const long          particle_no,
-    AT_single_material_data_struct         material);
-
-/**
- * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
- */
-double get_table_value_new( const double  x,
-    const long    n,
-    const double  x_table[],
-    const double  y_table[]);
-
-/**
- * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
- */
-int AT_establish_LET_data( AT_single_material_data_struct*  material);
-
-/**
- * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
- */
-double AT_CDSA_range_g_cm2_from_power_law_single(  const double E_MeV_u,
-     const long particle_no,
-     const double p_MeV,
-     const double alpha_g_cm2_MeV);
-
-/**
- * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
- */
-double AT_LET_MeV_cm2_g_from_power_law_single(  const double E_MeV_u,
-     const long particle_no,
-     const double p_MeV,
-     const double alpha_g_cm2_MeV);
 
 #endif /* AT_DATALET_H_ */

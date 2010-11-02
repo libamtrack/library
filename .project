@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>libamtrack</name>
+	<name>AmTrack_reorgan</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -18,10 +18,6 @@
 					<value>true</value>
 				</dictionary>
 				<dictionary>
-					<key>org.eclipse.cdt.make.core.autoBuildTarget</key>
-					<value>all</value>
-				</dictionary>
-				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildArguments</key>
 					<value></value>
 				</dictionary>
@@ -31,11 +27,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildLocation</key>
-					<value>${workspace_loc:/libamtrack/lib}</value>
-				</dictionary>
-				<dictionary>
-					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
-					<value>clean</value>
+					<value>${workspace_loc:/AmTrack_reorgan/AT_Release}</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.contents</key>
@@ -54,10 +46,6 @@
 					<value>true</value>
 				</dictionary>
 				<dictionary>
-					<key>org.eclipse.cdt.make.core.fullBuildTarget</key>
-					<value>all</value>
-				</dictionary>
-				<dictionary>
 					<key>org.eclipse.cdt.make.core.stopOnError</key>
 					<value>true</value>
 				</dictionary>
@@ -67,11 +55,20 @@
 				</dictionary>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
+				<dictionary>
+					<key>LaunchConfigHandle</key>
+					<value>&lt;project&gt;/.externalToolBuilders/org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder.launch</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.core.cnature</nature>
-		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
 </projectDescription>

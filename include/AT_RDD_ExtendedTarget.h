@@ -2,7 +2,8 @@
 #define AT_RDD_EXTENDEDTARGET_H_
 
 /**
- * @brief
+ * @file
+ * @brief Extended Target RDDs
  * File contains implementation of RDD
  * averaged over finite size, circular target of radius a0.
  * Here also inverse RDD (radius as function of dose) are implemented.
@@ -12,7 +13,7 @@
  *    AT_ExtendedTarget.h
  *    ===========================
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -51,7 +52,7 @@
  * @param[in]        t_m      distance at which segment length is calculated [m]
  * @return   Phi(r,a0,t)
  */
-double geometryFunctionPhi(         const double r_m,
+double          geometryFunctionPhi(         const double r_m,
     const double a0_m,
     const double t_m);
 
@@ -164,7 +165,7 @@ double AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy( const double 
  * @param Katz_point_coeff_Gy
  * @return
  */
-double AT_inverse_RDD_ExtendedTarget_KatzPoint_m( const double D_Gy,
+double  AT_inverse_RDD_ExtendedTarget_KatzPoint_m( const double D_Gy,
     const double r_min_m,
     const double max_electron_range_m,
     const double a0_m,
@@ -280,7 +281,7 @@ double AT_inverse_RDD_ExtendedTarget_CucinottaPoint_solver_function_Gy( const do
  * @param Cucinotta_plateau_Gy
  * @return
  */
-double AT_inverse_RDD_ExtendedTarget_CucinottaPoint_m( const double D_Gy,
+double  AT_inverse_RDD_ExtendedTarget_CucinottaPoint_m( const double D_Gy,
     const double  a0_m,
     const double  KatzPoint_r_min_m,
     const double  max_electron_range_m,

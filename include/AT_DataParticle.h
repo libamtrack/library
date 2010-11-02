@@ -2,6 +2,7 @@
 #define AT_DATAPARTICLE_H_
 
 /**
+ * @file
  * @brief Particle properties
  */
 
@@ -10,7 +11,7 @@
  *    AT_DataParticle.h
  *    ==============
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -32,12 +33,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
-#include "AT_Error.h"
 #include "AT_NumericalRoutines.h"
 
 #define PARTICLE_DATA_N    96
+
 
 #define PARTICLE_PROTON_NUMBER   1001
 
@@ -53,13 +53,13 @@ typedef struct {
   const char*     element_acronym[PARTICLE_DATA_N];
   const double    density_g_cm3[PARTICLE_DATA_N];
   const double    I_eV[PARTICLE_DATA_N];
-} AT_particle_data_struct;
+} particle_data;
 
 
 /**
  * TODO
  */
-static const AT_particle_data_struct AT_Particle_Data = {
+static const particle_data AT_Particle_Data = {
     PARTICLE_DATA_N,
     {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
@@ -138,7 +138,7 @@ static const AT_particle_data_struct AT_Particle_Data = {
 
 /**
  */
- long AT_particle_no_from_Z_and_A_single(  const long  Z,
+inline long AT_particle_no_from_Z_and_A_single(  const long  Z,
     const long  A);
 
 /**
@@ -156,7 +156,7 @@ int AT_particle_no_from_Z_and_A( const long  n,
  * @param particle_no
  * @return A
  */
- long AT_A_from_particle_no_single(  const long  particle_no );
+inline long AT_A_from_particle_no_single(  const long  particle_no );
 
 
 /**
@@ -176,7 +176,7 @@ int AT_A_from_particle_no(  const long  n,
  * @param particle_no
  * @return Z
  */
- long AT_Z_from_particle_no_single(  const long  particle_no );
+inline long AT_Z_from_particle_no_single(  const long  particle_no );
 
 
 /**
@@ -208,46 +208,21 @@ int AT_atomic_weight_from_particle_no(  const long  n,
  */
 #define PARTICLE_NAME_NCHAR 6
 
-/**
- * Returns particle index name for given particle index number
- * @param[in]  particle index number
- * @param[out] corresponding particle name
- * @return status
- */
-int AT_particle_name_from_particle_no_single( const long  particle_no,
-    char * particle_name);
 
 /**
- * Returns particle index number for given particle name
- * @param[in]  particle index name
- * @param[out] corresponding particle number
- * @return status
- */
-long AT_particle_no_from_particle_name_single( const char particle_name[PARTICLE_NAME_NCHAR]);
-
-
-/**
- * Returns particle index numbers for given particle names
+ * TODO
  * @param[in]  n
- * @param[in]  particle index numbers (array of size n)
- * @param[out] corresponding particle names (array of size n)
- * @return status
+ * @param[in]  particle_no
+ * @param[out] particle_name
+ * @return
  */
 int AT_particle_name_from_particle_no(const long  n,
     const long  particle_no[],
     char particle_name[][PARTICLE_NAME_NCHAR]);
 
 
-/**
- * Returns particle names for given particle numbers
- * @param[in]  n
- * @param[in]  particle names (array of size n)
- * @param[out] corresponding particle names (array of size n)
- * @return status
- */
 int AT_particle_no_from_particle_name( const long  n,
     char * particle_name[],
     long particle_no[]);
-
 
 #endif /* AT_DATAPARTICLE_H_ */

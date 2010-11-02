@@ -1,4 +1,5 @@
 /**
+ * @file
  * @brief Radial Dose Distribution models
  */
 
@@ -7,9 +8,9 @@
  *    ========
  *
  *    Created on: 05.04.2010
- *    Creator: kongruencja
+ *    Author: kongruencja
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -32,7 +33,7 @@
 
 /* --------------------------------------------------- SHELL AVERAGE DOSE ---------------------------------------------------*/
 
- double   AT_RDD_Katz_LinearER_Daverage_Gy(  const double r1_m,
+inline double   AT_RDD_Katz_LinearER_Daverage_Gy(  const double r1_m,
     const double r2_m,
     const double max_electron_range_m,
     const double Katz_point_coeff_Gy){
@@ -185,30 +186,6 @@ double   AT_RDD_Cucinotta_Cnorm( const double r_min_m,
 }
 
 
-double   AT_RDD_Geiss_average_Gy(  const double r1_m,
-    const double r2_m,
-    const double a0_m,
-    const double max_electron_range_m,
-    const double norm_Gy){
-
-  if( (r2_m > max_electron_range_m) || (r1_m > max_electron_range_m) || (r1_m > r2_m) || (r1_m < 0.0) ){
-    printf("wrong parameters given to AT_RDD_Geiss_average_Gy\n");
-    return 0.0;
-  }
-
-  // Dav(r1,r2) = 1/ (pi r2^2 - pi r1^2) * \int_r1^r2 D(r) 2 pi r dr
-
-  if( r2_m <= a0_m ){
-    return norm_Gy;
-  } else if ( (r1_m < a0_m ) && ( r2_m > a0_m ) ) {
-    return (norm_Gy / (gsl_pow_2(r2_m) - gsl_pow_2(r1_m)) ) * ( gsl_pow_2(a0_m) - gsl_pow_2(r1_m) + 2.0 * gsl_pow_2(a0_m) * log( r2_m / a0_m ));
-  } else if ( r1_m >= a0_m ){
-    return (norm_Gy / (gsl_pow_2(r2_m) - gsl_pow_2(r1_m)) ) * 2.0 * gsl_pow_2(a0_m) * log( r2_m / r1_m );
-  }
-  return 0.0;
-}
-
-
 /* --------------------------------------------------- dEdx IN OUTER SHELL ---------------------------------------------------*/
 
 
@@ -279,7 +256,7 @@ double   AT_RDD_Katz_PowerLawER_DSite_Gy( const double r_m,
 }
 
 
- double  AT_RDD_KatzSite_Gy( const double r_m,
+inline double  AT_RDD_KatzSite_Gy( const double r_m,
     const double r_min_m,
     const double max_electron_range_m,
     const double a0_m,

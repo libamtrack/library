@@ -1,7 +1,7 @@
 ################################################################################################
 # R test script for implemented RDD models
 ################################################################################################
-# Copyright 2006, 2010 The libamtrack team
+# Copyright 2006, 2009 Steffen Greilich / the libamtrack team
 # 
 # This file is part of the AmTrack program (libamtrack.sourceforge.net).
 #
@@ -25,9 +25,7 @@
 rm( list = ls() )
 
 # load libAmTrack library
-try(dyn.load("../../lib/libamtrack.dll"))
-try(dyn.load("../../lib/libamtrack.so"))
-try(dyn.load("../../lib/libamtrack.dylib"))
+dyn.load("../../AT_Release/libAmTrack.dll")
 
 # load wrapping scripts
 source("../../wrapper/R/AmTrack.R")

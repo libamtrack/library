@@ -1,4 +1,4 @@
-################################################################################################
+################o G################################################################################
 # S/R wrapping function interfacing libamtrack library
 ################################################################################################
 # This script replaces (together with the libamtrack.dll) the old S-Plus or mixed S-Plus/C-versions
@@ -7,7 +7,7 @@
 # Some function are not yet implemented in the
 # library as C-code but here in S/R
 #
-# Copyright 2006, 2010 The libamtrack team
+# Copyright 2006, 2009 Steffen Greilich / the libamtrack team
 # 
 # This file is part of the AmTrack program (libamtrack.sourceforge.net).
 #
@@ -44,38 +44,27 @@
 #              new (but non-SWIG) access from R to the library. As the old version of AmTrack.R
 #              is kept in the repository (pre-rev 304) function can be copied into the new 
 #              script whenever needed
-# 2010-Jun-01: Added IGK methode, and variable names for all methods' result arrays
+################################################################################################
+
+################################################################################################
+# FUNCTION LIST
+#
+# AT.gamma.response                          looks OK, to be tested
+# AT.LET.MeV.cm2.g                           OK
+# AT.max.E.transfer.MeV                      OK
+# AT.max.electron.range                      OK
+# AT.RDD.D.Gy                                OK
+# AT.RDD.D.ext.Gy                            OK
+# AT.SC.get.f1.array.size				     OK
+# AT.SC.get.f1								 OK
+# AT.SC.get.f.array.size                     OK
+# AT.Katz.inactivation.probability           to be tested TODO
+# AT.Katz.inactivation.cross.section.m2      to be tested
+# 
 ################################################################################################
 
 debug 		<- F
-AT.version 	<- "libamtrack S/R wrapping script - 2010/07/21"
-
-##########################
-AT.convert.beam.parameters	<-	function(	N 				= 0,
-											FWHM.mm			= 0,
-											fluence.cm2		= 0,
-											sigma.cm		= 0){
-	n					<-	max(length(N), length(FWHM.mm), length(fluence.cm2), length(sigma.cm))
-	if(N == 0){
-		N					<-	numeric(n)
-	}
-	if(FWHM.mm == 0){
-		FWHM.mm				<-	numeric(n)
-	}
-	if(fluence.cm2 == 0){
-		fluence.cm2			<-	numeric(n)
-	}
-	if(sigma.cm == 0){
-		sigma.cm			<-	numeric(n)
-	}
-	
-	res					<-	.C(	"AT_convert_beam_parameters_R",						n					=	as.integer(n),
-																					fluence.cm2			=	as.single(fluence.cm2),
-																					sigma.cm			=	as.single(sigma.cm),
-																					N					=	as.single(N),
-																					FWHM.mm				=	as.single(FWHM.mm))
-	return(res)						
-}
+AT.version 	<- "libamtrack S/R wrapping script - 2010/03/23"
 
 #################
 AT.CSDA.range.g.cm2		<-	function(	E.MeV.u,
@@ -91,24 +80,6 @@ AT.CSDA.range.g.cm2		<-	function(	E.MeV.u,
 	return(res$CSDA.range.g.cm2)						
 }
 
-#############
-AT.D.Gy					<-	function(	E.MeV.u,
-										particle.no,
-										fluence.cm2,
-										material.no){
-	n					<-	length(E.MeV.u)
-	D.Gy			<-	numeric(n)
-  		
-    res					<-	.C(	"AT_D_Gy_R",	n						=	as.integer(n),
-												E.MeV.u					=	as.single(E.MeV.u),
-												particle.no				=	as.integer(particle.no),
-												fluence.cm2				=	as.single(fluence.cm2),
-												material.no				=	as.integer(material.no),
-												D.Gy					=	as.single(D.Gy))		
-			
-	 return(res$D.Gy)						
-}
-
 ###########
 AT.D.RDD.Gy					<-	function(	r.m,
 											E.MeV.u,
@@ -119,7 +90,7 @@ AT.D.RDD.Gy					<-	function(	r.m,
 											RDD.parameters){
 	n					<-	length(r.m)
 	D.Gy				<-	numeric(n)
-
+  		
     res					<-	.C(	"AT_D_RDD_Gy_R",	n						=	as.integer(n),
 													r.m						=	as.single(r.m),
 													E.MeV.u					=	as.single(E.MeV.u),
@@ -133,65 +104,10 @@ AT.D.RDD.Gy					<-	function(	r.m,
 	 return(res$D.Gy)						
 }
 
-###########
-AT.RDD.f1.parameters.mixed.field					<-	function(	E.MeV.u,
-											particle.no,
-											material.no,
-											ER.model,
-											RDD.model,
-											RDD.parameters){
-	AT.SC.F1.PARAMETERS.SINGLE.LENGTH	<-	8
-	n						<-	length(E.MeV.u)
-	f1.parameters				<-	numeric(n * AT.SC.F1.PARAMETERS.SINGLE.LENGTH)
-  		
-    res					<-	.C(	"AT_RDD_f1_parameters_mixed_field_R",	n						=	as.integer(n),
-													E.MeV.u					=	as.single(E.MeV.u),
-													particle.no				=	as.integer(particle.no),
-													material.no				=	as.integer(material.no),
-													RDD.model				=	as.integer(RDD.model),
-													RDD.parameters			=	as.single(RDD.parameters),
-													ER.model				=	as.integer(ER.model),
-													f1.parameters			=	as.single(f1.parameters))		
-			
-	df					<-	data.frame(	LET.MeV.cm2.g			= numeric(0),
-									r.min.m				= numeric(0),
-									r.max.m				= numeric(0),
-									d.min.Gy				= numeric(0),
-									d.max.Gy				= numeric(0),
-									normalization.constant		= numeric(0),
-									single.impact.fluence.cm2	= numeric(0),
-									single.impact.dose.Gy		= numeric(0))
-
-	for(i in 1:n){
-		# i <- 2
-		df[i,]	<-	res$f1.parameters[(((i - 1) * AT.SC.F1.PARAMETERS.SINGLE.LENGTH)+1):(i * AT.SC.F1.PARAMETERS.SINGLE.LENGTH)]
-	}
-	
-	return(df)						
-}
-
-#############
-AT.fluence.cm2			<-	function(	E.MeV.u,
-										particle.no,
-										D.Gy,
-										material.no){
-	n					<-	length(E.MeV.u)
-	fluence.cm2			<-	numeric(n)
-  		
-    res					<-	.C(	"AT_fluence_cm2_R",	n						=	as.integer(n),
-												E.MeV.u					=	as.single(E.MeV.u),
-												particle.no				=	as.integer(particle.no),
-												D.Gy					=	as.single(D.Gy),
-												material.no				=	as.integer(material.no),
-												fluence.cm2				=	as.single(fluence.cm2))		
-			
-	 return(res$fluence.cm2)						
-}
-
 ##################
 AT.run.GSM.method	<-	function(	E.MeV.u,
 									particle.no,
-									fluence.cm2.or.dose.Gy,
+									fluence.cm2,
 									material.no,
 									RDD.model,
 									RDD.parameters,
@@ -199,6 +115,8 @@ AT.run.GSM.method	<-	function(	E.MeV.u,
 									gamma.model,
 									gamma.parameters,
 									N.runs,
+									N2,
+									fluence.factor,
 									write.output,
 									nX,
 									voxel.size.m,
@@ -207,37 +125,30 @@ AT.run.GSM.method	<-	function(	E.MeV.u,
 		res				<-	.C(	"AT_run_GSM_method_R",	n					= 	as.integer(length(E.MeV.u)),
 														E.MeV.u				=	as.single(E.MeV.u),
 														particle.no			=	as.integer(particle.no),
-														fluence.cm2.or.dose.Gy			=	as.single(fluence.cm2.or.dose.Gy),
+														fluence.cm2			=	as.single(fluence.cm2),
 														material.no			=	as.integer(material.no),
 														RDD.model			=	as.integer(RDD.model),
 														RDD.parameters		=	as.single(RDD.parameters),
 														ER.model			=	as.integer(ER.model),
 														gamma.model			=	as.integer(gamma.model),
 														gamma.parameters	=	as.single(gamma.parameters),
-														N.runs				=	as.integer(N.runs),
+														N.runs				=	as.single(N.runs),
+														N2					=	as.integer(N2),
+														fluence.factor		=	as.single(fluence.factor),
 														write.output		=	as.integer(write.output),
 														nX					=	as.integer(nX),
 														voxel.size.m		=	as.single(voxel.size.m),
 														lethal.events.mode 	= 	as.integer(lethal.events.mode),
 														results				=	as.single(results))
 		results			<-	res$results
-		names(results)		<-	c(	"efficiency", 
-								"D.check.Gy", 
-								"response.HCP", 
-								"response.gamma", 
-								"n.particles",	
-								"err.efficiency", 
-								"err.D.check.Gy", 
-								"err.response.HCP", 
-								"err.response.gamma", 
-								"err.n.particles")
+	
 	return(results)
 }
 											
 ##################
-AT.run.CPPSC.method	<-	function(	E.MeV.u,
+AT.run.SPIFF.method	<-	function(	E.MeV.u,
 									particle.no,
-									fluence.cm2.or.dose.Gy,
+									fluence.cm2,
 									material.no,
 									RDD.model,
 									RDD.parameters,
@@ -255,10 +166,10 @@ AT.run.CPPSC.method	<-	function(	E.MeV.u,
 		results			<-	numeric(10)
 		N2.tmp			<-	numeric(1)
 		N2.tmp			<-	N2
-		res				<-	.C(	"AT_run_CPPSC_method_R",	n					= 	as.integer(length(E.MeV.u)),
+		res				<-	.C(	"AT_run_SPIFF_method_R",	n					= 	as.integer(length(E.MeV.u)),
 															E.MeV.u				=	as.single(E.MeV.u),
 															particle.no			=	as.integer(particle.no),
-															fluence.cm2.or.dose.Gy			=	as.single(fluence.cm2.or.dose.Gy),
+															fluence.cm2			=	as.single(fluence.cm2),
 															material.no			=	as.integer(material.no),
 															RDD.model			=	as.integer(RDD.model),
 															RDD.parameters		=	as.single(RDD.parameters),
@@ -274,69 +185,16 @@ AT.run.CPPSC.method	<-	function(	E.MeV.u,
 															lethal.events.mode 	= 	as.integer(lethal.events.mode),
 															results				=	as.single(results))
 		results			<-	res$results
-		names(results)		<-	c(	"efficiency", 
-								"D.check.Gy", 
-								"response.HCP", 
-								"response.gamma", 
-								"---",	
-								"u", 
-								"u.start", 
-								"n.convolutions", 
-								"lower.Jensen.bound", 
-								"upper.Jensen.bound")
 	
 	return(results)
 }
-
 											
-##################
-AT.run.IGK.method	<-	function(	E.MeV.u,
-									particle.no,
-									fluence.cm2.or.dose.Gy,
-									material.no,
-									RDD.model,
-									RDD.parameters,
-									ER.model,
-									gamma.model,
-									gamma.parameters,
-									saturation.cross.section.factor,
-									write.output){
-	
-		results			<-	numeric(10)
-		res				<-	.C(	"AT_run_IGK_method_R",		n					= 	as.integer(length(E.MeV.u)),
-															E.MeV.u				=	as.single(E.MeV.u),
-															particle.no			=	as.integer(particle.no),
-															fluence.cm2.or.dose.Gy			=	as.single(fluence.cm2.or.dose.Gy),
-															material.no			=	as.integer(material.no),
-															RDD.model			=	as.integer(RDD.model),
-															RDD.parameters		=	as.single(RDD.parameters),
-															ER.model			=	as.integer(ER.model),
-															gamma.model			=	as.integer(gamma.model),
-															gamma.parameters	=	as.single(gamma.parameters),
-															saturation.cross.section.factor 	=	as.single(saturation.cross.section.factor),
-															write.output		=	as.integer(write.output),
-															results				=	as.single(results))
-		results			<-	res$results
-		names(results)		<-	c(	"efficiency", 
-								"---", 
-								"response.HCP", 
-								"response.gamma", 
-								"---",	
-								"ion.cross.section.cm2", 
-								"gamma.dose.Gy", 
-								"pi.Ion", 
-								"pi.Gamma", 
-								"---")
-	
-	return(results)
-}
-						
+
 
 #################
 AT.gamma.response	<-	function(	d.Gy,
 										gamma.model,
-										gamma.parameters,
-										lethal.events.mode = F){
+										gamma.parameters){
 											
 	n						<-	length(d.Gy)
 	S						<-	numeric(n)
@@ -344,7 +202,6 @@ AT.gamma.response	<-	function(	d.Gy,
 																d.Gy				= as.single(d.Gy),
 																gamma.model			= as.integer(gamma.model),
 																gamma.parameters	= as.single(gamma.parameters),
-																lethal.events.mode	= as.integer(lethal.events.mode),
 																S					= as.single(S))
 	return(res$S)
 }
@@ -415,20 +272,6 @@ AT.LET.MeV.cm2.g		<-	function(	E.MeV.u,
 	return(res$LET.MeV.cm2.g)						
 }
 
-#################
-AT.LET.keV.um		<-	function(	E.MeV.u,
-										particle.no,
-										material.no){
-	n					<-	length(E.MeV.u)
-	LET.keV.um			<-	numeric(n)
-	res					<-	.C(	"AT_LET_keV_um_R",			n					=	as.integer(n),
-															E.MeV.u				=	as.single(E.MeV.u),
-															particle.no			=	as.integer(particle.no),
-															material.no			=	as.integer(material.no),
-															LET.keV.um			=	as.single(LET.keV.um))
-	return(res$LET.keV.um)						
-}
-
 #####################
 AT.max.E.transfer.MeV		<-	function(	E.MeV.u ){
 	n							<-	length(E.MeV.u)
@@ -484,36 +327,6 @@ AT.particle.no.from.particle.name		<-	function(		particle.name ){
 }
 
 #################################
-AT.material.name.from.material.no		<-	function(		material.no){
-
-	n					<-	length(material.no)
-	material.name		<-	character(n)
-	
-	for (i in 1:n){
-		cur.material.name	<-	character(1)
-		res					<-	.C("AT_material_name_from_number_R", 		material.no				= as.integer(material.no[i]),
-																	material.name			= as.character(cur.material.name))
-		material.name[i]	<-	res$material.name
-	}		
-	return(material.name)
-}
-	
-#################################	
-AT.material.no.from.material.name		<-	function(		material.name ){
-
-	n					<-	length(material.name)
-	material.no		<-	numeric(n)
-	
-	for (i in 1:n){
-		cur.material.no	<-	numeric(1)
-		res					<-	.C("AT_material_number_from_name_R", 		material.name				= as.character(material.name[i]),  
-																	 material.no			= as.integer(cur.material.no))
-		material.no[i]	<-	res$material.no
-	}		
-	return(material.no)
-}
-
-#################################
 AT.particle.no.from.Z.and.A		<-	function(	Z, A){
 
 	n					<-	length(Z)
@@ -555,7 +368,7 @@ AT.r.RDD.m					<-	function(	D.Gy,
 #######################
 AT.SC.get.f1.array.size		<-	function(		E.MeV.u,
 												particle.no,
-												fluence.cm2.or.dose.Gy,  # TODO this parameter is not needed !
+												fluence.cm2,
 												material.no,
 												RDD.model,
 												RDD.parameters,
@@ -563,6 +376,7 @@ AT.SC.get.f1.array.size		<-	function(		E.MeV.u,
 												N2){
 											
 	n				<-	length(E.MeV.u)
+	f1.parameters	<-	numeric(8 * n)
 	n.bins.f1 <- 0
 	
 	res				<-	.C("AT_SC_get_f1_array_size_R", 	n					= as.integer(n),
@@ -573,15 +387,16 @@ AT.SC.get.f1.array.size		<-	function(		E.MeV.u,
 															RDD.parameters		= as.single(RDD.parameters),
 															ER.model			= as.integer(ER.model),
 															N2					= as.integer(N2),
-															n.bins.f1			= as.integer(n.bins.f1))
+															n.bins.f1			= as.integer(n.bins.f1),
+															f1.parameters		= as.single(f1.parameters))
 		
-	return(res)
+	return(list(n.bins.f1 = res$n.bins.f1, f1.parameters = res$f1.parameters))
 }
 
 ############
 AT.SC.get.f1		<-	function(		E.MeV.u,
 										particle.no,
-										fluence.cm2.or.dose.Gy,
+										fluence.cm2,
 										material.no,
 										RDD.model,
 										RDD.parameters,
@@ -591,7 +406,12 @@ AT.SC.get.f1		<-	function(		E.MeV.u,
 										f1.parameters){
 
 	n								<-	length(E.MeV.u)
-		
+	
+	f.parameters					<-	numeric(7)
+	
+	norm.fluence					<-	numeric(n)
+	dose.contribution.Gy			<-	numeric(n)
+	
 	f1.d.Gy							<-	numeric(n.bins.f1)
 	f1.dd.Gy						<-	numeric(n.bins.f1)
 	f1								<-	numeric(n.bins.f1)	
@@ -599,7 +419,7 @@ AT.SC.get.f1		<-	function(		E.MeV.u,
 	res				<-	.C("AT_SC_get_f1_R", 					n						= as.integer(n),
 																E.MeV.u					= as.single(E.MeV.u),
 																particle.no				= as.integer(particle.no),
-																fluence.cm2.or.dose.Gy	= as.single(fluence.cm2.or.dose.Gy),
+																fluence.cm2				= as.single(fluence.cm2),
 																material.no				= as.integer(material.no),
 																RDD.model				= as.integer(RDD.model),
 																RDD.parameters			= as.single(RDD.parameters),
@@ -607,11 +427,17 @@ AT.SC.get.f1		<-	function(		E.MeV.u,
 																N2						= as.integer(N2),
 																n.bins.f1				= as.integer(n.bins.f1),
 																f1.parameters			= as.single(f1.parameters),
+																norm.fluence			= as.single(norm.fluence),
+																dose.contribution.Gy	= as.single(dose.contribution.Gy),
+																f.parameters			= as.single(f.parameters),
 																f1.d.Gy					= as.single(f1.d.Gy),
 																f1.dd.Gy				= as.single(f1.dd.Gy),
 																f1						= as.single(f1))
 	
 	results	<-	list(	fluence.cm2					= 	res$fluence.cm2,
+						norm.fluence				= 	res$norm.fluence,
+						dose.contribution.Gy		= 	res$dose.contribution.Gy,
+						f.parameters				=	res$f.parameters,											
 						f1							=	data.frame(	f1.d.Gy						=	res$f1.d.Gy,
 																	f1.dd.Gy					=	res$f1.dd.Gy,
 																	f1							=	res$f1))
@@ -757,26 +583,6 @@ AT.SC.SuccessiveConvolutions		<-	function(	u,
 }
 
 #############
-AT.fluence.weighted.stopping.power.ratio.R					<-	function(	E.MeV.u,
-											particle.no,
-											fluence.cm2,
-											material.no,
-											reference.material.no){
-	n										<-	length(E.MeV.u)
-	fluence.weighted.stopping.power.ratio	<-	numeric(1)
-  		
-    res					<-	.C(	"AT_fluence_weighted_stopping_power_ratio_R",	n						=	as.integer(n),
-																				E.MeV.u					=	as.single(E.MeV.u),
-																				particle.no				=	as.integer(particle.no),
-																				fluence.cm2				=	as.single(fluence.cm2),
-																				material.no				=	as.integer(material.no),
-																				reference.material.no	=	as.integer(reference.material.no),
-																				result					=	as.single(fluence.weighted.stopping.power.ratio))		
-			
-	 return(res$result)						
-}
-
-#############
 AT.total.D.Gy					<-	function(	E.MeV.u,
 											particle.no,
 											fluence.cm2,
@@ -853,254 +659,6 @@ AT.Z.from.particle.no		<-	function(	particle.no){
 													Z						=	as.integer(Z))		
 			
 	 return(res$Z)						
-}
-
-###########################
-AT.fluence.weighted.E.MeV.u		<-	function(	E.MeV.u,
-												fluence.cm2)
-{
-	n							<-	length(E.MeV.u)
-	fluence.weighted.E.MeV.u	<-	numeric(1)
-    res					<-	.C(	"AT_fluence_weighted_E_MeV_u_R",	n							=	as.integer(n),
-																	E.MeV.u						=	as.single(E.MeV.u),
-																	fluence.cm2					=	as.single(fluence.cm2),
-																	fluence.weighted.E.MeV.u	=	as.single(fluence.weighted.E.MeV.u))		
-	
-	return(res$fluence.weighted.E.MeV.u)
-}
-								
-########################
-AT.dose.weighted.E.MeV.u		<-	function(	E.MeV.u,
-												particle.no,
-												fluence.cm2,
-												material.no)
-{
-	n							<-	length(E.MeV.u)
-	dose.weighted.E.MeV.u		<-	numeric(1)
-    res							<-	.C(	"AT_dose_weighted_E_MeV_u_R",	n							=	as.integer(n),
-																		E.MeV.u						=	as.single(E.MeV.u),
-																		particle.no					=	as.integer(particle.no),
-																		fluence.cm2					=	as.single(fluence.cm2),
-																		material.no					=	as.integer(material.no),
-																		dose.weighted.E.MeV.u		=	as.single(dose.weighted.E.MeV.u))		
-	return(res$dose.weighted.E.MeV.u)
-}
-			
-#################################
-AT.fluence.weighted.LET.MeV.cm2.g	<-	function(	E.MeV.u,
-													particle.no,
-													fluence.cm2,
-													material.no)
-{
-	n								<-	length(E.MeV.u)
-	fluence.weighted.LET.MeV.cm2.g	<-	numeric(1)
-    res								<-	.C(	"AT_fluence_weighted_LET_MeV_cm2_g_R",	n								=	as.integer(n),
-																					E.MeV.u							=	as.single(E.MeV.u),
-																					particle.no						=	as.integer(particle.no),
-																					fluence.cm2						=	as.single(fluence.cm2),
-																					material.no						=	as.integer(material.no),
-																					fluence.weighted.LET.MeV.cm2.g	=	as.single(fluence.weighted.LET.MeV.cm2.g))		
-	return(res$fluence.weighted.LET.MeV.cm2.g)
-}
-			
-##############################
-AT.dose.weighted.LET.MeV.cm2.g		<-	function(	E.MeV.u,
-													particle.no,
-													fluence.cm2,
-													material.no)
-{
-	n							<-	length(E.MeV.u)
-	dose.weighted.LET.MeV.cm2.g	<-	numeric(1)
-    res							<-	.C(	"AT_dose_weighted_LET_MeV_cm2_g_R",	n							=	as.integer(n),
-																			E.MeV.u						=	as.single(E.MeV.u),
-																			particle.no					=	as.integer(particle.no),
-																			fluence.cm2					=	as.single(fluence.cm2),
-																			material.no					=	as.integer(material.no),
-																			dose.weighted.LET.MeV.cm2.g	=	as.single(dose.weighted.LET.MeV.cm2.g))		
-	
-	return(res$dose.weighted.LET.MeV.cm2.g)
-}
-
-##############################
-AT.total.u      <-  function(   E.MeV.u,
-                                                    particle.no,
-                                                    fluence.cm2.or.dose.Gy,
-                                                    material.no,
-                                                    er.model)
-{
-    n                           <-  length(E.MeV.u)
-    u                           <-  numeric(1)
-    res                         <-  .C( "AT_total_u_R", n                           =   as.integer(n),
-                                                                            E.MeV.u                     =   as.single(E.MeV.u),
-                                                                            particle.no                 =   as.integer(particle.no),
-                                                                            fluence.cm2.or.dose.Gy                 =   as.single(fluence.cm2.or.dose.Gy),
-                                                                            material.no                 =   as.integer(material.no),
-                                                                            er.model                    =   as.integer(er.model),
-                                                                            u                           =   as.single(u))
-                                                                            
-
-    return(res$u)
-}
-
-##############################
-AT.u      <-  function(   E.MeV.u,
-                                                    particle.no,
-                                                    fluence.cm2.or.dose.Gy,
-                                                    material.no,
-                                                    er.model)
-{
-    n                           <-  length(E.MeV.u)
-    u_cur                          <-  numeric(1)
-    u	                          <-  numeric(n)
-    for (i in 1:n){
-		res                         <-  .C( "AT_total_u_R", n                           =   as.integer(1),
-                                                                           E.MeV.u                     =   as.single(E.MeV.u[i]),
-                                                                           particle.no                 =   as.integer(particle.no[i]),
-                                                                           fluence.cm2.or.dose.Gy                 =   as.single(fluence.cm2.or.dose.Gy[i]),
-                                                                            material.no                 =   as.integer(material.no),
-                                                                            er.model                    =   as.integer(er.model),
-                                                                            u                           =   as.single(u_cur))
-                                                                            
-		u[i]	<-	res$u
-	}
-    
-	return(u)
-}
-
-########################################
-AT.Bethe.Mass.Stopping.Power.MeV.cm2.g     <-  function(   E.MeV.u,
-                                                    particle.no,
-                                                    material.no,
-                                                    E.restricted.keV)
-{
-    n                           						<-  length(E.MeV.u)
-    Bethe.Mass.Stopping.Power.MeV.cm2.g                 <-  numeric(n)
-	res                         <-  .C( "AT_Bethe_Mass_Stopping_Power_MeV_cm2_g_R", n                           		=   as.integer(n),
-																					E.MeV.u                     		=   as.single(E.MeV.u),
-																					particle.no                 		=   as.integer(particle.no),
-																					material.no                 		=   as.integer(material.no),
-																					E.restricted.keV            		=   as.single(E.restricted.keV),
-																					Bethe.Mass.Stopping.Power.MeV.cm2.g =   as.single(Bethe.Mass.Stopping.Power.MeV.cm2.g))
-                                                                            
-	return(res$Bethe.Mass.Stopping.Power.MeV.cm2.g)
-}
-
-###############################
-AT.GSM.calculate.dose.histogram	<-	function(	E.MeV.u,
-									particle.no,
-									fluence.cm2.or.dose.Gy,
-									material.no,
-									RDD.model,
-									RDD.parameters,
-									ER.model,
-									nX,
-									pixel.size.m,
-									N.runs,
-									dose.bin.centers.Gy){
-	
-		n				<-	length(E.MeV.u)
-		n.bins			<-	length(dose.bin.centers.Gy)
-		
-		if(fluence.cm2.or.dose.Gy[1] < 0){
-			fluence.cm2.or.dose.Gy	<-	AT.fluence.cm2(	E.MeV.u,
-														particle.no,
-														-1.0 * fluence.cm2.or.dose.Gy,
-														material.no)	
-		}
-		
-		dose.frequency.Gy		<-	numeric(n.bins)
-		zero.dose.fraction	<-	numeric(1)
-
-		res				<-	.C(	"AT_GSM_calculate_dose_histogram_R",	n						= 	as.integer(n),
-																		E.MeV.u					=	as.single(E.MeV.u),
-																		fluence.cm2.or.dose.Gy	=	as.single(fluence.cm2.or.dose.Gy),
-																		particle.no				=	as.integer(particle.no),
-																		material.no				=	as.integer(material.no),
-																		RDD.model				=	as.integer(RDD.model),
-																		RDD.parameters			=	as.single(RDD.parameters),
-																		ER.model				=	as.integer(ER.model),
-																		nX						=	as.integer(nX),
-																		pixel.size.m			=	as.single(pixel.size.m),
-																		N.runs				=	as.integer(N.runs),
-																		number.of.bins			=	as.integer(n.bins),
-																		dose.bin.centers.Gy		=	as.single(dose.bin.centers.Gy),
-																		zero.dose.fraction		=	as.single(zero.dose.fraction),
-																		dose.frequency.Gy		=	as.single(dose.frequency.Gy))
-
-
-	results			<-	data.frame(		dose.bin.centers.Gy		= dose.bin.centers.Gy,
-										dose.frequency.Gy		= res$dose.frequency.Gy,
-										zero.dose.fraction		= rep(res$zero.dose.fraction, n.bins))
-
-	
-	return(results)
-}
-
-#########################################
-AT.GSM.calculate.multiple.dose.histograms	<-	function(	E.MeV.u,
-															particle.no,
-															fluence.cm2.or.dose.Gy,
-															material.no,
-															RDD.model,
-															RDD.parameters,
-															ER.model,
-															nX,
-															pixel.size.m,
-															N.runs,
-															N.repetitions,
-															dose.bin.centers.Gy){
-	
-		n				<-	length(E.MeV.u)
-		n.bins			<-	length(dose.bin.centers.Gy)
-		
-		if(fluence.cm2.or.dose.Gy[1] < 0){
-			fluence.cm2.or.dose.Gy	<-	AT.fluence.cm2(	E.MeV.u,
-														particle.no,
-														-1.0 * fluence.cm2.or.dose.Gy,
-														material.no)	
-		}
-		
-		dose.bin.widths.Gy		<-	numeric(n.bins)
-		mean.dose.frequency.Gy	<-	numeric(n.bins)
-		sd.dose.frequency.Gy	<-	numeric(n.bins)
-		mean.zero.dose.fraction	<-	numeric(1)
-		sd.zero.dose.fraction	<-	numeric(1)
-		mean.d.check.Gy			<-	numeric(1)
-		sd.d.check.Gy			<-	numeric(1)
-
-		res				<-	.C(	"AT_GSM_calculate_multiple_dose_histograms_R",	n						= 	as.integer(n),
-																				E.MeV.u					=	as.single(E.MeV.u),
-																				fluence.cm2.or.dose.Gy	=	as.single(fluence.cm2.or.dose.Gy),
-																				particle.no				=	as.integer(particle.no),
-																				material.no				=	as.integer(material.no),
-																				RDD.model				=	as.integer(RDD.model),
-																				RDD.parameters			=	as.single(RDD.parameters),
-																				ER.model				=	as.integer(ER.model),
-																				nX						=	as.integer(nX),
-																				pixel.size.m			=	as.single(pixel.size.m),
-																				N.runs					=	as.integer(N.runs),
-																				N.repetitions			=	as.integer(N.repetitions),
-																				number.of.bins			=	as.integer(n.bins),
-																				dose.bin.centers.Gy		=	as.single(dose.bin.centers.Gy),
-																				dose.bin.widths.Gy		=	as.single(dose.bin.widths.Gy),
-																				mean.d.check.Gy			=	as.single(mean.d.check.Gy),
-																				sd.d.check.Gy			=	as.single(sd.d.check.Gy),
-																				mean.zero.dose.fraction	=	as.single(mean.zero.dose.fraction),
-																				sd.zero.dose.fraction	=	as.single(sd.zero.dose.fraction),
-																				mean.dose.frequency.Gy	=	as.single(mean.dose.frequency.Gy),
-																				sd.dose.frequency.Gy	=	as.single(sd.dose.frequency.Gy))
-
-
-	results			<-	data.frame(		dose.bin.centers.Gy		= dose.bin.centers.Gy,
-										dose.bin.width.Gy		= res$dose.bin.widths.Gy,
-										mean.dose.frequency.Gy	= res$mean.dose.frequency.Gy,
-										sd.dose.frequency.Gy	= res$sd.dose.frequency.Gy,
-										mean.zero.dose.fraction	= rep(res$mean.zero.dose.fraction, n.bins),
-										sd.zero.dose.fraction	= rep(res$sd.zero.dose.fraction, n.bins),
-										mean.d.check.Gy			= rep(res$mean.d.check.Gy, n.bins),
-										sd.d.check.Gy			= rep(res$sd.d.check.Gy, n.bins))
-	
-	return(results)
 }
 
 
