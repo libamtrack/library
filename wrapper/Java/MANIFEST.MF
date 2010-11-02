@@ -1,3 +1,0 @@
-Manifest-Version: 1.2
-Main-Class: NewSwingApp
-Created-By: 1.4 (Sun Microsystems Inc.)
