@@ -161,7 +161,7 @@ for(i in 1:length(functions)){
 	para.out <- grep("out", para$type)
 	if(length(para.out) > 0){
 		for(i in para.out){
-			cur.description <- c(cur.description, paste("  \\item{", para$name[i], "}{", para$comment[i], "}", sep = ""))
+			cur.description <- c(cur.description, paste("  \\item{", para$name[i], "}{", gsub("_", ".", para$comment[i]), "}", sep = ""))
 		}
 	}
 
