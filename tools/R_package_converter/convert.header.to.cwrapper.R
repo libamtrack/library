@@ -29,7 +29,7 @@ source("type.conversion.R")
 
 load("functions.ssd")
 
-write("// Automatically created header file\n\n#include \"AmTrack.h\"\n#include <stdlib.h>\n#include <stdbool.h>\n", file = "./package/src/Rwrapper.h")
+write("#ifndef AT_WRAPPER_H_\n#define AT_WRAPPER_H_\n// Automatically created header file\n\n#include \"AmTrack.h\"\n#include <stdlib.h>\n#include <stdbool.h>\n", file = "./package/src/Rwrapper.h")
 
 write("// Automatically created header and body file\n\n#include \"Rwrapper.h\"\n", file = "./package/src/Rwrapper.c")
 
@@ -242,3 +242,5 @@ for(i in 1:length(functions)){
 	body <- c(body, "}\n\n")
 	write(body, file = "./package/src/Rwrapper.c", append = T)
 }
+
+write("#endif\n", file = "./package/src/Rwrapper.h", append = T)
