@@ -1,9 +1,9 @@
-#ifndef AT_GAMMARESPONSE_H_
-#define AT_GAMMARESPONSE_H_
+#ifndef AT_PARABOLICCYLINDER_H_
+#define AT_PARABOLICCYLINDER_H_
 
 /**
- *    AT_GammaResponse.h
- *    ==================
+ *    AT_ParabolicCylinderFunction.h
+ *    ==============================
  *
  *    Copyright 2006, 2009 Steffen Greilich / the libamtrack team
  *
@@ -30,25 +30,21 @@ extern int indent_counter;
 extern char isp[];
 extern FILE * debf;
 
+void AT_Funs(  float*  fz,
+        float*  fR0,
+        float*  fsigma,
+        float*  fni,
+        float*  funs);
 
-void AT_gamma_response(  long*  n,
-              float*  d_Gy,
-              long*  gamma_model,
-              float*  gamma_parameter,
-              // return
-              float*  S);
+void AT_fDyx(  float*  fy,
+        float*  fx,
+        float*  fDyx);
 
-void AT_get_gamma_response(  long*  n,
-                float*  d_Gy,
-                float*  dd_Gy,
-                float*  f,
-                float*  f0,
-                long*  gamma_model,
-                float*  gamma_parameter,
-                // return
-                float*  S,
-                float*  S_HCP,
-                float*  S_gamma,
-                float*  efficiency);
+double   d_sign(  double *a, double *b);
+int   pbdv_(  double *v, double *x, double *dv, double *dp, double *pdf, double *pdd);
+int   dvsa_(  double *va, double *x, double *pd);
+int   dvla_(  double *va, double *x, double *pd);
+int   vvla_(  double *va, double *x, double *pv);
+int   gamma_(  double *x, double *ga);
 
-#endif // AT_GAMMARESPONSE_H_
+#endif // AT_PARABOLICCYLINDER_H_
