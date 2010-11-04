@@ -2,14 +2,14 @@
 \alias{AT.SPC.tapply}
 \title{AT.SPC.tapply}
 \description{Similar to R's \code{tapply} this applies a function to cells defined by indices in a spc data object}
-\usage{AT.SPC.tapply( spc, INDEX, FUN, names.results = NULL, ...)
+\usage{AT.SPC.tapply( spc, INDEX, FUN, additional.argument = NULL, names.results = NULL)
 }
 \arguments{
   \item{spc}{ spc data}
   \item{INDEX}{ vector of column names in spc data that should be used as indices (indicating the cells).}
   \item{FUN}{ Function to be applied - preferably this is a libamtrack function obeying the standard naming of mixed field variables \code{\link{number.of.field.components}} and \code{\link{material.no}}. Additional arguments to \code{FUN} can be passed using \code{...})}
+  \item{additional.arguments}{ Optional additional arguments to \code{FUN}. This should be a list with a two-entry vector for each argument, e.g. for the primitive R function \code{mean(x)}: \code{additional.arguments = list(c("x", "E.MeV.u"))}}
   \item{names.results}{ optional vector with names for the returned values of \code{FUN}}
-  \item{...}{ Optional additional arguments to \code{FUN}}
 }
 \value{
   A data frame with the following columns:
@@ -33,4 +33,14 @@
 #                INDEX         = c("depth.g.cm2", "particle.no"), 
 #                FUN           = AT.total.D.Gy, 
 #                names.results = "D.Gy")
+# Compute the fluence with depth, but differentiate contribution
+# from individual particle species 
+# As 'mean' does not take any arguments obeying the mixed field naming
+# convention in libamtrack, but a vector "x",
+# one must specify this as additional argument
+# AT.SPC.tapply( spc                  = spc, 
+#                INDEX                = c("depth.g.cm2", "particle.no"), 
+#                FUN                  = mean,
+#                additional.arguments = list(c("x", "fluence.cm2")),
+#                names.results        = "fluence.cm2")
 }
