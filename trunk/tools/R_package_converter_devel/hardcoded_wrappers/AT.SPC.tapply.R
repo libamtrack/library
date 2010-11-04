@@ -1,4 +1,4 @@
-AT.SPC.tapply <- function( spc, INDEX, FUN, names.results = NULL, ...)
+AT.SPC.tapply <- function( spc, INDEX, FUN, additional.arguments = NULL, names.results = NULL)
 {
     ##############################
     # Get index columns and levels
@@ -35,6 +35,16 @@ AT.SPC.tapply <- function( spc, INDEX, FUN, names.results = NULL, ...)
                                     "material.no = AT.material.no.from.material.name(spc$target.name),",
                                     sep = "")
          }
+    }
+    if(!is.null(additional.arguments)){
+        for(j in 1:length(additional.arguments)){
+             args.list    <- paste( args.list, 
+                                    additional.arguments[[j]][1], 
+                                    " = spc$data$",
+                                    additional.arguments[[j]][2],
+                                    "[ii],",
+                                    sep = "")
+        }
     }
     args.list        <- paste(substring(args.list, 1, nchar(args.list) - 1), ")")
 
