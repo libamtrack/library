@@ -8,7 +8,7 @@
   \item{file.name}{ name of spc-file to be read (with extension).}
   \item{endian}{ byte-order in spc file, "big" or "little" depending on the machine of origin.}
   \item{mean}{ 0 if geometrical bin-mid should be used, 1 for arithmetic (default).}
-  \item{raw}{ if TRUE all data from spc file will be kept, if FALSE (default) the data frame will be reformatted for use with libamtrack, including using \code{\link{particle.no}} and \code{\link{material.name}} conventions.}
+  \item{raw}{ if TRUE all data from spc file will be kept, if FALSE (default) the data frame will be reformatted for use with libamtrack, including using \code{\link{particle.no}} and \code{\link{material.name}} conventions. N.B.: energy bins are represented by their bin-mids (\code{\link{E.MeV.u}} and the fluence is NOT normalized to bin-width (1/cm2 not 1/(cm2*MeV/u)).}
   \item{compress}{ if TRUE all entries with zero fluence will be removed to save memory.}
 }
 \value{

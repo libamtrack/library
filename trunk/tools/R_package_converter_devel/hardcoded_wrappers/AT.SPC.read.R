@@ -213,7 +213,7 @@ AT.SPC.read <- function( file.name,
        spc$data$E.MeV.u            <- spc$data$E.mid.MeV.u
        spc$data$E.mid.MeV.u        <- NULL
 
-       spc$data$fluence.cm2        <- spc$data$H
+       spc$data$fluence.cm2        <- spc$data$H * spc$data$DE.MeV.u
        spc$data$H                  <- NULL
 
        if(spc$target.name == "H2O"){
