@@ -10,14 +10,24 @@ import amtrackservice.shared.Config;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.visualization.client.VisualizationUtils;
-import com.google.gwt.visualization.client.visualizations.ScatterChart;
-import com.google.gwt.visualization.client.visualizations.ScatterChart.Options;
 import com.google.gwt.xml.client.impl.DOMParseException;
 
 /**
@@ -35,6 +45,10 @@ public class AmtrackService implements EntryPoint {
 
 	private ArrayList<Calculation> openCalculations = new ArrayList<Calculation>();
 
+	public interface AmtrackServiceResources extends ClientBundle {
+		  @Source("Play.png")
+		  ImageResource play();
+	}
 	
 	/**
 	 * This is the entry point method.
@@ -78,11 +92,36 @@ public class AmtrackService implements EntryPoint {
 	 * initializes the gui. the list of functions in the menu will be filled.
 	 */
 	public void initGui() {
-		gui.initMenu(getConfig().getTemplates().keySet().toArray(
-				new String[0]));
+		//gui.initMenu(getConfig().getTemplates().keySet().toArray(new String[0]));
+		AmtrackServiceResources resources = GWT.create(AmtrackServiceResources.class);
+		
+		VerticalPanel vp = new VerticalPanel();
+		vp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		vp.setSpacing(5);
+		for(String m : getConfig().getTemplates().keySet().toArray(new String[0])){
+				HorizontalPanel hPanel = new HorizontalPanel();
+			    hPanel.setSpacing(3);
+			    hPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+			    final String ms = m;
+			    ClickHandler ch = new ClickHandler() {					
+					@Override
+					public void onClick(ClickEvent event) {
+						openCalculation(ms);
+					}
+				};
+			    PushButton normalPushButton = new PushButton(new Image(resources.play()),ch);
+			    //normalPushButton.add
+			    hPanel.add(normalPushButton);
+			    HTML headerText = new HTML("start " + m + " calculations");
+			    hPanel.add(headerText);
+			    vp.add(hPanel);
+		}			
+		gui.addWidgetToLeftPanel(vp,"General");
+		gui.addWidgetToLeftPanel(new Label("none yet"),"Others");
 	}
 
-	
+
+
 	public void fetchTemplate(String templateName) {
 		String file = GWT.getModuleBaseURL() + URL_TEMPLATES + config.getTemplates().get(templateName);
 		Logger.info("Requesting file: "+file+" from Server");
@@ -155,7 +194,6 @@ public class AmtrackService implements EntryPoint {
 	}
 
 	public HashMap<String, String> getCalculationResult(long CalculationId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
