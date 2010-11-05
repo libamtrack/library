@@ -2,15 +2,16 @@ package amtrackservice.client.gui;
 
 import amtrackservice.client.AmtrackService;
 import amtrackservice.client.Logger;
+
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.DecoratedStackPanel;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,6 +27,7 @@ public class MainView {
 	private TextArea console;
 	private MenuBar menubar;
 	private MenuBar menuNew;
+	private DecoratedStackPanel leftPanel;
 
 	/**
 	 * Constructor of MainView
@@ -38,15 +40,19 @@ public class MainView {
 		
 		menubar = new MenuBar();
 		menuNew = new MenuBar(true);
-		menubar.addItem("New calculation", menuNew);
-		menubar.addSeparator();
+		//menubar.addItem("New calculation", menuNew);
+		//menubar.addSeparator();
 		menubar.addItem("Close current calculation", new CalculationClose());
 
 		tabPanel = new TabLayoutPanel(10, Unit.MM);
 		
 		SplitLayoutPanel rootPanel = new SplitLayoutPanel();
-		//rootPanel.addSouth(console,200);
-		//console.setSize("100%", "90%");
+		
+	    leftPanel = new DecoratedStackPanel();
+	    leftPanel.setWidth("300px");
+
+	    
+	    rootPanel.addWest(leftPanel,300);
 		DockLayoutPanel main = new DockLayoutPanel(Unit.MM);
 		main.addNorth(menubar, 5);
 		main.add(tabPanel);
@@ -66,6 +72,10 @@ public class MainView {
 	public void addTabPanel(Widget input, String name){
 		tabPanel.add(input,name);
 		tabPanel.selectTab(input);		
+	}
+	
+	public void addWidgetToLeftPanel(Widget w, String description){
+		leftPanel.add(w,description,true);
 	}
 	
 	/**
@@ -92,8 +102,7 @@ public class MainView {
 		
 	}
 	
-	private class CalculationClose implements Command{
-		
+	private class CalculationClose implements Command{		
 		@Override
 		public void execute() {
 			int index = tabPanel.getSelectedIndex();
@@ -106,8 +115,6 @@ public class MainView {
 		for(String m : array){
 			MenuItem mi = new MenuItem(m, new CalculationStart(m));
 			menuNew.addItem(mi);
-		}
-		
-		
+		}			
 	}
 }

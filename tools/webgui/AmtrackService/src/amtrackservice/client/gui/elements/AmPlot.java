@@ -1,6 +1,7 @@
 package amtrackservice.client.gui.elements;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import amtrackservice.client.MapList;
 import amtrackservice.client.gui.elements.ScatterChartLogAxis.AxisOptions;
@@ -23,7 +24,7 @@ public class AmPlot extends AmWidget {
 	private FlowPanel widget = new FlowPanel();
 	private ScatterChartLogAxis chart;
 	
-	private HashMap<Double, Double> values = new HashMap<Double, Double>();
+	private TreeMap<Double, Double> values = new TreeMap<Double, Double>();
 
 	public AmPlot(String label, String datatype, HTML description,
 			MapList<String, String> preset, String dataX, String dataY,
@@ -128,7 +129,7 @@ public class AmPlot extends AmWidget {
 		DataTable data = DataTable.create();
 		data.removeRows(0, data.getNumberOfRows());
 		data.addColumn(ColumnType.NUMBER, this.dataX);
-		data.addColumn(ColumnType.NUMBER, this.dataY);
+		data.addColumn(ColumnType.NUMBER, this.dataY);		
         for(Double d: this.values.keySet()){
         	int rowIndex = data.addRow();
         	data.setValue(rowIndex, 0, d);
