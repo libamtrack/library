@@ -27,8 +27,14 @@
 		<element type="combo" label="particle" datatype="long">
 			<entry>
 				<item key="Hydrogen" value="1001" />
-				<item key="Helium" value="2004" />
+				<item key="Helium-3" value="2003" />
+				<item key="Helium-4" value="2004" />
+				<item key="Berylium" value="4008" />
 				<item key="Carbon" value="6012" />
+				<item key="Oxygen" value="8016" />
+				<item key="Neon" value="10020" />
+				<item key="Iron" value="26056" />
+				<item key="Xeon" value="54132" />
 				<item key="Uranium" value="92238" />
 			</entry>
 			<description>particle[br]Default value is set to Hydrogen</description>
