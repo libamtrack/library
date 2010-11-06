@@ -25,8 +25,8 @@ public class Logger {
 	 * @param message the message to be logged
 	 */
 	public static void log(String message) {
-		if (mv != null);
-			mv.addConsoleLine(message);
+		//if (mv != null);
+		//	mv.addConsoleLine(message);
 	}
 	
 	/**
@@ -34,8 +34,8 @@ public class Logger {
 	 * @param message the message to be logged
 	 */
 	public static void info(String message) {
-		if (mv != null);
-			mv.addConsoleLine("[INFO]: "+message);
+		//if (mv != null);
+		//	mv.addConsoleLine("[INFO]: "+message);
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class Logger {
 	 * @param message the message to be logged
 	 */
 	public static void error(String message) {
-		if (mv != null);
-			mv.addConsoleLine("[ERROR]: "+message);
+		//if (mv != null);
+		//	mv.addConsoleLine("[ERROR]: "+message);
 	}
 }

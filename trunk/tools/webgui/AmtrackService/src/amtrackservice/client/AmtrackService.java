@@ -48,6 +48,12 @@ public class AmtrackService implements EntryPoint {
 	public interface AmtrackServiceResources extends ClientBundle {
 		  @Source("Play.png")
 		  ImageResource play();
+		  
+		  @Source("Close.png")
+		  ImageResource close();
+		  
+		  @Source("Logo.png")
+		  ImageResource logo();
 	}
 	
 	/**
@@ -112,7 +118,7 @@ public class AmtrackService implements EntryPoint {
 			    PushButton normalPushButton = new PushButton(new Image(resources.play()),ch);
 			    //normalPushButton.add
 			    hPanel.add(normalPushButton);
-			    HTML headerText = new HTML("start " + m + " calculations");
+			    HTML headerText = new HTML("open " + m + " calculations");
 			    hPanel.add(headerText);
 			    vp.add(hPanel);
 		}			
