@@ -1,9 +1,9 @@
 /**
- * @brief AT_D_RDD_GY wrapper
+ * @brief AT_CSDA_range wrapper
  */
 
 /*
- *    AT_D_RDD_GY.c
+ *    AT_CSDA_range.c
  *    ===================
  *
  *    Created on: 2010-10-11
@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "AmTrack.h"
+#include "AT_RDD.h"
 
 int main(int argc, char *argv[]) {
 	if (argc != 2) {
@@ -39,17 +39,22 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 	char *path = argv[1];
-	char Text[600];
+	char Text[6000];
 
 	long n = 0;
-	double r_m[500];
-	double E_MeV_u=0;
-	long particle_no=0;
-	long material_no=0;
-	long rdd_model=0;
-	long rn = 0;
-	double rdd_parameter[500];
-	long er_model=0;
+	double r_m[5000];
+	double RDD_GY[5000];
+	double rdd_parameters[RDD_MAX_NUMBER_OF_PARAMETERS];
+	long material_no;
+	long particle_no_single;
+	long rdd_model;
+	long er_model;
+	double E_MeV_u;
+
+	double r_start_m;
+	double r_stop_m;
+	long n_points;
+	long x_axis_type;
 
 	FILE *f;
 	fflush(stdin);
@@ -60,40 +65,25 @@ int main(int argc, char *argv[]) {
 	}
 
 	while (fgets(Text, sizeof(Text), f) != 0) {
-		if (strstr(Text, "r_m_input")) {
+		if (strstr(Text, "r_min")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
-			char* nToken;
-			nToken = strtok(token, " ");
-			do {
-				r_m[n] = atof(nToken);
-				n++;
-			} while ((nToken = strtok(NULL, " ")));
+			r_start_m = atof(token);
 		}
-		if (strstr(Text, "rdd_parameter")) {
+		if (strstr(Text, "r_max")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
-			char* nToken;
-			nToken = strtok(token, " ");
-			do {
-				rdd_parameter[rn] = atof(nToken);
-				rn++;
-			} while ((nToken = strtok(NULL, " ")));
+			r_stop_m = atof(token);
 		}
-		if (strstr(Text, "E_Mev_u")) {
+		if (strstr(Text, "n_points")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
-			E_MeV_u = atof(token);
+			n_points = atol(token);
 		}
-		if (strstr(Text, "er_model")) {
+		if (strstr(Text, "x_axis_type")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
-			er_model = atol(token);
-		}
-		if (strstr(Text, "rdd_model")) {
-			strtok(Text, ":");
-			char* token = strtok(NULL, ":");
-			rdd_model = atol(token);
+			x_axis_type = atol(token);
 		}
 		if (strstr(Text, "material_no")) {
 			strtok(Text, ":");
@@ -103,26 +93,67 @@ int main(int argc, char *argv[]) {
 		if (strstr(Text, "particle_no")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
-			particle_no = atol(token);
+			particle_no_single = atol(token);
+		}
+		if (strstr(Text, "E_MeV_u")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			E_MeV_u = atof(token);
+		}
+		if (strstr(Text, "rdd_model")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			rdd_model = atol(token);
+		}
+		if (strstr(Text, "er_model")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			er_model = atol(token);
 		}
 	}
 
-	double D_RDD_Gy[500];
-
-	AT_D_RDD_Gy(n, r_m, E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, D_RDD_Gy);
-	char str[] = { "D_RDD_Gy:" };
 	int i;
-	for (i = 0; i < n; i++) {
-		char text[1024];
-		sprintf(text, " %f", D_RDD_Gy[i]);
-		strcat(str, text);
-	}
-	strcat(str, "\n");
-	fputs(str, f);
 
-	if (f) {
-		fclose(f);
+	if( x_axis_type == 2){
+		for (i = 0; i < n_points; i++) {
+			r_m[i] = r_start_m + (i/(double)(n_points-1)) * (r_stop_m - r_start_m);
+		}
+	} else if( x_axis_type == 1){
+		for (i = 0; i < n_points; i++) {
+			double logE = log(r_start_m) + (i/(double)(n_points-1)) * (log(r_stop_m) - log(r_start_m));
+			r_m[i] = exp(logE);
+		}
+	} else {
+		return EXIT_FAILURE;
 	}
+
+	int rdd_index = AT_RDD_index_from_RDD_number(rdd_model);
+	for( i = 0; i < RDD_MAX_NUMBER_OF_PARAMETERS; i++){
+		rdd_parameters[i] = AT_RDD_Data.parameter_default[rdd_index][i];
+	}
+
+	AT_D_RDD_Gy( n_points,
+			r_m,
+			E_MeV_u,
+			particle_no_single,
+			material_no,
+			rdd_model,
+			rdd_parameters,
+			er_model,
+			RDD_GY);
+
+	fprintf(f , "r:");
+	for (i = 0; i < n_points; i++) {
+		fprintf(f, " %g", r_m[i]);
+	}
+	fprintf(f, "\n");
+
+	fprintf(f , "RDD:");
+	for (i = 0; i < n_points; i++) {
+		fprintf(f, " %g", RDD_GY[i]);
+	}
+	fprintf(f, "\n");
+	fclose(f);
 
 	return EXIT_SUCCESS;
 }
