@@ -120,6 +120,7 @@
 		<element type="plot" label="RDD [Gy] vs distance [m]" datatype="double">
 			<description>RDD [Gy] vs distance [m]</description>
 			<data x= "r" y="RDD" />
+			<axis x="log" y="log" />
 		</element>
 	</output>
 </root>
