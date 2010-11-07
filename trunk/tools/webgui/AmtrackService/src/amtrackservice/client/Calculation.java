@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -103,8 +104,8 @@ public class Calculation {
 		HorizontalPanel buttons = new HorizontalPanel();
 		buttons.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		VerticalPanel head = new VerticalPanel();
-		Grid input = new Grid(inputWidgets.size() + 2, 2);
-		Grid output = new Grid(outputWidgets.size() + 1, 2);
+		Grid input = new Grid(inputWidgets.size() + 4, 2);
+		Grid output = new Grid(outputWidgets.size() + 1, 1);
 		Button defaultsButton = new Button("load defaults");
 		defaultsButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -129,6 +130,8 @@ public class Calculation {
 		Image reloadImage = new Image(resources.reload());
 		reloadImage.setSize("48px", "48px");
 		PushButton reloadButton = new PushButton(reloadImage);
+		reloadButton.setHeight("48px");
+		reloadButton.setWidth("48px");
 		reloadButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				recalculate();
@@ -138,22 +141,27 @@ public class Calculation {
 		
 		//buttons.add(calculateButton);
 		//buttons.add(refreshButton);
-		buttons.add(new HTML("<b>RECALCULATE</b>&nbsp;    "));
-		buttons.add(reloadButton);
+		buttons.add(defaultsButton);
 
 		head.add(description);
-		head.add(buttons);
+		//head.add(buttons);
 
 		ScrollPanel scroll = new ScrollPanel();
 		forms.add(input);
 		forms.add(output);
 		scroll.add(forms);
 
-		panel.addNorth(head, 30);
+		panel.addNorth(head, 5);
 		panel.add(scroll);
 
-		input.setWidget(0, 0, new HTML("<b>Input</b>"));
-		output.setWidget(0, 0, new HTML("<b>Output</b>"));
+		input.setCellPadding(0);
+		input.setCellSpacing(0);
+
+		output.setCellPadding(0);
+		output.setCellSpacing(0);
+
+		input.setWidget(0, 0, new HTML("<h1><b>Input</b></h1>"));
+		output.setWidget(0, 0, new HTML("<h1><b>Output</b></h1>"));
 
 		int inputRow = 1;
 		for (AmWidget widget : inputWidgets) {
@@ -161,12 +169,21 @@ public class Calculation {
 			input.setWidget(inputRow, 1, widget.getWidget());
 			inputRow++;
 		}
-		input.setWidget(inputRow, 0, defaultsButton);
+		input.setWidget(inputRow, 0, new HTML("<b>RECALCULATE</b>&nbsp;    "));
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.add(reloadButton);
+		hp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		hp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		hp.setWidth("32px");
+		hp.setHeight("32px");
+		input.setWidget(inputRow, 1, reloadButton);
+		input.setWidget(inputRow+1, 0, new HTML("&nbsp;"));
+		input.setWidget(inputRow+2, 0, defaultsButton);
 
 		int outputRow = 1;
 		for (AmWidget widget : outputWidgets) {
-			output.setWidget(outputRow, 0, new HTML("<p align=\"right\">" + widget.getLabel().getText() + "</p>"));
-			output.setWidget(outputRow, 1, widget.getWidget());
+			//output.setWidget(outputRow, 0, new HTML("<p align=\"right\">" + widget.getLabel().getText() + "</p>"));
+			output.setWidget(outputRow, 0, widget.getWidget());
 			outputRow++;
 		}
 

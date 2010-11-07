@@ -121,11 +121,11 @@ public class AmtrackService implements EntryPoint {
 				};
 			    PushButton openCalculationButton = new PushButton(new Image(resources.play()),ch);
 			    openCalculationPanel.add(openCalculationButton);
-			    HTML openCalculationText = new HTML("open " + m + " calculations");
+			    HTML openCalculationText = new HTML(m);
 			    openCalculationPanel.add(openCalculationText);
 			    generalFunctionPanel.add(openCalculationPanel);
 		}			
-		gui.addWidgetToLeftPanel(generalFunctionPanel,"General");
+		gui.addWidgetToLeftPanel(generalFunctionPanel,"General calculations");
 		gui.addWidgetToLeftPanel(new Label("none yet"),"Others");
 	}
 

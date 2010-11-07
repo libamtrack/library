@@ -39,8 +39,8 @@
 	</input>
 
 	<output>
-		<element type="plot" label="particle energy [MeV/amu]" datatype="double">
-			<description>Energy [MeV/amu]</description>
+		<element type="plot" label=">particle energy [MeV/amu] vs beta" datatype="double">
+			<description>particle energy [MeV/amu]</description>
 			<data x="beta" y="E" />
 		</element>
 	</output>
