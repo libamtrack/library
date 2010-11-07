@@ -3,16 +3,22 @@ package amtrackservice.client;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import amtrackservice.client.AmtrackService.AmtrackServiceResources;
 import amtrackservice.client.gui.elements.AmWidget;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -89,40 +95,51 @@ public class Calculation {
 	 */
 	public DockLayoutPanel getCalculationPanel() {
 
+		
+		AmtrackServiceResources resources = GWT.create(AmtrackServiceResources.class);
+
 		DockLayoutPanel panel = new DockLayoutPanel(Unit.MM);
 		HorizontalPanel forms = new HorizontalPanel();
 		HorizontalPanel buttons = new HorizontalPanel();
+		buttons.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		VerticalPanel head = new VerticalPanel();
-		Grid input = new Grid(inputWidgets.size() + 1, 2);
+		Grid input = new Grid(inputWidgets.size() + 2, 2);
 		Grid output = new Grid(outputWidgets.size() + 1, 2);
-		//StackLayoutPanel descriptions = new StackLayoutPanel(Unit.MM);
-		Button defaults = new Button("load defaults");
-		defaults.addClickHandler(new ClickHandler() {
-			@Override
+		Button defaultsButton = new Button("load defaults");
+		defaultsButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				loadDefaults();
 			}
 		});
-		Button refresh = new Button("fetch result");
-		refresh.addClickHandler(new ClickHandler() {
-			@Override
+		defaultsButton.setWidth("150px");
+		Button refreshButton = new Button("fetch result");
+		refreshButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				refresh();
 
 			}
 		});
-		Button calculate = new Button("start calculation");
-		calculate.addClickHandler(new ClickHandler() {
-			@Override
+		Button calculateButton = new Button("start calculation");
+		calculateButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				calculate();
 			}
 		});
-	
 
-		buttons.add(defaults);
-		buttons.add(calculate);
-		buttons.add(refresh);
+		Image reloadImage = new Image(resources.reload());
+		reloadImage.setSize("48px", "48px");
+		PushButton reloadButton = new PushButton(reloadImage);
+		reloadButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				recalculate();
+			}
+		});
+
+		
+		//buttons.add(calculateButton);
+		//buttons.add(refreshButton);
+		buttons.add(new HTML("<b>RECALCULATE</b>&nbsp;    "));
+		buttons.add(reloadButton);
 
 		head.add(description);
 		head.add(buttons);
@@ -132,7 +149,6 @@ public class Calculation {
 		forms.add(output);
 		scroll.add(forms);
 
-		//panel.addWest(descriptions, 40);
 		panel.addNorth(head, 30);
 		panel.add(scroll);
 
@@ -141,25 +157,30 @@ public class Calculation {
 
 		int inputRow = 1;
 		for (AmWidget widget : inputWidgets) {
-			input.setWidget(inputRow, 0, new HTML("<p align=\"right\">"
-					+ widget.getLabel().getText() + "</p>"));
+			input.setWidget(inputRow, 0, new HTML("<p align=\"right\">" + widget.getLabel().getText() + "</p>"));
 			input.setWidget(inputRow, 1, widget.getWidget());
-			//descriptions.add(widget.getDescription(), widget.getLabel()
-			//		.getText(), 10);
 			inputRow++;
 		}
+		input.setWidget(inputRow, 0, defaultsButton);
 
 		int outputRow = 1;
 		for (AmWidget widget : outputWidgets) {
-			output.setWidget(outputRow, 0, new HTML("<p align=\"right\">"
-					+ widget.getLabel().getText() + "</p>"));
+			output.setWidget(outputRow, 0, new HTML("<p align=\"right\">" + widget.getLabel().getText() + "</p>"));
 			output.setWidget(outputRow, 1, widget.getWidget());
-			//descriptions.add(widget.getDescription(), widget.getLabel()
-			//		.getText(), 10);
 			outputRow++;
 		}
 
 		return panel;
+	}
+	
+	public void recalculate(){
+		calculate();
+	    Timer t = new Timer() {
+	        public void run() {
+	          refresh();
+	        }
+	    };
+	    t.schedule(500);
 	}
 
 	private void loadDefaults() {
@@ -231,5 +252,4 @@ public class Calculation {
 	public void setDescription(HTML description) {
 		this.description = description;
 	}
-
 }

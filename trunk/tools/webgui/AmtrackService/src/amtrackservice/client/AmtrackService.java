@@ -54,6 +54,9 @@ public class AmtrackService implements EntryPoint {
 		  
 		  @Source("Logo.png")
 		  ImageResource logo();
+		  
+		  @Source("Reload.png")
+		  ImageResource reload();
 	}
 	
 	/**
@@ -92,22 +95,23 @@ public class AmtrackService implements EntryPoint {
 		openCalculations.add(calc);
 		gui.addTabPanel(calc.getCalculationPanel(), calc.getName());
 		Logger.info(calc.getName() + " has been loaded");
+		calc.recalculate();
 	}
 
 	/**
 	 * initializes the gui. the list of functions in the menu will be filled.
 	 */
 	public void initGui() {
-		//gui.initMenu(getConfig().getTemplates().keySet().toArray(new String[0]));
+		/** TODO move this method to GUI class */
 		AmtrackServiceResources resources = GWT.create(AmtrackServiceResources.class);
 		
-		VerticalPanel vp = new VerticalPanel();
-		vp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-		vp.setSpacing(5);
+		VerticalPanel generalFunctionPanel = new VerticalPanel();
+		generalFunctionPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		generalFunctionPanel.setSpacing(5);
 		for(String m : getConfig().getTemplates().keySet().toArray(new String[0])){
-				HorizontalPanel hPanel = new HorizontalPanel();
-			    hPanel.setSpacing(3);
-			    hPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+				HorizontalPanel openCalculationPanel = new HorizontalPanel();
+			    openCalculationPanel.setSpacing(3);
+			    openCalculationPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 			    final String ms = m;
 			    ClickHandler ch = new ClickHandler() {					
 					@Override
@@ -115,14 +119,13 @@ public class AmtrackService implements EntryPoint {
 						openCalculation(ms);
 					}
 				};
-			    PushButton normalPushButton = new PushButton(new Image(resources.play()),ch);
-			    //normalPushButton.add
-			    hPanel.add(normalPushButton);
-			    HTML headerText = new HTML("open " + m + " calculations");
-			    hPanel.add(headerText);
-			    vp.add(hPanel);
+			    PushButton openCalculationButton = new PushButton(new Image(resources.play()),ch);
+			    openCalculationPanel.add(openCalculationButton);
+			    HTML openCalculationText = new HTML("open " + m + " calculations");
+			    openCalculationPanel.add(openCalculationText);
+			    generalFunctionPanel.add(openCalculationPanel);
 		}			
-		gui.addWidgetToLeftPanel(vp,"General");
+		gui.addWidgetToLeftPanel(generalFunctionPanel,"General");
 		gui.addWidgetToLeftPanel(new Label("none yet"),"Others");
 	}
 

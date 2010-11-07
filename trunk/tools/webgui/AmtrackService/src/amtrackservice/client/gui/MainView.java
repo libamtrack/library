@@ -28,6 +28,7 @@ public class MainView {
 
 	private TabLayoutPanel tabPanel;
 	private DecoratedStackPanel leftPanel;
+	private HorizontalPanel closeButtonPanel;
 
 	/**
 	 * Constructor of MainView
@@ -37,13 +38,6 @@ public class MainView {
 		Logger.init(this);
 		
 		AmtrackServiceResources resources = GWT.create(AmtrackServiceResources.class);
-	    ClickHandler closeHandler = new ClickHandler() {					
-			@Override
-			public void onClick(ClickEvent event) {
-				int index = tabPanel.getSelectedIndex();
-				tabPanel.remove(index);
-			}
-		};
 		
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		horizontalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -61,9 +55,9 @@ public class MainView {
 	    VerticalPanel verticalPanel_1 = new VerticalPanel();
 	    verticalPanel_1.setSize("1000px", "");
 
-	    HorizontalPanel horizontalPanel_1 = new HorizontalPanel();
-	    horizontalPanel_1.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-	    horizontalPanel_1.setSize("1000px", "32px");
+	    closeButtonPanel = new HorizontalPanel();
+	    closeButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+	    closeButtonPanel.setSize("1000px", "32px");
 	    
 	    Image closeImage = new Image(resources.close());
 	    closeImage.setSize("32px", "32px");
@@ -73,8 +67,24 @@ public class MainView {
 	    htmlCloseCurrentCalculation.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 	    htmlCloseCurrentCalculation.setSize("200px", "32px");
 	    
-	    PushButton closeButton = new PushButton(closeImage,closeHandler);
-	    closeButton.setSize("32px", "32px");
+	    PushButton closeButton = new PushButton(closeImage);
+	    closeButton.setSize("32px", "32px");	   
+	    
+	    ClickHandler closeHandler = new ClickHandler() {					
+			@Override
+			public void onClick(ClickEvent event) {
+				int index = tabPanel.getSelectedIndex();
+				if( index > -1 ){
+					tabPanel.remove(index);
+				}
+				if( tabPanel.getWidgetCount() == 0){
+					closeButtonPanel.setVisible(false);
+				}
+			}
+		};
+	    
+	    
+	    closeButton.addClickHandler(closeHandler);
 
 	    tabPanel = new TabLayoutPanel(10, Unit.MM);
 	    tabPanel.setSize("1000px", "800px");
@@ -97,17 +107,18 @@ public class MainView {
 	    westVerticalPanel.setCellHorizontalAlignment(leftPanel, HasHorizontalAlignment.ALIGN_CENTER);
 
 	    horizontalPanel.add(verticalPanel_1);	    
-	    verticalPanel_1.add(horizontalPanel_1);	    
-	    verticalPanel_1.setCellHorizontalAlignment(horizontalPanel_1, HasHorizontalAlignment.ALIGN_RIGHT);
+	    verticalPanel_1.add(closeButtonPanel);	    
+	    verticalPanel_1.setCellHorizontalAlignment(closeButtonPanel, HasHorizontalAlignment.ALIGN_RIGHT);
 	    	    
-	    horizontalPanel_1.add(htmlCloseCurrentCalculation);
-	    horizontalPanel_1.setCellHorizontalAlignment(htmlCloseCurrentCalculation, HasHorizontalAlignment.ALIGN_RIGHT);
-	    horizontalPanel_1.setCellHeight(htmlCloseCurrentCalculation, "32px");
-	    horizontalPanel_1.setCellVerticalAlignment(htmlCloseCurrentCalculation, HasVerticalAlignment.ALIGN_MIDDLE);
-	    horizontalPanel_1.add(closeButton);
-	    horizontalPanel_1.setCellHeight(closeButton, "32px");
-	    horizontalPanel_1.setCellWidth(closeButton, "32px");
-	    horizontalPanel_1.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    closeButtonPanel.add(htmlCloseCurrentCalculation);
+	    closeButtonPanel.setCellHorizontalAlignment(htmlCloseCurrentCalculation, HasHorizontalAlignment.ALIGN_RIGHT);
+	    closeButtonPanel.setCellHeight(htmlCloseCurrentCalculation, "32px");
+	    closeButtonPanel.setCellVerticalAlignment(htmlCloseCurrentCalculation, HasVerticalAlignment.ALIGN_MIDDLE);
+	    closeButtonPanel.add(closeButton);
+	    closeButtonPanel.setCellHeight(closeButton, "32px");
+	    closeButtonPanel.setCellWidth(closeButton, "32px");
+	    closeButtonPanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    closeButtonPanel.setVisible(false);
 
 	    verticalPanel_1.add(tabPanel);
 	}
@@ -119,7 +130,8 @@ public class MainView {
 	 */
 	public void addTabPanel(Widget input, String name){
 		tabPanel.add(input,name);
-		tabPanel.selectTab(input);		
+		tabPanel.selectTab(input);
+		closeButtonPanel.setVisible(true);
 	}
 	
 	public void addWidgetToLeftPanel(Widget w, String description){
