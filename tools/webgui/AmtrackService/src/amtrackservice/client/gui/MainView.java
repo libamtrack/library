@@ -43,21 +43,21 @@ public class MainView {
 		horizontalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
 		VerticalPanel westVerticalPanel = new VerticalPanel();
-		westVerticalPanel.setWidth("300px");
+		westVerticalPanel.setWidth("180px");
 		westVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
 		Image logoImage = new Image(resources.logo());
-		logoImage.setSize("300px", "200px");
+		logoImage.setSize("180px", "120px");
 		
 	    leftPanel = new DecoratedStackPanel();
-	    leftPanel.setWidth("300px");
+	    leftPanel.setWidth("180px");
 
 	    VerticalPanel verticalPanel_1 = new VerticalPanel();
-	    verticalPanel_1.setSize("1000px", "");
+	    verticalPanel_1.setWidth("1200px");
 
 	    closeButtonPanel = new HorizontalPanel();
 	    closeButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-	    closeButtonPanel.setSize("1000px", "32px");
+	    closeButtonPanel.setSize("800px", "32px");
 	    
 	    Image closeImage = new Image(resources.close());
 	    closeImage.setSize("32px", "32px");
@@ -87,23 +87,23 @@ public class MainView {
 	    closeButton.addClickHandler(closeHandler);
 
 	    tabPanel = new TabLayoutPanel(10, Unit.MM);
-	    tabPanel.setSize("1000px", "800px");
+	    tabPanel.setSize("1200px", "800px");
 	    
 		RootLayoutPanel rp  = RootLayoutPanel.get();
-		rp.setSize("1300px", "1300px");
+		rp.setSize("1380px", "800px");
 		
 		rp.add(horizontalPanel);
-		rp.setWidgetLeftWidth(horizontalPanel, 0.0, Unit.PX, 1800.0, Unit.PX);
-		rp.setWidgetTopHeight(horizontalPanel, 0.0, Unit.PX, 1800.0, Unit.PX);
+		rp.setWidgetLeftWidth(horizontalPanel, 0.0, Unit.PX, 1380.0, Unit.PX);
+		rp.setWidgetTopHeight(horizontalPanel, 0.0, Unit.PX, 800.0, Unit.PX);
 		
 		horizontalPanel.add(westVerticalPanel);		
     
 	    westVerticalPanel.add(logoImage);
 	    westVerticalPanel.add(leftPanel);
-	    westVerticalPanel.setCellHeight(logoImage, "200px");
+	    westVerticalPanel.setCellHeight(logoImage, "120px");
 	    westVerticalPanel.setCellVerticalAlignment(logoImage, HasVerticalAlignment.ALIGN_BOTTOM);
 	    westVerticalPanel.setCellHorizontalAlignment(logoImage, HasHorizontalAlignment.ALIGN_CENTER);
-	    westVerticalPanel.setCellWidth(leftPanel, "300px");
+	    westVerticalPanel.setCellWidth(leftPanel, "180px");
 	    westVerticalPanel.setCellHorizontalAlignment(leftPanel, HasHorizontalAlignment.ALIGN_CENTER);
 
 	    horizontalPanel.add(verticalPanel_1);	    

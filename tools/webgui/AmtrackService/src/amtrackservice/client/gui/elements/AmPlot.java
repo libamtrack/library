@@ -71,12 +71,12 @@ public class AmPlot extends AmWidget {
 		yAxisScale.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
 		
-		HTML xAxisButtonLabel = new HTML("X axis scale: ");
+		HTML xAxisButtonLabel = new HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X axis scale: ");
 		
 		final RadioButton xAxisScaleLogarithmicButton = new RadioButton("xaxis", "logarithmic");		
 		final RadioButton xAxisScaleLinearButton = new RadioButton("xaxis", "linear");	
 		xAxisScaleLinearButton.setValue(true);
-		HTML yAxisButtonLabel = new HTML("Y axis scale: ");
+		HTML yAxisButtonLabel = new HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y axis scale: ");
 		
 		final RadioButton yAxisScaleLogarithmicButton = new RadioButton("yaxis", "logarithmic");		
 		final RadioButton yAxisScaleLinearButton = new RadioButton("yaxis", "linear");	
@@ -149,7 +149,7 @@ public class AmPlot extends AmWidget {
 		Options options = Options.create();
 		options.setWidth(640);
 		options.setHeight(480);
-		options.setTitle(this.getLabel().getText());
+		options.setTitle(this.getLabel().getText());		
 		options.setLineSize(1);
 		options.setTitleX(this.dataX);
 		options.setTitleY(this.dataY);
