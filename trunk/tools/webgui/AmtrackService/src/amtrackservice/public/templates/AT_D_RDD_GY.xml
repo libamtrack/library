@@ -1,27 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root name="at_d_rdd_gy" wrapper="AT_D_RDD_GY.exe">
+<root name="RDD vs distance" wrapper="AT_D_RDD_GY.exe">
 	<description>
-		Returns RDD as a function of distance r_m
+		Returns RDD as a function of distance
 	</description>
 	<input>
-		<element type="inputlist" label="r_m input" datatype="double">
-			<description>distance [m] (array of size n)</description>
+		<element type="field" label="r minimum [m]" datatype="double">
+			<description>r [m] minimum</description>
 			<preset>
-				<item value="0.00000001" />
-				<item value="0.0000001" />
-				<item value="0.000001" />
-				<item value="0.00001" />
-				<item value="0.0001" />
+				<item value="1e-10" />
 			</preset>
-			<data x="r_m_input" />
+			<data x="r_min" />
 		</element>
-
-		<element type="field" label="E_Mev_u" datatype="double">
+		<element type="field" label="r maximum [m]" datatype="double">
+			<description>r [m] maximum</description>
+			<preset>
+				<item value="1e-5" />
+			</preset>
+			<data x="r_max" />
+		</element>
+		<element type="field" label="number of points" datatype="long">
+			<description>number of points</description>
+			<preset>
+				<item value="30" />
+			</preset>
+			<data x="n_points" />
+		</element>
+		<element type="combo" label="X axis spacing" datatype="long">
+			<entry>
+				<item key="Logarithmic" value="1" />
+				<item key="Linear" value="2" />
+			</entry>
+			<description>X axis spacing</description>
+			<preset>
+				<item value="1" />
+			</preset>
+			<data x="x_axis_type" />
+		</element>
+		<element type="field" label="E_MeV_u" datatype="double">
 			<description>particle (ion) energy per nucleon [MeV/amu]</description>
 			<preset>
-				<item value="10" />
+				<item value="60" />
 			</preset>
-			<data x="E_Mev_u" />
+			<data x="E_MeV_u" />
 		</element>
 
 		<element type="combo" label="particle" datatype="long">
@@ -59,37 +79,47 @@
 				<item value="1" />
 			</preset>
 			<data x="material_no" />
-		</element>		
-
-		<element type="field" label="rdd_model" datatype="long">
-			<description>Radial Dose Distribution model code number</description>
+		</element>	
+		
+		<element type="combo" label="rdd_model" datatype="long">
+			<description>Radial Dose Distribution model</description>
+			<entry>
+				<item key="Test" value="1" />
+				<item key="KatzPoint" value="2" />
+				<item key="Geiss" value="3" />
+				<item key="KatzSite" value="4" />
+				<item key="CucinottaPoint" value="5" />
+				<item key="KatzExtTarget" value="6" />
+				<item key="CucinottaExtTarget" value="7" />
+			</entry>
 			<preset>
 				<item value="3" />
 			</preset>
 			<data x="rdd_model" />
-		</element>
+		</element>			
 
-		<element type="inputlist" label="rdd_parameter" datatype="double">
-			<description>Radial Dose Distribution model parameters vector[br](array of size depending on chosen model, maximum length 3)</description>
+		<element type="combo" label="er_model" datatype="long">
+			<description>delta electron range model</description>
+			<entry>
+				<item key="Test" value="1" />
+				<item key="ButtsKatz" value="2" />
+				<item key="Waligorski" value="3" />
+				<item key="Geiss" value="4" />
+				<item key="Scholz" value="5" />
+				<item key="Edmund" value="6" />
+				<item key="Tabata" value="7" />
+			</entry>
 			<preset>
-				<item value="0.0000000005" />
-			</preset>
-			<data x="rdd_parameter" />
-		</element>
-
-		<element type="field" label="er_model" datatype="long">
-			<description>delta electron range model code number</description>
-			<preset>
-				<item value="4" />
+				<item value="7" />
 			</preset>
 			<data x="er_model" />
 		</element>
 	</input>
 
 	<output>
-		<element type="list" label="D_RDD_Gy" datatype="double">
-			<description>dose [Gy]</description>
-			<data x= "r_m_input" y="D_RDD_Gy" />
+		<element type="plot" label="RDD [Gy] vs distance [m]" datatype="double">
+			<description>RDD [Gy] vs distance [m]</description>
+			<data x= "r" y="RDD" />
 		</element>
 	</output>
 </root>
