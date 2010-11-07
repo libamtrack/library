@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <config path="/home/libamtrack/tmp/system/"> <!-- please specify the path where the wrapper folder is located -->
 	<template name="LET vs particle energy" file="AT_LET_from_E.xml"/>
-	<template name="particle energy vs beta" file="AT_E_from_beta.xml"/>
 	<template name="CSDA range vs energy" file="AT_CSDA_range.xml"/>
+	<template name="particle energy vs beta" file="AT_E_from_beta.xml"/>
+	<template name="Radial Dose Distribution vs distance" file="AT_D_RDD_GY.xml"/>
 	<template name="fluence vs dose" file="AT_fluence_from_dose.xml"/>
 </config>
