@@ -27,15 +27,19 @@ public class AmPlot extends AmWidget {
 	private String dataY;
 	private FlowPanel widget = new FlowPanel();
 	private ScatterChartLogAxis chart;
+	boolean xAxisLog;
+	boolean yAxisLog;
 	
 	private TreeMap<Double, Double> values = new TreeMap<Double, Double>();
 
 	public AmPlot(String label, String datatype, HTML description,
 			MapList<String, String> preset, String dataX, String dataY,
-			String dataZ) {
+			String dataZ, boolean xAxisLog, boolean yAxisLog) {
 		super(label, datatype, description);
 		this.dataX = dataX;
 		this.dataY = dataY;
+		this.xAxisLog = xAxisLog;
+		this.yAxisLog = yAxisLog;
 	}
 
 	@Override
@@ -74,14 +78,22 @@ public class AmPlot extends AmWidget {
 		HTML xAxisButtonLabel = new HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X axis scale: ");
 		
 		final RadioButton xAxisScaleLogarithmicButton = new RadioButton("xaxis", "logarithmic");		
-		final RadioButton xAxisScaleLinearButton = new RadioButton("xaxis", "linear");	
-		xAxisScaleLinearButton.setValue(true);
+		final RadioButton xAxisScaleLinearButton = new RadioButton("xaxis", "linear");
+		if( xAxisLog ){
+			xAxisScaleLogarithmicButton.setValue(true);
+		} else {
+			xAxisScaleLinearButton.setValue(true);			
+		}
 		HTML yAxisButtonLabel = new HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y axis scale: ");
 		
 		final RadioButton yAxisScaleLogarithmicButton = new RadioButton("yaxis", "logarithmic");		
 		final RadioButton yAxisScaleLinearButton = new RadioButton("yaxis", "linear");	
-		yAxisScaleLinearButton.setValue(true);
-
+		if( yAxisLog ){
+			yAxisScaleLogarithmicButton.setValue(true);
+		} else {
+			yAxisScaleLinearButton.setValue(true);			
+		}
+		
 		xAxisScale.add(xAxisButtonLabel);
 		xAxisScale.add(xAxisScaleLinearButton);
 		xAxisScale.add(xAxisScaleLogarithmicButton);
@@ -119,6 +131,7 @@ public class AmPlot extends AmWidget {
 		
 		widget.add(axisScale);
 		this.widget.add(createPlot());
+		setAxisLogScales(xAxisScaleLogarithmicButton.getValue(), yAxisScaleLogarithmicButton.getValue());
 	}
 
 	@Override

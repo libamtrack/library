@@ -35,6 +35,7 @@ public class TemplateParser extends AbstractXMLParser {
 	private static final String KEYWORD_KEY = "key";
 	private static final String KEYWORD_VALUE = "value";
 	private static final String KEYWORD_ELEMENT = "element";
+	private static final String KEYWORD_AXIS = "axis";
 	private static final String KEYWORD_X = "x";
 	private static final String KEYWORD_Y = "y";
 	private static final String KEYWORD_Z = "z";
@@ -113,7 +114,10 @@ public class TemplateParser extends AbstractXMLParser {
 		String dataX = null;
 		String dataY = null;
 		String dataZ = null;
-
+		
+		boolean xAxisLog = false;
+		boolean yAxisLog = false;
+		
 		NodeList childNodes = guiElement.getChildNodes();
 		Node n = null;
 		for (int i = 0; i < childNodes.getLength(); i++) {
@@ -129,6 +133,16 @@ public class TemplateParser extends AbstractXMLParser {
 				dataZ = data_attributes.get(KEYWORD_Z);
 			} else if (n.getNodeName().equals(KEYWORD_ENTRY)) {
 				entry = readItemList(n);
+			} else if (n.getNodeName().equals(KEYWORD_AXIS)) {
+				HashMap<String, String> data_attributes = readAttributes(n);
+				String xAxisType = data_attributes.get(KEYWORD_X);
+				if( (xAxisType != null) && (xAxisType.equalsIgnoreCase("log")) ){
+					xAxisLog = true;
+				}
+				String yAxisType = data_attributes.get(KEYWORD_Y);
+				if( (yAxisType != null) && (yAxisType.equalsIgnoreCase("log")) ){
+					yAxisLog = true;
+				}
 			}
 		}
 
@@ -144,8 +158,7 @@ public class TemplateParser extends AbstractXMLParser {
 		} else if (type.equals(GUI_LIST)) {
 			element = new AmList(label, datatype, description, preset, dataX);
 		} else if (type.equals(GUI_PLOT)) {
-			element = new AmPlot(label, datatype, description, preset, dataX,
-					dataY, dataZ);
+			element = new AmPlot(label, datatype, description, preset, dataX, dataY, dataZ, xAxisLog, yAxisLog);
 		}
 		return element;
 	}

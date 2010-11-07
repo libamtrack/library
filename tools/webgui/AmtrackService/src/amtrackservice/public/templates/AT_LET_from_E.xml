@@ -14,14 +14,14 @@
 		<element type="field" label="E maximum [MeV/amu]" datatype="double">
 			<description>E [MeV/amu] maximum</description>
 			<preset>
-				<item value="1" />
+				<item value="100" />
 			</preset>
 			<data x="E_end" />
 		</element>
 		<element type="field" label="number of points" datatype="long">
 			<description>number of points</description>
 			<preset>
-				<item value="30" />
+				<item value="40" />
 			</preset>
 			<data x="n_points" />
 		</element>
@@ -52,7 +52,7 @@
 			</entry>
 			<description>particle[br]Default value is set to Hydrogen</description>
 			<preset>
-				<item value="1001" />
+				<item value="6012" />
 			</preset>
 			<data x="particle_no" />
 		</element>
@@ -69,7 +69,7 @@
 				<item key="Air" value="7" />
 			</entry>
 			<preset>
-				<item value="1" />
+				<item value="4" />
 			</preset>
 			<data x="material_no" />
 		</element>		
@@ -79,6 +79,7 @@
 		<element type="plot" label="LET [keV/um]" datatype="double">
 			<description>LET [keV/um]</description>
 			<data x= "E" y="LET" />
+			<axis x="log" y="lin"/>
 		</element>
 	</output>
 </root>
