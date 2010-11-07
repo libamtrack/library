@@ -11,7 +11,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ToggleButton;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
@@ -56,36 +60,64 @@ public class AmPlot extends AmWidget {
 			this.values.put(x, y);
 		}
 		this.widget.clear();
-		final ToggleButton tbxaxis = new ToggleButton("switch X axis to logarithmic scale","switch X axis to linear scale");
-		final ToggleButton tbyaxis = new ToggleButton("switch Y axis to logarithmic scale","switch Y axis to linear scale");
-		tbxaxis.addClickHandler(new ClickHandler() {			
-			public void onClick(ClickEvent event) {
-				boolean yaxis = false;
-				if( tbyaxis.isDown() )
-					yaxis = true;
 				
-				if( tbxaxis.isDown() ){
-					setAxisLogScales(true,yaxis);
-				} else {
-					setAxisLogScales(false,yaxis);
-				}
-			}
-		});
-		tbyaxis.addClickHandler(new ClickHandler() {			
+		VerticalPanel axisScale = new VerticalPanel();
+		axisScale.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		
+		HorizontalPanel xAxisScale = new HorizontalPanel();
+		xAxisScale.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+
+		HorizontalPanel yAxisScale = new HorizontalPanel();
+		yAxisScale.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+
+		
+		HTML xAxisButtonLabel = new HTML("X axis scale: ");
+		
+		final RadioButton xAxisScaleLogarithmicButton = new RadioButton("xaxis", "logarithmic");		
+		final RadioButton xAxisScaleLinearButton = new RadioButton("xaxis", "linear");	
+		xAxisScaleLinearButton.setValue(true);
+		HTML yAxisButtonLabel = new HTML("Y axis scale: ");
+		
+		final RadioButton yAxisScaleLogarithmicButton = new RadioButton("yaxis", "logarithmic");		
+		final RadioButton yAxisScaleLinearButton = new RadioButton("yaxis", "linear");	
+		yAxisScaleLinearButton.setValue(true);
+
+		xAxisScale.add(xAxisButtonLabel);
+		xAxisScale.add(xAxisScaleLinearButton);
+		xAxisScale.add(xAxisScaleLogarithmicButton);
+		yAxisScale.add(yAxisButtonLabel);
+		yAxisScale.add(yAxisScaleLinearButton);
+		yAxisScale.add(yAxisScaleLogarithmicButton);
+		
+		axisScale.add(xAxisScale);
+		axisScale.add(yAxisScale);
+		
+		ClickHandler xAxisLinClickHandler = new ClickHandler() {			
 			public void onClick(ClickEvent event) {
-				boolean xaxis = false;
-				if( tbxaxis.isDown() )
-					xaxis = true;
-				
-				if( tbyaxis.isDown() ){
-					setAxisLogScales(xaxis,true);
-				} else {
-					setAxisLogScales(xaxis,false);
-				}
+				setAxisLogScales(false, yAxisScaleLogarithmicButton.getValue());
 			}
-		});
-		widget.add(tbxaxis);
-		widget.add(tbyaxis);
+		};
+		ClickHandler xAxisLogClickHandler = new ClickHandler() {			
+			public void onClick(ClickEvent event) {
+				setAxisLogScales(true, yAxisScaleLogarithmicButton.getValue());
+			}
+		};
+		ClickHandler yAxisLinClickHandler = new ClickHandler() {			
+			public void onClick(ClickEvent event) {
+				setAxisLogScales(xAxisScaleLogarithmicButton.getValue(), false);
+			}
+		};
+		ClickHandler yAxisLogClickHandler = new ClickHandler() {			
+			public void onClick(ClickEvent event) {
+				setAxisLogScales(xAxisScaleLogarithmicButton.getValue(), true);
+			}
+		};
+		xAxisScaleLinearButton.addClickHandler(xAxisLinClickHandler);
+		xAxisScaleLogarithmicButton.addClickHandler(xAxisLogClickHandler);
+		yAxisScaleLinearButton.addClickHandler(yAxisLinClickHandler);
+		yAxisScaleLogarithmicButton.addClickHandler(yAxisLogClickHandler);
+		
+		widget.add(axisScale);
 		this.widget.add(createPlot());
 	}
 
@@ -111,7 +143,6 @@ public class AmPlot extends AmWidget {
         panel.clear();
         panel.add(this.chart);
         return panel;
-
 	}		
 
 	private Options createOptions() {
