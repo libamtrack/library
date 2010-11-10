@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root name="LET from energy" wrapper="AT_LET_from_E.exe">
+	<description>
+		[b]Returns LET as a function of particle energy[/b]
+	</description>
+	<input>
+		<element type="field" label="E minimum [MeV/amu]" datatype="double">
+			<description>E [MeV/amu] minimum</description>
+			<preset>
+				<item value="0.01" />
+			</preset>
+			<data x="E_start" />
+		</element>
+		<element type="field" label="E maximum [MeV/amu]" datatype="double">
+			<description>E [MeV/amu] maximum</description>
+			<preset>
+				<item value="100" />
+			</preset>
+			<data x="E_end" />
+		</element>
+		<element type="field" label="number of points" datatype="long">
+			<description>number of points</description>
+			<preset>
+				<item value="40" />
+			</preset>
+			<data x="n_points" />
+		</element>
+		<element type="combo" label="X axis spacing" datatype="long">
+			<entry>
+				<item key="Logarithmic" value="1" />
+				<item key="Linear" value="2" />
+			</entry>
+			<description>X axis spacing</description>
+			<preset>
+				<item value="1" />
+			</preset>
+			<data x="x_axis_type" />
+		</element>
+		
+		<element type="combo" label="particle" datatype="long">
+			<entry>
+				<item key="Hydrogen" value="1001" />
+				<item key="Helium-3" value="2003" />
+				<item key="Helium-4" value="2004" />
+				<item key="Berylium" value="4008" />
+				<item key="Carbon" value="6012" />
+				<item key="Oxygen" value="8016" />
+				<item key="Neon" value="10020" />
+				<item key="Iron" value="26056" />
+				<item key="Xeon" value="54132" />
+				<item key="Uranium" value="92238" />
+			</entry>
+			<description>particle[br]Default value is set to Hydrogen</description>
+			<preset>
+				<item value="6012" />
+			</preset>
+			<data x="particle_no" />
+		</element>
+
+		<element type="combo" label="material" datatype="long">
+			<description>material</description>
+			<entry>
+				<item key="Liquid Water" value="1" />
+				<item key="Aluminum Oxide" value="2" />
+				<item key="Aluminum" value="3" />
+				<item key="PMMA" value="4" />
+				<item key="Alanine" value="5" />
+				<item key="LiF" value="6" />
+				<item key="Air" value="7" />
+			</entry>
+			<preset>
+				<item value="4" />
+			</preset>
+			<data x="material_no" />
+		</element>		
+	</input>
+
+	<output>
+		<element type="plot" label="LET [keV/um]" datatype="double">
+			<description>LET [keV/um]</description>
+			<data x= "E" y="LET" />
+			<axis x="log" y="lin"/>
+		</element>
+	</output>
+</root>
