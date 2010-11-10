@@ -305,7 +305,11 @@ long locate(const double xx[], const long n, const double x);
 
 
 /**
- * Numerical Recipes: Polynomial interpolation
+ * Polynomial interpolation.
+ * Given arrays xa[0..n-1] and ya[0..n-1], and given a value x,
+ * this routine returns a value y, and an error estimate dy.
+ * If P(x) is the polynomial of degree N − 1 such that
+ * P(xa[i]) = ya[i]; i = 0,...,n-1, then the returned value y = P(x).
  * @param xa
  * @param ya
  * @param n
