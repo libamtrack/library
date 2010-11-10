@@ -89,8 +89,8 @@ binary-linux:$(LIBCOBJS) $(LIBHOBJS)
 		- $(RMCMD) bin
 		$(MKDIRCMD) bin$(DSEP)dynamic$(DSEP)lib
 		$(MKDIRCMD) bin$(DSEP)static$(DSEP)lib
-		cp README.txt bin$(DSEP)dynamic
-		cp README.txt bin$(DSEP)static
+		cp *.txt bin$(DSEP)dynamic
+		cp *.txt bin$(DSEP)static
 		cp -r include bin$(DSEP)dynamic
 		cp -r include bin$(DSEP)static
 		cp -r example bin$(DSEP)dynamic
