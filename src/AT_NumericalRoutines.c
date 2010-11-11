@@ -37,6 +37,7 @@ double AT_range_straggling_convolution(  const double z,
 {
   double  F     =  0;
   double  u     =  R0 - z;              // Residual range
+  assert( sigma != 0.0 );
   double  zeta  =  u / sigma;           // parameter to divide convolution into domains
                                         // for zeta < -5, F(z,R0) becomes very small
                                         // for zeta > 10, F(z,R0) gets very close to (R0-z)^(ni-1)
@@ -618,7 +619,7 @@ long locate(const double xx[], const long n, const double x)
 
   jl    =  0;
   ju    =  n + 1;
-  ascnd  =  (xx[n-1] >= xx[1-1]);
+  ascnd  =  (xx[n-1] >= xx[0]);
   while (ju - jl > 1){
     jm    =  (ju + jl) >> 1;
     if (x >= xx[jm-1] == ascnd)
@@ -626,7 +627,7 @@ long locate(const double xx[], const long n, const double x)
     else
       ju  =  jm;
   }
-  if ( x == xx[1 - 1]) j = 1;
+  if ( x == xx[0]) j = 1;
   else if (x == xx[n - 1]) j = n - 1;
   else j  =  jl;
   return j;
@@ -642,26 +643,26 @@ void polint(const double xa[], const double ya[], const long n, const double x, 
   dif  =  fabs(x-xa[0]);
   c    =  (double*)calloc(n, sizeof(double));
   d    =  (double*)calloc(n, sizeof(double));
-  for (i = 1; i <= n; i++) {
-    if ( (dift = fabs(x - xa[i-1])) < dif) {
-      ns    =  i;
+  for (i = 0; i < n; i++) {
+    if ( (dift = fabs(x - xa[i])) < dif) {
+      ns     =  i+1;
       dif    =  dift;
     }
-    c[i-1]  =  ya[i-1];
-    d[i-1]  =  ya[i-1];
+    c[i]  =  ya[i];
+    d[i]  =  ya[i];
   }
 
   *y  =  ya[(ns--)-1];
   for (m = 1; m < n; m++) {
-    for (i = 1; i <= n - m; i++) {
-      ho  =  xa[i-1] - x;
-      hp  =  xa[i+m-1] - x;
-      w  =  c[i+1-1] - d[i-1];
+    for (i = 0; i < n - m - 1; i++) {
+      ho  =  xa[i] - x;
+      hp  =  xa[i+m] - x;
+      w  =  c[i+1] - d[i];
       den  =  ho - hp;
       if ( den == 0.0) return;
       den  =  w / den;
-      d[i-1]=  hp * den;
-      c[i-1]=  ho * den;
+      d[i]=  hp * den;
+      c[i]=  ho * den;
 
     }
     // TODO do we really have "=" inside ?
@@ -675,14 +676,33 @@ void polint(const double xa[], const double ya[], const long n, const double x, 
 
 void interp(const double xa[], const double ya[], const long n, const long n_pol, const double x, double y[], double dy[])
 {
-  long  j = locate(  xa,          // find index nearest to x
-      n,
-      x);
+  // find index nearest to x
+  long  j = locate(  xa, n, x);
+  // ????
   long  k  =  GSL_MIN(GSL_MAX(j - (n_pol-1) / 2, 1), n + 1 - n_pol);
-  polint(  &xa[k-1 -1],
-      &ya[k-1 -1],
-      n_pol,
-      x,
-      y,
-      dy);
+  assert( k >= 2);
+
+  polint(  &xa[k-2], &ya[k-2], n_pol, x, y, dy);
+}
+
+
+double AT_get_interpolated_y_from_input_table(const double input_data_x[], const double input_data_y[], const long length_of_input_data, const double intermediate_x){
+	int i = locate( input_data_x, length_of_input_data, intermediate_x );
+
+	assert( i >= 0 );
+	assert( i < length_of_input_data);
+
+	return AT_get_interpolated_y_from_interval( input_data_x[i-1], input_data_y[i-1], input_data_x[i], input_data_y[i], intermediate_x);
+}
+
+
+double AT_get_interpolated_y_from_interval(const double left_x, const double left_y, const double right_x, const double right_y, const double intermediate_x){
+	// (x - left_x) / (right_x - left_x ) = (y - left_y) / (right_y - left_y)
+
+	assert( right_x > left_x);
+	assert( right_y >= left_y);
+	assert( intermediate_x >= left_x);
+	assert( intermediate_x <= right_x);
+
+	return  left_y + (right_y - left_y)*((intermediate_x - left_x) / (right_x - left_x));
 }

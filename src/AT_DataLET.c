@@ -68,17 +68,20 @@ void get_table_value(
       j++;
     }
   }
-  long  n_pol      = 4 + 1;
+  long  interpolation_polynomial_degree      = 4 + 1;
   for (i = 0; i < n; i++){
     // Get proton-LET for scaled energy from table E, L using 4th degree polynomial (n_pol - 1 = 2) interpolation
-    double  err_y_tmp  = 0.0;    // dummy
-    interp(    x_c,
-        y_c,
-        n_matches,
-        n_pol,
-        x[i],
-        &y[i],
-        &err_y_tmp);
+    double  interpolation_error  = 0.0;    // dummy
+
+    y[i] = AT_get_interpolated_y_from_input_table(x_c, y_c, n_matches, x[i]);
+
+//    interp(    x_c,
+//        y_c,
+//        n_matches,
+//        interpolation_polynomial_degree,
+//        x[i],
+//        &y[i],
+//        &interpolation_error);
   }
 
   free(x_c);
