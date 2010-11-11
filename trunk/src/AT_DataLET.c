@@ -175,6 +175,23 @@ void AT_LET_keV_um(  const long  number_of_particles,
 }
 
 
+double AT_CSDA_range_g_cm2_single(   const double  E_MeV_u,
+    const long    particle_no,
+    const long    material_no)
+{
+  double CSDA_range_g_cm2;
+  const long number_of_particles  =  1;
+  get_table_value(number_of_particles, &E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.range_cdsa_g_cm2, &CSDA_range_g_cm2);
+
+  // Conversion CSDA_proton => CSDA_ion
+  long Z = AT_Z_from_particle_no_single(particle_no);
+  long A = AT_A_from_particle_no_single(particle_no);
+
+  return CSDA_range_g_cm2  * (double)(A)/(double)(Z*Z);
+}
+
+
+
 void AT_CSDA_range_g_cm2(  const long  number_of_particles,
     const double  E_MeV_u[],
     const long    particle_no[],
@@ -201,6 +218,17 @@ void AT_CSDA_range_g_cm2(  const long  number_of_particles,
 
   free(Z);
   free(A);
+}
+
+
+double AT_CSDA_range_m_single(  const double  E_MeV_u,
+		const long    particle_no,
+		const long    material_no){
+
+	double material_density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
+	double CSDA_range_g_cm2 = AT_CSDA_range_g_cm2_single(E_MeV_u, particle_no, material_no);
+
+	return CSDA_range_g_cm2 / (material_density_g_cm3 * 100.0);
 }
 
 
