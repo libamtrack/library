@@ -38,6 +38,7 @@
 #include <stdbool.h>
 #include <malloc.h>
 #include <string.h>
+#include <assert.h>
 
 #include "gsl/gsl_math.h"
 
@@ -331,6 +332,32 @@ void polint(const double xa[], const double ya[], const long n, const double x, 
  * @param dy
  */
 void interp(const double xa[], const double ya[], const long n, const long n_pol, const double x, double y[], double dy[]);
+
+
+/**
+ * TODO
+ * @param input_data_x
+ * @param input_data_y
+ * @param length_of_input_data
+ * @param intermediate_x
+ * @return
+ */
+double AT_get_interpolated_y_from_input_table(const double input_data_x[], const double input_data_y[], const long length_of_input_data, const double intermediate_x);
+
+
+/**
+ * TODO
+ * @param left_x
+ * @param left_y
+ * @param right_x
+ * @param right_y
+ * @param intermediate_x
+ * @return
+ */
+double AT_get_interpolated_y_from_interval(const double left_x, const double left_y, const double right_x, const double right_y, const double intermediate_x);
+
+
+// TODO implement linear interpolation on logarithmic scale
 
 
 #endif /* AT_NUMERICALROUTINES_H_ */
