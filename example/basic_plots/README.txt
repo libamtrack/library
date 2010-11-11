@@ -4,7 +4,7 @@ basic_plots README
 
 This example was written to provide easy way of generating data
 which could be later used in plots. It cover most basic units
-of libamtrack library: ER, RDD models and LET calculations.
+of libamtrack library: ER, RDD models, LET and CSDA range calculations.
 Source file AT_plot.c can be compiled and linked to libamtrack library
 to produce executable file AT_plot.exe. This executable file
 can be used to generate plots data, can be steered using command line switches.
@@ -58,7 +58,7 @@ $ ./AT_plot.exe
 Please specify plottype using -t (--plottype) option
 Usage: ./AT_plot.exe --plottype PLOTTYPE [ --modeltype MODELTYPE --submodeltype SUBMODELTYPE --xmin XMIN --xmax XMAX --xlogscale --npoints NPOINTS --particle PARTICLE]
 Usage (short): ./AT_plot.exe -t PLOTTYPE [ -s MODELTYPE -y SUBMODELTYPE -n XMIN -x XMAX -l -m NPOINTS -p PARTICLE]
-Plottypes supported: ER RDD LET
+Plottypes supported: ER RDD LET CSDArange
 
 We will see short usage summary. There is one main mandatory switch: plottype. Let us check LET:
 
@@ -157,7 +157,7 @@ $ ./AT_plot.exe
 Please specify plottype using -t (--plottype) option
 Usage: ./AT_plot.exe --plottype PLOTTYPE [ --modeltype MODELTYPE --submodeltype SUBMODELTYPE --xmin XMIN --xmax XMAX --xlogscale --npoints NPOINTS --particle PARTICLE]
 Usage (short): ./AT_plot.exe -t PLOTTYPE [ -s MODELTYPE -y SUBMODELTYPE -n XMIN -x XMAX -l -m NPOINTS -p PARTICLE]
-Plottypes supported: ER RDD LET 
+Plottypes supported: ER RDD LET CSDArange
 
 In the options list we see also possibility of specyfing range on X axis, axis type (linear or logarythmic),
 number of points and particle type. Let us use this options:

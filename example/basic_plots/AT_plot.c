@@ -38,8 +38,8 @@
 
 #include "AmTrack.h"
 
-char * plottypes[] = {"ER","RDD","LET"};
-int plottypes_nr = 3;
+char * plottypes[] = {"ER","RDD","LET","CSDArange"};
+int plottypes_nr = 4;
 
 
 void plottype_usage(){
@@ -237,7 +237,7 @@ int main( int argc, char* argv[]){
 	}
 
 
-	if( strcmp( plottype , "ER") == 0 || strcmp( plottype , "LET") == 0){
+	if( strcmp( plottype , "ER") == 0 || strcmp( plottype , "LET") == 0 || strcmp( plottype , "CSDArange") == 0){
 		if(x_start < 0){
 			x_start = 0.1;	    fprintf(stderr, "xmin not set, setting default value %g [MeV]\n", x_start);
 		}
@@ -320,6 +320,13 @@ int main( int argc, char* argv[]){
 		printf("#E[MeV] LET[MeV/cm2g]\n");
 		for( i = 0 ; i < number_of_points_on_x_axis ; i++){
 			y[i] = AT_LET_MeV_cm2_g_single(x[i],particle_no, material_no);
+		}
+	}  else if( strcmp( plottype , "CSDArange") == 0){
+		printf("#CSDArange vs primary ion energy\n");
+		printf("#particle: %s (code: %ld)\n", particle_name, particle_no);
+		printf("#E[MeV] CSDArange[m]\n");
+		for( i = 0 ; i < number_of_points_on_x_axis ; i++){
+			y[i] = AT_CSDA_range_m_single(x[i],particle_no,material_no);
 		}
 	}  else {
 		printf("Plottype %s not supported\n", plottype);
