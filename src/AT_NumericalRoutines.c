@@ -700,7 +700,6 @@ double AT_get_interpolated_y_from_interval(const double left_x, const double lef
 	// (x - left_x) / (right_x - left_x ) = (y - left_y) / (right_y - left_y)
 
 	assert( right_x > left_x);
-	assert( right_y >= left_y);
 	assert( intermediate_x >= left_x);
 	assert( intermediate_x <= right_x);
 
