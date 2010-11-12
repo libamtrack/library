@@ -306,32 +306,13 @@ long locate(const double xx[], const long n, const double x);
 
 
 /**
- * Polynomial interpolation.
- * Given arrays xa[0..n-1] and ya[0..n-1], and given a value x,
- * this routine returns a value y, and an error estimate dy.
- * If P(x) is the polynomial of degree N − 1 such that
- * P(xa[i]) = ya[i]; i = 0,...,n-1, then the returned value y = P(x).
- * @param xa
- * @param ya
+ * TODO
+ * @param xx
  * @param n
  * @param x
- * @param y
- * @param dy
+ * @return
  */
-void polint(const double xa[], const double ya[], const long n, const double x, double *y, double *dy);
-
-
-/**
- * TODO: ???
- * @param xa
- * @param ya
- * @param n
- * @param n_pol
- * @param x
- * @param y
- * @param dy
- */
-void interp(const double xa[], const double ya[], const long n, const long n_pol, const double x, double y[], double dy[]);
+long locate_in_2d_table(const double xx[][2], const long n, const double x);
 
 
 /**
@@ -343,6 +324,16 @@ void interp(const double xa[], const double ya[], const long n, const long n_pol
  * @return
  */
 double AT_get_interpolated_y_from_input_table(const double input_data_x[], const double input_data_y[], const long length_of_input_data, const double intermediate_x);
+
+
+/**
+ * TODO
+ * @param input_data_xy
+ * @param length_of_input_data
+ * @param intermediate_x
+ * @return
+ */
+double AT_get_interpolated_y_from_input_2d_table(const double input_data_xy[][2], const long length_of_input_data, const double intermediate_x);
 
 
 /**
