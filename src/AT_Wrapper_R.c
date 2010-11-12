@@ -2045,7 +2045,7 @@ void AT_Bethe_Mass_Stopping_Power_MeV_cm2_g_R(	const int* n,
 
 	double * 		Mass_Stopping_Power_MeV_cm2_g_double  	= (double*)calloc(n_long,sizeof(double));
 
-	AT_Bethe_Mass_Stopping_Power_MeV_cm2_g( n_long,
+	AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_multi( n_long,
 	    E_MeV_u_double,
 	    particle_no_long,
 	    material_no_long,

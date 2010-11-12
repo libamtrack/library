@@ -679,10 +679,6 @@ double AT_get_interpolated_y_from_input_2d_table(const double input_data_xy[][2]
 double AT_get_interpolated_y_from_interval(const double left_x, const double left_y, const double right_x, const double right_y, const double intermediate_x){
 	// (x - left_x) / (right_x - left_x ) = (y - left_y) / (right_y - left_y)
 
-	printf("x = %g\n", intermediate_x);
-	printf("Lx = %g, Rx = %g, Ly = %g, Ry = %g\n", left_x, right_x, left_y, right_y);
-	printf("result = %g\n", left_y + (right_y - left_y)*((intermediate_x - left_x) / (right_x - left_x)));
-
 	assert( right_x > left_x);
 	assert( intermediate_x >= left_x);
 	assert( intermediate_x <= right_x);
