@@ -68,20 +68,9 @@ void get_table_value(
       j++;
     }
   }
-  long  interpolation_polynomial_degree      = 4 + 1;
   for (i = 0; i < n; i++){
-    // Get proton-LET for scaled energy from table E, L using 4th degree polynomial (n_pol - 1 = 2) interpolation
-    double  interpolation_error  = 0.0;    // dummy
-
+    // Get proton-LET for scaled energy from table E, L using linear interpolation (to be done on logscale TODO)
     y[i] = AT_get_interpolated_y_from_input_table(x_c, y_c, n_matches, x[i]);
-
-//    interp(    x_c,
-//        y_c,
-//        n_matches,
-//        interpolation_polynomial_degree,
-//        x[i],
-//        &y[i],
-//        &interpolation_error);
   }
 
   free(x_c);

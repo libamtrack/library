@@ -634,55 +634,25 @@ long locate(const double xx[], const long n, const double x)
 }
 
 
-void polint(const double xa[], const double ya[], const long n, const double x, double *y, double *dy)
+long locate_in_2d_table(const double xx[][2], const long n, const double x)
 {
-  long  i, m, ns=1;
-  double  den, dif, dift, ho, hp, w;
-  double  *c,*d;
+  long  ju, jm, jl, j;
+  int    ascnd;
 
-  dif  =  fabs(x-xa[0]);
-  c    =  (double*)calloc(n, sizeof(double));
-  d    =  (double*)calloc(n, sizeof(double));
-  for (i = 0; i < n; i++) {
-    if ( (dift = fabs(x - xa[i])) < dif) {
-      ns     =  i+1;
-      dif    =  dift;
-    }
-    c[i]  =  ya[i];
-    d[i]  =  ya[i];
+  jl    =  0;
+  ju    =  n + 1;
+  ascnd  =  (xx[n-1][0] >= xx[0][0]);
+  while (ju - jl > 1){
+    jm    =  (ju + jl) >> 1;
+    if (x >= xx[jm-1][0] == ascnd)
+      jl  =  jm;
+    else
+      ju  =  jm;
   }
-
-  *y  =  ya[(ns--)-1];
-  for (m = 1; m < n; m++) {
-    for (i = 0; i < n - m - 1; i++) {
-      ho  =  xa[i] - x;
-      hp  =  xa[i+m] - x;
-      w  =  c[i+1] - d[i];
-      den  =  ho - hp;
-      if ( den == 0.0) return;
-      den  =  w / den;
-      d[i]=  hp * den;
-      c[i]=  ho * den;
-
-    }
-    // TODO do we really have "=" inside ?
-    // underline code looks really magically
-    *y += (*dy=(2*ns < (n-m) ? c[ns] : d[(ns--)-1]));
-  }
-  free(d);
-  free(c);
-}
-
-
-void interp(const double xa[], const double ya[], const long n, const long n_pol, const double x, double y[], double dy[])
-{
-  // find index nearest to x
-  long  j = locate(  xa, n, x);
-  // ????
-  long  k  =  GSL_MIN(GSL_MAX(j - (n_pol-1) / 2, 1), n + 1 - n_pol);
-  assert( k >= 2);
-
-  polint(  &xa[k-2], &ya[k-2], n_pol, x, y, dy);
+  if ( x == xx[0][0]) j = 1;
+  else if (x == xx[n - 1][0]) j = n - 1;
+  else j  =  jl;
+  return j;
 }
 
 
@@ -696,8 +666,22 @@ double AT_get_interpolated_y_from_input_table(const double input_data_x[], const
 }
 
 
+double AT_get_interpolated_y_from_input_2d_table(const double input_data_xy[][2], const long length_of_input_data, const double intermediate_x){
+	int i = locate_in_2d_table( input_data_xy, length_of_input_data, intermediate_x );
+
+	assert( i >= 0 );
+	assert( i < length_of_input_data);
+
+	return AT_get_interpolated_y_from_interval( input_data_xy[i-1][0], input_data_xy[i-1][1], input_data_xy[i][0], input_data_xy[i][1], intermediate_x);
+}
+
+
 double AT_get_interpolated_y_from_interval(const double left_x, const double left_y, const double right_x, const double right_y, const double intermediate_x){
 	// (x - left_x) / (right_x - left_x ) = (y - left_y) / (right_y - left_y)
+
+	printf("x = %g\n", intermediate_x);
+	printf("Lx = %g, Rx = %g, Ly = %g, Ry = %g\n", left_x, right_x, left_y, right_y);
+	printf("result = %g\n", left_y + (right_y - left_y)*((intermediate_x - left_x) / (right_x - left_x)));
 
 	assert( right_x > left_x);
 	assert( intermediate_x >= left_x);
