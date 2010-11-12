@@ -41,14 +41,6 @@
 #define PSTAR_DATA_N_PER_MATERIAL       132
 #define PSTAR_DATA_N                    PSTAR_DATA_N_PER_MATERIAL * MATERIAL_DATA_N
 
-/**
- * Enumerator for the LET data source
- */
-enum AT_LET_data_source{
-  User_Defined_Data    = 0, /**< To be defined by the user during runtime >**/
-  PowerLaw             = 1, /**< TODO */
-  PSTAR                = 2  /**< TODO */
-};
 
 /**
  * Structure definition for PSTAR stopping power data
@@ -1011,49 +1003,5 @@ void AT_E_MeV_from_LET(  const long  number_of_particles,
     double        E_MeV[]);
 //TODO: include zeff correction!
 
-/**
- * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
- */
-long AT_new_LET_MeV_cm2_g(  const long  number_of_particles,
-    const double        E_MeV_u[],
-    const long          particle_no[],
-    AT_single_material_data_struct         material,
-    double              LET_MeV_cm2_g[]);
-
-/**
- * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
- */
-double AT_new_LET_MeV_cm2_g_single(  const double        E_MeV_u,
-    const long          particle_no,
-    AT_single_material_data_struct         material);
-
-/**
- * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
- */
-double get_table_value_new( const double  x,
-    const long    n,
-    const double  x_table[],
-    const double  y_table[]);
-
-/**
- * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
- */
-int AT_establish_LET_data( AT_single_material_data_struct*  material);
-
-/**
- * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
- */
-double AT_CDSA_range_g_cm2_from_power_law_single(  const double E_MeV_u,
-     const long particle_no,
-     const double p_MeV,
-     const double alpha_g_cm2_MeV);
-
-/**
- * TEST FUNCTION FOR NEW MATERIAL / LET DATA HANDLING
- */
-double AT_LET_MeV_cm2_g_from_power_law_single(  const double E_MeV_u,
-     const long particle_no,
-     const double p_MeV,
-     const double alpha_g_cm2_MeV);
 
 #endif /* AT_DATALET_H_ */

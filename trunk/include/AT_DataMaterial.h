@@ -308,32 +308,9 @@ void AT_get_materials_data( const long  number_of_materials,
     double  average_Z[]);
 
 
-/////////////////////////////////////////////////////////
-/* TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
-
-/**
- * Checks if material has been established.
- * @param material           pointer to material structure
- * @return                   zero if successful
- */
-int AT_check_material( AT_single_material_data_struct* material);
-
-/**
- * Establishes a new material
- * @param material           pointer to material structure
- * @return                   zero if successful
- */
-int AT_establish_material(AT_single_material_data_struct* material);
-
-/**
- * Frees a material structure
- * @param material           pointer to material structure
- * @return                   zero if successful
- */
-int AT_free_material(AT_single_material_data_struct* material);
-
 /**
  * Computes the electron density
+ * TODO to be implemented
  * @param n                  number of constituents in material
  * @param density_g_cm3      physical density (in g/cm3) of material
  * @param Z                  atomic numbers of constituents
@@ -350,8 +327,10 @@ double AT_electron_density_m3( const long n,
     const long A[],
     const double weight_fraction[]);
 
+
 /**
  * Computes the average mass number
+ * TODO to be implemented
  * @param n                  number of constituents in material
  * @param A                  mass numbers of constituents
  * @length n
@@ -363,8 +342,10 @@ double AT_average_A( const long n,
     const long A[],
     const double weight_fraction[]);
 
+
 /**
  * Computes the average atomic number
+ * TODO to be implemented
  * @param n                  number of constituents in material
  * @param A                  atomic numbers of constituents
  * @length n
@@ -375,8 +356,5 @@ double AT_average_A( const long n,
 double AT_average_Z( const long n,
     const long Z[],
     const double weight_fraction[]);
-
-/* END OF TEST FUNCTIONS FOR NEW MATERIAL / LET DATA HANDLING */
-////////////////////////////////////////////////////////////////
 
 #endif /* AT_DATAMATERIAL_H_ */

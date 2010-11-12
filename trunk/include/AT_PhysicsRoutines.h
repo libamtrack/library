@@ -670,58 +670,5 @@ double AT_mean_number_of_tracks_contrib(    const long number_of_field_component
                 const long material_no,
                 const long er_model);
 
-/**
- * Computes the stopping number to be used with the Bethe formula
- * according to ICRU49, p.6, Eq. 2.3
- * BUT WITHOUT shell or density correction!
- * @param[in]  	   E_MeV_u      energy of particle per nucleon
- * @param[in]  	   particle_no  particle index
- * @see          AT_DataParticle.h for definition
- * @param[in]      material_no  material index
- * @see          AT_DataMaterial.h for definition
- * @param[in]      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping number will be computed
- * @return     result
- */
-double AT_Bethe_Stopping_Number_single(	const double 	E_MeV_u,
-										const long 	particle_no,
-										const long 		material_no,
-										const double	E_restricted_keV);
-
-/**
- * Computes the mass stopping power using the Bethe formula
- * according to ICRU49, p.6, Eq. 2.1
- * BUT WITHOUT shell or density, Bloch or Barkas correction!
- * @param[in]  	   E_MeV_u      energy of particle per nucleon
- * @param[in]  	   particle_no  particle index
- * @see          AT_DataParticle.h for definition
- * @param[in]      material_no  material index
- * @see          AT_DataMaterial.h for definition
- * @param[in]      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping power will be computed
- * @return     result
- */
-double AT_Bethe_Mass_Stopping_Power_MeV_cm2_g_single(	const double 	E_MeV_u,
-														const long 	particle_no,
-														const long 		material_no,
-														const double	E_restricted_keV);
-
-/**
- * Computes the mass stopping power using the Bethe formula
- * for many particles according to ICRU49, p.6, Eq. 2.1
- * BUT WITHOUT shell or density, Bloch or Barkas correction!
- * @param[in]  	   n      		number of particles
- * @param[in]  	   E_MeV_u      energies of particle per nucleon (array of size n)
- * @param[in]  	   particle_no  particle indices (array of size n)
- * @see          AT_DataParticle.h for definition
- * @param[in]      material_no  material index (single value)
- * @see          AT_DataMaterial.h for definition
- * @param[in]      E_restricted_keV 	if positive and smaller than maximally transferable energy, the restricted stopping power will be computed (single value)
- * @param[out]     Mass_Stopping_Power_MeV_cm2_g (array of size n)
- */
-void AT_Bethe_Mass_Stopping_Power_MeV_cm2_g(	const long n,
-		const double E_MeV_u[],
-		const long particle_no[],
-		const long material_no,
-		const double E_restricted_keV,
-		double Mass_Stopping_Power_MeV_cm2_g[]);
 
 #endif /* AT_PHYSICSROUTINES_H_ */
