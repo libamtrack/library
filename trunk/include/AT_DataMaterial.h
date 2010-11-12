@@ -46,7 +46,7 @@ enum material_no{
   PMMA                 = 4, /**< PMMA */
   Alanine              = 5, /**< Alanine */
   LiF                  = 6, /**< Lithium Fluoride */
-  Air				   = 7  /**< Air */
+  Air				   = 7  /**< Air dry (at sea level) */
 };
 
 
