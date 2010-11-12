@@ -37,6 +37,7 @@
 #include "AT_RDD_ExtendedTarget.h"
 #include "AT_GammaResponse.h"
 #include "AT_SuccessiveConvolutions.h"
+#include "AT_DataStoppingPower.h"
 
 void AT_D_Gy_R( const int* n,
     const float*  E_MeV_u,
