@@ -1,8 +1,12 @@
-AT.SPC.tapply <- function( spc, INDEX, FUN, additional.arguments = NULL, names.results = NULL)
-{
+AT.SPC.tapply <- function( spc, 
+                           INDEX, 
+                           FUN, 
+                           additional.arguments = NULL, 
+                           names.results = NULL)
+{    
     ##############################
     # Get index columns and levels
-    index.columns    <- which(is.element(names(spc$data), INDEX))
+    index.columns    <- which(is.element(names(spc), INDEX))
     if(length(INDEX) != length(index.columns)){
         cat("At least one index variable not found in spc data.\n")
         return(NULL)
@@ -11,7 +15,7 @@ AT.SPC.tapply <- function( spc, INDEX, FUN, additional.arguments = NULL, names.r
     index.variable   <- NULL
     for (i in 1:length(index.columns)){
         # DEBUG: i <- 1
-        index.variable    <- paste(index.variable, spc$data[,index.columns[i]])
+        index.variable    <- paste(index.variable, spc[,index.columns[i]])
     }
     levels           <- unique(index.variable)
 
@@ -25,14 +29,9 @@ AT.SPC.tapply <- function( spc, INDEX, FUN, additional.arguments = NULL, names.r
          if(args.FUN[i] %in% mixed.field.args){
              args.list    <- paste( args.list, 
                                     args.FUN[i], 
-                                    " = spc$data$",
+                                    " = spc$",
                                     args.FUN[i],
                                     "[ii],",
-                                    sep = "")
-         }
-         if(args.FUN[i] == "material.no"){
-             args.list    <- paste( args.list, 
-                                    "material.no = AT.material.no.from.material.name(spc$target.name),",
                                     sep = "")
          }
     }
@@ -40,7 +39,7 @@ AT.SPC.tapply <- function( spc, INDEX, FUN, additional.arguments = NULL, names.r
         for(j in 1:length(additional.arguments)){
              args.list    <- paste( args.list, 
                                     additional.arguments[[j]][1], 
-                                    " = spc$data$",
+                                    " = spc$",
                                     additional.arguments[[j]][2],
                                     "[ii],",
                                     sep = "")
@@ -56,7 +55,7 @@ AT.SPC.tapply <- function( spc, INDEX, FUN, additional.arguments = NULL, names.r
         res           <- eval( parse( text = paste( "FUN",
                                                     args.list,
                                                     sep = "")))
-        df.cur.level  <-  cbind.data.frame( unique(data.frame( spc$data[ii,index.columns])), 
+        df.cur.level  <-  cbind.data.frame( unique(data.frame( spc[ii,index.columns])), 
                                             res)
         if(is.null(df.return)){
             df.return    <- df.cur.level
