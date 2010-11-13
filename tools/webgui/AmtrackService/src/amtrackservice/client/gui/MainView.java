@@ -82,8 +82,7 @@ public class MainView {
 				}
 			}
 		};
-	    
-	    
+	    	    
 	    closeButton.addClickHandler(closeHandler);
 
 	    tabPanel = new TabLayoutPanel(10, Unit.MM);
@@ -98,11 +97,17 @@ public class MainView {
 		
 		horizontalPanel.add(westVerticalPanel);		
     
+		HTML contact = new HTML("Contact address: <b><u>Leszek.Grzanka@ifj.edu.pl</u></b>");
+		
 	    westVerticalPanel.add(logoImage);
+	    westVerticalPanel.add(contact);
 	    westVerticalPanel.add(leftPanel);
 	    westVerticalPanel.setCellHeight(logoImage, "120px");
 	    westVerticalPanel.setCellVerticalAlignment(logoImage, HasVerticalAlignment.ALIGN_BOTTOM);
 	    westVerticalPanel.setCellHorizontalAlignment(logoImage, HasHorizontalAlignment.ALIGN_CENTER);
+	    westVerticalPanel.setCellHeight(contact, "50px");
+	    westVerticalPanel.setCellVerticalAlignment(contact, HasVerticalAlignment.ALIGN_MIDDLE);
+	    westVerticalPanel.setCellHorizontalAlignment(contact, HasHorizontalAlignment.ALIGN_CENTER);
 	    westVerticalPanel.setCellWidth(leftPanel, "180px");
 	    westVerticalPanel.setCellHorizontalAlignment(leftPanel, HasHorizontalAlignment.ALIGN_CENTER);
 

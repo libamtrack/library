@@ -25,14 +25,14 @@
 			</preset>
 			<data x="n_points" />
 		</element>
-		<element type="combo" label="X axis spacing" datatype="long">
+		<element type="radio" label="X axis spacing" datatype="long">
 			<entry>
 				<item key="Logarithmic" value="1" />
 				<item key="Linear" value="2" />
 			</entry>
 			<description>X axis spacing</description>
 			<preset>
-				<item value="2" />
+				<item value="1" />
 			</preset>
 			<data x="x_axis_type" />
 		</element>

@@ -57,6 +57,9 @@ public class AmtrackService implements EntryPoint {
 		  
 		  @Source("Reload.png")
 		  ImageResource reload();
+		  
+		  @Source("Defaults.png")
+		  ImageResource defaults();
 	}
 	
 	/**

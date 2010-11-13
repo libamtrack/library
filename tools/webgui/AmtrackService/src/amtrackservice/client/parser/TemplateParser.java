@@ -14,6 +14,7 @@ import amtrackservice.client.gui.elements.AmCombo;
 import amtrackservice.client.gui.elements.AmInputList;
 import amtrackservice.client.gui.elements.AmList;
 import amtrackservice.client.gui.elements.AmPlot;
+import amtrackservice.client.gui.elements.AmRadio;
 import amtrackservice.client.gui.elements.AmTextField;
 import amtrackservice.client.gui.elements.AmWidget;
 
@@ -43,6 +44,7 @@ public class TemplateParser extends AbstractXMLParser {
 	private static final String GUI_INPUTLIST = "inputlist";
 	private static final String GUI_LIST = "list";
 	private static final String GUI_COMBO = "combo";
+	private static final String GUI_RADIO = "radio";
 	private static final String GUI_TEXTFIELD = "field";
 	private static final String GUI_PLOT = "plot";
 
@@ -74,8 +76,7 @@ public class TemplateParser extends AbstractXMLParser {
 				outputWidgets = readGuiElements(n);
 			}
 		}
-		return new Calculation(name, wrapper, description, inputWidgets,
-				outputWidgets);
+		return new Calculation(name, wrapper, description, inputWidgets, outputWidgets);
 	}
 
 	private static HTML readDescription(Node descriptionNode) {
@@ -147,14 +148,13 @@ public class TemplateParser extends AbstractXMLParser {
 		}
 
 		if (type.equals(GUI_COMBO)) {
-			element = new AmCombo(label, datatype, description, entry, preset,
-					dataX);
+			element = new AmCombo(label, datatype, description, entry, preset, dataX);
+		} else if (type.equals(GUI_RADIO)) {
+			element = new AmRadio(label, datatype, description, entry, preset, dataX);
 		} else if (type.equals(GUI_TEXTFIELD)) {
-			element = new AmTextField(label, datatype, description, preset,
-					dataX);
+			element = new AmTextField(label, datatype, description, preset, dataX);
 		} else if (type.equals(GUI_INPUTLIST)) {
-			element = new AmInputList(label, datatype, description, preset,
-					dataX);
+			element = new AmInputList(label, datatype, description, preset, dataX);
 		} else if (type.equals(GUI_LIST)) {
 			element = new AmList(label, datatype, description, preset, dataX);
 		} else if (type.equals(GUI_PLOT)) {
@@ -171,11 +171,9 @@ public class TemplateParser extends AbstractXMLParser {
 			n = childNodes.item(i);
 			HashMap<String, String> attributes = readAttributes(n);
 			if (attributes.get(KEYWORD_KEY) != null)
-				itemList.put(attributes.get(KEYWORD_KEY), attributes
-						.get(KEYWORD_VALUE));
+				itemList.put(attributes.get(KEYWORD_KEY), attributes.get(KEYWORD_VALUE));
 			else
-				itemList.put(attributes.get(KEYWORD_VALUE), attributes
-						.get(KEYWORD_VALUE));
+				itemList.put(attributes.get(KEYWORD_VALUE), attributes.get(KEYWORD_VALUE));
 		}
 		return itemList;
 	}
