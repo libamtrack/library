@@ -11,12 +11,9 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
@@ -101,29 +98,18 @@ public class Calculation {
 
 		DockLayoutPanel panel = new DockLayoutPanel(Unit.MM);
 		HorizontalPanel forms = new HorizontalPanel();
-		HorizontalPanel buttons = new HorizontalPanel();
-		buttons.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		VerticalPanel head = new VerticalPanel();
 		Grid input = new Grid(inputWidgets.size() + 4, 2);
 		Grid output = new Grid(outputWidgets.size() + 1, 1);
-		Button defaultsButton = new Button("load defaults");
+
+		Image loadDefaultsImage = new Image(resources.defaults());
+		loadDefaultsImage.setSize("48px", "48px");
+		PushButton defaultsButton = new PushButton(loadDefaultsImage);
+		defaultsButton.setHeight("48px");
+		defaultsButton.setWidth("48px");
 		defaultsButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				loadDefaults();
-			}
-		});
-		defaultsButton.setWidth("150px");
-		Button refreshButton = new Button("fetch result");
-		refreshButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				refresh();
-
-			}
-		});
-		Button calculateButton = new Button("start calculation");
-		calculateButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				calculate();
 			}
 		});
 
@@ -138,13 +124,7 @@ public class Calculation {
 			}
 		});
 
-		
-		//buttons.add(calculateButton);
-		//buttons.add(refreshButton);
-		buttons.add(defaultsButton);
-
 		head.add(description);
-		//head.add(buttons);
 
 		ScrollPanel scroll = new ScrollPanel();
 		forms.add(input);
@@ -160,29 +140,28 @@ public class Calculation {
 		output.setCellPadding(0);
 		output.setCellSpacing(0);
 
-		input.setWidget(0, 0, new HTML("<h1><b>Input</b></h1>"));
-		output.setWidget(0, 0, new HTML("<h1><b>Output</b></h1>"));
-
-		int inputRow = 1;
+		int inputRow = 0;
 		for (AmWidget widget : inputWidgets) {
-			input.setWidget(inputRow, 0, new HTML("<p align=\"right\">" + widget.getLabel().getText() + "</p>"));
+			if( widget.getClass().getName() == "amtrackservice.client.gui.elements.AmCombo"){		
+				widget.getWidget().setWidth("150px");
+			} else if (widget.getClass().getName() == "amtrackservice.client.gui.elements.AmTextField"){
+				widget.getWidget().setWidth("150px");
+			} 
+			input.setWidget(inputRow, 0, new HTML("<p align=\"right\">" + widget.getLabel().getText() + "&nbsp;&nbsp;&nbsp;</p>"));
 			input.setWidget(inputRow, 1, widget.getWidget());
 			inputRow++;
 		}
-		input.setWidget(inputRow, 0, new HTML("<b>RECALCULATE</b>&nbsp;    "));
-		HorizontalPanel hp = new HorizontalPanel();
-		hp.add(reloadButton);
-		hp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		hp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-		hp.setWidth("32px");
-		hp.setHeight("32px");
+		input.setWidget(inputRow, 0, new HTML("<p align=\"right\"><b>RECALCULATE</b>&nbsp;&nbsp;&nbsp;</p>"));
 		input.setWidget(inputRow, 1, reloadButton);
-		input.setWidget(inputRow+1, 0, new HTML("&nbsp;"));
-		input.setWidget(inputRow+2, 0, defaultsButton);
-
+		
+		input.setWidget(inputRow+1, 0, new HTML("<p align=\"right\"><b>LOAD DEFAULTS</b>&nbsp;&nbsp;&nbsp;</p>"));
+		input.setWidget(inputRow+1, 1, defaultsButton);
+		
+		input.getCellFormatter().setHeight(inputRow, 1, "65px");
+		input.getCellFormatter().setHeight(inputRow+1, 1, "65px");
+		
 		int outputRow = 1;
 		for (AmWidget widget : outputWidgets) {
-			//output.setWidget(outputRow, 0, new HTML("<p align=\"right\">" + widget.getLabel().getText() + "</p>"));
 			output.setWidget(outputRow, 0, widget.getWidget());
 			outputRow++;
 		}
