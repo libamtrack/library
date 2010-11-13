@@ -37,17 +37,15 @@ public class AmRadio extends AmWidget {
 
 	@Override
 	public String getValue() {
-		String value = "";
+		String result = "";
 		for( int index = 0; index < this.panelWithRadioButtons.getWidgetCount() ; index++){
 			RadioButton button = (RadioButton) this.panelWithRadioButtons.getWidget(index); 
 			if( button.getValue() ){
-				value = button.getName();
-				// search for such key that entry[key] = value 
-				int valueIndex = this.entry.getValues().indexOf(value);
-				value = this.entry.getKeys().get(valueIndex);
+				String value = button.getText();
+				result = this.entry.getValue(value);
 			}
-		}			
-		return value;
+		}
+		return result;
 	}
 
 	@Override
@@ -70,9 +68,8 @@ public class AmRadio extends AmWidget {
 		for( int index = 0; index < this.panelWithRadioButtons.getWidgetCount() ; index++){
 			RadioButton button = (RadioButton) this.panelWithRadioButtons.getWidget(index);
 			button.setValue(false);
-			String name = button.getName(); 
-			int i = this.entry.getValues().indexOf(name);
-			String value = this.entry.getKeys().get(i);
+			String name = button.getText(); 
+			String value = this.entry.getValue(name);
 			if( value.equals(preset.getValues().get(0)) ){
 				button.setValue(true);
 			}
