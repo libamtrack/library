@@ -27,6 +27,7 @@ public class Logger {
 	public static void log(String message) {
 		//if (mv != null);
 		//	mv.addConsoleLine(message);
+		System.out.println("[LOG]: " + message);
 	}
 	
 	/**
@@ -36,6 +37,7 @@ public class Logger {
 	public static void info(String message) {
 		//if (mv != null);
 		//	mv.addConsoleLine("[INFO]: "+message);
+		System.out.println("[INFO]: " + message);
 	}
 	
 	/**
@@ -45,5 +47,6 @@ public class Logger {
 	public static void error(String message) {
 		//if (mv != null);
 		//	mv.addConsoleLine("[ERROR]: "+message);
+		System.out.println("[ERROR]: " + message);
 	}
 }

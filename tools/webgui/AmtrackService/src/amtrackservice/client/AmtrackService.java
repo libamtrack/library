@@ -220,8 +220,7 @@ public class AmtrackService implements EntryPoint {
 	public void fetchCalculation(String templateName, long id) {
 		String file = GWT.getModuleBaseURL() + URL_TEMPLATES + config.getTemplates().get(templateName);
 		Logger.info("Requesting file: "+file+" from Server");
-		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET,
-				file);
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, file);
 
 		try {
 			requestBuilder.sendRequest(null, new RequestCallback() {
@@ -229,8 +228,7 @@ public class AmtrackService implements EntryPoint {
 					requestFailed(exception);
 				}
 
-				public void onResponseReceived(Request request,
-						Response response) {
+				public void onResponseReceived(Request request, Response response) {
 					try {
 						Calculation calc = TemplateParser.readTemplate(response.getText());
 						CalculationControl.getInstance().getCalculationResult(calc);

@@ -31,7 +31,7 @@ public class CalculationFile {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static HashMap<String, String> dateiAuslesen(String pfad)
+	public static HashMap<String, String> readData(String pfad)
 			throws FileNotFoundException, IOException {
 		HashMap<String, String> keyVal = readStrings(pfad);
 
@@ -46,7 +46,7 @@ public class CalculationFile {
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	public static void dateiSchreiben(String file, String path) throws IOException,
+	public static void writeData(String file, String path) throws IOException,
 			FileNotFoundException {
 
 		createFile(path);
@@ -85,7 +85,7 @@ public class CalculationFile {
 	 *            bis zum Ordner, der die gewünschten Ordner enthält,
 	 * @return ArrayList<String> gibt liste von Dateipfaden zurück
 	 */
-	public static ArrayList<String> ordnerAuslesen(String pfad) {
+	public static ArrayList<String> readOrder(String pfad) {
 		File file = new File(pfad);
 		ArrayList<String> dateien = new ArrayList<String>();
 		if (file.isDirectory()) {
@@ -114,14 +114,13 @@ public class CalculationFile {
 	}
 
 	/**
-	 * Either creates a new file or overwrites the existing File with a emtpy
+	 * Either creates a new file or overwrites the existing File with a empty
 	 * file, and opens the new File for Data input. Data can now be written to
 	 * the file via writeLine(). The File must then be closed with closeFile();
-	 * 
 	 */
-	private static void createFile(String pfad) throws IOException,
+	private static void createFile(String fileName) throws IOException,
 			FileNotFoundException {
-		File file = new File(pfad);
+		File file = new File(fileName);
 		File dir = file;
 		if (dir.isFile())
 			dir = file.getParentFile();
@@ -136,12 +135,12 @@ public class CalculationFile {
 		try {
 			file.createNewFile();
 		} catch (IOException e1) {
-			throw new IOException("Cannot create file.");
+			throw new IOException("Cannot create file " + fileName);
 		}
 
 		// Cancel if File cannot be written to.
 		if (!file.canWrite()) {
-			throw new IOException("Cannot write to file.");
+			throw new IOException("Cannot write to file " + fileName);
 		}
 
 		// create Stream:
@@ -157,19 +156,18 @@ public class CalculationFile {
 	}
 
 	/**
-	 * Liest die Datei in eine Hashmap ein.
+	 * Read data from file to HashMap
 	 * 
-	 * @return Alle Schlüssel - Wert Paare als Hashmap
+	 * @return 
 	 */
-	private static HashMap<String, String> readStrings(String pfad)
+	private static HashMap<String, String> readStrings(String fileName)
 			throws FileNotFoundException, IOException {
 
 		HashMap<String, String> result = new HashMap<String, String>();
 		BufferedReader reader = null;
 
 		try {
-			reader = new BufferedReader(new FileReader(pfad));
-
+			reader = new BufferedReader(new FileReader(fileName));
 		} catch (IOException e) {
 			try {
 				if (reader != null) {
@@ -177,8 +175,7 @@ public class CalculationFile {
 				}
 			} catch (IOException ex) {
 			}
-
-			throw new FileNotFoundException("File not Found");
+			throw new FileNotFoundException("File " + fileName + " not found");
 		}
 
 		try {
@@ -219,12 +216,11 @@ public class CalculationFile {
 	/**
 	 * Writes a line to the file, if a file is currently opened for writing
 	 * 
-	 * @param line
-	 *            The Line to be written to the File
+	 * @param line 	The Line to be written to the File
 	 */
 	private static void writeLine(String line) throws IOException {
 		if (writer == null)
-			throw new IOException("Cannot write to file, file not open.");
+			throw new IOException("Cannot write to file, file not open");
 		writer.println(line);
 	}
 

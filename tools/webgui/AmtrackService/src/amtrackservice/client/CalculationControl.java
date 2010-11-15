@@ -44,8 +44,7 @@ public class CalculationControl {
 	}
 
 	public void getCalculationResult(final Calculation calculation) {
-		Logger.info("Requesting result for calculation "
-				+ calculation.getName() + "(" + calculation.getTimeID() + ")");
+		Logger.info("Requesting result for calculation " + calculation.getName() + "(" + calculation.getTimeID() + ")");
 		calculationService.requestResult(calculation.getTimeID(),
 				new AsyncCallback<HashMap<String, String>>() {
 
@@ -76,8 +75,7 @@ public class CalculationControl {
 			@Override
 			public void onSuccess(Long result) {
 				calculation.setTimeID(result);
-				Logger.info(calculation.getName()
-						+ ": calculation request sent. Id set to: " + result);
+				Logger.info(calculation.getName() + ": calculation request sent. Id set to: " + result);
 			}
 
 			@Override
