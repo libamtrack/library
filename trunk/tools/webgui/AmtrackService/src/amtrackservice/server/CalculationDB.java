@@ -33,7 +33,6 @@ public class CalculationDB extends AbstractDBConnection {
 			PreparedStatement prep = connection.prepareStatement(query);
 			prep.setLong(1, id);
 			ResultSet result = prep.executeQuery();
-
 			result.next();
 			resultPath = result.getString(1);
 			if( result.getLong(2) == 0 )

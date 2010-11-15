@@ -7,6 +7,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import amtrackservice.client.CalculationService;
+import amtrackservice.client.Logger;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 
@@ -23,6 +25,8 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 	public long startCalculation(HashMap<String, String> input,
 			String wrapperPath, String functionName)
 			throws IllegalArgumentException {
+		
+		System.out.println("Server side: start calculation using " + wrapperPath + " and " + functionName);
 		
 		String db_ip="localhost";
 		String db_name=getServletContext().getInitParameter("dbname");
@@ -41,7 +45,7 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 			fileText.append(s + ":" + input.get(s) + "\n");
 		}
 		try {
-			CalculationFile.dateiSchreiben(new String(fileText), resultPath);
+			CalculationFile.writeData(new String(fileText), resultPath);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -55,13 +59,15 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
+		System.out.println("Server side: inserted into DB " + time + " and " + resultPath);
 		return time;
 	}
 
 	@Override
 	public HashMap<String, String> requestResult(long id)
 			throws IllegalArgumentException {
+
+		System.out.println("Server side: getting results for id = " + id );
 		
 		String db_ip="localhost";
 		String db_name=getServletContext().getInitParameter("dbname");
@@ -72,9 +78,9 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 		CalculationDB db = new CalculationDB(db_ip, db_name, db_user, db_pass);
 		String calcPath = db.getCalculation(id).getFilePath();
 		try {
-			result.putAll(CalculationFile.dateiAuslesen(calcPath));
+			result.putAll(CalculationFile.readData(calcPath));
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Logger.error("Results file " + calcPath + " not ready yet");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -98,6 +104,9 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 		for (CalculationData d : data) {
 			calculations.put(d.getId(), d.getFunctionName());
 		}
+		
+		System.out.println("Server side: get all calculation (number) = " + calculations.size() );
+		
 		return calculations;
 	}
 }
