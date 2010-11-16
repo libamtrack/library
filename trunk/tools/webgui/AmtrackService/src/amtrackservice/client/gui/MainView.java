@@ -46,15 +46,17 @@ public class MainView {
 	    VerticalPanel rightPanel = new VerticalPanel();
 
 	    Image leftPanelUpperLogo = new Image(resources.logo());
-	    HTML leftPanelCentralContact = new HTML("<center><big>HOWTO</big></center>" +
-				"<font size=\"-2\"><ol><li>Choose a function below.</li>"+
-				"<li>Enter parameters and recalculate.</li>" +
-				"<li>Results printed on the right.</li>"+
-				"<li>Open another/close function.</li></ol>"+
-                "Please report any problems/feedback<br>"+
-                "to: <b><u><a href=\"mailto:Leszek.Grzanka@ifj.edu.pl\" target=\"_blank\">Leszek.Grzanka@ifj.edu.pl</a></u></b><br></font>");
 		leftDownPanelFunctions = new DecoratedStackPanel();
 	    
+		final HTML rightMainTab = new HTML("<center><big><font size=\"+2\"><br><br>Welcome to libamtrack webGUI</font></big><br><br>" + 
+				"<big>HOWTO</big><br><br>" +
+				"<font size=\"1\">1. Choose a function below.<br>"+
+				"2. Enter parameters and recalculate.<br>" +
+				"3. Results printed on the right.<br>"+
+				"4. Open another/close function.<br>"+
+                "Please report any problems/feedback<br>"+
+                "to: <b><u><a href=\"mailto:Leszek.Grzanka@ifj.edu.pl\" target=\"_blank\">Leszek.Grzanka@ifj.edu.pl</a></u></b><br></font></center>");
+		
 		upperRightPanelCloseCurrentTab = new HorizontalPanel();
 	    HTML htmlCloseCurrentTab = new HTML("Close current calculation: ", true);
 	    Image imageCloseCurrentTab = new Image(resources.close());
@@ -68,7 +70,6 @@ public class MainView {
 	    wholePagePanel.add(rightPanel);	    
 		
 	    leftPanel.add(leftPanelUpperLogo);
-	    leftPanel.add(leftPanelCentralContact);
 	    leftPanel.add(leftDownPanelFunctions);
 
 	    rightPanel.add(upperRightPanelCloseCurrentTab);
@@ -84,8 +85,6 @@ public class MainView {
 
 		leftPanel.setWidth("180px");
 	    leftPanel.setCellHeight(leftPanelUpperLogo, "120px");
-	    leftPanel.setCellHeight(leftPanelCentralContact, "150px");
-	    leftPanel.setCellWidth(leftPanelCentralContact, "180px");
 	    leftPanel.setCellWidth(leftDownPanelFunctions, "180px");
 		
 	    rightPanel.setWidth("600px");
@@ -111,8 +110,6 @@ public class MainView {
 		leftPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 	    leftPanel.setCellVerticalAlignment(leftPanelUpperLogo, HasVerticalAlignment.ALIGN_BOTTOM);
 	    leftPanel.setCellHorizontalAlignment(leftPanelUpperLogo, HasHorizontalAlignment.ALIGN_CENTER);
-	    leftPanel.setCellVerticalAlignment(leftPanelCentralContact, HasVerticalAlignment.ALIGN_MIDDLE);
-	    leftPanel.setCellHorizontalAlignment(leftPanelCentralContact, HasHorizontalAlignment.ALIGN_CENTER);
 	    leftPanel.setCellHorizontalAlignment(leftDownPanelFunctions, HasHorizontalAlignment.ALIGN_CENTER);
 	    
 	    rightPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
@@ -134,13 +131,18 @@ public class MainView {
 				}
 				if( centralTabPanel.getWidgetCount() == 0){
 					upperRightPanelCloseCurrentTab.setVisible(false);
+					centralTabPanel.add(rightMainTab);
 				}
 			}
 		};
 	    closeCurrentTabButton.addClickHandler(closeHandler);
 	    htmlCloseCurrentTab.setStyleName("h1");
 	    upperRightPanelCloseCurrentTab.setVisible(false);
-	    
+
+		if( centralTabPanel.getWidgetCount() == 0){
+			centralTabPanel.add(rightMainTab);
+		}
+
 	}
 	
 	/**
@@ -149,6 +151,13 @@ public class MainView {
 	 * @param name A title for the widget
 	 */
 	public void addTabPanel(Widget input, String name){
+		if( centralTabPanel.getWidgetCount() == 1){
+			Widget w = centralTabPanel.getWidget(0);
+			if( w.getClass().getName().equals("com.google.gwt.user.client.ui.HTML") ){
+				centralTabPanel.remove(0);
+			}
+		}		
+
 		centralTabPanel.add(input,name);
 		centralTabPanel.selectTab(input);
 		upperRightPanelCloseCurrentTab.setVisible(true);
