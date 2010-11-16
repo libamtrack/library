@@ -37,12 +37,21 @@ AT.SPC.tapply <- function( spc,
     }
     if(!is.null(additional.arguments)){
         for(j in 1:length(additional.arguments)){
-             args.list    <- paste( args.list, 
-                                    additional.arguments[[j]][1], 
-                                    " = spc$",
-                                    additional.arguments[[j]][2],
-                                    "[ii],",
-                                    sep = "")
+             if(additional.arguments[[j]][3] == TRUE){
+                 args.list    <- paste( args.list, 
+                                        additional.arguments[[j]][1], 
+                                        " = spc$",
+                                       additional.arguments[[j]][2],
+                                       "[ii],",
+                                       sep = "")
+             }else{
+                 args.list    <- paste( args.list, 
+                                        additional.arguments[[j]][1], 
+                                        " = ",
+                                       additional.arguments[[j]][2],
+                                       ",",
+                                       sep = "")
+             }
         }
     }
     args.list        <- paste(substring(args.list, 1, nchar(args.list) - 1), ")")
