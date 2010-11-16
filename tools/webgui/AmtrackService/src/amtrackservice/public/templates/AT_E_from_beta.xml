@@ -4,15 +4,15 @@
 		[b]Returns particle energy as a function of beta[/b]		
 	</description>
 	<input>
-		<element type="field" label="beta minimum" datatype="double">
-			<description>beta minimum</description>
+		<element type="field" label="beta min" datatype="double">
+			<description>beta min</description>
 			<preset>
 				<item value="0.1" />
 			</preset>
 			<data x="beta_start" />
 		</element>
-		<element type="field" label="beta maximum" datatype="double">
-			<description>beta maximum</description>
+		<element type="field" label="beta max" datatype="double">
+			<description>beta max</description>
 			<preset>
 				<item value="0.9" />
 			</preset>
@@ -25,21 +25,21 @@
 			</preset>
 			<data x="n_points" />
 		</element>
-		<element type="combo" label="X axis spacing" datatype="long">
-			<entry>
-				<item key="Logarithmic" value="1" />
-				<item key="Linear" value="2" />
-			</entry>
-			<description>X axis spacing</description>
-			<preset>
-				<item value="1" />
-			</preset>
-			<data x="x_axis_type" />
-		</element>
+        <element type="radio" label="X axis spacing" datatype="long">
+            <entry>
+                <item key="Logarithmic" value="1" />
+                <item key="Linear" value="2" />
+            </entry>
+            <description>X axis spacing</description>
+            <preset>
+                <item value="1" />
+            </preset>
+            <data x="x_axis_type" />
+        </element>
 	</input>
 
 	<output>
-		<element type="plot" label=">particle energy [MeV/amu] vs beta" datatype="double">
+		<element type="plot" label="particle energy [MeV/amu] vs beta" datatype="double">
 			<description>particle energy [MeV/amu]</description>
 			<data x="beta" y="E" />
 		</element>

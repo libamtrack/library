@@ -4,15 +4,15 @@
 		[b]Returns LET as a function of particle energy[/b]
 	</description>
 	<input>
-		<element type="field" label="E minimum [MeV/amu]" datatype="double">
-			<description>E [MeV/amu] minimum</description>
+		<element type="field" label="E min [MeV/amu]" datatype="double">
+			<description>E [MeV/amu] min</description>
 			<preset>
 				<item value="0.01" />
 			</preset>
 			<data x="E_start" />
 		</element>
-		<element type="field" label="E maximum [MeV/amu]" datatype="double">
-			<description>E [MeV/amu] maximum</description>
+		<element type="field" label="E max [MeV/amu]" datatype="double">
+			<description>E [MeV/amu] max</description>
 			<preset>
 				<item value="100" />
 			</preset>
@@ -25,17 +25,17 @@
 			</preset>
 			<data x="n_points" />
 		</element>
-		<element type="combo" label="X axis spacing" datatype="long">
-			<entry>
-				<item key="Logarithmic" value="1" />
-				<item key="Linear" value="2" />
-			</entry>
-			<description>X axis spacing</description>
-			<preset>
-				<item value="1" />
-			</preset>
-			<data x="x_axis_type" />
-		</element>
+        <element type="radio" label="X axis spacing" datatype="long">
+            <entry>
+                <item key="Logarithmic" value="1" />
+                <item key="Linear" value="2" />
+            </entry>
+            <description>X axis spacing</description>
+            <preset>
+                <item value="1" />
+            </preset>
+            <data x="x_axis_type" />
+        </element>
 		
 		<element type="combo" label="particle" datatype="long">
 			<entry>

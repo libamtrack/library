@@ -4,15 +4,15 @@
 		[b]Returns CSDA range as a function of particle energy[/b]
 	</description>
 	<input>
-		<element type="field" label="E minimum [MeV/amu]" datatype="double">
-			<description>E [MeV/amu] minimum</description>
+		<element type="field" label="E min [MeV/amu]" datatype="double">
+			<description>E [MeV/amu] min</description>
 			<preset>
 				<item value="0.5" />
 			</preset>
 			<data x="E_start" />
 		</element>
-		<element type="field" label="E maximum [MeV/amu]" datatype="double">
-			<description>E [MeV/amu] maximum</description>
+		<element type="field" label="E max [MeV/amu]" datatype="double">
+			<description>E [MeV/amu] max</description>
 			<preset>
 				<item value="200" />
 			</preset>
@@ -35,8 +35,7 @@
 				<item value="1" />
 			</preset>
 			<data x="x_axis_type" />
-		</element>
-		
+		</element>		
 		<element type="combo" label="particle" datatype="long">
 			<entry>
 				<item key="Hydrogen" value="1001" />
@@ -76,7 +75,7 @@
 	</input>
 
 	<output>
-		<element type="plot" label="CSDA range [m]" datatype="double">
+		<element type="plot" label="CSDA range [m] vs particle energy [MeV/amu]" datatype="double">
 			<description>CSDA range</description>
 			<data x="E" y="range" />
 		</element>
