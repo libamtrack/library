@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.TreeMap;
 
 import amtrackservice.client.MapList;
-import amtrackservice.client.gui.elements.ScatterChartLogAxis.AxisOptions;
-import amtrackservice.client.gui.elements.ScatterChartLogAxis.Options;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -20,15 +18,23 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
+import com.google.gwt.visualization.client.visualizations.ScatterChart;
+import com.google.gwt.visualization.client.visualizations.ScatterChart.Options;
 
 public class AmPlot extends AmWidget {
 
 	private String dataX;
 	private String dataY;
 	private FlowPanel widget = new FlowPanel();
-	private ScatterChartLogAxis chart;
-	boolean xAxisLog;
-	boolean yAxisLog;
+	private ScatterChart chart;
+	boolean xAxisLogByDefault;
+	boolean yAxisLogByDefault;
+	
+	RadioButton xAxisScaleLogarithmicButton = new RadioButton("xaxis", "logarithmic");		
+	RadioButton xAxisScaleLinearButton = new RadioButton("xaxis", "linear");
+
+	RadioButton yAxisScaleLogarithmicButton = new RadioButton("yaxis", "logarithmic");		
+	RadioButton yAxisScaleLinearButton = new RadioButton("yaxis", "linear");	
 	
 	private TreeMap<Double, Double> values = new TreeMap<Double, Double>();
 
@@ -38,8 +44,14 @@ public class AmPlot extends AmWidget {
 		super(label, datatype, description);
 		this.dataX = dataX;
 		this.dataY = dataY;
-		this.xAxisLog = xAxisLog;
-		this.yAxisLog = yAxisLog;
+		this.xAxisLogByDefault = xAxisLog;
+		this.yAxisLogByDefault = yAxisLog;
+		
+		xAxisScaleLogarithmicButton.setValue(xAxisLogByDefault);
+		yAxisScaleLogarithmicButton.setValue(yAxisLogByDefault);
+		xAxisScaleLinearButton.setValue(!xAxisLogByDefault);
+		yAxisScaleLinearButton.setValue(!yAxisLogByDefault);
+		
 	}
 
 	@Override
@@ -75,84 +87,46 @@ public class AmPlot extends AmWidget {
 		yAxisScale.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
 		
-		HTML xAxisButtonLabel = new HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X axis scale: ");
-		
-		final RadioButton xAxisScaleLogarithmicButton = new RadioButton("xaxis", "logarithmic");		
-		final RadioButton xAxisScaleLinearButton = new RadioButton("xaxis", "linear");
-		if( xAxisLog ){
-			xAxisScaleLogarithmicButton.setValue(true);
-		} else {
-			xAxisScaleLinearButton.setValue(true);			
-		}
+		HTML xAxisButtonLabel = new HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X axis scale: ");		
 		HTML yAxisButtonLabel = new HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y axis scale: ");
-		
-		final RadioButton yAxisScaleLogarithmicButton = new RadioButton("yaxis", "logarithmic");		
-		final RadioButton yAxisScaleLinearButton = new RadioButton("yaxis", "linear");	
-		if( yAxisLog ){
-			yAxisScaleLogarithmicButton.setValue(true);
-		} else {
-			yAxisScaleLinearButton.setValue(true);			
-		}
-		
+				
 		xAxisScale.add(xAxisButtonLabel);
-		xAxisScale.add(xAxisScaleLinearButton);
-		xAxisScale.add(xAxisScaleLogarithmicButton);
+		xAxisScale.add(this.xAxisScaleLinearButton);
+		xAxisScale.add(this.xAxisScaleLogarithmicButton);
 		yAxisScale.add(yAxisButtonLabel);
-		yAxisScale.add(yAxisScaleLinearButton);
-		yAxisScale.add(yAxisScaleLogarithmicButton);
+		yAxisScale.add(this.yAxisScaleLinearButton);
+		yAxisScale.add(this.yAxisScaleLogarithmicButton);
 		
 		axisScale.add(xAxisScale);
 		axisScale.add(yAxisScale);
 		
-		ClickHandler xAxisLinClickHandler = new ClickHandler() {			
+		// one click handler for all buttons which checks state 
+
+		ClickHandler generalAxisHandler = new ClickHandler() {			
 			public void onClick(ClickEvent event) {
-				setAxisLogScales(false, yAxisScaleLogarithmicButton.getValue());
+				chart.draw(createTable(), createOptions());
 			}
 		};
-		ClickHandler xAxisLogClickHandler = new ClickHandler() {			
-			public void onClick(ClickEvent event) {
-				setAxisLogScales(true, yAxisScaleLogarithmicButton.getValue());
-			}
-		};
-		ClickHandler yAxisLinClickHandler = new ClickHandler() {			
-			public void onClick(ClickEvent event) {
-				setAxisLogScales(xAxisScaleLogarithmicButton.getValue(), false);
-			}
-		};
-		ClickHandler yAxisLogClickHandler = new ClickHandler() {			
-			public void onClick(ClickEvent event) {
-				setAxisLogScales(xAxisScaleLogarithmicButton.getValue(), true);
-			}
-		};
-		xAxisScaleLinearButton.addClickHandler(xAxisLinClickHandler);
-		xAxisScaleLogarithmicButton.addClickHandler(xAxisLogClickHandler);
-		yAxisScaleLinearButton.addClickHandler(yAxisLinClickHandler);
-		yAxisScaleLogarithmicButton.addClickHandler(yAxisLogClickHandler);
-		
+
+		xAxisScaleLinearButton.addClickHandler(generalAxisHandler);
+		xAxisScaleLogarithmicButton.addClickHandler(generalAxisHandler);
+		yAxisScaleLinearButton.addClickHandler(generalAxisHandler);
+		yAxisScaleLogarithmicButton.addClickHandler(generalAxisHandler);
+
 		widget.add(axisScale);
 		this.widget.add(createPlot());
-		setAxisLogScales(xAxisScaleLogarithmicButton.getValue(), yAxisScaleLogarithmicButton.getValue());
+		
+        chart.draw(createTable(), createOptions());						
 	}
 
 	@Override
 	public String getDataLink() {
 		return null; // unimplemented
 	}
-	
-	public void setAxisLogScales(boolean logscaleX, boolean logscaleY){
-		Options options = createOptions();
-		AxisOptions axisoptX = AxisOptions.create();
-		AxisOptions axisoptY = AxisOptions.create();
-		axisoptX.setIsLogScale(logscaleX);
-		options.setHAxisOptions(axisoptX);
-		axisoptY.setIsLogScale(logscaleY);
-		options.setVAxisOptions(axisoptY);
-		this.chart.draw(createTable(), options);
-	}
-		
+			
 	private Widget createPlot() {
         FlowPanel panel = new FlowPanel();        
-        this.chart = new ScatterChartLogAxis(createTable(), createOptions() );
+        this.chart = new ScatterChart(createTable(), createOptions() );
         panel.clear();
         panel.add(this.chart);
         return panel;
@@ -164,8 +138,17 @@ public class AmPlot extends AmWidget {
 		options.setHeight(480);
 		options.setTitle(this.getLabel().getText());		
 		options.setLineSize(1);
-		options.setTitleX(this.dataX);
-		options.setTitleY(this.dataY);
+		if( xAxisScaleLogarithmicButton.getValue() ){
+			options.setTitleX("log( " + dataX + " )");
+		} else {
+			options.setTitleX(dataX);
+		}
+		
+		if( yAxisScaleLogarithmicButton.getValue() ){
+			options.setTitleY("log( " + dataY + " )");
+		} else {
+			options.setTitleY(dataY);
+		}
 		return options;
 	}
 
@@ -176,8 +159,16 @@ public class AmPlot extends AmWidget {
 		data.addColumn(ColumnType.NUMBER, this.dataY);		
         for(Double d: this.values.keySet()){
         	int rowIndex = data.addRow();
-        	data.setValue(rowIndex, 0, d);
-        	data.setValue(rowIndex, 1, this.values.get(d));
+        	if( this.xAxisScaleLogarithmicButton.getValue() ){
+            	data.setValue(rowIndex, 0, Math.log10(d));        		
+        	} else {
+            	data.setValue(rowIndex, 0, d);
+        	}
+        	if( this.yAxisScaleLogarithmicButton.getValue() ){
+        		data.setValue(rowIndex, 1, Math.log10(this.values.get(d)));
+        	} else {
+        		data.setValue(rowIndex, 1, this.values.get(d));
+        	}
         }		
 		return data;
 	}
