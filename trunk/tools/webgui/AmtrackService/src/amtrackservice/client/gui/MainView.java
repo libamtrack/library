@@ -26,9 +26,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MainView {
 
-	private TabLayoutPanel tabPanel;
-	private DecoratedStackPanel leftPanel;
-	private HorizontalPanel closeButtonPanel;
+	private TabLayoutPanel centralTabPanel;
+	private DecoratedStackPanel leftDownPanelFunctions;
+	private HorizontalPanel upperRightPanelCloseCurrentTab;
 
 	/**
 	 * Constructor of MainView
@@ -39,99 +39,108 @@ public class MainView {
 		
 		AmtrackServiceResources resources = GWT.create(AmtrackServiceResources.class);
 		
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		horizontalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		/**  Constructors **/
+		RootLayoutPanel rootPanel  = RootLayoutPanel.get();
+	    HorizontalPanel wholePagePanel = new HorizontalPanel();
+		VerticalPanel leftPanel = new VerticalPanel();
+	    VerticalPanel rightPanel = new VerticalPanel();
 
-		VerticalPanel westVerticalPanel = new VerticalPanel();
-		westVerticalPanel.setWidth("180px");
-		westVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-
-		Image logoImage = new Image(resources.logo());
-		logoImage.setSize("180px", "120px");
+	    Image leftPanelUpperLogo = new Image(resources.logo());
+	    HTML leftPanelCentralContact = new HTML("<center><big>HOWTO</big></center>" +
+				"<font size=\"-2\"><ol><li>Choose a function below.</li>"+
+				"<li>Enter parameters and recalculate.</li>" +
+				"<li>Results printed on the right.</li>"+
+				"<li>Open another/close function.</li></ol>"+
+                "Please report any problems/feedback<br>"+
+                "to: <b><u><a href=\"mailto:Leszek.Grzanka@ifj.edu.pl\" target=\"_blank\">Leszek.Grzanka@ifj.edu.pl</a></u></b><br></font>");
+		leftDownPanelFunctions = new DecoratedStackPanel();
+	    
+		upperRightPanelCloseCurrentTab = new HorizontalPanel();
+	    HTML htmlCloseCurrentTab = new HTML("Close current calculation: ", true);
+	    Image imageCloseCurrentTab = new Image(resources.close());
+	    PushButton closeCurrentTabButton = new PushButton(imageCloseCurrentTab);
 		
-	    leftPanel = new DecoratedStackPanel();
-	    leftPanel.setWidth("180px");
+	    centralTabPanel = new TabLayoutPanel(10, Unit.MM);
 
-	    VerticalPanel verticalPanel_1 = new VerticalPanel();
-	    verticalPanel_1.setWidth("1200px");
+		/**  Tree of life **/
+		rootPanel.add(wholePagePanel);		
+		wholePagePanel.add(leftPanel);		
+	    wholePagePanel.add(rightPanel);	    
+		
+	    leftPanel.add(leftPanelUpperLogo);
+	    leftPanel.add(leftPanelCentralContact);
+	    leftPanel.add(leftDownPanelFunctions);
 
-	    closeButtonPanel = new HorizontalPanel();
-	    closeButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-	    closeButtonPanel.setSize("800px", "32px");
+	    rightPanel.add(upperRightPanelCloseCurrentTab);
+	    upperRightPanelCloseCurrentTab.add(htmlCloseCurrentTab);
+	    upperRightPanelCloseCurrentTab.add(closeCurrentTabButton);
+	    rightPanel.add(centralTabPanel);
 	    
-	    Image closeImage = new Image(resources.close());
-	    closeImage.setSize("32px", "32px");
+		
+		/**  Dimensions **/
+	    rootPanel.setSize("1180px", "800px");
+		rootPanel.setWidgetLeftWidth(wholePagePanel, 0.0, Unit.PX, 1180.0, Unit.PX);
+		rootPanel.setWidgetTopHeight(wholePagePanel, 0.0, Unit.PX, 800.0, Unit.PX);
 
-	    HTML htmlCloseCurrentCalculation = new HTML("Close current calculation: ", true);
-	    htmlCloseCurrentCalculation.setStyleName("h1");
-	    htmlCloseCurrentCalculation.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-	    htmlCloseCurrentCalculation.setSize("200px", "32px");
+		leftPanel.setWidth("180px");
+	    leftPanel.setCellHeight(leftPanelUpperLogo, "120px");
+	    leftPanel.setCellHeight(leftPanelCentralContact, "150px");
+	    leftPanel.setCellWidth(leftPanelCentralContact, "180px");
+	    leftPanel.setCellWidth(leftDownPanelFunctions, "180px");
+		
+	    rightPanel.setWidth("600px");
+	    rightPanel.setCellWidth(upperRightPanelCloseCurrentTab, "600px");
+
+	    leftPanelUpperLogo.setSize("180px", "120px");
+	    leftDownPanelFunctions.setWidth("180px");
 	    
-	    PushButton closeButton = new PushButton(closeImage);
-	    closeButton.setSize("32px", "32px");	   
+	    upperRightPanelCloseCurrentTab.setSize("400px", "32px");
+	    upperRightPanelCloseCurrentTab.setCellHeight(htmlCloseCurrentTab, "32px");
+	    upperRightPanelCloseCurrentTab.setCellHeight(closeCurrentTabButton, "32px");
+	    upperRightPanelCloseCurrentTab.setCellWidth(closeCurrentTabButton, "32px");
+	    htmlCloseCurrentTab.setSize("200px", "32px");
+	    closeCurrentTabButton.setSize("32px", "32px");
+	    imageCloseCurrentTab.setSize("32px", "32px");
+
+	    centralTabPanel.setSize("1000px", "800px");
+		
+		
+		/**  Alignment **/
+		wholePagePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+
+		leftPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+	    leftPanel.setCellVerticalAlignment(leftPanelUpperLogo, HasVerticalAlignment.ALIGN_BOTTOM);
+	    leftPanel.setCellHorizontalAlignment(leftPanelUpperLogo, HasHorizontalAlignment.ALIGN_CENTER);
+	    leftPanel.setCellVerticalAlignment(leftPanelCentralContact, HasVerticalAlignment.ALIGN_MIDDLE);
+	    leftPanel.setCellHorizontalAlignment(leftPanelCentralContact, HasHorizontalAlignment.ALIGN_CENTER);
+	    leftPanel.setCellHorizontalAlignment(leftDownPanelFunctions, HasHorizontalAlignment.ALIGN_CENTER);
 	    
+	    rightPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+	    rightPanel.setCellHorizontalAlignment(upperRightPanelCloseCurrentTab, HasHorizontalAlignment.ALIGN_LEFT);
+	    upperRightPanelCloseCurrentTab.setCellHorizontalAlignment(htmlCloseCurrentTab, HasHorizontalAlignment.ALIGN_RIGHT);
+	    upperRightPanelCloseCurrentTab.setCellVerticalAlignment(htmlCloseCurrentTab, HasVerticalAlignment.ALIGN_MIDDLE);
+	    upperRightPanelCloseCurrentTab.setCellHorizontalAlignment(closeCurrentTabButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    upperRightPanelCloseCurrentTab.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+	    htmlCloseCurrentTab.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);		
+		
+	    
+		/**  Others **/
 	    ClickHandler closeHandler = new ClickHandler() {					
 			@Override
 			public void onClick(ClickEvent event) {
-				int index = tabPanel.getSelectedIndex();
+				int index = centralTabPanel.getSelectedIndex();
 				if( index > -1 ){
-					tabPanel.remove(index);
+					centralTabPanel.remove(index);
 				}
-				if( tabPanel.getWidgetCount() == 0){
-					closeButtonPanel.setVisible(false);
+				if( centralTabPanel.getWidgetCount() == 0){
+					upperRightPanelCloseCurrentTab.setVisible(false);
 				}
 			}
 		};
-	    	    
-	    closeButton.addClickHandler(closeHandler);
-
-	    tabPanel = new TabLayoutPanel(10, Unit.MM);
-	    tabPanel.setSize("1200px", "800px");
+	    closeCurrentTabButton.addClickHandler(closeHandler);
+	    htmlCloseCurrentTab.setStyleName("h1");
+	    upperRightPanelCloseCurrentTab.setVisible(false);
 	    
-		RootLayoutPanel rp  = RootLayoutPanel.get();
-		rp.setSize("1380px", "800px");
-		
-		rp.add(horizontalPanel);
-		rp.setWidgetLeftWidth(horizontalPanel, 0.0, Unit.PX, 1380.0, Unit.PX);
-		rp.setWidgetTopHeight(horizontalPanel, 0.0, Unit.PX, 800.0, Unit.PX);
-		
-		horizontalPanel.add(westVerticalPanel);		
-    
-		HTML contact = new HTML("<center><big><big>HOWTO</big></big></center>" +
-				"<ol><li>Choose a function below.</li>"+
-				"<li>Enter you parameters and click &#39;recalculate&#39;.</li>" +
-				"<li>Results are printed on the right.</li>"+
-				"<li>Open more function panels or close them.</li></ol>"+
-                "In case of problems and for any feedback:"+
-                "<b><u><a href=\"mailto:Leszek.Grzanka@ifj.edu.pl\" target=\"_blank\">Leszek.Grzanka@ifj.edu.pl</a></u></b><br>");
-		
-	    westVerticalPanel.add(logoImage);
-	    westVerticalPanel.add(contact);
-	    westVerticalPanel.add(leftPanel);
-	    westVerticalPanel.setCellHeight(logoImage, "120px");
-	    westVerticalPanel.setCellVerticalAlignment(logoImage, HasVerticalAlignment.ALIGN_BOTTOM);
-	    westVerticalPanel.setCellHorizontalAlignment(logoImage, HasHorizontalAlignment.ALIGN_CENTER);
-	    westVerticalPanel.setCellHeight(contact, "190px");
-	    westVerticalPanel.setCellVerticalAlignment(contact, HasVerticalAlignment.ALIGN_MIDDLE);
-	    westVerticalPanel.setCellHorizontalAlignment(contact, HasHorizontalAlignment.ALIGN_CENTER);
-	    westVerticalPanel.setCellWidth(leftPanel, "180px");
-	    westVerticalPanel.setCellHorizontalAlignment(leftPanel, HasHorizontalAlignment.ALIGN_CENTER);
-
-	    horizontalPanel.add(verticalPanel_1);	    
-	    verticalPanel_1.add(closeButtonPanel);	    
-	    verticalPanel_1.setCellHorizontalAlignment(closeButtonPanel, HasHorizontalAlignment.ALIGN_RIGHT);
-	    	    
-	    closeButtonPanel.add(htmlCloseCurrentCalculation);
-	    closeButtonPanel.setCellHorizontalAlignment(htmlCloseCurrentCalculation, HasHorizontalAlignment.ALIGN_RIGHT);
-	    closeButtonPanel.setCellHeight(htmlCloseCurrentCalculation, "32px");
-	    closeButtonPanel.setCellVerticalAlignment(htmlCloseCurrentCalculation, HasVerticalAlignment.ALIGN_MIDDLE);
-	    closeButtonPanel.add(closeButton);
-	    closeButtonPanel.setCellHeight(closeButton, "32px");
-	    closeButtonPanel.setCellWidth(closeButton, "32px");
-	    closeButtonPanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
-	    closeButtonPanel.setVisible(false);
-
-	    verticalPanel_1.add(tabPanel);
 	}
 	
 	/**
@@ -140,12 +149,12 @@ public class MainView {
 	 * @param name A title for the widget
 	 */
 	public void addTabPanel(Widget input, String name){
-		tabPanel.add(input,name);
-		tabPanel.selectTab(input);
-		closeButtonPanel.setVisible(true);
+		centralTabPanel.add(input,name);
+		centralTabPanel.selectTab(input);
+		upperRightPanelCloseCurrentTab.setVisible(true);
 	}
 	
 	public void addWidgetToLeftPanel(Widget w, String description){
-		leftPanel.add(w,description,true);
+		leftDownPanelFunctions.add(w,description,true);
 	}
 }
