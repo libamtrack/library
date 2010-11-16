@@ -97,7 +97,13 @@ public class MainView {
 		
 		horizontalPanel.add(westVerticalPanel);		
     
-		HTML contact = new HTML("Contact address: <b><u>Leszek.Grzanka@ifj.edu.pl</u></b>");
+		HTML contact = new HTML("<center><big><big>HOWTO</big></big></center>" +
+				"<ol><li>Choose a function below.</li>"+
+				"<li>Enter you parameters and click &#39;recalculate&#39;.</li>" +
+				"<li>Results are printed on the right.</li>"+
+				"<li>Open more function panels or close them.</li></ol>"+
+                "In case of problems and for any feedback:"+
+                "<b><u><a href=\"mailto:Leszek.Grzanka@ifj.edu.pl\" target=\"_blank\">Leszek.Grzanka@ifj.edu.pl</a></u></b><br>");
 		
 	    westVerticalPanel.add(logoImage);
 	    westVerticalPanel.add(contact);
@@ -105,7 +111,7 @@ public class MainView {
 	    westVerticalPanel.setCellHeight(logoImage, "120px");
 	    westVerticalPanel.setCellVerticalAlignment(logoImage, HasVerticalAlignment.ALIGN_BOTTOM);
 	    westVerticalPanel.setCellHorizontalAlignment(logoImage, HasHorizontalAlignment.ALIGN_CENTER);
-	    westVerticalPanel.setCellHeight(contact, "50px");
+	    westVerticalPanel.setCellHeight(contact, "190px");
 	    westVerticalPanel.setCellVerticalAlignment(contact, HasVerticalAlignment.ALIGN_MIDDLE);
 	    westVerticalPanel.setCellHorizontalAlignment(contact, HasHorizontalAlignment.ALIGN_CENTER);
 	    westVerticalPanel.setCellWidth(leftPanel, "180px");
