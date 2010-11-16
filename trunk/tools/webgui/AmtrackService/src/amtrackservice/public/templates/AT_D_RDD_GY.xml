@@ -4,15 +4,15 @@
 		Returns RDD as a function of distance
 	</description>
 	<input>
-		<element type="field" label="r minimum [m]" datatype="double">
-			<description>r [m] minimum</description>
+		<element type="field" label="r min [m]" datatype="double">
+			<description>r [m] min</description>
 			<preset>
 				<item value="1e-10" />
 			</preset>
 			<data x="r_min" />
 		</element>
-		<element type="field" label="r maximum [m]" datatype="double">
-			<description>r [m] maximum</description>
+		<element type="field" label="r max [m]" datatype="double">
+			<description>r [m] max</description>
 			<preset>
 				<item value="1e-5" />
 			</preset>
@@ -25,17 +25,17 @@
 			</preset>
 			<data x="n_points" />
 		</element>
-		<element type="combo" label="X axis spacing" datatype="long">
-			<entry>
-				<item key="Logarithmic" value="1" />
-				<item key="Linear" value="2" />
-			</entry>
-			<description>X axis spacing</description>
-			<preset>
-				<item value="1" />
-			</preset>
-			<data x="x_axis_type" />
-		</element>
+        <element type="radio" label="X axis spacing" datatype="long">
+            <entry>
+                <item key="Logarithmic" value="1" />
+                <item key="Linear" value="2" />
+            </entry>
+            <description>X axis spacing</description>
+            <preset>
+                <item value="1" />
+            </preset>
+            <data x="x_axis_type" />
+        </element>
 		<element type="field" label="E_MeV_u" datatype="double">
 			<description>particle (ion) energy per nucleon [MeV/amu]</description>
 			<preset>
