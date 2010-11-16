@@ -8,7 +8,9 @@
   \item{spc}{ spc data as returned by \code{\link{AT.SPC.read}}}
   \item{INDEX}{ vector of column names in spc data that should be used as indices (indicating the cells).}
   \item{FUN}{ Function to be applied - preferably this is a libamtrack function obeying the standard naming of mixed field variables \code{\link{number.of.field.components}} and \code{\link{material.no}}. Additional arguments to \code{FUN} can be passed using \code{...})}
-  \item{additional.arguments}{ Optional additional arguments to \code{FUN}. This should be a list with a two-entry vector for each argument, e.g. for the primitive R function \code{mean(x)}: \code{additional.arguments = list(c("x", "E.MeV.u"))}}
+  \item{additional.arguments}{ Optional additional arguments to \code{FUN}. This should be a list with a three-entry vector for each argument. The first entry is the argument name, the second the value, the third indicated if it should be applied cell-wise (if TRUE). 
+  For example: the primitive R function to evaluate the mean energy per cell: \code{mean(x)}: \code{additional.arguments = list(c("x", "E.MeV.u", TRUE))}
+  Or to pass the material.no (same for all cells): \code{additional.arguments = list(c("material.no", "1", FALSE))}}
   \item{names.results}{ optional vector with names for the returned values of \code{FUN}}
 }
 \value{
