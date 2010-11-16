@@ -25,7 +25,7 @@
 			</preset>
 			<data x="n_points" />
 		</element>
-        <element type="radio" label="X axis spacing" datatype="long">
+        <element type="combo" label="X axis spacing" datatype="long">
             <entry>
                 <item key="Logarithmic" value="1" />
                 <item key="Linear" value="2" />
