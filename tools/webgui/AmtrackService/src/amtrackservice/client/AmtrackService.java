@@ -50,7 +50,7 @@ public class AmtrackService implements EntryPoint {
 		  ImageResource play();
 		  
 		  @Source("Close.png")
-		  ImageResource close();
+		  ImageResource close();		  
 		  
 		  @Source("Logo.png")
 		  ImageResource logo();
@@ -60,6 +60,12 @@ public class AmtrackService implements EntryPoint {
 		  
 		  @Source("Defaults.png")
 		  ImageResource defaults();
+
+		  @Source("Add.png")
+		  ImageResource add();
+
+		  @Source("Help.png")
+		  ImageResource help();
 	}
 	
 	/**
