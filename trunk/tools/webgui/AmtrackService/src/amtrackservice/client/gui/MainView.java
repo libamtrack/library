@@ -52,7 +52,7 @@ public class MainView {
 	    
 		rightMainTab = new HTML("<center><big><font size=\"+2\"><br><br>Welcome to libamtrack webGUI</font></big><br><br>" + 
 					"<big>HOWTO</big><br><br>" +
-					"<font size=\"1\">1. Choose a function below.<br>"+
+					"<font size=\"2\">1. Choose a function from the left panel.<br>"+
 					"2. Enter parameters and recalculate.<br>" +
 					"3. Results printed on the right.<br>"+
 					"4. Open another/close function.<br>"+
