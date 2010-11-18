@@ -14,6 +14,9 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AmInputList extends AmWidget {
+	
+	// replace by Cell Table:
+	// http://gwt.google.com/samples/Showcase/Showcase.html#!CwCellTable
 
 	private DockPanel widget;
 	private ListBox listbox;
