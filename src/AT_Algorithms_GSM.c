@@ -241,6 +241,35 @@ void AT_GSM_calculate_histogram_from_grid( const long     nX,
   (*zero_fraction) /= gsl_pow_2(nX);
 }
 
+
+void AT_GSM_calculate_local_response_grid( const long      nX,
+    const long      gamma_model,
+    const double    gamma_parameters[],
+    const double**  grid_D_Gy,
+    const bool      lethal_events_mode,
+    double**        grid_response){
+
+/* lethal_events_mode (dGSM) works with arbitrary gamma models */
+/* It is however more efficient to use GR_LinQuad_Log if LQ is used */
+//  if( lethal_events_mode && (gamma_model != GR_LinQuad) ){
+//    printf("Sorry, no Grid Summation model (lethal events mode) with other than Linear Quadratic gamma response\n");
+//    printf("Please choose gamma_model = %d. Exiting now...\n", GR_LinQuad);
+//    return;
+//  }
+
+  // get gamma response for local dose
+  long i;
+  for (i = 0; i < nX; i++){
+    AT_gamma_response( nX,
+        grid_D_Gy[i],
+        gamma_model,
+        gamma_parameters,
+        lethal_events_mode,
+        grid_response[i]);
+  } // i
+
+}
+
 void AT_GSM_calculate_dose_histogram( const long  number_of_field_components,
     const double   E_MeV_u[],
     const double   fluence_cm2[],
@@ -327,34 +356,6 @@ void AT_GSM_calculate_dose_histogram( const long  number_of_field_components,
 
 }
 
-
-void AT_GSM_calculate_local_response_grid( const long      nX,
-    const long      gamma_model,
-    const double    gamma_parameters[],
-    const double**  grid_D_Gy,
-    const bool      lethal_events_mode,
-    double**        grid_response){
-
-/* lethal_events_mode (dGSM) works with arbitrary gamma models */
-/* It is however more efficient to use GR_LinQuad_Log if LQ is used */
-//  if( lethal_events_mode && (gamma_model != GR_LinQuad) ){
-//    printf("Sorry, no Grid Summation model (lethal events mode) with other than Linear Quadratic gamma response\n");
-//    printf("Please choose gamma_model = %d. Exiting now...\n", GR_LinQuad);
-//    return;
-//  }
-
-  // get gamma response for local dose
-  long i;
-  for (i = 0; i < nX; i++){
-    AT_gamma_response( nX,
-        grid_D_Gy[i],
-        gamma_model,
-        gamma_parameters,
-        lethal_events_mode,
-        grid_response[i]);
-  } // i
-
-}
 
 void AT_GSM_calculate_multiple_dose_histograms( const long  number_of_field_components,
     const double   	E_MeV_u[],
