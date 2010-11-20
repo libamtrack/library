@@ -1,13 +1,13 @@
-#ifndef AmTrack_H_
-#define AmTrack_H_
+#ifndef AT_ALGORITHMS_IGK_H_
+#define AT_ALGORITHMS_IGK_H_
 
 /**
- * @brief libamtrack main file holding the amorphous track methods for RE/RBE calculation
+ * @brief Ion-gamma-kill model
  */
 
 /*
- *    AmTrack.h
- *    =========
+ *    AT_Algorithms_IGK.h
+ *    ===================
  *
  *    Created on: 28.07.2009
  *    Creator: greilich
@@ -106,4 +106,4 @@ void AT_run_IGK_method(  const long  number_of_field_components,
 
 
 
-#endif /* AmTrack_H_ */
+#endif /* AT_ALGORITHMS_IGK_H_ */
