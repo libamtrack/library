@@ -1,10 +1,10 @@
 /**
- * @brief main file holding the amorphous track methods for RE/RBE calculation
+ * @brief Ion-gamma-kill model
  */
 
 /*
- *    AmTrack.c
- *    =========
+ *    AT_Algorithms_IGK.c
+ *    ===================
  *
  *    Created on: 28.07.2009
  *    Creator: greilich
@@ -28,7 +28,7 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "AmTrack.h"
+#include "AT_Algorithms_IGK.h"
 #include <math.h>
 
 void AT_run_IGK_method(  const long  number_of_field_components,
