@@ -25,13 +25,13 @@
 
 rm(list = ls())
 
-source("type.conversion.R")
+source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")
 
-load("functions.ssd")
+load("functions.sdd")
 
-write("#ifndef AT_WRAPPER_H_\n#define AT_WRAPPER_H_\n// Automatically created header file\n\n#include \"AmTrack.h\"\n#include <stdlib.h>\n#include <stdbool.h>\n", file = "./package/src/Rwrapper.h")
+write("#ifndef AT_R_WRAPPER_H_\n#define AT_R_WRAPPER_H_\n// Automatically created header file\n\n#include \"AT_Algorithms_IGK.h\"\n#include <stdlib.h>\n#include <stdbool.h>\n", file = "AT_R_Wrapper.h")
 
-write("// Automatically created header and body file\n\n#include \"Rwrapper.h\"\n", file = "./package/src/Rwrapper.c")
+write("// Automatically created header and body file\n\n#include \"AT_R_Wrapper.h\"\n", file = "AT_R_Wrapper.c")
 
 # replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
 grep.bool	<-	function(pattern, x, ...){
@@ -65,7 +65,7 @@ for(i in 1:length(functions)){
 		header[length(header)] <- paste( "\t", convert.c(tmp$parameter$type[length(header)]), " ",
 							tmp$parameter$name[length(header)], ");", sep = "")
 	}
-	write(c(header, "\n"), file = "./package/src/Rwrapper.h", append = T)
+	write(c(header, "\n"), file = "AT_R_Wrapper.h", append = T)
 
 	###########################
 	# create function body
@@ -240,7 +240,7 @@ for(i in 1:length(functions)){
 
 	# close body
 	body <- c(body, "}\n\n")
-	write(body, file = "./package/src/Rwrapper.c", append = T)
+	write(body, file = "AT_R_Wrapper.c", append = T)
 }
 
-write("#endif\n", file = "./package/src/Rwrapper.h", append = T)
+write("#endif\n", file = "AT_R_Wrapper.h", append = T)
