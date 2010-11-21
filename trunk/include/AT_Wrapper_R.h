@@ -29,7 +29,9 @@
  */
 
 
-#include "AmTrack.h"
+#include "AT_Algorithms_IGK.h"
+#include "AT_Algorithms_GSM.h"
+#include "AT_Algorithms_CPP.h"
 #include "AT_DataMaterial.h"
 #include "AT_PhysicsRoutines.h"
 #include "AT_ElectronRange.h"
@@ -380,7 +382,7 @@ void AT_convert_beam_parameters_R(  const int*  n,
     float* N,
     float* FWHM_mm);
 
-void AT_GSM_calculate_dose_histogram_R( const int*  number_of_field_components,
+void AT_GSM_local_dose_distrib_R( const int*  number_of_field_components,
     const float*   E_MeV_u,
     const float*   fluence_cm2,
     const int*     particle_no,
@@ -396,7 +398,7 @@ void AT_GSM_calculate_dose_histogram_R( const int*  number_of_field_components,
     float *        zero_dose_fraction,
     float *        dose_frequency_Gy);
 
-void AT_GSM_calculate_multiple_dose_histograms_R( const int*  number_of_field_components,
+void AT_GSM_multiple_local_dose_distrib_R( const int*  number_of_field_components,
     const float*   	E_MeV_u,
     const float*   	fluence_cm2,
     const int*     	particle_no,

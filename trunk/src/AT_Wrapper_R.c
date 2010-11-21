@@ -1768,7 +1768,7 @@ void AT_convert_beam_parameters_R(  const int*  n,
 
 
 
-void AT_GSM_calculate_dose_histogram_R( const int*  number_of_field_components,
+void AT_GSM_local_dose_distrib_R( const int*  number_of_field_components,
     const float*   E_MeV_u,
     const float*   fluence_cm2,
     const int*     particle_no,
@@ -1830,7 +1830,7 @@ void AT_GSM_calculate_dose_histogram_R( const int*  number_of_field_components,
 	  unsigned long  random_number_generator_seed	= gsl_rng_get(rng);
 
 	  for (i = 0; i < N_runs_long; i++){
-		  AT_GSM_calculate_dose_histogram( n_long,
+		  AT_GSM_local_dose_distrib( n_long,
 			E_MeV_u_double,
 			fluence_cm2_double,
 			particle_no_long,
@@ -1871,7 +1871,7 @@ void AT_GSM_calculate_dose_histogram_R( const int*  number_of_field_components,
 
 }
 
-void AT_GSM_calculate_multiple_dose_histograms_R( const int*  number_of_field_components,
+void AT_GSM_multiple_local_dose_distrib_R( const int*  number_of_field_components,
     const float*   	E_MeV_u,
     const float*   	fluence_cm2,
     const int*     	particle_no,
@@ -1938,7 +1938,7 @@ void AT_GSM_calculate_multiple_dose_histograms_R( const int*  number_of_field_co
 	  double * 		mean_dose_frequency_Gy_double 	= (double*)calloc(number_of_bins_long,sizeof(double));
 	  double * 		sd_dose_frequency_Gy_double		= (double*)calloc(number_of_bins_long,sizeof(double));
 
-	AT_GSM_calculate_multiple_dose_histograms( n_long,
+	  AT_GSM_multiple_local_dose_distrib( n_long,
 	    E_MeV_u_double,
 	    fluence_cm2_double,
 	    particle_no_long,
