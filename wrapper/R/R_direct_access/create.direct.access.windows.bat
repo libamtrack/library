@@ -18,4 +18,7 @@ del .RData
 del functions.sdd
 del ..\..\..\tools\automatic_wrapper_generator\*.Rout
 
+copy C:\Programme\GnuWin32\bin\libgsl.dll package.Rcheck\libamtrack\libs
+copy C:\Programme\GnuWin32\bin\libgslcblas.dll package.Rcheck\libamtrack\libs
+
 echo "Done."
