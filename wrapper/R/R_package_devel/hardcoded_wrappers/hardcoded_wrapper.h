@@ -1,7 +1,7 @@
 #ifndef AT_HARDCODED_WRAPPER_H_
 #define AT_HARDCODED_WRAPPER_H_
 
-#include "AmTrack.h"
+#include "AT_Algorithms_IGK.h"
 
 void AT_gamma_response_R( const int*  n,
     const float*  d_Gy,
