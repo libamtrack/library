@@ -25,11 +25,11 @@
 
 rm(list = ls())
 
-source("type.conversion.R")
+source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")
 
-load("functions.ssd")
+load("functions.sdd")
 
-write("# Automatically created wrapper file\n", file = "./package/R/wrapper.R")
+write("# Automatically created wrapper file\n", file = "./libamtrack.R")
 
 # replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
 grep.bool	<-	function(pattern, x, ...){
@@ -211,7 +211,7 @@ for(i in 1:length(functions)){
 	}
 
 
-	write(c(header, "\n"), file = "./package/R/wrapper.R", append = T)
+	write(c(header, "\n"), file = "./libamtrack.R", append = T)
 
 }
 #tmp
