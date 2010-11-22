@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "AT_Algorithms_IGK"
+#include "AT_PhysicsRoutines.h"
 
 int main( int argc, char* argv[]){
 
