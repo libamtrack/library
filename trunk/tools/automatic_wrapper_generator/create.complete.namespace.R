@@ -1,10 +1,9 @@
 ################################################################################################
-# Namespace generator for the libamtrack R package
+# Namespace generator
 ################################################################################################
 # This script will crawl all header-files in the /include director of the libamtrack trunk
 # and create a file containing the names of all functions found. The user can then decide
-# which of them to include in the R package by deleting / commenting out individual
-# function names.
+# which of them to include by deleting / commenting out individual function names.
 ################################################################################################
 # Copyright 2006, 2010 The libamtrack team
 # 
@@ -36,7 +35,7 @@ cur.dir <- getwd()
 
 # Navigate to include path within libamtrack trunk, stop if fails
 if (try(setwd("../../include")) != TRUE){
-    stop("Please start script in /tools/R_package_generator")
+    stop("I do not see from current folder ../../include. Move to other place !")
 }
 
 # Get the names of all header files, exclude "AT_Wrapper_R.h"
@@ -56,7 +55,7 @@ for(name.cur.header.file in names.all.header.files){
       print(paste("Read: ", name.cur.header.file))
 
       # Find end of doxygen comments AND end of functions
-	# The end of a doxygen comment ("*/") is not unique and can be
+      # The end of a doxygen comment ("*/") is not unique and can be
       # used for regular comments too. Thus, we use only those end positions that
       # lie before the end of a function declaration (");")
 	end.doxygen.comments <- grep("*/", cur.header.file, fixed = T)
@@ -92,7 +91,7 @@ for(name.cur.header.file in names.all.header.files){
             print("Extracted functions:")
             print(cur.function.names)
       
-            # append function names for current header file to function name vextor
+            # append function names for current header file to function name vector
             function.names <- c(function.names, cur.function.names)
       }else{
             print("Header file contains no functions.")
@@ -110,4 +109,3 @@ write( function.names,
              sep = "\n")
 
 # End of script
-

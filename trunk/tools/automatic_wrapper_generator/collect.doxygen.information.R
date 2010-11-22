@@ -34,7 +34,7 @@ namespace         <- scan(file = "NAMESPACE", what = "character")
 
 # Navigate to include path within libamtrack trunk. Stop if this fails
 if(try(setwd("../../../include")) == FALSE){
-     stop("Please start script from /tools/R_package_converter")
+    stop("I do not see from current folder ../../include. Move to other place !")
 }
 
 # Read in all header file names
@@ -42,7 +42,7 @@ header.file.names <- list.files(".")
 header.file.names <- header.file.names[grep(".h", header.file.names)]
 
 # Remove the old style R-wrappers from the list of header files - they are obsolete here. 
-# Additionally header files fow which doxygen comments are not ready yet can be excluded
+# Additionally header files for which doxygen comments are not ready yet can be excluded
 to.remove         <- c("AT_KatzModel.h", "AT_NumericalRoutines.h")
 pos.remove        <- match(to.remove, header.file.names)
 #pos.remove        <- c(pos.remove, grep("Data", header.file.names))
@@ -433,4 +433,3 @@ for(header.file.name in header.file.names){
 setwd(cur.dir)
 
 save(functions, file = "functions.sdd")
-
