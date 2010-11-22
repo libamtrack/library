@@ -35,7 +35,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "AmTrack.h"
+#include "AT_Algorithms_IGK.h"
 
 #include <assert.h>
 

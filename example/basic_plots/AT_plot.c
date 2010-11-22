@@ -36,7 +36,7 @@
 #include <string.h>
 #include <getopt.h>
 
-#include "AmTrack.h"
+#include "AT_Algorithms_IGK.h"
 
 char * plottypes[] = {"ER","RDD","LET","CSDArange"};
 int plottypes_nr = 4;
