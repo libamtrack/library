@@ -16,7 +16,7 @@ R CMD check ./package --no-latex # this command produce directory with R package
 rm package/src/*.h
 rm package/src/*.c
 cd package.Rcheck
-tar -zcf libamtrack_0.4.1.tar.gz libamtrack/ # packaging of real package
+tar -zcf libamtrack_0.4.1.tar.gz libamtrack/ # packaging of real package 
 mv libamtrack_0.4.1.tar.gz ../
 rm -rf package.Rcheck
 cd ../../..
