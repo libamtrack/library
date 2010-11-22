@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "AmTrack.h"
+#include "AT_Algorithms_IGK"
 
 int main(int argc, char *argv[]) {
 	if (argc != 2) {

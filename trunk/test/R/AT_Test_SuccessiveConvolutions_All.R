@@ -128,9 +128,4 @@ res.SC$f)
 #df <- read.table("SuccessiveConvolutions.log", header = TRUE, sep = ";")
 #p1 <- xyplot(xyplot(log10(f)~log10(f.d.Gy)|n.convolution,df))
 
-pdf("AT_test_successive_convolutions_All.pdf")						
-
 plot(p1)
-
-dev.off()
-
