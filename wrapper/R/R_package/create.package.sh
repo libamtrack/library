@@ -8,8 +8,8 @@ cp hardcoded_wrappers/hardcoded_wrapper.c package/src/
 cp hardcoded_wrappers/hardcoded_wrapper.h package/src/
 R --no-save < ../../../tools/automatic_wrapper_generator/collect.doxygen.information.R
 R --no-save < ../../../tools/automatic_wrapper_generator/R.generate.C.wrapper.R
-R --no-save < ../../../tools/automatic_wrapper_generator/R.generate.C.wrapper.R
-R --no-save < ../../../tools/automatic_wrapper_generator/R.generate.C.wrapper.R
+R --no-save < ../../../tools/automatic_wrapper_generator/R.generate.R.wrapper.R
+R --no-save < ../../../tools/automatic_wrapper_generator/R.generate.Rd.documentation.R
 mv AT_R_Wrapper.* package/src
 mv libamtrack.R package/R
 R CMD check ./package --no-latex # this command produce directory with R package
