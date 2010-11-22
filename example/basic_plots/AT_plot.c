@@ -36,7 +36,8 @@
 #include <string.h>
 #include <getopt.h>
 
-#include "AT_Algorithms_IGK.h"
+#include "AT_RDD.h"
+#include "AT_PhysicsRoutines.h"
 
 char * plottypes[] = {"ER","RDD","LET","CSDArange"};
 int plottypes_nr = 4;
