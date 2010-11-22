@@ -41,7 +41,6 @@ int main(int argc, char *argv[]) {
 	char *path = argv[1];
 	char Text[600];
 
-	long n = 0;
 	double E_MeV_u[500];
 	double LET_keV_um[500];
 	long material_no;

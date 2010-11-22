@@ -41,7 +41,6 @@ int main(int argc, char *argv[]) {
 	char *path = argv[1];
 	char Text[6000];
 
-	long n = 0;
 	double r_m[5000];
 	double RDD_GY[5000];
 	double rdd_parameters[RDD_MAX_NUMBER_OF_PARAMETERS];

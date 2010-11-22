@@ -31,7 +31,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "AT_Algorithms_IGK"
+
+#include "AT_PhysicsRoutines.h"
 
 int main(int argc, char *argv[]) {
 	if (argc != 2) {
@@ -41,13 +42,12 @@ int main(int argc, char *argv[]) {
 	char *path = argv[1];
 	char Text[600];
 
-	long n = 0;
 	double beta[500];
 
-	double beta_start;
-	double beta_end;
-	long n_points;
-	long x_axis_type;
+	double beta_start = 0.;
+	double beta_end = 0.;
+	long n_points = 0;
+	long x_axis_type = 0;
 
 	FILE *f;
 	fflush(stdin);
