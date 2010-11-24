@@ -28,7 +28,7 @@ rm( list = ls() )
 # Trigger build of latest libamtrack version for direct R access 
 # and load resulting dll / wrappers
 start.dir           <- getwd()
-if(try(setwd("../wrapper/R/R_direct_access")) == FALSE){stop("Please start script from /test")}
+if(try(setwd("..\\..\\wrapper\\R\\R_direct_access")) == FALSE){stop("Please start script from /test")}
 try(system("create.direct.access.windows.bat"))
 
 # load library and wrappers

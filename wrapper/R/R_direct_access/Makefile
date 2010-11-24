@@ -41,16 +41,12 @@ INCLDIR    = "..\..\..\include"
 RMCMD      = del
 GCC        = "gcc.exe"
 GSLINCLUDE = "$(GSLPATH)\include"
-GSLLIB     = "$(GSLPATH)\lib"
+GSLLIB     = "$(GSLPATH)\bin"
 endif
 
-AT_R_Wrapper.o:AT_R_Wrapper.c 
-		$(GCC) -I$(GSLINCLUDE) -I$(INCLDIR) -I$(MINGWPATH)/include -I. $(CFLAGS) AT_R_Wrapper.c
-
-
-all:AT_R_Wrapper.o
-		$(GCC) -L$(GSLLIB) -L$(LIBDIR) -shared AT_R_Wrapper.o $(LFLAGS) -lamtrack -o $(NAMELIB)
-
+all:
+		$(GCC) -I$(GSLINCLUDE) -I$(INCLDIR) -I$(MINGWPATH)/include -I. $(CFLAGS) *.c
+		$(GCC) -L$(LIBDIR) -L$(GSLLIB) $(LFLAGS) -shared -o $(NAMELIB) *.o
 
 clean:
 		- $(RMCMD) *.o
