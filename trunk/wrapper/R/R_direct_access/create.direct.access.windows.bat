@@ -7,6 +7,10 @@ R CMD BATCH ..\..\..\tools\automatic_wrapper_generator\collect.doxygen.informati
 R CMD BATCH ..\..\..\tools\automatic_wrapper_generator\R.generate.C.wrapper.R
 R CMD BATCH ..\..\..\tools\automatic_wrapper_generator\R.generate.R.wrapper.R
 
+REM *** Copy sources to local directory
+copy ..\..\..\include\*.h .
+copy ..\..\..\src\*.c .
+
 REM *** Compile libamtrack including R wrappers ***
 make all
 
