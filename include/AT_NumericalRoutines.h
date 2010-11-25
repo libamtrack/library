@@ -310,9 +310,10 @@ long locate(const double xx[], const long n, const double x);
  * @param xx
  * @param n
  * @param x
+ * @param index_in_row
  * @return
  */
-long locate_in_2d_table(const double xx[][2], const long n, const double x);
+long locate_index_in_2d_table(const double xx[][2], const long n, const double x, const int index_in_row);
 
 
 /**

@@ -41,10 +41,10 @@ double AT_Bethe_wrapper(const double 	E_MeV_u,
 };
 
 
-double AT_Stopping_Power_data_interpolation(const long stopping_power_source_no,
-		const double 	E_MeV_u,
+double _AT_Stopping_Power_get_data(const long stopping_power_source_no,
 		const long 	    particle_no,
-		const long 		material_no){
+		const long 		material_no,
+		AT_stopping_power_tabulated_source_for_given_material_struct ** source_for_given_material){
 
 	assert( AT_stopping_power_tabulated_source.stopping_power_source_data_group != NULL );
 	assert( AT_stopping_power_tabulated_source.number_of_sources == STOPPING_POWER_SOURCE_N);
@@ -59,27 +59,8 @@ double AT_Stopping_Power_data_interpolation(const long stopping_power_source_no,
 		assert( group_for_all_materials->material_no[material_no] == material_no);
 		assert( group_for_all_materials->stopping_power_source_no == stopping_power_source_no);
 
-		AT_stopping_power_tabulated_source_for_given_material_struct * source_for_given_material =
-				(AT_stopping_power_tabulated_source_for_given_material_struct *)group_for_all_materials->stopping_power_source_data[material_no];
-
-		if( source_for_given_material != NULL ){
-			const long n = source_for_given_material->number_of_data_points;
-			if( source_for_given_material->E_MeV_u_and_stopping_power_total_MeV_cm2_g != NULL){
-
-				double result = AT_get_interpolated_y_from_input_2d_table(
-						source_for_given_material->E_MeV_u_and_stopping_power_total_MeV_cm2_g,
-						n,
-						E_MeV_u);
-
-				return result;
-			} else {
-				char source_name[1000];
-				AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
-				char material_name[1000];
-				AT_material_name_from_number(material_no,material_name);
-				printf("Missing data points for data source [%s] and material [%s]\n", source_name, material_name);
-			}
-		} else {
+		*source_for_given_material =	(AT_stopping_power_tabulated_source_for_given_material_struct *)group_for_all_materials->stopping_power_source_data[material_no];
+		if( *source_for_given_material == NULL ){
 			char source_name[1000];
 			AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
 			char material_name[1000];
@@ -91,6 +72,38 @@ double AT_Stopping_Power_data_interpolation(const long stopping_power_source_no,
 		AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
 		printf("Missing data for data source [%s]\n", source_name);
 		return -1;
+	}
+	return -1;
+
+}
+
+
+double AT_Stopping_Power_data_interpolation(const long stopping_power_source_no,
+		const double 	E_MeV_u,
+		const long 	    particle_no,
+		const long 		material_no){
+
+	AT_stopping_power_tabulated_source_for_given_material_struct * source_for_given_material = NULL;
+
+	_AT_Stopping_Power_get_data( stopping_power_source_no, particle_no, material_no, &source_for_given_material);
+
+	assert( source_for_given_material != NULL );
+
+	const long n = source_for_given_material->number_of_data_points;
+
+	if( source_for_given_material->E_MeV_u_and_stopping_power_total_MeV_cm2_g != NULL){
+		double result = AT_get_interpolated_y_from_input_2d_table(
+				source_for_given_material->E_MeV_u_and_stopping_power_total_MeV_cm2_g,
+				n,
+				E_MeV_u);
+
+		return result;
+	} else {
+		char source_name[1000];
+		AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
+		char material_name[1000];
+		AT_material_name_from_number(material_no,material_name);
+		printf("Missing data points for data source [%s] and material [%s]\n", source_name, material_name);
 	}
 	return -1;
 };
@@ -137,6 +150,14 @@ void AT_Stopping_Power_keV_um_multi( const long stopping_power_source_no, const 
 	for( i = 0 ; i < number_of_particles; i++){
 		Stopping_Power_keV_um[i] = AT_Stopping_Power_keV_um_single(stopping_power_source_no, E_MeV_u[i], particle_no[i], material_no);
 	}
+}
+
+
+double AT_Range_m_from_Stopping_Power_single( const long stopping_power_source_no,
+		const double Stopping_Power_MeV_cm2_g,
+		const long particle_no,
+		const long material_no){
+	return -1;
 }
 
 
