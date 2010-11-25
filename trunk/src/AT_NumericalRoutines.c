@@ -634,23 +634,27 @@ long locate(const double xx[], const long n, const double x)
 }
 
 
-long locate_in_2d_table(const double xx[][2], const long n, const double x)
+long locate_index_in_2d_table(const double xx[][2], const long n, const double x, int index_in_row)
 {
+  assert( index_in_row >= 0 );
+  assert( index_in_row <= 2 );
+  assert( n > 0 );
+
   long  ju, jm, jl, j;
   int    ascnd;
 
   jl    =  0;
   ju    =  n + 1;
-  ascnd  =  (xx[n-1][0] >= xx[0][0]);
+  ascnd  =  (xx[n-1][index_in_row] >= xx[0][index_in_row]);
   while (ju - jl > 1){
     jm    =  (ju + jl) >> 1;
-    if (x >= xx[jm-1][0] == ascnd)
+    if (x >= xx[jm-1][index_in_row] == ascnd)
       jl  =  jm;
     else
       ju  =  jm;
   }
-  if ( x == xx[0][0]) j = 1;
-  else if (x == xx[n - 1][0]) j = n - 1;
+  if ( x == xx[0][index_in_row]) j = 1;
+  else if (x == xx[n - 1][index_in_row]) j = n - 1;
   else j  =  jl;
   return j;
 }
@@ -667,12 +671,22 @@ double AT_get_interpolated_y_from_input_table(const double input_data_x[], const
 
 
 double AT_get_interpolated_y_from_input_2d_table(const double input_data_xy[][2], const long length_of_input_data, const double intermediate_x){
-	int i = locate_in_2d_table( input_data_xy, length_of_input_data, intermediate_x );
+	int i = locate_index_in_2d_table( input_data_xy, length_of_input_data, intermediate_x, 0 );
 
 	assert( i >= 0 );
 	assert( i < length_of_input_data);
 
 	return AT_get_interpolated_y_from_interval( input_data_xy[i-1][0], input_data_xy[i-1][1], input_data_xy[i][0], input_data_xy[i][1], intermediate_x);
+}
+
+
+double AT_get_interpolated_x_from_input_2d_table(const double input_data_xy[][2], const long length_of_input_data, const double intermediate_y){
+	int i = locate_index_in_2d_table( input_data_xy, length_of_input_data, intermediate_y, 1 );
+
+	assert( i >= 0 );
+	assert( i < length_of_input_data);
+
+	return AT_get_interpolated_y_from_interval( input_data_xy[i-1][1], input_data_xy[i-1][0], input_data_xy[i][1], input_data_xy[i][0], intermediate_y);
 }
 
 
