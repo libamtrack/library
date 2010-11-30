@@ -153,10 +153,60 @@ void AT_Stopping_Power_keV_um_multi( const long stopping_power_source_no, const 
 }
 
 
-double AT_Range_m_from_Stopping_Power_single( const long stopping_power_source_no,
+double AT_Energy_MeV_u_from_Stopping_Power_single( const long stopping_power_source_no,
 		const double Stopping_Power_MeV_cm2_g,
 		const long particle_no,
 		const long material_no){
+
+	// should work for energies from 0.5 MeV till 1000 MeV
+
+	AT_stopping_power_tabulated_source_for_given_material_struct * source_for_given_material = NULL;
+
+	_AT_Stopping_Power_get_data( stopping_power_source_no, particle_no, material_no, &source_for_given_material);
+
+	assert( source_for_given_material != NULL );
+
+	const long n = source_for_given_material->number_of_data_points;
+
+	if( source_for_given_material->E_MeV_u_and_stopping_power_total_MeV_cm2_g != NULL){
+
+		long lowest_index = locate_index_in_2d_table( source_for_given_material->E_MeV_u_and_stopping_power_total_MeV_cm2_g, 0, n-1, 4.9, 0 );
+		long highest_index = locate_index_in_2d_table( source_for_given_material->E_MeV_u_and_stopping_power_total_MeV_cm2_g, 0, n-1, 1000.0, 0 );
+
+		double tab[highest_index-lowest_index+1][2];
+		long i ;
+		for( i = lowest_index-1 ; i < highest_index ; i++ ){
+			double E_MeV_u                                =  source_for_given_material->E_MeV_u_and_stopping_power_total_MeV_cm2_g[i][0];
+			double stopping_power_total_MeV_cm2_g_proton  =  source_for_given_material->E_MeV_u_and_stopping_power_total_MeV_cm2_g[i][1];
+			tab[i - lowest_index + 1][0] = E_MeV_u;
+			if( particle_no != PARTICLE_PROTON_NUMBER ){
+				double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single( E_MeV_u, particle_no);
+				double Zeff_proton =  AT_effective_charge_from_E_MeV_u_single( E_MeV_u, PARTICLE_PROTON_NUMBER);
+				tab[i - lowest_index + 1][1] = stopping_power_total_MeV_cm2_g_proton * gsl_pow_2(Zeff_ion / Zeff_proton);
+			} else {
+				tab[i - lowest_index + 1][1] = stopping_power_total_MeV_cm2_g_proton;
+			}
+		}
+
+		if( (Stopping_Power_MeV_cm2_g < tab[highest_index - lowest_index][1] ) || (Stopping_Power_MeV_cm2_g > tab[0][1]) ){
+			printf("Only energy region 5-1000 MeV supported\n");
+			return -1;
+		}
+
+		double result = AT_get_interpolated_x_from_input_2d_table(
+				(const double (*)[2])tab,
+				0,
+				highest_index - lowest_index,
+				Stopping_Power_MeV_cm2_g);
+
+		return result;
+	} else {
+		char source_name[1000];
+		AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
+		char material_name[1000];
+		AT_material_name_from_number(material_no,material_name);
+		printf("Missing data points for data source [%s] and material [%s]\n", source_name, material_name);
+	}
 	return -1;
 }
 

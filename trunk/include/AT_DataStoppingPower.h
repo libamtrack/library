@@ -242,7 +242,7 @@ void AT_Stopping_Power_keV_um_multi( const long stopping_power_source_no,
  * @param[in] material_no
  * @return range [m]
  */
-double AT_Range_m_from_Stopping_Power_single( const long stopping_power_source_no,
+double AT_Energy_MeV_u_from_Stopping_Power_single( const long stopping_power_source_no,
 		const double Stopping_Power_MeV_cm2_g,
 		const long particle_no,
 		const long material_no);
