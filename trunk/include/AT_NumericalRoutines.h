@@ -306,14 +306,16 @@ long locate(const double xx[], const long n, const double x);
 
 
 /**
- * TODO
+ * Locates such index i that following inequation holds:
+ * xx[i-1] <= x < x[i]
  * @param xx
+ * @param n
  * @param n
  * @param x
  * @param index_in_row
  * @return
  */
-long locate_index_in_2d_table(const double xx[][2], const long n, const double x, const int index_in_row);
+long locate_index_in_2d_table(const double xx[][2], const long lowest_index, const long highest_index, const double x, int index_in_row);
 
 
 /**
@@ -335,6 +337,17 @@ double AT_get_interpolated_y_from_input_table(const double input_data_x[], const
  * @return
  */
 double AT_get_interpolated_y_from_input_2d_table(const double input_data_xy[][2], const long length_of_input_data, const double intermediate_x);
+
+
+/**
+ *TODO
+ * @param input_data_xy
+ * @param lowest_index
+ * @param highest_index
+ * @param intermediate_y
+ * @return
+ */
+double AT_get_interpolated_x_from_input_2d_table(const double input_data_xy[][2], const long lowest_index, const long highest_index, const double intermediate_y);
 
 
 /**
