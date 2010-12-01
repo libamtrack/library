@@ -77,7 +77,7 @@ int AT_SPC_get_size(FILE *fp){
     }
     fread(&nSpecies,sizeof(int64_t),1,fp);
     if (switchEndian) endian_swap8(&nSpecies);
-    printf("Species: %u \n",nSpecies);
+//    printf("Species: %u \n",nSpecies);
     int j;
     for (j=0; j < nSpecies; j++){
       struct STRPSPCBTAG  zA;
@@ -129,7 +129,7 @@ int AT_SPC_get_size(FILE *fp){
       struct STRPSPCBTAG  histoBins;
       readStruct(fp,&histoBins,switchEndian);
       if (histoBins.ulTag != TRPSPCDTAG_HISTO){
-	printf("Hisotry bin tag corrupt: %u \n",histoBins.ulTag);
+	printf("History bin tag corrupt: %u \n",histoBins.ulTag);
 	return 0;
       }
       fseek(fp,histoBins.ulLen,SEEK_CUR);
@@ -141,14 +141,11 @@ int AT_SPC_get_size(FILE *fp){
 	return 0;
       }
       fseek(fp,runSum.ulLen,SEEK_CUR);
-      printf("RunSum: %u %u \n",runSum.ulTag,runSum.ulLen);
+//      printf("RunSum: %u %u \n",runSum.ulTag,runSum.ulLen);
     }
 
   }
   return size;
-
-
-
 }
 
 
