@@ -1,3 +1,4 @@
+if(FALSE){
 # Testing script for AT_SuccessiveConvolutions routine
 # Created: 2010-10-05
 # Creator: greilich
@@ -60,3 +61,4 @@ pdf("AT_test_successive_convolutions.pdf")
 p1
 
 dev.off()
+}

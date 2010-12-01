@@ -35,65 +35,31 @@ require(lattice)
 
 E.MeV.u                <- c( 1, 10, 100)
 particle.no            <- c( 1001, 6012, 1001)
-fluence.cm2.or.dose.Gy <- c( -1, -5, -4)  # in Gy
-material.no            <- 1 # Liquid water
+fluence.cm2.or.dose.Gy <- c( -1, -5, -4)                                       # in Gy
+material.no            <- 1                                                    # Water, Liquid
+RDD.model              <- 3                                                    # Geiss
+RDD.parameters         <- 5e-8                                                 # a0
+ER.model               <- 4                                                    # Geiss
+gamma.model            <- 2                                                    # General hit/target
+gamma.parameters       <- c(1,10,1,1,0)                                        # Exp.-sat. (one-hit/one-target) with 10 Gy sat.-dose
+N2                     <- 10                                                   # 10 bins / factor of 2
 
-CPPSC.res              <- .C("AT_run_CPPSC_method",   E.MeV.u = E.MeV.u,
-									particle.no = particle.no,
-									fluence.cm2.or.dose.Gy = current.fluence.cm2.or.dose.Gy,
-									material.no = material.no,
-									RDD.model = 3,
-									RDD.parameters = 5e-8,
-									ER.model = 4,
-									gamma.model = 2,
-									gamma.parameters = GR.parameters,
-									N2 = 3,
-									fluence.factor = 1.0,
-									write.output = F,
-									shrink.tails = T,
-									shrink.tails.under = 1e-30,
-									adjust.N2 = T,
-									lethal.events.mode = F)
-         cat( "CPPSC results ", CPPSC.res , "\n")
-         df1$CPPSC.ion[kk] <- CPPSC.res[3]
-         df1$CPPSC.gamma[kk] <- CPPSC.res[4]
-         df1$CPPSC.check[kk] <- CPPSC.res[2]
-         
-         GSM.res <- AT.run.GSM.method( E.MeV.u = E.MeV.u,
-                                    particle.no = particle.no,
-                                    fluence.cm2.or.dose.Gy = current.fluence.cm2.or.dose.Gy,
-                                    material.no = material.no,
-                                    RDD.model = j,
-                                    RDD.parameters = RDD.parameters[[j]],
-                                    ER.model = i,
-                                    gamma.model = 2,
-                                    gamma.parameters = GR.parameters,
-                                    N.runs = 1,
-                                    write.output = F,
-                                    nX = 5,
-                                    voxel.size.m = 1e-7,
-                                    lethal.events.mode = F)
-         cat( "GSM results ", GSM.res , "\n")
-         df1$GSM.ion[kk] <- GSM.res[3]
-         df1$GSM.gamma[kk] <- GSM.res[4]
-         df1$GSM.check[kk] <- GSM.res[2]
-			}
-		}
-}
+CPPSC.res              <- AT.run.CPPSC.method(        E.MeV.u                     = E.MeV.u,
+									particle.no                 = particle.no,
+									fluence.cm2.or.dose.Gy      = fluence.cm2.or.dose.Gy,
+									material.no                 = material.no,
+									rdd.model                   = RDD.model,
+									rdd.parameters              = RDD.parameters,
+									er.model                    = ER.model,
+									gamma.model                 = gamma.model,
+									gamma.parameters            = gamma.parameters,
+									N2                          = N2,
+									fluence.factor              = 1.0,
+									write.output                = F,
+									shrink.tails                = T,
+									shrink.tails.under          = 1e-30,
+									adjust.N2                   = T,
+									lethal.events.mode          = F)
 
-df1
+print(CPPSC.res)
 
-# plots...
-
-p1 <- xyplot( CPPSC.ion + GSM.ion ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Response", auto.key = list(title = "ion response",points = FALSE, lines = TRUE), scales = list(log = 10))
-p2 <- xyplot( CPPSC.gamma + GSM.gamma ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Response", auto.key = list(title = "gamma response",points = FALSE, lines = TRUE), scales = list(log = 10))
-p3 <- xyplot( CPPSC.check + GSM.check ~ factor | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose factor", ylab = "Dose check", auto.key = list(title = "CPPSC dose check",points = FALSE, lines = TRUE), scales = list(log = 10))
-
-
-pdf("Models.pdf")
-
-p1
-p2
-p3
-
-dev.off()
