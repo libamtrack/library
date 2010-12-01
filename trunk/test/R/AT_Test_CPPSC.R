@@ -24,26 +24,10 @@
 # clear workspace
 rm( list = ls() )
 
-####################################### THIS CAN BE LATER COLLECTED IN A SCRIPT SHARED BY ALL R TESTSCRIPTS ##########
-# Trigger build of latest libamtrack version for direct R access 
-# and load resulting dll / wrappers
-start.dir           <- getwd()
-if(try(setwd("..\\..\\wrapper\\R\\R_direct_access")) == FALSE){stop("Please start script from /test")}
-try(system("create.direct.access.windows.bat"))
+# Build latest version of libamtrack and load for direct access
+source("AT_Test_PreRun.R")
 
-# load library and wrappers
-try(dyn.load("libamtrack.dll"))
-try(dyn.load("libamtrack.so"))
-try(dyn.load("libamtrack.dylib"))
-
-source("libamtrack.R")
-
-setwd(cur.dir)
-
-# necessary library for plotting
-require("lattice")
-####################################### THIS CAN BE LATER COLLECTED IN A SCRIPT SHARED BY ALL R TESTSCRIPTS ##########
-
+require(lattice)
 
 ####################### CPPSC function test #########################################
 
@@ -58,9 +42,9 @@ CPPSC.res              <- .C("AT_run_CPPSC_method",   E.MeV.u = E.MeV.u,
 									particle.no = particle.no,
 									fluence.cm2.or.dose.Gy = current.fluence.cm2.or.dose.Gy,
 									material.no = material.no,
-									RDD.model = j,
-									RDD.parameters = RDD.parameters[[j]],
-									ER.model = i,
+									RDD.model = 3,
+									RDD.parameters = 5e-8,
+									ER.model = 4,
 									gamma.model = 2,
 									gamma.parameters = GR.parameters,
 									N2 = 3,
