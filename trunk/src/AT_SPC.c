@@ -150,6 +150,7 @@ int AT_SPC_get_size(FILE *fp){
 
 
 int AT_SPC_read_data(FILE *fp,
+		const long total_n_bins,
 		long depth_step[],
 		double depth_g_cm2[],
 		double E_MeV_u[],
