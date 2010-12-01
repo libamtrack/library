@@ -1,3 +1,4 @@
+if(FALSE){
 # Testing script for AT_SuccessiveConvolutions workflow
 # Created: 2010-10-06
 # Creator: greilich
@@ -129,3 +130,4 @@ res.SC$f)
 #p1 <- xyplot(xyplot(log10(f)~log10(f.d.Gy)|n.convolution,df))
 
 plot(p1)
+}
