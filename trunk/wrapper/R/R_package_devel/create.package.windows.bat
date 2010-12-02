@@ -13,7 +13,7 @@ REM *** Copy hardcoded documentation ***
 copy .\hardcoded_documentation .\package\man\
 
 REM *** Copy hardcoded wrappers ***
-copy .\hardcoded_wrappers\hardcoded_wrapper.R .\package\R\
+copy .\hardcoded_wrappers\*.R .\package\R\
 copy .\hardcoded_wrappers\hardcoded_wrapper.c .\package\src\
 copy .\hardcoded_wrappers\hardcoded_wrapper.h .\package\src\
 
