@@ -1,4 +1,3 @@
-if(FALSE){
 ################################################################################################
 # R test script for implemented RDD models
 ################################################################################################
@@ -26,12 +25,12 @@ if(FALSE){
 rm( list = ls() )
 
 # load libAmTrack library
-try(dyn.load("../../lib/libamtrack.dll"))
-try(dyn.load("../../lib/libamtrack.so"))
-try(dyn.load("../../lib/libamtrack.dylib"))
+try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dll"))
+try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.so"))
+try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dylib"))
 
 # load wrapping scripts
-source("../../wrapper/R/AmTrack.R")
+source("../../wrapper/R/R_direct_access/libamtrack.R")
 
 # necessary library for plotting
 library("lattice")
@@ -142,4 +141,3 @@ p1.check
 p2.check
 
 dev.off()
-}
