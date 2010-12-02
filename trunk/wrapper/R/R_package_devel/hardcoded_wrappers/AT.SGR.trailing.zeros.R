@@ -6,7 +6,7 @@ AT.SGR.trailing.zeros <- function(x, digits = 5){
 # "digits" < number of significant digits in fractional part of "x"
 
 mx 	<- paste("0.",paste(rep("0",digits),sep="",collapse=""),"1",sep="")
-fx	<- substring(as.character(x), grep(".", cx) + 2)
+fx	<- substring(as.character(x), grep(".", x) + 2)
 if (nchar(fx) >= digits){
 	nx	<-	round(x, digits = digits)
 	res	<- as.character(nx)
