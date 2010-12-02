@@ -320,9 +320,9 @@ AT.LET.MeV.cm2.g( E.MeV.u     = 270,
 ::AT.E.MeV.from.LET::
 # At which kinetic energy do proton and carbon ions have
 # the same LET in water (e.g. 15 keV/um)?
-AT.E.MeV.from.LET( LET.MeV.cm2.g = c(150.0, 150.0), 
-                   particle.no   = AT.particle.no.from.particle.name(c("1H", "12C")),
-                   material.no   = AT.material.no.from.material.name("Water, Liquid"))
+#AT.E.MeV.from.LET( LET.MeV.cm2.g = c(150.0, 150.0), 
+#                   particle.no   = AT.particle.no.from.particle.name(c("1H", "12C")),
+#                   material.no   = AT.material.no.from.material.name("Water, Liquid"))
 ::AT.stopping.power.ratio::
 require(lattice)
 
