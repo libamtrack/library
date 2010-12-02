@@ -129,6 +129,14 @@ Other routines:
 \code{\link{AT.get.material.data}} \tab Returns properties of pre-defined material
 }
 
+
+SGR routines shipped with libamtrack:
+
+\tabular{ll}{
+\code{\link{AT.SGR.leading.zeros}} \tab Adds leading zeros to a character string representing a number\cr
+\code{\link{AT.SGR.trailing.zeros}} \tab Adds trailing zeros to a character string representing a number
+}
+
 }
 
 \author{
