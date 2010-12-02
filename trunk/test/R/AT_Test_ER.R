@@ -1,4 +1,3 @@
-if(FALSE){
 ################################################################################################
 # R test script for implemented electron range models
 ################################################################################################
@@ -22,18 +21,16 @@ if(FALSE){
 #
 ################################################################################################
 
-dev.off
-
 # clear workspace
 rm( list = ls() )
 
 # load libAmTrack library
-try(dyn.load("../../lib/libamtrack.dll"))
-try(dyn.load("../../lib/libamtrack.so"))
-try(dyn.load("../../lib/libamtrack.dylib"))
+try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dll"))
+try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.so"))
+try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dylib"))
 
 # load wrapping scripts
-source("../../wrapper/R/AmTrack.R")
+source("../../wrapper/R/R_direct_access/libamtrack.R")
 
 # necessary library for plotting
 library("lattice")
@@ -64,8 +61,8 @@ for( i in er.models ){
   ii			   <-  df$er.models == i
   df$er.models.name[ii] <- er.models.names[j]
   wmax_MeV         <-  AT.max.E.transfer.MeV( E.MeV.u = df$E.MeV.u[ii] )
-  df$wmax[ii]      <-  wmax_MeV
-  df$range.m[ii]   <-  AT.max.electron.range(	E.MeV.u = df$E.MeV.u[ii], material.number, i)
+  df$wmax[ii]      <-  wmax_MeV[[1]]
+  df$range.m[ii]   <-  AT.max.electron.ranges.m( E.MeV.u = df$E.MeV.u[ii], material.number, i)[[1]]
 }
 
 # plots...
@@ -73,11 +70,9 @@ for( i in er.models ){
 logplot <- xyplot( 1e2*range.m ~ wmax, groups = er.models.name, ref = TRUE, data=df, pch = ".", lty = 1, type = "l", xlab = "wmax [MeV]", ylab = "Range [cm]", auto.key = list(title = "Range of delta electrons in liquid water",points = FALSE, lines = TRUE), scales = list(log = 10))
 linplot <- xyplot( 1e2*range.m ~ wmax, groups = er.models.name, ref = TRUE, data=df, pch = ".", lty = 1, type = "l", xlab = "wmax [MeV]", ylab = "Range [cm]", auto.key = list(title = "Range of delta electrons in liquid water",points = FALSE, lines = TRUE))
 
-
 pdf("ER.pdf")
 
 logplot
 linplot
 
 dev.off()
-}
