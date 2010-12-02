@@ -1,15 +1,16 @@
-if(FALSE){
 # Testing script for AT_SuccessiveConvolutions routine
 # Created: 2010-10-05
 # Creator: greilich
 
 rm(list = ls())
 
-try(dyn.load("../../lib/libamtrack.dll"))
-try(dyn.load("../../lib/libamtrack.so"))
-try(dyn.load("../../lib/libamtrack.dylib"))
+# load libAmTrack library
+try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dll"))
+try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.so"))
+try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dylib"))
 
-source("../../wrapper/R/AmTrack.R")
+# load wrapping scripts
+source("../../wrapper/R/R_direct_access/libamtrack.R")
 
 library(lattice)
 
@@ -61,4 +62,3 @@ pdf("AT_test_successive_convolutions.pdf")
 p1
 
 dev.off()
-}
