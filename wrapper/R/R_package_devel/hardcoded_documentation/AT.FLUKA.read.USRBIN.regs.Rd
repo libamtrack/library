@@ -1,7 +1,7 @@
 \name{AT.FLUKA.read.USRBIN.regs}
 \alias{AT.FLUKA.read.USRBIN.regs}
 \title{AT.FLUKA.read.USRBIN.regs}
-\description{Reads USRBIN output for a series of regions, also for multiple output files from cluster runs.}
+\description{Reads USRBIN output for a series of regions, also for multiple output files from cluster runs. As USRBIN (regions, option 12.0) scores energy deposited per primary weight (GeV), both the region volume(s) and density(ies) have to be given for dose computation.}
 \usage{AT.FLUKA.read.USRBIN.regs(exp.name, number.of.runs, unit, data.source = 'local', vol.cm3 = NULL, density.g.cm3 = NULL)
 }
 \arguments{

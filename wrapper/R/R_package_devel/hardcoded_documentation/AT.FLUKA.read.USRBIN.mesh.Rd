@@ -1,7 +1,7 @@
 \name{AT.FLUKA.read.USRBIN.mesh}
 \alias{AT.FLUKA.read.USRBIN.mesh}
 \title{AT.FLUKA.read.USRBIN.mesh}
-\description{Reads USRBIN output for Cartesian mesh, also for multiple output files from cluster runs.}
+\description{Reads USRBIN output for Cartesian mesh, also for multiple output files from cluster runs. As USRBIN (mesh) scores energy deposited per unit volume per primary weight (GeV/cm3), the density as to be given for dose computation.}
 \usage{AT.FLUKA.read.USRBIN.mesh(exp.name, number.of.runs, unit, data.source = 'local', density.g.cm3 = 1.0)
 }
 \arguments{
