@@ -55,6 +55,17 @@ These functions provide an interface to spectral depth data:
 \code{\link{AT.SPC.tapply}} \tab Applies a function to all depths of spc data
 }
 
+\bold{FLUKA routines:}
+
+These function provide an interface to FLUKA output files:
+
+\tabular{ll}{
+\code{\link{AT.FLUKA.read.USRBIN.mesh}} \tab Reads USRBIN output (Cartesian mesh, also for multiple runs).\cr
+\code{\link{AT.FLUKA.read.USRBIN.regs}} \tab Reads USRBIN output (regions, also for multiple runs).\cr
+\code{\link{AT.FLUKA.read.USRTRACK}} \tab Reads USRTRACK output (energy spectra, also for multiple runs).\cr
+\code{\link{AT.FLUKA.particle.name.to.libamtrack.particle.name}} \tab Converts FLUKA particle names to libamtrack conventions.
+}
+
 \bold{Physics routines:}
 
 These functions handle the physics of proton and ion beams needed in libamtrack.
