@@ -45,6 +45,7 @@ cd ..
 REM Delete temporary files
 del package\R\libamtrack.R
 del package\R\hardcoded_wrapper.R
+del package\R\AT*.R
 del package\src\*.o
 del package\src\*.c
 del package\src\*.h
@@ -52,7 +53,7 @@ del package\src\*.dll
 del package\man\*.* /Q
 del .RData
 del functions.sdd
-del package.Rcheck /Q
+REM del package.Rcheck /Q
 del ..\..\..\tools\automatic_wrapper_generator\*.Rout
 
 echo "Done."
