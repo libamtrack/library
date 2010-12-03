@@ -1,4 +1,4 @@
-AT.FLUKA.read.USRTRACK <- function(exp.name, number.of.runs, unit, data.source = 'local', compress = TRUE, vol.cm3 = NULL)
+AT.FLUKA.read.USRTRACK <- function(exp.name, number.of.runs, unit, data.source = 'local', compress = TRUE)
 {
     for (cur.run in 1:number.of.runs){
         #cur.run <- 1
@@ -85,22 +85,12 @@ AT.FLUKA.read.USRTRACK <- function(exp.name, number.of.runs, unit, data.source =
 
     df$E.MeV.u         <- values[,2] * 1000   # convert energy scale GeV/u -> MeV/u
     df$DE.MeV.u        <- values[,3] * 1000
-    df$track.length.cm <- values[,4] * values[,3] / number.of.runs
+    df$fluence.cm2     <- values[,4] * values[,3] / number.of.runs
 
     # reduce size
     if(compress == TRUE){
       ii <- df$fluence.cm2 == 0
       df <- df[!ii,]
-    }
-
-    if(!is.null(vol.cm3)){
-        # If no value is given for volume skip fluence computation
-        # If single value is given, apply to all regions the same value
-        if(length(vol.cm3) == 1){
-            vol.cm3           <- rep(vol.cm3, length(unique(df$region)))
-        }
-        start.region            <- min(unique(df$region))
-        df$fluence.cm2          <- df$track.length.cm / vol.cm3[df$region - start.region + 1]
     }
 
     return(df)

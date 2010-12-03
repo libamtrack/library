@@ -38,7 +38,6 @@ AT.FLUKA.read.USRBIN.regs <- function(exp.name, number.of.runs, unit, data.sourc
             # build data.frame
             df            <-    data.frame(    idx                    =        1:sum(bins),
                                                     name                =        character(sum(bins)),
-                                                    bins                =        numeric(sum(bins)),
                                                     index                =        numeric(sum(bins)),
                                                     bin                    =        numeric(sum(bins)),
                                                     E.dep.GeV                    =        numeric(sum(bins)),
@@ -50,8 +49,6 @@ AT.FLUKA.read.USRBIN.regs <- function(exp.name, number.of.runs, unit, data.sourc
                 #i <- 2
                 ii                                    <-    df$idx >= index[i] & df$idx < (index[i] + bins[i])
                 df$name[ii]                <-    as.character(rep(names[i], sum(ii)))
-                df$bins[ii]                <-    rep(bins[i], sum(ii))
-                df$index[ii]                <-    rep(index[i], sum(ii))
                 df$bin[ii]                <-    1:sum(ii)
                 tmp                                    <-    as.numeric(input[outputs[i] + 66 + (1:bins[i]) - 1])
                 df$E.dep.GeV                        <-    tmp
@@ -87,8 +84,15 @@ AT.FLUKA.read.USRBIN.regs <- function(exp.name, number.of.runs, unit, data.sourc
         sterr.E.dep.GeV.cm3  <- stdev.E.dep.GeV.cm3 / sqrt(number.of.runs)
         df$D.Gy              <- E.dep.GeV.cm3 * 1.602176462e-7 / df$density.g.cm3
         df$sterr.D.Gy        <- sterr.E.dep.GeV.cm3 * 1.602176462e-7 / df$density.g.cm3
+
+        df$E.dep.GeV         <- NULL
+        df$E2.dep.GeV2       <- NULL
+        df$vol.cm3           <- NULL
+        df$density.g.cm3     <- NULL
     }
 
-    df$scoring <- rep("Regions", nrow(df))
+    df$idx               <- NULL
+    df$index             <- NULL
+ 
     return(df)
 }
