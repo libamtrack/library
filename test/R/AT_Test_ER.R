@@ -24,16 +24,11 @@
 # clear workspace
 rm( list = ls() )
 
-# load libAmTrack library
-try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dll"))
-try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.so"))
-try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dylib"))
-
-# load wrapping scripts
-source("../../wrapper/R/R_direct_access/libamtrack.R")
+# Build latest version of libamtrack and load for direct access
+source("AT_Test_PreRun.R")
 
 # necessary library for plotting
-library("lattice")
+require("lattice")
 
 # energy range definitions:
 expn <- seq (-3, 4, by=1e-1)
@@ -60,15 +55,16 @@ for( i in er.models ){
   j                <-  j+1
   ii			   <-  df$er.models == i
   df$er.models.name[ii] <- er.models.names[j]
-  wmax_MeV         <-  AT.max.E.transfer.MeV( E.MeV.u = df$E.MeV.u[ii] )
-  df$wmax[ii]      <-  wmax_MeV[[1]]
-  df$range.m[ii]   <-  AT.max.electron.ranges.m( E.MeV.u = df$E.MeV.u[ii], material.number, i)[[1]]
+  wmax_MeV         <-  AT.max.E.transfer.MeV( E.MeV.u = df$E.MeV.u[ii] )$max.E.transfer.MeV
+  df$wmax[ii]      <-  wmax_MeV
+  df$range.m[ii]   <-  AT.max.electron.ranges.m( E.MeV.u = df$E.MeV.u[ii], material.number, i)$max.electron.range.m
 }
 
 # plots...
 
 logplot <- xyplot( 1e2*range.m ~ wmax, groups = er.models.name, ref = TRUE, data=df, pch = ".", lty = 1, type = "l", xlab = "wmax [MeV]", ylab = "Range [cm]", auto.key = list(title = "Range of delta electrons in liquid water",points = FALSE, lines = TRUE), scales = list(log = 10))
 linplot <- xyplot( 1e2*range.m ~ wmax, groups = er.models.name, ref = TRUE, data=df, pch = ".", lty = 1, type = "l", xlab = "wmax [MeV]", ylab = "Range [cm]", auto.key = list(title = "Range of delta electrons in liquid water",points = FALSE, lines = TRUE))
+
 
 pdf("ER.pdf")
 
