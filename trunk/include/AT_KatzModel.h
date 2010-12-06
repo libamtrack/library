@@ -265,7 +265,7 @@ double AT_KatzModel_single_field_survival(
     const long   er_model,
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
-    const double kappa);
+    const double sigma0_m2);
 
 
 /**
