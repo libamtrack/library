@@ -1,7 +1,10 @@
 #ifndef AT_HARDCODED_WRAPPER_H_
 #define AT_HARDCODED_WRAPPER_H_
 
-#include "AT_Algorithms_IGK.h"
+#include "AT_SPC.h"
+#include "AT_DataParticle.h"
+#include "AT_GammaResponse.h"
+#include "AT_DataMaterial.h"
 
 void AT_gamma_response_R( const int*  n,
     const float*  d_Gy,
@@ -21,5 +24,18 @@ void AT_material_name_from_material_no_R( const int* material_no,
 
 void AT_material_no_from_material_name_R( const char** material_name,
 	int* material_no);
+
+void AT_SPC_get_size_from_filename_R(const char** filename,
+    int* spc_size);
+
+void AT_SPC_read_data_from_filename_R( const char** filename,
+		const int* n,
+		int* depth_step,
+		float* depth_g_cm2,
+		float* E_MeV_u,
+		float* DE_MeV_u,
+		int* particle_no,
+		float* fluence_cm2,
+        int* n_bins_read);
 
 #endif /* AT_HARDCODED_WRAPPER_H_ */
