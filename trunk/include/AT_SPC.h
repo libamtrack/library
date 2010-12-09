@@ -2,11 +2,11 @@
 #define AT_SPC_H_
 
 /**
- * @brief LET tables and access routines
+ * @brief SPC reader
  */
 
 /*
- *    AT_DataLET.h
+ *    AT_SPC.h
  *    ==================
  *
  *    Copyright 2006, 2010 The libamtrack team
@@ -33,10 +33,12 @@
 #include <stdbool.h>
 #include <string.h>
 
+
 /**
  * File name and path length
  */
 #define FILE_NAME_NCHAR 256
+
 
 /**
  * @enum spc tags
@@ -64,11 +66,13 @@ enum {
        TRPSPCDTAG_RUNNINGSUM =20,                         //!< TRPSPCDTAG_RUNNINGSUM
 };
 
+
 /**
  * structure for spc tags
  */
 
 struct STRPSPCBTAG { uint32_t ulTag; uint32_t ulLen; };
+
 
 /**
  * Swaps endianess of two-byte types
@@ -77,6 +81,7 @@ struct STRPSPCBTAG { uint32_t ulTag; uint32_t ulLen; };
  */
 void endian_swap2(    unsigned short* x);
 
+
 /**
  * Swaps endianess of four-byte types
  *
@@ -84,12 +89,14 @@ void endian_swap2(    unsigned short* x);
  */
 void endian_swap4(    unsigned int* x);
 
+
 /**
  * Swaps endianess of eight-byte types (uint64_t MSVC, long long in gcc)
  *
  * @param[in/out]	x	pointer to variable to be swapped
  */
 void endian_swap8(     uint64_t * x);
+
 
 /**
  * Reads tag into tag structure
@@ -101,6 +108,7 @@ void endian_swap8(     uint64_t * x);
 void readStruct(      FILE *fp,
 		struct STRPSPCBTAG * str,
 		bool switchEndian);
+
 
 /**
  * Reads data from spc file. Will reallocate the arrays to hold the
@@ -130,6 +138,7 @@ long AT_SPC_read( const char filename[FILE_NAME_NCHAR],
 		long* particle_no[],
 		double* fluence_cm2[]);
 
+
 /**
  * Browses spc file to get total number of energy bins covered.
  * This is needed for later memory allocation when reading the
@@ -140,6 +149,7 @@ long AT_SPC_read( const char filename[FILE_NAME_NCHAR],
  */
 long AT_SPC_get_size_from_filename(const char filename[FILE_NAME_NCHAR]);
 
+
 /**
  * Browses spc file to get total number of energy bins covered.
  * This is needed for later memory allocation when reading the
@@ -149,6 +159,7 @@ long AT_SPC_get_size_from_filename(const char filename[FILE_NAME_NCHAR]);
  * @return							total number of bins in spc file
  */
 long AT_SPC_get_size(  FILE *fp);
+
 
 /**
  * Reads data from spc file into pre-allocated arrays. It will be converted
@@ -179,6 +190,7 @@ long AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
 		long particle_no[],
 		double fluence_cm2[]);
 
+
 /**
  * Reads data from spc file into pre-allocated arrays. It will be converted
  * for direct use in libamtrack, i.e. to an R-style array of six columns
@@ -206,5 +218,6 @@ long AT_SPC_read_data( FILE* fp,
 		double DE_MeV_u[],
 		long particle_no[],
 		double fluence_cm2[]);
+
 
 #endif /* AT_SPC_H_ */
