@@ -1,11 +1,39 @@
+/**
+ * @brief SPC reader
+ */
+
+/*
+ *    AT_SPC.c
+ *    ========
+ *
+ *    Copyright 2006, 2010 The libamtrack team
+ *
+ *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
+ *
+ *    AmTrack is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    AmTrack is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with AmTrack (file: copying.txt).
+ *    If not, see <http://www.gnu.org/licenses/>
+ */
+
+
 #include "AT_SPC.h"
 
 void endian_swap2(unsigned short* x)
 {
 
-  *x = (*x>>8) |
-    (*x<<8);
+  *x = (*x>>8) | (*x<<8);
 }
+
 
 void endian_swap4(unsigned int* x)
 {
@@ -14,6 +42,7 @@ void endian_swap4(unsigned int* x)
     ((*x>>8) & 0x0000FF00) |
     (*x<<24);
 }
+
 
 // __int64 for MSVC, "long long" for gcc
 void endian_swap8(uint64_t * x)
@@ -28,6 +57,7 @@ void endian_swap8(uint64_t * x)
     (*x<<56);
 }
 
+
 void readStruct(FILE *fp,
 		struct STRPSPCBTAG * str,
 		bool switchEndian)
@@ -38,6 +68,7 @@ void readStruct(FILE *fp,
       endian_swap4(&(*str).ulTag);
   }
 }
+
 
 long AT_SPC_get_size_from_filename(const char filename[FILE_NAME_NCHAR])
 {
@@ -220,6 +251,7 @@ long AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
 	return(n_bins_read);
 }
 
+
 long AT_SPC_read_data(FILE* fp,
 		const long n,
 		long depth_step[],
@@ -360,25 +392,3 @@ long AT_SPC_read_data(FILE* fp,
 	}
 	return size;
 }
-
-
-//void main()
-//{
-//  FILE *fp;
-//  //  fp=fopen("TRIP_GSI_12C.H2O.MeV27000.spc", "r");
-//  fp=fopen("out.spc", "r");
-//  int size = AT_SPC_get_size(fp);
-//  printf("%u \n",size);
-//  int particleNo[size];
-//  int depthStep[size];
-//  double energy[size];
-//  double dEnergy[size];
-//  double depth[size];
-//  double fluence[size];
-//
-//  AT_SPC_read_data(fp,depthStep,particleNo,energy,dEnergy,depth,fluence);
-//
-//
-//}
-
-
