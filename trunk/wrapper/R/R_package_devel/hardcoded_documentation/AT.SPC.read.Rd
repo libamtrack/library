@@ -2,11 +2,10 @@
 \alias{AT.SPC.read}
 \title{AT.SPC.read}
 \description{Read a spc-formatted data file with energy-fluence in n depth steps. For original TRiP format definition by M. Kraemer, please see \url{http://bio.gsi.de/DOCS/TRiP98BEAM/DOCS/trip98fmtspc.html}. Please note that the user has to take care of picking the spc-file for the projectile and target material desired.}
-\usage{AT.SPC.read( file.name, endian, mean, compress)
+\usage{AT.SPC.read( file.name, mean, compress)
 }
 \arguments{
   \item{file.name}{ name of spc-file to be read (with extension).}
-  \item{endian}{ byte-order in spc file, "big" or "little" depending on the machine of origin.}
   \item{mean}{ method for computing bin midpoints, "geometric" or "arithmetic" (default).}
   \item{compress}{ if TRUE all entries with zero fluence will be removed to save memory.}
 }
