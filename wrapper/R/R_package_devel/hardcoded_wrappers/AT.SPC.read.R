@@ -5,17 +5,18 @@ AT.SPC.read <- function(file.name, mean = c("arithmetic", "geometric")[1], compr
                                 spc.size           = as.integer(spc.size),
                                 PACKAGE            = "libamtrack")
 
-    depth.step           <- integer(res$spc.size)
-    depth.g.cm2          <- numeric(res$spc.size)
-    E.MeV.u              <- numeric(res$spc.size)
-    DE.MeV.u             <- numeric(res$spc.size)
-    particle.no          <- integer(res$spc.size)
-    fluence.cm2          <- numeric(res$spc.size)
+    n                    <- res$spc.size
+    depth.step           <- integer(n)
+    depth.g.cm2          <- numeric(n)
+    E.MeV.u              <- numeric(n)
+    DE.MeV.u             <- numeric(n)
+    particle.no          <- integer(n)
+    fluence.cm2          <- numeric(n)
     n.bins.read          <- integer(1)
     
     res                  <- .C( "AT_SPC_read_data_from_filename_R",
                                 file.name          = as.character(file.name),
-                                n                  = as.integer(spc.size),
+                                n                  = as.integer(n),
                                 depth.step         = as.integer(depth.step),
                                 depth.g.cm2        = as.single(depth.g.cm2),
                                 E.MeV.u            = as.single(E.MeV.u),
