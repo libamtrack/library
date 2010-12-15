@@ -1,21 +1,22 @@
-AT.SPC.read <- function(file.name){
+AT.SPC.read <- function(file.name, mean = c("arithmetic", "geometric")[1], compress = TRUE){
      spc.size            <- numeric(1)
      res                 <- .C( "AT_SPC_get_size_from_filename_R",
                                 file.name          = as.character(file.name),
                                 spc.size           = as.integer(spc.size),
                                 PACKAGE            = "libamtrack")
 
-    depth.step           <- integer(res$spc.size)
-    depth.g.cm2          <- numeric(res$spc.size)
-    E.MeV.u              <- numeric(res$spc.size)
-    DE.MeV.u             <- numeric(res$spc.size)
-    particle.no          <- integer(res$spc.size)
-    fluence.cm2          <- numeric(res$spc.size)
+    n                    <- res$spc.size
+    depth.step           <- integer(n)
+    depth.g.cm2          <- numeric(n)
+    E.MeV.u              <- numeric(n)
+    DE.MeV.u             <- numeric(n)
+    particle.no          <- integer(n)
+    fluence.cm2          <- numeric(n)
     n.bins.read          <- integer(1)
     
     res                  <- .C( "AT_SPC_read_data_from_filename_R",
                                 file.name          = as.character(file.name),
-                                n                  = as.integer(spc.size),
+                                n                  = as.integer(n),
                                 depth.step         = as.integer(depth.step),
                                 depth.g.cm2        = as.single(depth.g.cm2),
                                 E.MeV.u            = as.single(E.MeV.u),
@@ -25,10 +26,14 @@ AT.SPC.read <- function(file.name){
                                 n.bins.read        = as.integer(n.bins.read),
                                 PACKAGE            = "libamtrack")
     
-    return( data.frame(  depth.step             = res$depth.step,
+    df   <- data.frame(  depth.step             = res$depth.step,
                          depth.g.cm2            = res$depth.g.cm2,
                          E.MeV.u                = res$E.MeV.u,
                          DE.MeV.u               = res$DE.MeV.u,
                          particle.no            = res$particle.no,
-                         fluence.cm2            = res$fluence.cm2))
+                         fluence.cm2            = res$fluence.cm2)
+
+    if (compress == TRUE){
+        df  <- df[df$fluence.cm2 != 0,]
+    }
 }
