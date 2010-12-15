@@ -82,7 +82,7 @@ Stopping-power routines:
 \code{\link{AT.CSDA.range.g.cm2}} \tab CSDA range in mass thickness\cr
 \code{\link{AT.E.MeV.from.CDSA.range}} \tab Inverse routine: energy from CSDA range\cr
 
-\code{\link{AT.Bethe.Mass.Stopping.Power.MeV.cm2.g}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formular
+\code{\link{AT.Bethe.Mass.Stopping.Power.MeV.cm2.g.multi}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formular
 }
 
 Mean LET / energy in mixed fields routines:
