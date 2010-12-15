@@ -1,4 +1,4 @@
-AT.SGR.leading.zeros <- function(x, digits = 5){
+AT.add.leading.zeros <- function(x, digits = 5){
 # Convert 99 into "00099" etc.
 # From the s-mailing list.
 # [S] SUMMARY:  Formatting with Leading Zeroes

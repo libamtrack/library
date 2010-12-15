@@ -31,7 +31,8 @@ These functions compute the relative efficiency / RBE of a mixed particle field 
 \tabular{ll}{
 \code{\link{AT.run.GSM.method}} \tab Grid-summation ('checkerboard') method \cr
 \code{\link{AT.run.IGK.method}} \tab Ion-gamma-kill ('Katz') method \cr
-\code{\link{AT.run.CPPSC.method}} \tab Compund-Poison process with successive convolutions (CPP-SC, 'SPIFF') method
+\code{\link{AT.run.CPPSC.method}} \tab Compund-Poison process with successive convolutions (CPP-SC, 'SPIFF') method \cr
+\code{\link{AT.CPPSC.alpha.and.beta}} \tab Alpha, beta for ion beams as predicted by CPP-SC method
 }
 
 \bold{Track-structure routines:}
@@ -41,7 +42,8 @@ These functions handle underlying physic used in amorphous track modeling:
 \tabular{ll}{
 \code{\link{AT.D.RDD.Gy}} \tab Dose distribution around a particle track \cr
 \code{\link{AT.max.electron.ranges.m}} \tab Maximum electron range / track width \cr
-\code{\link{AT.gamma.response}} \tab Gamma / X ray response of a system
+\code{\link{AT.gamma.response}} \tab Gamma / X ray response of a system \cr
+\code{\link{AT.inverse.gamma.response}} \tab Inverse Gamma / X ray response of a system
 }
 
 \bold{SPC routines:}
@@ -141,11 +143,11 @@ Other routines:
 }
 
 
-SGR routines shipped with libamtrack:
+Helper routines shipped with libamtrack:
 
 \tabular{ll}{
-\code{\link{AT.SGR.leading.zeros}} \tab Adds leading zeros to a character string representing a number\cr
-\code{\link{AT.SGR.trailing.zeros}} \tab Adds trailing zeros to a character string representing a number
+\code{\link{AT.add.leading.zeros}} \tab Adds leading zeros to a character string representing a number\cr
+\code{\link{AT.add.trailing.zeros}} \tab Adds trailing zeros to a character string representing a number
 }
 
 }

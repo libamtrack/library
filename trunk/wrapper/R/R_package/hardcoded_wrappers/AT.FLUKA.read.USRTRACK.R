@@ -3,21 +3,21 @@ AT.FLUKA.read.USRTRACK <- function(exp.name, number.of.runs, unit, data.source =
     for (cur.run in 1:number.of.runs){
         #cur.run <- 1
         file.name  <- paste( exp.name,                                                      # default: local
-                         AT.SGR.leading.zeros(cur.run, 3),
+                         AT.add.leading.zeros(cur.run, 3),
                                         "_fort.",
                                         unit,
                                         sep = "")
         if(data.source == "condor"){                                                        # condor naming in case cleaning hasn't been run
             file.name            <-    paste(    exp.name,
                                             "_node",
-                                            AT.SGR.leading.zeros(cur.run - 1, 4),
+                                            AT.add.leading.zeros(cur.run - 1, 4),
                                             "001_fort.",
                                             unit,
                                             sep = "")
         }
         if(data.source == "condor_cleaned"){
             file.name            <-    paste(    exp.name,                                   # condor
-                                            AT.SGR.leading.zeros(cur.run - 1, 5),
+                                            AT.add.leading.zeros(cur.run - 1, 5),
                                             "_fort.",
                                             unit,
                                             sep = "")

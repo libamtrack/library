@@ -2,14 +2,14 @@ AT.FLUKA.read.USRBIN.regs <- function (exp.name, number.of.runs, unit, data.sour
     vol.cm3 = NULL, density.g.cm3 = NULL)                        
 {                                                                
     for (cur.run in 1:number.of.runs) {                          
-        file.name <- paste(exp.name, AT.SGR.leading.zeros(cur.run, 
+        file.name <- paste(exp.name, AT.add.leading.zeros(cur.run, 
             3), "_fort.", unit, sep = "")                          
         if (data.source == "condor") {                             
-            file.name <- paste(exp.name, "_node", AT.SGR.leading.zeros(cur.run - 
+            file.name <- paste(exp.name, "_node", AT.add.leading.zeros(cur.run - 
                 1, 4), "001_fort.", unit, sep = "")                              
         }                                                                        
         if (data.source == "condor_cleaned") {                                   
-            file.name <- paste(exp.name, AT.SGR.leading.zeros(cur.run -          
+            file.name <- paste(exp.name, AT.add.leading.zeros(cur.run -          
                 1, 5), "_fort.", unit, sep = "")                                 
         }                                                                        
         input <- scan(file = file.name, what = "character", strip.white = TRUE,  

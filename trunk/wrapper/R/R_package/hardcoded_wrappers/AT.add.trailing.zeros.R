@@ -1,4 +1,4 @@
-AT.SGR.trailing.zeros <- function(x, digits = 5){
+AT.add.trailing.zeros <- function(x, digits = 5){
 # Convert 99.1 into "99.10000" etc.
 # Library: clan
 # Created March 12, 2009, S. Greilich
