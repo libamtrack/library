@@ -31,44 +31,84 @@ source("AT_Test_PreRun.R")
 require("lattice")
 
 # energy range definitions:
-expn <- seq (-3, 4, by=1e-1)
-E.MeV.u <- 10^expn
+E.MeV.u           <- 10^seq(-1, 3, length.out = 50)
 
 # models definition
-er.models.names <- c("simple test ER model",  "Butts & Katz' ER model (linear)",  "Waligorski's ER model (power-law wmax)",  "Geiss' ER model (power-law E)", "Scholz' ER model (power-law E)", "Edmund' ER model (power-law wmax)","Tabata  ER model")
-er.models <- c(1,2,3,4,5,6,7)
+er.models.names   <- c( "Simple test ER model",  
+                        "Butts & Katz' ER model (linear)",  
+                        "Waligorski's ER model (power-law)",  
+                        "Geiss' ER model", 
+                        "Scholz' ER model", 
+                        "Edmund' ER model",
+                        "Tabata  ER model")
+er.models         <- 1:7
 
-# other parameters
-n <- length(E.MeV.u) 
-material.number <- rep(1, 1) # Water
+material.no       <- 1            # Water, Liquid
 
 # data frame setup
-df <- expand.grid( E.MeV.u = E.MeV.u , er.models = er.models )
+df.range                <- expand.grid( E.MeV.u                 = E.MeV.u , 
+                                        er.models               = er.models, 
+                                        range.m                 = 0, 
+                                        stringsAsFactors        = FALSE)
+df.range$er.models.name <- er.models.names[df.range$er.models]
 
-df$er.models.name  <-  as.character(er.models.names[df$er.models])
-df$range.m         <-  numeric(nrow(df))
-df$wmax            <-  0
+df.energy               <- expand.grid( E.MeV.u                 = E.MeV.u,
+                                        which                   = c("non-relativistic", "relativistic"),
+                                        max.electron.energy.keV = 0)
+
 
 # calculations
-j <- 0
+ii                                     <-  df.energy$which == "relativistic"
+df.energy$max.electron.energy.keV[ii]  <-  AT.max.E.transfer.MeV( E.MeV.u = df.energy$E.MeV.u[ii]  )$max.E.transfer.MeV * 1000
+df.energy$max.electron.energy.keV[!ii] <-  AT.max.E.transfer.MeV( E.MeV.u = -df.energy$E.MeV.u[!ii])$max.E.transfer.MeV * 1000
+
 for( i in er.models ){
-  j                <-  j+1
-  ii			   <-  df$er.models == i
-  df$er.models.name[ii] <- er.models.names[j]
-  wmax_MeV         <-  AT.max.E.transfer.MeV( E.MeV.u = df$E.MeV.u[ii] )$max.E.transfer.MeV
-  df$wmax[ii]      <-  wmax_MeV
-  df$range.m[ii]   <-  AT.max.electron.ranges.m( E.MeV.u = df$E.MeV.u[ii], material.number, i)$max.electron.range.m
+  ii			               <-  df.range$er.models == i
+  df.range$range.m[ii]           <-  AT.max.electron.ranges.m( E.MeV.u      = df.range$E.MeV.u[ii], 
+                                                               material.no  = material.no, 
+                                                               er.model     = i)$max.electron.range.m
 }
 
-# plots...
+# Plots
 
-logplot <- xyplot( 1e2*range.m ~ wmax, groups = er.models.name, ref = TRUE, data=df, pch = ".", lty = 1, type = "l", xlab = "wmax [MeV]", ylab = "Range [cm]", auto.key = list(title = "Range of delta electrons in liquid water",points = FALSE, lines = TRUE), scales = list(log = 10))
-linplot <- xyplot( 1e2*range.m ~ wmax, groups = er.models.name, ref = TRUE, data=df, pch = ".", lty = 1, type = "l", xlab = "wmax [MeV]", ylab = "Range [cm]", auto.key = list(title = "Range of delta electrons in liquid water",points = FALSE, lines = TRUE))
+plot1 <- xyplot( log10(max.electron.energy.keV) ~ log10(E.MeV.u), 
+                 df.energy,
+                 type         = "l", 
+                 groups       = which,
+                 xlab         = "particle energy [MeV/u]", 
+                 ylab         = "log max. electron energy [keV]",
+                 panel        = function(...){
+                                    panel.grid( v = -1, h = -1)
+                                    panel.xyplot(...)},
+                 scales       = list( x = list( at     = -1:3,
+                                                labels = c("0.1", "1", "10", "100", "1000")),
+                                      y = list( at     = 0:3,
+                                                labels = c("1", "10", "100", "1000"))),
+                 aspect       = 1,
+                 auto.key     = list(columns = 2))
+
+plot2 <- xyplot( log10(range.m) ~ log10(E.MeV.u), 
+                 df.range,
+                 type         = "l", 
+                 groups       = er.models.name,
+                 xlab         = "particle energy [MeV/u]", 
+                 ylab         = "log range [m]",
+                 aspect       = 1,
+                 panel        = function(...){
+                                    panel.grid( v = -1, h = -1)
+                                    panel.xyplot(...)},
+                 scales       = list( x = list( at     = -1:3,
+                                                labels = c("0.1", "1", "10", "100", "1000"))),
+                 auto.key     = list(space  = 'right',
+                                     cex    = 0.5,
+                                     points = FALSE,
+                                     lines  = TRUE))
+
 
 
 pdf("ER.pdf")
 
-logplot
-linplot
+plot1
+plot2
 
 dev.off()
