@@ -31,3 +31,4 @@ AT_beta_from_E
 AT_E_from_beta
 AT_gamma_from_E
 AT_get_material_data
+AT_KatzModel_inactivation_probability
