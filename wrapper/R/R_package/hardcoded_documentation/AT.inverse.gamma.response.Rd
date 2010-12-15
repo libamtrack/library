@@ -8,12 +8,10 @@
 }
 \arguments{
   \item{surv}{ Response (survival)}
-  \item{alpha}{ Alpha parameter / (1/Gy)}
-  \item{beta} { Beta parameter / (1/Gy^2)}
+  \item{alpha}{ Alpha parameter in (1/Gy)}
+  \item{beta}{ Beta parameter in (1/Gy2)}
 }
-\value{
-  Dose in Gy
-}
+\value{Dose in Gy}
 
 \examples{
 # Compute dose for 10% survival for HSG cells
