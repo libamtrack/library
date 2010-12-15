@@ -1,9 +1,0 @@
-Package: libamtrack
-Version: 0.5.0
-Date: 2010-12-02
-Title: libamtrack package
-Author: Felix Klein <fklein@embl.de>. 
-Maintainer: Steffen Greilich <s.greilich@dkfz.de> 
-Depends: R (>= 2.2.0)
-Description:  This package is the R interface to the open-source, ANSI C library libamtrack (http://libamtrack.dkfz.org). libamtrack provides computational routines for the prediction of detector response and radiobiological efficiency in heavy charged particle beams. It is designed for research in proton and ion dosimetry and radiotherapy. libamtrack also provides many auxiliary physics routines for proton and ion beams.
-License: GPL (version 3 or later)
