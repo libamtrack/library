@@ -132,52 +132,27 @@ void AT_SPC_get_size_from_filename_R(const char** filename,
 void AT_SPC_read_data_from_filename_R( const char** filename,
 		const int* n,
 		int* depth_step,
-		float* depth_g_cm2,
-		float* E_MeV_u,
-		float* DE_MeV_u,
+		double* depth_g_cm2,
+	        double* E_MeV_u,
+		double* DE_MeV_u,
 		int* particle_no,
-		float* fluence_cm2,
+		double* fluence_cm2,
         int* n_bins_read){
 
 	  char * filename_str = (char*)calloc(256, sizeof(char));
 	  strcpy(filename_str, *filename);
 
-    long    n_long             = (long)*n;
-    
-    long*   depth_step_long    = (long*)calloc(n_long,sizeof(long));
-    double* depth_g_cm2_double = (double*)calloc(n_long,sizeof(double));
-    double* E_MeV_u_double     = (double*)calloc(n_long,sizeof(double));
-    double* DE_MeV_u_double    = (double*)calloc(n_long,sizeof(double));
-    long*   particle_no_long   = (long*)calloc(n_long,sizeof(long));
-    double* fluence_cm2_double = (double*)calloc(n_long,sizeof(double));
-
-      long n_bins_read_long = AT_SPC_read_data_from_filename( filename_str,
-		n_long,
-		depth_step_long,
-		depth_g_cm2_double,
-		E_MeV_u_double,
-		DE_MeV_u_double,
-		particle_no_long,
-		fluence_cm2_double);
+       int n_bins_read_tmp = AT_SPC_read_data_from_filename( filename_str,
+		n,
+		depth_step,
+		depth_g_cm2,
+		E_MeV_u,
+		DE_MeV_u,
+		particle_no,
+		fluence_cm2);
         
-    long i;
-    for(i = 0 ; i < n_long ; i++){
-        depth_step[i]         = (int)depth_step_long[i];
-        depth_g_cm2[i]        = (float)depth_g_cm2_double[i];
-        E_MeV_u[i]            = (float)E_MeV_u_double[i];
-        DE_MeV_u[i]           = (float)DE_MeV_u_double[i];
-        particle_no[i]        = (int)particle_no_long[i];
-        fluence_cm2[i]        = (float)fluence_cm2_double[i];
-    }
 
     free( filename_str);
-
-    free( depth_step_long);
-    free( depth_g_cm2_double);
-    free( E_MeV_u_double);
-    free( DE_MeV_u_double);
-    free( particle_no_long);
-    free( fluence_cm2_double);
       
-    *n_bins_read = (int)n_bins_read_long;
+    *n_bins_read = n_bins_read_tmp;
 }
