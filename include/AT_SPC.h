@@ -131,12 +131,12 @@ void readStruct(      FILE *fp,
  * @param[out]      fluence_cm2		fluence values differential in energy and particle number
  * @return                          array sizes after reallocation
  */
-long AT_SPC_read( const char filename[FILE_NAME_NCHAR],
-		long* depth_step[],
+int AT_SPC_read( const char filename[FILE_NAME_NCHAR],
+		int* depth_step[],
 		double* depth_g_cm2[],
 		double* E_MeV_u[],
 		double* DE_MeV_u[],
-		long* particle_no[],
+		int* particle_no[],
 		double* fluence_cm2[]);
 
 
@@ -148,7 +148,7 @@ long AT_SPC_read( const char filename[FILE_NAME_NCHAR],
  * @param[in]	    filename  	    path and name for spc file (incl. extension)
  * @return							total number of bins in spc file
  */
-long AT_SPC_get_size_from_filename(const char filename[FILE_NAME_NCHAR]);
+int AT_SPC_get_size_from_filename(const char filename[FILE_NAME_NCHAR]);
 
 
 /**
@@ -159,7 +159,7 @@ long AT_SPC_get_size_from_filename(const char filename[FILE_NAME_NCHAR]);
  * @param[in/out]	fp				pointer to spc file
  * @return							total number of bins in spc file
  */
-long AT_SPC_get_size(  FILE *fp);
+int AT_SPC_get_size(  FILE *fp);
 
 
 /**
@@ -182,13 +182,13 @@ long AT_SPC_get_size(  FILE *fp);
  * @param[out]      fluence_cm2		fluence values differential in energy and particle number
  * @return                          number of bins read. Must match the array size n
  */
-long AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
-		const long n,
-		long depth_step[],
+int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
+		const int n,
+		int depth_step[],
 		double depth_g_cm2[],
 		double E_MeV_u[],
 		double DE_MeV_u[],
-		long particle_no[],
+		int particle_no[],
 		double fluence_cm2[]);
 
 
@@ -211,13 +211,13 @@ long AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
  * @param[out]		particle_no		particle index numbers (array of size total_n_bins)
  * @param[out]      fluence_cm2		fluence values differential in energy and particle number
  */
-long AT_SPC_read_data( FILE* fp,
-		const long n,
-		long depth_step[],
+int AT_SPC_read_data( FILE* fp,
+		const int n,
+		int depth_step[],
 		double depth_g_cm2[],
 		double E_MeV_u[],
 		double DE_MeV_u[],
-		long particle_no[],
+		int particle_no[],
 		double fluence_cm2[]);
 
 
