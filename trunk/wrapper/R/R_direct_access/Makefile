@@ -5,20 +5,30 @@
 ############################################################
 # USER SETTINGS
 ############################################################
-## Please specify your OS here
-#  OS        = Linux (or)
-#  OS        = Windows
-OS        = Windows
+## OS setting detection
+TRG       = $(shell uname)
+ifeq ($(TRG),Linux)
+OS = Linux
+else
+OS = Windows
+endif
 ## Please set the correct path to your GSL installation here:
 #  most likely:
-#  GSLPATH   = /usr (Linux)
+ifeq ($(OS),Linux)
+GSLPATH   = /usr
+else
 #  GSLPATH   = C:\Program Files\GnuWin32 (Windows)
 GSLPATH   = C:\Programme\GnuWin32
+endif
 ## Under Windows please specify the path to your MinGW installation
 #  leave empty under Linux: MINGWPATH = 
 #  for Windows most likely:
 #  MINGWPATH = C:\Program Files\MinGW (Windows)
+ifeq ($(OS),Linux)
+MINGWPATH = 
+else
 MINGWPATH = "C:\Programme\MinGW"
+endif
 ############################################################
 
 CFLAGS    = -Wall -c -O3 -fPIC
