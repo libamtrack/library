@@ -13,13 +13,17 @@
 
 # Navigate to wrapper directory
 start.dir           <- getwd()
-if(try(setwd("..\\..\\wrapper\\R\\R_direct_access")) == FALSE){
-    stop("Please start script from /test/R directory")
+
+setdir_win <- try(setwd("..\\..\\wrapper\\R\\R_direct_access"))
+setdir_lin <- try(setwd("../../wrapper/R/R_direct_access"))
+
+if(setdir_win == FALSE && setdir_lin == FALSE){
+   stop("Please start script from /test/R directory")    
 }
 
 # Trigger new build
 try(system("create.direct.access.windows.bat"))
-try(system("./create.direct.access.sh"))
+try(system("bash create.direct.access.linux.sh"))
 
 # Load library and wrappers
 try(dyn.load("libamtrack.dll"))
