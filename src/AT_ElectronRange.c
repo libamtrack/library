@@ -83,7 +83,7 @@ int getERName(
 
  double AT_ER_Scholz_range_g_cm2(double E_MeV_u){
 	assert( (E_MeV_u > 0.) && (E_MeV_u < 1e6));
-	return 5e-5 * pow(E_MeV_u, 1.7);
+	return 5e-6 * pow(E_MeV_u, 1.7);
 }
 
 
