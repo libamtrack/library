@@ -21,21 +21,13 @@
 #
 ################################################################################################
 
-dev.off
-
 # clear workspace
 rm( list = ls() )
 
-# load libAmTrack library
-try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dll"))
-try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.so"))
-try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dylib"))
+# Build latest version of libamtrack and load for direct access
+source("AT_Test_PreRun.R")
 
-# load wrapping scripts
-source("../../wrapper/R/R_direct_access/libamtrack.R")
-
-# necessary library for plotting
-library("lattice")
+require(lattice)
 
 ####################### INACTIVATION PROBABILITY function test #########################################
 

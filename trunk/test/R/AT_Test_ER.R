@@ -25,6 +25,8 @@
 rm( list = ls() )
 
 # Build latest version of libamtrack and load for direct access
+recompile <- TRUE
+#recompile <- FALSE
 source("AT_Test_PreRun.R")
 
 # necessary library for plotting
@@ -67,6 +69,12 @@ for( i in er.models ){
   df.range$range.m[ii]           <-  AT.max.electron.ranges.m( E.MeV.u      = df.range$E.MeV.u[ii], 
                                                                material.no  = material.no, 
                                                                er.model     = i)$max.electron.range.m
+}
+
+# Check sanity of computation output
+failures <- which(!(df.range$range.m >= 1e-15 & df.range$range.m < 10))
+if( length(failures > 0)){
+   stop("At least one range value outside range (1e-15 m to 10 m)!")
 }
 
 # Plots
