@@ -185,12 +185,12 @@ int AT_D_RDD_Gy( const long  n,
  * @param[in]   particle_no         particle code number
  * @param[in]   material_no         material code number
  * @param[in]   rdd_model           Radial Dose Distribution model code number
- * @param[in]   rdd_parameter       Radial Dose Distribution model parameters vector (array of size 3)
+ * @param[in]   rdd_parameter       Radial Dose Distribution model parameters vector (array of size 4)
  * @param[in]   er_model            delta electron range model code number
  * @param[out]  r_RDD_m             distance [m] (array of size n)
  * @return status code
  */
-int AT_r_RDD_m  ( const long  n,
+int AT_r_RDD_m( const long  n,
     const double  D_RDD_Gy[],
     const double  E_MeV_u,
     const long    particle_no,
