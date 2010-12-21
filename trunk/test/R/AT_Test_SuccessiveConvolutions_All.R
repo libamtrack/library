@@ -1,16 +1,29 @@
+################################################################################################
 # Testing script for AT_SuccessiveConvolutions workflow
-# Created: 2010-10-06
-# Creator: greilich
-
+################################################################################################
+# Copyright 2006, 2010 The libamtrack team
+# 
+# This file is part of the AmTrack program (libamtrack.sourceforge.net).
+#
+# AmTrack is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# AmTrack is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# long with AmTrack (file: copying.txt).
+# If not, see <http://www.gnu.org/licenses/>
+#
+################################################################################################
 rm(list = ls())
 
-# load libAmTrack library
-try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dll"))
-try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.so"))
-try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dylib"))
-
-# load wrapping scripts
-source("../../wrapper/R/R_direct_access/libamtrack.R")
+# Build latest version of libamtrack and load for direct access
+source("AT_Test_PreRun.R")
 
 library(lattice)
 
