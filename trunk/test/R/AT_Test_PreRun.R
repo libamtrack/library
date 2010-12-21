@@ -24,7 +24,11 @@ if(setdir_win == FALSE && setdir_lin == FALSE){
    stop("Please start script from /test/R directory")    
 }
 
-# Trigger new build
+# Trigger new build (default, even if variable is not set)
+if(!exists("recompile")){
+    recompile <- TRUE
+}
+
 if(recompile == TRUE){
     try(system("create.direct.access.windows.bat"))
     try(system("bash create.direct.access.linux.sh"))
