@@ -24,13 +24,8 @@
 # clear workspace
 rm( list = ls() )
 
-# load libAmTrack library
-try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dll"))
-try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.so"))
-try(dyn.load("../../wrapper/R/R_direct_access/libamtrack.dylib"))
-
-# load wrapping scripts
-source("../../wrapper/R/R_direct_access/libamtrack.R")
+# Build latest version of libamtrack and load for direct access
+source("AT_Test_PreRun.R")
 
 # necessary library for plotting
 library("lattice")
@@ -65,31 +60,28 @@ df1$r.m.check	<- numeric(nrow(df1))
 
 
 material.no <- c(1)
-E.MeV.u = rep( 100 , nrow(df1))
-particle.no = rep( 1001, nrow(df1))
+E.MeV.u = c(100) 
+particle.no = c( 1001)
 
 
 for( i in ER.model) {
- ii 			<- df1$ER.model == i
-	for( j in RDD.model) {
- 	jj 			<- ((df1$RDD.model == j) & (df1$ER.model == i)) 
-			df1$D.Gy[jj] <- AT.D.RDD.Gy(r.m = df1$r.m[jj], E.MeV.u, particle.no, material.no, ER.model = i, RDD.model = j, RDD.parameters=RDD.parameters[[j]] )
- 		df1$r.m.check[jj] <- AT.r.RDD.m(D.Gy = df1$D.Gy[jj], E.MeV.u, particle.no, material.no, ER.model = i, RDD.model = j, RDD.parameters=RDD.parameters[[j]] ) 	
-		}
+    ii 			<- df1$ER.model == i
+    for( j in RDD.model) {
+        jj                  <- ((df1$RDD.model == j) & (df1$ER.model == i)) 
+        df1$D.Gy[jj]        <- AT.D.RDD.Gy(r.m = df1$r.m[jj], E.MeV.u, particle.no, material.no, rdd.model = j, rdd.parameter=RDD.parameters[[j]], er.model = i )[[1]]
+ 		#df1$r.m.check[jj]    <- AT.r.RDD.m(D.Gy = df1$D.Gy[jj], E.MeV.u, particle.no, material.no, rdd.model = j, rdd.parameters=RDD.parameters[[j]], er.model = i )[[1]] 	
+    }
 }
 
-#df1
+# df1
 
 # plots...
 
 p1 <- xyplot( D.Gy ~ r.m | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Dose [Gy]", auto.key = list(title = "Protons in liquid water, RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
 p2 <- xyplot( D.Gy ~ r.m | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Dose [Gy]", auto.key = list(title = "Protons in liquid water, RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
 
-p1
-p2
-
-p1.check <- xyplot( r.m.check ~ r.m | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Distance [m]", auto.key = list(title = "Protons in liquid water, test RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
-p2.check <- xyplot( r.m.check ~ r.m | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Distance [m]", auto.key = list(title = "Protons in liquid water, test RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
+#p1.check <- xyplot( r.m.check ~ r.m | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Distance [m]", auto.key = list(title = "Protons in liquid water, test RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
+#p2.check <- xyplot( r.m.check ~ r.m | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Distance [m]", ylab = "Distance [m]", auto.key = list(title = "Protons in liquid water, test RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
 
 
 ####################### DISTANCE(DOSE) function test #########################################
@@ -97,7 +89,6 @@ p2.check <- xyplot( r.m.check ~ r.m | RDD.model.name, groups = ER.model.name, re
 # energy range definitions:
 #D.Gy <- c( 1e-8,1e-6,1e-4)
 #D.Gy <- c( 7.115367e-02, 7.116197e+02)
-#D.expn <- seq (-2, 7, by=0.1)
 D.Gy <- 10^seq(-10,6,length.out=50)
 
 
@@ -118,7 +109,7 @@ for( i in ER.model) {
  ii 			<- df2$ER.model == i
  for( j in RDD.model) {
  	jj 			<- ((df2$RDD.model == j) & (df2$ER.model == i)) 
-  		df2$r.m[jj] <- AT.r.RDD.m(D.Gy = df2$D.Gy[jj], E.MeV.u, particle.no, material.no, ER.model = i, RDD.model = j, RDD.parameters=RDD.parameters[[j]] ) 	
+  		#df2$r.m[jj] <- AT.r.RDD.m(D.Gy = df2$D.Gy[jj], E.MeV.u, particle.no, material.no, ER.model = i, RDD.model = j, RDD.parameters=RDD.parameters[[j]] ) 	
 		}
 }
 
@@ -126,8 +117,8 @@ for( i in ER.model) {
 
 # plots...
 
-p3 <- xyplot( r.m ~ D.Gy | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df2, pch = ".", lty = 1, type = "l", xlab = "Dose [Gy]", ylab = "Distance [m]", auto.key = list(title = "Protons in liquid water, inverse RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
-p4 <- xyplot( r.m ~ D.Gy | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df2, pch = ".", lty = 1, type = "l", xlab = "Dose [Gy]", ylab = "Distance [m]", auto.key = list(title = "Protons in liquid water, inverse RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
+#p3 <- xyplot( r.m ~ D.Gy | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df2, pch = ".", lty = 1, type = "l", xlab = "Dose [Gy]", ylab = "Distance [m]", auto.key = list(title = "Protons in liquid water, inverse RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
+#p4 <- xyplot( r.m ~ D.Gy | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df2, pch = ".", lty = 1, type = "l", xlab = "Dose [Gy]", ylab = "Distance [m]", auto.key = list(title = "Protons in liquid water, inverse RDD",points = FALSE, lines = TRUE), scales = list(log = 10))
 
 # saving plots to the file
 
@@ -135,9 +126,9 @@ pdf("RDD.pdf")
 
 p1
 p2
-p3
-p4
-p1.check
-p2.check
+#p3
+#p4
+#p1.check
+#p2.check
 
 dev.off()
