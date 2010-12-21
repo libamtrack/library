@@ -8,6 +8,9 @@
 # Should be called by "source" statement from
 # corresponding test script
 #
+# If 'recompile' is set FALSE recompiling is
+# skipped and the existing library is loaded.
+#
 # Started 2010-12-01, Steffen Greilich
 #################################################
 
@@ -22,8 +25,10 @@ if(setdir_win == FALSE && setdir_lin == FALSE){
 }
 
 # Trigger new build
-try(system("create.direct.access.windows.bat"))
-try(system("bash create.direct.access.linux.sh"))
+if(recompile == TRUE){
+    try(system("create.direct.access.windows.bat"))
+    try(system("bash create.direct.access.linux.sh"))
+}
 
 # Load library and wrappers
 try(dyn.load("libamtrack.dll"))
