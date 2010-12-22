@@ -196,7 +196,7 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
         max_electron_range_g_cm2  =  AT_ER_Tabata_range_g_cm2(beta[i], a1_g_cm2, a2, a3, a4, a5);
         break;
       default:
-        max_electron_range_g_cm2  =  0.0;
+        max_electron_range_g_cm2  =  5e-5; /* ER model Test, constant range 50 µm */
         break;
     }
 
@@ -266,7 +266,7 @@ double AT_max_electron_range_m(  const double E_MeV_u,
       max_electron_range_g_cm2  =  AT_ER_Tabata_range_g_cm2(beta, a1_g_cm2, a2, a3, a4, a5);
       break;
     default:
-      max_electron_range_g_cm2  =  0.0;
+      max_electron_range_g_cm2  =  5e-5; /* ER model Test, constant range 50 µm */
       break;
   }
 
