@@ -75,10 +75,10 @@ long AT_n_bins_for_single_impact_local_dose_distrib(
  * @param[in]  er_model              index number for chosen electron-range model
  * @param[in]  N2                    number of bins per factor of two in local dose array
  * @param[in]  f1_parameters         array of size n * 8 with n field component characteristics (array of size n*8)
- * @param[in]  n_bins_f1             number of bins holding the f1 distribution (from AT_SC_get_f1_array_size)
- * @param[out] f1_d_Gy               bin midpoints for f1, array of size n_bins_f1
- * @param[out] f1_dd_Gy              bin widths for f1, array of size n_bins_f1
- * @param[out] f1                    f1 values, array of size n_bins_f1
+ * @param[in]  n_bins_f1             number of bins holding the f1 distribution
+ * @param[out] f1_d_Gy               bin midpoints for f1 (array of size n_bins_f1)
+ * @param[out] f1_dd_Gy              bin widths for f1 (array of size n_bins_f1)
+ * @param[out] f1                    f1 values (array of size n_bins_f1)
  */
 void AT_single_impact_local_dose_distrib(
     const long   n,
@@ -104,9 +104,9 @@ void AT_single_impact_local_dose_distrib(
  * @param[in]  fluence_factor      variable to tweak the total dose from the mixed field (rather than change the single components fluences)
  * @param[in]  N2                  number of bins per factor of two in local dose array
  * @param[in]  n_bins_f1           number of bins holding the f1 distribution (from AT_SC_get_f1_array_size)
- * @param[in]  f1_d_Gy             bin midpoints for f1, array of size n_bins_f1 (from AT_SC_get_f1)
- * @param[in]  f1_dd_Gy            bin width for f1, array of size n_bins_f1 (from AT_SC_get_f1)
- * @param[in]  f1                  f1 values, array of size n_bins_f1 (from AT_SC_get_f1)
+ * @param[in]  f1_d_Gy             bin midpoints for f1 (array of size n_bins_f1)
+ * @param[in]  f1_dd_Gy            bin width for f1 (array of size n_bins_f1)
+ * @param[in]  f1                  f1 values (array of size n_bins_f1)
  * @param[out] n_bins_f            number of bins holding the resulting f local dose distribution
  * @param[out] u_start             value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid
  * @param[out] n_convolutions      number of convolutions necessary to get from u_start to u (u = 2^n_convolutions * u_start)
@@ -129,13 +129,13 @@ void AT_n_bins_for_low_fluence_local_dose_distribution(  const double   u,
  * Usually step 4 of the CPP-SC method
  * @param[in]  n_bins_f1           number of bins holding the f1 distribution (from AT_SC_get_f1_array_size)
  * @param[in]  N2                  number of bins per factor of two in local dose array
- * @param[in]  f1_d_Gy             bin midpoints for f1, array of size n_bins_f1 (from AT_SC_get_f1)
- * @param[in]  f1_dd_Gy            bin width for f1, array of size n_bins_f1 (from AT_SC_get_f1)
- * @param[in]  f1                  f1 values, array of size n_bins_f1 (from AT_SC_get_f1)
+ * @param[in]  f1_d_Gy             bin midpoints for f1 (array of size n_bins_f1)
+ * @param[in]  f1_dd_Gy            bin width for f1 (array of size n_bins_f1)
+ * @param[in]  f1                  f1 values (array of size n_bins_f1)
  * @param[in]  n_bins_f            number of bins holding the resulting f local dose distribution (from AT_SC_get_f_array_size)
- * @param[out] f_d_Gy              bin midpoints for f, array of size n_bins_f
- * @param[out] f_dd_Gy             bin widths for f, array of size n_bins_f
- * @param[out] f_start             f values to start with, array of size n_bins_f
+ * @param[out] f_d_Gy              bin midpoints for f (array of size n_bins_f1)
+ * @param[out] f_dd_Gy             bin widths for f (array of size n_bins_f1)
+ * @param[out] f_start             f values to start with (array of size n_bins_f1)
  */
 void AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
     const long    N2,
@@ -156,8 +156,7 @@ void AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
  * @param[in]      final_mean_number_of_tracks_contrib                   value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from AT_SC_get_f_array_size)
  * @param[in]      n_bins              Size of arrays convolutions are performed on
  * @param[in,out]  N2                  number of bins per factor of two in local dose array f_start, will return new value in case it was adjusted by the routine (higher resolution in case of high fluences)
- * @param[in,out]  n_bins_f_used       in: number of bins used for f_start, \n
- *                                     out: number of bins used for resulting. As tails can be cut and N2 adjusted this is usually not the array size for f_d_Gy, f_dd_Gy, f but smaller (so entries 0..n_bins_f_used-1 are used)
+ * @param[in,out]  n_bins_f_used       in number of bins used for f_start, out number of bins used for resulting. As tails can be cut and N2 adjusted this is usually not the array size for f_d_Gy, f_dd_Gy, f but smaller (so entries 0 to n_bins_f_used-1 are used)
  * @param[in,out]  f_d_Gy              bin midpoints for f (array of size n_bins)
  * @param[in,out]  f_dd_Gy             bin widths for f (array of size n_bins)
  * @param[in,out]  f                   in low fluence approx values to start with, out resulting values after convolutions (array of size n_bins_f_used)
