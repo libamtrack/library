@@ -64,7 +64,7 @@ for( i in ER.model) {
  ii 			<- df1$ER.model == i
 	for( j in RDD.model) {
  	jj 			<- ((df1$RDD.model == j) & (df1$ER.model == i)) 
-			df1$inact.prob[jj] <- AT.Katz.inactivation.probability(r.m = df1$r.m[jj], E.MeV.u, particle.no, material.no, rdd.model = j, rdd.parameters = RDD.parameters[[j]], er.model = i, GR.parameters)
+			df1$inact.prob[jj] <- AT.KatzModel.inactivation.probability(r.m = df1$r.m[jj], E.MeV.u, particle.no, material.no, rdd.model = j, rdd.parameters = RDD.parameters[[j]], er.model = i, GR.parameters)
 		}
 }
 
