@@ -37,7 +37,7 @@
 #define DEBUG_SIGMA                          1.0
 
 
-long  AT_n_bins_for_singe_impact_local_dose_distrib(
+long  AT_n_bins_for_single_impact_local_dose_distrib(
 		const long    n,
 		const double  E_MeV_u[],
 		const long    particle_no[],

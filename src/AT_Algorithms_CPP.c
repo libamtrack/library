@@ -72,7 +72,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
 
   /* Get array size for single impact dose
    * distribution for later memory allocation */
-  long     n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_distrib(  number_of_field_components,
+  long     n_bins_f1 = AT_n_bins_for_single_impact_local_dose_distrib(  number_of_field_components,
       E_MeV_u,
       particle_no,
       material_no,
@@ -311,7 +311,7 @@ void AT_run_CPPSS_method(  const long  number_of_field_components,
 
   // The histogram initialization and handling has been adapted to CPPSC
   // although some features are not used here
-  long    n_bins_f1 = AT_n_bins_for_singe_impact_local_dose_distrib(          number_of_field_components,
+  long    n_bins_f1 = AT_n_bins_for_single_impact_local_dose_distrib(          number_of_field_components,
       E_MeV_u,
       particle_no,
       material_no,
