@@ -46,12 +46,12 @@
  * @param[in]  particle_no         type of the particles in the mixed particle field (array of size n)
  * @param[in]  material_no         index number for detector material
  * @param[in]  rdd_model           index number for chosen radial dose distribution
- * @param[in]  rdd_parameter       parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  rdd_parameter       parameters for chosen radial dose distribution (array of size 4)
  * @param[in]  er_model            index number for chosen electron-range model
  * @param[in]  N2                  number of bins per factor of two in local dose array
  * @return number of bins to hold the f1 distribution
  */
-long AT_n_bins_for_singe_impact_local_dose_distrib(
+long AT_n_bins_for_single_impact_local_dose_distrib(
     const long   n,
     const double E_MeV_u[],
     const long   particle_no[],
@@ -71,10 +71,10 @@ long AT_n_bins_for_singe_impact_local_dose_distrib(
  * @param[in]  fluence_cm2_or_dose_Gy           fluences for the given particles, doses in Gy if negative (array of size n)
  * @param[in]  material_no           index number for detector material
  * @param[in]  rdd_model             index number for chosen radial dose distribution
- * @param[in]  rdd_parameter         parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  rdd_parameter         parameters for chosen radial dose distribution (array of size 4)
  * @param[in]  er_model              index number for chosen electron-range model
  * @param[in]  N2                    number of bins per factor of two in local dose array
- * @param[in]  f1_parameters         array of size n * 8 with n field component characteristics (from AT_SC_get_f1_array_size)
+ * @param[in]  f1_parameters         array of size n * 8 with n field component characteristics (array of size n*8)
  * @param[in]  n_bins_f1             number of bins holding the f1 distribution (from AT_SC_get_f1_array_size)
  * @param[out] f1_d_Gy               bin midpoints for f1, array of size n_bins_f1
  * @param[out] f1_dd_Gy              bin widths for f1, array of size n_bins_f1
@@ -153,27 +153,25 @@ void AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
  * as described by Kellerer, 1969. This is a to most extend a reimplementation of Kellerer's original FORTRAN IV code.
  * Usually step 5 of the CPP-SC method
  *
- * @param[in]      u                   value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from AT_SC_get_f_array_size)
- * @param[in]      n_bins_f            number of bins holding the resulting f local dose distribution (from AT_SC_get_f_array_size)
+ * @param[in]      final_mean_number_of_tracks_contrib                   value for u to start convolutions with, between 0.001 and 0.002 where linearization of f into no and one impact is valid (from AT_SC_get_f_array_size)
+ * @param[in]      n_bins              Size of arrays convolutions are performed on
  * @param[in,out]  N2                  number of bins per factor of two in local dose array f_start, will return new value in case it was adjusted by the routine (higher resolution in case of high fluences)
  * @param[in,out]  n_bins_f_used       in: number of bins used for f_start, \n
  *                                     out: number of bins used for resulting. As tails can be cut and N2 adjusted this is usually not the array size for f_d_Gy, f_dd_Gy, f but smaller (so entries 0..n_bins_f_used-1 are used)
- * @param[in,out]  n_bins_f            number of bins holding the resulting f local dose distribution (from AT_SC_get_f_array_size)
- * @param[in,out]  f_d_Gy              bin midpoints for f, array of size n_bins_f (from AT_SC_get_f_start)
- * @param[in,out]  f_dd_Gy             bin widths for f, array of size n_bins_f (from AT_SC_get_f_start)
- * @param[in,out]  f                   in: f values to start with, array of size n_bins_f (from AT_SC_get_f_start) \n
- *                                     out: resulting f values after convolutions
+ * @param[in,out]  f_d_Gy              bin midpoints for f (array of size n_bins)
+ * @param[in,out]  f_dd_Gy             bin widths for f (array of size n_bins)
+ * @param[in,out]  f                   in low fluence approx values to start with, out resulting values after convolutions (array of size n_bins_f_used)
  * @param[out]     f0                  zero-dose f value (as bins are log this has to be separated)
- * @param[out]     fdd                 frequency:          H * DE        (f * dd), size n_bins_f, used: n_bins_f_used
- * @param[out]     dfdd                dose contribution:  H * E * DE    (f * d * dd), size n_bins_f, used: n_bins_f_used
- * @param[out]     d                   first moment:       (@<d@>)         provides check on convolution quality
+ * @param[out]     fdd                 frequency f x f_dd_Gy precomputed for comfort (array of size n_bins)
+ * @param[out]     dfdd                dose contribution f x f_dd_Gy precomputed for comfort (array of size n_bins)
+ * @param[out]     d                   first moment of distribution f - should coincide with given dose and provides check on convolution quality
  * @param[in]      write_output        if true, a very verbose log file will be written ("SuccessiveConvolutions.log") with results from each convolution
  * @param[in]      shrink_tails        if true, the upper and lower tail of f will be cut after every convolution (bins that contribute less than "shrink_tails_under" to the first moment @<d@>)
  * @param[in]      shrink_tails_under  cut threshold for tails
- * @param[in]      adjust_N2           if true, N2 (i.e. the bin density) can be adjusted. This can be necessary esp. for high doses / fluences where f gets very narrow
+ * @param[in]      adjust_N2           if true, N2 (i.e. the bin density) can be adjusted. This can be necessary esp. for high doses or fluences where f gets very narrow
  */
 void AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_contrib,
-		const long    array_size,
+		const long    n_bins,
 		long*         N2,
 		long*         n_bins_f_used,
 		double        f_d_Gy[],
