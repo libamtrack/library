@@ -45,9 +45,9 @@ int main(int argc, char *argv[]) {
 	double D_Gy[500];
 	double E_MeV_u[500];
 	long particle_no[500];
-	double E_MeV_u_single;
-	long particle_no_single;
-	long material_no;
+	double E_MeV_u_single = 50.;
+	long particle_no_single = PARTICLE_PROTON_NUMBER;
+	long material_no = Water_Liquid;
 
 	FILE *f;
 	fflush(stdin);
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 
 	double fluence_cm2[500];
 
-	AT_fluence_cm2(  n,
+	AT_fluence_cm2_from_dose_Gy(  n,
 	    E_MeV_u,
 	    particle_no,
 	    D_Gy,
