@@ -7,7 +7,7 @@
  *    ===================
  *
  *    Created on: 2010-10-11
- *    Creator: christophkolb
+ *    Creator: kongruencja
  *
  *    Copyright 2006, 2010 The libamtrack team
  *
@@ -44,18 +44,15 @@ int main(int argc, char *argv[]) {
 
 	double E_MeV_u_single;
 
-	long material_no;
-	long particle_no_single;
-	long rdd_model;
+	long material_no = Water_Liquid;
+	long particle_no_single = PARTICLE_PROTON_NUMBER;
+	long rdd_model = RDD_Geiss;
 	double rdd_parameters[RDD_MAX_NUMBER_OF_PARAMETERS];
-	long er_model;
-	long gamma_model;
+	long er_model = ER_Geiss;
+	long gamma_model = GR_LinQuad;
 	double gamma_parameters[GR_MAX_NUMBER_OF_PARAMETERS];
 
 	double fluence_cm2_or_dose_Gy_single;
-
-	long n_points;
-	long x_axis_type;
 
 	FILE *file;
 	fflush(stdin);
@@ -189,8 +186,7 @@ int main(int argc, char *argv[]) {
 			f1_parameters
 	);
 
-	/* Get local dose dictribution for the
-	 * impact of a single particle */
+	/* Get local dose distribution for the impact of a single particle */
 	double*  f1_d_Gy       =  (double*)calloc(n_bins_f1, sizeof(double));
 	double*  f1_dd_Gy      =  (double*)calloc(n_bins_f1, sizeof(double));
 	double*  f1            =  (double*)calloc(n_bins_f1, sizeof(double));
@@ -298,6 +294,8 @@ int main(int argc, char *argv[]) {
 		if( f[i] > 0. )
 			fprintf(file, " %g", f[i]);
 	}
+	fprintf(file, "\n");
+	fclose(file);
 
 	/* Free allocated memory and return*/
 	free(f_d_Gy);
@@ -311,9 +309,6 @@ int main(int argc, char *argv[]) {
 	free(f1);
 
 	free(f1_parameters);
-
-	fprintf(file, "\n");
-	fclose(file);
 
 	return EXIT_SUCCESS;
 }

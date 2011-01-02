@@ -44,16 +44,16 @@ int main(int argc, char *argv[]) {
 	double r_m[5000];
 	double RDD_GY[5000];
 	double rdd_parameters[RDD_MAX_NUMBER_OF_PARAMETERS];
-	long material_no;
-	long particle_no_single;
-	long rdd_model;
-	long er_model;
-	double E_MeV_u;
+	long material_no = Water_Liquid;
+	long particle_no_single = PARTICLE_PROTON_NUMBER;
+	long rdd_model = RDD_Geiss;
+	long er_model = ER_Geiss;
+	double E_MeV_u = 50.;
 
-	double r_start_m;
-	double r_stop_m;
-	long n_points;
-	long x_axis_type;
+	double r_start_m = 1e-10;
+	double r_stop_m = 1e-7;
+	long n_points = 30;
+	long x_axis_type = 1;
 
 	FILE *f;
 	fflush(stdin);

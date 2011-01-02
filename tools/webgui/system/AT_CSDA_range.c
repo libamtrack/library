@@ -43,14 +43,14 @@ int main(int argc, char *argv[]) {
 
 	double E_MeV_u[5000];
 	double range_m[5000];
-	long material_no;
+	long material_no = Water_Liquid;
 	long particle_no[5000];
-	long particle_no_single;
+	long particle_no_single = PARTICLE_PROTON_NUMBER;
 
-	double E_start;
-	double E_end;
-	long n_points;
-	long x_axis_type;
+	double E_start = 0.1;
+	double E_end = 60.;
+	long n_points = 30;
+	long x_axis_type = 1;
 
 	FILE *f;
 	fflush(stdin);
