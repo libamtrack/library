@@ -43,7 +43,7 @@ header.file.names <- header.file.names[grep(".h", header.file.names)]
 
 # Remove the old style R-wrappers from the list of header files - they are obsolete here. 
 # Additionally header files for which doxygen comments are not ready yet can be excluded
-to.remove         <- c("AT_KatzModel.h", "AT_NumericalRoutines.h")
+to.remove         <- c("AT_NumericalRoutines.h")
 pos.remove        <- match(to.remove, header.file.names)
 #pos.remove        <- c(pos.remove, grep("Data", header.file.names))
 header.file.names <- header.file.names[-pos.remove]
