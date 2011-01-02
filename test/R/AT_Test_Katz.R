@@ -1,5 +1,5 @@
 ################################################################################################
-# R test script for implemented electron range models
+# R test script for implemented Katz model
 ################################################################################################
 # Copyright 2006, 2010 The libamtrack team
 # 
@@ -25,6 +25,7 @@
 rm( list = ls() )
 
 # Build latest version of libamtrack and load for direct access
+recompile <- FALSE
 source("AT_Test_PreRun.R")
 
 require(lattice)
@@ -32,7 +33,7 @@ require(lattice)
 ####################### INACTIVATION PROBABILITY function test #########################################
 
 # radius definitions:
-r.m <- 10^seq (-10, -3, length.out=100)
+r.m <- 10^seq (-10, -3, length.out=3)
 
 # electron range models definition
 ER.model.names <- c("simple test",  "Butts & Katz' (linear)",  "Waligorski's (power-law wmax)",  "Geiss' (power-law E)", "Scholz' (power-law E)", "Edmund' (power-law wmax)","Tabata")
@@ -64,11 +65,11 @@ for( i in ER.model) {
  ii 			<- df1$ER.model == i
 	for( j in RDD.model) {
  	jj 			<- ((df1$RDD.model == j) & (df1$ER.model == i)) 
-			df1$inact.prob[jj] <- AT.KatzModel.inactivation.probability(r.m = df1$r.m[jj], E.MeV.u, particle.no, material.no, rdd.model = j, rdd.parameters = RDD.parameters[[j]], er.model = i, GR.parameters)
+			df1$inact.prob[jj] <- AT.KatzModel.inactivation.probability(r.m = df1$r.m[jj], E.MeV.u, particle.no, material.no, rdd.model = j, rdd.parameters = RDD.parameters[[j]], er.model = i, GR.parameters)[[1]]
 		}
 }
 
-#df1
+df1
 
 # plots...
 
@@ -80,7 +81,7 @@ p2logx <- xyplot( inact.prob ~ r.m | RDD.model.name, groups = ER.model.name, ref
 
 ####################### INACTIVATION CROSS SECTION function test #########################################
 
-E.MeV.u <- 10^seq (0, 3, length.out=100)
+E.MeV.u <- 10^seq (0, 3, length.out=10)
 
 # data frame setup
 df1 <- expand.grid( E.MeV.u = E.MeV.u, ER.model = ER.model, RDD.model = RDD.model )
@@ -100,9 +101,11 @@ for( i in ER.model) {
  ii 			<- df1$ER.model == i
 	for( j in RDD.model) {
  	jj 			<- ((df1$RDD.model == j) & (df1$ER.model == i)) 
-			df1$inact.cross.sect.m2[jj] <- AT.Katz.inactivation.cross.section.m2(E.MeV.u = df1$E.MeV.u[jj], particle.no, material.no, rdd.model = j, rdd.parameters = RDD.parameters[[j]], er.model = i, GR.parameters)
+			df1$inact.cross.sect.m2[jj] <- AT.KatzModel.inactivation.cross.section.m2(E.MeV.u = df1$E.MeV.u[jj], particle.no, material.no, rdd.model = j, rdd.parameters = RDD.parameters[[j]], er.model = i, GR.parameters)[[1]]
 		}
 }
+
+df1
 
 p3 <- xyplot( inact.cross.sect.m2 ~ E.MeV.u | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV/u]", ylab = "Inactivation cross section [m2]", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list(log = 10))
 p4 <- xyplot( inact.cross.sect.m2 ~ E.MeV.u | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV/u]", ylab = "Inactivation cross section [m2]", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list(log = 10))

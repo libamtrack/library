@@ -101,7 +101,7 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_probability(
  * @param[in] rdd_model                     todo
  * @param[in] rdd_parameters                todo (array of size 4)
  * @param[in] er_model                      todo
- * @param[in] gamma_parameters              todo (array of size 9)
+ * @param[in] gamma_parameters              todo (array of size 5)
  * @param[out] inactivation_probability     results (array of size n)
  * @return status code
  */
@@ -230,15 +230,15 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2(
 
 /**
  * TODO
- * @param n
- * @param E_MeV_u
- * @param particle_no
- * @param material_no
- * @param rdd_model
- * @param rdd_parameters
- * @param er_model
- * @param gamma_parameters
- * @param inactivation_cross_section_m2
+ * @param[in] n
+ * @param[in] E_MeV_u (array of size n)
+ * @param[in] particle_no
+ * @param[in] material_no
+ * @param[in] rdd_model
+ * @param[in] rdd_parameters (array of size 4)
+ * @param[in] er_model
+ * @param[in] gamma_parameters (array of size 5)
+ * @param[out] inactivation_cross_section_m2 (array of size n)
  * @return status code
  */
 int AT_KatzModel_inactivation_cross_section_m2(
@@ -249,7 +249,7 @@ int AT_KatzModel_inactivation_cross_section_m2(
     const long   rdd_model,
     const double rdd_parameters[],
     const long   er_model,
-    const double gamma_parameters[5],
+    const double gamma_parameters[],
     double inactivation_cross_section_m2[]);
 
 
