@@ -8,11 +8,10 @@ Compilation of the wrappers.
  After this step you new file (libamtrack.a or libamtrack.lib) should
  appear in lib directory.
  
- 2. Compile all wrappers - go to each directory containing wrapper
- code and type also:
+ 2. Compile all wrappers:
  
- make static
+ make all
  
- New .exe file should be created.
+ New .exe files should be created.
  
  3. Remember to copy all .exe files to the wrapper directory on the server. 
