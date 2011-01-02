@@ -33,6 +33,7 @@ AT_E_from_beta
 AT_gamma_from_E
 AT_get_material_data
 AT_KatzModel_inactivation_probability
+AT_KatzModel_inactivation_cross_section_m2
 AT_n_bins_for_single_impact_local_dose_distrib
 AT_RDD_f1_parameters_mixed_field
 AT_single_impact_local_dose_distrib
@@ -40,4 +41,3 @@ AT_mean_number_of_tracks_contrib
 AT_n_bins_for_low_fluence_local_dose_distribution
 AT_low_fluence_local_dose_distribution
 AT_SuccessiveConvolutions
-
