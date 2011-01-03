@@ -34,18 +34,18 @@
 
 /**
  * TODO
- * @param r_m
- * @param a0_m
- * @param KatzPoint_r_min_m
- * @param max_electron_range_m
- * @param er_model
- * @param alpha
- * @param Katz_plateau_Gy
- * @param Katz_point_coeff_Gy
- * @param D0_characteristic_dose_Gy
- * @param c_hittedness
- * @param m_number_of_targets
- * @return
+ * @param[in] r_m
+ * @param[in] a0_m
+ * @param[in] KatzPoint_r_min_m
+ * @param[in] max_electron_range_m
+ * @param[in] er_model
+ * @param[in] alpha
+ * @param[in] Katz_plateau_Gy
+ * @param[in] Katz_point_coeff_Gy
+ * @param[in] D0_characteristic_dose_Gy
+ * @param[in] c_hittedness
+ * @param[in] m_number_of_targets
+ * @return inactivation probability
  */
 double AT_KatzModel_KatzExtTarget_inactivation_probability(
     const double  r_m,
@@ -63,18 +63,18 @@ double AT_KatzModel_KatzExtTarget_inactivation_probability(
 
 /**
  * TODO
- * @param r_m
- * @param a0_m
- * @param KatzPoint_r_min_m
- * @param max_electron_range_m
- * @param beta
- * @param C_norm
- * @param Cucinotta_plateau_Gy
- * @param KatzPoint_point_coeff_Gy
- * @param D0_characteristic_dose_Gy
- * @param c_hittedness
- * @param m_number_of_targets
- * @return
+ * @param[in] r_m
+ * @param[in] a0_m
+ * @param[in] KatzPoint_r_min_m
+ * @param[in] max_electron_range_m
+ * @param[in] beta
+ * @param[in] C_norm
+ * @param[in] Cucinotta_plateau_Gy
+ * @param[in] KatzPoint_point_coeff_Gy
+ * @param[in] D0_characteristic_dose_Gy
+ * @param[in] c_hittedness
+ * @param[in] m_number_of_targets
+ * @return inactivation probability
  */
 double AT_KatzModel_CucinottaExtTarget_inactivation_probability(
     const double  r_m,
@@ -137,9 +137,9 @@ typedef struct {
 
 /**
  * TODO
- * @param t_m
- * @param params
- * @return
+ * @param[in] t_m
+ * @param[in] params
+ * @return TODO
  */
 double AT_KatzModel_KatzExtTarget_inactivation_cross_section_integrand_m(
     double t_m,
@@ -148,17 +148,17 @@ double AT_KatzModel_KatzExtTarget_inactivation_cross_section_integrand_m(
 
 /**
  * TODO
- * @param a0_m
- * @param KatzPoint_r_min_m
- * @param max_electron_range_m
- * @param er_model
- * @param alpha
- * @param Katz_plateau_Gy
- * @param Katz_point_coeff_Gy
- * @param D0_characteristic_dose_Gy
- * @param c_hittedness
- * @param m_number_of_targets
- * @return
+ * @param[in] a0_m
+ * @param[in] KatzPoint_r_min_m
+ * @param[in] max_electron_range_m
+ * @param[in] er_model
+ * @param[in] alpha
+ * @param[in] Katz_plateau_Gy
+ * @param[in] Katz_point_coeff_Gy
+ * @param[in] D0_characteristic_dose_Gy
+ * @param[in] c_hittedness
+ * @param[in] m_number_of_targets
+ * @return TODO
  */
 double AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2(
     const double  a0_m,
@@ -192,9 +192,9 @@ typedef struct {
 
 /**
  * TODO
- * @param t_m
- * @param params
- * @return
+ * @param[in] t_m
+ * @param[in] params
+ * @return TODO
  */
 double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_integrand_m(
     double t_m,
@@ -203,17 +203,17 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_integrand_m(
 
 /**
  * TODO
- * @param a0_m
- * @param KatzPoint_r_min_m
- * @param max_electron_range_m
- * @param beta
- * @param C_norm
- * @param Cucinotta_plateau_Gy
- * @param KatzPoint_point_coeff_Gy
- * @param D0_characteristic_dose_Gy
- * @param c_hittedness
- * @param m_number_of_targets
- * @return
+ * @param[in] a0_m
+ * @param[in] KatzPoint_r_min_m
+ * @param[in] max_electron_range_m
+ * @param[in] beta
+ * @param[in] C_norm
+ * @param[in] Cucinotta_plateau_Gy
+ * @param[in] KatzPoint_point_coeff_Gy
+ * @param[in] D0_characteristic_dose_Gy
+ * @param[in] c_hittedness
+ * @param[in] m_number_of_targets
+ * @return TODO
  */
 double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2(
     const double  a0_m,
@@ -255,6 +255,17 @@ int AT_KatzModel_inactivation_cross_section_m2(
 
 /**
  * TODO
+ * @param[in] fluence_cm2
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] material_no
+ * @param[in] rdd_model
+ * @param[in] rdd_parameters (array of size 4)
+ * @param[in] er_model
+ * @param[in] D0_characteristic_dose_Gy
+ * @param[in] m_number_of_targets
+ * @param[in] sigma0_m2
+ * @return TODO
  */
 double AT_KatzModel_single_field_survival(
     const double fluence_cm2,

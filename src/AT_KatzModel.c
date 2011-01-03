@@ -1,5 +1,5 @@
 /**
- * @brief ...
+ * @brief TODO
  */
 
 /*
@@ -108,7 +108,7 @@ int AT_KatzModel_inactivation_probability(
     const long    rdd_model,
     const double  rdd_parameters[],
     const long    er_model,
-    const double  gamma_parameters[5],
+    const double  gamma_parameters[],
     double        inactivation_probability[]){
 
   const double max_electron_range_m  =  AT_max_electron_range_m( E_MeV_u, (int)material_no, (int)er_model);
@@ -353,7 +353,7 @@ int AT_KatzModel_inactivation_cross_section_m2(
     const long   rdd_model,
     const double rdd_parameters[],
     const long   er_model,
-    const double gamma_parameters[5],
+    const double gamma_parameters[],
     double inactivation_cross_section_m2[]){
 
   const double D0_characteristic_dose_Gy  =  gamma_parameters[1];
