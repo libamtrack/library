@@ -2,6 +2,7 @@ package amtrackservice.client.gui;
 
 import amtrackservice.client.AmtrackService;
 import amtrackservice.client.AmtrackService.AmtrackServiceResources;
+import amtrackservice.client.BuildInfo;
 import amtrackservice.client.Logger;
 
 import com.google.gwt.core.client.GWT;
@@ -56,9 +57,13 @@ public class MainView {
 					"3. Results printed on the right.<br>"+
 					"4. Open another/close function.<br>"+
 		            "Please report any problems/feedback<br>"+
-		            "to: <b><u><a href=\"mailto:Leszek.Grzanka@ifj.edu.pl\" target=\"_blank\">Leszek.Grzanka@ifj.edu.pl</a></u></b><br></font></center>");
+		            "to: <b><u><a href=\"mailto:Leszek.Grzanka@ifj.edu.pl\" target=\"_blank\">Leszek.Grzanka@ifj.edu.pl</a></u></b><br></font>" +
+		            "<I>libamtrack version: " + BuildInfo.revisionNumber + "</I>" + 
+		            "</center>");
 
-	
+		System.out.println();
+		
+		
 	    centralTabPanel = new TabLayoutPanel(32, Unit.PX);
 
 	    
