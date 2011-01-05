@@ -95,13 +95,18 @@ public class CalculationControl {
 
 			@Override
 			public void onSuccess(Long result) {
-				calculation.setTimeID(result);
-				Logger.info(calculation.getName() + ": calculation request sent. Id set to: " + result);
+				if( result > 0){
+					calculation.setTimeID(result);
+					Logger.info(calculation.getName() + ": calculation request sent. Id set to: " + result);
+				} else {
+					Logger.error(calculation.getName() + ": a problem occured, probably wrapper file missing");
+					Logger.show();
+				}
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Logger.log(caught.getMessage());
+				Logger.error(caught.getMessage());
 			}
 		});
 
