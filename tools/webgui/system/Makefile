@@ -56,14 +56,14 @@ SOURCES=AT_CPPSC.c AT_CSDA_range.c AT_D_RDD_GY.c AT_E_from_beta.c AT_fluence_fro
 OBJECTS=$(SOURCES:.c=.o)
 EXECS=$(SOURCES:.c=.exe)
 
-all: $(SOURCES) $(EXECS)
+all: $(EXECS) $(SOURCES)
 
 
-$(EXECS): $(OBJECTS) 
+%.exe: %.o
 		$(GCC) -L$(GSLLIB) -L$(LIBDIR) $< $(LFLAGS) -lamtrack -o $@
 
 
-.c.o:
+%.o: %.c
 		$(GCC) -I$(GSLINCLUDE) -I$(INCLDIR) $(CFLAGS) $< -o $@
 
 
