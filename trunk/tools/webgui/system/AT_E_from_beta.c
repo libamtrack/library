@@ -40,9 +40,7 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 	char *path = argv[1];
-	char Text[600];
-
-	double beta[500];
+	char Text[10000];
 
 	double beta_start = 0.;
 	double beta_end = 0.;
@@ -80,18 +78,35 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	double E[500];
-	int i;
+	if( n_points < 1 ){
+		fprintf(stderr, "Number of points should be greater than 0, but is equal to %ld\n", n_points);
+		return EXIT_FAILURE;
+	}
+
+	double * beta = (double*)calloc(n_points, sizeof(double));
+	double * E    = (double*)calloc(n_points, sizeof(double));
+
+	long i;
+
 	if( x_axis_type == 2){
-		for (i = 0; i < n_points; i++) {
-			beta[i] = beta_start + (i/(double)(n_points-1)) * (beta_end - beta_start);
+		if( n_points > 1){
+			for (i = 0; i < n_points; i++) {
+				beta[i] = beta_start + (i/(double)(n_points-1)) * (beta_end - beta_start);
+			}
+		} else {
+			beta[0] = beta_start;
 		}
 	} else if( x_axis_type == 1){
-		for (i = 0; i < n_points; i++) {
-			double logbeta = log(beta_start) + (i/(double)(n_points-1)) * (log(beta_end) - log(beta_start));
-			beta[i] = exp(logbeta);
+		if( n_points > 1 ){
+			for (i = 0; i < n_points; i++) {
+				double logbeta = log(beta_start) + (i/(double)(n_points-1)) * (log(beta_end) - log(beta_start));
+				beta[i] = exp(logbeta);
+			}
+		} else {
+			beta[0] = beta_start;
 		}
 	} else {
+		fprintf(stderr, "X axis spacing type %ld not supported\n", x_axis_type);
 		return EXIT_FAILURE;
 	}
 
@@ -109,6 +124,9 @@ int main(int argc, char *argv[]) {
 	}
 	fprintf(f, "\n");
 	fclose(f);
+
+	free(beta);
+	free(E);
 
 	return EXIT_SUCCESS;
 }
