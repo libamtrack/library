@@ -258,12 +258,21 @@ public class Calculation {
 	public void recalculate(){
 	    this.clearLoggerMessages();
 		calculate();
+	    // repeat until Calculation is done or n attempts
+		// were performed
 	    Timer t = new Timer() {
-	        public void run() {
-	          refresh();
+	    	int n = 40;	    	
+	    	public void run() {
+	    		n--;
+	    		if( isCalculated() || n < 0 ){
+	    			this.cancel();  // cancel timer
+	    		} else {
+	    			refresh(); // refresh calculation
+	    		}
 	        }
 	    };
-	    t.schedule(500);
+	    // repeating interval is specified below
+	    t.scheduleRepeating(250);
 	}
 
 	private void loadDefaults() {
