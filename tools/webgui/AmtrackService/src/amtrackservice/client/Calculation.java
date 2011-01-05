@@ -10,8 +10,15 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -19,9 +26,11 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Represents a Calculation and generates the input/output gui
@@ -34,6 +43,10 @@ public class Calculation {
 	private long timeID;
 	private boolean calculated;
 	private HTML description;
+	
+	private DecoratedPopupPanel loggerPopUp;
+	private String loggerText;
+	private ScrollPanel dialogContents;
 
 	private ArrayList<AmWidget> inputWidgets = new ArrayList<AmWidget>();
 	private ArrayList<AmWidget> outputWidgets = new ArrayList<AmWidget>();
@@ -74,7 +87,14 @@ public class Calculation {
 		this.outputWidgets = outputWidgets;
 		this.calculated = calculated;
 		this.timeID = timeID;
-
+		Logger.init(this);
+		
+		loggerPopUp = new DecoratedPopupPanel();
+		loggerPopUp.setGlassEnabled(true);
+		loggerPopUp.setAnimationEnabled(true);
+		loggerPopUp.setAutoHideEnabled(true);
+		loggerPopUp.setWidth("720px");
+		
 	}
 
 	/**
@@ -95,10 +115,10 @@ public class Calculation {
 	 * @return the Panel, containing the input/output form
 	 */
 	public DockLayoutPanel getCalculationPanel() {
-
+		Logger.init(this);
 		
 		AmtrackServiceResources resources = GWT.create(AmtrackServiceResources.class);
-
+		
 		DockLayoutPanel panel = new DockLayoutPanel(Unit.MM);
 		HorizontalPanel forms = new HorizontalPanel();
 		VerticalPanel head = new VerticalPanel();
@@ -138,6 +158,26 @@ public class Calculation {
 			}
 		});
 
+		Image statusImage = new Image(resources.status());
+		statusImage.setSize("48px", "48px");
+		PushButton statusButton = new PushButton(statusImage);
+		statusButton.setHeight("48px");
+		statusButton.setWidth("48px");
+		statusButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				showStatus();
+			}
+		});
+		
+		statusButton.addKeyPressHandler(new KeyPressHandler() {
+			
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+				if( event.getCharCode() == KeyCodes.KEY_ESCAPE ){
+					hideStatus();
+				}				
+			}
+		});
 		
 		head.add(description);
 
@@ -194,9 +234,12 @@ public class Calculation {
 		input.setWidget(inputRow+1, 0, new HTML("<p align=\"right\"><b>LOAD DEFAULTS</b>&nbsp;&nbsp;&nbsp;</p>"));
 		input.setWidget(inputRow+1, 1, defaultsButton);
 		
+		input.setWidget(inputRow+2, 0, new HTML("<p align=\"right\"><b>STATUS</b>&nbsp;&nbsp;&nbsp;</p>"));
+		input.setWidget(inputRow+2, 1, statusButton);
+		
 		input.getCellFormatter().setHeight(inputRow, 1, "65px");
 		input.getCellFormatter().setHeight(inputRow+1, 1, "65px");
-//		input.getCellFormatter().setHeight(inputRow+2, 1, "65px");
+		input.getCellFormatter().setHeight(inputRow+2, 1, "65px");
 		
 		int outputRow = 1;
 		for (AmWidget widget : outputWidgets) {
@@ -204,10 +247,16 @@ public class Calculation {
 			outputRow++;
 		}
 
+	    // Create a table to layout the content
+	    this.dialogContents = new ScrollPanel();
+	    this.dialogContents.setHeight("500px");
+	    this.loggerPopUp.setWidget(this.dialogContents);
+		
 		return panel;
 	}
 	
 	public void recalculate(){
+	    this.clearLoggerMessages();
 		calculate();
 	    Timer t = new Timer() {
 	        public void run() {
@@ -227,6 +276,16 @@ public class Calculation {
 		CalculationControl.getInstance().calculate(this);
 	}
 
+	public void showStatus() {
+		this.dialogContents.setWidget(new HTML(this.loggerText));
+		this.loggerPopUp.center();
+		this.loggerPopUp.show();
+	}	
+	
+	public void hideStatus() {
+		this.loggerPopUp.hide();
+	}
+	
 	/**
 	 * sets an id to this calculation
 	 * @param timeID
@@ -285,5 +344,13 @@ public class Calculation {
 
 	public void setDescription(HTML description) {
 		this.description = description;
+	}
+	
+	public void clearLoggerMessages(){
+		this.loggerText = "<H1><B>Click outside this window to displace it</B></H1>";
+	}
+	
+	public void addLoggerMessage(String message){
+		this.loggerText += "<BR>" + message;
 	}
 }

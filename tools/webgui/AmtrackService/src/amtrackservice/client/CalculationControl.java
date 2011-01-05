@@ -18,8 +18,7 @@ public class CalculationControl {
 	/**
 	 * Create a remote service proxy to talk to the server-side service.
 	 */
-	private final CalculationServiceAsync calculationService = GWT
-			.create(CalculationService.class);
+	private final CalculationServiceAsync calculationService = GWT.create(CalculationService.class);
 
 	private Config config = null;
 	
@@ -36,7 +35,6 @@ public class CalculationControl {
 			instance = new CalculationControl();
 		}
 		return instance;
-
 	}
 
 	public void setConfig(Config config) {
@@ -45,13 +43,35 @@ public class CalculationControl {
 
 	public void getCalculationResult(final Calculation calculation) {
 		Logger.info("Requesting result for calculation " + calculation.getName() + "(" + calculation.getTimeID() + ")");
+		Logger.init(calculation);
 		calculationService.requestResult(calculation.getTimeID(),
 				new AsyncCallback<HashMap<String, String>>() {
 
 					@Override
-					public void onSuccess(HashMap<String, String> result) {
-						calculation.setCalculationResult(result);
+					public void onSuccess(HashMap<String, String> result) {						
 						Logger.info("Reqest successful");
+						if( result.get("exitcode") != null){
+							String exitcode = result.get("exitcode").trim();
+							if( exitcode == ""){
+								Logger.info("Process not finished yet");
+								calculation.setCalculationResult(new HashMap<String, String>());
+							}else{
+								Logger.info("Standard output : <BR>" + result.get("stdout").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+								Logger.info("Standard error : <BR>" + result.get("stderr").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+								if( exitcode.equals("0")){
+									Logger.info("Process finished, success" );
+									Logger.info("Output file content : <BR>" + result.get("content").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+									calculation.setCalculationResult(result);
+								} else {
+									Logger.info("Process finished, failure, exit code = _" + exitcode + "_");
+									calculation.setCalculationResult(new HashMap<String, String>());
+									calculation.showStatus();
+								}
+							}
+						} else {
+							Logger.info("Process not finished yet");
+							calculation.setCalculationResult(new HashMap<String, String>());
+						}
 					}
 
 					@Override
@@ -64,6 +84,7 @@ public class CalculationControl {
 
 	public void calculate(final Calculation calculation) {
 		Logger.info("Starting calculation for " + calculation.getName());
+		
 		HashMap<String, String> calcData = new HashMap<String, String>();
 		for (AmWidget widget : calculation.getInputWidgets()) {
 			calcData.put(widget.getDataLink(), widget.getValue());
