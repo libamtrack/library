@@ -105,7 +105,7 @@ for( i in ER.model) {
 		}
 }
 
-df1
+#df1
 
 p3 <- xyplot( inact.cross.sect.m2 ~ E.MeV.u | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV/u]", ylab = "Inactivation cross section [m2]", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list(log = 10))
 p4 <- xyplot( inact.cross.sect.m2 ~ E.MeV.u | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV/u]", ylab = "Inactivation cross section [m2]", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list(log = 10))
@@ -113,17 +113,67 @@ p4 <- xyplot( inact.cross.sect.m2 ~ E.MeV.u | RDD.model.name, groups = ER.model.
 p3logx <- xyplot( inact.cross.sect.m2 ~ E.MeV.u | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV/u]", ylab = "Inactivation cross section [m2]", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list( x = list(log = 10)))
 p4logx <- xyplot( inact.cross.sect.m2 ~ E.MeV.u | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Energy [MeV/u]", ylab = "Inactivation cross section [m2]", auto.key = list(title = "Protons in liquid water",points = FALSE, lines = TRUE), scales = list( x = list(log = 10)))
 
+####################### SURVIVAL function test #########################################
+
+D.Gy <- 10^seq (-2, 1, length.out=10)
+E.MeV.u <- 60
+
+# data frame setup
+df1 <- expand.grid( D.Gy = D.Gy, ER.model = ER.model, RDD.model = RDD.model )
+
+df1$ER.model.name   <- as.character(ER.model.names[df1$ER.model])
+df1$RDD.model.name  <- as.character(RDD.model.names[df1$RDD.model])
+
+df1$survival <- numeric(nrow(df1))
+
+material.no  <-  c(1)
+particle.no  <-  c(6012)
+sigma0.m2 <- 10^(-10)
+E.array <- rep( E.MeV.u, length(D.Gy) )
+particle.array <- rep( particle.no, length(D.Gy) )
+
+# 1, D0, c, m, 0
+GR.parameters <- c(1, 3.0, 1, 2, 0)
+
+for( i in ER.model) {
+ ii             <- df1$ER.model == i
+    for( j in RDD.model) {
+    jj          <- ((df1$RDD.model == j) & (df1$ER.model == i))
+            for( k in D.Gy ) {
+                kk   <- ((df1$RDD.model == j) & (df1$ER.model == i) & (df1$D.Gy == k) )
+                fluence.cm2 <- AT.fluence.cm2.from.dose.Gy( E.MeV.u, D.Gy = df1$D.Gy[kk], particle.no, material.no)[[1]]                 
+                df1$survival[kk] <- AT.KatzModel.single.field.survival( fluence.cm2, E.MeV.u, particle.no, material.no,
+                rdd.model = j,
+                rdd.parameters = RDD.parameters[[j]],
+                er.model = i,
+                D0.characteristic.dose.Gy = GR.parameters[[2]],
+                m.number.of.targets = GR.parameters[[4]],
+                sigma0.m2 = sigma0.m2)[[1]]
+            }
+        }
+}
+
+df1
+
+p5logy <- xyplot( survival ~ D.Gy | ER.model.name , groups = RDD.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose [Gy]", ylab = "Survival", auto.key = list(title = "Carbons in liquid water",points = FALSE, lines = TRUE), scales = list( y = list(log = 10)))
+p6logy <- xyplot( survival ~ D.Gy | RDD.model.name, groups = ER.model.name, ref = TRUE, data=df1, pch = ".", lty = 1, type = "l", xlab = "Dose [Gy]", ylab = "Survival", auto.key = list(title = "Carbons in liquid water",points = FALSE, lines = TRUE), scales = list( y = list(log = 10)))
+
+
 
 pdf("Katz.pdf")
 
-p1
-p2
-p1logx
+#p1
+#p2
+#p1logx
 p2logx
 
-p3
+#p3
 p4
-p3logx
+#p3logx
 p4logx
+
+p5logy
+p6logy
+
 
 dev.off()
