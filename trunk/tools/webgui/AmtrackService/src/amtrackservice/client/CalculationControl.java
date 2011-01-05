@@ -26,9 +26,7 @@ public class CalculationControl {
 
 	private static CalculationControl instance = null;
 	
-	private CalculationControl() {
-		// TODO Auto-generated constructor stub
-	}
+	private CalculationControl() {	}
 
 	public static CalculationControl getInstance() {
 		if (instance == null) {
@@ -62,14 +60,14 @@ public class CalculationControl {
 							calculation.setCalculated(false);
 						}else{
 							calculation.setCalculated(true);
-							Logger.info("Standard output : <BR>" + result.get("stdout").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
-							Logger.info("Standard error : <BR>" + result.get("stderr").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
 							if( exitcode.equals("0")){
 								Logger.info("Process finished, success" );
 								Logger.info("Output file content : <BR>" + result.get("content").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
 								calculation.setCalculationResult(result);
 							} else {
-								Logger.info("Process finished, failure, exit code = _" + exitcode + "_");
+								Logger.info("Standard output : <BR>" + result.get("stdout").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+								Logger.info("Standard error : <BR>" + result.get("stderr").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+								Logger.error("Process finished, failure, exit code = _" + exitcode + "_");
 								calculation.setCalculationResult(new HashMap<String, String>());
 								calculation.showStatus();
 							}
@@ -81,7 +79,6 @@ public class CalculationControl {
 					}
 				}
 
-				@Override
 				public void onFailure(Throwable caught) {
 					calculation.setCalculated(true);
 					Logger.log(caught.getMessage());

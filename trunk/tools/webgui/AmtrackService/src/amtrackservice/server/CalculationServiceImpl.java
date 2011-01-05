@@ -31,7 +31,7 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 			String wrapperPath, String functionName)
 			throws IllegalArgumentException {
 		
-		System.out.println("Server side: start calculation using " + wrapperPath + " and " + functionName);
+		System.out.println("Server side @startCalculation: wrapperPath: " + wrapperPath + " functionName " + functionName);
 		
 		String db_ip="localhost";
 		String db_name=getServletContext().getInitParameter("dbname");
@@ -45,7 +45,7 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 		File file = new File(wrapperPath);
 		
 		if( !file.exists() ){			
-			System.out.println("Server side: File " + wrapperPath + " missing");
+			System.out.println("Server side @startCalculation: File " + wrapperPath + " missing");
 			return -1;
 		}
 		
@@ -71,29 +71,29 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 		try {
 			Process p = pb.start();			
 			
-			System.out.println("Server side: starting wrapper " + wrapperPath + " with argument " + resultPath);
+			System.out.println("Server side @startCalculation: starting wrapper " + wrapperPath + " with argument " + resultPath);
 			
 			FileOutputStream stdoutFile = new FileOutputStream( resultPath + ".stdout");
 			BufferedReader stdoutStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line = "";
 			while ((line = stdoutStream.readLine()) != null) {
-				System.out.println("Server side: stdout = " + line);
+				System.out.println("Server side @startCalculation: stdout = " + line);
 				stdoutFile.write(line.getBytes());
 			}
 			FileOutputStream stderrFile = new FileOutputStream( resultPath + ".stderr");
 			BufferedReader stderrStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 			line = "";
 			while ((line = stderrStream.readLine()) != null) {
-				System.out.println("Server side: stderr = " + line);
+				System.out.println("Server side @startCalculation: stderr = " + line);
 				stderrFile.write(line.getBytes());
 			}
 			FileOutputStream exitCodeFile = new FileOutputStream( resultPath + ".exitcode");
 			try {
 				String exitCodeString = String.valueOf(p.exitValue());	
 				exitCodeFile.write(exitCodeString.getBytes());
-				System.out.println("Server side: exit code = " + exitCodeString);
+				System.out.println("Server side @startCalculation: exit code = " + exitCodeString);
 			} catch(java.lang.IllegalThreadStateException e1) {
-				System.out.println("Server side: Process not yet finished.");				
+				System.out.println("Server side @startCalculation: Process not yet finished.");				
 				String exitCodeString = " ";	
 				exitCodeFile.write(exitCodeString.getBytes());
 			}
@@ -102,7 +102,7 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 //			stderrFile.close();
 			processPool.put(time, p);
 			db.insertCalculation(time, resultPath, functionName);
-			System.out.println("Server side: inserted into DB " + time + " and " + resultPath);
+			System.out.println("Server side @startCalculation: inserted into DB " + time + " and " + resultPath);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		} catch (Exception e) {
@@ -115,12 +115,12 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 	public HashMap<String, String> requestResult(long id)
 			throws IllegalArgumentException {
 
-		System.out.println("Server side: getting results for id = " + id );
+		System.out.println("Server side @requestResult: getting results for id = " + id );
 
 		HashMap<String, String> result = new HashMap<String, String>();
 		
 		if( id == 0 ){
-			System.out.println("Server side: Wrong id !" );			
+			System.out.println("Server side @requestResult: Wrong id !" );			
 			return result;
 		}
 		
@@ -139,14 +139,14 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 			String exitCodeString = String.valueOf(exitcode);	
 			result.put("exitcode", exitCodeString);
 			if( exitcode != 0){
-				System.out.println("Server side: Process finished, failure" );				
+				System.out.println("Server side @requestResult: Process finished, failure" );				
 				result.put("stdout", CalculationFile.readContent(calcPath + ".stdout"));
 				result.put("stderr", CalculationFile.readContent(calcPath + ".stderr"));
 				processPool.remove(id);
 				return result;	
 			}
 		} catch(java.lang.IllegalThreadStateException e1) {
-			System.out.println("Server side: Process not yet finished.");				
+			System.out.println("Server side @requestResult: Process not yet finished.");				
 			result.put("stdout", "");
 			result.put("stderr", "");
 			return result;
@@ -159,23 +159,23 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 		processPool.remove(id);
 		
 		try {
-			System.out.println("Server side: reading output from " + calcPath );
+			System.out.println("Server side @requestResult: reading output from " + calcPath );
 			result.putAll(CalculationFile.readData(calcPath));
 			try{
 				result.put("content", CalculationFile.readContent(calcPath));
 			} catch (FileNotFoundException e) {
-				Logger.error("Server side: Results file " + calcPath + " not ready yet");
+				Logger.error("Server side @requestResult: Results file " + calcPath + " not ready yet");
 				result.put("content", "");
 				e.printStackTrace();
 			} catch (IOException e) {
-				Logger.error("Server side: Results file " + calcPath + " problem");
+				Logger.error("Server side @requestResult: Results file " + calcPath + " problem");
 				result.put("content", "");
 				e.printStackTrace();
 			} 
 			result.put("stdout", CalculationFile.readContent(calcPath + ".stdout"));
 			result.put("stderr", CalculationFile.readContent(calcPath + ".stderr"));
 		} catch (FileNotFoundException e) {
-			Logger.error("Server side: Results file " + calcPath + " not ready yet");
+			Logger.error("Server side @requestResult: Results file " + calcPath + " not ready yet");
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -201,7 +201,7 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 			calculations.put(d.getId(), d.getFunctionName());
 		}
 		
-		System.out.println("Server side: get all calculation (number) = " + calculations.size() );
+		System.out.println("Server side @getCalculations: get all calculation (number) = " + calculations.size() );
 		
 		return calculations;
 	}
