@@ -64,9 +64,15 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 		}
 
 		ProcessBuilder pb = new ProcessBuilder(wrapperPath, resultPath);
+		
+		// added path to shared library, same as directory containg wrappers
+		pb.environment().put("LD_LIBRARY_PATH", file.getParent());
+		
 		try {
-			Process p = pb.start();
-			System.out.println("Server side: process started : " + wrapperPath + " " + resultPath);
+			Process p = pb.start();			
+			
+			System.out.println("Server side: starting wrapper " + wrapperPath + " with argument " + resultPath);
+			
 			FileOutputStream stdoutFile = new FileOutputStream( resultPath + ".stdout");
 			BufferedReader stdoutStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line = "";
