@@ -37,7 +37,6 @@ public class MainView {
 	 * @param service 
 	 */
 	public MainView(AmtrackService service) {
-		Logger.init(this);
 		
 		AmtrackServiceResources resources = GWT.create(AmtrackServiceResources.class);
 		
@@ -106,6 +105,7 @@ public class MainView {
 		if( centralTabPanel.getWidgetCount() == 0){
 			centralTabPanel.add(rightMainTab);
 		}
+				
 
 	}
 	
@@ -156,4 +156,5 @@ public class MainView {
 	public void addWidgetToLeftPanel(Widget w, String description){
 		leftDownPanelFunctions.add(w,description,true);
 	}
+
 }

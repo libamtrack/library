@@ -11,6 +11,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.gwt.user.client.ui.HTML;
+
 /**
  * Liest aus einer bestehenden txt-Datei und schreibt in einer txt-Datei liest
  * Ordner aus
@@ -36,6 +38,54 @@ public class CalculationFile {
 		HashMap<String, String> keyVal = readStrings(pfad);
 
 		return keyVal;
+	}
+	
+	
+	public static String readContent(String fileName)
+	throws FileNotFoundException, IOException {
+
+		String result = "";
+		BufferedReader reader = null;
+
+		try {
+			reader = new BufferedReader(new FileReader(fileName));
+		} catch (IOException e) {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (IOException ex) {
+			}
+			throw new FileNotFoundException("File " + fileName + " not found");
+		}
+
+		try {
+			String nextLine = reader.readLine();
+			while (nextLine != null) {
+				result += nextLine + "\n";
+				nextLine = reader.readLine();
+			}
+
+		} catch (FileNotFoundException e) {
+			throw e;
+		} catch (IOException e) {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException ex) {
+				}
+			}
+			throw e;
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException ex) {
+				}
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -210,7 +260,6 @@ public class CalculationFile {
 		}
 
 		return result;
-
 	}
 
 	/**

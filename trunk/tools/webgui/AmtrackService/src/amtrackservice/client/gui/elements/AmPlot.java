@@ -1,6 +1,7 @@
 package amtrackservice.client.gui.elements;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.TreeMap;
 
 import amtrackservice.client.MapList;
@@ -27,14 +28,14 @@ public class AmPlot extends AmWidget {
 	private String dataY;
 	private FlowPanel widget = new FlowPanel();
 	private ScatterChart chart;
-	boolean xAxisLogByDefault;
-	boolean yAxisLogByDefault;
+	private boolean xAxisLogByDefault;
+	private boolean yAxisLogByDefault;
 	
-	RadioButton xAxisScaleLogarithmicButton = new RadioButton("xaxis", "logarithmic");		
-	RadioButton xAxisScaleLinearButton = new RadioButton("xaxis", "linear");
+	private RadioButton xAxisScaleLogarithmicButton;		
+	private RadioButton xAxisScaleLinearButton;
 
-	RadioButton yAxisScaleLogarithmicButton = new RadioButton("yaxis", "logarithmic");		
-	RadioButton yAxisScaleLinearButton = new RadioButton("yaxis", "linear");	
+	private RadioButton yAxisScaleLogarithmicButton;		
+	private RadioButton yAxisScaleLinearButton;	
 	
 	private TreeMap<Double, Double> values = new TreeMap<Double, Double>();
 
@@ -42,10 +43,20 @@ public class AmPlot extends AmWidget {
 			MapList<String, String> preset, String dataX, String dataY,
 			String dataZ, boolean xAxisLog, boolean yAxisLog) {
 		super(label, datatype, description);
+
+		Random rand = new Random(); 
+		String id = label + rand.nextLong();
+
 		this.dataX = dataX;
 		this.dataY = dataY;
 		this.xAxisLogByDefault = xAxisLog;
 		this.yAxisLogByDefault = yAxisLog;
+		
+		xAxisScaleLogarithmicButton = new RadioButton("xaxis" + id, "logarithmic");		
+		xAxisScaleLinearButton = new RadioButton("xaxis" + id, "linear");
+
+		yAxisScaleLogarithmicButton = new RadioButton("yaxis" + id, "logarithmic");		
+		yAxisScaleLinearButton = new RadioButton("yaxis" + id, "linear");	
 		
 		xAxisScaleLogarithmicButton.setValue(xAxisLogByDefault);
 		yAxisScaleLogarithmicButton.setValue(yAxisLogByDefault);
@@ -67,9 +78,15 @@ public class AmPlot extends AmWidget {
 
 	@Override
 	public void setValue(HashMap<String, String> valueMap) {
+		
 		this.values.clear();
-		String[] xValues = valueMap.get(dataX).split(" ");
-		String[] yValues = valueMap.get(dataY).split(" ");
+		String[] xValues = {};
+		if( valueMap.get(dataX) != null )
+			xValues = valueMap.get(dataX).split(" ");
+		String[] yValues = {};
+		if( valueMap.get(dataY) != null )
+			yValues = valueMap.get(dataY).split(" ");
+		
 		for (int i = 0; (i < xValues.length) && (i < yValues.length); i++) {
 			double x = Double.parseDouble(xValues[i]);
 			double y = Double.parseDouble(yValues[i]);
@@ -101,7 +118,6 @@ public class AmPlot extends AmWidget {
 		axisScale.add(yAxisScale);
 		
 		// one click handler for all buttons which checks state 
-
 		ClickHandler generalAxisHandler = new ClickHandler() {			
 			public void onClick(ClickEvent event) {
 				chart.draw(createTable(), createOptions());
@@ -115,7 +131,7 @@ public class AmPlot extends AmWidget {
 
 		widget.add(axisScale);
 		this.widget.add(createPlot());
-		
+
         chart.draw(createTable(), createOptions());						
 	}
 
@@ -138,15 +154,19 @@ public class AmPlot extends AmWidget {
 		options.setHeight(480);
 		options.setTitle(this.getLabel().getText());		
 		options.setLineSize(1);
-		if( xAxisScaleLogarithmicButton.getValue() ){
+		if( this.xAxisScaleLogarithmicButton.getValue() ){
 			options.setTitleX("log( " + dataX + " )");
+			this.xAxisScaleLogarithmicButton.setValue(true);
 		} else {
+			this.xAxisScaleLogarithmicButton.setValue(false);
 			options.setTitleX(dataX);
 		}
 		
-		if( yAxisScaleLogarithmicButton.getValue() ){
+		if( this.yAxisScaleLogarithmicButton.getValue() ){
+			this.yAxisScaleLogarithmicButton.setValue(true);
 			options.setTitleY("log( " + dataY + " )");
 		} else {
+			this.yAxisScaleLogarithmicButton.setValue(false);
 			options.setTitleY(dataY);
 		}
 		return options;

@@ -66,6 +66,9 @@ public class AmtrackService implements EntryPoint {
 
 		  @Source("Help.png")
 		  ImageResource help();
+		  
+		  @Source("Status.png")
+		  ImageResource status();
 	}
 	
 	/**
@@ -101,6 +104,7 @@ public class AmtrackService implements EntryPoint {
 	 * @param calc
 	 */
 	public void openCalculation(Calculation calc) {
+		calc.clearLoggerMessages();
 		openCalculations.add(calc);
 		gui.addTabPanel(calc.getCalculationPanel(), calc.getName());
 		Logger.info(calc.getName() + " has been loaded");

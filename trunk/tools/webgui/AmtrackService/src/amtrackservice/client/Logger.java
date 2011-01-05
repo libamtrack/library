@@ -1,6 +1,6 @@
 package amtrackservice.client;
 
-import amtrackservice.client.gui.MainView;
+import amtrackservice.client.Calculation;
 
 /**
  * This class provides the access to the TextBox on the main GUI, to print out
@@ -10,14 +10,14 @@ import amtrackservice.client.gui.MainView;
  */
 public class Logger {
 
-	private static MainView mv = null;
+	private static Calculation c = null;
 
 	/**
 	 * sets the MainView on which the logs will be printed.
 	 * @param mv
 	 */
-	public static void init(MainView mv) {
-		Logger.mv = mv;
+	public static void init(Calculation c) {
+		Logger.c = c;
 	}
 
 	/**
@@ -25,8 +25,8 @@ public class Logger {
 	 * @param message the message to be logged
 	 */
 	public static void log(String message) {
-		//if (mv != null);
-		//	mv.addConsoleLine(message);
+		if( c != null )
+			c.addLoggerMessage("[LOG]: " + message);
 		System.out.println("[LOG]: " + message);
 	}
 	
@@ -35,8 +35,8 @@ public class Logger {
 	 * @param message the message to be logged
 	 */
 	public static void info(String message) {
-		//if (mv != null);
-		//	mv.addConsoleLine("[INFO]: "+message);
+		if( c != null )
+			c.addLoggerMessage("[INFO]: " + message);
 		System.out.println("[INFO]: " + message);
 	}
 	
@@ -45,8 +45,8 @@ public class Logger {
 	 * @param message the message to be logged
 	 */
 	public static void error(String message) {
-		//if (mv != null);
-		//	mv.addConsoleLine("[ERROR]: "+message);
+		if( c != null )
+			c.addLoggerMessage("[ERROR]: " + message);
 		System.out.println("[ERROR]: " + message);
 	}
 }
