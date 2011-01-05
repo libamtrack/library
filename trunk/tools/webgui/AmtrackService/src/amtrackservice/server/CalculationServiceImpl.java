@@ -43,6 +43,12 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 
 		long time = cal.getTimeInMillis();
 		File file = new File(wrapperPath);
+		
+		if( !file.exists() ){			
+			System.out.println("Server side: File " + wrapperPath + " missing");
+			return -1;
+		}
+		
 		String resultPath = file.getParentFile().getAbsolutePath() + time;
 
 		StringBuffer fileText = new StringBuffer("");
@@ -90,12 +96,12 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 //			stderrFile.close();
 			processPool.put(time, p);
 			db.insertCalculation(time, resultPath, functionName);
+			System.out.println("Server side: inserted into DB " + time + " and " + resultPath);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("Server side: inserted into DB " + time + " and " + resultPath);
 		return time;
 	}
 

@@ -46,7 +46,23 @@ public class Logger {
 	 */
 	public static void error(String message) {
 		if( c != null )
-			c.addLoggerMessage("[ERROR]: " + message);
+			c.addLoggerMessage("<B>[ERROR]: " + message + "</B>");
 		System.out.println("[ERROR]: " + message);
 	}
+	
+	/**
+	 */
+	public static void show() {
+		if( c != null )
+			c.showStatus();
+	}
+
+	/**
+	 */
+	public static void hide() {
+		if( c != null )
+			c.hideStatus();
+	}
+
+	
 }
