@@ -438,43 +438,22 @@ int AT_KatzModel_inactivation_cross_section_m2(
 }
 
 
-/* TODO implement old Katz with kappa and sigma instead of track-width here */
-int AT_KatzModel_single_field_survival(
+double AT_KatzModel_single_field_survival_from_inactivation_cross_section(
     const double fluence_cm2,
 	const double E_MeV_u,
     const long   particle_no,
     const long   material_no,
-    const long   rdd_model,
-    const double rdd_parameters[],
-    const long   er_model,
+    const double inactivation_cross_section_m2,
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
-    const double sigma0_m2,
-    double * survival){
+    const double sigma0_m2){
 
 	/* some useful variables */
 	double dose_Gy = AT_dose_Gy_from_fluence_cm2_single( E_MeV_u, particle_no, fluence_cm2, material_no); /* fluence + LET -> dose */
 
 	assert( sigma0_m2 > 0);
 
-	/* single particle inactivation cross section calculation */
-	double inactivation_cross_section_m2 = 0.0;
-	double gamma_parameters[5] = {1.,D0_characteristic_dose_Gy,1.,m_number_of_targets,0.};
-	int status = AT_KatzModel_inactivation_cross_section_m2(
-	    1,
-	    &E_MeV_u,
-	    particle_no,
-	    material_no,
-	    rdd_model,
-	    rdd_parameters,
-	    er_model,
-	    gamma_parameters,
-	    &inactivation_cross_section_m2);    /* here we use D0, m and a0 */
-
-	if( status != EXIT_SUCCESS ){
-		fprintf(stderr, "Problem with evaluating inactivation cross section\n");
-		return status;
-	}
+	assert( inactivation_cross_section_m2 > 0);
 
 	/* fraction of dose delivered in ion kill mode */
 	double ion_kill_mode_fraction = inactivation_cross_section_m2 / sigma0_m2;
@@ -502,7 +481,109 @@ int AT_KatzModel_single_field_survival(
 	}
 
 	/* finally survival as a product of ion and gamma kill modes */
-	*survival = ion_kill_mode_survival * gamma_kill_mode_survival;
+	return ion_kill_mode_survival * gamma_kill_mode_survival;
+}
+
+
+
+/* TODO implement old Katz with kappa and sigma instead of track-width here */
+int AT_KatzModel_single_field_survival(
+    const double fluence_cm2,
+	const double E_MeV_u,
+    const long   particle_no,
+    const long   material_no,
+    const long   rdd_model,
+    const double rdd_parameters[],
+    const long   er_model,
+    const double D0_characteristic_dose_Gy,
+    const double m_number_of_targets,
+    const double sigma0_m2,
+    double * survival){
+
+	assert( sigma0_m2 > 0);
+
+	/* single particle inactivation cross section calculation */
+	double inactivation_cross_section_m2 = 0.0;
+	double gamma_parameters[5] = {1.,D0_characteristic_dose_Gy,1.,m_number_of_targets,0.};
+	int status = AT_KatzModel_inactivation_cross_section_m2(
+	    1,
+	    &E_MeV_u,
+	    particle_no,
+	    material_no,
+	    rdd_model,
+	    rdd_parameters,
+	    er_model,
+	    gamma_parameters,
+	    &inactivation_cross_section_m2);    /* here we use D0, m and a0 */
+
+	printf("Inactivation cross section = %g\n", inactivation_cross_section_m2);
+
+	if( status != EXIT_SUCCESS ){
+		fprintf(stderr, "Problem with evaluating inactivation cross section\n");
+		return status;
+	}
+
+	*survival = AT_KatzModel_single_field_survival_from_inactivation_cross_section( fluence_cm2,
+			E_MeV_u,
+			particle_no,
+			material_no,
+			inactivation_cross_section_m2,
+			D0_characteristic_dose_Gy,
+			m_number_of_targets,
+			sigma0_m2);
+
+	return EXIT_SUCCESS;
+}
+
+
+int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
+	const long   number_of_items,
+    const double fluence_cm2[],
+	const double E_MeV_u,
+    const long   particle_no,
+    const long   material_no,
+    const long   rdd_model,
+    const double rdd_parameters[],
+    const long   er_model,
+    const double D0_characteristic_dose_Gy,
+    const double m_number_of_targets,
+    const double sigma0_m2,
+    double * survival){
+
+	assert( sigma0_m2 > 0);
+
+	/* single particle inactivation cross section calculation */
+	double inactivation_cross_section_m2 = 0.0;
+	double gamma_parameters[5] = {1.,D0_characteristic_dose_Gy,1.,m_number_of_targets,0.};
+	int status = AT_KatzModel_inactivation_cross_section_m2(
+	    1,
+	    &E_MeV_u,
+	    particle_no,
+	    material_no,
+	    rdd_model,
+	    rdd_parameters,
+	    er_model,
+	    gamma_parameters,
+	    &inactivation_cross_section_m2);    /* here we use D0, m and a0 */
+
+	printf("Inactivation cross section = %g\n", inactivation_cross_section_m2);
+
+	if( status != EXIT_SUCCESS ){
+		fprintf(stderr, "Problem with evaluating inactivation cross section\n");
+		return status;
+	}
+
+	long i;
+	for( i = 0 ; i < number_of_items ; i++){
+		survival[i] = AT_KatzModel_single_field_survival_from_inactivation_cross_section( fluence_cm2[i],
+			E_MeV_u,
+			particle_no,
+			material_no,
+			inactivation_cross_section_m2,
+			D0_characteristic_dose_Gy,
+			m_number_of_targets,
+			sigma0_m2);
+	}
 
 	return EXIT_SUCCESS;
 }
