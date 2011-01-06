@@ -265,9 +265,10 @@ int AT_KatzModel_inactivation_cross_section_m2(
  * @param[in] D0_characteristic_dose_Gy
  * @param[in] m_number_of_targets
  * @param[in] sigma0_m2
- * @return TODO
+ * @param[out] survival
+ * @return status code
  */
-double AT_KatzModel_single_field_survival(
+int AT_KatzModel_single_field_survival(
     const double fluence_cm2,
 	const double E_MeV_u,
     const long   particle_no,
@@ -277,7 +278,8 @@ double AT_KatzModel_single_field_survival(
     const long   er_model,
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
-    const double sigma0_m2);
+    const double sigma0_m2,
+    double *     survival);
 
 
 /**

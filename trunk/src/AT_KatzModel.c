@@ -180,7 +180,7 @@ int AT_KatzModel_inactivation_probability(
   }
 
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 
@@ -391,6 +391,8 @@ int AT_KatzModel_inactivation_cross_section_m2(
           c_hittedness,
           m_number_of_targets);
     }
+
+    return EXIT_SUCCESS;
   }
 
   if( rdd_model == RDD_CucinottaExtTarget ){
@@ -425,15 +427,19 @@ int AT_KatzModel_inactivation_cross_section_m2(
           c_hittedness,
           m_number_of_targets);
     }
+
+    return EXIT_SUCCESS;
   }
 
-
-  return 0;
+  char rdd_name[200];
+  AT_RDD_name_from_number(rdd_model, rdd_name);
+  fprintf(stderr, "RDD model %ld [%s] not supported\n", rdd_model, rdd_name);
+  return EXIT_FAILURE;
 }
 
 
 /* TODO implement old Katz with kappa and sigma instead of track-width here */
-double AT_KatzModel_single_field_survival(
+int AT_KatzModel_single_field_survival(
     const double fluence_cm2,
 	const double E_MeV_u,
     const long   particle_no,
@@ -443,7 +449,8 @@ double AT_KatzModel_single_field_survival(
     const long   er_model,
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
-    const double sigma0_m2){
+    const double sigma0_m2,
+    double * survival){
 
 	/* some useful variables */
 	double dose_Gy = AT_dose_Gy_from_fluence_cm2_single( E_MeV_u, particle_no, fluence_cm2, material_no); /* fluence + LET -> dose */
@@ -453,7 +460,7 @@ double AT_KatzModel_single_field_survival(
 	/* single particle inactivation cross section calculation */
 	double inactivation_cross_section_m2 = 0.0;
 	double gamma_parameters[5] = {1.,D0_characteristic_dose_Gy,1.,m_number_of_targets,0.};
-	AT_KatzModel_inactivation_cross_section_m2(
+	int status = AT_KatzModel_inactivation_cross_section_m2(
 	    1,
 	    &E_MeV_u,
 	    particle_no,
@@ -463,6 +470,11 @@ double AT_KatzModel_single_field_survival(
 	    er_model,
 	    gamma_parameters,
 	    &inactivation_cross_section_m2);    /* here we use D0, m and a0 */
+
+	if( status != EXIT_SUCCESS ){
+		fprintf(stderr, "Problem with evaluating inactivation cross section\n");
+		return status;
+	}
 
 	/* fraction of dose delivered in ion kill mode */
 	double ion_kill_mode_fraction = inactivation_cross_section_m2 / sigma0_m2;
@@ -490,7 +502,9 @@ double AT_KatzModel_single_field_survival(
 	}
 
 	/* finally survival as a product of ion and gamma kill modes */
-	return ion_kill_mode_survival * gamma_kill_mode_survival;
+	*survival = ion_kill_mode_survival * gamma_kill_mode_survival;
+
+	return EXIT_SUCCESS;
 }
 
 
