@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 	char *path = argv[1];
-	char Text[600];
+	char Text[10000];
 
 	long n = 0;
 	double D_Gy[500];
