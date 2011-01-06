@@ -244,7 +244,7 @@ double AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2(
   F.params = (void*)(&inact_prob_parameters);
   int status = gsl_integration_qag (&F, low_lim_m, max_electron_range_m + a0_m, 0, 1e-4, 1000, GSL_INTEG_GAUSS21, w1, &integral_m2, &error);
   if (status == GSL_EROUND || status == GSL_ESING){
-    printf("Error in AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2: er_model = %ld, integration from %g to %g [m] + %g [m]\n", er_model, low_lim_m, max_electron_range_m, a0_m);
+    fprintf(stderr,"Error in AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2: er_model = %ld, integration from %g to %g [m] + %g [m]\n", er_model, low_lim_m, max_electron_range_m, a0_m);
     integral_m2 = 0.0;
   }
   gsl_integration_workspace_free (w1);
@@ -324,7 +324,7 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2(
   F.params = (void*)(&inact_prob_parameters);
   int status = gsl_integration_qag (&F, low_lim_m, max_electron_range_m + a0_m, 0, 1e-4, 1000, GSL_INTEG_GAUSS21, w1, &integral_m2, &error);
   if (status == GSL_EROUND || status == GSL_ESING){
-    printf("Error in AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2: integration from %g to %g [m] + %g [m]\n", low_lim_m, max_electron_range_m, a0_m);
+    fprintf(stderr,"Error in AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2: integration from %g to %g [m] + %g [m]\n", low_lim_m, max_electron_range_m, a0_m);
     integral_m2 = 0.0;
   }
   gsl_integration_workspace_free (w1);
@@ -463,12 +463,10 @@ double AT_KatzModel_single_field_survival(
 	    er_model,
 	    gamma_parameters,
 	    &inactivation_cross_section_m2);    /* here we use D0, m and a0 */
-	printf("inactivation_cross_section = %g [m2]\n", inactivation_cross_section_m2);
 
 	/* fraction of dose delivered in ion kill mode */
 	double ion_kill_mode_fraction = inactivation_cross_section_m2 / sigma0_m2;
 	if( ion_kill_mode_fraction > 1.0) ion_kill_mode_fraction = 1.0;
-	printf("ion_kill_mode_fraction = %g\n", ion_kill_mode_fraction);
 
 	double gamma_kill_dose = (1. - ion_kill_mode_fraction) * dose_Gy;
 
@@ -490,8 +488,6 @@ double AT_KatzModel_single_field_survival(
 	} else {
 		gamma_kill_mode_survival = 1. - pow( 1. - exp( - gamma_kill_dose / D0_characteristic_dose_Gy), m_number_of_targets);  /* depends on D0, m and kappa; not on a0 ! */
 	}
-
-	printf("ion_kill_mode_survival = %g , gamma_kill_mode_survival = %g[m2]\n", ion_kill_mode_survival, gamma_kill_mode_survival);
 
 	/* finally survival as a product of ion and gamma kill modes */
 	return ion_kill_mode_survival * gamma_kill_mode_survival;
