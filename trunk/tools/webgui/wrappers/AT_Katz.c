@@ -32,7 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "AT_Algorithms_CPP.h"
+#include "AT_KatzModel.h"
 
 int main(int argc, char *argv[]) {
 	if (argc != 2) {
@@ -154,10 +154,15 @@ int main(int argc, char *argv[]) {
 		D_Gy[0] = D_Gy_start;
 	}
 
-	double fluence_cm2;
+	double * fluence_cm2 = (double*)calloc(n_points, sizeof(double));
+
 	for (i = 0; i < n_points; i++) {
-		fluence_cm2 = AT_fluence_cm2_from_dose_Gy_single(E_MeV_u, particle_no_single, D_Gy[i], material_no );
-		int status = AT_KatzModel_single_field_survival( fluence_cm2,
+		fluence_cm2[i] = AT_fluence_cm2_from_dose_Gy_single(E_MeV_u, particle_no_single, D_Gy[i], material_no );
+	}
+
+	int status = AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
+			n_points,
+			fluence_cm2,
 			E_MeV_u,
 			particle_no_single,
 			material_no,
@@ -167,14 +172,16 @@ int main(int argc, char *argv[]) {
 			D0_Gy,
 			m,
 			sigma0_m2,
-			&survival[i]);
-		if( status != EXIT_SUCCESS ){
-			fprintf(stderr,"Exit code of AT_KatzModel_single_field_survival is %d\n", status);
-			fclose(file);
-			free(D_Gy);
-			free(survival);
-			return EXIT_FAILURE;
-		}
+			survival);
+
+	free(fluence_cm2);
+
+	if( status != EXIT_SUCCESS ){
+		fprintf(stderr,"Exit code of AT_KatzModel_single_field_survival_optimized_for_fluence_vector is %d\n", status);
+		fclose(file);
+		free(D_Gy);
+		free(survival);
+		return EXIT_FAILURE;
 	}
 
 	fprintf(file , "D_Gy:");
