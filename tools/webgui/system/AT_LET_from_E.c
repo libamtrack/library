@@ -39,12 +39,9 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 	char *path = argv[1];
-	char Text[600];
+	char Text[10000];
 
-	double E_MeV_u[500];
-	double LET_keV_um[500];
 	long material_no = Water_Liquid;
-	long particle_no[500];
 	long particle_no_single = PARTICLE_PROTON_NUMBER;
 
 	double E_start = 0.1;
@@ -93,21 +90,38 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	int i;
+	double * E_MeV_u    = (double*)calloc(n_points, sizeof(double));
+	double * LET_keV_um = (double*)calloc(n_points, sizeof(double));
+	long * particle_no  = (long*)calloc(n_points, sizeof(long));
+
+	long i;
 	for( i = 0 ; i < n_points ; i++){
 		particle_no[i] = particle_no_single;
 	}
 
 	if( x_axis_type == 2){
-		for (i = 0; i < n_points; i++) {
-			E_MeV_u[i] = E_start + (i/(double)(n_points-1)) * (E_end - E_start);
+		if( n_points > 1){
+			for (i = 0; i < n_points; i++) {
+				E_MeV_u[i] = E_start + (i/(double)(n_points-1)) * (E_end - E_start);
+			}
+		} else {
+			E_MeV_u[0] = E_start;
 		}
 	} else if( x_axis_type == 1){
-		for (i = 0; i < n_points; i++) {
-			double logE = log(E_start) + (i/(double)(n_points-1)) * (log(E_end) - log(E_start));
-			E_MeV_u[i] = exp(logE);
+		if( n_points > 1 ){
+			for (i = 0; i < n_points; i++) {
+				double logE = log(E_start) + (i/(double)(n_points-1)) * (log(E_end) - log(E_start));
+				E_MeV_u[i] = exp(logE);
+			}
+		} else {
+			E_MeV_u[0] = E_start;
 		}
 	} else {
+		fprintf(stderr, "X axis spacing type %ld not supported\n", x_axis_type);
+		fclose(f);
+		free(LET_keV_um);
+		free(E_MeV_u);
+		free(particle_no);
 		return EXIT_FAILURE;
 	}
 
@@ -128,6 +142,9 @@ int main(int argc, char *argv[]) {
 		fprintf(f, " %g", LET_keV_um[i]);
 	}
 	fprintf(f, "\n");
+	free(LET_keV_um);
+	free(E_MeV_u);
+	free(particle_no);
 	fclose(f);
 
 	return EXIT_SUCCESS;

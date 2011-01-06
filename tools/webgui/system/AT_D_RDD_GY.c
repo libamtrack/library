@@ -39,10 +39,8 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 	char *path = argv[1];
-	char Text[6000];
+	char Text[10000];
 
-	double r_m[5000];
-	double RDD_GY[5000];
 	double rdd_parameters[RDD_MAX_NUMBER_OF_PARAMETERS];
 	long material_no = Water_Liquid;
 	long particle_no_single = PARTICLE_PROTON_NUMBER;
@@ -111,27 +109,42 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	int i;
+	double * r_m    = (double*)calloc(n_points, sizeof(double));
+	double * RDD_GY = (double*)calloc(n_points, sizeof(double));
 
+	long i;
 	if( x_axis_type == 2){
-		for (i = 0; i < n_points; i++) {
-			r_m[i] = r_start_m + (i/(double)(n_points-1)) * (r_stop_m - r_start_m);
+		if( n_points > 1){
+			for (i = 0; i < n_points; i++) {
+				r_m[i] = r_start_m + (i/(double)(n_points-1)) * (r_stop_m - r_start_m);
+			}
+		} else {
+			r_m[0] = r_start_m;
 		}
 	} else if( x_axis_type == 1){
-		for (i = 0; i < n_points; i++) {
-			double logE = log(r_start_m) + (i/(double)(n_points-1)) * (log(r_stop_m) - log(r_start_m));
-			r_m[i] = exp(logE);
+		if( n_points > 1 ){
+			for (i = 0; i < n_points; i++) {
+				double logE = log(r_start_m) + (i/(double)(n_points-1)) * (log(r_stop_m) - log(r_start_m));
+				r_m[i] = exp(logE);
+			}
+		} else {
+			r_m[0] = r_start_m;
 		}
 	} else {
+		fprintf(stderr, "X axis spacing type %ld not supported\n", x_axis_type);
+		fclose(f);
+		free(r_m);
+		free(RDD_GY);
 		return EXIT_FAILURE;
 	}
+
 
 	int rdd_index = AT_RDD_index_from_RDD_number(rdd_model);
 	for( i = 0; i < RDD_MAX_NUMBER_OF_PARAMETERS; i++){
 		rdd_parameters[i] = AT_RDD_Data.parameter_default[rdd_index][i];
 	}
 
-	AT_D_RDD_Gy( n_points,
+	int status = AT_D_RDD_Gy( n_points,
 			r_m,
 			E_MeV_u,
 			particle_no_single,
@@ -140,6 +153,15 @@ int main(int argc, char *argv[]) {
 			rdd_parameters,
 			er_model,
 			RDD_GY);
+
+	if( status != EXIT_SUCCESS){
+		fprintf(stderr, "Exit code from AT_D_RDD_Gy = %d\n", status);
+		fclose(f);
+		free(r_m);
+		free(RDD_GY);
+		return EXIT_FAILURE;
+	}
+
 
 	fprintf(f , "r:");
 	for (i = 0; i < n_points; i++) {
@@ -152,6 +174,8 @@ int main(int argc, char *argv[]) {
 		fprintf(f, " %g", RDD_GY[i]);
 	}
 	fprintf(f, "\n");
+	free(r_m);
+	free(RDD_GY);
 	fclose(f);
 
 	return EXIT_SUCCESS;

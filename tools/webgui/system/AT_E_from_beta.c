@@ -80,6 +80,7 @@ int main(int argc, char *argv[]) {
 
 	if( n_points < 1 ){
 		fprintf(stderr, "Number of points should be greater than 0, but is equal to %ld\n", n_points);
+		fclose(f);
 		return EXIT_FAILURE;
 	}
 
@@ -107,10 +108,21 @@ int main(int argc, char *argv[]) {
 		}
 	} else {
 		fprintf(stderr, "X axis spacing type %ld not supported\n", x_axis_type);
+		fclose(f);
+		free(beta);
+		free(E);
 		return EXIT_FAILURE;
 	}
 
-	AT_E_from_beta(n_points, beta, E);
+	int status = AT_E_from_beta(n_points, beta, E);
+
+	if( status != EXIT_SUCCESS){
+		fprintf(stderr, "Exit code from AT_E_from_beta = %d\n", status);
+		fclose(f);
+		free(beta);
+		free(E);
+		return EXIT_FAILURE;
+	}
 
 	fprintf(f , "beta:");
 	for (i = 0; i < n_points; i++) {
@@ -123,8 +135,8 @@ int main(int argc, char *argv[]) {
 		fprintf(f, " %g", E[i]);
 	}
 	fprintf(f, "\n");
-	fclose(f);
 
+	fclose(f);
 	free(beta);
 	free(E);
 
