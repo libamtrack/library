@@ -259,6 +259,29 @@ int AT_KatzModel_inactivation_cross_section_m2(
  * @param[in] E_MeV_u
  * @param[in] particle_no
  * @param[in] material_no
+ * @param[in] inactivation_cross_section_m2
+ * @param[in] D0_characteristic_dose_Gy
+ * @param[in] m_number_of_targets
+ * @param[in] sigma0_m2
+ * @return TODO
+ */
+double AT_KatzModel_single_field_survival_from_inactivation_cross_section(
+    const double fluence_cm2,
+	const double E_MeV_u,
+    const long   particle_no,
+    const long   material_no,
+    const double inactivation_cross_section_m2,
+    const double D0_characteristic_dose_Gy,
+    const double m_number_of_targets,
+    const double sigma0_m2);
+
+
+/**
+ * TODO
+ * @param[in] fluence_cm2
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] material_no
  * @param[in] rdd_model
  * @param[in] rdd_parameters (array of size 4)
  * @param[in] er_model
@@ -281,6 +304,36 @@ int AT_KatzModel_single_field_survival(
     const double sigma0_m2,
     double *     survival);
 
+
+/**
+ * TODO
+ * @param[in] number_of_items
+ * @param[in] fluence_cm2 (array of size number_of_items)
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] material_no
+ * @param[in] rdd_model
+ * @param[in] rdd_parameters (array of size 4)
+ * @param[in] er_model
+ * @param[in] D0_characteristic_dose_Gy
+ * @param[in] m_number_of_targets
+ * @param[in] sigma0_m2
+ * @param[out] survival (array of size number_of_items)
+ * @return
+ */
+int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
+	const long   number_of_items,
+    const double fluence_cm2[],
+	const double E_MeV_u,
+    const long   particle_no,
+    const long   material_no,
+    const long   rdd_model,
+    const double rdd_parameters[],
+    const long   er_model,
+    const double D0_characteristic_dose_Gy,
+    const double m_number_of_targets,
+    const double sigma0_m2,
+    double * survival);
 
 /**
  * TODO
