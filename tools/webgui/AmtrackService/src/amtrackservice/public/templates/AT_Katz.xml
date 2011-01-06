@@ -71,11 +71,6 @@
         <element type="combo" label="rdd_model" datatype="long">
             <description>Radial Dose Distribution model</description>
             <entry>
-                <item key="Test" value="1" />
-                <item key="KatzPoint" value="2" />
-                <item key="Geiss" value="3" />
-                <item key="KatzSite" value="4" />
-                <item key="CucinottaPoint" value="5" />
                 <item key="KatzExtTarget" value="6" />
                 <item key="CucinottaExtTarget" value="7" />
             </entry>
@@ -88,12 +83,8 @@
         <element type="combo" label="er_model" datatype="long">
             <description>delta electron range model</description>
             <entry>
-                <item key="Test" value="1" />
                 <item key="ButtsKatz" value="2" />
                 <item key="Waligorski" value="3" />
-                <item key="Geiss" value="4" />
-                <item key="Scholz" value="5" />
-                <item key="Edmund" value="6" />
                 <item key="Tabata" value="7" />
             </entry>
             <preset>
@@ -135,6 +126,7 @@
         <element type="plot" label="survival curve" datatype="double">
             <description>dose [Gy]</description>
             <data x="D_Gy" y="survival" />
+            <axis x="lin" y="log"/>
         </element>
     </output>
 </root>
