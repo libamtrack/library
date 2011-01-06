@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root name="Katz model" wrapper="AT_Katz.exe">
+    <description>
+        [b]Katz model calculations[/b]        
+    </description>
+    <input>
+        <element type="field" label="Dose min [Gy]" datatype="double">
+            <description>Dose min [Gy]</description>
+            <preset>
+                <item value="0" />
+            </preset>
+            <data x="D_Gy_start" />
+        </element>
+        <element type="field" label="Dose max [Gy]" datatype="double">
+            <description>Dose max [Gy]</description>
+            <preset>
+                <item value="10" />
+            </preset>
+            <data x="D_Gy_end" />
+        </element>
+        <element type="field" label="number of points" datatype="long">
+            <description>number of points</description>
+            <preset>
+                <item value="30" />
+            </preset>
+            <data x="n_points" />
+        </element>
+        <element type="field" label="E [MeV/amu]" datatype="double">
+            <description>Energy [MeV/amu]</description>
+            <preset>
+                <item value="60.0" />
+            </preset>
+            <data x="E_MeV_u" />
+        </element>        
+        <element type="combo" label="particle" datatype="long">
+            <entry>
+                <item key="Hydrogen" value="1001" />
+                <item key="Helium-3" value="2003" />
+                <item key="Helium-4" value="2004" />
+                <item key="Berylium" value="4008" />
+                <item key="Carbon" value="6012" />
+                <item key="Oxygen" value="8016" />
+                <item key="Neon" value="10020" />
+                <item key="Iron" value="26056" />
+                <item key="Xeon" value="54132" />
+                <item key="Uranium" value="92238" />
+            </entry>
+            <description>particle[br]Default value is set to Hydrogen</description>
+            <preset>
+                <item value="6012" />
+            </preset>
+            <data x="particle_no" />
+        </element>
+        <element type="combo" label="material" datatype="long">
+            <description>material</description>
+            <entry>
+                <item key="Liquid Water" value="1" />
+                <item key="Aluminum Oxide" value="2" />
+                <item key="Aluminum" value="3" />
+                <item key="PMMA" value="4" />
+                <item key="Alanine" value="5" />
+                <item key="LiF" value="6" />
+                <item key="Air" value="7" />
+            </entry>
+            <preset>
+                <item value="4" />
+            </preset>
+            <data x="material_no" />
+        </element>      
+        
+        <element type="combo" label="rdd_model" datatype="long">
+            <description>Radial Dose Distribution model</description>
+            <entry>
+                <item key="Test" value="1" />
+                <item key="KatzPoint" value="2" />
+                <item key="Geiss" value="3" />
+                <item key="KatzSite" value="4" />
+                <item key="CucinottaPoint" value="5" />
+                <item key="KatzExtTarget" value="6" />
+                <item key="CucinottaExtTarget" value="7" />
+            </entry>
+            <preset>
+                <item value="3" />
+            </preset>
+            <data x="rdd_model" />
+        </element>          
+
+        <element type="combo" label="er_model" datatype="long">
+            <description>delta electron range model</description>
+            <entry>
+                <item key="Test" value="1" />
+                <item key="ButtsKatz" value="2" />
+                <item key="Waligorski" value="3" />
+                <item key="Geiss" value="4" />
+                <item key="Scholz" value="5" />
+                <item key="Edmund" value="6" />
+                <item key="Tabata" value="7" />
+            </entry>
+            <preset>
+                <item value="7" />
+            </preset>
+            <data x="er_model" />
+        </element>        
+        <element type="field" label="a0 [m]" datatype="double">
+            <description>a0 [m]</description>
+            <preset>
+                <item value="1e-6" />
+            </preset>
+            <data x="a0_m" />
+        </element>
+        <element type="field" label="D0 [Gy]" datatype="double">
+            <description>D0 [Gy]</description>
+            <preset>
+                <item value="2.0" />
+            </preset>
+            <data x="D0_Gy" />
+        </element>
+        <element type="field" label="m" datatype="double">
+            <description>m</description>
+            <preset>
+                <item value="2.5" />
+            </preset>
+            <data x="m" />
+        </element>
+        <element type="field" label="sigma0 [m2]" datatype="double">
+            <description>sigma0 [m2]</description>
+            <preset>
+                <item value="1e-10" />
+            </preset>
+            <data x="sigma0_m2" />
+        </element>
+    </input>
+
+    <output>
+        <element type="plot" label="survival curve" datatype="double">
+            <description>dose [Gy]</description>
+            <data x="D_Gy" y="survival" />
+        </element>
+    </output>
+</root>
