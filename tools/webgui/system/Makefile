@@ -52,7 +52,7 @@ GSLINCLUDE = "$(GSLPATH)\include"
 GSLLIB     = "$(GSLPATH)\lib"
 endif
 
-SOURCES=AT_CPPSC.c AT_CSDA_range.c AT_D_RDD_GY.c AT_E_from_beta.c AT_fluence_from_dose.c AT_LET_from_E.c
+SOURCES=AT_CPPSC.c AT_CSDA_range.c AT_D_RDD_GY.c AT_E_from_beta.c AT_fluence_from_dose.c AT_LET_from_E.c AT_Katz.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECS=$(SOURCES:.c=.exe)
 
@@ -68,5 +68,4 @@ all: $(EXECS) $(SOURCES)
 
 
 clean:
-		- $(RMCMD) $(OBJECTS)
 		- $(RMCMD) $(EXECS)
