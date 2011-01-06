@@ -62,47 +62,47 @@ int main(int argc, char *argv[]) {
 	}
 
 	while (fgets(Text, sizeof(Text), f) != 0) {
-		if (strstr(Text, "r_min")) {
+		if (strstr(Text, "r_min:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			r_start_m = atof(token);
 		}
-		if (strstr(Text, "r_max")) {
+		if (strstr(Text, "r_max:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			r_stop_m = atof(token);
 		}
-		if (strstr(Text, "n_points")) {
+		if (strstr(Text, "n_points:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			n_points = atol(token);
 		}
-		if (strstr(Text, "x_axis_type")) {
+		if (strstr(Text, "x_axis_type:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			x_axis_type = atol(token);
 		}
-		if (strstr(Text, "material_no")) {
+		if (strstr(Text, "material_no:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			material_no = atol(token);
 		}
-		if (strstr(Text, "particle_no")) {
+		if (strstr(Text, "particle_no:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			particle_no_single = atol(token);
 		}
-		if (strstr(Text, "E_MeV_u")) {
+		if (strstr(Text, "E_MeV_u:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			E_MeV_u = atof(token);
 		}
-		if (strstr(Text, "rdd_model")) {
+		if (strstr(Text, "rdd_model:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			rdd_model = atol(token);
 		}
-		if (strstr(Text, "er_model")) {
+		if (strstr(Text, "er_model:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			er_model = atol(token);

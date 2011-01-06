@@ -58,32 +58,32 @@ int main(int argc, char *argv[]) {
 	}
 
 	while (fgets(Text, sizeof(Text), f) != 0) {
-		if (strstr(Text, "E_start")) {
+		if (strstr(Text, "E_start:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			E_start = atof(token);
 		}
-		if (strstr(Text, "E_end")) {
+		if (strstr(Text, "E_end:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			E_end = atof(token);
 		}
-		if (strstr(Text, "n_points")) {
+		if (strstr(Text, "n_points:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			n_points = atol(token);
 		}
-		if (strstr(Text, "x_axis_type")) {
+		if (strstr(Text, "x_axis_type:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			x_axis_type = atol(token);
 		}
-		if (strstr(Text, "material_no")) {
+		if (strstr(Text, "material_no:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			material_no = atol(token);
 		}
-		if (strstr(Text, "particle_no")) {
+		if (strstr(Text, "particle_no:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			particle_no_single = atol(token);

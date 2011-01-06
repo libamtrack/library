@@ -56,22 +56,22 @@ int main(int argc, char *argv[]) {
 	}
 
 	while (fgets(Text, sizeof(Text), f) != 0) {
-		if (strstr(Text, "beta_start")) {
+		if (strstr(Text, "beta_start:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			beta_start = atof(token);
 		}
-		if (strstr(Text, "beta_end")) {
+		if (strstr(Text, "beta_end:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			beta_end = atof(token);
 		}
-		if (strstr(Text, "n_points")) {
+		if (strstr(Text, "n_points:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			n_points = atol(token);
 		}
-		if (strstr(Text, "x_axis_type")) {
+		if (strstr(Text, "x_axis_type:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			x_axis_type = atol(token);
