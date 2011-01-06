@@ -63,37 +63,37 @@ int main(int argc, char *argv[]) {
 	}
 
 	while (fgets(Text, sizeof(Text), file) != 0) {
-		if (strstr(Text, "E_MeV_u")) {
+		if (strstr(Text, "E_MeV_u:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			E_MeV_u_single = atof(token);
 		}
-		if (strstr(Text, "fluence_cm2")) {
+		if (strstr(Text, "fluence_cm2:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			fluence_cm2_or_dose_Gy_single = atof(token);
 		}
-		if (strstr(Text, "material_no")) {
+		if (strstr(Text, "material_no:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			material_no = atol(token);
 		}
-		if (strstr(Text, "particle_no")) {
+		if (strstr(Text, "particle_no:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			particle_no_single = atol(token);
 		}
-		if (strstr(Text, "rdd_model")) {
+		if (strstr(Text, "rdd_model:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			rdd_model = atol(token);
 		}
-		if (strstr(Text, "er_model")) {
+		if (strstr(Text, "er_model:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			er_model = atol(token);
 		}
-		if (strstr(Text, "gr_model")) {
+		if (strstr(Text, "gr_model:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			gamma_model = atol(token);
