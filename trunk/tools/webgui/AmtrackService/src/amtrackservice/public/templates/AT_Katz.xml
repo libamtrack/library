@@ -75,7 +75,7 @@
                 <item key="CucinottaExtTarget" value="7" />
             </entry>
             <preset>
-                <item value="3" />
+                <item value="6" />
             </preset>
             <data x="rdd_model" />
         </element>          
@@ -88,7 +88,7 @@
                 <item key="Tabata" value="7" />
             </entry>
             <preset>
-                <item value="7" />
+                <item value="2" />
             </preset>
             <data x="er_model" />
         </element>        
