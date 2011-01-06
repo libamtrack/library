@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
 	double fluence_cm2;
 	for (i = 0; i < n_points; i++) {
 		fluence_cm2 = AT_fluence_cm2_from_dose_Gy_single(E_MeV_u, particle_no_single, D_Gy[i], material_no );
-		survival[i] = AT_KatzModel_single_field_survival( fluence_cm2,
+		int status = AT_KatzModel_single_field_survival( fluence_cm2,
 			E_MeV_u,
 			particle_no_single,
 			material_no,
@@ -166,7 +166,15 @@ int main(int argc, char *argv[]) {
 			er_model,
 			D0_Gy,
 			m,
-			sigma0_m2);
+			sigma0_m2,
+			&survival[i]);
+		if( status != EXIT_SUCCESS ){
+			fprintf(stderr,"Exit code of AT_KatzModel_single_field_survival is %d\n", status);
+			fclose(file);
+			free(D_Gy);
+			free(survival);
+			return EXIT_FAILURE;
+		}
 	}
 
 	fprintf(file , "D_Gy:");
