@@ -1,7 +1,6 @@
 package amtrackservice.client;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import amtrackservice.client.gui.MainView;
 import amtrackservice.client.parser.ConfigParser;
@@ -45,6 +44,9 @@ public class AmtrackService implements EntryPoint {
 
 	private ArrayList<Calculation> openCalculations = new ArrayList<Calculation>();
 
+	/**
+	 * Resource to store images used in the project
+	 */
 	public interface AmtrackServiceResources extends ClientBundle {
 		  @Source("Play.png")
 		  ImageResource play();
@@ -88,7 +90,6 @@ public class AmtrackService implements EntryPoint {
 
 	/**
 	 * opens the calculation form defined by the name
-	 * 
 	 * @param method
 	 *            name of the calculation form
 	 */
@@ -100,7 +101,6 @@ public class AmtrackService implements EntryPoint {
 	/**
 	 * this method is invoked by ServiceControl, when the template has been
 	 * parsed to a Calculation Object. a tab will be added to the gui.
-	 * 
 	 * @param calc
 	 */
 	public void openCalculation(Calculation calc) {
@@ -144,11 +144,14 @@ public class AmtrackService implements EntryPoint {
 
 
 
+	/**
+	 * Fetch calculation template from server and process it
+	 * @param templateName
+	 */
 	public void fetchTemplate(String templateName) {
 		String file = GWT.getModuleBaseURL() + URL_TEMPLATES + config.getTemplates().get(templateName);
 		Logger.info("Requesting file: "+file+" from Server");
-		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET,
-				file);
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, file);
 
 		try {
 			requestBuilder.sendRequest(null, new RequestCallback() {
@@ -156,8 +159,7 @@ public class AmtrackService implements EntryPoint {
 					requestFailed(exception);
 				}
 
-				public void onResponseReceived(Request request,
-						Response response) {
+				public void onResponseReceived(Request request, Response response) {
 					try {
 						Calculation calc = TemplateParser.readTemplate(response.getText());
 						openCalculation(calc);
@@ -174,19 +176,20 @@ public class AmtrackService implements EntryPoint {
 		}
 	}
 
+	/**
+	 * Get from server XML config file and process it
+	 */
 	public void initConfig() {		
 		String file = GWT.getModuleBaseURL() + URL_CONFIG;
 		Logger.info("Requesting file: "+file+" from Server");
-		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET,
-				file);
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, file);
 		try {
 			requestBuilder.sendRequest(null, new RequestCallback() {
 				public void onError(Request request, Throwable exception) {
 					requestFailed(exception);
 				}
 
-				public void onResponseReceived(Request request,
-						Response response) {
+				public void onResponseReceived(Request request, Response response) {
 					try {
 						Config config = ConfigParser.readConfig(response.getText());
 						setConfig(config);
@@ -207,16 +210,11 @@ public class AmtrackService implements EntryPoint {
 		}
 	}
 	private void requestFailed(Throwable exception) {
-		Logger.error("Failed to retrieve " + URL_CONFIG
-				+ exception.getMessage());
+		Logger.error("Failed to retrieve " + URL_CONFIG + exception.getMessage());
 	}
 
 	private void parseFailed(Throwable exception) {
 		Logger.error("Failed to parse: " + exception.getMessage());
-	}
-
-	public HashMap<String, String> getCalculationResult(long CalculationId) {
-		return null;
 	}
 	
 	public void setConfig(Config config){
@@ -227,32 +225,4 @@ public class AmtrackService implements EntryPoint {
 		return config;
 	}
 
-	public void fetchCalculation(String templateName, long id) {
-		String file = GWT.getModuleBaseURL() + URL_TEMPLATES + config.getTemplates().get(templateName);
-		Logger.info("Requesting file: "+file+" from Server");
-		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, file);
-
-		try {
-			requestBuilder.sendRequest(null, new RequestCallback() {
-				public void onError(Request request, Throwable exception) {
-					requestFailed(exception);
-				}
-
-				public void onResponseReceived(Request request, Response response) {
-					try {
-						Calculation calc = TemplateParser.readTemplate(response.getText());
-						CalculationControl.getInstance().getCalculationResult(calc);
-						openCalculation(calc);
-					} catch (DOMParseException e) {
-						Logger.error("Couldn't parse template file");
-						Logger.log(e.getMessage());
-					}
-				}
-			});
-		} catch (RequestException ex) {
-			requestFailed(ex);
-		} catch (DOMParseException e) {
-			parseFailed(e);
-		}		
-	}
 }
