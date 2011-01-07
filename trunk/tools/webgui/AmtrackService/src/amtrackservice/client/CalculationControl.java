@@ -20,28 +20,46 @@ public class CalculationControl {
 	 */
 	private final CalculationServiceAsync calculationService = GWT.create(CalculationService.class);
 
+	/**
+	 * Calculation configuration object
+	 */
 	private Config config = null;
 	
-	private HashMap<Long,String> runningOnServer = new HashMap<Long, String>();
-
+	/**
+	 * static instance
+	 */
 	private static CalculationControl instance = null;
 	
+	/**
+	 * default constructor
+	 */
 	private CalculationControl() {	}
 
+	/**
+	 * getter for static instance
+	 * @return static instance
+	 */
 	public static CalculationControl getInstance() {
-		if (instance == null) {
+		if (instance == null)
 			instance = new CalculationControl();
-		}
 		return instance;
 	}
 
+	/**
+	 * TODO
+	 * @param config
+	 */
 	public void setConfig(Config config) {
 		this.config = config;
 	}
 
+	/**
+	 * Request calculation results from server
+	 * @param calculation
+	 */
 	public void getCalculationResult(final Calculation calculation) {
-		Logger.info("Requesting result for calculation " + calculation.getName() + "(" + calculation.getTimeID() + ")");
 		Logger.init(calculation);
+		Logger.info("Requesting result for calculation " + calculation.getName() + "(" + calculation.getTimeID() + ")");
 		if( calculation.getTimeID() == 0 ){
 			Logger.info("Process id not set yet...");
 			calculation.setCalculationResult(new HashMap<String, String>());
@@ -50,6 +68,7 @@ public class CalculationControl {
 			calculationService.requestResult(calculation.getTimeID(),
 					new AsyncCallback<HashMap<String, String>>() {
 
+				// TODO needs to be rewritten in clearer way
 				public void onSuccess(HashMap<String, String> result) {						
 					Logger.info("Reqest successful");
 					if( result.get("exitcode") != null){
@@ -87,6 +106,10 @@ public class CalculationControl {
 		}
 	}
 
+	/**
+	 * Asks server to start calculation
+	 * @param calculation
+	 */
 	public void calculate(final Calculation calculation) {
 		Logger.info("Starting calculation for " + calculation.getName());
 		calculation.setCalculated(false);
@@ -99,7 +122,6 @@ public class CalculationControl {
 		calculationService.startCalculation(calcData, config.getWrapperPath()
 				+ calculation.getWrapper(),calculation.getName(), new AsyncCallback<Long>() {
 
-			@Override
 			public void onSuccess(Long result) {
 				if( result > 0){
 					calculation.setTimeID(result);
@@ -110,36 +132,11 @@ public class CalculationControl {
 				}
 			}
 
-			@Override
 			public void onFailure(Throwable caught) {
 				Logger.error(caught.getMessage());
 			}
 		});
 
-	}
-
-	public void getCalculation(final long id, final AmtrackService amtrackService) {
-		calculationService.getCalculations(new AsyncCallback<HashMap<Long,String>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				Logger.log(caught.getMessage());
-				
-			}
-
-			@Override
-			public void onSuccess(HashMap<Long, String> result) {
-				result.get(id);
-			}
-		});	
-	}
-	
-	private void setRunning(HashMap<Long, String> running){
-		this.runningOnServer = running;
-	}
-	
-	public HashMap<Long, String> getRunning(){
-		return runningOnServer;
 	}
 
 }

@@ -13,12 +13,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -26,11 +23,9 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Represents a Calculation and generates the input/output gui
@@ -52,7 +47,6 @@ public class Calculation {
 	private ArrayList<AmWidget> outputWidgets = new ArrayList<AmWidget>();
 
 	/**
-	 * 
 	 * @return List of output widgets
 	 */
 	public ArrayList<AmWidget> getInputWidgets() {
@@ -60,7 +54,6 @@ public class Calculation {
 	}
 
 	/**
-	 * 
 	 * @return List of input widgets
 	 */
 	public ArrayList<AmWidget> getOutputWidgets() {
@@ -68,7 +61,7 @@ public class Calculation {
 	}
 
 	/**
-	 * 
+	 * Constructor 
 	 * @param timeID ID
 	 * @param name will be displayed in the title
 	 * @param wrapper the name of the function wrapper
@@ -98,7 +91,7 @@ public class Calculation {
 	}
 
 	/**
-	 * 
+	 * Simpler constructor
 	 * @param name
 	 * @param wrapper
 	 * @param description
@@ -168,10 +161,9 @@ public class Calculation {
 				showStatus();
 			}
 		});
-		
+
+		// TODO check if this works or not
 		statusButton.addKeyPressHandler(new KeyPressHandler() {
-			
-			@Override
 			public void onKeyPress(KeyPressEvent event) {
 				if( event.getCharCode() == KeyCodes.KEY_ESCAPE ){
 					hideStatus();
@@ -258,8 +250,8 @@ public class Calculation {
 	public void recalculate(){
 	    this.clearLoggerMessages();
 		calculate();
-	    // repeat until Calculation is done or n attempts
-		// were performed
+	    // repeat until Calculation is done or 
+		// n attempts were performed
 	    Timer t = new Timer() {
 	    	int n = 40;	    	
 	    	public void run() {

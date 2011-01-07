@@ -3,7 +3,6 @@ package amtrackservice.client.gui;
 import amtrackservice.client.AmtrackService;
 import amtrackservice.client.AmtrackService.AmtrackServiceResources;
 import amtrackservice.client.BuildInfo;
-import amtrackservice.client.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -60,9 +59,6 @@ public class MainView {
 		            "to: <b><u><a href=\"mailto:Leszek.Grzanka@ifj.edu.pl\" target=\"_blank\">Leszek.Grzanka@ifj.edu.pl</a></u></b><br></font>" +
 		            "<I>libamtrack version: " + BuildInfo.revisionNumber + "</I>" + 
 		            "</center>");
-
-		System.out.println();
-		
 		
 	    centralTabPanel = new TabLayoutPanel(32, Unit.PX);
 

@@ -11,12 +11,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.google.gwt.user.client.ui.HTML;
-
 /**
- * Liest aus einer bestehenden txt-Datei und schreibt in einer txt-Datei liest
- * Ordner aus
- * 
+ * data file used as input/output for libamtrack wrapper
  * @author Christoph
  * 
  */
@@ -25,22 +21,25 @@ public class CalculationFile {
 	private static PrintWriter writer;
 
 	/**
-	 * Liest die Datei und beschreibt ein Untersuchung Objekt mit den Daten
-	 * 
-	 * @param pfad
-	 * 
-	 * @return das aus der Datei ausgelesene Untersuchung Objekt
+	 * read data from file and translate them to hashmap
+	 * @param path
+	 * @return 
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static HashMap<String, String> readData(String pfad)
+	public static HashMap<String, String> readData(String path)
 			throws FileNotFoundException, IOException {
-		HashMap<String, String> keyVal = readStrings(pfad);
-
+		HashMap<String, String> keyVal = readStrings(path);
 		return keyVal;
 	}
 	
-	
+	/**
+	 * read data from file and return them as string
+	 * @param fileName
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public static String readContent(String fileName)
 	throws FileNotFoundException, IOException {
 
@@ -89,10 +88,9 @@ public class CalculationFile {
 	}
 
 	/**
-	 * Schreibt die Daten des übergebenen Speicherbaren Objekts in eine Datei
+	 * Write data to the file
 	 * 
-	 * @param datei
-	 *            Das Speicherbare Objekt.
+	 * @param datei 
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
@@ -108,48 +106,41 @@ public class CalculationFile {
 	}
 
 	/**
-	 * Falls die Datei existiert, wird diese gelöscht.
-	 * 
-	 * @param pfad
-	 *            der Datei
+	 * delete file
+	 * @param path
 	 */
-	public static void deleteFile(String pfad) {
-		File file = new File(pfad);
-
+	public static void deleteFile(String path) {
+		File file = new File(path);
 		if (!file.delete()) {
 			if (file.isDirectory()) {
 				File files[] = file.listFiles();
 				for (int i = 0; i < files.length; i++)
 					deleteFile(files[i].getAbsolutePath());
 				file.delete();
-
 			}
 		}
 	}
 
 	/**
-	 * Falls ein Pfad zu einem Ordner korrekt übergeben wird, dann werden alle
-	 * Unterordner als relativer Pfad zurückgegeben.
-	 * 
-	 * @param pfad
-	 *            bis zum Ordner, der die gewünschten Ordner enthält,
-	 * @return ArrayList<String> gibt liste von Dateipfaden zurück
+	 * TODO
+	 * @param path
+	 * @return ArrayList<String> 
 	 */
-	public static ArrayList<String> readOrder(String pfad) {
-		File file = new File(pfad);
-		ArrayList<String> dateien = new ArrayList<String>();
+	public static ArrayList<String> readOrder(String path) {
+		File file = new File(path);
+		ArrayList<String> dataVector = new ArrayList<String>();
 		if (file.isDirectory()) {
 			File[] files = file.listFiles();
 			for (int i = 0; i < files.length; i++) {
 				try {
 					if(files[i].isDirectory())
-					dateien.add(files[i].getCanonicalPath());
+					dataVector.add(files[i].getCanonicalPath());
 				} catch (IOException e) {
-					System.out.println("Datei konnte nicht gelesen werden");
+					System.out.println("Data cannot be read");
 				}
 			}
 		}
-		return dateien;
+		return dataVector;
 	}
 
 	/**

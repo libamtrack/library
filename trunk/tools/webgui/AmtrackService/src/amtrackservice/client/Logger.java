@@ -3,8 +3,8 @@ package amtrackservice.client;
 import amtrackservice.client.Calculation;
 
 /**
- * This class provides the access to the TextBox on the main GUI, to print out
- * warnings and errors.
+ * This class provides the access to the logger windows 
+ * to print out warnings and errors.
  * 
  * @author Christoph Kolb, 2010 Hochschule Heilbronn
  */
@@ -21,7 +21,7 @@ public class Logger {
 	}
 
 	/**
-	 * adds a new line on the TextBox of MainView
+	 * adds a new line on the logger windows
 	 * @param message the message to be logged
 	 */
 	public static void log(String message) {
@@ -31,7 +31,7 @@ public class Logger {
 	}
 	
 	/**
-	 * adds a new line on the TextBox of MainView
+	 * adds a new line on the logger windows
 	 * @param message the message to be logged
 	 */
 	public static void info(String message) {
@@ -41,7 +41,7 @@ public class Logger {
 	}
 	
 	/**
-	 * adds a new line on the TextBox of MainView
+	 * adds a new line on the logger windows
 	 * @param message the message to be logged
 	 */
 	public static void error(String message) {
@@ -51,6 +51,7 @@ public class Logger {
 	}
 	
 	/**
+	 * this method will cause logger window to show up
 	 */
 	public static void show() {
 		if( c != null )
@@ -58,11 +59,11 @@ public class Logger {
 	}
 
 	/**
+	 * this method will cause logger window to hide
 	 */
 	public static void hide() {
 		if( c != null )
 			c.hideStatus();
 	}
 
-	
 }

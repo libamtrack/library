@@ -14,8 +14,6 @@ import amtrackservice.client.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-
-
 /**
  * The server side implementation of the RPC service.
  */
@@ -27,6 +25,9 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 	
 	private HashMap<Long, Process> processPool = new HashMap<Long, Process>();
 	
+	/**
+	 * TODO needs to be rewritten
+	 */
 	public long startCalculation(HashMap<String, String> input,
 			String wrapperPath, String functionName)
 			throws IllegalArgumentException {
@@ -111,7 +112,9 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 		return time;
 	}
 
-	@Override
+	/**
+	 * TODO needs to be rewritten
+	 */
 	public HashMap<String, String> requestResult(long id)
 			throws IllegalArgumentException {
 
@@ -185,24 +188,4 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 
 	}
 
-	@Override
-	public HashMap<Long, String> getCalculations()
-			throws IllegalArgumentException {
-		
-		String db_ip="localhost";
-		String db_name=getServletContext().getInitParameter("dbname");
-		String db_user=getServletContext().getInitParameter("dbuser");
-		String db_pass=getServletContext().getInitParameter("dbpass");
-		
-		CalculationDB db = new CalculationDB(db_ip, db_name, db_user, db_pass);
-		CalculationData[] data = db.getAllCalculations();
-		HashMap<Long, String> calculations = new HashMap<Long, String>();
-		for (CalculationData d : data) {
-			calculations.put(d.getId(), d.getFunctionName());
-		}
-		
-		System.out.println("Server side @getCalculations: get all calculation (number) = " + calculations.size() );
-		
-		return calculations;
-	}
 }

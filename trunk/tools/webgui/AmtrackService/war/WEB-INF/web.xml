@@ -28,7 +28,7 @@
   
   <servlet-mapping>
     <servlet-name>calcServlet</servlet-name>
-    <url-pattern>/amtrackservice/greet</url-pattern>
+    <url-pattern>/amtrackservice/CalculationService</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
