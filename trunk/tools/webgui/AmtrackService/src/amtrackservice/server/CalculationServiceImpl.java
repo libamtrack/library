@@ -136,17 +136,23 @@ public class CalculationServiceImpl extends RemoteServiceServlet implements
 		String calcPath = db.getCalculation(id).getFilePath();
 		
 		Process p = processPool.get(id);
-		
+				
 		try {
-			int exitcode = p.exitValue();
-			String exitCodeString = String.valueOf(exitcode);	
-			result.put("exitcode", exitCodeString);
-			if( exitcode != 0){
-				System.out.println("Server side @requestResult: Process finished, failure" );				
-				result.put("stdout", CalculationFile.readContent(calcPath + ".stdout"));
-				result.put("stderr", CalculationFile.readContent(calcPath + ".stderr"));
-				processPool.remove(id);
-				return result;	
+			if( p == null ){
+				System.out.println("Server side @requestResult: Process not in the pool, problem !" );				
+				result.put("stdout", "");
+				result.put("stderr", "");
+			} else {
+				int exitcode = p.exitValue();
+				String exitCodeString = String.valueOf(exitcode);	
+				result.put("exitcode", exitCodeString);
+				if( exitcode != 0){
+					System.out.println("Server side @requestResult: Process finished, failure" );				
+					result.put("stdout", CalculationFile.readContent(calcPath + ".stdout"));
+					result.put("stderr", CalculationFile.readContent(calcPath + ".stderr"));
+					processPool.remove(id);
+					return result;	
+				} 
 			}
 		} catch(java.lang.IllegalThreadStateException e1) {
 			System.out.println("Server side @requestResult: Process not yet finished.");				

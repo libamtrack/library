@@ -37,7 +37,7 @@ public class AmPlot extends AmWidget {
 	private RadioButton yAxisScaleLogarithmicButton;		
 	private RadioButton yAxisScaleLinearButton;	
 	
-	private TreeMap<Double, Double> values = new TreeMap<Double, Double>();
+	private HashMap< String, TreeMap<Double, Double>> values = new HashMap<String, TreeMap<Double,Double>>();
 
 	public AmPlot(String label, String datatype, HTML description,
 			MapList<String, String> preset, String dataX, String dataY,
@@ -78,22 +78,25 @@ public class AmPlot extends AmWidget {
 
 	@Override
 	public void setValue(HashMap<String, String> valueMap) {
-		
 		this.values.clear();
-		String[] xValues = {};
-		if( valueMap.get(dataX) != null )
-			xValues = valueMap.get(dataX).split(" ");
-		String[] yValues = {};
-		if( valueMap.get(dataY) != null )
-			yValues = valueMap.get(dataY).split(" ");
 		
-		for (int i = 0; (i < xValues.length) && (i < yValues.length); i++) {
-			double x = Double.parseDouble(xValues[i]);
-			double y = Double.parseDouble(yValues[i]);
-			this.values.put(x, y);
-		}
+		addDataSerie(valueMap, this.dataY);
+
 		this.widget.clear();
-				
+		this.widget.add(createPlot());
+
+        chart.draw(createTable(), createOptions());						
+	}
+
+	@Override
+	public String getDataLink() {
+		return null; // unimplemented
+	}
+			
+	private Widget createPlot() {
+        FlowPanel panel = new FlowPanel();        
+        this.chart = new ScatterChart(DataTable.create(), createOptions() );
+        		
 		VerticalPanel axisScale = new VerticalPanel();
 		axisScale.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		
@@ -102,7 +105,6 @@ public class AmPlot extends AmWidget {
 
 		HorizontalPanel yAxisScale = new HorizontalPanel();
 		yAxisScale.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-
 		
 		HTML xAxisButtonLabel = new HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X axis scale: ");		
 		HTML yAxisButtonLabel = new HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y axis scale: ");
@@ -128,22 +130,9 @@ public class AmPlot extends AmWidget {
 		xAxisScaleLogarithmicButton.addClickHandler(generalAxisHandler);
 		yAxisScaleLinearButton.addClickHandler(generalAxisHandler);
 		yAxisScaleLogarithmicButton.addClickHandler(generalAxisHandler);
-
-		widget.add(axisScale);
-		this.widget.add(createPlot());
-
-        chart.draw(createTable(), createOptions());						
-	}
-
-	@Override
-	public String getDataLink() {
-		return null; // unimplemented
-	}
-			
-	private Widget createPlot() {
-        FlowPanel panel = new FlowPanel();        
-        this.chart = new ScatterChart(createTable(), createOptions() );
+        
         panel.clear();
+		panel.add(axisScale);
         panel.add(this.chart);
         return panel;
 	}		
@@ -154,6 +143,7 @@ public class AmPlot extends AmWidget {
 		options.setHeight(480);
 		options.setTitle(this.getLabel().getText());		
 		options.setLineSize(1);
+		options.setPointSize(4);
 		if( this.xAxisScaleLogarithmicButton.getValue() ){
 			options.setTitleX("log( " + dataX + " )");
 			this.xAxisScaleLogarithmicButton.setValue(true);
@@ -176,25 +166,75 @@ public class AmPlot extends AmWidget {
 		DataTable data = DataTable.create();
 		data.removeRows(0, data.getNumberOfRows());
 		data.addColumn(ColumnType.NUMBER, this.dataX);
-		data.addColumn(ColumnType.NUMBER, this.dataY);		
-        for(Double d: this.values.keySet()){
-        	int rowIndex = data.addRow();
-        	if( this.xAxisScaleLogarithmicButton.getValue() ){
-            	data.setValue(rowIndex, 0, Math.log10(d));        		
-        	} else {
-            	data.setValue(rowIndex, 0, d);
-        	}
-        	if( this.yAxisScaleLogarithmicButton.getValue() ){
-        		data.setValue(rowIndex, 1, Math.log10(this.values.get(d)));
-        	} else {
-        		data.setValue(rowIndex, 1, this.values.get(d));
-        	}
-        }		
+
+		TreeMap<Double,Integer> xValuesIndexes = new TreeMap<Double, Integer>(); 
+		for( String name : this.values.keySet()){
+	        for(Double d: this.values.get(name).keySet()){
+	        	xValuesIndexes.put(d, 0);
+	        }
+		}
+		
+		int i = 0;
+		for( Double d: xValuesIndexes.keySet()){
+			xValuesIndexes.put(d, i);
+			i++;
+		}
+		
+		data.addRows(xValuesIndexes.size());
+		
+		i = 1;
+		for( String name : this.values.keySet()){
+			data.addColumn(ColumnType.NUMBER, name);
+	        for(Double d: this.values.get(name).keySet()){
+	        	double xValueToInsert = 0., yValueToInsert = 0.;
+	        	if( this.xAxisScaleLogarithmicButton.getValue() ){
+	            	xValueToInsert = Math.log10(d);
+	        	} else {
+	        		xValueToInsert = d;
+	        	}
+	        	if( this.yAxisScaleLogarithmicButton.getValue() ){
+	        		yValueToInsert = Math.log10(this.values.get(name).get(d));
+	        	} else {
+	        		yValueToInsert = this.values.get(name).get(d);
+	        	}
+	        	int rowIndex = xValuesIndexes.get(d);
+            	data.setValue(rowIndex, 0, xValueToInsert);
+        		data.setValue(rowIndex, i, yValueToInsert);
+	        }
+	        i++;
+		}	
+		
 		return data;
 	}
 
-	@Override
 	public void setDefault() {
+	}
+
+	public void appendValue(HashMap<String, String> valueMap) {
+		int newDataSerieNumber = this.values.size();
+
+		addDataSerie(valueMap, this.dataY + "-" + newDataSerieNumber);
+		
+		this.widget.clear();		
+		this.widget.add(createPlot());
+
+        chart.draw(createTable(), createOptions());						
+	}
+	
+	private void addDataSerie(HashMap<String, String> valueMap, String name){
+		String[] xValues = {};
+		if( valueMap.get(dataX) != null )
+			xValues = valueMap.get(dataX).split(" ");
+		String[] yValues = {};
+		if( valueMap.get(dataY) != null )
+			yValues = valueMap.get(dataY).split(" ");
+		
+		this.values.put(name, new TreeMap<Double, Double>());
+		for (int i = 0; (i < xValues.length) && (i < yValues.length); i++) {
+			double x = Double.parseDouble(xValues[i]);
+			double y = Double.parseDouble(yValues[i]);
+			this.values.get(name).put(x, y);
+		}
 	}
 
 }

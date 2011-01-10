@@ -40,7 +40,8 @@ public class TemplateParser extends AbstractXMLParser {
 	private static final String KEYWORD_X = "x";
 	private static final String KEYWORD_Y = "y";
 	private static final String KEYWORD_Z = "z";
-
+	private static final String KEYWORD_APPEND = "append";
+	
 	private static final String GUI_INPUTLIST = "inputlist";
 	private static final String GUI_LIST = "list";
 	private static final String GUI_COMBO = "combo";
@@ -108,6 +109,12 @@ public class TemplateParser extends AbstractXMLParser {
 		String label = attributes.get(KEYWORD_LABEL);
 		String type = attributes.get(KEYWORD_TYPE);
 		String datatype = attributes.get(KEYWORD_DATATYPE);
+		boolean append = false;
+		if( attributes.containsKey(KEYWORD_APPEND)){
+			if( attributes.get(KEYWORD_APPEND).equals("true") ){
+				append = true;
+			}
+		}
 
 		HTML description = null;
 		MapList<String, String> entry = null;
@@ -158,8 +165,9 @@ public class TemplateParser extends AbstractXMLParser {
 		} else if (type.equals(GUI_LIST)) {
 			element = new AmList(label, datatype, description, preset, dataX);
 		} else if (type.equals(GUI_PLOT)) {
-			element = new AmPlot(label, datatype, description, preset, dataX, dataY, dataZ, xAxisLog, yAxisLog);
+			element = new AmPlot(label, datatype, description, preset, dataX, dataY, dataZ, xAxisLog, yAxisLog);			
 		}
+		element.setMultipleDataSeriesEnable(append);
 		return element;
 	}
 

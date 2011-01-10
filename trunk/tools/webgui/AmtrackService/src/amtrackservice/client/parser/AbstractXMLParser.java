@@ -27,7 +27,6 @@ public class AbstractXMLParser {
 			Node att = atts.item(i);
 			String name = att.getNodeName();
 			attMap.put(name, att.getNodeValue().trim());
-
 		}
 		return attMap;
 	}

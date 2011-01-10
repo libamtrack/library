@@ -60,4 +60,9 @@ public class AmCombo extends AmWidget {
 		}
 	}
 
+	@Override
+	public void appendValue(HashMap<String, String> valueMap) {
+		// TODO Auto-generated method stub		
+	}
+
 }

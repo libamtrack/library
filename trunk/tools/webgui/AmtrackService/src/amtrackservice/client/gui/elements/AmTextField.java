@@ -49,5 +49,11 @@ public class AmTextField extends AmWidget  {
 		this.textbox.setText(this.preset.getValues().get(0));	
 	}
 
+	@Override
+	public void appendValue(HashMap<String, String> valueMap) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

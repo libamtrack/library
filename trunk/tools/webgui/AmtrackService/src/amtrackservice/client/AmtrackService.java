@@ -108,7 +108,7 @@ public class AmtrackService implements EntryPoint {
 		openCalculations.add(calc);
 		gui.addTabPanel(calc.getCalculationPanel(), calc.getName());
 		Logger.info(calc.getName() + " has been loaded");
-		calc.recalculate();
+		calc.startAndWaitForResults();
 	}
 
 	/**
