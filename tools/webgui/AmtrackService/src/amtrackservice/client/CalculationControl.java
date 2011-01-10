@@ -62,7 +62,7 @@ public class CalculationControl {
 		Logger.info("Requesting result for calculation " + calculation.getName() + "(" + calculation.getTimeID() + ")");
 		if( calculation.getTimeID() == 0 ){
 			Logger.info("Process id not set yet...");
-			calculation.setCalculationResult(new HashMap<String, String>());
+			//calculation.setCalculationResult(new HashMap<String, String>());
 			calculation.setCalculated(false);
 		} else {
 			calculationService.requestResult(calculation.getTimeID(),
@@ -75,14 +75,19 @@ public class CalculationControl {
 						String exitcode = result.get("exitcode").trim();
 						if( exitcode == ""){
 							Logger.info("Process not finished yet");
-							calculation.setCalculationResult(new HashMap<String, String>());
+							//calculation.setCalculationResult(new HashMap<String, String>());
 							calculation.setCalculated(false);
 						}else{
 							calculation.setCalculated(true);
 							if( exitcode.equals("0")){
 								Logger.info("Process finished, success" );
-								Logger.info("Output file content : <BR>" + result.get("content").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
-								calculation.setCalculationResult(result);
+								String content = result.get("content");
+								if( content == null)
+									Logger.info("Output file content : null<br>");
+								else{
+									Logger.info("Output file content : <BR>" + content.replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+									calculation.setCalculationResult(result);
+								}
 							} else {
 								Logger.info("Standard output : <BR>" + result.get("stdout").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
 								Logger.info("Standard error : <BR>" + result.get("stderr").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
@@ -94,7 +99,7 @@ public class CalculationControl {
 					} else {
 						calculation.setCalculated(false);
 						Logger.info("Process not finished yet");
-						calculation.setCalculationResult(new HashMap<String, String>());
+						//calculation.setCalculationResult(new HashMap<String, String>());
 					}
 				}
 
@@ -110,7 +115,7 @@ public class CalculationControl {
 	 * Asks server to start calculation
 	 * @param calculation
 	 */
-	public void calculate(final Calculation calculation) {
+	public void startCalculation(final Calculation calculation) {
 		Logger.info("Starting calculation for " + calculation.getName());
 		calculation.setCalculated(false);
 		

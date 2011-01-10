@@ -10,15 +10,19 @@ public abstract class AmWidget {
 	private HTML description;
 	private String datatype;
 	private String label;
+	private boolean canHaveMultipleDataSeries;
 
 	public AmWidget(String label, String datatype, HTML description) {
 		this.description = description;
 		this.label = label;
 		this.datatype = datatype;
+		this.canHaveMultipleDataSeries = false;
 	}
 	public abstract String getValue();
 
 	public abstract void setValue(HashMap<String, String> valueMap);
+	
+	public abstract void appendValue(HashMap<String, String> valueMap);
 	
 	public abstract void setDefault();
 
@@ -41,4 +45,13 @@ public abstract class AmWidget {
 	}
 
 	public abstract Widget getWidget();
+	
+	public void setMultipleDataSeriesEnable( boolean flag ){
+		this.canHaveMultipleDataSeries = flag;
+	}
+	
+	public boolean getMultipleDataSeriesEnable(){
+		return this.canHaveMultipleDataSeries;
+	}
+	
 }

@@ -39,6 +39,8 @@ public class Calculation {
 	private boolean calculated;
 	private HTML description;
 	
+	private boolean appending;
+	
 	private DecoratedPopupPanel loggerPopUp;
 	private String loggerText;
 	private ScrollPanel dialogContents;
@@ -79,6 +81,7 @@ public class Calculation {
 		this.inputWidgets = inputWidgets;
 		this.outputWidgets = outputWidgets;
 		this.calculated = calculated;
+		this.appending = false;
 		this.timeID = timeID;
 		Logger.init(this);
 		
@@ -136,7 +139,8 @@ public class Calculation {
 		reloadButton.setWidth("48px");
 		reloadButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				recalculate();
+				appending = false;
+				startAndWaitForResults();
 			}
 		});
 
@@ -147,7 +151,8 @@ public class Calculation {
 		addButton.setWidth("48px");
 		addButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				//recalculate();
+				appending = true;
+				startAndWaitForResults();
 			}
 		});
 
@@ -220,18 +225,30 @@ public class Calculation {
 		input.setWidget(inputRow, 0, new HTML("<p align=\"right\"><b>RECALCULATE</b>&nbsp;&nbsp;&nbsp;</p>"));
 		input.setWidget(inputRow, 1, reloadButton);
 		
-//		input.setWidget(inputRow+1, 0, new HTML("<p align=\"right\"><b>ADD TO PLOT</b>&nbsp;&nbsp;&nbsp;</p>"));
-//		input.setWidget(inputRow+1, 1, addButton);
+		boolean showAddButton = false;
+		for (AmWidget widget : outputWidgets) {
+			if( widget.getMultipleDataSeriesEnable() ){
+				showAddButton = true;
+			}
+		}
 		
-		input.setWidget(inputRow+1, 0, new HTML("<p align=\"right\"><b>LOAD DEFAULTS</b>&nbsp;&nbsp;&nbsp;</p>"));
-		input.setWidget(inputRow+1, 1, defaultsButton);
+		if( showAddButton == true ){
+			input.setWidget(inputRow+1, 0, new HTML("<p align=\"right\"><b>ADD TO PLOT</b>&nbsp;&nbsp;&nbsp;</p>"));
+			input.setWidget(inputRow+1, 1, addButton);
+			input.getCellFormatter().setHeight(inputRow+1, 1, "65px");
+		} else {
+			input.getCellFormatter().setHeight(inputRow+1, 1, "0px");
+		}
 		
-		input.setWidget(inputRow+2, 0, new HTML("<p align=\"right\"><b>STATUS</b>&nbsp;&nbsp;&nbsp;</p>"));
-		input.setWidget(inputRow+2, 1, statusButton);
+		input.setWidget(inputRow+2, 0, new HTML("<p align=\"right\"><b>LOAD DEFAULTS</b>&nbsp;&nbsp;&nbsp;</p>"));
+		input.setWidget(inputRow+2, 1, defaultsButton);
+		
+		input.setWidget(inputRow+3, 0, new HTML("<p align=\"right\"><b>STATUS</b>&nbsp;&nbsp;&nbsp;</p>"));
+		input.setWidget(inputRow+3, 1, statusButton);
 		
 		input.getCellFormatter().setHeight(inputRow, 1, "65px");
-		input.getCellFormatter().setHeight(inputRow+1, 1, "65px");
 		input.getCellFormatter().setHeight(inputRow+2, 1, "65px");
+		input.getCellFormatter().setHeight(inputRow+3, 1, "65px");
 		
 		int outputRow = 1;
 		for (AmWidget widget : outputWidgets) {
@@ -247,10 +264,10 @@ public class Calculation {
 		return panel;
 	}
 	
-	public void recalculate(){
+	public void startAndWaitForResults(){
 	    this.clearLoggerMessages();
-		calculate();
-	    // repeat until Calculation is done or 
+		start();
+		// repeat until Calculation is done or 
 		// n attempts were performed
 	    Timer t = new Timer() {
 	    	int n = 40;	    	
@@ -259,7 +276,10 @@ public class Calculation {
 	    		if( isCalculated() || n < 0 ){
 	    			this.cancel();  // cancel timer
 	    		} else {
-	    			refresh(); // refresh calculation
+	    			if( n < 36 ){
+	    				System.out.println("### get Results");
+	    				getResults();   // try to get Results
+	    			}
 	    		}
 	        }
 	    };
@@ -273,8 +293,8 @@ public class Calculation {
 		}
 	}
 	
-	private void calculate() {
-		CalculationControl.getInstance().calculate(this);
+	private void start() {
+		CalculationControl.getInstance().startCalculation(this);
 	}
 
 	public void showStatus() {
@@ -295,7 +315,7 @@ public class Calculation {
 		this.timeID = timeID;
 	}
 
-	private void refresh() {
+	private void getResults() {
 		CalculationControl.getInstance().getCalculationResult(this);
 	}
 
@@ -306,7 +326,10 @@ public class Calculation {
 	public void setCalculationResult(HashMap<String, String> result) {
 		if (result != null) {
 			for (AmWidget widget : outputWidgets) {
-				widget.setValue(result);
+				if( appending )
+					widget.appendValue(result);
+				else
+					widget.setValue(result);
 			}
 		}
 	}

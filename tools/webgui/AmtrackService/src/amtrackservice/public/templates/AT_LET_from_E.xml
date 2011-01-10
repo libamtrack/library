@@ -76,10 +76,10 @@
 	</input>
 
 	<output>
-		<element type="plot" label="LET [keV/um]" datatype="double">
+		<element type="plot" label="LET [keV/um]" datatype="double" append="true">
 			<description>LET [keV/um]</description>
 			<data x= "E" y="LET" />
-			<axis x="log" y="lin"/>
+			<axis x="log" y="lin"/>			
 		</element>
 	</output>
 </root>
