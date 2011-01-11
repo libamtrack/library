@@ -91,8 +91,7 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_probability(
 
 
 /**
- * Blablabla TODO
- *
+ * TODO
  * @param[in] n                             todo
  * @param[in] r_m                           todo (array of size n)
  * @param[in] E_MeV_u                       todo
@@ -302,7 +301,7 @@ int AT_KatzModel_single_field_survival(
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
     const double sigma0_m2,
-    double *     survival);
+    double*     survival);
 
 
 /**
@@ -333,7 +332,7 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
     const double sigma0_m2,
-    double * survival);
+    double* survival);
 
 /**
  * TODO
