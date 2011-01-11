@@ -74,7 +74,7 @@ long AT_n_bins_for_single_impact_local_dose_distrib(
  * @param[in]  rdd_parameter         parameters for chosen radial dose distribution (array of size 4)
  * @param[in]  er_model              index number for chosen electron-range model
  * @param[in]  N2                    number of bins per factor of two in local dose array
- * @param[in]  f1_parameters         array of size n * 8 with n field component characteristics (array of size n*8)
+ * @param[in]  f1_parameters         n field component characteristics (array of size 8) // TODO in R package should also work for 8*n, but is not working
  * @param[in]  n_bins_f1             number of bins holding the f1 distribution
  * @param[out] f1_d_Gy               bin midpoints for f1 (array of size n_bins_f1)
  * @param[out] f1_dd_Gy              bin widths for f1 (array of size n_bins_f1)
