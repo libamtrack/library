@@ -23,6 +23,7 @@
 rm(list = ls())
 
 # Build latest version of libamtrack and load for direct access
+recompile <- FALSE
 source("AT_Test_PreRun.R")
 
 library(lattice)
@@ -30,61 +31,59 @@ library(lattice)
 #################################################
 # Set parameters
 
-E.MeV.u <- 10
-particle.no <- 1001
-fluence.cm2.or.dose.Gy <- -1
-material.no <- 1				# Liquid water
+E.MeV.u <- 50
+particle.no <- 6012
+fluence.cm2.or.dose.Gy <- 1e8
+material.no <- 4				# Liquid water
 RDD.model <- 3				# Geiss RDD
 RDD.parameters <- 5e-8			# a0 = 50 nm
-ER.model <- 4				# Geiss ER
-gamma.model <- 2				# General hit-target
-gamma.parameters <- c(1,10,1,1,0)	# One single-hit-single-target (exp-sat) component, characteristic dose 10 Gy
+ER.model <- 7				# Geiss ER
+gamma.model <- 5				# General hit-target
+gamma.parameters <- c(0.2,0.02,10,0,0)	# One single-hit-single-target (exp-sat) component, characteristic dose 10 Gy
 N2 <- 20				# 20 bins per factor 2 in histograms
 fluence.factor <- 1				# use fluence as given
-write.output <- T				# no log file
+write.output <- F				# no log file
 shrink.tails <- T				# cut insignificant tails
 shrink.tails.under <- 1e-30			# cut them in case contribution to first moment is lower than
 adjust.N2 <- T				# adjust bin width during convolution
 lethal.events.mode <- F				# use survival instead of activation
 
 # Get histogram size for single-impact dose distribution
-res.get.f1.array.size	<-	AT.SC.get.f1.array.size(E.MeV.u = E.MeV.u,
+res.get.f1.array.size	<-	AT.n.bins.for.single.impact.local.dose.distrib(E.MeV.u = E.MeV.u,
 								particle.no = particle.no,
-								fluence.cm2.or.dose.Gy = fluence.cm2.or.dose.Gy,
-								material.no = material.no,
-								RDD.model = RDD.model,
-								RDD.parameters = RDD.parameters,
-								ER.model = ER.model,
-								N2 = N2)
+                                material.no = material.no,
+								rdd.model = RDD.model,
+								rdd.parameter = RDD.parameters,
+								er.model = ER.model,
+								N2 = N2)[[1]]
 								
-print(res.get.f1.array.size$n.bins.f1)
+print(res.get.f1.array.size)
 
 # Get single-impact RDD parameters
 res.f1.parameters	<-	AT.RDD.f1.parameters.mixed.field(E.MeV.u = E.MeV.u,
 								particle.no = particle.no,
 								material.no = material.no,
-								ER.model = ER.model,
-								RDD.model = RDD.model,
-								RDD.parameters = RDD.parameters)
+								rdd.model = RDD.model,
+								rdd.parameter = RDD.parameters,
+								er.model = ER.model)[[1]]
 print(res.f1.parameters)
 
 # Get single-impact dose distribution
-res.get.f1	<-	AT.SC.get.f1(	E.MeV.u = E.MeV.u,
+res.get.f1	<-	AT.single.impact.local.dose.distrib(	E.MeV.u = E.MeV.u,
 							particle.no = particle.no,
 							fluence.cm2.or.dose.Gy = fluence.cm2.or.dose.Gy,
 							material.no = material.no,
-							RDD.model = RDD.model,
-							RDD.parameters = RDD.parameters,
-							ER.model = ER.model,
+							rdd.model = RDD.model,
+							rdd.parameter = RDD.parameters,
+							er.model = ER.model,
 							N2 = N2,
-							n.bins.f1 = res.get.f1.array.size$n.bins.f1,
-							f1.parameters = res.f1.parameters)
+							f1.parameters = res.f1.parameters,
+							n.bins.f1 = res.get.f1.array.size)
 
-xyplot(log10(f1)~log10(f1.d.Gy),
-res.get.f1$f1)
+print(res.get.f1)
 
-xyplot(log10(f1*f1.dd.Gy)~log10(f1.d.Gy),
-res.get.f1$f1)
+p1 <- plot(log10(res.get.f1[[3]])~log10(res.get.f1[[3]]))
+p2 <- plot(log10(res.get.f1[[2]])~log10(res.get.f1[[3]]))
 
 
 # Get mean impact number u
@@ -116,14 +115,13 @@ res.get.f.start	<-	AT.SC.get.f.start(	N2 = N2,
 								 f1 = res.get.f1$f1$f1,
 								 n.bins.f = res.get.f.array.size$n.bins.f)
 
-xyplot(log10(f.start)~log10(f.start.d.Gy),
-res.get.f.start)
+xyplot(log10(f.start)~log10(f.start.d.Gy), res.get.f.start)
 
 # Perform SC
 res.SC	<-	AT.SC.SuccessiveConvolutions(	u = res.u,
-									n.bins.f = res.get.f.array.size$n.bins.f,
+									n.bins.f = res.get.f.array.size[[1]],
 									N2 = N2,
-									n.bins.f.used = res.get.f1.array.size$n.bins.f1,
+									n.bins.f.used = res.get.f1.array.size[[1]],
 									f.d.Gy = res.get.f.start$f.start.d.Gy,
 									f.dd.Gy = res.get.f.start$f.start.dd.Gy,
 									f = res.get.f.start$f.start,
@@ -137,10 +135,16 @@ print(res.SC$n.bins.f.used)
 print(res.SC$f0)
 print(res.SC$d)
 
-p1 <- xyplot(log10(f)~log10(f.d.Gy),
-res.SC$f)
+#p1 <- xyplot(log10(f)~log10(f.d.Gy),res.SC$f)
 
 #df <- read.table("SuccessiveConvolutions.log", header = TRUE, sep = ";")
 #p1 <- xyplot(xyplot(log10(f)~log10(f.d.Gy)|n.convolution,df))
 
 plot(p1)
+
+pdf("SC.pdf")
+
+p1
+p2
+
+dev.off()
