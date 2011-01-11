@@ -104,9 +104,9 @@ int main(int argc, char *argv[]) {
 
 	long number_of_field_components = 1;
 	double fluence_factor = 1.0;
-	long N2 = 2;
+	long N2 = 20;
 	const bool    write_output = false;
-	const bool    shrink_tails = false;
+	const bool    shrink_tails = true;
 	const double  shrink_tails_under = 1e-30;
 	const bool    adjust_N2 = true;
 	const bool    lethal_events_mode = false;
