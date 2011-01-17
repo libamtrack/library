@@ -43,7 +43,7 @@ AT.CPPSC.alpha.and.beta <- function( E.MeV.u,
 
     HCP.surv <- nls(-log(response.HCP) ~ alpha * D.check.Gy + beta * D.check.Gy^2,
                     data = df,
-                    start = list(alpha = 0.1, beta = 0.01))
+                    start = list(alpha = 10, beta = 0.0001))
     
     alpha    <- coef(HCP.surv)[1]
     beta     <- coef(HCP.surv)[2]

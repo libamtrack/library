@@ -66,7 +66,7 @@ AT.material.name.from.material.no <- function(material.no){
 		                               material.no    = as.integer(material.no[i]),           
 									   material.name  = as.character(cur.material.name),
 									   PACKAGE        = "libamtrack")
-          material.name[i]     <-     res$material.name
+          material.name[i]     <-  res$material.name
      }          
      return(material.name)
 }
