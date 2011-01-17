@@ -12,7 +12,7 @@ AT_CSDA_range_g_cm2
 AT_CSDA_range_m
 AT_E_MeV_from_CDSA_range
 AT_E_MeV_from_LET
-AT_Bethe_Mass_Stopping_Power_MeV_cm2_g
+AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_multi
 AT_fluence_weighted_E_MeV_u
 AT_dose_weighted_E_MeV_u
 AT_fluence_weighted_LET_MeV_cm2_g
@@ -31,7 +31,6 @@ AT_mean_number_of_tracks_contrib
 AT_beta_from_E
 AT_E_from_beta
 AT_gamma_from_E
-AT_get_material_data
 AT_KatzModel_inactivation_probability
 AT_KatzModel_inactivation_cross_section_m2
 AT_KatzModel_single_field_survival
@@ -42,3 +41,4 @@ AT_mean_number_of_tracks_contrib
 AT_n_bins_for_low_fluence_local_dose_distribution
 AT_low_fluence_local_dose_distribution
 AT_SuccessiveConvolutions
+AT_get_materials_data

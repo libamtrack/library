@@ -10,9 +10,16 @@ R CMD BATCH ..\..\..\tools\automatic_wrapper_generator\R.generate.R.wrapper.R
 REM *** Copy sources to local directory
 copy ..\..\..\include\*.h .
 copy ..\..\..\src\*.c .
+copy ..\R_package\hardcoded_wrappers\hardcoded_wrapper.* .
+
+REM *** Merge R wrapper
+copy libamtrack.R+hardcoded_wrapper.R libamtrack.R
 
 REM *** Compile libamtrack including R wrappers ***
 make all
+
+REM Uncomment to leave temporary file for debugging
+REM goto EOF
 
 REM Delete temporary files
 del *.o
