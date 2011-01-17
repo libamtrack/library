@@ -84,7 +84,9 @@ Stopping-power routines:
 \code{\link{AT.CSDA.range.g.cm2}} \tab CSDA range in mass thickness\cr
 \code{\link{AT.E.MeV.from.CDSA.range}} \tab Inverse routine: energy from CSDA range\cr
 
-\code{\link{AT.Bethe.Mass.Stopping.Power.MeV.cm2.g.multi}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formular
+\code{\link{AT.Bethe.Mass.Stopping.Power.MeV.cm2.g.multi}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formular\cr
+\code{\link{AT.CSDA.range.Bethe.cm2.g}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formular\cr
+\code{\link{AT.WEPL.Bethe}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formular
 }
 
 Mean LET / energy in mixed fields routines:
@@ -137,6 +139,8 @@ Other routines:
 \code{\link{AT.particle.name.from.particle.no}} \tab Converts particle index numbers into particle names\cr
 \code{\link{AT.particle.no.from.particle.name}} \tab Converts particle names into particle index numbers\cr
 \code{\link{AT.particle.no.from.Z.and.A}} \tab Returns particle index number for given mass and atomic number\cr
+\code{\link{AT.A.from.particle.no}} \tab Returns mass number for given particle number\cr
+\code{\link{AT.Z.from.particle.no}} \tab Returns atomic number for given particle number\cr
 \code{\link{AT.material.name.from.material.no}} \tab Converts material index numbers into material names\cr
 \code{\link{AT.material.no.from.material.name}} \tab Converts material names into material index numbers\cr
 \code{\link{AT.get.material.data}} \tab Returns properties of pre-defined material

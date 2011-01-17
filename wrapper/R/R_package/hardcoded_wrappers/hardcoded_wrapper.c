@@ -128,7 +128,8 @@ void AT_SPC_get_size_from_filename_R(const char** filename,
       
       *spc_size = (int)spc_size_long;
 }
-
+/*
+// TODO: solve issue (int to pointer w/o cast) of parameter 2 in subfunction call
 void AT_SPC_read_data_from_filename_R( const char** filename,
 		const int* n,
 		int* depth_step,
@@ -156,3 +157,4 @@ void AT_SPC_read_data_from_filename_R( const char** filename,
       
     *n_bins_read = n_bins_read_tmp;
 }
+*/
