@@ -39,18 +39,23 @@
  * @enum material_no Materials code numbers
  */
 enum material_no{
-  User_Defined_Material= 0, /**< To be defined by the user during runtime >**/
-  Water_Liquid         = 1, /**< Liquid water */
-  Aluminum_Oxide       = 2, /**< Aluminium oxide */
-  Aluminum             = 3, /**< Aluminium */
-  PMMA                 = 4, /**< PMMA */
-  Alanine              = 5, /**< Alanine */
-  LiF                  = 6, /**< Lithium Fluoride */
-  Air				   = 7  /**< Air dry (at sea level) */
+  User_Defined_Material     = 0,  /**< To be defined by the user during runtime >**/
+  Water_Liquid              = 1,  /**< Liquid water */
+  Aluminum_Oxide            = 2,  /**< Aluminium oxide */
+  Aluminum                  = 3,  /**< Aluminium */
+  PMMA                      = 4,  /**< PMMA */
+  Alanine                   = 5,  /**< Alanine */
+  LiF                       = 6,  /**< Lithium Fluoride */
+  Air				        = 7,  /**< Air dry (at sea level) */
+  Dummy8                    = 8,  /**< Dummy */
+  Dummy9                    = 9,  /**< Dummy */
+  Dummy10                   = 10, /**< Dummy */
+  Gammex_Lung_LN450         = 11, /**< Gammex tissue surrogate "Lung (LN450)" */
+  Gammes_AP6_adipose_RMI453 = 12  /**< Gammex tissue surrogate "AP6 Adipose RMI 453" */
 };
 
 
-#define MATERIAL_DATA_N    8
+#define MATERIAL_DATA_N    13
 
 // TODO The next two LET-related structures must be declared here rather than in AT_DataLET.h to avoid circular dependencies
 
@@ -136,18 +141,66 @@ typedef struct {
 
 static const AT_table_of_material_data_struct AT_Material_Data = {
     MATERIAL_DATA_N,
-    {  User_Defined_Material,    Water_Liquid,   Aluminum_Oxide,   Aluminum,     PMMA,      Alanine,     LiF,	Air},           // material_no
-    {  false,           true,           true,             true,         true,      true,        true,			true},          // ready
-    {  0,               276,             106,              13,           223,       0,           185,			104},           // ICRU_ID
-    {  0.0,             1.00,            3.97,             2.6989,       1.188,     1.42,        2.64,			1.20479E-03},   // density_g_cm3
-    {  0.0,             3.3456e29,       1.1719e30,        7.8314e29,    3.8698e29, 4.60571e29,  7.341e29,		-100},          // electron_density_g_cm3 (TODO for air)
-    {  0.0,             75.0,            145.2,            166.0,        74.0,      71.9,        10.0, 			85.7},          // I_eV
-    {  0.0,             0.00231,         0.003058,         0.003266,     0.001988,  0.00216381,  0.0,			0.0},           // alpha_g_cm2 - TODO No data for LiF, air
-    {  0.0,             1.761,           1.748,            1.745,        1.762,     1.79165987,  0.0,           0.0},			// p_MeV - TODO No data for LiF, air
-    {  0.0,             0.01153,         0.01305,          0.01230,      0.01338,   -100.0,      0.0,			0.0},           // m_g_cm2 - TODO No data processed for nuclear interactions in Alanine, hence set to -100
-    {  0.0,             13.0,            21.72,            27.0,         11.556,       12.8088,     17.7333,    14.78},         // average_A
-    {  0.0,             7.22,            10.637,           13.0,         6.24,       6.44,        8.0,			7.375},         // average_Z
-    {  "User defined",  "Water, Liquid", "Aluminum Oxide", "Aluminum",   "PMMA",    "Alanine",   "Lithium Fluoride", "Air" }
+    // material_no
+    {  User_Defined_Material,
+       Water_Liquid,      Aluminum_Oxide,   Aluminum,     PMMA,      Alanine,
+       LiF,	              Air,              Dummy8,       Dummy9,    Dummy10,
+       Gammex_Lung_LN450, Gammes_AP6_adipose_RMI453},
+    // ready
+    {  false,
+       true,              true,             true,         true,      true,
+       true,			  true,             true,         true,      true,
+       true,              true},
+    // ICRU_ID
+    {  0,
+       276,               106,              13,           223,       0,
+       185,               104,              0,            0,         0,
+       0,                 0},
+    // density_g_cm3
+    {  0.0,
+       1.00,              3.97,             2.6989,       1.188,     1.42,
+       2.64,   			  1.20479E-03,      0,            0,         0,
+       0.450,             0.920},
+    // electron_density_g_cm3 (TODO for air)
+    {  0.0,
+       3.3456e29,         1.1719e30,        7.8314e29,    3.8698e29, 4.60571e29,
+       7.341e29,		  -100.0,           0,            0,         0,
+       -100.0,            -100.0},
+    // I_eV
+    {  0.0,
+       75.0,              145.2,            166.0,        74.0,      71.9,
+       10.0,              85.7,             0,            0,         0,
+       71.45,             65.38},
+    // alpha_g_cm2 - TODO No data for LiF, air
+    {  0.0,
+       0.00231,           0.003058,         0.003266,     0.001988,  0.00216381,
+       0.0,	  		      0.0,              0,            0,         0,
+       0.0,               0.0},
+	// p_MeV - TODO No data for LiF, air
+    {  0.0,
+       1.761,             1.748,            1.745,        1.762,     1.79165987,
+       0.0,               0.0,              0,            0,         0,
+       0.0,               0.0},
+    // m_g_cm2 - TODO No data processed for nuclear interactions in Alanine, hence set to -100
+    {  0.0,
+       0.01153,           0.01305,          0.01230,      0.01338,   -100.0,
+       0.0,		          0.0,              0,            0,         0,
+       0.0,               0.0},
+    // average_A
+    {  0.0,
+       13.0,              21.72,            27.0,         11.556,    12.8088,
+       17.7333,           14.78,            0,            0,         0,
+       12.0,              11.0},
+    // average_Z
+    {  0.0,
+       7.22,              10.637,           13.0,         6.24,      6.44,
+       8.0,		          7.375,            0,            0,         0,
+       6.689,             5.910},
+    // material_name
+    {  "User defined",
+       "Water, Liquid",   "Aluminum Oxide", "Aluminum",   "PMMA",    "Alanine",
+       "Lithium Fluoride","Air", "Dummy8", "Dummy9", "Dummy10",
+       "Gammex Lung LN450", "Gammex AP6 Adipose RMI453"}
 };
 
 /* Cucinnotta calculated average A for water as 14.3, but it seems that it is 13.0 (Leszek) *
@@ -250,12 +303,27 @@ double AT_average_Z_from_material_no( const long   material_no );
  * @param[in]  material_no           index number of material
  * @param[out] density_g_cm3         physical density [g/cm3]
  * @param[out] electron_density_m3   electron density [1/m3]
+ *   electron_density = number_of_electron_per_molecule * avogadro_constant / molar_mass * 1m3 * density
  * @param[out] I_eV                  mean ionization potential [eV]
  * @param[out] alpha_g_cm2_MeV       fit parameter for power-law representation of stopping-power (Bortfeld, 1997)
+ *   @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
+ *   Here, however, we use the mass stopping power. The correct dimension is g/(cm^2 * MeV^p)
  * @param[out] p_MeV                 fit parameter for power-law representation of stopping-power (Bortfeld, 1997)
- * @param[out] m_g_cm2               fit parameter for linear representation of proton nuclear interactions (Bortfeld, 1997)
+ *   @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.\n
+ *   p is actually dimensionless, it should be nevertheless indicated, that the energy must be given in MeV
+ * @param[out] m_g_cm2               fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni 1982  (Bortfeld, 1997)
+ *   @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
  * @param[out] average_A             average mass number
+ *   let f_i be fraction by weight of the constituent element with atomic number Z_i and atomic weight A_i\n
+ *   let us define average_Z/A = sum_i f_i Z_i / A_i \n
+ *   then we have: average_A = average_Z / (average_Z/A) \n
+ *   for water (H20) we have: average_Z/A = (2/18) * (1/1) + (16/18)*(8/16) = 0.5555 \n
+ *   average_A = 7.22 / 0.555 = 13
  * @param[out] average_Z             average atomic number
+ *   let f_i be fraction by weight of the constituent element with atomic number Z_i and atomic weight A_i\n
+ *   average_Z = sum_i f_i Z_i \n
+ *   for water (H20) we have: average_Z = (2/18)*1 + (16/18)*8 = 7.22\n
+ *   @see Tabata, T. (1972) Generalized semiempirical equations for the extrapolated range of electrons, Nucl. Instr and Meth. 103, 85-91.
  */
 void AT_get_material_data(     const long  material_no,
     double*  density_g_cm3,
@@ -270,31 +338,16 @@ void AT_get_material_data(     const long  material_no,
 
 /**
  * Returns material data for list of materials
- * @param[in]   number_of_materials  numbers of materials the routine is called for (array of length number_of_materials)
- * @param[in]   material_no          material indices (array of length number_of_materials)
- * @param[out]  density_g_cm3        material density in g/cm3 (array of length number_of_materials)
- * @param[out]  electron_density_m3  electron density in 1/m3 (array of length number_of_materials)\n
- *   electron_density = number_of_electron_per_molecule * avogadro_constant / molar_mass * 1m3 * density
- * @param[out]  I_eV                 mean ionization potential in eV (array of length number_of_materials)
- * @param[out]  alpha_g_cm2_MeV      fit parameter for power-law representation of stp.power/range/E-dependence (array of length nnumber_of_materials)
- *   @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
- *   Here, however, we use the mass stopping power. The correct dimension is g/(cm^2 * MeV^p)
- * @param[out]  p_MeV                fit parameter for power-law representation of stp.power/range/E-dependence (array of length number_of_materials)
- *   @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.\n
- *   p is actually dimensionless, it should be nevertheless indicated, that the energy must be given in MeV
- * @param[out]  m_g_cm2              fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni, 1982 (array of length number_of_materials)
- *   @see  Bortfeld, T. (1997), An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24, 2024ff.
- * @param[out]  average_A            average mass number (array of length number_of_materials) \n
- *   let f_i be fraction by weight of the constituent element with atomic number Z_i and atomic weight A_i\n
- *   let us define average_Z/A = sum_i f_i Z_i / A_i \n
- *   then we have: average_A = average_Z / (average_Z/A) \n
- *   for water (H20) we have: average_Z/A = (2/18) * (1/1) + (16/18)*(8/16) = 0.5555 \n
- *   average_A = 7.22 / 0.555 = 13
- * @param[out]  average_Z            average atomic number (array of length number_of_materials)\n
- *   let f_i be fraction by weight of the constituent element with atomic number Z_i and atomic weight A_i\n
- *   average_Z = sum_i f_i Z_i \n
- *   for water (H20) we have: average_Z = (2/18)*1 + (16/18)*8 = 7.22\n
- *   @see Tabata, T. (1972) Generalized semiempirical equations for the extrapolated range of electrons, Nucl. Instr and Meth. 103, 85-91.
+ * @param[in]   number_of_materials  numbers of materials the routine is called for
+ * @param[in]   material_no          material indices (array of size number_of_materials)
+ * @param[out]  density_g_cm3        material density in g/cm3 (array of size number_of_materials)
+ * @param[out]  electron_density_m3  electron density in 1/m3 (array of size number_of_materials)
+ * @param[out]  I_eV                 mean ionization potential in eV (array of size number_of_materials)
+ * @param[out]  alpha_g_cm2_MeV      fit parameter for power-law representation of stp.power/range/E-dependence (array of size number_of_materials)
+ * @param[out]  p_MeV                fit parameter for power-law representation of stp.power/range/E-dependence (array of size number_of_materials)
+ * @param[out]  m_g_cm2              fit parameter for the linear representation of fluence changes due to nuclear interactions based on data from Janni 1982 (array of size number_of_materials)
+ * @param[out]  average_A            average mass number (array of size number_of_materials)
+ * @param[out]  average_Z            average atomic number (array of size number_of_materials)
  */
 void AT_get_materials_data( const long  number_of_materials,
     const long  material_no[],

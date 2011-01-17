@@ -165,11 +165,11 @@ int AT_particle_no_from_Z_and_A( const long  n,
 
 
 /**
- * TODO
- * @param[in]  n
- * @param[in]  particle_no
- * @param[out] A
- * @return
+ * Returns mass number for given particle number
+ * @param[in]  n                length of arrays
+ * @param[in]  particle_no      particle index number (array of size n)
+ * @param[out] A                mass number (array of size n)
+ * @return     return code
  */
 int AT_A_from_particle_no(  const long  n,
     const long  particle_no[],
@@ -185,11 +185,11 @@ int AT_A_from_particle_no(  const long  n,
 
 
 /**
- * TODO
- * @param[in]  n
- * @param[in]  particle_no
- * @param[out] Z
- * @return
+ * Returns atomic number for given particle number
+ * @param[in]  n               length of arrays
+ * @param[in]  particle_no     particle index number (array of size n)
+ * @param[out] Z               atomic number (array of size n)
+ * @return     return code
  */
 int AT_Z_from_particle_no(  const long  n,
     const long  particle_no[],
