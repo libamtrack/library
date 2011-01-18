@@ -86,6 +86,21 @@ double AT_CSDA_range_Bethe_cm2_g(	const double 	E_MeV_u,
 	return(range_cm2_g);
 }
 
+void AT_CSDA_range_Bethe_cm2_g_multi(	const long    n,
+		const double 	E_MeV_u[],
+		const long 		particle_no[],
+		const long 		material_no,
+		double          CSDA_range_cm2_g[])
+{
+	long i;
+	for (i = 0; i < n; i++){
+		CSDA_range_cm2_g[i] = AT_CSDA_range_Bethe_cm2_g(	E_MeV_u[i],
+				particle_no[i],
+				material_no);
+	}
+
+}
+
 double AT_WEPL_Bethe(	const double 	E_MeV_u,
 		const long 		particle_no,
 		const long 		material_no){
@@ -97,3 +112,18 @@ double AT_WEPL_Bethe(	const double 	E_MeV_u,
 					material_no_water));
 
 };
+
+void AT_WEPL_Bethe_multi(	const long    n,
+		const double 	E_MeV_u[],
+		const long 		particle_no[],
+		const long 		material_no,
+		double          WEPL[])
+{
+	long i;
+	for (i = 0; i < n; i++){
+		WEPL[i] = AT_WEPL_Bethe(	E_MeV_u[i],
+				particle_no[i],
+				material_no);
+	}
+
+}
