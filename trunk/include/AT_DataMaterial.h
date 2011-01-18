@@ -39,23 +39,34 @@
  * @enum material_no Materials code numbers
  */
 enum material_no{
-  User_Defined_Material     = 0,  /**< To be defined by the user during runtime >**/
-  Water_Liquid              = 1,  /**< Liquid water */
-  Aluminum_Oxide            = 2,  /**< Aluminium oxide */
-  Aluminum                  = 3,  /**< Aluminium */
-  PMMA                      = 4,  /**< PMMA */
-  Alanine                   = 5,  /**< Alanine */
-  LiF                       = 6,  /**< Lithium Fluoride */
-  Air				        = 7,  /**< Air dry (at sea level) */
-  Dummy8                    = 8,  /**< Dummy */
-  Dummy9                    = 9,  /**< Dummy */
-  Dummy10                   = 10, /**< Dummy */
-  Gammex_Lung_LN450         = 11, /**< Gammex tissue surrogate "Lung (LN450)" */
-  Gammes_AP6_adipose_RMI453 = 12  /**< Gammex tissue surrogate "AP6 Adipose RMI 453" */
+  User_Defined_Material     		= 0,  /**< To be defined by the user during runtime >**/
+  Water_Liquid             			= 1,  /**< Liquid water */
+  Aluminum_Oxide            		= 2,  /**< Aluminium oxide */
+  Aluminum                  		= 3,  /**< Aluminium */
+  PMMA                      		= 4,  /**< PMMA */
+  Alanine                   		= 5,  /**< Alanine */
+  LiF                       		= 6,  /**< Lithium Fluoride */
+  Air				        		= 7,  /**< Air dry (at sea level) */
+  Dummy8                    		= 8,  /**< Dummy */
+  Dummy9                    		= 9,  /**< Dummy */
+  Dummy10                   		= 10, /**< Dummy */
+  Gammex_Lung_LN450         		= 11, /**< Gammex tissue surrogate "Lung (LN450)" */
+  Gammex_AP6_Adipose_RMI453 		= 12, /**< Gammex tissue surrogate "AP6 Adipose RMI 453" */
+  Gammex_BR12_Breast_RMI454 		= 13, /**< Gammex tissue surrogate "BR12 Breast RMI454" */
+  Gammex_CT_Solid_Water_RMI451		= 14, /**< Gammex tissue surrogate "CT Solid Water RMI451" */
+  Gammex_Water				 		= 15, /**< Gammex tissue surrogate "Gammex Water" */
+  Gammex_Muscle_RMI452         		= 16, /**< Gammex tissue surrogate "Muscle RMI452" */
+  Gammex_LV1_RMI 					= 17, /**< Gammex tissue surrogate "LV1 Liver RMI" */
+  Gammex_SR2_Brain 			 		= 18, /**< Gammex tissue surrogate "SR2 Brain" */
+  Gammex_IB3_Inner_Bone_RMI456		= 19, /**< Gammex tissue surrogate "IB3 Inner Bone RMI 456" */
+  Gammex_B200_Bone_Mineral			= 20, /**< Gammex tissue surrogate "B200 Bone Mineral" */
+  Gammex_CB2_30_CaCO3				= 21, /**< Gammex tissue surrogate "CB2 30%  CaCO3" */
+  Gammex_CB2_50_CaCO3				= 22, /**< Gammex tissue surrogate "CB2 50%  CaCO3" */
+  Gammex_SB3_Cortical_Bone_RMI450	= 23 /**< Gammex tissue surrogate "SB3 Cortical Bone RMI 450" */
 };
 
 
-#define MATERIAL_DATA_N    13
+#define MATERIAL_DATA_N    24
 
 // TODO The next two LET-related structures must be declared here rather than in AT_DataLET.h to avoid circular dependencies
 
@@ -145,62 +156,87 @@ static const AT_table_of_material_data_struct AT_Material_Data = {
     {  User_Defined_Material,
        Water_Liquid,      Aluminum_Oxide,   Aluminum,     PMMA,      Alanine,
        LiF,	              Air,              Dummy8,       Dummy9,    Dummy10,
-       Gammex_Lung_LN450, Gammes_AP6_adipose_RMI453},
+       Gammex_Lung_LN450,		Gammex_AP6_Adipose_RMI453,	Gammex_BR12_Breast_RMI454,		  Gammex_CT_Solid_Water_RMI451,		Gammex_Water,
+	   Gammex_Muscle_RMI452,	Gammex_LV1_RMI,				Gammex_SR2_Brain, 		   		  Gammex_IB3_Inner_Bone_RMI456,	   	Gammex_B200_Bone_Mineral,
+	   Gammex_CB2_30_CaCO3,		Gammex_CB2_50_CaCO3,	    Gammex_SB3_Cortical_Bone_RMI450},
+
     // ready
     {  false,
        true,              true,             true,         true,      true,
        true,			  true,             true,         true,      true,
-       true,              true},
+	   true,              true,             true,         true,      true,
+       true,			  true,             true,         true,      true,
+	   true,              true,				true},
     // ICRU_ID
     {  0,
        276,               106,              13,           223,       0,
        185,               104,              0,            0,         0,
-       0,                 0},
+       0,                 0,              	0,            0,         0,
+       0,              	  0,              	0,            0,         0,
+       0,                 0,				0},
     // density_g_cm3
     {  0.0,
        1.00,              3.97,             2.6989,       1.188,     1.42,
        2.64,   			  1.20479E-03,      0,            0,         0,
-       0.450,             0.920},
+       0.450,             0.920,            0.980,        1.015,     1.0,
+       1.050,          	  1.039,         	1.049,        1.133,   	 1.145,
+       1.340,	          1.560,			1.819},
     // electron_density_g_cm3 (TODO for air)
     {  0.0,
        3.3456e29,         1.1719e30,        7.8314e29,    3.8698e29, 4.60571e29,
        7.341e29,		  -100.0,           0,            0,         0,
-       -100.0,            -100.0},
+       -100.0,            -100.0,           -100.0,       -100.0,    -100.0,
+       -100.0,            -100.0,           -100.0,       -100.0,    -100.0,
+       -100.0,            -100.0,			-100.0},
     // I_eV
     {  0.0,
        75.0,              145.2,            166.0,        74.0,      71.9,
        10.0,              85.7,             0,            0,         0,
-       71.45,             65.38},
+       71.45,             65.38,            66.81,        68.72,     68.86,
+       68.55,             68.64,            62.51,        77.01,     77.09,
+       77.48,             87.94,			97.40},
     // alpha_g_cm2 - TODO No data for LiF, air
     {  0.0,
        0.00231,           0.003058,         0.003266,     0.001988,  0.00216381,
-       0.0,	  		      0.0,              0,            0,         0,
-       0.0,               0.0},
+       0.0,	  		      0.0,              0.0,          0.0,       0.0,
+       0.0,               0.0,              0.0,          0.0,       0.0,
+       0.0,            	  0.0,              0.0,          0.0,       0.0,
+       0.0,               0.0,				0.0},
 	// p_MeV - TODO No data for LiF, air
     {  0.0,
        1.761,             1.748,            1.745,        1.762,     1.79165987,
-       0.0,               0.0,              0,            0,         0,
-       0.0,               0.0},
+       0.0,	  		      0.0,              0.0,          0.0,       0.0,
+       0.0,               0.0,              0.0,          0.0,       0.0,
+       0.0,            	  0.0,              0.0,          0.0,       0.0,
+       0.0,               0.0,				0.0},
     // m_g_cm2 - TODO No data processed for nuclear interactions in Alanine, hence set to -100
     {  0.0,
        0.01153,           0.01305,          0.01230,      0.01338,   -100.0,
-       0.0,		          0.0,              0,            0,         0,
-       0.0,               0.0},
+	   0.0,	 			  0.0,              0.0,          0.0,       0.0,
+       0.0,               0.0,              0.0,          0.0,       0.0,
+       0.0,            	  0.0,              0.0,          0.0,       0.0,
+       0.0,               0.0,				0.0},
     // average_A
     {  0.0,
        13.0,              21.72,            27.0,         11.556,    12.8088,
        17.7333,           14.78,            0,            0,         0,
-       12.0,              11.0},
+       12.33, 		      10.84,		 	11.24,        11.78,     12.98,
+       11.76,          	  11.77,          	10.43,        14.45,  	 14.46,
+       14.80,             17.62,			19.99},
     // average_Z
     {  0.0,
        7.22,              10.637,           13.0,         6.24,      6.44,
        8.0,		          7.375,            0,            0,         0,
-       6.689,             5.910},
+       6.68,     	      5.91,      	    6.10,    	  6.36,      7.22,
+       6.36,           	  6.36,           	5.78,         7.70,      7.71,
+       7.89,              9.23,				10.34},
     // material_name
     {  "User defined",
        "Water, Liquid",   "Aluminum Oxide", "Aluminum",   "PMMA",    "Alanine",
        "Lithium Fluoride","Air", "Dummy8", "Dummy9", "Dummy10",
-       "Gammex Lung LN450", "Gammex AP6 Adipose RMI453"}
+       "Gammex Lung LN450", "Gammex AP6 Adipose RMI453", "BR12 Breast RMI454",	"CT Solid Water RMI451", "Gammex Water",
+		"Muscle RMI452" , "LV1 Liver RMI" ,	"SR2 Brain", "IB3 Inner Bone RMI 456", "B200 Bone Mineral",
+		"CB2 30% CaCO3", "CB2 50% CaCO3", "SB3 Cortical Bone RMI 450" }
 };
 
 /* Cucinnotta calculated average A for water as 14.3, but it seems that it is 13.0 (Leszek) *
