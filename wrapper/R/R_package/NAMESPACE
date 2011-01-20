@@ -33,5 +33,5 @@ AT_get_materials_data
 AT_particle_no_from_Z_and_A
 AT_A_from_particle_no
 AT_Z_from_particle_no
-AT_CSDA_range_Bethe_cm2_g
-AT_WEPL_Bethe
+AT_CSDA_range_Bethe_cm2_g_multi
+AT_WEPL_Bethe_multi
