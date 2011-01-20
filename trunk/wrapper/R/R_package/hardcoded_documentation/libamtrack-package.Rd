@@ -84,9 +84,9 @@ Stopping-power routines:
 \code{\link{AT.CSDA.range.g.cm2}} \tab CSDA range in mass thickness\cr
 \code{\link{AT.E.MeV.from.CDSA.range}} \tab Inverse routine: energy from CSDA range\cr
 
-\code{\link{AT.Bethe.Mass.Stopping.Power.MeV.cm2.g.multi}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formula\cr
-\code{\link{AT.CSDA.range.Bethe.cm2.g_multi}} \tab CSDA range from Bethe formula\cr
-\code{\link{AT.WEPL.Bethe.multi}} \tab Water equivalent path length from Bethe range
+\code{\link{AT.Stopping.Power.Mass.Bethe.MeV.cm2.g}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formula\cr
+\code{\link{AT.CSDA.range.Bethe.cm2.g}} \tab CSDA range from Bethe formula\cr
+\code{\link{AT.WEPL.Bethe}} \tab Water equivalent path length from Bethe range
 }
 
 Mean LET / energy in mixed fields routines:

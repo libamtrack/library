@@ -46,7 +46,7 @@ double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_int( double  E_MeV_u,
   return (1.0 / StPow);
 }
 
-double AT_CSDA_range_Bethe_cm2_g(	const double 	E_MeV_u,
+double AT_CSDA_range_Bethe_cm2_g_single(	const double 	E_MeV_u,
 		const long 		particle_no,
 		const long 		material_no){
 
@@ -94,23 +94,31 @@ void AT_CSDA_range_Bethe_cm2_g_multi(	const long    n,
 {
 	long i;
 	for (i = 0; i < n; i++){
-		CSDA_range_cm2_g[i] = AT_CSDA_range_Bethe_cm2_g(	E_MeV_u[i],
+		CSDA_range_cm2_g[i] = AT_CSDA_range_Bethe_cm2_g_single(	E_MeV_u[i],
 				particle_no[i],
 				material_no);
 	}
 
 }
 
-double AT_WEPL_Bethe(	const double 	E_MeV_u,
+double AT_WEPL_Bethe_single(	const double 	E_MeV_u,
 		const long 		particle_no,
 		const long 		material_no){
 	const long material_no_water = Water_Liquid;
-	return(AT_CSDA_range_Bethe_cm2_g(	E_MeV_u,
-			particle_no,
-			material_no) / AT_CSDA_range_Bethe_cm2_g(	E_MeV_u,
-					particle_no,
-					material_no_water));
 
+	double range_material_cm2_g = AT_CSDA_range_Bethe_cm2_g_single(	E_MeV_u,
+			particle_no,
+			material_no);
+
+	double range_water_cm2_g = AT_CSDA_range_Bethe_cm2_g_single(	E_MeV_u,
+			particle_no,
+			material_no_water);
+
+	double density_water_g_cm3 = AT_density_g_cm3_from_material_no( material_no_water);
+
+	double density_material_g_cm3 = AT_density_g_cm3_from_material_no( material_no_water);
+
+	return( density_material_g_cm3 * range_material_cm2_g / (density_water_g_cm3 * range_water_cm2_g));
 };
 
 void AT_WEPL_Bethe_multi(	const long    n,
@@ -121,7 +129,7 @@ void AT_WEPL_Bethe_multi(	const long    n,
 {
 	long i;
 	for (i = 0; i < n; i++){
-		WEPL[i] = AT_WEPL_Bethe(	E_MeV_u[i],
+		WEPL[i] = AT_WEPL_Bethe_single(	E_MeV_u[i],
 				particle_no[i],
 				material_no);
 	}

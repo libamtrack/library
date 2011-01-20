@@ -71,8 +71,8 @@ for(i in 1:length(functions)){
 	# i <- 4
 	cur.function <- functions[[i]]
 
-	# replace "_" by "."
-	cur.function$name <- gsub("_", ".", cur.function$name)
+	# replace "_" by "." and remove ".multi" suffix
+	cur.function$name <- gsub(".multi", "", gsub("_", ".", cur.function$name))
 	cur.function$parameter.comment$name <- gsub("_", ".", cur.function$parameter.comment$name)
 
 	# remove "[]"

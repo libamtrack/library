@@ -43,7 +43,7 @@
 
 /**
  * Structure to hold parameters other then parameter to integrate over
- * for GSL integration routine used in AT_CSDA_range_Bethe_cm2_g
+ * for GSL integration routine used in AT_CSDA_range_Bethe_cm2_g_single
  */
 typedef struct {
   long    particle_no;
@@ -82,7 +82,7 @@ void AT_CSDA_range_Bethe_cm2_g_multi(	const long    n,
  * @see          AT_DataMaterial.h for definition
  * @return     result
  */
-double AT_CSDA_range_Bethe_cm2_g(	const double 	E_MeV_u,
+double AT_CSDA_range_Bethe_cm2_g_single(	const double 	E_MeV_u,
 							const long 		particle_no,
 							const long 		material_no);
 
@@ -111,7 +111,7 @@ void AT_WEPL_Bethe_multi(	const long    n,
  * @see          AT_DataMaterial.h for definition
  * @return     result
  */
-double AT_WEPL_Bethe(	const double 	E_MeV_u,
+double AT_WEPL_Bethe_single(	const double 	E_MeV_u,
 		const long 		particle_no,
 		const long 		material_no);
 

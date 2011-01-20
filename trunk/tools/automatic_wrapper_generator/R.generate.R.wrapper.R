@@ -60,11 +60,14 @@ for(i in 1:length(functions)){
 	para$name     <- gsub("_", ".", para$name, fixed = T)
 
 	header <- character(length(pos.in))
-	if(length(header) == 1){
-           header[1] <- paste(gsub("_", ".", tmp$name), " <- function( ", 
+	# remove ".multi"-suffix
+    function.R.name <- gsub(".multi", "", tmp$name)
+    
+    if(length(header) == 1){
+           header[1] <- paste(gsub("_", ".", function.R.name), " <- function( ", 
                                    para$name[pos.in[1]], "){\n", sep = "")
 	}else{
-           header[1] <- paste(gsub("_", ".", tmp$name), " <- function( ", 
+           header[1] <- paste(gsub("_", ".", function.R.name), " <- function( ", 
                                    para$name[pos.in[1]], ",", sep = "")
       }
 
