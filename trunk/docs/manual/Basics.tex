@@ -17,7 +17,7 @@ distance $r$ from the trajectory is considered. $d(r)$ is mostly referred as the
 (Fig. \ref{fig:TST}).}
 \item{The second important assumption is that -- since photons deposit their
 energy eventually by electrons as well -- local radiation effects are supposed
-to be the same for photons and HCPs. }
+to be the same for photons and HCPs.}
 \end{itemize}
 Thus, the response to irradiation with particles of type $T$ and energy $E$ can
 be predicted from the homogenous bulk photon dose response $S_X(D)$ of the
@@ -45,6 +45,30 @@ combine gamma and local dose. Solution discriminates approaches:
   \item{GSM, iGSM/dGSM}
   \item{SPIFF}
 \end{itemize}
+
+\section{Averaging}
+It is a bit confusing to see where averaging steps are taken in ATMs. A full
+scenario would cover -- in three dimenions -- the stoachistic nature of energy
+deposition in the functional subunits, placement of tracks, number and type of tracks. To
+simplify this ATMs take the following steps:
+\begin{itemize}
+  \item Consider only the 2D situation perpendicular to the beam direction with
+  a slice thickness according to the track segment regime.
+  \item \textbf{First averaging} -- The stoachistic nature of the track is
+  replaced by the radial dose distribution, i.e. the average of a large
+  number of tracks, a representative track.
+  \item \textbf{Second averaging} -- The stoachistic placement of the tracks is
+  replaced by the integration over all possible impact parameters, weighted by
+  their likelihood.
+  \item \textbf{Third averaging} -- The random nature of multiple tracks
+  affecting a functional unit (following a Poisson distribution) has to be
+  tackled. In mixed fields, the tracks can also be of different subsets (30%
+  protons, 70% Carbon etc.). 
+\end{itemize}
+Sometimes (LEM0), these steps are used to factorize the overall effect
+($E=E_1\cdot E_2\cdot E_3$). But this assumes that no interaction (e.g.
+$E_2\ast E_3$) is present. In the case of overlapping tracks
+this is clearly not true!
 
 
 \section*{Document status}
