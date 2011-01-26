@@ -217,15 +217,9 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
   assert( *n > 0);
   long  i;
   double tmp;
-  double  electron_density_m3;
   for (i = 0; i < *n; i++){
 
-    AT_get_materials_data(  *n,
-        material_no,
-        NULL,
-        &electron_density_m3,
-        NULL, NULL, NULL, NULL, NULL, NULL);
-
+	double  electron_density_m3 = AT_electron_density_m3_from_material_no_single(material_no[i]);
     tmp                  =  gsl_pow_4(e_C) * electron_density_m3;
     tmp                 /=  4.0 * M_PI * gsl_pow_2(e0_F_m);
     tmp                 /=  gsl_pow_2(MeV_to_J) * m_to_cm;

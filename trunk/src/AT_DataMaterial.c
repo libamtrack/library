@@ -96,16 +96,6 @@ double AT_density_g_cm3_from_material_no( const long   material_no )
 }
 
 
-double AT_electron_density_m3_from_material_no( const long   material_no )
-{
-  long  index = AT_material_index_from_material_number( material_no );
-  if( index == -1){
-    printf("Material no %ld not found\n", material_no);
-    return 0.0;
-  }
-  return AT_Material_Data.electron_density_m3[index];
-}
-
 
 double AT_I_eV_from_material_no( const long   material_no )
 {
@@ -173,7 +163,6 @@ double AT_average_Z_from_material_no( const long   material_no )
 
 void AT_get_material_data(     const long  material_no,
     double*  density_g_cm3,
-    double*  electron_density_m3,
     double*  I_eV,
     double*  alpha_g_cm2_MeV,
     double*  p_MeV,
@@ -185,7 +174,6 @@ void AT_get_material_data(     const long  material_no,
   if( index == -1){
     printf("Material no %ld not found\n", material_no);
     *density_g_cm3        =  0.0;
-    *electron_density_m3  =  0.0;
     *I_eV                 =  0.0;
     *alpha_g_cm2_MeV      =  0.0;
     *p_MeV                =  0.0;
@@ -196,9 +184,6 @@ void AT_get_material_data(     const long  material_no,
   }
   if( density_g_cm3 != NULL ){
       *density_g_cm3            =  AT_Material_Data.density_g_cm3[index];
-  }
-  if( electron_density_m3 != NULL ){
-      *electron_density_m3      =  AT_Material_Data.electron_density_m3[index];
   }
   if( I_eV != NULL ){
       *I_eV                     =  AT_Material_Data.I_eV[index];
@@ -227,7 +212,6 @@ void AT_get_material_data(     const long  material_no,
 void AT_get_materials_data( const long  number_of_materials,
     const long  material_no[],
     double  density_g_cm3[],
-    double  electron_density_m3[],
     double  I_eV[],
     double  alpha_g_cm2_MeV[],
     double  p_MeV[],
@@ -246,11 +230,6 @@ void AT_get_materials_data( const long  number_of_materials,
   if( density_g_cm3 != NULL ){
     for(i = 0; i < number_of_materials; i++){
       density_g_cm3[i]      = AT_Material_Data.density_g_cm3[match[i]];
-    }
-  }
-  if( electron_density_m3 != NULL ){
-    for(i = 0; i < number_of_materials; i++){
-      electron_density_m3[i]      = AT_Material_Data.electron_density_m3[match[i]];
     }
   }
   if( I_eV != NULL ){
@@ -285,6 +264,33 @@ void AT_get_materials_data( const long  number_of_materials,
   }
   free(match);
 }
+
+
+double AT_electron_density_m3_from_material_no_single( const long   material_no )
+{
+  long  index = AT_material_index_from_material_number( material_no );
+  if( index == -1){
+    printf("Material no %ld not found\n", material_no);
+    return 0.0;
+  }
+  double density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
+  double average_Z     = AT_average_Z_from_material_no(material_no);
+  double average_A     = AT_average_A_from_material_no(material_no);
+  return(AT_electron_density_m3_single( density_g_cm3,
+    average_Z,
+    average_A));
+}
+
+void AT_electron_density_m3_from_material_no_multi( const long n,
+		const long   material_no[],
+		double electron_density_m3[])
+{
+  long i;
+  for (i = 0; i < n; i++){
+	electron_density_m3[i]  = 	AT_electron_density_m3_from_material_no_single(material_no[i]);
+  }
+}
+
 
 double AT_electron_density_m3_single( const double density_g_cm3,
     const double average_Z,
