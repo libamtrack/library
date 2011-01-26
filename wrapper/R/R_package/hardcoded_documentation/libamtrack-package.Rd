@@ -85,7 +85,7 @@ Stopping-power routines:
 \code{\link{AT.E.MeV.from.CDSA.range}} \tab Inverse routine: energy from CSDA range\cr
 
 \code{\link{AT.Stopping.Power.Mass.Bethe.MeV.cm2.g}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formula\cr
-\code{\link{AT.CSDA.range.Bethe.cm2.g}} \tab CSDA range from Bethe formula\cr
+\code{\link{AT.CSDA.range.Bethe.g.cm2}} \tab CSDA range from Bethe formula\cr
 \code{\link{AT.WEPL.Bethe}} \tab Water equivalent path length from Bethe range
 }
 
@@ -141,6 +141,7 @@ Other routines:
 \code{\link{AT.particle.no.from.Z.and.A}} \tab Returns particle index number for given mass and atomic number\cr
 \code{\link{AT.A.from.particle.no}} \tab Returns mass number for given particle number\cr
 \code{\link{AT.Z.from.particle.no}} \tab Returns atomic number for given particle number\cr
+\code{\link{AT.electron.density.m3}} \tab Returns electron density from average Z and A\cr
 \code{\link{AT.material.name.from.material.no}} \tab Converts material index numbers into material names\cr
 \code{\link{AT.material.no.from.material.name}} \tab Converts material names into material index numbers\cr
 \code{\link{AT.get.materials.data}} \tab Returns properties of pre-defined materials
