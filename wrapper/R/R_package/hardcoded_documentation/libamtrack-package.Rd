@@ -142,6 +142,7 @@ Other routines:
 \code{\link{AT.A.from.particle.no}} \tab Returns mass number for given particle number\cr
 \code{\link{AT.Z.from.particle.no}} \tab Returns atomic number for given particle number\cr
 \code{\link{AT.electron.density.m3}} \tab Returns electron density from average Z and A\cr
+\code{\link{AT.electron.density.m3.from.material.no}} \tab Returns electron density for given material\cr
 \code{\link{AT.material.name.from.material.no}} \tab Converts material index numbers into material names\cr
 \code{\link{AT.material.no.from.material.name}} \tab Converts material names into material index numbers\cr
 \code{\link{AT.get.materials.data}} \tab Returns properties of pre-defined materials

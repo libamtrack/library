@@ -115,7 +115,6 @@ typedef struct {
 
   double          average_Z;                              /**< Average atomic number, will be calculated if not given */
   double          average_A;                              /**< Average mass number,  will be calculated if not given */
-  double          electron_density_m3;                    /**< Electron density (in 1/m^3),  will be calculated if not given */
 
   long            LET_data_source;                        /**< Defines the source for stopping power data, see enum AT_LET_data_source [ESSENTIAL]. The user has to make sure that he provides the necessary data. */
 
@@ -139,7 +138,6 @@ typedef struct {
   const bool    ready[MATERIAL_DATA_N];
   const long    ICRU_ID[MATERIAL_DATA_N];
   const double  density_g_cm3[MATERIAL_DATA_N];
-  const double  electron_density_m3[MATERIAL_DATA_N];
   const double  I_eV[MATERIAL_DATA_N];
   const double  alpha_g_cm2_MeV[MATERIAL_DATA_N];
   const double  p_MeV[MATERIAL_DATA_N];
@@ -181,13 +179,6 @@ static const AT_table_of_material_data_struct AT_Material_Data = {
        0.450,             0.920,            0.980,        1.015,     1.0,
        1.050,          	  1.039,         	1.049,        1.133,   	 1.145,
        1.340,	          1.560,			1.819},
-    // electron_density_m3 (TODO for air)
-    {  0.0,
-       3.3456e29,         1.1719e30,        7.8314e29,    3.8698e29, 4.60571e29,
-       7.341e29,		  -100.0,           0,            0,         0,
-       1.4599e29,         3.0047e29,        3.1866e29,    3.2825e29, 3.3304e29,
-       3.3988e29,         3.3619e29,        3.4802e29,    3.6170e29, 3.6536e29,
-       4.2810e29,         4.8959e29,		5.6353e29},
     // I_eV
     {  0.0,
        75.0,              145.2,            166.0,        74.0,      71.9,
@@ -278,12 +269,6 @@ long AT_material_number_from_name( const char* material_name );
 double AT_density_g_cm3_from_material_no( const long   material_no );
 
 
-/**
- * Get electron density [1/m3] for single material with number material_no
- * @param[in] material_no
- * @return    electron density [1/m3]
- */
-double AT_electron_density_m3_from_material_no( const long   material_no );
 
 
 /**
@@ -338,7 +323,6 @@ double AT_average_Z_from_material_no( const long   material_no );
  * Returns material data for single material
  * @param[in]  material_no           index number of material
  * @param[out] density_g_cm3         physical density [g/cm3]
- * @param[out] electron_density_m3   electron density [1/m3]
  *   electron_density = number_of_electron_per_molecule * avogadro_constant / molar_mass * 1m3 * density
  * @param[out] I_eV                  mean ionization potential [eV]
  * @param[out] alpha_g_cm2_MeV       fit parameter for power-law representation of stopping-power (Bortfeld, 1997)
@@ -363,7 +347,6 @@ double AT_average_Z_from_material_no( const long   material_no );
  */
 void AT_get_material_data(     const long  material_no,
     double*  density_g_cm3,
-    double*  electron_density_m3,
     double*  I_eV,
     double*  alpha_g_cm2_MeV,
     double*  p_MeV,
@@ -377,7 +360,6 @@ void AT_get_material_data(     const long  material_no,
  * @param[in]   number_of_materials  numbers of materials the routine is called for
  * @param[in]   material_no          material indices (array of size number_of_materials)
  * @param[out]  density_g_cm3        material density in g/cm3 (array of size number_of_materials)
- * @param[out]  electron_density_m3  electron density in 1/m3 (array of size number_of_materials)
  * @param[out]  I_eV                 mean ionization potential in eV (array of size number_of_materials)
  * @param[out]  alpha_g_cm2_MeV      fit parameter for power-law representation of stp.power/range/E-dependence (array of size number_of_materials)
  * @param[out]  p_MeV                fit parameter for power-law representation of stp.power/range/E-dependence (array of size number_of_materials)
@@ -388,7 +370,6 @@ void AT_get_material_data(     const long  material_no,
 void AT_get_materials_data( const long  number_of_materials,
     const long  material_no[],
     double  density_g_cm3[],
-    double  electron_density_m3[],
     double  I_eV[],
     double  alpha_g_cm2_MeV[],
     double  p_MeV[],
@@ -396,6 +377,26 @@ void AT_get_materials_data( const long  number_of_materials,
     double  average_A[],
     double  average_Z[]);
 
+// ROUTINES TO GET DERIVED PARAMETERS FOR A MATERIAL
+/**
+ * Get electron density [1/m3] for single material with number material_no
+ * @param[in] material_no
+ * @return    electron density [1/m3]
+ */
+double AT_electron_density_m3_from_material_no_single( const long   material_no );
+
+/**
+ * Get electron density [1/m3] for materials
+ * @param[in]     n                    number of materials
+ * @param[in]     material_no          material indices (array of size n)
+ * @param[out]    electron_density_m3  electron densities per m3 (array of size n)
+ * @return        none
+ */
+void AT_electron_density_m3_from_material_no_multi( const long n,
+		const long   material_no[],
+		double electron_density_m3[]);
+
+// ROUTINES FOR COMPUTING DERIVED PARAMETERS
 /**
  * Computes the electron density from average A and Z
  * @param density_g_cm3      physical density (in g/cm3) of material
@@ -434,11 +435,11 @@ void AT_electron_density_m3_multi( const long n,
  * @length n
  * @return                   electron density in 1/m3
  */
-double AT_electron_density_m3( const long n,
-    const double density_g_cm3,
-    const long Z[],
-    const long A[],
-    const double weight_fraction[]);
+//double AT_electron_density_m3( const long n,
+//    const double density_g_cm3,
+//    const long Z[],
+//    const long A[],
+//    const double weight_fraction[]);
 
 
 /**

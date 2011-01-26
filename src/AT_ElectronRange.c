@@ -141,7 +141,7 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
   double average_A                     =  0.0;
   double average_Z                     =  0.0;
   AT_get_material_data( (long)material_no, &material_density_g_cm3,
-      NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
+      NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
   assert( average_A > 0);
   assert( average_Z > 0);
@@ -219,7 +219,7 @@ double AT_max_electron_range_m(  const double E_MeV_u,
   double average_A                     = 0.0;
   double average_Z                     = 0.0;
   AT_get_material_data( (long)material_no, &material_density_g_cm3,
-      NULL,NULL,NULL,NULL,NULL, &average_A, &average_Z );
+      NULL,NULL,NULL,NULL, &average_A, &average_Z );
 
   assert( average_A > 0);
   assert( average_Z > 0);

@@ -111,10 +111,9 @@
   AT_get_material_data(
       material_no,
       &density_g_cm3,
-      &electron_density_m3,
       NULL, NULL, NULL, NULL, NULL, NULL);
   double density_kg_m3      =  density_g_cm3 * 1000.0;
-
+  electron_density_m3 = AT_electron_density_m3_from_material_no_single(material_no);
   const double max_electron_range_m  =  AT_max_electron_range_m( E_MeV_u, (int)material_no, (int)er_model);
 
   const long   Z                     =  AT_Z_from_particle_no_single(particle_no);
