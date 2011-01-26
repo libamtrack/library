@@ -43,7 +43,7 @@
 
 /**
  * Structure to hold parameters other then parameter to integrate over
- * for GSL integration routine used in AT_CSDA_range_Bethe_cm2_g_single
+ * for GSL integration routine used in AT_CSDA_range_Bethe_g_cm2_single
  */
 typedef struct {
   long    particle_no;
@@ -65,7 +65,7 @@ double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_int( double  r_m,
  * @see          AT_DataMaterial.h for definition
  * @param[out]    CSDA_range_cm2_g resulting range (array of size n)
  */
-void AT_CSDA_range_Bethe_cm2_g_multi(	const long    n,
+void AT_CSDA_range_Bethe_g_cm2_multi(	const long    n,
 		                    const double 	E_MeV_u[],
 							const long 		particle_no[],
 							const long 		material_no,
@@ -82,7 +82,7 @@ void AT_CSDA_range_Bethe_cm2_g_multi(	const long    n,
  * @see          AT_DataMaterial.h for definition
  * @return     result
  */
-double AT_CSDA_range_Bethe_cm2_g_single(	const double 	E_MeV_u,
+double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_MeV_u,
 							const long 		particle_no,
 							const long 		material_no);
 
