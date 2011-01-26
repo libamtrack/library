@@ -44,6 +44,6 @@ static const double  cm_to_mm                =  10.0;
 
 static const double	 c_m_s				     =  299792458;
 
-static const double  Avogadro_constant_1_mol =  6.02214179e-23;
+static const double  Avogadro_constant_1_mol =  6.02214179e23;
 
 #endif /* AT_CONSTANTS_H_ */
