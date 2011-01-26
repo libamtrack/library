@@ -286,6 +286,33 @@ void AT_get_materials_data( const long  number_of_materials,
   free(match);
 }
 
+double AT_electron_density_m3_single( const double density_g_cm3,
+    const double average_Z,
+    const double average_A){
+
+	// TODO: Again, number of nucleon rather than atomic mass is used
+	double molar_mass_g_mol          = average_A;
+	double number_of_atoms_per_g     = Avogadro_constant_1_mol / molar_mass_g_mol;
+	double number_of_electrons_per_g = number_of_atoms_per_g * average_Z;
+	double electron_density_per_cm3  = number_of_electrons_per_g * density_g_cm3;
+	return(electron_density_per_cm3 * m_to_cm * m_to_cm * m_to_cm);
+}
+
+void AT_electron_density_m3_multi( const long n,
+    const double density_g_cm3[],
+    const double average_Z[],
+    const double average_A[],
+    double electron_density_m3[]){
+
+	long i;
+	for (i = 0; i < n; i++){
+		electron_density_m3[i]   = AT_electron_density_m3_single(density_g_cm3[i],
+				average_Z[i],
+				average_A[i]);
+	}
+}
+
+// FROM HERE: New routines for runtime material definition
 
 double AT_electron_density_m3( const long n,
     const double density_g_cm3,

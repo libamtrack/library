@@ -396,6 +396,30 @@ void AT_get_materials_data( const long  number_of_materials,
     double  average_A[],
     double  average_Z[]);
 
+/**
+ * Computes the electron density from average A and Z
+ * @param density_g_cm3      physical density (in g/cm3) of material
+ * @param average_Z          average atomic number of material
+ * @param average_A          mass number of material
+ * @return                   electron density in 1/m3
+ */
+double AT_electron_density_m3_single( const double density_g_cm3,
+    const double average_Z,
+    const double average_A);
+
+/**
+ * Returns electron density from average A and Z
+ * @param[in]   n                    size of arrays
+ * @param[in]   density_g_cm3        material density in g/cm3 (array of size n)
+ * @param[in]   average_A            average mass number (array of size n)
+ * @param[in]   average_Z            average atomic number (array of size n)
+ * @param[out]  electron_density_m3  electron density in 1/m3 (array of size n)
+ */
+void AT_electron_density_m3_multi( const long n,
+    const double density_g_cm3[],
+    const double average_Z[],
+    const double average_A[],
+    double electron_density_m3[]);
 
 /**
  * Computes the electron density
