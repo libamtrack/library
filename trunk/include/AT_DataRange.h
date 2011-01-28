@@ -138,7 +138,7 @@ double AT_CSDA_energy_after_slab_E_MeV_u_single( const double E_initial_MeV_u,
  * @param[in]      material_no          material index
  * @see          AT_DataMaterial.h for definition
  * @param[in]      slab_thickness_m     thickness of slab to transversed
- * @param[out]     E_final_MeV_u        final energy after slab
+ * @param[out]     E_final_MeV_u        final energy after slab (array of size n)
  */
 void AT_CSDA_energy_after_slab_E_MeV_u_multi( const long n,
 		const double E_initial_MeV_u[],
