@@ -57,8 +57,9 @@ double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_int( double  r_m,
  * Computes the CSDA range using the Bethe formula (AT_Stopping_Power_Bethe_Number)
  * according to ICRU49, p.6, Eq. 2.1
  * BUT WITHOUT shell or density, Bloch or Barkas correction!
- * @param[in]  	   n            number of particles
- * @param[in]  	   E_MeV_u      energy of particle per nucleon (array of size n)
+ * @param[in]  	   n                    number of particles
+ * @param[in]  	   E_initial_MeV_u      initial energy of particle per nucleon (array of size n)
+ * @param[in]  	   E_final_MeV_u        final energy of particle per nucleon (array of size n)
  * @param[in]  	   particle_no  particle index (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]      material_no  material index
@@ -66,25 +67,28 @@ double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_int( double  r_m,
  * @param[out]    CSDA_range_cm2_g resulting range (array of size n)
  */
 void AT_CSDA_range_Bethe_g_cm2_multi(	const long    n,
-		                    const double 	E_MeV_u[],
-							const long 		particle_no[],
-							const long 		material_no,
-							double          CSDA_range_cm2_g[]);
+		const double 	E_initial_MeV_u[],
+		const double 	E_final_MeV_u[],
+		const long 		particle_no[],
+		const long 		material_no,
+		double          CSDA_range_cm2_g[]);
 
 /**
  * Computes the CSDA range using the Bethe formula (AT_Stopping_Power_Bethe_Number)
  * according to ICRU49, p.6, Eq. 2.1
  * BUT WITHOUT shell or density, Bloch or Barkas correction!
- * @param[in]  	   E_MeV_u      energy of particle per nucleon
+ * @param[in]  	   E_inital_MeV_u      initial energy of particle per nucleon
+ * @param[in]  	   E_final_MeV_u       final energy of particle per nucleon
  * @param[in]  	   particle_no  particle index
  * @see          AT_DataParticle.h for definition
  * @param[in]      material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @return     result
  */
-double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_MeV_u,
-							const long 		particle_no,
-							const long 		material_no);
+double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_initial_MeV_u,
+		const double 	E_final_MeV_u,
+		const long 		particle_no,
+		const long 		material_no);
 
 /**
  * Computes the water equivalent path length (WEPL) using the Bethe formula
@@ -97,7 +101,7 @@ double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_MeV_u,
  * @param[out]    WEPL resulting water equivalent path length (array of size n)
  */
 void AT_WEPL_Bethe_multi(	const long    n,
-		const double 	E_MeV_u[],
+		const double    E_MeV_u[],
 		const long 		particle_no[],
 		const long 		material_no,
 		double          WEPL[]);
