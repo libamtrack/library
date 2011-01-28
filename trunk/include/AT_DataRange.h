@@ -50,7 +50,29 @@ typedef struct {
   long    material_no;
 } AT_CSDA_range_Bethe_parameters;
 
-double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_int( double  r_m,
+/**
+ * Integrand function for CSDA computation:
+ * inverse stopping power as function of energy (all other dependencies [particle, material] in params structre)
+ */
+double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_int( double  E_MeV_u,
+    void*   params);
+
+/**
+ * Structure to hold parameters
+ */
+typedef struct {
+  double  E_initial_MeV_u;
+  long    particle_no;
+  long    material_no;
+  double  range_g_cm2;
+} AT_CSDA_range_difference_parameters;
+
+
+/**
+ * Integrand function for CSDA computation:
+ * inverse stopping power as function of energy (all other dependencies [particle, material] in params structre)
+ */
+double AT_CSDA_range_g_cm_int( double  E_MeV_u,
     void*   params);
 
 /**
@@ -89,6 +111,41 @@ double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_initial_MeV_u,
 		const double 	E_final_MeV_u,
 		const long 		particle_no,
 		const long 		material_no);
+
+/**
+ * Solver function for CSDA energy after slab
+ */
+double AT_CSDA_range_difference_solver( double  E_final_MeV_u,
+	    void*   params);
+
+/**
+ * Computes the ion energy after transversing a slab of material using Bethe stopping power
+ * and CSDA approach
+ */
+double AT_CSDA_energy_after_slab_E_MeV_u_single( const double E_initial_MeV_u,
+		const long   particle_no,
+		const long   material_no,
+		const double slab_thickness_m);
+
+/**
+ * Computes the ion energy after transversing a slab of material using Bethe stopping power
+ * and CSDA approach for many energies / particles
+ *
+ * @param[in]  	   n                    number of particles
+ * @param[in]  	   E_initial_MeV_u      initial energy of particle per nucleon (array of size n)
+ * @param[in]  	   particle_no          particle index (array of size n)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]      material_no          material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]      slab_thickness_m     thickness of slab to transversed
+ * @param[out]     E_final_MeV_u        final energy after slab
+ */
+void AT_CSDA_energy_after_slab_E_MeV_u_multi( const long n,
+		const double E_initial_MeV_u[],
+		const long   particle_no[],
+		const long   material_no,
+		const double slab_thickness_m,
+		double E_final_MeV_u[]);
 
 /**
  * Computes the water equivalent path length (WEPL) using the Bethe formula

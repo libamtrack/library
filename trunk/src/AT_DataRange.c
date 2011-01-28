@@ -101,7 +101,63 @@ void AT_CSDA_range_Bethe_g_cm2_multi(	const long    n,
                 particle_no[i],
 				material_no);
 	}
+}
 
+
+double AT_CSDA_range_difference_solver( double  E_final_MeV_u,
+	    void*   params)
+{
+	  assert( params != NULL );
+	  AT_CSDA_range_difference_parameters* solver_params = (AT_CSDA_range_difference_parameters*)params;
+
+	  double material_range_g_cm2 = AT_CSDA_range_Bethe_g_cm2_single(	solver_params->E_initial_MeV_u,
+	  		E_final_MeV_u,
+	  		solver_params->particle_no,
+	  		solver_params->material_no);
+
+	  return (material_range_g_cm2 - solver_params->range_g_cm2);
+}
+
+
+double AT_CSDA_energy_after_slab_E_MeV_u_single( const double E_initial_MeV_u,
+		const long   particle_no,
+		const long   material_no,
+		const double slab_thickness_m)
+{
+	double slab_thickness_g_cm2 = (slab_thickness_m * m_to_cm) * AT_density_g_cm3_from_material_no(material_no);
+	AT_CSDA_range_difference_parameters params;
+	params.E_initial_MeV_u      = E_initial_MeV_u;
+	params.particle_no          = particle_no;
+	params.material_no          = material_no;
+	params.range_g_cm2          = slab_thickness_g_cm2;
+
+	const double  solver_accuracy  =  1e-6;
+    const double  min_possible_value_E_final_MeV_u = 0.0;
+    const double  max_possible_value_E_final_MeV_u = E_initial_MeV_u;
+
+    double E_final_MeV_u =  zriddr(AT_CSDA_range_difference_solver,
+	          (void*)(&params),
+	          min_possible_value_E_final_MeV_u,
+	          max_possible_value_E_final_MeV_u,
+	          solver_accuracy);
+
+	return E_final_MeV_u;
+}
+
+void AT_CSDA_energy_after_slab_E_MeV_u_multi( const long n,
+		const double E_initial_MeV_u[],
+		const long   particle_no[],
+		const long   material_no,
+		const double slab_thickness_m,
+		double E_final_MeV_u[]){
+
+	long i;
+	for (i = 0; i < n; i++){
+		E_final_MeV_u[i] = AT_CSDA_energy_after_slab_E_MeV_u_single(E_initial_MeV_u[i],
+				particle_no[i],
+				material_no,
+				slab_thickness_m);
+	}
 }
 
 double AT_WEPL_Bethe_single(	const double 	E_MeV_u,
