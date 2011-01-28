@@ -86,6 +86,7 @@ Stopping-power routines:
 
 \code{\link{AT.Stopping.Power.Mass.Bethe.MeV.cm2.g}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formula\cr
 \code{\link{AT.CSDA.range.Bethe.g.cm2}} \tab CSDA range from Bethe formula\cr
+\code{\link{AT.CSDA.energy.after.slab.E.MeV.u.multi}} \tab Ion energy after slab of material according Bethe formula\cr
 \code{\link{AT.WEPL.Bethe}} \tab Water equivalent path length from Bethe range
 }
 
