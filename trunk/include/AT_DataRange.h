@@ -155,12 +155,14 @@ void AT_CSDA_energy_after_slab_E_MeV_u_multi( const long n,
  * @see          AT_DataParticle.h for definition
  * @param[in]      material_no  material index
  * @see          AT_DataMaterial.h for definition
+ * @param[in]      slab_thickness_m  thickness of slab of material different than water, in meter
  * @param[out]    WEPL resulting water equivalent path length (array of size n)
  */
 void AT_WEPL_Bethe_multi(	const long    n,
 		const double    E_MeV_u[],
 		const long 		particle_no[],
 		const long 		material_no,
+		const double    slab_thickness_m,
 		double          WEPL[]);
 
 /**
@@ -170,9 +172,11 @@ void AT_WEPL_Bethe_multi(	const long    n,
  * @see          AT_DataParticle.h for definition
  * @param[in]      material_no  material index
  * @see          AT_DataMaterial.h for definition
+ * @param[in]      slab_thickness_m  thickness of slab of material different than water, in meter
  * @return     result
  */
 double AT_WEPL_Bethe_single(	const double 	E_MeV_u,
 		const long 		particle_no,
-		const long 		material_no);
+		const long 		material_no,
+		const double    slab_thickness_m);
 
