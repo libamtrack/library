@@ -174,19 +174,19 @@ double AT_WEPL_Bethe_single(	const double 	E_MeV_u,
 			material_no,
 			slab_thickness_m);
 
-	double range_material_g_cm2   = AT_CSDA_range_Bethe_g_cm2_single( E_final_MeV_u,
+	double residual_range_g_cm2   = AT_CSDA_range_Bethe_g_cm2_single( E_final_MeV_u,
 			0,
 			particle_no,
-			material_no);
+			Water_Liquid);
 
-	double range_material_m       = range_material_g_cm2 / AT_density_g_cm3_from_material_no(material_no) / m_to_cm;
+	double residual_range_m       = residual_range_g_cm2 / AT_density_g_cm3_from_material_no(Water_Liquid) / m_to_cm;
 
 	double range_water_m          = AT_CSDA_range_Bethe_g_cm2_single(E_MeV_u,
 	                                               0,
 	                                               particle_no,
 	                                               Water_Liquid) / m_to_cm;
 
-	return (slab_thickness_m + range_material_m) / range_water_m;
+	return (range_water_m - residual_range_m) / slab_thickness_m;
 };
 
 void AT_WEPL_Bethe_multi(	const long    n,
