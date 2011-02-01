@@ -129,6 +129,32 @@ int AT_atomic_weight_from_particle_no( const long  n,
   return AT_Success;
 }
 
+int AT_I_eV_from_particle_no( const long  n,
+    const long  particle_no[],
+    double  I_eV[])
+{
+  long i;
+  long*  matches  =  (long*)calloc(n, sizeof(long));
+  long*  Z        =  (long*)calloc(n, sizeof(long));
+
+  AT_Z_from_particle_no( n,
+      particle_no,
+      Z);
+
+  find_elements_int(  Z,
+      n,
+      AT_Particle_Data.Z,
+      AT_Particle_Data.n,
+      matches);
+
+  for (i = 0; i < n; i++){
+    I_eV[i]    = AT_Particle_Data.I_eV[matches[i]];
+  }
+
+  free(Z);
+  free(matches);
+  return AT_Success;
+}
 
 int AT_particle_name_from_particle_no_single( const long  particle_no,
     char * particle_name){

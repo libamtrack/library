@@ -325,38 +325,74 @@ void AT_electron_density_m3_from_composition( const long n,
     const double weight_fraction[],
     double* electron_density_m3)
 {
+	*electron_density_m3 = 0.0;
+	long i;
+	for (i = 0; i < n; i++){
+		*electron_density_m3 += weight_fraction[i] * Avogadro_constant_1_mol * Z[i] / A[i];
+	}
+
+	*electron_density_m3 *= density_g_cm3* m_to_cm * m_to_cm * m_to_cm;
 }
 
 
-double AT_average_A_from_composition( const long n,
+void AT_average_A_from_composition( const long n,
     const long A[],
     const double weight_fraction[],
     double* average_A)
 {
+	*average_A = 0.0;
+	long i;
+	for (i = 0; i < n; i++){
+		*average_A += weight_fraction[i] * A[i];
+	}
 }
 
-
-double AT_average_Z_from_composition( const long n,
+void AT_average_Z_from_composition( const long n,
     const long Z[],
     const double weight_fraction[],
     double* average_Z)
 {
+	*average_Z = 0.0;
+	long i;
+	for (i = 0; i < n; i++){
+		*average_Z += weight_fraction[i] * Z[i];
+	}
 }
 
-double AT_effective_Z_from_composition( const long n,
+void AT_effective_Z_from_composition( const long n,
     const long Z[],
     const double weight_fraction[],
     const double exponent,
     double* effective_Z)
 {
+	double effective_Z_sum = 0.0;
+	long i;
+	for (i = 0; i < n; i++){
+		effective_Z_sum += pow(weight_fraction[i] * Z[i], exponent);
+		*effective_Z = pow(effective_Z_sum, 1/exponent);
+	}
 }
 
-double AT_I_eV_from_composition( const long n,
+void AT_I_eV_from_composition( const long n,
 	const long A[],
     const long Z[],
     const double weight_fraction[],
     double* I_eV)
 {
+	double* I_eV_elements   = (double*)calloc(n, sizeof(double));
+	long*   particle_nos    = (long*)calloc(n, sizeof(long));
+	AT_particle_no_from_Z_and_A(n, Z, A, particle_nos);
+	AT_I_eV_from_particle_no(n, particle_nos, I_eV_elements);
+	long i;
+	double numerator = 0.0;
+	double denominator = 0.0;
+
+	for (i = 0; i < n; i++){
+			numerator	   += (weight_fraction[i] * (Z[i])/A[i]) * log(I_eV_elements[i]);
+	        denominator	   += weight_fraction[i] * (Z[i]/A[i]);
+	        *I_eV 	= exp(numerator / denominator);
+	}
+    free(I_eV_elements);
 }
 
 void AT_set_user_material( const double density_g_cm3,
