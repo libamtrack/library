@@ -135,20 +135,21 @@ typedef struct {
 typedef struct {
   const long    n;
   const long    material_no[MATERIAL_DATA_N];
-  const bool    ready[MATERIAL_DATA_N];
+  bool          ready[MATERIAL_DATA_N];
   const long    ICRU_ID[MATERIAL_DATA_N];
-  const double  density_g_cm3[MATERIAL_DATA_N];
-  const double  I_eV[MATERIAL_DATA_N];
+  double        density_g_cm3[MATERIAL_DATA_N];
+  double        I_eV[MATERIAL_DATA_N];
   const double  alpha_g_cm2_MeV[MATERIAL_DATA_N];
   const double  p_MeV[MATERIAL_DATA_N];
   const double  m_g_cm2[MATERIAL_DATA_N];
-  const double  average_A[MATERIAL_DATA_N];
-  const double  average_Z[MATERIAL_DATA_N];
+  double        average_A[MATERIAL_DATA_N];
+  double        average_Z[MATERIAL_DATA_N];
   const char*   material_name[MATERIAL_DATA_N];
 } AT_table_of_material_data_struct;
 
 
-static const AT_table_of_material_data_struct AT_Material_Data = {
+//static const
+static AT_table_of_material_data_struct AT_Material_Data = {
     MATERIAL_DATA_N,
     // material_no
     {  User_Defined_Material,
@@ -423,52 +424,94 @@ void AT_electron_density_m3_multi( const long n,
     double electron_density_m3[]);
 
 /**
- * Computes the electron density
- * TODO to be implemented
- * @param n                  number of constituents in material
- * @param density_g_cm3      physical density (in g/cm3) of material
- * @param Z                  atomic numbers of constituents
- * @length n
- * @param A                  mass numbers of constituents
- * @length n
- * @param weight_fraction    relative fractions of weight of constituents
- * @length n
- * @return                   electron density in 1/m3
+ * Computes the electron density for a given material composition
+ *
+ * @param[in]  n                     number of constituents in material
+ * @param[in]  density_g_cm3         physical density (in g per cm3) of material
+ * @param[in]  Z                     atomic numbers of constituents (array of size n)
+ * @param[in]  A                     mass numbers of constituents (array of size n)
+ * @param[in]  weight_fraction       relative fractions of weight of constituents (array of size n)
+ * @param[out] electron_density_m3   electron density per m3
  */
-//double AT_electron_density_m3( const long n,
-//    const double density_g_cm3,
-//    const long Z[],
-//    const long A[],
-//    const double weight_fraction[]);
-
-
-/**
- * Computes the average mass number
- * TODO to be implemented
- * @param n                  number of constituents in material
- * @param A                  mass numbers of constituents
- * @length n
- * @param weight_fraction    relative fractions of weight of constituents
- * @length n
- * @return                   average mass number
- */
-double AT_average_A( const long n,
-    const long A[],
-    const double weight_fraction[]);
-
-
-/**
- * Computes the average atomic number
- * TODO to be implemented
- * @param n                  number of constituents in material
- * @param A                  atomic numbers of constituents
- * @length n
- * @param weight_fraction    relative fractions of weight of constituents
- * @length n
- * @return                   average atomic number
- */
-double AT_average_Z( const long n,
+void AT_electron_density_m3_from_composition( const long n,
+    const double density_g_cm3,
     const long Z[],
-    const double weight_fraction[]);
+    const long A[],
+    const double weight_fraction[],
+    double* electron_density_m3);
+
+
+/**
+ * Computes the average mass number for a given material composition
+ *
+ * @param[in]  n                     number of constituents in material
+ * @param[in]  A                     mass numbers of constituents (array of size n)
+ * @param[in]  weight_fraction       relative fractions of weight of constituents (array of size n)
+ * @param[out] average_A             average A
+ */
+double AT_average_A_from_composition( const long n,
+    const long A[],
+    const double weight_fraction[],
+    double* average_A);
+
+
+/**
+ * Computes the average atomic number for a given material composition
+ *
+ * @param[in]  n                     number of constituents in material
+ * @param[in]  Z                     atomic numbers of constituents (array of size n)
+ * @param[in]  weight_fraction       relative fractions of weight of constituents (array of size n)
+ * @param[out] average_Z             average Z
+ */
+double AT_average_Z_from_composition( const long n,
+    const long Z[],
+    const double weight_fraction[],
+    double* average_Z);
+
+/**
+ * Computes the effective atomic number for a given material composition
+ *
+ * @param[in]  n                     number of constituents in material
+ * @param[in]  Z                     atomic numbers of constituents (array of size n)
+ * @param[in]  weight_fraction       relative fractions of weight of constituents (array of size n)
+ * @param[in]  exponent              exponent for additivity rule reflecting the photon energy regime (usually 3.5 at ~ 100 kV)
+ * @param[out] effective_Z           effective Z
+ */
+double AT_effective_Z_from_composition( const long n,
+    const long Z[],
+    const double weight_fraction[],
+    const double exponent,
+    double* effective_Z);
+
+/**
+ * Computes the I value for a given material composition
+ *
+ * @param[in]  n                     number of constituents in material
+ * @param[in]  Z                     atomic numbers of constituents (array of size n)
+ * @param[in]  A                     mass numbers of constituents (array of size n)
+ * @param[in]  weight_fraction       relative fractions of weight of constituents (array of size n)
+ * @param[out] I_eV                  I value in eV
+ */
+double AT_I_eV_from_composition( const long n,
+    const long Z[],
+    const long A[],
+    const double weight_fraction[],
+    double* I_eV);
+
+/**
+ * Initializes user defined material. The material can then be used with material index number 0. !Be aware! that is
+ * definition is only valid during run-time. When the library is reloaded, the default settings are restored and the
+ * material is removed.
+ * @param[in] density_g_cm3  physical density in g per cm3
+ * @param[in] I_eV           I value in eV
+ * @param[in] average_A      average mass number
+ * @param[in] average_Z      average atomic number
+ * @param[out] status        material defined successfully if zero
+ */
+void AT_set_user_material( const double density_g_cm3,
+		const double I_eV,
+		const double average_A,
+		const double average_Z,
+		long* status);
 
 #endif /* AT_DATAMATERIAL_H_ */
