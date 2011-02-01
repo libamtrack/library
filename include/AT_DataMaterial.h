@@ -31,6 +31,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
+#include <math.h>
 
 #include "AT_Error.h"
 #include "AT_NumericalRoutines.h"
@@ -449,7 +450,7 @@ void AT_electron_density_m3_from_composition( const long n,
  * @param[in]  weight_fraction       relative fractions of weight of constituents (array of size n)
  * @param[out] average_A             average A
  */
-double AT_average_A_from_composition( const long n,
+void AT_average_A_from_composition( const long n,
     const long A[],
     const double weight_fraction[],
     double* average_A);
@@ -463,7 +464,7 @@ double AT_average_A_from_composition( const long n,
  * @param[in]  weight_fraction       relative fractions of weight of constituents (array of size n)
  * @param[out] average_Z             average Z
  */
-double AT_average_Z_from_composition( const long n,
+void AT_average_Z_from_composition( const long n,
     const long Z[],
     const double weight_fraction[],
     double* average_Z);
@@ -477,7 +478,7 @@ double AT_average_Z_from_composition( const long n,
  * @param[in]  exponent              exponent for additivity rule reflecting the photon energy regime (usually 3.5 at ~ 100 kV)
  * @param[out] effective_Z           effective Z
  */
-double AT_effective_Z_from_composition( const long n,
+void AT_effective_Z_from_composition( const long n,
     const long Z[],
     const double weight_fraction[],
     const double exponent,
@@ -492,7 +493,7 @@ double AT_effective_Z_from_composition( const long n,
  * @param[in]  weight_fraction       relative fractions of weight of constituents (array of size n)
  * @param[out] I_eV                  I value in eV
  */
-double AT_I_eV_from_composition( const long n,
+void AT_I_eV_from_composition( const long n,
     const long Z[],
     const long A[],
     const double weight_fraction[],

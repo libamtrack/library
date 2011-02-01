@@ -207,6 +207,16 @@ int AT_atomic_weight_from_particle_no(  const long  n,
     const long  particle_no[],
     double  atomic_weight[]);
 
+/**
+ * Return I value for given elements
+ * @param[in]  n              number of elements
+ * @param[in]  particle_no    particle index number (array of size n)
+ * @param[out] I_eV           I value (array of size n)
+ * @return
+ */
+int AT_I_eV_from_particle_no( const long  n,
+    const long  particle_no[],
+    double  I_eV[]);
 
 /**
  * TODO
