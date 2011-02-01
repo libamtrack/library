@@ -318,29 +318,59 @@ void AT_electron_density_m3_multi( const long n,
 	}
 }
 
-// FROM HERE: New routines for runtime material definition
-
-double AT_electron_density_m3( const long n,
+void AT_electron_density_m3_from_composition( const long n,
     const double density_g_cm3,
     const long Z[],
     const long A[],
-    const double weight_fraction[])
+    const double weight_fraction[],
+    double* electron_density_m3)
 {
-  return (6.6e23);
 }
 
 
-double AT_average_A( const long n,
+double AT_average_A_from_composition( const long n,
     const long A[],
-    const double weight_fraction[])
+    const double weight_fraction[],
+    double* average_A)
 {
-  return (6.6e23);
 }
 
 
-double AT_average_Z( const long n,
+double AT_average_Z_from_composition( const long n,
     const long Z[],
-    const double weight_fraction[])
+    const double weight_fraction[],
+    double* average_Z)
 {
-  return (6.6e23);
 }
+
+double AT_effective_Z_from_composition( const long n,
+    const long Z[],
+    const double weight_fraction[],
+    const double exponent,
+    double* effective_Z)
+{
+}
+
+double AT_I_eV_from_composition( const long n,
+	const long A[],
+    const long Z[],
+    const double weight_fraction[],
+    double* I_eV)
+{
+}
+
+void AT_set_user_material( const double density_g_cm3,
+		const double I_eV,
+		const double average_A,
+		const double average_Z,
+		long* status)
+{
+	long  index = User_Defined_Material;
+	AT_Material_Data.density_g_cm3[index]     = density_g_cm3;
+	AT_Material_Data.I_eV[index]              = I_eV;
+	AT_Material_Data.average_A[index]         = average_A;
+	AT_Material_Data.average_Z[index]         = average_Z;
+	AT_Material_Data.ready[index]             = true;
+	*status = EXIT_SUCCESS;
+}
+
