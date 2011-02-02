@@ -435,3 +435,25 @@ void AT_set_user_material( const double density_g_cm3,
 	*status = EXIT_SUCCESS;
 }
 
+void AT_set_user_material_from_composition( const long n,
+		const double density_g_cm3,
+		const long A[],
+	    const long Z[],
+	    const double weight_fraction[],
+		long* status)
+{
+
+	double* normalized_weight_fraction = (double*)calloc(n, sizeof(double));
+	AT_normalize(n, weight_fraction, normalized_weight_fraction);
+
+	double I_eV;
+	double average_Z;
+	double average_A;
+	AT_set_user_material(density_g_cm3,
+			I_eV,
+			average_A,
+			average_Z,
+			status);
+
+	free(normalized_weight_fraction);
+}

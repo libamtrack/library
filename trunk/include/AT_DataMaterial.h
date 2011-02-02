@@ -515,4 +515,24 @@ void AT_set_user_material( const double density_g_cm3,
 		const double average_Z,
 		long* status);
 
-#endif /* AT_DATAMATERIAL_H_ */
+/**
+ * Initializes user defined material from composition data. The material can then be used with material index number 0. !Be aware! that is
+ * definition is only valid during run-time. When the library is reloaded, the default settings are restored and the
+ * material is removed.
+ *
+ * @param[in]  n                     number of constituents in material
+ * @param[in]  density_g_cm3         physical density (in g per cm3) of material
+ * @param[in]  Z                     atomic numbers of constituents (array of size n)
+ * @param[in]  A                     mass numbers of constituents (array of size n)
+ * @param[in]  weight_fraction       relative fractions of weight of constituents (array of size n)
+ * @param[out] status                material defined successfully if zero
+ */
+void AT_set_user_material_from_composition( const long n,
+		const double density_g_cm3,
+		const long A[],
+	    const long Z[],
+	    const double weight_fraction[],
+		long* status);
+#endif
+
+/* AT_DATAMATERIAL_H_ */
