@@ -152,6 +152,7 @@ Other routines:
 \code{\link{AT.effective.Z.from.composition}} \tab Computes effective atomic number from material composition\cr
 \code{\link{AT.I.eV.from.composition}} \tab Computes average I value from material composition\cr
 \code{\link{AT.set.user.material}} \tab Sets properties of user defined material (CAVE: only valid until library is freed)\cr
+\code{\link{AT.set.user.material.from.composition}} \tab Sets properties of user defined material from elemental composition (CAVE: only valid until library is freed)\cr
 \code{\link{AT.get.materials.data}} \tab Returns properties of pre-defined materials
 }
 
