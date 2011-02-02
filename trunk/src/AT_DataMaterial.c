@@ -325,13 +325,18 @@ void AT_electron_density_m3_from_composition( const long n,
     const double weight_fraction[],
     double* electron_density_m3)
 {
+	double* normalized_weight_fraction = (double*)calloc(n, sizeof(double));
+	AT_normalize(n, weight_fraction, normalized_weight_fraction);
+
 	*electron_density_m3 = 0.0;
 	long i;
 	for (i = 0; i < n; i++){
-		*electron_density_m3 += weight_fraction[i] * Avogadro_constant_1_mol * Z[i] / A[i];
+		*electron_density_m3 += normalized_weight_fraction[i] * Avogadro_constant_1_mol * Z[i] / A[i];
 	}
 
 	*electron_density_m3 *= density_g_cm3* m_to_cm * m_to_cm * m_to_cm;
+
+	free(normalized_weight_fraction);
 }
 
 
@@ -340,11 +345,16 @@ void AT_average_A_from_composition( const long n,
     const double weight_fraction[],
     double* average_A)
 {
+	double* normalized_weight_fraction = (double*)calloc(n, sizeof(double));
+	AT_normalize(n, weight_fraction, normalized_weight_fraction);
+
 	*average_A = 0.0;
 	long i;
 	for (i = 0; i < n; i++){
-		*average_A += weight_fraction[i] * A[i];
+		*average_A += normalized_weight_fraction[i] * A[i];
 	}
+
+	free(normalized_weight_fraction);
 }
 
 void AT_average_Z_from_composition( const long n,
@@ -352,11 +362,16 @@ void AT_average_Z_from_composition( const long n,
     const double weight_fraction[],
     double* average_Z)
 {
+	double* normalized_weight_fraction = (double*)calloc(n, sizeof(double));
+	AT_normalize(n, weight_fraction, normalized_weight_fraction);
+
 	*average_Z = 0.0;
 	long i;
 	for (i = 0; i < n; i++){
-		*average_Z += weight_fraction[i] * Z[i];
+		*average_Z += normalized_weight_fraction[i] * Z[i];
 	}
+
+	free(normalized_weight_fraction);
 }
 
 void AT_effective_Z_from_composition( const long n,
@@ -365,12 +380,17 @@ void AT_effective_Z_from_composition( const long n,
     const double exponent,
     double* effective_Z)
 {
+	double* normalized_weight_fraction = (double*)calloc(n, sizeof(double));
+	AT_normalize(n, weight_fraction, normalized_weight_fraction);
+
 	double effective_Z_sum = 0.0;
 	long i;
 	for (i = 0; i < n; i++){
-		effective_Z_sum += pow(weight_fraction[i] * Z[i], exponent);
+		effective_Z_sum += pow(normalized_weight_fraction[i] * Z[i], exponent);
 		*effective_Z = pow(effective_Z_sum, 1/exponent);
 	}
+
+	free(normalized_weight_fraction);
 }
 
 void AT_I_eV_from_composition( const long n,
@@ -379,6 +399,9 @@ void AT_I_eV_from_composition( const long n,
     const double weight_fraction[],
     double* I_eV)
 {
+	double* normalized_weight_fraction = (double*)calloc(n, sizeof(double));
+	AT_normalize(n, weight_fraction, normalized_weight_fraction);
+
 	double* I_eV_elements   = (double*)calloc(n, sizeof(double));
 	long*   particle_nos    = (long*)calloc(n, sizeof(long));
 	AT_particle_no_from_Z_and_A(n, Z, A, particle_nos);
@@ -388,11 +411,13 @@ void AT_I_eV_from_composition( const long n,
 	double denominator = 0.0;
 
 	for (i = 0; i < n; i++){
-			numerator	   += (weight_fraction[i] * (Z[i])/A[i]) * log(I_eV_elements[i]);
-	        denominator	   += weight_fraction[i] * (Z[i]/A[i]);
+			numerator	   += (normalized_weight_fraction[i] * (Z[i])/A[i]) * log(I_eV_elements[i]);
+	        denominator	   += normalized_weight_fraction[i] * (Z[i]/A[i]);
 	        *I_eV 	= exp(numerator / denominator);
 	}
-    free(I_eV_elements);
+
+	free(I_eV_elements);
+	free(normalized_weight_fraction);
 }
 
 void AT_set_user_material( const double density_g_cm3,
