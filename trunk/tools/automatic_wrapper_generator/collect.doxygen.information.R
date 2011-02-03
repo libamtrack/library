@@ -33,8 +33,8 @@ cur.dir           <- getwd()
 namespace         <- scan(file = "NAMESPACE", what = "character")
 
 # Navigate to include path within libamtrack trunk. Stop if this fails
-if(try(setwd("../../../include")) == FALSE){
-    stop("I do not see from current folder ../../include. Move to other place !")
+if((try(setwd("../../../include")) == FALSE)&(try(setwd("../../include")) == FALSE)){
+    stop("I do not see from current folder /include. Please move to other place !")
 }
 
 # Read in all header file names
@@ -61,7 +61,7 @@ grep.bool     <-     function(pattern, x, ...){
 }
 
 for(header.file.name in header.file.names){
-     # DEBUG: header.file.name <- header.file.names[4]
+     # DEBUG: header.file.name <- header.file.names[21]
      
      #####################################################
      # A. Extract doxygen comment and function declaration
@@ -70,12 +70,18 @@ for(header.file.name in header.file.names){
      # Read the current header file (separated into 'words' (=chunks of strings that were separated by whitespaces, line
      # break etc. All whitespaces are removed during read in
      header.file.text                 <- scan(header.file.name, what = "character", strip.white = T)
+     
+     # Read the current header file (in lines)
+     raw.header.file.text             <- scan(header.file.name, what = "character", sep = "\n")
+     
      print(paste("Read: ", header.file.name))
 
      # Find the start of doxygen comments ("/**") and the end of a declaration (");")
      # They should embrase a function declaration (but also others, like enumerators etc.)
      pos.start.doxygen.comment        <- grep("/**", header.file.text, fixed = T)
      pos.end.function.declaration     <- grep (");", header.file.text, fixed = T)
+     raw.pos.start.doxygen.comment    <- grep("/**", raw.header.file.text, fixed = TRUE)
+     raw.pos.end.function.declaration <- grep(");", raw.header.file.text, fixed = TRUE)
 
      # Break and process next header file in case no function are found
      if(length(pos.start.doxygen.comment) == 0 | length(pos.end.function.declaration) == 0){
@@ -86,17 +92,20 @@ for(header.file.name in header.file.names){
      # Remove the first entry of pos.start.doxygen.comment as this is (most likely!) the
      # brief description of the header file itself (@brief)
      # TODO: replace by more robust statement which looks for "@brief"
-     pos.start.doxygen.comment <- pos.start.doxygen.comment[-1]
+     pos.start.doxygen.comment     <- pos.start.doxygen.comment[-1]
+     raw.pos.start.doxygen.comment <- raw.pos.start.doxygen.comment[-1]
      
      # Check whether both vectors have same length
      # If not, remove all those comment-starts that do not correlate with 
      # a function-end
      # first, initialize keep-variable which will contain all element indices of header.file.text to keep
-     idx.keep <- NULL
+     idx.keep     <- NULL
+     raw.idx.keep <- NULL
      # If both vectors have the same length, keep everything but reformat
      if(length(pos.start.doxygen.comment) == length(pos.end.function.declaration)){
           for(i in 1:length(pos.start.doxygen.comment)){
-               idx.keep <- c(idx.keep, (pos.start.doxygen.comment[i]):(pos.end.function.declaration[i])) 
+               idx.keep     <- c(idx.keep,     (pos.start.doxygen.comment[i]):(pos.end.function.declaration[i])) 
+               raw.idx.keep <- c(raw.idx.keep, (raw.pos.start.doxygen.comment[i]):(raw.pos.end.function.declaration[i])) 
           }     
      # if more function ends, just select those that correspond to a comment-start
      } else if (length(pos.start.doxygen.comment) < length(pos.end.function.declaration)){
@@ -105,7 +114,8 @@ for(header.file.name in header.file.names){
                while(pos.start.doxygen.comment[i] > pos.end.function.declaration[j]){
                     j = j+1
                }
-               idx.keep <- c(idx.keep, (pos.start.doxygen.comment[i]):(pos.end.function.declaration[j]))
+               idx.keep      <- c(idx.keep,     (pos.start.doxygen.comment[i]):(pos.end.function.declaration[j]))
+               raw.idx.keep  <- c(raw.idx.keep, (raw.pos.start.doxygen.comment[i]):(raw.pos.end.function.declaration[j]))
           } 
      # if more comment starts, just select those that correspond to a function end
      } else {
@@ -114,12 +124,15 @@ for(header.file.name in header.file.names){
                while(pos.end.function.declaration[i] < pos.start.doxygen.comment[j]){
                     j = j-1
                }
-               idx.keep <- c(idx.keep, (pos.start.doxygen.comment[j]):(pos.end.function.declaration[i])) 
+               idx.keep     <- c(idx.keep,     (pos.start.doxygen.comment[j]):(pos.end.function.declaration[i])) 
+               raw.idx.keep <- c(raw.idx.keep, (raw.pos.start.doxygen.comment[j]):(raw.pos.end.function.declaration[i])) 
           }
      }
 
      # Now, only the comment and declaration text of suitable functions are left
      reduced.header.file.text           <- header.file.text[idx.keep]
+     raw.reduced.header.file.text       <- raw.header.file.text[raw.idx.keep]
+     
 
 
      #####################################################
@@ -131,6 +144,10 @@ for(header.file.name in header.file.names){
      pos.start.doxygen.comment           <- grep("/**", reduced.header.file.text, fixed = T)
      pos.end.doxygen.comment             <- grep("*/", reduced.header.file.text, fixed = T)
      pos.end.function.declaration        <- grep(");", reduced.header.file.text, fixed = T)
+
+     raw.pos.start.doxygen.comment       <- grep("/**", raw.reduced.header.file.text, fixed = TRUE)
+     raw.pos.end.doxygen.comment         <- grep("*/", raw.reduced.header.file.text, fixed = TRUE)
+     raw.pos.end.function.declaration    <- grep(");", raw.reduced.header.file.text, fixed = TRUE)
 
      # If length are different comments are corrupted, skip file and process next
      if((length(pos.start.doxygen.comment) != length(pos.end.doxygen.comment))|(length(pos.start.doxygen.comment) != length(pos.end.function.declaration))){
@@ -146,6 +163,8 @@ for(header.file.name in header.file.names){
           # Indices for reduced.header.file.text that hold comment and declaration
           idx.comment         <- pos.start.doxygen.comment[i]:pos.end.doxygen.comment[i] 
           idx.declaration     <- (pos.end.doxygen.comment[i]+1):pos.end.function.declaration[i]
+          raw.idx.comment     <- raw.pos.start.doxygen.comment[i]:raw.pos.end.doxygen.comment[i] 
+          raw.idx.declaration <- (raw.pos.end.doxygen.comment[i]+1):raw.pos.end.function.declaration[i]
 
           # Extract the function name (which is on second position of the declaration, opening bracket has to be removed
           name                <- gsub("(", "", reduced.header.file.text[idx.declaration[2]], fixed = T)
@@ -155,8 +174,10 @@ for(header.file.name in header.file.names){
           if(name %in% namespace){
 
                # Extract comment and declaration text
-               raw.comment.text        <- reduced.header.file.text[idx.comment]
-               raw.declaration.text    <- reduced.header.file.text[idx.declaration]
+               current.function$raw.comment.text        <- raw.reduced.header.file.text[raw.idx.comment]
+               current.function$raw.declaration.text    <- raw.reduced.header.file.text[raw.idx.declaration]
+               raw.comment.text                         <- reduced.header.file.text[idx.comment]
+               raw.declaration.text                     <- reduced.header.file.text[idx.declaration]
           
                # Function name
                current.function$name   <- name     
