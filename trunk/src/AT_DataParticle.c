@@ -148,7 +148,7 @@ int AT_I_eV_from_particle_no( const long  n,
       matches);
 
   for (i = 0; i < n; i++){
-    I_eV[i]    = AT_Particle_Data.I_eV[matches[i]];
+    I_eV[i]    = AT_Particle_Data.I_eV_per_Z[matches[i]] * Z[i];
   }
 
   free(Z);
