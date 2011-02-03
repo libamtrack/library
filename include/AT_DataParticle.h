@@ -52,7 +52,7 @@ typedef struct {
   const char*     element_name[PARTICLE_DATA_N];
   const char*     element_acronym[PARTICLE_DATA_N];
   const double    density_g_cm3[PARTICLE_DATA_N];
-  const double    I_eV[PARTICLE_DATA_N];
+  const double    I_eV_per_Z[PARTICLE_DATA_N];
 } AT_particle_data_struct;
 
 
