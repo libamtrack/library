@@ -117,10 +117,10 @@
 	</input>
 
 	<output>
-		<element type="plot" label="RDD [Gy] vs distance [m]" datatype="double">
-			<description>RDD [Gy] vs distance [m]</description>
-			<data x= "r" y="RDD" />
-			<axis x="log" y="log" />
+		<element type="plot" label="Radial Dose Distribution" datatype="double">
+			<description>Radial Dose Distribution</description>
+			<data x= "r" y="RDD"/>
+			<axis x="log" y="log" labelx="distance [m]" labely="RDD [Gy]"/>
 		</element>
 	</output>
 </root>

@@ -89,7 +89,8 @@
 	<output>
 		<element type="plot" label="D_RDD_Gy" datatype="double">
 			<description>dose [Gy]</description>
-			<data x= "r_m_input" y="D_RDD_Gy" />
+			<data x= "r_m_input" y="D_RDD_Gy"/>
+			<axis labelx="Distance [m]" labely="RDD [Gy]"/>
 		</element>
 	</output>
 </root>

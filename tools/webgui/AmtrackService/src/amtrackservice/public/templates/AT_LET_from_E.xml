@@ -73,13 +73,20 @@
 			</preset>
 			<data x="material_no" />
 		</element>		
+		<element type="field" label="label" datatype="string">
+            <description>label</description>
+            <preset>
+                <item value="default" />
+            </preset>
+            <data x="label" />
+        </element>
 	</input>
 
 	<output>
-		<element type="plot" label="LET [keV/um]" datatype="double" append="true">
+		<element type="plot" label="Electronic stopping power" datatype="double" append="true">
 			<description>LET [keV/um]</description>
-			<data x= "E" y="LET" />
-			<axis x="log" y="lin"/>			
+			<data x= "E" y="LET"/>
+			<axis x="log" y="lin" labelx="Energy [MeV/amu]" labely="LET [keV/um]"/>			
 		</element>
 	</output>
 </root>

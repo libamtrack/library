@@ -117,12 +117,12 @@
         <element type="plot" label="f1" datatype="double">
             <description>f1 histogram</description>
             <data x="f1_d_Gy" y="f1" />
-             <axis x="log" y="log" />
+            <axis x="log" y="log" labelx="X" labely="Y"/>
         </element>
         <element type="plot" label="f" datatype="double">
             <description>f histogram</description>
             <data x="fdd" y="f" />
-            <axis x="log" y="log" />
+            <axis x="log" y="log" labelx="X" labely="Y"/>
         </element>
     </output>
 </root>

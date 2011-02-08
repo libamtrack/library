@@ -1,6 +1,8 @@
 package amtrackservice.client.gui.elements;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
@@ -22,10 +24,260 @@ import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.visualizations.ScatterChart;
 import com.google.gwt.visualization.client.visualizations.ScatterChart.Options;
 
-public class AmPlot extends AmWidget {
 
+/**
+ *  one data serie, which contains:
+ *    vector of X and corresponding to them Y values
+ *    names (types) of X and Y data
+ *    name of serie 
+ **/
+class DataSerie {
+
+	private String name;
+	private String dataXname;
+	private String dataYname;
+	private TreeMap<Double, Double> dataXY;
+	
+	/**
+	 * @param name
+	 * @param dataXY
+	 */
+	public DataSerie(String name, String dataXname, String dataYname, TreeMap<Double, Double> dataXY) {
+		this.name = name;
+		this.dataXname = dataXname;
+		this.dataYname = dataYname;
+		this.dataXY = dataXY;
+	}		
+	
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	/**
+	 * @param dataXY the dataXY to set
+	 */
+	public void setData(TreeMap<Double, Double> dataXY) {
+		this.dataXY = dataXY;
+	}
+	/**
+	 * @return the dataXY
+	 */
+	public TreeMap<Double, Double> getData() {
+		return dataXY;
+	}
+	
+	public Collection<Double> getDataX(){
+		return dataXY.keySet();
+	}
+	
+	public Collection<Double> getDataY(){
+		return dataXY.values();
+	}
+
+	/**
+	 * @param dataXname the dataXname to set
+	 */
+	public void setDataXname(String dataXname) {
+		this.dataXname = dataXname;
+	}
+
+	/**
+	 * @return the dataXname
+	 */
+	public String getDataXname() {
+		return dataXname;
+	}
+
+	/**
+	 * @param dataYname the dataYname to set
+	 */
+	public void setDataYname(String dataYname) {
+		this.dataYname = dataYname;
+	}
+
+	/**
+	 * @return the dataYname
+	 */
+	public String getDataYname() {
+		return dataYname;
+	}
+	
+	
+	public AbstractDataTable getDataTable( boolean xAxisLogScale , boolean yAxisLogScale){
+		DataTable data = DataTable.create();
+		data.removeRows(0, data.getNumberOfRows());
+		data.addColumn(ColumnType.NUMBER, this.getDataXname());
+		data.addColumn(ColumnType.NUMBER, this.getDataYname());
+		data.addRows(this.dataXY.size());
+				
+		int rowIndex = 0;
+        for( Map.Entry<Double, Double> item : this.dataXY.entrySet()){        
+        	double xValueToInsert = 0., yValueToInsert = 0.;
+        	if( xAxisLogScale ){
+            	xValueToInsert = Math.log10(item.getKey());
+        	} else {
+        		xValueToInsert = item.getKey();
+        	}
+        	if( yAxisLogScale ){
+        		yValueToInsert = Math.log10(item.getValue());
+        	} else {
+        		yValueToInsert = item.getValue();
+        	}        	
+           	data.setValue(rowIndex, 0, xValueToInsert);
+       		data.setValue(rowIndex, 1, yValueToInsert);
+       		rowIndex++;
+        }
+		
+		return data;
+	}
+}
+
+/**
+ *  collection of data series with the same name (type) of data
+ *  at X and Y axis, contains:
+ *    collection of DataSeries
+ *    names of X and Y data
+ *    name of collection 
+ **/
+class DataSerieCollection {
+
+	private String name;
+	private String dataXname;
+	private String dataYname;
+	private TreeMap<String, DataSerie> dataSerieMap;
+	
+    public DataSerieCollection(String name) {
+        this.setName(name);
+        dataSerieMap = new TreeMap<String, DataSerie>();
+    }
+
+    public int size(){
+    	return dataSerieMap.size();
+    }
+    
+    public void clear(){
+    	this.dataSerieMap.clear();
+    }
+    
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return the dataXname
+	 */
+	public String getDataXname() {
+		return dataXname;
+	}
+
+	/**
+	 * @return the dataYname
+	 */
+	public String getDataYname() {
+		return dataYname;
+	}
+	
+	/**
+	 * TODO
+	 * @param serie
+	 * @return
+	 */
+	public int add(DataSerie serie){
+		if( this.size() == 0 ){
+			this.dataSerieMap.put(serie.getName(), serie);
+			this.dataXname = serie.getDataXname();
+			this.dataYname = serie.getDataYname();
+		} else {
+			if( !this.getDataXname().equals(serie.getDataXname()) ){
+				return -1;
+			}
+			if( !this.getDataYname().equals(serie.getDataYname()) ){
+				return -1;
+			}
+			if( this.dataSerieMap.containsKey(serie.getName())){
+				return -1;
+			}
+			this.dataSerieMap.put(serie.getName(), serie);
+		}
+		return 0;
+	}
+	
+	
+	public AbstractDataTable getDataTable( boolean xAxisLogScale , boolean yAxisLogScale){
+		DataTable data = DataTable.create();
+		data.removeRows(0, data.getNumberOfRows());
+		data.addColumn(ColumnType.NUMBER, this.getDataXname());
+		
+		boolean allXVectorsTheSame = true;
+		Collection<Double> xVector = null;
+		for( Map.Entry<String, DataSerie> item : this.dataSerieMap.entrySet()){
+			if( xVector != null){
+				if( !item.getValue().getDataX().equals(xVector)){
+					allXVectorsTheSame = false;
+				}
+			} else {
+				xVector = item.getValue().getDataX();
+			}
+		}
+		
+		if( allXVectorsTheSame ){
+			data.addRows(xVector.size());
+			for( Map.Entry<String, DataSerie> item : this.dataSerieMap.entrySet()){
+				data.addColumn(ColumnType.NUMBER, item.getKey());
+			}
+			int rowIndex = 0;
+			for( Double x : xVector){
+	        	double xValueToInsert = 0.;
+	        	if( xAxisLogScale ){
+	            	xValueToInsert = Math.log10(x);
+	        	} else {
+	        		xValueToInsert = x;
+	        	}
+				data.setValue(rowIndex, 0, xValueToInsert);
+				
+				int columnIndex = 1;
+				for( Map.Entry<String, DataSerie> item : this.dataSerieMap.entrySet()){
+		        	double yValueToInsert = 0.;
+		        	if( yAxisLogScale ){
+		            	yValueToInsert = Math.log10(item.getValue().getData().get(x));
+		        	} else {
+		        		yValueToInsert = item.getValue().getData().get(x);
+		        	}					
+					data.setValue(rowIndex, columnIndex, yValueToInsert);
+					columnIndex++;
+				}
+				rowIndex++;
+			}
+		}				
+		return data;
+	}
+	
+}
+
+public class AmPlot extends AmWidget {
+	
 	private String dataX;
 	private String dataY;
+	private String labelX;
+	private String labelY;
 	private FlowPanel widget = new FlowPanel();
 	private ScatterChart chart;
 	private boolean xAxisLogByDefault;
@@ -37,18 +289,35 @@ public class AmPlot extends AmWidget {
 	private RadioButton yAxisScaleLogarithmicButton;		
 	private RadioButton yAxisScaleLinearButton;	
 	
-	private HashMap< String, TreeMap<Double, Double>> values = new HashMap<String, TreeMap<Double,Double>>();
+	private DataSerieCollection dataSerieCollection;
 
-	public AmPlot(String label, String datatype, HTML description,
-			MapList<String, String> preset, String dataX, String dataY,
-			String dataZ, boolean xAxisLog, boolean yAxisLog) {
-		super(label, datatype, description);
+	/**
+	 * TODO
+	 * @param plotLabel
+	 * @param datatype
+	 * @param description
+	 * @param preset
+	 * @param dataX
+	 * @param dataY
+	 * @param labelX
+	 * @param labelY
+	 * @param xAxisLog
+	 * @param yAxisLog
+	 */
+	public AmPlot(String plotLabel, String datatype, HTML description,
+			MapList<String, String> preset, 
+			String dataX, String dataY,
+			String labelX, String labelY,
+			boolean xAxisLog, boolean yAxisLog) {
+		super(plotLabel, datatype, description);
 
 		Random rand = new Random(); 
-		String id = label + rand.nextLong();
+		String id = plotLabel + rand.nextLong();
 
 		this.dataX = dataX;
 		this.dataY = dataY;
+		this.labelX = labelX;
+		this.labelY = labelY;
 		this.xAxisLogByDefault = xAxisLog;
 		this.yAxisLogByDefault = yAxisLog;
 		
@@ -63,36 +332,32 @@ public class AmPlot extends AmWidget {
 		xAxisScaleLinearButton.setValue(!xAxisLogByDefault);
 		yAxisScaleLinearButton.setValue(!yAxisLogByDefault);
 		
+		this.dataSerieCollection = new DataSerieCollection(plotLabel);
+		
 	}
 
-	@Override
-	public String getValue() {
-		// unimplemented
-		return "";
-	}
-
-	@Override
+	
+	/**
+	 * TODO
+	 */
 	public Widget getWidget() {
 		return widget;
 	}
 
-	@Override
-	public void setValue(HashMap<String, String> valueMap) {
-		this.values.clear();
-		
-		addDataSerie(valueMap, this.dataY);
-
-		this.widget.clear();
-		this.widget.add(createPlot());
-
-        chart.draw(createTable(), createOptions());						
-	}
-
-	@Override
-	public String getDataLink() {
-		return null; // unimplemented
+	
+	/**
+	 * TODO
+	 */
+	public void setValue(HashMap<String, String> valueMap) {		
+		this.dataSerieCollection.clear();		
+		this.appendValue(valueMap);
 	}
 			
+	
+	/**
+	 * TODO
+	 * @return
+	 */
 	private Widget createPlot() {
         FlowPanel panel = new FlowPanel();        
         this.chart = new ScatterChart(DataTable.create(), createOptions() );
@@ -137,6 +402,11 @@ public class AmPlot extends AmWidget {
         return panel;
 	}		
 
+	
+	/**
+	 * TODO
+	 * @return
+	 */
 	private Options createOptions() {
 		Options options = Options.create();
 		options.setWidth(640);
@@ -145,83 +415,38 @@ public class AmPlot extends AmWidget {
 		options.setLineSize(1);
 		options.setPointSize(4);
 		if( this.xAxisScaleLogarithmicButton.getValue() ){
-			options.setTitleX("log( " + dataX + " )");
+			options.setTitleX("log( " + labelX + " )");
 			this.xAxisScaleLogarithmicButton.setValue(true);
 		} else {
 			this.xAxisScaleLogarithmicButton.setValue(false);
-			options.setTitleX(dataX);
+			options.setTitleX(labelX);
 		}
 		
 		if( this.yAxisScaleLogarithmicButton.getValue() ){
 			this.yAxisScaleLogarithmicButton.setValue(true);
-			options.setTitleY("log( " + dataY + " )");
+			options.setTitleY("log( " + labelY + " )");
 		} else {
 			this.yAxisScaleLogarithmicButton.setValue(false);
-			options.setTitleY(dataY);
+			options.setTitleY(labelY);
 		}
 		return options;
 	}
 
+	/**
+	 * TODO
+	 * @return
+	 */
 	private AbstractDataTable createTable() {
-		DataTable data = DataTable.create();
-		data.removeRows(0, data.getNumberOfRows());
-		data.addColumn(ColumnType.NUMBER, this.dataX);
-
-		TreeMap<Double,Integer> xValuesIndexes = new TreeMap<Double, Integer>(); 
-		for( String name : this.values.keySet()){
-	        for(Double d: this.values.get(name).keySet()){
-	        	xValuesIndexes.put(d, 0);
-	        }
-		}
-		
-		int i = 0;
-		for( Double d: xValuesIndexes.keySet()){
-			xValuesIndexes.put(d, i);
-			i++;
-		}
-		
-		data.addRows(xValuesIndexes.size());
-		
-		i = 1;
-		for( String name : this.values.keySet()){
-			data.addColumn(ColumnType.NUMBER, name);
-	        for(Double d: this.values.get(name).keySet()){
-	        	double xValueToInsert = 0., yValueToInsert = 0.;
-	        	if( this.xAxisScaleLogarithmicButton.getValue() ){
-	            	xValueToInsert = Math.log10(d);
-	        	} else {
-	        		xValueToInsert = d;
-	        	}
-	        	if( this.yAxisScaleLogarithmicButton.getValue() ){
-	        		yValueToInsert = Math.log10(this.values.get(name).get(d));
-	        	} else {
-	        		yValueToInsert = this.values.get(name).get(d);
-	        	}
-	        	int rowIndex = xValuesIndexes.get(d);
-            	data.setValue(rowIndex, 0, xValueToInsert);
-        		data.setValue(rowIndex, i, yValueToInsert);
-	        }
-	        i++;
-		}	
-		
-		return data;
+		return this.dataSerieCollection.getDataTable(this.xAxisScaleLogarithmicButton.getValue(), yAxisScaleLogarithmicButton.getValue());
 	}
 
-	public void setDefault() {
-	}
-
+	/**
+	 * TODO
+	 */
 	public void appendValue(HashMap<String, String> valueMap) {
-		int newDataSerieNumber = this.values.size();
-
-		addDataSerie(valueMap, this.dataY + "-" + newDataSerieNumber);
 		
-		this.widget.clear();		
-		this.widget.add(createPlot());
-
-        chart.draw(createTable(), createOptions());						
-	}
-	
-	private void addDataSerie(HashMap<String, String> valueMap, String name){
+		String serieLabel = valueMap.get("label");
+				
 		String[] xValues = {};
 		if( valueMap.get(dataX) != null )
 			xValues = valueMap.get(dataX).split(" ");
@@ -229,12 +454,30 @@ public class AmPlot extends AmWidget {
 		if( valueMap.get(dataY) != null )
 			yValues = valueMap.get(dataY).split(" ");
 		
-		this.values.put(name, new TreeMap<Double, Double>());
+		TreeMap<Double, Double> dataXY = new TreeMap<Double, Double>();
 		for (int i = 0; (i < xValues.length) && (i < yValues.length); i++) {
 			double x = Double.parseDouble(xValues[i]);
 			double y = Double.parseDouble(yValues[i]);
-			this.values.get(name).put(x, y);
+			dataXY.put(x, y);
 		}
+				
+		DataSerie serie = new DataSerie(serieLabel, this.dataX, this.dataY, dataXY);		
+		this.dataSerieCollection.add(serie);
+		
+		this.widget.clear();
+		this.widget.add(createPlot());
+					
+        chart.draw(createTable(), createOptions());		
+	}
+	
+	public String getValue() {
+		return null;
+	}
+
+	public void setDefault() {}
+
+	public String getDataLink() {
+		return null;
 	}
 
 }
