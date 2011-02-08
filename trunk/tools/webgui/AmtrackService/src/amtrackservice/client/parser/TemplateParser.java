@@ -2,6 +2,8 @@ package amtrackservice.client.parser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
+
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.Node;
@@ -39,7 +41,8 @@ public class TemplateParser extends AbstractXMLParser {
 	private static final String KEYWORD_AXIS = "axis";
 	private static final String KEYWORD_X = "x";
 	private static final String KEYWORD_Y = "y";
-	private static final String KEYWORD_Z = "z";
+	private static final String KEYWORD_LABELX = "labelx";
+	private static final String KEYWORD_LABELY = "labely";
 	private static final String KEYWORD_APPEND = "append";
 	
 	private static final String GUI_INPUTLIST = "inputlist";
@@ -121,8 +124,10 @@ public class TemplateParser extends AbstractXMLParser {
 		MapList<String, String> preset = null;
 		String dataX = null;
 		String dataY = null;
-		String dataZ = null;
 		
+		String xAxisLabel = null;
+		String yAxisLabel = null;
+
 		boolean xAxisLog = false;
 		boolean yAxisLog = false;
 		
@@ -138,7 +143,6 @@ public class TemplateParser extends AbstractXMLParser {
 				HashMap<String, String> data_attributes = readAttributes(n);
 				dataX = data_attributes.get(KEYWORD_X);
 				dataY = data_attributes.get(KEYWORD_Y);
-				dataZ = data_attributes.get(KEYWORD_Z);
 			} else if (n.getNodeName().equals(KEYWORD_ENTRY)) {
 				entry = readItemList(n);
 			} else if (n.getNodeName().equals(KEYWORD_AXIS)) {
@@ -151,6 +155,8 @@ public class TemplateParser extends AbstractXMLParser {
 				if( (yAxisType != null) && (yAxisType.equalsIgnoreCase("log")) ){
 					yAxisLog = true;
 				}
+				xAxisLabel = data_attributes.get(KEYWORD_LABELX);
+				yAxisLabel = data_attributes.get(KEYWORD_LABELY);
 			}
 		}
 
@@ -165,9 +171,9 @@ public class TemplateParser extends AbstractXMLParser {
 		} else if (type.equals(GUI_LIST)) {
 			element = new AmList(label, datatype, description, preset, dataX);
 		} else if (type.equals(GUI_PLOT)) {
-			element = new AmPlot(label, datatype, description, preset, dataX, dataY, dataZ, xAxisLog, yAxisLog);			
+			element = new AmPlot(label, datatype, description, preset, dataX, dataY, xAxisLabel, yAxisLabel, xAxisLog, yAxisLog);			
+			element.setMultipleDataSeriesEnable(append);
 		}
-		element.setMultipleDataSeriesEnable(append);
 		return element;
 	}
 
