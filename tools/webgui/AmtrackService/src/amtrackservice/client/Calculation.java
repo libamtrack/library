@@ -323,15 +323,20 @@ public class Calculation {
 	 * fills all output widgets of this calculation with the result
 	 * @param result
 	 */
-	public void setCalculationResult(HashMap<String, String> result) {
+	public int setCalculationResult(HashMap<String, String> result) {
+		int status = 0;
 		if (result != null) {
 			for (AmWidget widget : outputWidgets) {
 				if( appending )
-					widget.appendValue(result);
+					status = widget.appendValue(result);
 				else
-					widget.setValue(result);
+					status = widget.setValue(result);
+				if( status != 0 ){
+					return status;
+				}
 			}
 		}
+		return status;
 	}
 
 	public String getName() {

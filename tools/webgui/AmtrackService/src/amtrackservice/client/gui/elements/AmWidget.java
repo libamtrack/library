@@ -20,9 +20,9 @@ public abstract class AmWidget {
 	}
 	public abstract String getValue();
 
-	public abstract void setValue(HashMap<String, String> valueMap);
+	public abstract int setValue(HashMap<String, String> valueMap);
 	
-	public abstract void appendValue(HashMap<String, String> valueMap);
+	public abstract int appendValue(HashMap<String, String> valueMap);
 	
 	public abstract void setDefault();
 
