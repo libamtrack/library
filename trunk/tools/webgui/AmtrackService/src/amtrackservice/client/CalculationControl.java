@@ -86,13 +86,29 @@ public class CalculationControl {
 									Logger.info("Output file content : null<br>");
 								else{
 									Logger.info("Output file content : <BR>" + content.replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
-									calculation.setCalculationResult(result);
+									int status = calculation.setCalculationResult(result);
+									if( status != 0){
+										Logger.error("Problem with filling output elements with data, code " + status);
+										if( status == -1)
+											Logger.error("Data X name in collection is different from data X name in serie");
+										if( status == -2)
+											Logger.error("Data Y name in collection is different from data Y name in serie");
+										if( status == -3)
+											Logger.error("Another data serie with the same name exists in collection");										
+										if( status == -4)
+											Logger.error("Couldn't prepare DataTable for plot");										
+										Logger.show();
+									}
 								}
 							} else {
 								Logger.info("Standard output : <BR>" + result.get("stdout").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
 								Logger.info("Standard error : <BR>" + result.get("stderr").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
 								Logger.error("Process finished, failure, exit code = _" + exitcode + "_");
-								calculation.setCalculationResult(new HashMap<String, String>());
+								int status = calculation.setCalculationResult(new HashMap<String, String>());
+								if( status != 0){
+									Logger.error("Problem with filling output elements with data");
+									Logger.show();
+								}
 								calculation.showStatus();
 							}
 						}

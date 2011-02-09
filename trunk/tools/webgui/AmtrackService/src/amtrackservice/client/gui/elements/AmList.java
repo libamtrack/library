@@ -39,7 +39,7 @@ public class AmList extends AmWidget  {
 	}
 
 	@Override
-	public void setValue(HashMap<String, String> valueMap) {
+	public int setValue(HashMap<String, String> valueMap) {
 		listbox.clear();
 		String str = valueMap.get(data);
 		if (str != null) {
@@ -47,8 +47,9 @@ public class AmList extends AmWidget  {
 			for (String c : s) {
 				listbox.addItem(c);
 			}
+			return 0;
 		}
-		
+		return -1;
 	}
 	
 	@Override
@@ -65,9 +66,8 @@ public class AmList extends AmWidget  {
 	}
 
 	@Override
-	public void appendValue(HashMap<String, String> valueMap) {
-		// TODO Auto-generated method stub
-		
+	public int appendValue(HashMap<String, String> valueMap) {
+		return 0;		
 	}
 
 }

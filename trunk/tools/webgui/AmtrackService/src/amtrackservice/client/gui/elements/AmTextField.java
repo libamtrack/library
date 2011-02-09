@@ -34,9 +34,10 @@ public class AmTextField extends AmWidget  {
 	}
 
 	@Override
-	public void setValue(HashMap<String, String> valueMap) {
+	public int setValue(HashMap<String, String> valueMap) {
 		String str = valueMap.get(data);
 		textbox.setValue(str);
+		return 0;
 	}
 	
 	@Override
@@ -50,9 +51,8 @@ public class AmTextField extends AmWidget  {
 	}
 
 	@Override
-	public void appendValue(HashMap<String, String> valueMap) {
-		// TODO Auto-generated method stub
-		
+	public int appendValue(HashMap<String, String> valueMap) {
+		return 0;
 	}
 
 

@@ -206,14 +206,17 @@ class DataSerieCollection {
 			this.dataXname = serie.getDataXname();
 			this.dataYname = serie.getDataYname();
 		} else {
+			/** problem - data X name in collection is different from data X name in serie */
 			if( !this.getDataXname().equals(serie.getDataXname()) ){
 				return -1;
 			}
+			/** problem - data Y name in collection is different from data Y name in serie */
 			if( !this.getDataYname().equals(serie.getDataYname()) ){
-				return -1;
+				return -2;
 			}
+			/** problem - another data serie with the same name exists in collection */
 			if( this.dataSerieMap.containsKey(serie.getName())){
-				return -1;
+				return -3;
 			}
 			this.dataSerieMap.put(serie.getName(), serie);
 		}
@@ -266,7 +269,9 @@ class DataSerieCollection {
 				}
 				rowIndex++;
 			}
-		}				
+		} else {
+			return null;
+		}
 		return data;
 	}
 	
@@ -348,9 +353,10 @@ public class AmPlot extends AmWidget {
 	/**
 	 * TODO
 	 */
-	public void setValue(HashMap<String, String> valueMap) {		
+	public int setValue(HashMap<String, String> valueMap) {		
 		this.dataSerieCollection.clear();		
-		this.appendValue(valueMap);
+		int status = this.appendValue(valueMap);
+		return status;
 	}
 			
 	
@@ -443,7 +449,7 @@ public class AmPlot extends AmWidget {
 	/**
 	 * TODO
 	 */
-	public void appendValue(HashMap<String, String> valueMap) {
+	public int appendValue(HashMap<String, String> valueMap) {
 		
 		String serieLabel = valueMap.get("label");
 				
@@ -462,12 +468,18 @@ public class AmPlot extends AmWidget {
 		}
 				
 		DataSerie serie = new DataSerie(serieLabel, this.dataX, this.dataY, dataXY);		
-		this.dataSerieCollection.add(serie);
+		int status = this.dataSerieCollection.add(serie);
 		
-		this.widget.clear();
-		this.widget.add(createPlot());
-					
-        chart.draw(createTable(), createOptions());		
+		if( status == 0){		
+			this.widget.clear();
+			this.widget.add(createPlot());
+			AbstractDataTable dataTable = createTable();
+			if( dataTable == null ){
+				return -4;
+			}
+			chart.draw(dataTable, createOptions());
+		}
+		return status;
 	}
 	
 	public String getValue() {
