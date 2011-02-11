@@ -50,34 +50,53 @@ class DataSerie {
 	}		
 	
 	/**
+	 * TODO
+	 * @return
+	 */
+	public int size(){
+		return dataXY.size();
+	}
+	
+	/**
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
+	
 	/**
 	 * @param dataXY the dataXY to set
 	 */
 	public void setData(TreeMap<Double, Double> dataXY) {
 		this.dataXY = dataXY;
 	}
+	
 	/**
 	 * @return the dataXY
 	 */
-	public TreeMap<Double, Double> getData() {
-		return dataXY;
+	public double get(double x) {
+		return dataXY.get(x);
 	}
 	
+	/**
+	 * TODO
+	 * @return
+	 */
 	public Collection<Double> getDataX(){
 		return dataXY.keySet();
 	}
 	
+	/**
+	 * TODO
+	 * @return
+	 */
 	public Collection<Double> getDataY(){
 		return dataXY.values();
 	}
@@ -109,8 +128,13 @@ class DataSerie {
 	public String getDataYname() {
 		return dataYname;
 	}
-	
-	
+		
+	/**
+	 * TODO
+	 * @param xAxisLogScale
+	 * @param yAxisLogScale
+	 * @return
+	 */
 	public AbstractDataTable getDataTable( boolean xAxisLogScale , boolean yAxisLogScale){
 		DataTable data = DataTable.create();
 		data.removeRows(0, data.getNumberOfRows());
@@ -154,15 +178,26 @@ class DataSerieCollection {
 	private String dataYname;
 	private TreeMap<String, DataSerie> dataSerieMap;
 	
+	/**
+	 * TODO
+	 * @param name
+	 */
     public DataSerieCollection(String name) {
         this.setName(name);
         dataSerieMap = new TreeMap<String, DataSerie>();
     }
 
+    /**
+     * TODO
+     * @return
+     */
     public int size(){
     	return dataSerieMap.size();
     }
     
+    /**
+     * TODO
+     */
     public void clear(){
     	this.dataSerieMap.clear();
     }
@@ -224,59 +259,122 @@ class DataSerieCollection {
 	}
 	
 	
-	public AbstractDataTable getDataTable( boolean xAxisLogScale , boolean yAxisLogScale){
-		DataTable data = DataTable.create();
-		data.removeRows(0, data.getNumberOfRows());
-		data.addColumn(ColumnType.NUMBER, this.getDataXname());
-		
-		boolean allXVectorsTheSame = true;
-		Collection<Double> xVector = null;
-		for( Map.Entry<String, DataSerie> item : this.dataSerieMap.entrySet()){
-			if( xVector != null){
-				if( !item.getValue().getDataX().equals(xVector)){
-					allXVectorsTheSame = false;
-				}
-			} else {
-				xVector = item.getValue().getDataX();
+	/**
+	 * TODO
+	 * @return
+	 */
+	private boolean checkIfAllSeriesHaveTheSameDataX(){
+		if( !this.dataSerieMap.isEmpty()){
+			// first dataX item:
+			String firstKey = this.dataSerieMap.firstKey();
+			Collection<Double> xVector = this.dataSerieMap.get(firstKey).getDataX();
+			// loop over all items
+			for( Map.Entry<String, DataSerie> item : this.dataSerieMap.entrySet()){
+				// if found one item which is different than the first one - exit with false
+				if( !item.getValue().getDataX().equals(xVector))
+					return false;
 			}
 		}
+		return true;
+	}
+	
+	
+	/**
+	 * TODO
+	 * @param flag
+	 * @param value
+	 * @return
+	 */
+	private double convertToLogarithm(boolean flag, double value){
+		if( flag )
+			return Math.log10(value);
+		return value;		
+	}
+	
+	
+	/**
+	 * TODO
+	 * @param xAxisLogScale
+	 * @param yAxisLogScale
+	 * @return
+	 */
+	public AbstractDataTable getDataTable( boolean xAxisLogScale , boolean yAxisLogScale){
+		DataTable data = DataTable.create();
 		
-		if( allXVectorsTheSame ){
+		// clean datatable
+		data.removeRows(0, data.getNumberOfRows());
+		data.removeColumns(0, data.getNumberOfColumns());
+		
+		// add first column for storing X values 
+		data.addColumn(ColumnType.NUMBER, this.getDataXname());
+		
+		boolean allDataXVectorsTheSame = checkIfAllSeriesHaveTheSameDataX();
+		
+		if( allDataXVectorsTheSame ){
+			// get first data X from first data serie 		
+			String firstKey = this.dataSerieMap.firstKey();
+			Collection<Double> xVector = this.dataSerieMap.get(firstKey).getDataX();
+			
+			// add sufficient amount of rows
 			data.addRows(xVector.size());
+			
+			// add sufficient amount of columns
 			for( Map.Entry<String, DataSerie> item : this.dataSerieMap.entrySet()){
 				data.addColumn(ColumnType.NUMBER, item.getKey());
 			}
+			
+			// loop over all x from data X
 			int rowIndex = 0;
 			for( Double x : xVector){
-	        	double xValueToInsert = 0.;
-	        	if( xAxisLogScale ){
-	            	xValueToInsert = Math.log10(x);
-	        	} else {
-	        		xValueToInsert = x;
-	        	}
+				
+				// insert X into a data table
+	        	double xValueToInsert = convertToLogarithm(xAxisLogScale, x);
 				data.setValue(rowIndex, 0, xValueToInsert);
 				
+				// loop over all data series and insert Y value corresponding to inserted X
 				int columnIndex = 1;
 				for( Map.Entry<String, DataSerie> item : this.dataSerieMap.entrySet()){
-		        	double yValueToInsert = 0.;
-		        	if( yAxisLogScale ){
-		            	yValueToInsert = Math.log10(item.getValue().getData().get(x));
-		        	} else {
-		        		yValueToInsert = item.getValue().getData().get(x);
-		        	}					
+		        	double yValueToInsert = convertToLogarithm(yAxisLogScale, item.getValue().get(x));
 					data.setValue(rowIndex, columnIndex, yValueToInsert);
 					columnIndex++;
 				}
 				rowIndex++;
 			}
 		} else {
-			return null;
+			int columnIndex = 1;
+			int rowIndex = 0;
+			// loop over all series
+			for( Map.Entry<String, DataSerie> item : this.dataSerieMap.entrySet()){
+				// for every serie append some amount of rows and columns
+				data.addRows(item.getValue().size());
+				data.addColumn(ColumnType.NUMBER, item.getKey());
+				
+				// loop over all x from data X
+				for( Double x : item.getValue().getDataX()){
+		        	
+					// insert X
+					double xValueToInsert = convertToLogarithm(xAxisLogScale, x);
+					data.setValue(rowIndex, 0, xValueToInsert);
+					
+					// insert Y
+		        	double yValueToInsert = convertToLogarithm(yAxisLogScale, item.getValue().get(x));			
+					data.setValue(rowIndex, columnIndex, yValueToInsert);						
+					
+					rowIndex++;					
+				}
+				columnIndex++;
+			}
 		}
 		return data;
 	}
 	
 }
 
+
+/**
+ * TODO
+ * @author grzanka
+ */
 public class AmPlot extends AmWidget {
 	
 	private String dataX;
@@ -482,12 +580,21 @@ public class AmPlot extends AmWidget {
 		return status;
 	}
 	
+	/**
+	 * TODO
+	 */
 	public String getValue() {
 		return null;
 	}
 
+	/**
+	 * TODO
+	 */
 	public void setDefault() {}
 
+	/**
+	 * TODO
+	 */
 	public String getDataLink() {
 		return null;
 	}
