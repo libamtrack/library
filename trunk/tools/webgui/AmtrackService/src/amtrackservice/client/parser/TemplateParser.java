@@ -12,6 +12,7 @@ import com.google.gwt.xml.client.impl.DOMParseException;
 
 import amtrackservice.client.Calculation;
 import amtrackservice.client.MapList;
+import amtrackservice.client.gui.elements.AmCellList;
 import amtrackservice.client.gui.elements.AmCombo;
 import amtrackservice.client.gui.elements.AmInputList;
 import amtrackservice.client.gui.elements.AmList;
@@ -167,7 +168,7 @@ public class TemplateParser extends AbstractXMLParser {
 		} else if (type.equals(GUI_TEXTFIELD)) {
 			element = new AmTextField(label, datatype, description, preset, dataX);
 		} else if (type.equals(GUI_INPUTLIST)) {
-			element = new AmInputList(label, datatype, description, preset, dataX);
+			element = new AmCellList(label, datatype, description, preset, dataX);			
 		} else if (type.equals(GUI_LIST)) {
 			element = new AmList(label, datatype, description, preset, dataX);
 		} else if (type.equals(GUI_PLOT)) {
