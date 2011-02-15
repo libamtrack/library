@@ -13,20 +13,13 @@
     .cellTable td{
       height: 35px;
     }
-    
   </ui:style>
 
   <g:HTMLPanel>
-    <g:VerticalPanel>
-      <c:CellTable
+      <g:VerticalPanel>  
+        <c:CellTable
             addStyleNames='{style.cellTable}'
             ui:field='cellTable' />
-      <g:HorizontalPanel>
-        <g:TextArea ui:field='addTextArea'/>
-         <g:Button ui:field='addButton'>
-              <ui:msg key='addButton'>Add</ui:msg>
-         </g:Button>
-      </g:HorizontalPanel>                         
-    </g:VerticalPanel>
+     </g:VerticalPanel>            
   </g:HTMLPanel>
 </ui:UiBinder>

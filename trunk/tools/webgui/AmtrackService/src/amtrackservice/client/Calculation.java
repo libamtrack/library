@@ -119,7 +119,7 @@ public class Calculation {
 		HorizontalPanel forms = new HorizontalPanel();
 		VerticalPanel head = new VerticalPanel();
 		Grid input = new Grid(inputWidgets.size() + 4, 2);
-		Grid output = new Grid(outputWidgets.size() + 1, 1);
+		Grid output = new Grid(outputWidgets.size(), 2);
 
 		Image loadDefaultsImage = new Image(resources.defaults());		
 		loadDefaultsImage.setSize("48px", "48px");
@@ -250,9 +250,17 @@ public class Calculation {
 		input.getCellFormatter().setHeight(inputRow+2, 1, "65px");
 		input.getCellFormatter().setHeight(inputRow+3, 1, "65px");
 		
-		int outputRow = 1;
+		int outputRow = 0;
 		for (AmWidget widget : outputWidgets) {
-			output.setWidget(outputRow, 0, widget.getWidget());
+			HorizontalPanel desc = new HorizontalPanel();
+			desc.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+			desc.add(new HTML("<p align=\"right\">" + widget.getLabel().getText() + "&nbsp;&nbsp;&nbsp;</p>"));
+			
+			output.setWidget(outputRow, 0, desc);
+			output.setWidget(outputRow, 1, widget.getWidget());
+			
+			output.getCellFormatter().setHorizontalAlignment(outputRow, 0, HasHorizontalAlignment.ALIGN_RIGHT);
+
 			outputRow++;
 		}
 
