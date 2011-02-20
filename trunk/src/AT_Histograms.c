@@ -340,9 +340,12 @@ int AT_histo_linear_n_bins(     const double lowest_left_limit,
                                 const double step,
                                 long * number_of_bins)
 {
-	// TODO to be implemented
-  int global_status_code = EXIT_SUCCESS;
-  return global_status_code;
+	if ((step <= 0)||(highest_left_limit <= lowest_left_limit)){
+		return EXIT_FAILURE;
+	}
+
+	*number_of_bins = (highest_left_limit - lowest_left_limit) / step;
+	return EXIT_SUCCESS;
 }
 
 
@@ -351,9 +354,13 @@ int AT_histo_logarithmic_n_bins(     const double lowest_left_limit,
                                 const double step,
                                 long * number_of_bins)
 {
-	// TODO to be implemented
-  int global_status_code = EXIT_SUCCESS;
-  return global_status_code;
+	  if ((step <= 1.0)||(highest_left_limit <= lowest_left_limit)
+	     ||(lowest_left_limit <= 0)||(highest_left_limit <= 0)){
+	    return EXIT_FAILURE;
+	  }
+
+	  *number_of_bins = floor(log(highest_left_limit / lowest_left_limit) / log(step)) + 1;
+	  return EXIT_SUCCESS;
 }
 
 
@@ -363,9 +370,19 @@ int AT_histo_n_bins(     const double lowest_left_limit,
     const long histo_type,
     long * number_of_bins)
 {
- // TODO to be implemented
-  int global_status_code = EXIT_SUCCESS;
-  return global_status_code;
+	  int status_code = EXIT_FAILURE;
+	  if (histo_type == AT_histo_linear){
+	          status_code = AT_histo_linear_n_bins( lowest_left_limit,
+	              highest_left_limit,
+	              step,
+	              number_of_bins);
+	  }else{
+	          status_code = AT_histo_logarithmic_n_bins( lowest_left_limit,
+	              highest_left_limit,
+	              step,
+	              number_of_bins);
+	  }
+	  return status_code;
 }
 
 
@@ -400,7 +417,7 @@ long AT_histo_logarithmic_bin_no(      const long number_of_bins,
   if (factor < 1.0){
     return (-1);
   }
-  long bin_no = floor(log10(factor) - log10(step));
+  long bin_no = floor(log10(factor) / log10(step));
 
   if (bin_no > number_of_bins - 1){
     return(-2);
@@ -429,7 +446,7 @@ long AT_histo_bin_no(      const long number_of_bins,
 }
 
 
-void AT_histo_add(      const long number_of_bins,
+void AT_histo_add_single(      const long number_of_bins,
     const double lowest_left_limit,
     const double step,
     const long histo_type,
@@ -454,6 +471,26 @@ void AT_histo_add(      const long number_of_bins,
   }
 }
 
+void AT_histo_add_multi(      const long number_of_bins,
+    const double lowest_left_limit,
+    const double step,
+    const long histo_type,
+    const long n_values,
+    const double value[],
+    const double weight[],
+    double frequency[])
+{
+	long i;
+	for(i = 0; i< n_values; i++){
+		AT_histo_add_single(number_of_bins,
+				lowest_left_limit,
+				step,
+				histo_type,
+				value[i],
+				weight[i],
+				frequency);
+	}
+}
 
 //TODO rewrite in such way that it has return type "double"
 void AT_histo_sum(	const long number_of_bins,
