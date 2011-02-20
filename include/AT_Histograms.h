@@ -394,14 +394,36 @@ long AT_histo_bin_no(      const long number_of_bins,
  * @param[in,out] frequency        vector of frequencies for the histogram
  * length number_of_bins
  */
-void AT_histo_add(      const long number_of_bins,
+void AT_histo_add_single(      const long number_of_bins,
     const double lowest_left_limit,
     const double step,
     const long histo_type,
-    const double value,
-    const double weight,
+    const double values,
+    const double weights,
     double frequency[]);
 
+/**
+ * Add an array of values with individual weight to histogram
+ * TODO: optimize routine, now histotype is checked unnecessarily often
+ * @param[in] number_of_bins       number of bins in histogram
+ * @param[in] lowest_left_limit    left limit of first bin
+ * @param[in] step                 step between bin limits
+ * @param[in] histo_type           type of histogram (linear or logarithmic)
+ * @see AT_histo_type
+ * @param[in] number_of_values     number of values given
+ * @param[in] values               values (array of size number_of_values)
+ * @param[in] weights              weights by which the bin frequency content for 'value' is increase (array of size number_of_values)
+ * @param[in,out] frequency        vector of frequencies for the histogram
+ * length number_of_bins
+ */
+void AT_histo_add_multi(      const long number_of_bins,
+    const double lowest_left_limit,
+    const double step,
+    const long histo_type,
+    const long n_values,
+    const double value[],
+    const double weight[],
+    double frequency[]);
 
 /**
  * TODO
