@@ -30,12 +30,12 @@
 
 
 import string
-import  os
+import os
 
 import pyam_obj as tools
 
 
-#DEBUG = True
+DEBUG = True
 DEBUG =False
 
 
@@ -82,10 +82,10 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py'):
             i+=1
         py_func_string+='):\n'
         #write comment, copied from source code
-        py_func_string +='\'\'\'\n'
+        py_func_string +='\t\'\'\'\n'
         for line in c_func.comment :
             py_func_string += '\t'+ line 
-        py_func_string +='\'\'\'\n'
+        py_func_string +='\t\'\'\'\n'
         
         for i,  key in enumerate(c_func.parameter.keys()):
             py_func_string += '\t' + translate_type(c_func.parameter[key])
@@ -97,7 +97,7 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py'):
         while i < len(c_func.parameter.keys()):
             for  para_name in  c_func.parameter.keys():
                 if c_func.parameter[para_name].no == i+1:
-                    py_func_string += ' '+ para_name
+                    py_func_string += ' c_'+ para_name
             if i < len(c_func.parameter.keys())-1:
                 py_func_string +=','
             i+=1
@@ -111,7 +111,7 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py'):
         if c_output_list != []:
             py_func_string += '\treturn '
             for i , item in enumerate(c_output_list):
-                py_func_string += ' ' + item
+                py_func_string += ' ' + item+'._obj.value'
                 if i<len(c_output_list)-1:
                     py_func_string += ','
         py_func_string+='\n\n'
@@ -123,9 +123,10 @@ def translate_type(parameter):
     '''
     takes an amtrack_para object and returns the python lines necessary to access it from python
     '''
-    c_lookup = {'double':'ctypes.c_double', 
-                    'long':'ctypes.c_long', 
-                    'bool':'ctypes.c_bool'}
+    c_lookup = {'double': 'ctypes.c_double', 
+                'long': 'ctypes.c_long', 
+                'bool': 'ctypes.c_bool',
+                'int' : 'ctypes.c_int'}
     
     py_line =''
     if parameter.direction == 'in':
@@ -140,7 +141,7 @@ def translate_type(parameter):
         if not parameter.array:
             py_line += 'c_'+parameter.name +' =  ctypes.byref('+ c_lookup[parameter.type] +'(' +parameter.name+'))\n'
         if parameter.array :
-            py_line += 'tmp+_arr = ' + c_lookup[parameter.type] + '*' +parameter.array_size + '\n'
+            py_line += 'tmp_array = ' + c_lookup[parameter.type] + '*' +parameter.array_size + '\n'
             py_line += '\tc_' +parameter.name + '= ctypes.byref(tmp_array)\n'
         
         #print 'array, TODO ' ,  parameter.name,  parameter.array_size
