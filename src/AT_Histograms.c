@@ -466,7 +466,7 @@ void AT_histo_add_single(      const long number_of_bins,
                                    step,
                                    value);
   }
-  if(bin_no > 0){
+  if(bin_no >= 0){
     frequency[bin_no] += weight;
   }
 }
