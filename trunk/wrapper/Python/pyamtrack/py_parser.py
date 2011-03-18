@@ -84,6 +84,7 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py'):
         #write comment, copied from source code
         py_func_string +='\t\'\'\'\n'
         for line in c_func.comment :
+            line = string.replace(line ,'\'','\\\'')
             py_func_string += '\t'+ line 
         py_func_string +='\t\'\'\'\n'
         
