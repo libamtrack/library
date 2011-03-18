@@ -66,6 +66,11 @@ enum material_no{
   Gammex_SB3_Cortical_Bone_RMI450	= 23 /**< Gammex tissue surrogate "SB3 Cortical Bone RMI 450" */
 };
 
+enum material_phase{
+  phase_undefined		= 0,
+  phase_condensed     	= 1,
+  phase_gaseous			= 2
+};
 
 #define MATERIAL_DATA_N    24
 
@@ -125,6 +130,7 @@ typedef struct {
   AT_LET_data     LET_data;                               /**< Stopping power data for the material, see AT_DataLET.h for definition. Will be calculated in case of power-law or given by the user (or read in from PSTAR data?). */
                                                           /**<  LET_data has to hold at_least the proton stopping powers. For any particle where no explicit stopping power data is given, a scaling by Z_eff^2 will be performed. */
 
+  long			  phase;								  /**< Phase of the material: condensed or gaseous */
 //  const double  m_g_cm2;                                /**< Slope of linear approximation in fluence reduction due to nuclear interactions, not used yet */
 } AT_single_material_data_struct;
 
@@ -146,6 +152,7 @@ typedef struct {
   double        average_A[MATERIAL_DATA_N];
   double        average_Z[MATERIAL_DATA_N];
   const char*   material_name[MATERIAL_DATA_N];
+  long			phase[MATERIAL_DATA_N];
 } AT_table_of_material_data_struct;
 
 
@@ -229,7 +236,14 @@ static AT_table_of_material_data_struct AT_Material_Data = {
        "Lithium Fluoride","Air", "Dummy8", "Dummy9", "Dummy10",
        "Gammex Lung LN450", "Gammex AP6 Adipose RMI453", "BR12 Breast RMI454",	"CT Solid Water RMI451", "Gammex Water",
 		"Muscle RMI452" , "LV1 Liver RMI" ,	"SR2 Brain", "IB3 Inner Bone RMI 456", "B200 Bone Mineral",
-		"CB2 30% CaCO3", "CB2 50% CaCO3", "SB3 Cortical Bone RMI 450" }
+		"CB2 30% CaCO3", "CB2 50% CaCO3", "SB3 Cortical Bone RMI 450" },
+	// phase
+	{  phase_undefined,
+	   phase_condensed, phase_condensed, phase_condensed, phase_condensed, phase_condensed,
+	   phase_condensed, phase_gaseous,   phase_undefined, phase_undefined, phase_undefined,
+	   phase_condensed, phase_condensed, phase_condensed, phase_condensed, phase_condensed,
+	   phase_condensed, phase_condensed, phase_condensed, phase_condensed, phase_condensed,
+	   phase_condensed, phase_condensed, phase_condensed}
 };
 
 /* Cucinnotta calculated average A for water as 14.3, but it seems that it is 13.0 (Leszek) *
@@ -320,6 +334,12 @@ double AT_average_A_from_material_no( const long   material_no );
  */
 double AT_average_Z_from_material_no( const long   material_no );
 
+/**
+ * Get material phase
+ * @param[in] material_no
+ * @return    material phase index (enumerator)
+ */
+long AT_phase_from_material_no( const long   material_no );
 
 /**
  * Returns material data for single material
@@ -398,6 +418,13 @@ void AT_electron_density_m3_from_material_no_multi( const long n,
 		const long   material_no[],
 		double electron_density_m3[]);
 
+/**
+ * Returns material's plasma energy needed for Sternheimer
+ * computation of density effect in stopping power
+ * @param[in]  electron_density_m3  electron density in 1/m3
+ */
+double AT_plasma_energy_J_from_material_no(const long material_no);
+
 // ROUTINES FOR COMPUTING DERIVED PARAMETERS
 /**
  * Computes the electron density from average A and Z
@@ -423,6 +450,13 @@ void AT_electron_density_m3_multi( const long n,
     const double average_Z[],
     const double average_A[],
     double electron_density_m3[]);
+
+/**
+ * Returns plasma energy needed for Sternheimer
+ * computation of density effect in stopping power
+ * @param[in]  electron_density_m3  electron density in 1/m3
+ */
+double AT_plasma_energy_J_single(const double electron_density_m3);
 
 /**
  * Computes the electron density for a given material composition

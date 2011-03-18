@@ -670,5 +670,14 @@ double AT_mean_number_of_tracks_contrib(    const long number_of_field_component
                 const long material_no,
                 const long er_model);
 
+/**
+ * Computes the kinetic variable needed for computation of
+ * density effect in Bethe formula for stopping power
+ * following the Sternheimer (1971) approach
+ *
+ * @param[in]  E_MeV_u      energy of particle
+ * @return     				kinetic variable
+ */
+double AT_kinetic_variable_single(double E_MeV_u);
 
 #endif /* AT_PHYSICSROUTINES_H_ */

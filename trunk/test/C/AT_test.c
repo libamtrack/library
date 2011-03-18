@@ -35,17 +35,32 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "AT_Algorithms_IGK.h"
+#include "AT_DataRange.h"
 
 #include <assert.h>
 
 int main(){
 
-	double E_MeV_u = 60;
-	double beta = AT_beta_from_E_single( E_MeV_u );
-	double E_MeV_u_bis = AT_E_from_beta_single( beta );
+	
+	const long n = 3;
+	const long Z[3] = {1,6,8};
+	const long A[3] = {1,12,16};
+	const double weight_fraction[3] = {6, 3, 1};
+	double average_A = 6666;
+	double effective_Z = 6666;
+    double exponent = 3.5;
+	double el_dens = 0;
+    double I_eV = 0;
+    double density = 2.0;
 
-	assert( abs(E_MeV_u - E_MeV_u_bis) < E_MeV_u * 1e-10 );
+	AT_average_A_from_composition( n,
+	    A,
+	    weight_fraction,
+	    &average_A);
+
+	AT_effective_Z_from_composition(n, Z, weight_fraction, exponent, &effective_Z);
+	AT_I_eV_from_composition(n, A, Z, weight_fraction, &I_eV);
+	AT_electron_density_m3_from_composition(n, density, Z, A, weight_fraction, &el_dens);
 
 	return EXIT_SUCCESS;
 };
