@@ -634,3 +634,13 @@ double AT_mean_number_of_tracks_contrib(    const long number_of_field_component
   return(total_D_Gy / u);
 }
 
+double AT_kinetic_variable_single(double E_MeV_u){
+	double beta 	= AT_beta_from_E_single(E_MeV_u);
+	double gamma 	= AT_gamma_from_E_single(E_MeV_u);
+
+	assert(beta * gamma > 0);
+
+	return(log10(beta*gamma));
+}
+
+

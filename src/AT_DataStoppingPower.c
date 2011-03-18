@@ -270,7 +270,10 @@ double AT_Stopping_Power_Bethe_Number(	const double 	E_MeV_u,
 	  }
 
 	  /* Third part of stopping number (shell correction) TODO: implement */
-	  /* Forth part of stopping number (density correction TODO: implement*/
+
+	  /* Forth part of stopping number (density correction following Sternheimer, 1971) */
+	  double kinetic_variable	= AT_kinetic_variable_single(E_MeV_u);
+	  double plasma_energy_J 	= AT_plasma_energy_J_from_material_no(material_no);
 
 	  assert( SN11 > 0. );
 	  assert( SN12 > 0. );

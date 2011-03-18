@@ -160,7 +160,15 @@ double AT_average_Z_from_material_no( const long   material_no )
   return AT_Material_Data.average_Z[index];
 }
 
-
+long AT_phase_from_material_no( const long   material_no )
+{
+  long  index = AT_material_index_from_material_number( material_no );
+  if( index == -1){
+    printf("Material no %ld not found\n", material_no);
+    return 0.0;
+  }
+  return AT_Material_Data.phase[index];
+}
 void AT_get_material_data(     const long  material_no,
     double*  density_g_cm3,
     double*  I_eV,
@@ -265,6 +273,19 @@ void AT_get_materials_data( const long  number_of_materials,
   free(match);
 }
 
+double AT_plasma_energy_J_from_material_no(const long material_no){
+	  long  index = AT_material_index_from_material_number( material_no );
+	  if( index == -1){
+	    printf("Material no %ld not found\n", material_no);
+	    return 0.0;
+	  }
+	  double electron_density_m3 = AT_electron_density_m3_from_material_no_single(material_no);
+	  return(AT_plasma_energy_J_single( electron_density_m3));
+}
+
+double AT_plasma_energy_J_single(const double electron_density_m3){
+	  return(sqrt(4 * M_PI * electron_density_m3 * classical_electron_radius_m) * Dirac_constant_J_s * c_m_s);
+}
 
 double AT_electron_density_m3_from_material_no_single( const long   material_no )
 {
