@@ -244,7 +244,8 @@ double AT_Stopping_Power_Bethe_Number(	const double 	E_MeV_u,
 										const double	E_restricted_keV)
 {
 	  const double beta2 	= gsl_pow_2(AT_beta_from_E_single(E_MeV_u));
-	  const double I_MeV	= AT_I_eV_from_material_no(material_no) * 1e-6;
+	  const double I_eV		= AT_I_eV_from_material_no(material_no);
+	  const double I_MeV	= I_eV * 1e-6;
 	  double Wm_MeV			= AT_max_relativistic_E_transfer_MeV_single(E_MeV_u);
 
 	  /* Restricted stopping number requested? */
@@ -269,16 +270,84 @@ double AT_Stopping_Power_Bethe_Number(	const double 	E_MeV_u,
 		  SN2					+= (1.0 - beta2) * Wm_MeV / (4.0 * electron_mass_MeV_c2);
 	  }
 
-	  /* Third part of stopping number (shell correction) TODO: implement */
+	  /* Third part of stopping number (density correction following Sternheimer, 1971) */
+	  double delta				= 0.0;
+	  long   phase              = AT_phase_from_material_no(material_no);
+	  if( (phase =! phase_undefined) ){
+		  double kinetic_variable	= AT_kinetic_variable_single(E_MeV_u);
+		  double plasma_energy_J 	= AT_plasma_energy_J_from_material_no(material_no);
+		  double I_J				= I_MeV * MeV_to_J;
 
-	  /* Forth part of stopping number (density correction following Sternheimer, 1971) */
-	  double kinetic_variable	= AT_kinetic_variable_single(E_MeV_u);
-	  double plasma_energy_J 	= AT_plasma_energy_J_from_material_no(material_no);
+		  double C					= 1.0 + 2.0 * log(I_J / plasma_energy_J);
+
+		  // Find x_0 and x_1 dependent on phase, I-value and C
+		  double x_0 = 0.0;
+		  double x_1 = 0.0;
+		  if( phase == phase_condensed){
+			  if(I_eV < 100){
+				  x_1	= 2.0;
+				  if(C <= 3.681){
+					  x_0 	= 0.2;
+				  }else{
+					  x_0	= 0.326 * C - 1.0;
+				  }
+			  }else{ // I_eV >= 100
+				  x_1	= 3.0;
+				  if(C <= 5.215){
+					  x_0	= 0.2;
+				  }else{
+					  x_0	= 0.326 * C - 1.5;
+				  }
+			  }
+		  }else{ // gaseous material
+			  x_0	= 0.326 * C - 2.5;
+			  x_1	= 5.0;
+			  if(C < 10.0){
+				  x_0	= 1.6;
+				  x_1	= 4.0;
+			  }
+			  if(C >= 10.0 && C < 10.5){
+				  x_0	= 1.7;
+				  x_1	= 4.0;
+			  }
+			  if(C >= 10.5 && C < 11.0){
+				  x_0	= 1.8;
+				  x_1	= 4.0;
+			  }
+			  if(C >= 11.0 && C < 11.5){
+				  x_0	= 1.9;
+				  x_1	= 4.0;
+			  }
+			  if(C >= 11.5 && C < 12.25){
+				  x_0	= 2.0;
+				  x_1	= 4.0;
+			  }
+			  if(C >= 12.25 && C < 13.804){
+				  x_0	= 2.0;
+				  x_1	= 5.0;
+			  }
+		  }
+
+		  double x_a				= C / 4.606;
+		  double m					= 3.0;
+		  double a					= 4.606 * (x_a - x_0) / pow(x_1 - x_0, m);
+
+		  if( kinetic_variable >= x_0 && kinetic_variable <= x_1){
+			  delta						= 4.606 * kinetic_variable - C + a * pow(x_1 - kinetic_variable, m);
+		  }
+		  if( kinetic_variable > x_1){
+			  delta						= 4.606 * kinetic_variable - C;
+		  }
+	  }
+	  double SN3		= delta;
+
+	  /* Forth part of stopping number (shell correction) TODO: implement */
+
 
 	  assert( SN11 > 0. );
 	  assert( SN12 > 0. );
 
-	  return (0.5 * log(SN11 * SN12) - SN2);
+	  return (0.5 * log(SN11 * SN12) - SN2 - SN3);
 }
 
 
