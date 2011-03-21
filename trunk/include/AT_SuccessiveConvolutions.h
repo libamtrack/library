@@ -30,7 +30,7 @@
 
 #include "AT_Constants.h"
 #include "AT_RDD.h"
-
+#include "AT_Histograms.h"
 
 #include <stdio.h>
 #include <stdlib.h>

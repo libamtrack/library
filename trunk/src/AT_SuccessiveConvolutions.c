@@ -75,13 +75,19 @@ long  AT_n_bins_for_single_impact_local_dose_distrib(
 	long n_bins_for_singe_impact_local_dose_ditrib = 0;
 	// get number of bins needed to span that dose range
 	if( (d_min_Gy > 0) && (d_max_Gy >0) ){
-		double tmp        =  log10(d_max_Gy/d_min_Gy) / log10(2.0) * ((double)N2);
-		n_bins_for_singe_impact_local_dose_ditrib        =  (long)(floor(tmp) + 1.0);
+		// OLD:
+		//		double tmp        =  log10(d_max_Gy/d_min_Gy) / log10(2.0) * ((double)N2);
+		//		n_bins_for_singe_impact_local_dose_ditrib        =  (long)(floor(tmp) + 1.0);
+		AT_histo_n_bins(     d_min_Gy,
+				d_max_Gy,
+				AT_N2_to_step(N2),
+				AT_histo_log,
+				&n_bins_for_singe_impact_local_dose_ditrib);
 	} else {
 		printf("AT_n_bins_for_singe_impact_local_dose_ditrib: problem in evaluating n_bins_for_singe_impact_local_dose_ditrib: d_min = %g [Gy], d_max = %g [Gy] \n", d_min_Gy, d_max_Gy);
 		exit(EXIT_FAILURE);
 	}
-	return n_bins_for_singe_impact_local_dose_ditrib;
+	return n_bins_for_singe_impact_local_dose_ditrib + 1;
 }
 
 
@@ -99,11 +105,15 @@ void  AT_single_impact_local_dose_distrib(
 		const double  f1_parameters[],
 		double        f1_d_Gy[],
 		double        f1_dd_Gy[],
-		double        f1[])
+		double        frequency_1_Gy_f1[])
 {
-	double*  fluence_cm2    =  (double*)calloc(n, sizeof(double));
+	long i, j;
 
-	long i;
+	/*
+	 * Get relative fluence for beam components
+	 * Convert dose to fluence if necessary
+	 */
+	double*  fluence_cm2    =  (double*)calloc(n, sizeof(double));
 	if(fluence_cm2_or_dose_Gy[0] < 0){
 		double*  dose_Gy        =  (double*)calloc(n, sizeof(double));
 		for (i = 0; i < n; i++){
@@ -122,99 +132,113 @@ void  AT_single_impact_local_dose_distrib(
 		}
 	}
 	double*  norm_fluence                                 =  (double*)calloc(n, sizeof(double));
-
-	// Normalize fluence vector
 	AT_normalize(    n,
 			fluence_cm2,
 			norm_fluence);
-
 	free( fluence_cm2 );
 
+	/*
+	 * Prepare singe impact local dose distribution histogram
+	 */
+
 	if(n_bins_f1 > 0){
-		double  d_min      =  f1_parameters[0*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3];
-		double  d_max      =  f1_parameters[0*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4];
+		const double step		= AT_N2_to_step(N2);
+		const long   histo_type	= AT_histo_log;
 
+		// Find lowest and highest dose (looking at ALL particles)
+		// TODO: redundant, already used in finding number of bins, replace
+		double  d_min_f1      =  f1_parameters[0*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3];
+		double  d_max_f1      =  f1_parameters[0*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4];
 		for (i = 1; i < n; i++){
-			d_min          =  GSL_MIN(f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3], d_min);
-			d_max          =  GSL_MAX(f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4], d_max);
+			d_min_f1          =  GSL_MIN(f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3], d_min_f1);
+			d_max_f1          =  GSL_MAX(f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4], d_max_f1);
 		}
 
-		double  U        =  (log(2.0) / (double)N2);
+		double	 lowest_left_limit_f1 = d_min_f1 / sqrt(step);
 
-		double*  d_df_low      =  (double*)calloc(n_bins_f1, sizeof(double));
-		double*  d_df_mid      =  (double*)calloc(n_bins_f1, sizeof(double));
-		double*  d_df_high     =  (double*)calloc(n_bins_f1, sizeof(double));
-		double*  dd_df         =  (double*)calloc(n_bins_f1, sizeof(double));
+		AT_histo_midpoints(n_bins_f1,
+				lowest_left_limit_f1,
+				step,
+				histo_type,
+				f1_d_Gy);
 
-		for (i = 0; i < n_bins_f1; i++){
-			// TODO: check if n.bins sufficient
+		AT_histo_bin_widths(n_bins_f1,
+				lowest_left_limit_f1,
+				step,
+				histo_type,
+				f1_dd_Gy);
 
-			d_df_low[i]          =   d_min * exp((double)i * U);
-			d_df_high[i]         =   d_min * exp(((double)i + 1.0) * U);
-			d_df_mid[i]          =   d_min * exp(((double)i + 0.5) * U);
-			dd_df[i]             =   d_df_high[i] - d_df_low[i];              // OBS: using Kellerer's bin-width = mid.point * U is not entirely correct
+		memset(frequency_1_Gy_f1, 0.0, n_bins_f1);
 
-			f1[i]            =  0.0;
-		}
+		/*
+		 * Fill histogram with single impact distribution(s) from individual components
+		 */
 
+		// loop over all components (i.e. particles and energies), compute contribution to f1
 		long n_bins_used = 1;
+		for (i = 0; i < n; i++){
 
-		// loop over all particles and energies, compute contribution to f1
-		long   k;
-		for (k = 0; k < n; k++){
+			// Find lowest and highest dose for component
+			double  d_min_f1_comp   =  f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3];
+			double  d_max_f1_comp   =  f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4];
 
-			double  d_min_k        =  f1_parameters[k*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 3];
-			double  d_max_k        =  f1_parameters[k*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4];
+			// Find position and number of bins for component f1 in overall f1
+			// TODO: df_low??
+			//			long i_low  		 	= locate(dose_midpoint_Gy_f1, n_bins_f1, d_min_f1_comp) - 1;
+			//			long i_high 			= locate(dose_midpoint_Gy_f1, n_bins_f1, d_max_f1_comp) - 1;
+			long lowest_bin_no_comp  		 	= AT_histo_bin_no(n_bins_f1,
+					lowest_left_limit_f1,
+					step,
+					histo_type,
+					d_min_f1_comp);
+			long highest_bin_no_comp 			= AT_histo_bin_no(n_bins_f1,
+					lowest_left_limit_f1,
+					step,
+					histo_type,
+					d_max_f1_comp);
+			long n_bins_f1_comp      			=  highest_bin_no_comp - lowest_bin_no_comp + 1;  // changed from + 2
 
-			// find first and last bin to fit this particle's contribution into the all-over f1-frame
-			long  i_low, i_high;
-			i_low  = locate(d_df_low, n_bins_f1, d_min_k);
-			i_high = locate(d_df_low, n_bins_f1, d_max_k);
-			i_low            -=  1;
-			i_high           -=  1;
 
-			long  n_bins_df      =  i_high - i_low + 1;  // changed from + 2
+			if (n_bins_f1_comp > 1){
+				/*
+				 * Prepare histogram to compute component F1 (accumulated single impact)
+				 * In contrast to f1, the sampling points for F1 are the bin limits, no the bin midpoints!
+				 */
+				double*  dose_left_limits_Gy_F1_comp =  (double*)calloc(n_bins_f1_comp + 1, sizeof(double));
+				double*  r_m_comp           		 =  (double*)calloc(n_bins_f1_comp + 1, sizeof(double));
+				double*  F1_comp        			 =  (double*)calloc(n_bins_f1_comp + 1, sizeof(double));
 
-			if (n_bins_df > 1){
-				double*  d_low       =  (double*)calloc(n_bins_df, sizeof(double));
-				double*  d_mid       =  (double*)calloc(n_bins_df, sizeof(double));
-				double*  d_high      =  (double*)calloc(n_bins_df, sizeof(double));
-				double*  dd          =  (double*)calloc(n_bins_df, sizeof(double));
-				double*  r           =  (double*)calloc(n_bins_df, sizeof(double));
-				double*  F1_1        =  (double*)calloc(n_bins_df, sizeof(double));
-				double*  f1_k        =  (double*)calloc(n_bins_df - 1, sizeof(double));
+				// left limit of lowest bin for component
+				double   lowest_left_limit_f1_comp = 0.0;
+				AT_histo_left_limit(n_bins_f1,
+						lowest_left_limit_f1,
+						step,
+						histo_type,
+						lowest_bin_no_comp,
+						&lowest_left_limit_f1_comp);
 
-				// extract the corresponding part from the all-over frame
-				for (i = 0; i < n_bins_df; i++){
-					d_low[i]           =   d_df_low[i_low + i];
-					d_high[i]          =   d_df_high[i_low + i];
-					d_mid[i]           =   d_df_mid[i_low + i];
-					dd[i]              =   d_high[i] - d_low[i];
-				};
+				// get all left limits
+				AT_histo_left_limits(n_bins_f1_comp + 1,
+						lowest_left_limit_f1_comp,
+						step,
+						histo_type,
+						dose_left_limits_Gy_F1_comp);
 
-				// and adjust the edges
-				d_low[0]                =  d_min_k;
-				d_low[n_bins_df-1]      =  d_max_k;
+				// but adjust lowest left limit as because these can be different from
+				// bins of overall f1
+				dose_left_limits_Gy_F1_comp[0]                =  d_min_f1_comp;
+				dose_left_limits_Gy_F1_comp[n_bins_f1_comp]   =  d_max_f1_comp;
 
-				d_mid[0]                =  sqrt(d_low[0] * d_high[0]);
-				d_mid[n_bins_df-1-1]    =  sqrt(d_low[n_bins_df - 1] * d_high[n_bins_df - 1]);
-				d_mid[n_bins_df-1]      =  0.0;
-
-				d_high[n_bins_df-1-1]   =  d_max_k;
-				d_high[n_bins_df-1]     =  0.0;  //TODO ??
-
-				dd[n_bins_df-1]         =  0.0;
-
-				// now compute r, F1, and f1, this could be any RDD if implemented
-				int inverse_RDD_status_code = AT_r_RDD_m  (  n_bins_df,
-						d_low,
-						E_MeV_u[k],
-						particle_no[k],
+				// compute radius as function of dose (inverse RDD), exit in case of problems
+				int inverse_RDD_status_code = AT_r_RDD_m  (  n_bins_f1_comp + 1,
+						dose_left_limits_Gy_F1_comp,
+						E_MeV_u[i],
+						particle_no[i],
 						material_no,
 						rdd_model,
 						rdd_parameter,
 						er_model,
-						r);
+						r_m_comp);
 
 				if( inverse_RDD_status_code != 0 ){
 					printf("Problem in evaluating inverse RDD in AT_SC_get_f1, probably wrong combination of ER and RDD used\n");
@@ -226,66 +250,48 @@ void  AT_single_impact_local_dose_distrib(
 					exit(EXIT_FAILURE);
 				}
 
-				for (i = 0; i < n_bins_df; i++){
-					F1_1[i]            = gsl_pow_2(r[i] / f1_parameters[k*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 2]);        // F1 - 1 instead of F1 to avoid numeric cut-off problems
+				// compute F1 as function of radius
+				// use F1 - 1 instead of F1 to avoid numeric cut-off problems
+				// TODO: separate function
+				double r_max_m_comp = f1_parameters[i * AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 2];
+				for (j = 0; j < n_bins_f1_comp + 1; j++){
+					F1_comp[j]            = gsl_pow_2(r_m_comp[j] / r_max_m_comp);
 				}
 
-				F1_1[n_bins_df-1]    =  0.0;
-
-				// now compute f1 as the derivative of F1
-				for (i = 0; i < (n_bins_df - 1); i++){
-					f1_k[i]          =  -1.0 * (F1_1[i + 1] - F1_1[i]) / dd[i];
+				// now compute f1 as the derivative of F1 and add to overall f1
+				double f1_comp;
+				for (j = 0; j < n_bins_f1_comp; j++){
+					f1_comp				  						=  (F1_comp[j] - F1_comp[j + 1]) / (dose_left_limits_Gy_F1_comp[j + 1] - dose_left_limits_Gy_F1_comp[j]);
+					frequency_1_Gy_f1[lowest_bin_no_comp + j]   += norm_fluence[i] * f1_comp;
 				}
 
 				// adjust the density in first and last bin, because upper limit is not d.max.Gy and lower not d.min.Gy
-				f1_k[0]              *=  dd[0] / dd_df[i_low];
-				f1_k[n_bins_df-2]    *=  dd[n_bins_df - 2] / dd_df[i_high - 1];
+//				f1_comp[0]              *=  dose_width_Gy_f1_comp[0] / dose_width_Gy_f1[lowest_bin_no_comp];
+//				f1_comp[n_bins_f1_comp-2]    *=  dose_width_Gy_f1_comp[n_bins_f1_comp - 2] / dose_width_Gy_f1[highest_bin_no_comp - 1];
 
-				// and paste f1 for this energy /particle into the over all data frame according to rel. fluence
-				for (i = 0; i < (n_bins_df - 1); i++){
-					f1[i_low + i]      +=  norm_fluence[k] * f1_k[i];
-				}
-
-				free(d_low);
-				free(d_mid);
-				free(d_high);
-				free(dd);
-				free(r);
-				free(F1_1);
-				free(f1_k);
+				free(dose_left_limits_Gy_F1_comp);
+				free(r_m_comp);
+				free(F1_comp);
 			}
 			else{ // n_bins_df == 1
-				f1[i_low ]        +=  norm_fluence[k] * 1.0 / dd_df[i_low];
+				frequency_1_Gy_f1[lowest_bin_no_comp ]        +=  norm_fluence[i] * 1.0 / f1_d_Gy[lowest_bin_no_comp];
 			}
 
 			// remember highest bin used
-			n_bins_used          =  GSL_MAX(n_bins_used, i_high);
+			n_bins_used          =  GSL_MAX(n_bins_used, highest_bin_no_comp);
 		}
-
-		// copy back for the dose axis
-		for (i = 0; i < n_bins_f1; i++){
-			f1_d_Gy[i]    =  d_df_mid[i];
-			f1_dd_Gy[i]   =  dd_df[i];
-		}
-
-		free(d_df_low);
-		free(d_df_mid);
-		free(d_df_high);
-		free(dd_df);
 
 		// normalize f1 (should be ok anyway but there could be small round-off errors)
 		double  f1_norm    =  0.0;
 		for (i = 0; i < n_bins_f1; i++){
-			f1_norm    +=    f1[i] * f1_dd_Gy[i];
+			f1_norm    +=    frequency_1_Gy_f1[i] * f1_dd_Gy[i];
 		}
 		for (i = 0; i < n_bins_f1; i++){
-			f1[i]    /=    f1_norm;
+			frequency_1_Gy_f1[i]    /=    f1_norm;
 		}
-
 	} // if(f1_d_Gy != NULL)
 
 	free( norm_fluence );
-
 }
 
 
