@@ -25,16 +25,9 @@
 
 rm(list = ls())
 
-write("#ifndef AT_LIBAMTRACK_H_\n#define AT_LIBAMTRACK_H_\n// Automatically created header file for use of libamtrack in Matlab\n\n", file = "libamtrack.h")
+write("#ifndef LIBAMTRACK_H_\n#define LIBAMTRACK_H_\n// Automatically created header file for use of libamtrack in Matlab\n\n", file = "libamtrack.h")
 
 load("functions.sdd")
-
-# replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
-grep.bool	<-	function(pattern, x, ...){
-	results	<-	grep(pattern, x, ...)
-	indices	<-	1:length(x)
-	bool.res	<-	is.element(indices, results)
-}
 
 for(i in 1:length(functions)){
 	# i <- 1
@@ -46,7 +39,7 @@ for(i in 1:length(functions)){
 	comment          <-  functions[[i]]$raw.comment.text
       declaration      <-  functions[[i]]$raw.declaration.text
 
-	write(c(comment, "\n", declaration, "\n\n"), file = "AT_R_Wrapper.c", append = T)
+	write(c(comment, declaration, "\n\n"), file = "libamtrack.h", append = T)
 }
 
-write("#endif\n", file = "AT_R_Wrapper.h", append = T)
+write("#endif\n", file = "libamtrack.h", append = T)
