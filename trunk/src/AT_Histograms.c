@@ -88,7 +88,7 @@ int AT_histo_left_limits( const long number_of_bins,
 {
   long bin_no;
   int global_status_code = EXIT_SUCCESS;
-  for (bin_no = 0; bin_no < number_of_bins + 1; bin_no++){
+  for (bin_no = 0; bin_no < number_of_bins; bin_no++){
 	  int status_code = AT_histo_left_limit( number_of_bins,
                                           lowest_left_limit,
                                           step,
