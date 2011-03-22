@@ -185,9 +185,6 @@ void  AT_single_impact_local_dose_distrib(
 			double  d_max_f1_comp   =  f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4];
 
 			// Find position and number of bins for component f1 in overall f1
-			// TODO: df_low??
-			//			long i_low  		 	= locate(dose_midpoint_Gy_f1, n_bins_f1, d_min_f1_comp) - 1;
-			//			long i_high 			= locate(dose_midpoint_Gy_f1, n_bins_f1, d_max_f1_comp) - 1;
 			long lowest_bin_no_comp  		 	= AT_histo_bin_no(n_bins_f1,
 					lowest_left_limit_f1,
 					step,
@@ -229,7 +226,7 @@ void  AT_single_impact_local_dose_distrib(
 				// but adjust lowest left limit as because these can be different from
 				// bins of overall f1
 				dose_left_limits_Gy_F1_comp[0]                =  d_min_f1_comp;
-				dose_left_limits_Gy_F1_comp[n_bins_f1_comp]   =  d_max_f1_comp;
+				dose_left_limits_Gy_F1_comp[n_bins_f1_comp]	  =  d_max_f1_comp;
 
 				// compute radius as function of dose (inverse RDD), exit in case of problems
 				int inverse_RDD_status_code = AT_r_RDD_m  (  n_bins_f1_comp + 1,
@@ -254,7 +251,6 @@ void  AT_single_impact_local_dose_distrib(
 
 				// compute F1 as function of radius
 				// use F1 - 1 instead of F1 to avoid numeric cut-off problems
-				// TODO: separate function
 				double r_max_m_comp = f1_parameters[i * AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 2];
 				for (j = 0; j < n_bins_f1_comp + 1; j++){
 					F1_comp[j]            = gsl_pow_2(r_m_comp[j] / r_max_m_comp);
@@ -268,9 +264,6 @@ void  AT_single_impact_local_dose_distrib(
 				}
 
 				// adjust the density in first and last bin, because upper limit is not d.max.Gy and lower not d.min.Gy
-//				f1_comp[0]              *=  dose_width_Gy_f1_comp[0] / dose_width_Gy_f1[lowest_bin_no_comp];
-//				f1_comp[n_bins_f1_comp-2]    *=  dose_width_Gy_f1_comp[n_bins_f1_comp - 2] / dose_width_Gy_f1[highest_bin_no_comp - 1];
-
 				free(dose_left_limits_Gy_F1_comp);
 				free(r_m_comp);
 				free(F1_comp);
