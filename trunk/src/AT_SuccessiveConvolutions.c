@@ -168,7 +168,9 @@ void  AT_single_impact_local_dose_distrib(
 				histo_type,
 				f1_dd_Gy);
 
-		memset(frequency_1_Gy_f1, 0.0, n_bins_f1);
+		for (i = 0; i < n_bins_f1; i++){
+			frequency_1_Gy_f1[i] = 0.0;
+		}
 
 		/*
 		 * Fill histogram with single impact distribution(s) from individual components
