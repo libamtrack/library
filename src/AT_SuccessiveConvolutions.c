@@ -138,7 +138,7 @@ void  AT_single_impact_local_dose_distrib(
 	free( fluence_cm2 );
 
 	/*
-	 * Prepare singe impact local dose distribution histogram
+	 * Prepare single impact local dose distribution histogram
 	 */
 
 	if(n_bins_f1 > 0){
@@ -195,13 +195,22 @@ void  AT_single_impact_local_dose_distrib(
 					step,
 					histo_type,
 					d_max_f1_comp);
-			long n_bins_f1_comp      			=  highest_bin_no_comp - lowest_bin_no_comp + 1;  // changed from + 2
+			long n_bins_f1_comp      			=  highest_bin_no_comp - lowest_bin_no_comp + 1;
 
 
 			if (n_bins_f1_comp > 1){
 				/*
-				 * Prepare histogram to compute component F1 (accumulated single impact)
-				 * In contrast to f1, the sampling points for F1 are the bin limits, no the bin midpoints!
+				 * Compute component F1 (accumulated single impact density)
+				 * Computation is done with bin limits as sampling points and later differential
+				 * f1 will be computed (therefore we need one bin more)
+				 * The lowest and highest value for F1 have however to be adjusted as they might
+				 * not coincide with the actual min/max values for dose, r, and F1 resp.
+				 * They bin widths have to be the same though to assure the integral to be 1
+				 *
+				 * At the limits F1 will be set to 0 and 1, resp. This enable to account for all
+				 * dose, e.g. also in the core, where many radii have the same dose. This procedure,
+				 * however, will only work with monotonously falling RDDs which we can assume for all
+				 * realistic cases.
 				 */
 				double*  dose_left_limits_Gy_F1_comp =  (double*)calloc(n_bins_f1_comp + 1, sizeof(double));
 				double*  r_m_comp           		 =  (double*)calloc(n_bins_f1_comp + 1, sizeof(double));
@@ -223,14 +232,13 @@ void  AT_single_impact_local_dose_distrib(
 						histo_type,
 						dose_left_limits_Gy_F1_comp);
 
-				// but adjust lowest left limit as because these can be different from
-				// bins of overall f1
-				dose_left_limits_Gy_F1_comp[0]                =  d_min_f1_comp;
-				dose_left_limits_Gy_F1_comp[n_bins_f1_comp]	  =  d_max_f1_comp;
-
-				// compute radius as function of dose (inverse RDD), exit in case of problems
-				int inverse_RDD_status_code = AT_r_RDD_m  (  n_bins_f1_comp + 1,
-						dose_left_limits_Gy_F1_comp,
+				// compute radius as function of dose (inverse RDD),
+				// but not for lowest and highest value (i.e. 'n_bins_f1_comp - 1'
+				// instead of 'n_bins_f1_comp + 1' and &dose_left_limits_Gy_F1_comp[1]
+				// as entry point instead of dose_left_limits_Gy_F1_comp
+				// exit in case of problems
+				int inverse_RDD_status_code = AT_r_RDD_m  (  n_bins_f1_comp - 1,
+						&dose_left_limits_Gy_F1_comp[1],
 						E_MeV_u[i],
 						particle_no[i],
 						material_no,
@@ -252,9 +260,13 @@ void  AT_single_impact_local_dose_distrib(
 				// compute F1 as function of radius
 				// use F1 - 1 instead of F1 to avoid numeric cut-off problems
 				double r_max_m_comp = f1_parameters[i * AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 2];
-				for (j = 0; j < n_bins_f1_comp + 1; j++){
+				for (j = 1; j < n_bins_f1_comp; j++){
 					F1_comp[j]            = gsl_pow_2(r_m_comp[j] / r_max_m_comp);
 				}
+
+				// Set extreme values of F1
+				F1_comp[0]					= 1.0;
+				F1_comp[n_bins_f1_comp]		= 0.0;
 
 				// now compute f1 as the derivative of F1 and add to overall f1
 				double f1_comp;
@@ -268,8 +280,8 @@ void  AT_single_impact_local_dose_distrib(
 				free(r_m_comp);
 				free(F1_comp);
 			}
-			else{ // n_bins_df == 1
-				frequency_1_Gy_f1[lowest_bin_no_comp ]        +=  norm_fluence[i] * 1.0 / f1_d_Gy[lowest_bin_no_comp];
+			else{ // in case of n_bins_df == 1 (all doses fall into single bin, just add a value of 1.0
+				frequency_1_Gy_f1[lowest_bin_no_comp ]        +=  norm_fluence[i] * 1.0 / f1_dd_Gy[lowest_bin_no_comp];
 			}
 
 			// remember highest bin used
