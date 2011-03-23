@@ -63,7 +63,12 @@ long AT_n_bins_for_single_impact_local_dose_distrib(
 
 
 /**
- * Computes the f1 (single impact) local dose distribution for a given field, rdd, er
+ * Computes the f1 (single impact) local dose distribution for a given field,
+ * radial dose distribution and electron-range model. The routine can handle
+ * mixed fields by adding the single contributions according to their respective
+ * fluence.
+ * This routine can handle all monotonously falling RDDs which should be the case
+ * for every realistic approach.
  * Usually step 2 of the CPP-SC method
  * @param[in]  n                     number of particle types in the mixed particle field
  * @param[in]  E_MeV_u               energy of particles in the mixed particle field (array of size n)
