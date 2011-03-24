@@ -21,6 +21,9 @@ make all
 REM Uncomment to leave temporary file for debugging
 REM goto EOF
 
+REM TODO REMOVE 'PACKAGE="libamtrack"' from R wrapper!
+grep
+
 REM Delete temporary files
 del *.o
 del *.c

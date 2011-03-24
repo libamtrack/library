@@ -41,6 +41,7 @@ These functions handle underlying physic used in amorphous track modeling:
 
 \tabular{ll}{
 \code{\link{AT.D.RDD.Gy}} \tab Dose distribution around a particle track \cr
+\code{\link{AT.r.RDD.m}} \tab Inverse dose distribution around a particle track \cr
 \code{\link{AT.max.electron.ranges.m}} \tab Maximum electron range / track width \cr
 \code{\link{AT.gamma.response}} \tab Gamma / X ray response of a system \cr
 \code{\link{AT.inverse.gamma.response}} \tab Inverse Gamma / X ray response of a system
