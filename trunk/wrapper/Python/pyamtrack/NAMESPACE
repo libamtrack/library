@@ -1,7 +1,10 @@
 # Functions to be wrapped for Python
+# main RE algorithms don\'t change
 AT_run_CPPSC_method
 AT_run_IGK_method
 AT_run_GSM_method
+# auxiliary functions, here you can put every function defined
+# in a libamtrack header, if it\'s well documented it will be parsed
 AT_D_RDD_Gy
 AT_max_electron_ranges_m
 AT_LET_keV_um

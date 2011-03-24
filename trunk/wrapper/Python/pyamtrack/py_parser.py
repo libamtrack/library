@@ -107,14 +107,19 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py'):
         c_output_list= []
         for para_name in c_func.parameter.keys():
             if c_func.parameter[para_name].direction == 'out':
-                c_output_list.append('c_' +para_name)
+                c_output_list.append(str(c_func.parameter[para_name].no) +'c_' +para_name)
 
+                
         if c_output_list != []:
+            c_output_list.sort()
             py_func_string += '\treturn '
-            for i , item in enumerate(c_output_list):
-                py_func_string += ' ' + item+'._obj.value'
-                if i<len(c_output_list)-1:
+
+            for  i,item in enumerate(c_output_list):
+                #                if c_func.parameter[item[2:]].no == l+len(c_output_list):
+                py_func_string += ' ' + item[2:]+'._obj.value'
+                if i < len(c_output_list)-1:
                     py_func_string += ','
+            
         py_func_string+='\n\n'
         outfile.write(py_func_string)
 
@@ -130,7 +135,7 @@ def translate_type(parameter):
                 'int' : 'ctypes.c_int'}
     
     py_line =''
-    if parameter.direction == 'in':
+    if parameter.direction == 'in'or  parameter.direction == 'in,out':
         if not parameter.array:
             py_line += 'c_' + parameter.name + ' = '
             py_line += c_lookup[parameter.type] + '(' +parameter.name+')'
@@ -144,8 +149,8 @@ def translate_type(parameter):
         if parameter.array :
             py_line += 'tmp_array = ' + c_lookup[parameter.type] + '*' +parameter.array_size + '\n'
             py_line += '\tc_' +parameter.name + '= ctypes.byref(tmp_array)\n'
+
         
-        #print 'array, TODO ' ,  parameter.name,  parameter.array_size
     py_line += '\n'
     return py_line
     
