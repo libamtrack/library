@@ -2,6 +2,7 @@ AT_run_CPPSC_method
 AT_run_IGK_method
 AT_run_GSM_method
 AT_D_RDD_Gy
+AT_r_RDD_m
 AT_max_electron_ranges_m
 AT_LET_keV_um
 AT_LET_MeV_cm2_g
