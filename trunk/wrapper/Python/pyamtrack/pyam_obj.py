@@ -80,7 +80,6 @@ class amtrack_func:
                 tmp_string_ls = string.split(item, '(')
                 if len(string.split(item, ')')) == 2:
                     oneline =True
-                #print tmp_string_ls
                 if oneline :
                     tmp_name = string.split(tmp_string_ls[-1])[-2]
                 else:
@@ -92,8 +91,6 @@ class amtrack_func:
                 if tmp_type[-1] == '*':
                     tmp_type = tmp_type[:-1]
                     self.parameter[tmp_name].pointer =True
-                #print tmp_name,
-                #print 'keys',  self.parameter.keys()
                 self.parameter[tmp_name].type=tmp_type
             elif len(string.split(item, ')')) == 2  and not oneline:
                 tmp_string_ls = string.split(item, ')')
