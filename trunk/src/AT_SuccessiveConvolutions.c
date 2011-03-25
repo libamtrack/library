@@ -154,7 +154,7 @@ void  AT_single_impact_local_dose_distrib(
 			d_max_f1          =  GSL_MAX(f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH + 4], d_max_f1);
 		}
 
-		double	 lowest_left_limit_f1 = d_min_f1 / sqrt(step);
+		double	 lowest_left_limit_f1 = d_min_f1;
 
 		AT_histo_midpoints(n_bins_f1,
 				lowest_left_limit_f1,
@@ -245,7 +245,7 @@ void  AT_single_impact_local_dose_distrib(
 						rdd_model,
 						rdd_parameter,
 						er_model,
-						r_m_comp);
+						&r_m_comp[1]);
 
 				if( inverse_RDD_status_code != 0 ){
 					printf("Problem in evaluating inverse RDD in AT_SC_get_f1, probably wrong combination of ER and RDD used\n");
@@ -267,6 +267,15 @@ void  AT_single_impact_local_dose_distrib(
 				// Set extreme values of F1
 				F1_comp[0]					= 1.0;
 				F1_comp[n_bins_f1_comp]		= 0.0;
+
+				FILE* output = fopen("F_output.csv", "w");
+				fprintf(output, "bin.no;r.m;d.Gy;F1\n");
+				for (j = 0; j < n_bins_f1_comp + 1; j++){
+					fprintf(output,
+							"%ld;%7.6e;%7.6e;%7.6e\n",
+							j, r_m_comp[j], dose_left_limits_Gy_F1_comp[j], F1_comp[j]);
+				}
+				fclose(output);
 
 				// now compute f1 as the derivative of F1 and add to overall f1
 				double f1_comp;
