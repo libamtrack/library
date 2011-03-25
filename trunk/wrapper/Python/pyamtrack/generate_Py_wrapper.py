@@ -34,13 +34,13 @@ import py_parser
 
 def main():
     
-    print 'Reading  namespace'
+    print 'Reading NAMESPACE file'
     desired_func = py_parser.read_namespace()
-    print ' Searching header files'
+    print 'Harvesting function definitions in header files'
     c_functions = py_parser.harvest(desired_func)
-    print 'Writing wrapper file'
+    print 'Writing \'pyamtrack.py\' wrapper file'
     py_parser.write_func_in_py(c_functions, 'pyamtrack.py')
-    print 'Done!'
+    print 'Done'
     
     
 main()

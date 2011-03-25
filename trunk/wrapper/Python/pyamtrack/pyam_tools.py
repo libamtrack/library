@@ -42,7 +42,7 @@ class PyAmRun(object):
     def __init__(self, name = 'amtackrun'):
         '''
         PuyAmRun object
-        run object the under self.algortihm specified algorithm with the given parameters
+        run object with the under self.algortihm specified algorithm with the given parameters
         default \'CPPSC\'
         '''
         self.name = name
@@ -104,7 +104,7 @@ class PyAmRun(object):
 
     def run(self):
         '''
-        run specified algorithm
+        run algorithm specified in self.algorithm
         '''
         if self.algorithm == 'CPPSC':
             self.runCPPSC()
