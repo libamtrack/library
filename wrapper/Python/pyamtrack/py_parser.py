@@ -81,7 +81,7 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py'):
                 py_func_string +=','
             i+=1
         py_func_string+='):\n'
-        #write comment, copied from source code
+        # write comment, copied from source code
         py_func_string +='\t\'\'\'\n'
         for line in c_func.comment :
             line = string.replace(line ,'\'','\\\'')
@@ -107,7 +107,7 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py'):
         c_output_list= []
         for para_name in c_func.parameter.keys():
             if c_func.parameter[para_name].direction == 'out':
-                c_output_list.append(str(c_func.parameter[para_name].no) +'c_' +para_name)
+                c_output_list.append(str(c_func.parameter[para_name].no) +'_c_' +para_name)
 
                 
         if c_output_list != []:
@@ -116,6 +116,7 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py'):
 
             for  i,item in enumerate(c_output_list):
                 #                if c_func.parameter[item[2:]].no == l+len(c_output_list):
+                tmp_no = len(string.split(item,'_')[0])
                 py_func_string += ' ' + item[2:]+'._obj.value'
                 if i < len(c_output_list)-1:
                     py_func_string += ','
@@ -187,11 +188,7 @@ def harvest(functions,  path = '../../../include/'):
                 splitted_line = string.split(line)
                 if splitted_line != []:
                     if function_end:
-                        function_end = False
-                        #print tmp_definition_start,  len(tmp_header_content)
-                        #print tmp_header_content[tmp_definition_start]
-                        #print string.split(tmp_header_content[tmp_definition_start])[1]
-                        #print string.split(string.split(tmp_header_content[tmp_definition_start])[1], '(') 
+                        function_end = False     
                         if all:
                             desired_func.append(tools.amtrack_func(string.split(string.split(tmp_header_content[tmp_definition_start] )[1] , '(') [0]))
                             desired_func[-1].comment = tmp_header_content[comment_start:comment_stop]
