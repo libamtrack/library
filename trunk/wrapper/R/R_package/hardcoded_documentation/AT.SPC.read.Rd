@@ -5,7 +5,7 @@
 
 Presently, two versions of the reader exists: a slower but stable R version ('vanilla') and a faster but still buggy C version.
 }
-\usage{AT.SPC.read( file.name, mean, compress)
+\usage{AT.SPC.read( file.name, flavour, endian, mean, compress)
 }
 \arguments{
   \item{file.name}{ name of spc-file to be read (with extension).}

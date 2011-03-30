@@ -128,7 +128,7 @@ Misc physics routines:
 \code{\link{AT.effective.charge.from.E.MeV.u}} \tab Effective charge of an ion depending on its kinetic energy \cr
 \code{\link{AT.max.E.transfer.MeV}} \tab Max energy transfered from an ion to secondary electrons\cr
 \code{\link{AT.mean.number.of.tracks.contrib}} \tab Mean number of tracks that desposite dose in a representative point\cr
-
+\code{\link{AT.Rutherford.SDCS}} \tab Rutherford cross section of energy transferred to sec. electrons\cr
 \code{\link{AT.beta.from.E}} \tab Relativistic beta of an ion with \cr
 \code{\link{AT.E.from.beta}} \tab Kinetic energy for given beta \cr
 \code{\link{AT.gamma.from.E}} \tab Relativistic gamma of an ion
@@ -143,6 +143,7 @@ Other routines:
 \code{\link{AT.particle.no.from.Z.and.A}} \tab Returns particle index number for given mass and atomic number\cr
 \code{\link{AT.A.from.particle.no}} \tab Returns mass number for given particle number\cr
 \code{\link{AT.Z.from.particle.no}} \tab Returns atomic number for given particle number\cr
+\code{\link{AT.nuclear.spin.from.particle.no}} \tab Returns nuclear spin for given particle number\cr
 \code{\link{AT.electron.density.m3}} \tab Returns electron density from average Z and A\cr
 \code{\link{AT.electron.density.m3.from.material.no}} \tab Returns electron density for given material\cr
 \code{\link{AT.material.name.from.material.no}} \tab Converts material index numbers into material names\cr
