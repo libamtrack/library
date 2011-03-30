@@ -156,6 +156,38 @@ int AT_I_eV_from_particle_no( const long  n,
   return AT_Success;
 }
 
+int AT_nuclear_spin_from_particle_no_multi( const long  n,
+    const long  particle_no[],
+    double  I[]){
+
+	long i;
+	for( i = 0; i < n; i++){
+		I[i]	= AT_nuclear_spin_from_particle_no_single(particle_no[i]);
+	}
+
+	return EXIT_SUCCESS;
+}
+
+double AT_nuclear_spin_from_particle_no_single( const long  particle_no){
+
+	return AT_nuclear_spin_from_Z_and_A( AT_Z_from_particle_no_single(particle_no),
+			AT_A_from_particle_no_single(particle_no));
+}
+
+double AT_nuclear_spin_from_Z_and_A( const long  Z,
+    const long  A){
+
+	if(A % 2 == 0){
+		if(Z % 2 == 0){
+			return 0.0;		// If even number of neutrons AND protons -> I = 0
+		}else{
+			return 1.0;     // If odd number of n AND p but even number of nucleons -> I = 1
+		}
+	}else{
+		return 0.5;			// If odd number of nucleons -> I = 1/2
+	}
+}
+
 int AT_particle_name_from_particle_no_single( const long  particle_no,
     char * particle_name){
 
