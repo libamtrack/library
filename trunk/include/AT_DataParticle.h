@@ -219,6 +219,33 @@ int AT_I_eV_from_particle_no( const long  n,
     double  I_eV[]);
 
 /**
+ * Returns nuclear spin from particle no
+ * @param[in]  n              number of elements
+ * @param[in]  particle_no    particle index number (array of size n)
+ * @param[out] I              nuclear spin (array of size n)
+ * @return                    status code
+ */
+int AT_nuclear_spin_from_particle_no_multi( const long  n,
+    const long  particle_no[],
+    double  I[]);
+
+/**
+ * Returns nuclear spin from particle no
+ * @param[in]  particle_no    particle index number (array of size n)
+ * @return     nuclear spin
+ */
+double AT_nuclear_spin_from_particle_no_single( const long  particle_no);
+
+/**
+ * Returns nuclear spin from Z and A
+ * @param[in]  Z              atomic number
+ * @param[in]  A              mass number
+ * @return     nuclear spin
+ */
+double AT_nuclear_spin_from_Z_and_A( const long  Z,
+    const long  A);
+
+/**
  * TODO
  */
 #define PARTICLE_NAME_NCHAR 6
