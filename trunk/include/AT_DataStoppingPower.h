@@ -304,6 +304,17 @@ void AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_multi(	const long n,
 		const double E_restricted_keV,
 		double Mass_Stopping_Power_MeV_cm2_g[]);
 
+/**
+ * Computes the Rutherford single differential cross section
+ * for the energy spectrum of secondary electrons produced by
+ * an HCP
+ */
+int AT_Rutherford_SDCS(const double E_MeV_u,
+		const long particle_no,
+		const long material_no,
+		const long n,
+		const double T_MeV[],
+		double dsigmadT[]);
 
 /** ----------------------------------------------- PSTAR DATA --------------------------------------------- */
 
