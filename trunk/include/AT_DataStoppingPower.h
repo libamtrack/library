@@ -314,7 +314,7 @@ int AT_Rutherford_SDCS(const double E_MeV_u,
 		const long material_no,
 		const long n,
 		const double T_MeV[],
-		double dsigmadT[]);
+		double dsdT_m2_MeV[]);
 
 /** ----------------------------------------------- PSTAR DATA --------------------------------------------- */
 
