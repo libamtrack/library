@@ -47,3 +47,4 @@ AT_average_Z_from_composition
 AT_effective_Z_from_composition
 AT_I_eV_from_composition
 AT_nuclear_spin_from_particle_no_multi
+AT_Rutherford_SDCS
