@@ -308,6 +308,15 @@ void AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_multi(	const long n,
  * Computes the Rutherford single differential cross section
  * for the energy spectrum of secondary electrons produced by
  * an HCP
+ * @param[in]  	   E_MeV_u      energy of particle per nucleon
+ * @param[in]  	   particle_no  particle index
+ * @see          AT_DataParticle.h for definition
+ * @param[in]      material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]  	   n      		number of secondary electron energies
+ * @param[in]      T_MeV 	    electron energies (array of size n)
+ * @param[out]     dsdT_m2_MeV  Rutherford SDCS for given electron energies (array of size n)
+ * @return         status code
  */
 int AT_Rutherford_SDCS(const double E_MeV_u,
 		const long particle_no,
