@@ -50,5 +50,7 @@ static const double  Avogadro_constant_1_mol =  6.02214179e23;
 static const double  classical_electron_radius_m = 2.8179402894e-15;
 static const double  Planck_constant_J_s	 =  6.62606896e-34;
 static const double  Dirac_constant_J_s		 =  1.054571628e-34;
+static const double	 fine_structure_constant =  7.297353e-3;
+
 
 #endif /* AT_CONSTANTS_H_ */
