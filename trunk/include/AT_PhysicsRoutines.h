@@ -680,6 +680,27 @@ double AT_mean_number_of_tracks_contrib(    const long number_of_field_component
  */
 double AT_kinetic_variable_single(double E_MeV_u);
 
+/**
+ * Computes the cross section (in 1/m2) the a particle is scattered
+ * in the solid angle O = 2 * pi * theta * d_theta given the
+ * scatter angle theta
+ *
+ * @param[in]  E_MeV_u      			energy of incoming particle
+ * @param[in]  particle_no  			particle index
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  material_no  			material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]  n						number of scattering angles given
+ * @param[in]  scattering_angle			scattering angles theta (array of size n)
+ * @param[out] scatter_cross_section	scatter cross section (array of size n)
+ * @return     status code
+ */
+long AT_Rutherford_scatter_cross_section( const double E_Mev_u,
+		const long particle_no,
+		const long material_no,
+		const long n,
+		const double scattering_angle[],
+		double scatter_cross_section[]);
 
 
 #endif /* AT_PHYSICSROUTINES_H_ */

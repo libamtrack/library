@@ -643,4 +643,30 @@ double AT_kinetic_variable_single(double E_MeV_u){
 	return(log10(beta*gamma));
 }
 
+long AT_Rutherford_scatter_cross_section(const double E_MeV_u,
+		const long particle_no,
+		const long material_no,
+		const long n,
+		const double scattering_angle[],
+		double scatter_cross_section[]){
 
+// TODO: This is in center of mass reference frame.
+// TODO: Retransformation in lab system?
+
+	double	Z_material 	= AT_average_Z_from_material_no(material_no);
+	double  Z_eff		= AT_effective_charge_from_E_MeV_u_single(E_MeV_u,
+			particle_no);
+	long	A			= AT_A_from_particle_no_single(particle_no);
+
+	double  prefactor	=  fine_structure_constant * Dirac_constant_J_s * c_m_s / MeV_to_J;
+			prefactor	*= Z_eff * Z_eff * Z_material * Z_material;
+			prefactor	/= 4 * E_MeV_u * A;
+			prefactor	*= prefactor;
+
+	long 	i;
+	for(i = 0; i < n; i++){
+		scatter_cross_section[i]	= prefactor / pow(sin(scattering_angle[i]/2), 4);
+	}
+
+	return EXIT_SUCCESS;
+}
