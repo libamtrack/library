@@ -33,7 +33,7 @@
 
  double AT_beta_from_E_single( const double E_MeV_u ){ //TODO is energy per nucleon really defined like that ?
   assert( E_MeV_u > 0.);
-  return sqrt(1.0 - 1.0/gsl_pow_2(1.0 + E_MeV_u/(1.0079*proton_mass_MeV_c2)));
+  return sqrt(1.0 - 1.0/gsl_pow_2(1.0 + E_MeV_u/(atomic_mass_unit_MeV_c2)));
 }
 
 
@@ -70,7 +70,7 @@ int AT_gamma_from_E( const long  n,
 
  double AT_E_from_beta_single(  const double beta ){
   assert( beta < 1.0);
-  return 1.0079*proton_mass_MeV_c2 * (sqrt(1.0 / (1.0 - gsl_pow_2(beta))) - 1.0);
+  return atomic_mass_unit_MeV_c2 * (sqrt(1.0 / (1.0 - gsl_pow_2(beta))) - 1.0);
 }
 
 
