@@ -16,11 +16,9 @@
 
 # Navigate to wrapper directory
 start.dir           <- getwd()
+setdir              <- try(setwd(file.path("../../wrapper/R/R_direct_access")))
 
-setdir_win <- try(setwd("..\\..\\wrapper\\R\\R_direct_access"))
-setdir_lin <- try(setwd("../../wrapper/R/R_direct_access"))
-
-if(setdir_win == FALSE && setdir_lin == FALSE){
+if(setdir == FALSE){
    stop("Please start script from /test/R directory")    
 }
 
@@ -30,14 +28,17 @@ if(!exists("recompile")){
 }
 
 if(recompile == TRUE){
-    try(system("create.direct.access.windows.bat"))
-    try(system("bash create.direct.access.linux.sh"))
+    if(.Platform$OS.type == "windows"){
+      system("create.direct.access.windows.bat")}
+    if(.Platform$OS.type == "unix"){
+      system("bash create.direct.access.linux.sh")}
 }
 
 # Load library and wrappers
-try(dyn.load("libamtrack.dll"))
-try(dyn.load("libamtrack.so"))
-try(dyn.load("libamtrack.dylib"))
+if(.Platform$OS.type == "windows"){
+     dyn.load("libamtrack.dll")}
+if(.Platform$OS.type == "unix"){
+     dyn.load("libamtrack.so")}
 
 # Source wrappers
 source("libamtrack.R")
