@@ -51,7 +51,7 @@ df                 <- expand.grid( E.MeV.u                        = E.MeV.u,
 # Get Bethe Stopping Power
 for (i in 1:nrow(df)){
     # DEBUG i <- 2
-    df$Stopping.Power.Bethe.MeV.g.cm2[i]   <- AT.Stopping.Power.Mass.Bethe.MeV.cm2.g.multi(   E.MeV.u          = df$E.MeV.u[i],
+    df$Stopping.Power.Bethe.MeV.g.cm2[i]   <- AT.Stopping.Power.Mass.Bethe.MeV.cm2.g(         E.MeV.u          = df$E.MeV.u[i],
                                                                                               particle.no      = df$particle.no[i],
                                                                                               material.no      = df$material.no[i],
                                                                                               E.restricted.keV = 0)[1]
