@@ -6,7 +6,7 @@ echo "*************************************************"
 echo "Auto-generate wrappers and documentation"
 R --no-save < ../../../tools/automatic_wrapper_generator/collect.doxygen.information.R
 R --no-save < ../../../tools/automatic_wrapper_generator/R.generate.C.wrapper.R
-R --no-save < ../../../tools/automatic_wrapper_generator/R.generate.R.wrapper.R
+R --no-save --args nopackage < ../../../tools/automatic_wrapper_generator/R.generate.R.wrapper.R
 
 echo "Copy sources to local directory"
 cp -r ../../../include/*.h .
