@@ -27,6 +27,14 @@ rm(list = ls())
 
 source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")
 
+cmd_args <- commandArgs(trailingOnly = TRUE)
+package  <- TRUE
+if(length(cmd_args)>0){
+  if(cmd_args[1] == "nopackage"){
+    package    <- FALSE
+  }
+}
+
 load("functions.sdd")
 
 write("# Automatically created wrapper file\n", file = "./libamtrack.R")
@@ -170,7 +178,13 @@ for(i in 1:length(functions)){
 		header <- c(header, paste("\t\t\t", gsub("_", ".", para$name[j]), " = ", convert.R(para$type[j]), "(",  gsub("_", ".", para$name[j]), "),", sep = ""))
 	}
 	
-	header <- c(header, paste("\t\t\t", gsub("_", ".", para$name[nrow(para)]), " = ", convert.R(para$type[nrow(para)]), "(",  gsub("_", ".", para$name[nrow(para)]), "),PACKAGE=\"libamtrack\")", sep = ""))
+	if(package == TRUE){
+	  package.ref  <- ",PACKAGE=\"libamtrack\""
+	}else{
+	  package.ref  <- ""
+	}
+	
+	header <- c(header, paste("\t\t\t", gsub("_", ".", para$name[nrow(para)]), " = ", convert.R(para$type[nrow(para)]), "(",  gsub("_", ".", para$name[nrow(para)]), ")", package.ref, ")", sep = ""))
 
 	header <- c(header, "")
 

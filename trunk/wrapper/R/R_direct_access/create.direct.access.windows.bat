@@ -5,7 +5,7 @@ REM *************************************************
 REM *** Auto-generate wrappers and documentation ***
 R CMD BATCH ..\..\..\tools\automatic_wrapper_generator\collect.doxygen.information.R
 R CMD BATCH ..\..\..\tools\automatic_wrapper_generator\R.generate.C.wrapper.R
-R CMD BATCH ..\..\..\tools\automatic_wrapper_generator\R.generate.R.wrapper.R
+R --slave --no-save --args nopackage <..\..\..\tools\automatic_wrapper_generator\R.generate.R.wrapper.R
 
 REM *** Copy sources to local directory
 copy ..\..\..\include\*.h .
