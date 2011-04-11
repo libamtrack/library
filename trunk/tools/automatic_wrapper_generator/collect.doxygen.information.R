@@ -157,7 +157,7 @@ for(header.file.name in header.file.names){
 
      # Loop through all functions found
      for (i in 1:length(pos.start.doxygen.comment)){
-          # DEBUG: i <- 1
+          # DEBUG: i <- 2
           current.function    <- NULL
           
           # Indices for reduced.header.file.text that hold comment and declaration
@@ -403,7 +403,7 @@ for(header.file.name in header.file.names){
                current.function$parameter$derivable.array.size.variable         <- FALSE
 
                for(j in 1:nrow(current.function$parameter)){
-                  # j <- 1
+                  # j <- 12
                   if(length(regexpr("[[:alpha:]]", current.function$parameter$length[j]))>0){                   # only if non-digit character in length: numbers can never be variables
                      idx <- grep(paste( "^", current.function$parameter$length[j], "$", sep = ""), 
                                         current.function$parameter$name)                                        # look for exact match of length name in variable list
@@ -413,10 +413,14 @@ for(header.file.name in header.file.names){
                   }
                }
                for(j in 1:nrow(current.function$parameter)){
-                  # j <- 2
-                  idx    <- grep(current.function$parameter$name[j], current.function$parameter$length)
+                  # j <- 1
+                  idx    <- grep(paste("^", current.function$parameter$name[j], "$", sep = ""), current.function$parameter$length)  # use exact matching here to avoid ambiguities
                   if(length(idx) > 0){
-                       current.function$parameter$derivable.array.size.variable[j] <- TRUE
+					  # check if any of the dependent variables is input, otherwise skip automatic array size determination!
+					  ii     <- (current.function$parameter$in.out[idx] == "in") | (current.function$parameter$in.out[idx] == "in.out")
+					  if( sum(ii) > 0){
+						  current.function$parameter$derivable.array.size.variable[j] <- TRUE
+					  }
                   }
                }
 
