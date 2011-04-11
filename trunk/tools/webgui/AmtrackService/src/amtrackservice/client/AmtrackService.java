@@ -1,6 +1,7 @@
 package amtrackservice.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import amtrackservice.client.gui.MainView;
 import amtrackservice.client.parser.ConfigParser;
@@ -118,27 +119,34 @@ public class AmtrackService implements EntryPoint {
 		/** TODO move this method to GUI class */
 		AmtrackServiceResources resources = GWT.create(AmtrackServiceResources.class);
 		
-		VerticalPanel generalFunctionPanel = new VerticalPanel();
-		generalFunctionPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-		generalFunctionPanel.setSpacing(5);
-		for(String m : getConfig().getTemplates().keySet().toArray(new String[0])){
+		HashMap<String, VerticalPanel> groupPanels = new HashMap<String, VerticalPanel>();
+		for(String groupName : getConfig().getGroupNames().values()){
+			if( !groupPanels.containsKey(groupName) ){
+				groupPanels.put(groupName, new VerticalPanel());
+				groupPanels.get(groupName).setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+				groupPanels.get(groupName).setSpacing(5);
+				gui.addWidgetToLeftPanel(groupPanels.get(groupName),groupName);
+			}
+		}			
+
+		for(String templateName : getConfig().getTemplateFilenames().keySet()){
 				HorizontalPanel openCalculationPanel = new HorizontalPanel();
 			    openCalculationPanel.setSpacing(3);
 			    openCalculationPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-			    final String ms = m;
+			    final String ms = templateName;
 			    ClickHandler ch = new ClickHandler() {					
-					@Override
 					public void onClick(ClickEvent event) {
 						openCalculation(ms);
 					}
 				};
 			    PushButton openCalculationButton = new PushButton(new Image(resources.play()),ch);
 			    openCalculationPanel.add(openCalculationButton);
-			    HTML openCalculationText = new HTML(m);
+			    HTML openCalculationText = new HTML(templateName);
 			    openCalculationPanel.add(openCalculationText);
-			    generalFunctionPanel.add(openCalculationPanel);
+			    String groupName = getConfig().getGroupNames().get(templateName);
+			    groupPanels.get(groupName).add(openCalculationPanel);
 		}			
-		gui.addWidgetToLeftPanel(generalFunctionPanel,"General calculations");
+		
 		gui.addWidgetToLeftPanel(new Label("none yet"),"Others");
 	}
 
@@ -149,7 +157,7 @@ public class AmtrackService implements EntryPoint {
 	 * @param templateName
 	 */
 	public void fetchTemplate(String templateName) {
-		String file = GWT.getModuleBaseURL() + URL_TEMPLATES + config.getTemplates().get(templateName);
+		String file = GWT.getModuleBaseURL() + URL_TEMPLATES + config.getTemplateFilenames().get(templateName);
 		Logger.info("Requesting file: "+file+" from Server");
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, file);
 
