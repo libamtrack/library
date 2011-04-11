@@ -138,9 +138,9 @@ void AT_n_bins_for_low_fluence_local_dose_distribution(  const double   u,
  * @param[in]  f1_dd_Gy            bin width for f1 (array of size n_bins_f1)
  * @param[in]  f1                  f1 values (array of size n_bins_f1)
  * @param[in]  n_bins_f            number of bins holding the resulting f local dose distribution (from AT_SC_get_f_array_size)
- * @param[out] f_d_Gy              bin midpoints for f (array of size n_bins_f1)
- * @param[out] f_dd_Gy             bin widths for f (array of size n_bins_f1)
- * @param[out] f_start             f values to start with (array of size n_bins_f1)
+ * @param[out] f_d_Gy              bin midpoints for f (array of size n_bins_f)
+ * @param[out] f_dd_Gy             bin widths for f (array of size n_bins_f)
+ * @param[out] f_start             f values to start with (array of size n_bins_f)
  */
 void AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
     const long    N2,
