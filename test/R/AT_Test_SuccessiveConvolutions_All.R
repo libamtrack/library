@@ -23,7 +23,7 @@
 rm(list = ls())
 
 # Build latest version of libamtrack and load for direct access
-recompile <- FALSE
+#recompile <- FALSE
 source("AT_Test_PreRun.R")
 
 library(lattice)
@@ -34,10 +34,10 @@ library(lattice)
 E.MeV.u <- 50
 particle.no <- 6012
 fluence.cm2.or.dose.Gy <- 1e8
-material.no <- 4				# Liquid water
+material.no <- 1				# Liquid water
 RDD.model <- 3				# Geiss RDD
 RDD.parameters <- 5e-8			# a0 = 50 nm
-ER.model <- 7				# Geiss ER
+ER.model <- 3				# Geiss ER
 gamma.model <- 5				# General hit-target
 gamma.parameters <- c(0.2,0.02,10,0,0)	# One single-hit-single-target (exp-sat) component, characteristic dose 10 Gy
 N2 <- 20				# 20 bins per factor 2 in histograms
@@ -82,49 +82,44 @@ res.get.f1	<-	AT.single.impact.local.dose.distrib(	E.MeV.u = E.MeV.u,
 
 print(res.get.f1)
 
-p1 <- plot(log10(res.get.f1[[3]])~log10(res.get.f1[[3]]))
-p2 <- plot(log10(res.get.f1[[2]])~log10(res.get.f1[[3]]))
+p1 <- plot(log10(res.get.f1$f1)~log10(res.get.f1$f1.d.Gy))
 
 
 # Get mean impact number u
-res.u <- AT.u(E.MeV.u = E.MeV.u,
+res.u <- AT.mean.number.of.tracks.contrib(E.MeV.u = E.MeV.u,
 							particle.no = particle.no,
-							fluence.cm2.or.dose.Gy = fluence.cm2.or.dose.Gy,
+							fluence.cm2 = fluence.cm2.or.dose.Gy,
 							material.no = material.no,
 							er.model = ER.model)
 
 print(res.u)
 
 # Get histogram size for low-fluence dose distribution, low-fluence impact number (u.start) and number of convolutions
-res.get.f.array.size <-	AT.SC.get.f.array.size(	u = res.u,
+res.get.f.array.size <-	AT.n.bins.for.low.fluence.local.dose.distribution(	u = res.u,
 								fluence.factor = fluence.factor,
 								N2 = N2,
-								n.bins.f1 = res.get.f1.array.size$n.bins.f1,
-								f1.d.Gy = res.get.f1$f1$f1.d.Gy,
-								f1.dd.Gy = res.get.f1$f1$f1.dd.Gy,
-								f1 = res.get.f1$f1$f1)
+								f1.d.Gy = res.get.f1$f1.d.Gy,
+								f1.dd.Gy = res.get.f1$f1.dd.Gy,
+								f1 = res.get.f1$f1)
 
 print(res.get.f.array.size)
 
 
 # Get low-fluence dose distribution (computes again u.start -> remove from function above)
-res.get.f.start	<-	AT.SC.get.f.start(	N2 = N2,
-								 n.bins.f1 = res.get.f1.array.size$n.bins.f1,
-								 f1.d.Gy = res.get.f1$f1$f1.d.Gy,
-								 f1.dd.Gy = res.get.f1$f1$f1.dd.Gy,
-								 f1 = res.get.f1$f1$f1,
-								 n.bins.f = res.get.f.array.size$n.bins.f)
+res.get.f.start	<-	AT.low.fluence.local.dose.distribution(	N2 = N2,
+								 f1.d.Gy = res.get.f1$f1.d.Gy,
+								 f1.dd.Gy = res.get.f1$f1.dd.Gy,
+								 f1 = res.get.f1$f1,
+								 n.bins.f = res.get.f.array.size[names(res.get.f.array.size) == "n.bins.f"])
 
-xyplot(log10(f.start)~log10(f.start.d.Gy), res.get.f.start)
+xyplot(log10(res.get.f.start[[3]]) ~ log10(res.get.f.start[[1]]))
 
 # Perform SC
-res.SC	<-	AT.SC.SuccessiveConvolutions(	u = res.u,
-									n.bins.f = res.get.f.array.size[[1]],
+res.SC	<-	AT.SuccessiveConvolutions(	final.mean.number.of.tracks.contrib = res.u,
 									N2 = N2,
-									n.bins.f.used = res.get.f1.array.size[[1]],
-									f.d.Gy = res.get.f.start$f.start.d.Gy,
-									f.dd.Gy = res.get.f.start$f.start.dd.Gy,
-									f = res.get.f.start$f.start,
+									f.d.Gy = res.get.f.start[[1]],
+									f.dd.Gy = res.get.f.start[[2]],
+									f = res.get.f.start[[3]],
 									write.output = write.output,
 									shrink.tails = shrink.tails,
 									shrink.tails.under = shrink.tails.under,
