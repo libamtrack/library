@@ -131,12 +131,7 @@ print(res.SC$n.bins.f.used)
 print(res.SC$f0)
 print(res.SC$d)
 
-p1 <- xyplot(log10(res.SC$f)~log10(res.SC$f.d.Gy))
-
-#df <- read.table("SuccessiveConvolutions.log", header = TRUE, sep = ";")
-#p1 <- xyplot(xyplot(log10(f)~log10(f.d.Gy)|n.convolution,df))
-
-plot(p1)
+p2 <- xyplot(log10(res.SC$f)~log10(res.SC$f.d.Gy))
 
 pdf("SC.pdf")
 
