@@ -41,7 +41,7 @@ grep.bool	<-	function(pattern, x, ...){
 }
 
 for(i in 1:length(functions)){
-	# i <- 3
+	# i <- 43
 	tmp <- functions[[i]]
 	
 	##############################
@@ -214,8 +214,10 @@ for(i in 1:length(functions)){
 	ll <-  which(output & vector)
 	if(length(ll) > 0){
 		for(l in para.length){
-			kk <-  which(!input & vector & para$length == l)
-			if(length(kk) > 0){
+#			kk <-  which(!input & vector & para$length == l)
+#			kk <-  which(vector & para$length == l)
+		kk <-  which(output & vector & para$length == l)
+		if(length(kk) > 0){
 				# fill the data into the allocated space
 				body <- c(body, paste("  for(i = 0 ; i < ", l, "; i++){", sep = ""))
 				for(j in kk){
