@@ -196,7 +196,7 @@ for(i in 1:length(functions)){
 	}
 	n.return.elements	<-	 n.return.elements + length(pos.out)
 	if(n.return.elements>= 1){
-		header <- c(header, "\t return.list <- NULL")
+		header <- c(header, paste("\t return.list <- list(", n.return.elements, ")", sep = ""))
 		j <- 0
             names.in.return.list   <- "c("
             if(length(pos.out) > 0){
