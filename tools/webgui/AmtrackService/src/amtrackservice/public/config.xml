@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<config path="/home/libamtrack/tmp/system/"> <!-- please specify the path where the wrapper folder is located -->
-	<template name="LET vs particle energy" file="AT_LET_from_E.xml"/>
-	<template name="CSDA range vs energy" file="AT_CSDA_range.xml"/>
-	<template name="Radial Dose Distribution vs distance" file="AT_D_RDD_GY.xml"/>
-	<template name="particle energy vs beta" file="AT_E_from_beta.xml"/>
+<config path="/home/grzanka/tmp/system/"> <!-- please specify the path where the wrapper folder is located -->
+	<template name="LET vs particle energy" file="AT_LET_from_E.xml" group="Stopping Power"/>
+	<template name="CSDA range vs energy" file="AT_CSDA_range.xml" group="Stopping Power"/>
+	<template name="Radial Dose Distribution vs distance" file="AT_D_RDD_GY.xml" group="Track Structure"/>
+	<template name="particle energy vs beta" file="AT_E_from_beta.xml" group="Basic Kinematics"/>
 </config>
