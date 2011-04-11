@@ -95,7 +95,7 @@ res.u <- AT.mean.number.of.tracks.contrib(E.MeV.u = E.MeV.u,
 print(res.u)
 
 # Get histogram size for low-fluence dose distribution, low-fluence impact number (u.start) and number of convolutions
-res.get.f.array.size <-	AT.n.bins.for.low.fluence.local.dose.distribution(	u = res.u,
+res.get.f.array.size <-	AT.n.bins.for.low.fluence.local.dose.distribution(	u = res.u$returnValue,
 								fluence.factor = fluence.factor,
 								N2 = N2,
 								f1.d.Gy = res.get.f1$f1.d.Gy,
@@ -110,16 +110,17 @@ res.get.f.start	<-	AT.low.fluence.local.dose.distribution(	N2 = N2,
 								 f1.d.Gy = res.get.f1$f1.d.Gy,
 								 f1.dd.Gy = res.get.f1$f1.dd.Gy,
 								 f1 = res.get.f1$f1,
-								 n.bins.f = res.get.f.array.size[names(res.get.f.array.size) == "n.bins.f"])
+								 n.bins.f = res.get.f.array.size$n.bins.f)
 
-xyplot(log10(res.get.f.start[[3]]) ~ log10(res.get.f.start[[1]]))
+xyplot(log10(res.get.f.start$f.start) ~ log10(res.get.f.start$f.d.Gy))
 
 # Perform SC
 res.SC	<-	AT.SuccessiveConvolutions(	final.mean.number.of.tracks.contrib = res.u,
 									N2 = N2,
-									f.d.Gy = res.get.f.start[[1]],
-									f.dd.Gy = res.get.f.start[[2]],
-									f = res.get.f.start[[3]],
+									n.bins.f.used = res.get.f1.array.size,
+									f.d.Gy = res.get.f.start$f.d.Gy,
+									f.dd.Gy = res.get.f.start$f.dd.Gy,
+									f = res.get.f.start$f.start,
 									write.output = write.output,
 									shrink.tails = shrink.tails,
 									shrink.tails.under = shrink.tails.under,
@@ -130,7 +131,7 @@ print(res.SC$n.bins.f.used)
 print(res.SC$f0)
 print(res.SC$d)
 
-#p1 <- xyplot(log10(f)~log10(f.d.Gy),res.SC$f)
+p1 <- xyplot(log10(res.SC$f)~log10(res.SC$f.d.Gy))
 
 #df <- read.table("SuccessiveConvolutions.log", header = TRUE, sep = ";")
 #p1 <- xyplot(xyplot(log10(f)~log10(f.d.Gy)|n.convolution,df))
