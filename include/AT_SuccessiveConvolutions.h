@@ -164,7 +164,7 @@ void AT_low_fluence_local_dose_distribution(  const long    n_bins_f1,
  * @param[in,out]  n_bins_f_used       in number of bins used for f_start, out number of bins used for resulting. As tails can be cut and N2 adjusted this is usually not the array size for f_d_Gy, f_dd_Gy, f but smaller (so entries 0 to n_bins_f_used-1 are used)
  * @param[in,out]  f_d_Gy              bin midpoints for f (array of size n_bins)
  * @param[in,out]  f_dd_Gy             bin widths for f (array of size n_bins)
- * @param[in,out]  f                   in low fluence approx values to start with, out resulting values after convolutions (array of size n_bins_f_used)
+ * @param[in,out]  f                   in low fluence approx values to start with, out resulting values after convolutions (array of size n_bins)
  * @param[out]     f0                  zero-dose f value (as bins are log this has to be separated)
  * @param[out]     fdd                 frequency f x f_dd_Gy precomputed for comfort (array of size n_bins)
  * @param[out]     dfdd                dose contribution f x f_dd_Gy precomputed for comfort (array of size n_bins)
