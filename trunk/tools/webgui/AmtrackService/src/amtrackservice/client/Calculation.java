@@ -335,10 +335,12 @@ public class Calculation {
 		int status = 0;
 		if (result != null) {
 			for (AmWidget widget : outputWidgets) {
-				if( appending )
+				if( appending ){
 					status = widget.appendValue(result);
-				else
+				}else{
+					result.put("label", "default");
 					status = widget.setValue(result);
+				}
 				if( status != 0 ){
 					return status;
 				}

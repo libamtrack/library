@@ -549,8 +549,6 @@ public class AmPlot extends AmWidget {
 	 */
 	public int appendValue(HashMap<String, String> valueMap) {
 		
-		String serieLabel = valueMap.get("label");
-				
 		String[] xValues = {};
 		if( valueMap.get(dataX) != null )
 			xValues = valueMap.get(dataX).split(" ");
@@ -564,9 +562,16 @@ public class AmPlot extends AmWidget {
 			double y = Double.parseDouble(yValues[i]);
 			dataXY.put(x, y);
 		}
-				
-		DataSerie serie = new DataSerie(serieLabel, this.dataX, this.dataY, dataXY);		
-		int status = this.dataSerieCollection.add(serie);
+		
+		String serieLabel = valueMap.get("label");
+		
+		int status = 0;
+		if( serieLabel != null ){		
+			DataSerie serie = new DataSerie(serieLabel, this.dataX, this.dataY, dataXY);		
+			status = this.dataSerieCollection.add(serie);
+		} else {
+			status = -2;
+		}
 		
 		if( status == 0){		
 			this.widget.clear();
