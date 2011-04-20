@@ -374,7 +374,7 @@ df                <-    expand.grid( particle.name         = c("1H", "3He", "12C
 for (i in 1:nrow(df)){
     df$CSDA.range.m[i]        <-    AT.CSDA.range.m( E.MeV.u               = df$particle.energy.MeV.u[i],
                                                      particle.no           = AT.particle.no.from.particle.name(df$particle.name[i]),
-                                                     material.no           = AT.material.no.from.material.name("Water, Liquid"))
+                                                     material.no           = AT.material.no.from.material.name("Water, Liquid"))$CSDA.range.m
 }
 
 xyplot( log10(CSDA.range.m) ~ log10(particle.energy.MeV.u)|"CSDA ranges in water",
