@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root name="momentum from energy" wrapper="AT_momentum_from_E.exe">
+    <description>
+        [b]Returns momentum as a function of particle energy[/b]
+    </description>
+    <input>
+        <element type="field" label="E min [MeV/amu]" datatype="double">
+            <description>E [MeV/amu] min</description>
+            <preset>
+                <item value="0.01" />
+            </preset>
+            <data x="E_start" />
+        </element>
+        <element type="field" label="E max [MeV/amu]" datatype="double">
+            <description>E [MeV/amu] max</description>
+            <preset>
+                <item value="100" />
+            </preset>
+            <data x="E_end" />
+        </element>
+        <element type="field" label="number of points" datatype="long">
+            <description>number of points</description>
+            <preset>
+                <item value="40" />
+            </preset>
+            <data x="n_points" />
+        </element>
+        <element type="combo" label="X axis spacing" datatype="long">
+            <entry>
+                <item key="Logarithmic" value="1" />
+                <item key="Linear" value="2" />
+            </entry>
+            <description>X axis spacing</description>
+            <preset>
+                <item value="1" />
+            </preset>
+            <data x="x_axis_type" />
+        </element>
+    </input>
+
+    <output>
+        <element type="plot" label="Electronic stopping power" datatype="double">
+            <description>momentum [MeV/c]</description>
+            <data x= "E" y="momentum"/>
+            <axis x="log" y="lin" labelx="Energy [MeV/amu]" labely="Momentum [MeV/c]"/>         
+        </element>
+    </output>
+</root>
