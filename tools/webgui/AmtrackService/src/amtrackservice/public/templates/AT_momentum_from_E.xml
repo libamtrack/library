@@ -39,7 +39,7 @@
     </input>
 
     <output>
-        <element type="plot" label="Electronic stopping power" datatype="double">
+        <element type="plot" label="Particle momentum" datatype="double">
             <description>momentum [MeV/c]</description>
             <data x= "E" y="momentum"/>
             <axis x="log" y="lin" labelx="Energy [MeV/amu]" labely="Momentum [MeV/c]"/>         

@@ -32,7 +32,7 @@
             </entry>
             <description>X axis spacing</description>
             <preset>
-                <item value="0" />
+                <item value="2" />
             </preset>
             <data x="x_axis_type" />
         </element>
