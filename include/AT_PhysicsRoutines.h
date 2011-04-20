@@ -139,6 +139,29 @@ int AT_E_from_beta(  const long  n,
     const double  beta[],
     double  E_MeV_u[]);
 
+
+/**
+ *  Returns energy for single value of relativistic gamma
+ *
+ * @param[in]  gamma
+ * @return     E_MeV_u                  energy of particle per nucleon [MeV]
+ */
+ double AT_E_from_gamma_single( const double gamma );
+
+/**
+ *  Returns energy from relativistic gamma
+ *
+ * @param[in]  n                        number of particles
+ * @param[in]  gamma                    vector of results (array of size n)
+ * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @return     status code
+ */
+int AT_E_from_gamma( const long  n,
+    const double  gamma[],
+    double        E_MeV_u[]);
+
+
+
 /**
  *  Returns energy per nucleon of particle with given momentum per nucleon
  *

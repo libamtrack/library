@@ -86,6 +86,24 @@ int AT_E_from_beta(  const long  n,
   return 0;
 }
 
+
+double AT_E_from_gamma_single( const double gamma ){
+	double beta = sqrt(1.0-1.0/gsl_pow_2(gamma));
+	return AT_E_from_beta_single(beta);
+}
+
+int AT_E_from_gamma( const long  n,
+    const double  gamma[],
+    double        E_MeV_u[]){
+	// loop over n to find E for all gammas
+	long  i;
+	for(i = 0; i < n; i++){
+		E_MeV_u[i]      =  AT_E_from_gamma_single(gamma[i]);
+	}
+	return 0;
+}
+
+
  double AT_E_MeV_u_from_momentum_single( 	const double momentum_MeV_c_u){
 	double total_E_MeV_u = sqrt(momentum_MeV_c_u * momentum_MeV_c_u + 1.0079 * 1.0079 * proton_mass_MeV_c2 * proton_mass_MeV_c2);
 	return (total_E_MeV_u - 1.0079 * proton_mass_MeV_c2);
