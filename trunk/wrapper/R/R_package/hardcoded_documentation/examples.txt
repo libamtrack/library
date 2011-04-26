@@ -73,7 +73,7 @@ df            <- expand.grid( E.MeV.u       = E.MeV.u,
 for(i in 1:nrow(df)){
      df$LET.keV.um[i] <- AT.LET.keV.um( E.MeV.u     = df$E.MeV.u[i],
                                         particle.no = AT.particle.no.from.particle.name(df$particle.name[i]),
-                                        material.no = AT.material.no.from.material.name(df$material.name[i]))
+                                        material.no = AT.material.no.from.material.name(df$material.name[i]))$LET.keV.um
 }
 
 xyplot( log10(LET.keV.um) ~ log10(E.MeV.u)|material.name,
@@ -129,7 +129,7 @@ for (i in 1:nrow(df)){                                                        # 
                                      material.no      = df$material.no[i],
                                      rdd.model        = df$rdd.model[i],
                                      rdd.parameter    = df$rdd.parameter[i],
-                                     er.model         = df$er.model[i])[[1]]
+                                     er.model         = df$er.model[i])$D.RDD.Gy
 }
 
 xyplot( log10(D.Gy) ~ log10(r.m)|particle.name,                                # Plot
