@@ -1,5 +1,5 @@
 ################################################################################################
-# R test script for implemented models
+# R test script for GSM model
 ################################################################################################
 # Copyright 2006, 2010 The libamtrack team
 # 
@@ -70,10 +70,13 @@ nX            <- 5
 voxel.size.m  <- 1e-7
 
 for( i in ER.model) {
- ii 			<- df1$ER.model == i
+ # i <- ER.model[1]
+   ii 			<- df1$ER.model == i
 	for( j in RDD.model) {
+      # j <- RDD.model[1]
  	jj 			<- ((df1$RDD.model == j) & (df1$ER.model == i))
  	 for( k in factor ){   
+          # k <- factor[1]
  	    kk 			<- ((df1$RDD.model == j) & (df1$ER.model == i) & (df1$factor == k))
  	    
  	    current.fluence.cm2.or.dose.Gy <- df1$factor[kk] * fluence.cm2.or.dose.Gy
@@ -94,10 +97,11 @@ for( i in ER.model) {
                                     nX = nX,
                                     voxel.size.m = voxel.size.m,
                                     lethal.events.mode = F)
-         cat( "GSM results ", GSM.res , "\n")
-         df1$GSM.ion[kk] <- GSM.res[3]
-         df1$GSM.gamma[kk] <- GSM.res[4]
-         df1$GSM.check[kk] <- GSM.res[2]
+         cat( "############\nGSM results\n############\n")
+         print(GSM.res)
+         df1$GSM.ion[kk] <- GSM.res$S.HCP
+         df1$GSM.gamma[kk] <- GSM.res$S.gamma
+         df1$GSM.check[kk] <- GSM.res$d.check
 			}
 		}
 }
