@@ -4,14 +4,14 @@
 		[b]Returns CSDA range as a function of particle energy[/b]
 	</description>
 	<input>
-		<element type="field" label="E min [MeV/amu]" datatype="double">
+		<element type="field" label="particle kinetic energy min [MeV/amu]" datatype="double">
 			<description>E [MeV/amu] min</description>
 			<preset>
 				<item value="0.5" />
 			</preset>
 			<data x="E_start" />
 		</element>
-		<element type="field" label="E max [MeV/amu]" datatype="double">
+		<element type="field" label="particle kinetic energy max [MeV/amu]" datatype="double">
 			<description>E [MeV/amu] max</description>
 			<preset>
 				<item value="200" />
@@ -78,7 +78,7 @@
 		<element type="plot" label="CSDA range vs particle energy" datatype="double">
 			<description>CSDA range</description>
 			<data x="E" y="range"/>
-			<axis labelx="Energy [MeV/amu]" labely="CSDA Range [m]"/>
+			<axis labelx="Kinetic energy [MeV/amu]" labely="CSDA Range [m]"/>
 		</element>
 	</output>
 </root>

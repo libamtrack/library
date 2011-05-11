@@ -2,12 +2,9 @@
 <config path="/home/grzanka/tmp/system/"> <!-- please specify the path where the wrapper folder is located -->
 	<template name="Stopping Power vs particle energy" file="AT_LET_from_E.xml" group="Stopping Power"/>
 	<template name="CSDA range vs energy" file="AT_CSDA_range.xml" group="Stopping Power"/>
-	<template name="Radial Dose Distribution vs distance" file="AT_D_RDD_GY.xml" group="Track Structure"/>
+	<template name="radial dose vs distance" file="AT_D_RDD_GY.xml" group="Track Structure"/>
 	<template name="particle energy vs beta" file="AT_E_from_beta.xml" group="Basic Kinematics"/>
 	<template name="particle energy vs gamma" file="AT_E_from_gamma.xml" group="Basic Kinematics"/>
 	<template name="particle momentum vs energy" file="AT_momentum_from_E.xml" group="Basic Kinematics"/>
-	<template name="max. energy transferred to delta-electron" file="AT_max_energy_transferred.xml" group="Basic Kinematics"/>
-	<template name="secondary electron range" file="AT_secondary_electron_range.xml" group="Basic Kinematics"/>
 	<template name="effective charge" file="AT_effective_charge.xml" group="Basic Kinematics"/>
-	<template name="energy loss straggling" file="AT_energy_loss_straggling.xml" group="Basic Kinematics"/>
 </config>

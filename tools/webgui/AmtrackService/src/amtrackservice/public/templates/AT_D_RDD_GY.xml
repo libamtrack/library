@@ -4,14 +4,14 @@
 		Returns RDD as a function of distance
 	</description>
 	<input>
-		<element type="field" label="r min [m]" datatype="double">
+		<element type="field" label="radius min [m]" datatype="double">
 			<description>r [m] min</description>
 			<preset>
 				<item value="1e-10" />
 			</preset>
 			<data x="r_min" />
 		</element>
-		<element type="field" label="r max [m]" datatype="double">
+		<element type="field" label="radius max [m]" datatype="double">
 			<description>r [m] max</description>
 			<preset>
 				<item value="1e-5" />
@@ -36,7 +36,7 @@
             </preset>
             <data x="x_axis_type" />
         </element>
-		<element type="field" label="E_MeV_u" datatype="double">
+		<element type="field" label="ion kinetic energy [MeV/amu]" datatype="double">
 			<description>particle (ion) energy per nucleon [MeV/amu]</description>
 			<preset>
 				<item value="60" />
@@ -81,7 +81,7 @@
 			<data x="material_no" />
 		</element>	
 		
-		<element type="combo" label="rdd_model" datatype="long">
+		<element type="combo" label="radial-dose model" datatype="long">
 			<description>Radial Dose Distribution model</description>
 			<entry>
 				<item key="Test" value="1" />
@@ -98,7 +98,7 @@
 			<data x="rdd_model" />
 		</element>			
 
-		<element type="combo" label="er_model" datatype="long">
+		<element type="combo" label="electron-range model" datatype="long">
 			<description>delta electron range model</description>
 			<entry>
 				<item key="Test" value="1" />

@@ -11,7 +11,7 @@
             </preset>
             <data x="fluence_cm2" />
         </element>   
-        <element type="field" label="E [MeV/amu]" datatype="double">
+        <element type="field" label="ion kinetic energy [MeV/amu]" datatype="double">
             <description>E [MeV/amu]</description>
             <preset>
                 <item value="50" />
