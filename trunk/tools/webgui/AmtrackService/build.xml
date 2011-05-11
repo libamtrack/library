@@ -17,6 +17,9 @@
   <target name="libs" description="Copy libs to WEB-INF/lib">
     <mkdir dir="war/WEB-INF/lib" />
     <copy todir="war/WEB-INF/lib" file="${gwt.sdk}/gwt-servlet.jar" />
+    <copy todir="war/WEB-INF/lib" file="${gwt.sdk}/gwt-servlet-deps.jar"/>
+    <copy todir="war/WEB-INF/lib" file="${gwt.sdk}/validation-api-1.0.0.GA.jar"/>
+    <copy todir="war/WEB-INF/lib" file="${gwt.sdk}/validation-api-1.0.0.GA-sources.jar"/>
     <!-- Add any additional server libs that need to be copied -->
     <exec executable="svnversion" failifexecutionfails="no" outputproperty="version">
       <arg value="."/> 
