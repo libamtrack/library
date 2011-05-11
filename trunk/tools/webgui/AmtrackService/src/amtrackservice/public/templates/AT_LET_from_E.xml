@@ -4,14 +4,14 @@
 		[b]Returns LET as a function of particle energy[/b]
 	</description>
 	<input>
-		<element type="field" label="E min [MeV/amu]" datatype="double">
+		<element type="field" label="ion kinetic energy min [MeV/amu]" datatype="double">
 			<description>E [MeV/amu] min</description>
 			<preset>
 				<item value="0.01" />
 			</preset>
 			<data x="E_start" />
 		</element>
-		<element type="field" label="E max [MeV/amu]" datatype="double">
+		<element type="field" label="ion kinetic energy max [MeV/amu]" datatype="double">
 			<description>E [MeV/amu] max</description>
 			<preset>
 				<item value="100" />
@@ -86,7 +86,7 @@
 		<element type="plot" label="Electronic stopping power" datatype="double" append="true">
 			<description>LET [keV/um]</description>
 			<data x= "E" y="LET"/>
-			<axis x="log" y="lin" labelx="Energy [MeV/amu]" labely="LET [keV/um]"/>			
+			<axis x="log" y="lin" labelx="kinetic energy [MeV/amu]" labely="LET [keV/um]"/>			
 		</element>
 	</output>
 </root>

@@ -42,7 +42,7 @@
         <element type="plot" label="particle energy vs gamma" datatype="double">
             <description>particle energy [MeV/amu]</description>
             <data x="gamma" y="E" />
-            <axis labelx="gamma" labely="Energy [MeV/amu]"/>
+            <axis labelx="gamma" labely="kinetic energy [MeV/amu]"/>
         </element>
     </output>
 </root>

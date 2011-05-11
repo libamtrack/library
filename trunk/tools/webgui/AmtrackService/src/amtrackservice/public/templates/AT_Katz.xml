@@ -4,14 +4,14 @@
         [b]Katz model calculations[/b]        
     </description>
     <input>
-        <element type="field" label="Dose min [Gy]" datatype="double">
+        <element type="field" label="dose min [Gy]" datatype="double">
             <description>Dose min [Gy]</description>
             <preset>
                 <item value="0" />
             </preset>
             <data x="D_Gy_start" />
         </element>
-        <element type="field" label="Dose max [Gy]" datatype="double">
+        <element type="field" label="dose max [Gy]" datatype="double">
             <description>Dose max [Gy]</description>
             <preset>
                 <item value="10" />
@@ -25,7 +25,7 @@
             </preset>
             <data x="n_points" />
         </element>
-        <element type="field" label="E [MeV/amu]" datatype="double">
+        <element type="field" label="ion kinetic energy [MeV/amu]" datatype="double">
             <description>Energy [MeV/amu]</description>
             <preset>
                 <item value="60.0" />
@@ -134,7 +134,7 @@
         <element type="plot" label="survival curve" datatype="double" append="true">
             <description>plot description</description>
             <data x="D_Gy" y="survival"/>
-            <axis x="lin" y="log" labelx="Dose [Gy]" labely="Survival"/>
+            <axis x="lin" y="log" labelx="dose [Gy]" labely="survival"/>
         </element>
     </output>
 </root>
