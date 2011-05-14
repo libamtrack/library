@@ -41,14 +41,15 @@
  */
 enum stoppingPowerSource_no{
   PSTAR                = 0, /**< PSTAR */
-  Bethe                = 1  /**< Bethe */
+  Bethe                = 1, /**< Bethe */
+  ShieldHit			   = 2  /**< ShieldHit code: extended Bethe formula */
 };
 
 
 /**
  * TODO
  */
-#define STOPPING_POWER_SOURCE_N    2
+#define STOPPING_POWER_SOURCE_N    3
 
 
 /**
@@ -141,6 +142,20 @@ long AT_stopping_power_source_model_number_from_name( const char* source_name );
  * @return
  */
 double AT_Bethe_wrapper(const double 	E_MeV_u,
+		const long 	    particle_no,
+		const long 		material_no);
+
+/**
+ * Wrapper for ShieldHit stopping powers
+ * momentarily read from hardwired struct for water
+ * TODO: augment by routine to read data file into
+ * TODO: struct and look-up value
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] material_no
+ * @return stopping power (MeV cm2 per g)
+ */
+double AT_ShieldHit_wrapper(const double 	E_MeV_u,
 		const long 	    particle_no,
 		const long 		material_no);
 
@@ -1327,8 +1342,8 @@ static const AT_stopping_power_tabulated_source_for_given_material_struct AT_sto
 
 static const AT_stopping_power_sources_struct AT_stopping_power_sources = {
 	STOPPING_POWER_SOURCE_N,
-    {  PSTAR,         Bethe           }, // source_no
-    {  "PSTAR data",  "Bethe formula" }  // source_name
+    {  PSTAR,         Bethe, 			ShieldHit           }, // source_no
+    {  "PSTAR data",  "Bethe formula",  "ShieldHit (Bethe)" }  // source_name
 };
 
 
@@ -1342,15 +1357,15 @@ static const AT_stopping_power_tabulated_source_group_for_all_materials_struct A
 
 static const AT_stopping_power_tabulated_source_group_struct AT_stopping_power_tabulated_source = {
   STOPPING_POWER_SOURCE_N,
-  { PSTAR,                  Bethe},
-  { &AT_data_PSTAR_source,  NULL}
+  { PSTAR,                  Bethe, 	ShieldHit},
+  { &AT_data_PSTAR_source,  NULL,	NULL}
 };
 
 
 static const AT_stopping_power_analytical_sources_struct AT_stopping_power_analytical_source = {
   STOPPING_POWER_SOURCE_N,
-  { PSTAR,   Bethe},
-  { NULL,    &AT_Bethe_wrapper}
+  { PSTAR,   Bethe,				ShieldHit},
+  { NULL,    &AT_Bethe_wrapper, &AT_ShieldHit_wrapper}
 };
 
 #endif /* AT_DATASTOPPINGPOWER_H_ */

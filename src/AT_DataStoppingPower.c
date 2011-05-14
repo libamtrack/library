@@ -38,8 +38,13 @@ double AT_Bethe_wrapper(const double 	E_MeV_u,
 															particle_no,
 															material_no,
 															-1.0);
-};
+}
 
+double AT_ShieldHit_wrapper(const double 	E_MeV_u,
+		const long 	    particle_no,
+		const long 		material_no){
+	return -1000;
+}
 
 double _AT_Stopping_Power_get_data(const long stopping_power_source_no,
 		const long 	    particle_no,
