@@ -122,8 +122,9 @@ typedef struct {
  * TODO
  * @param[in]  source_no
  * @param[out] source_name
+ * @return statuc code
  */
-void AT_stopping_power_source_model_name_from_number( const long source_no, char* source_name);
+int AT_stopping_power_source_model_name_from_number( const long source_no, char* source_name);
 
 
 /**

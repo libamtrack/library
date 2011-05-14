@@ -236,13 +236,17 @@ double AT_Energy_MeV_u_from_Stopping_Power_single( const long stopping_power_sou
 }
 
 
-void AT_stopping_power_source_model_name_from_number( const long source_no, char* source_name){
+int AT_stopping_power_source_model_name_from_number( const long source_no, char* source_name){
 
 	assert( source_no >= 0);
 	assert( source_no < STOPPING_POWER_SOURCE_N);
 	assert(AT_stopping_power_sources.stopping_power_source_no[source_no] == source_no);
-
+	if( source_no < 0)
+		return -1;	
+	if( source_no >= STOPPING_POWER_SOURCE_N)
+		return -1;	
     strcpy(source_name, AT_stopping_power_sources.stopping_power_source_name[source_no]);
+    return AT_Success;
 }
 
 
