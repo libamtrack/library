@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
 	long rdd_model = RDD_Geiss;
 	double rdd_parameters[RDD_MAX_NUMBER_OF_PARAMETERS];
 	long er_model = ER_Geiss;
+	long source_no = PSTAR;
 	double D0_Gy = 0.;
 	double m = 0.;
 	double sigma0_m2 = 0.;
@@ -106,6 +107,11 @@ int main(int argc, char *argv[]) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
 			er_model = atol(token);
+		}
+		if (strstr(Text, "source_no:")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			source_no = atol(token);
 		}
 		if (strstr(Text, "a0_m:")) {
 			strtok(Text, ":");
@@ -169,6 +175,7 @@ int main(int argc, char *argv[]) {
 			rdd_model,
 			rdd_parameters,
 			er_model,
+			source_no,
 			D0_Gy,
 			m,
 			sigma0_m2,
