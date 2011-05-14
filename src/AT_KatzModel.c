@@ -155,7 +155,7 @@ int AT_KatzModel_inactivation_probability(
   if( rdd_model == RDD_CucinottaExtTarget ){
     const double  density_g_cm3        =  AT_density_g_cm3_from_material_no( material_no );
     const double  density_kg_m3        =  density_g_cm3 * 1000.0;
-    const double  LET_MeV_cm2_g        =  AT_LET_MeV_cm2_g_single(E_MeV_u, particle_no, material_no);
+    const double  LET_MeV_cm2_g        =  AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no);
     const double  LET_J_m              =  LET_MeV_cm2_g * density_g_cm3 * 100.0 * MeV_to_J; // [MeV / cm] -> [J/m]
     const double  beta                 =  AT_beta_from_E_single( E_MeV_u );
     const double  C_norm               =  AT_RDD_Cucinotta_Cnorm(KatzPoint_r_min_m, max_electron_range_m, beta, density_kg_m3, LET_J_m, Katz_point_coeff_Gy);
@@ -408,7 +408,7 @@ int AT_KatzModel_inactivation_cross_section_m2(
       const double Katz_point_coeff_Gy   =  AT_RDD_Katz_coeff_Gy_general( E_MeV_u[i], particle_no, material_no, er_model);
       const double r_max_m               =  GSL_MIN(a0_m, max_electron_range_m);
 
-      const double  LET_MeV_cm2_g        =  AT_LET_MeV_cm2_g_single(E_MeV_u[i], particle_no, material_no);
+      const double  LET_MeV_cm2_g        =  AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u[i], particle_no, material_no);
       const double  LET_J_m              =  LET_MeV_cm2_g * density_g_cm3 * 100.0 * MeV_to_J; // [MeV / cm] -> [J/m]
       const double  beta                 =  AT_beta_from_E_single( E_MeV_u[i] );
       const double  C_norm               =  AT_RDD_Cucinotta_Cnorm(KatzPoint_r_min_m, max_electron_range_m, beta, density_kg_m3, LET_J_m, Katz_point_coeff_Gy);
