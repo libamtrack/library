@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "AT_DataLET.h"
+#include "AT_DataStoppingPower.h"
 
 int main(int argc, char *argv[]) {
 	if (argc != 2) {
@@ -125,7 +125,8 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	AT_LET_keV_um(  n_points,
+	AT_Stopping_Power_keV_um_multi( PSTAR,  
+		n_points,
 	    E_MeV_u,
 	    particle_no,
 	    material_no,

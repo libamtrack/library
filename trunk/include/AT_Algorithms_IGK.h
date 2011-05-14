@@ -46,6 +46,7 @@
 #include "AT_NumericalRoutines.h"
 #include "AT_KatzModel.h"
 #include "AT_Algorithms_GSM.h"
+#include "AT_DataStoppingPower.h"
 
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_integration.h>

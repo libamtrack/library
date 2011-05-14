@@ -37,6 +37,8 @@
 #include <getopt.h>
 
 #include "AT_RDD.h"
+#include "AT_DataLET.h"
+#include "AT_DataStoppingPower.h"
 #include "AT_PhysicsRoutines.h"
 
 char * plottypes[] = {"ER","RDD","LET","CSDArange"};
@@ -320,7 +322,7 @@ int main( int argc, char* argv[]){
 		printf("#particle: %s (code: %ld)\n", particle_name, particle_no);
 		printf("#E[MeV] LET[MeV/cm2g]\n");
 		for( i = 0 ; i < number_of_points_on_x_axis ; i++){
-			y[i] = AT_LET_MeV_cm2_g_single(x[i],particle_no, material_no);
+			y[i] = AT_Stopping_Power_MeV_cm2_g_single( PSTAR, x[i],particle_no, material_no);
 		}
 	}  else if( strcmp( plottype , "CSDArange") == 0){
 		printf("#CSDArange vs primary ion energy\n");

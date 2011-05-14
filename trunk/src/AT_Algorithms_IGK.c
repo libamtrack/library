@@ -111,7 +111,7 @@ void AT_run_IGK_method(  const long  number_of_field_components,
 
   /* TODO: Replace by explicit functions */
   for (i = 0; i < number_of_field_components; i++){
-	  double LET_MeV_cm2_g              = AT_LET_MeV_cm2_g_single(E_MeV_u[i], particle_no[i], material_no);
+	  double LET_MeV_cm2_g              = AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u[i], particle_no[i], material_no);	  
 	  double single_impact_fluence_cm2  = AT_single_impact_fluence_cm2_single(E_MeV_u[i], material_no, er_model);
 	  norm_fluence[i]                   =  fluence_cm2[i] / total_fluence_cm2;
 	  u_single                          =  fluence_cm2[i] / single_impact_fluence_cm2;
