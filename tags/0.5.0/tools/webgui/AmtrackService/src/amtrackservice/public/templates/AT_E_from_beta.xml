@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root name="energy from beta" wrapper="AT_E_from_beta.exe">
+	<description>
+		[b]Returns particle energy as a function of beta[/b]		
+	</description>
+	<input>
+		<element type="field" label="beta min" datatype="double">
+			<description>beta min</description>
+			<preset>
+				<item value="0.1" />
+			</preset>
+			<data x="beta_start" />
+		</element>
+		<element type="field" label="beta max" datatype="double">
+			<description>beta max</description>
+			<preset>
+				<item value="0.9" />
+			</preset>
+			<data x="beta_end" />
+		</element>
+		<element type="field" label="number of points" datatype="long">
+			<description>number of points</description>
+			<preset>
+				<item value="30" />
+			</preset>
+			<data x="n_points" />
+		</element>
+        <element type="combo" label="X axis spacing" datatype="long">
+            <entry>
+                <item key="Logarithmic" value="1" />
+                <item key="Linear" value="2" />
+            </entry>
+            <description>X axis spacing</description>
+            <preset>
+                <item value="1" />
+            </preset>
+            <data x="x_axis_type" />
+        </element>
+	</input>
+
+	<output>
+		<element type="plot" label="particle energy vs beta" datatype="double">
+			<description>particle energy [MeV/amu]</description>
+			<data x="beta" y="E" />
+			<axis labelx="beta" labely="kinetic energy [MeV/amu]"/>
+		</element>
+	</output>
+</root>

@@ -1,0 +1,567 @@
+::AT.run.GSM.method::
+# Compute the relative efficiency of an Alanine detector
+#  in a proton field
+AT.run.GSM.method( particle.no                          = 1001,                        # protons with
+                   E.MeV.u                              = 10,                          # 10 MeV/u
+                   fluence.cm2.or.dose.Gy               = c(-1.0),                     # delivering 1 Gy
+                   material.no                          = 5,                           # i.e. Alanine
+                   rdd.model                            = 3,                           # simple 'Geiss' parametrization of radial dose distribution
+                   rdd.parameter                        = 50e-9,                       # with 50 nm core radius
+                   er.model                             = 4,                           # M. Scholz' parametrization of track radius
+                   gamma.model                          = 4,                           # Use exponential saturation
+                   gamma.parameters                     = c(1,500),                    # max. response normalized to 1, saturation dose 500 Gy
+                   N.runs                               = 1000,                        # resample 1000 times
+                   write.output                         = TRUE,                        # write a log file
+                   nX                                   = 10,                          # use a 10x10 grid
+                   voxel.size.m                         = 5e-9,                        # with 5 nm voxel size
+                   lethal.events.mode                   = FALSE)                       # use independent subtargets
+::AT.run.IGK.method::
+# Compute the relative efficiency of an Alanine detector in a mixed
+# carbon / proton field
+AT.run.IGK.method( particle.no                          = 1001,                        # namely protons with
+                   E.MeV.u                              = 10,                          # 10 MeV/u
+                   fluence.cm2.or.dose.Gy               = c(-1.0),                     # delivering 1 Gy
+                   material.no                          = 5,                           # i.e. Alanine
+                   rdd.model                            = 4,                           # Katz parametrization of radial dose distribution with simplified extended targets
+                   rdd.parameter                        = c(5e-8,1e-10),               # with 50 nm target size and 1e-10 dose minimum
+                   er.model                             = 2,                           # Butts&Katz parametrization of track radius
+                   gamma.model                          = 2,                           # Use general target/hit model but here...
+                   gamma.parameters                     = c(1,500,1,1,0),              # ...as exponential saturation with characteristic dose 500 Gy
+                   saturation.cross.section.factor      = 1.4,                         # factor to take 'brush' around track into account
+                   write.output                         = TRUE)                        # write a log file
+::AT.run.CPPSC.method::
+# Compute the relative efficiency of an Alanine detector in a mixed
+# carbon / proton field
+AT.run.CPPSC.method( particle.no                          = c(6012, 1001, 1001),         # namely carbon, protons, and protons with
+                     E.MeV.u                              = c(270, 270, 5),              # 270 MeV/u (primary Carbon, 270 MeV/u and 5 MeV/u (fast and slow proton component) 
+                     fluence.cm2.or.dose.Gy               = c(1e8, 1e9, 1e7),            # and their corresponding fluences
+                     material.no                          = 5,                           # i.e. Alanine
+                     rdd.model                            = 3,                           # simple 'Geiss' parametrization of radial dose distribution
+                     rdd.parameter                        = 50e-9,                       # with 50 nm core radius
+                     er.model                             = 4,                           # M. Scholz' parametrization of track radius
+                     gamma.model                          = 2,                           # General hit/target X ray response, but
+                     gamma.parameters                     = c(1,500,1,1,0),              # as simple single exponential saturation (one hit, one target), saturation dose 500 Gy
+                     N2                                   = 10,                          # ten bins per factor 2 for internal local dose histogramming
+                     fluence.factor                       = 1.0,                         # can be used to easily scale total fluence (historical)
+                     write.output                         = TRUE,                        # write a log file
+                     shrink.tails                         = TRUE,                        # cut tails of local dose distribution, if...
+                     shrink.tails.under                   = 1e-30,                       # ... they contribute less then 1e-30 to first moment of histogram
+                     adjust.N2                            = TRUE,                        # perform rebinning if local dose distribution becomes too narrow
+                     lethal.events.mode                   = FALSE)                       # use independent subtargets
+::AT.beta.from.E::
+# Compute beta between 1 and 1000 MeV/u:
+AT.beta.from.E( E.MeV.u     = c(1,10,100,1000))
+::AT.E.from.beta::
+# Compute energies for betas between 0.1 and 0.99:
+AT.E.from.beta( beta = c(0.1, 0.1*(1:9), 0.99))
+::AT.gamma.from.E::
+# Compute mass in MeV/c2 for a proton with 1-1000 MeV kinetic energy:
+938.3 * AT.gamma.from.E( E.MeV.u = 10^(0:3))$gamma
+::AT.LET.keV.um::
+# Get LET for several nuclids and materials in the clinically relevant energy range
+require(lattice)
+
+E.MeV.u       <- 10^seq(-1, 3, length.out = 50)
+particle.name <- c("1H", "3He", "12C", "16O")
+material.name <- c("Water, Liquid", "PMMA", "Aluminum Oxide")
+
+df            <- expand.grid( E.MeV.u       = E.MeV.u,
+                              particle.name = particle.name,
+                              material.name = material.name,
+                              LET.keV.um    = 0)
+
+for(i in 1:nrow(df)){
+     df$LET.keV.um[i] <- AT.LET.keV.um( E.MeV.u     = df$E.MeV.u[i],
+                                        particle.no = AT.particle.no.from.particle.name(df$particle.name[i]),
+                                        material.no = AT.material.no.from.material.name(df$material.name[i]))$LET.keV.um
+}
+
+xyplot( log10(LET.keV.um) ~ log10(E.MeV.u)|material.name,
+        df,
+        type       = 'l',
+        groups     = particle.name,
+        layout     = c(3,1),
+        aspect     = 1,
+        between    = list( x = 0.5),
+        auto.key   = list( space   = 'top',
+                           columns = 4,
+                           points  = FALSE,
+                           lines   = TRUE),
+        panel      = function(...){
+                          panel.grid(-1, -1)
+                          panel.xyplot(...)
+                     },
+        ylab       = list('LET / (keV/um)', font = 4),
+        xlab       = list('kinetic energy / (MeV/u)', font = 4),
+        scales     = list( x       = list( at      = -1:3,
+                                           labels  = c("0.1", "1", "10", "100", "1000")),
+                           y       = list( at      = 0:3,
+                                           labels  = c("1", "10", "100", "1000"))))
+::AT.D.RDD.Gy::
+# Compute dose in several distances of an 100 MeV/u neon ion in water according to 'Site' parametrization
+AT.D.RDD.Gy(    r.m              = 10^(-9:-4),
+                E.MeV.u          = 100,
+                particle.no      = 10020,
+                material.no      = 1,
+                rdd.model        = 4,
+                rdd.parameter    = c(5e-8, 1e-10),
+                er.model         = 2)
+
+# Compare the Geiss parametrization of RDD for protons and Carbon ions at different energies:
+require(lattice)
+df    <-    expand.grid( E.MeV.u        = 10^seq(0, 3, length.out = 4),       # from 1 to 1000 MeV/u in 4 steps
+                         particle.no    = c(1001,6012),                       # protons and carbons
+                         r.m            = 10^seq(-9, -2, length.out = 100),   # from 1 nm to 1 cm in 100 steps
+                         material.no    = 2,                                  # Aluminium Oxide
+                         rdd.model      = 3,                                  # Geiss parametrization
+                         rdd.parameter  = 5e-8,                               # Fixed core size of 50 nm
+                         er.model       = 4,                                  # Geiss track width parametrization
+                         D.Gy           = 0)                                  # For later use
+
+ii                   <-  df$particle.no == 1001                               # Add particle names
+df$particle.name     <-  "Carbon-12"
+df$particle.name[ii] <-  "Protons"
+
+for (i in 1:nrow(df)){                                                        # Loop through particles/energies
+    df$D.Gy[i]    <-    AT.D.RDD.Gy( r.m              = df$r.m[i],
+                                     E.MeV.u          = df$E.MeV.u[i],
+                                     particle.no      = df$particle.no[i],
+                                     material.no      = df$material.no[i],
+                                     rdd.model        = df$rdd.model[i],
+                                     rdd.parameter    = df$rdd.parameter[i],
+                                     er.model         = df$er.model[i])$D.RDD.Gy
+}
+
+xyplot( log10(D.Gy) ~ log10(r.m)|particle.name,                                # Plot
+        df,
+        type      = 'l',
+        groups    = E.MeV.u,
+        auto.key  = TRUE)[c(2,1)]
+::AT.max.electron.ranges.m::
+# Compute the electron range in PMMA for the Tabata parametrization between 0.3 keV and 30 MeV
+AT.max.electron.ranges.m( E.MeV.u     = 0.3 * 10^(-4:2),
+                          material.no = 4,
+                          er.model    = 7)
+::AT.gamma.response::
+# Show the gamma response of two Al2O3 detectors (A & B) and two protocols ('peak' and 'total')
+# parametrized in two components (single hit/single target and two hit/single target)
+# as measured and published by Edmund et al., NIM B 262 (2007), 261-275
+require(lattice)
+
+d.Gy                        <-    10^seq(from = log10(0.1), to = log10(25), length.out = 100)     # Compute 100 points between 0.1 and 25 Gy
+gamma.model                 <-    2                                                               # General hit/target model
+
+R                           <-    1                                                               # Probe A, 'peak'
+Smax                        <-    0.81e6
+k1                          <-    Smax * (R / 100)
+k2                          <-    Smax * (1 - R / 100)
+gamma.parameter.peak.A      <-    c(    k1 = k1, D01 = 0.36, c1 = 1, m1 = 1,
+                                        k2 = k2, D02 = 3.06, c2 = 2, m2 = 1,
+                                        0)
+
+R                           <-    33                                                              # Probe A, 'total'
+Smax                        <-    6.2e6
+k1                          <-    Smax * (R / 100)
+k2                          <-    Smax * (1 - R / 100)
+gamma.parameter.total.A     <-    c(    k1 = k1, D01 = 1.13, c1 = 1, m1 = 1,
+                                        k2 = k2, D02 = 1.77, c2 = 2, m2 = 1,
+                                        0)
+
+R                           <-    13                                                              # Probe B, 'peak'
+Smax                        <-    2.84e6
+k1                          <-    Smax * (R / 100)
+k2                          <-    Smax * (1 - R / 100)
+gamma.parameter.peak.B      <-    c(    k1 = k1, D01 = 4.15, c1 = 1, m1 = 1,
+                                        k2 = k2, D02 = 5.14, c2 = 2, m2 = 1,
+                                        0)
+
+R                           <-    44                                                              # Probe B, 'total'
+Smax                        <-    27.6e6
+k1                          <-    Smax * (R / 100)
+k2                          <-    Smax * (1 - R / 100)
+gamma.parameter.total.B     <-    c(    k1 = k1, D01 = 2.90, c1 = 1, m1 = 1,
+                                        k2 = k2, D02 = 4.66, c2 = 2, m2 = 1,
+                                        0)
+
+df            <-    data.frame(    d.Gy = rep(    d.Gy, 2),                                       # Compose data frame
+                                   S    = c(    AT.gamma.response(    d.Gy              = d.Gy,
+                                                                      gamma.model       = gamma.model,
+                                                                      gamma.parameter   = gamma.parameter.peak.A,
+                                                                      lethal.event.mode = FALSE)$response,
+                                                AT.gamma.response(    d.Gy              = d.Gy,
+                                                                      gamma.model       = gamma.model,
+                                                                      gamma.parameter   = gamma.parameter.total.A,
+                                                                      lethal.event.mode = FALSE)$response,
+                                                AT.gamma.response(    d.Gy              = d.Gy,
+                                                                      gamma.model       = gamma.model,
+                                                                      gamma.parameter   = gamma.parameter.peak.B,
+                                                                      lethal.event.mode = FALSE)$response,
+                                                AT.gamma.response(    d.Gy              = d.Gy,
+                                                                      gamma.model       = gamma.model,
+                                                                      gamma.parameter   = gamma.parameter.total.B,
+                                                                      lethal.event.mode = FALSE)$response),
+                                   which = rep(    c(    rep("peak", length(d.Gy)),
+                                                         rep("total", length(d.Gy))), 2),
+                                   probe = c(    rep("probe A", 2 * length(d.Gy)),
+                                                 rep("probe B", 2 * length(d.Gy))))
+
+xyplot(     log10(S) ~ log10(d.Gy)|probe,                                                           # Plot
+            df,
+            groups    = which,
+            type      = 'l',
+            lwd       = 2,
+            ylim      = log10(c(1e3, 4e7)),
+            ylab      = list(    "OSL response",
+                                 cex = 1.2),
+            xlim      = log10(c(0.1, 25)),
+            xlab      = list(    "dose / Gy",
+                                 cex = 1.2),
+            scales    = list(    x = list(    at         = log10(c(1,10,20)),
+                                              labels    = as.character(c(1,10,20))),
+                                 y = list(    at        = c(4,5,6,7),
+                                              labels    = sprintf("%1.0e",10^(c(4,5,6,7))))),
+            aspect    = 2.5)
+::AT.E.MeV.u.from.momentum.MeV.c.u::
+# Get kinetic energy for a 502 MeV/c antiproton beam (CERN AD/ACE experiment):
+AT.E.MeV.u.from.momentum.MeV.c.u( momentum.MeV.c.u = 502)
+::AT.momentum.MeV.c.u.from.E.MeV.u::
+# Relation between kinetic proton energy and momentum
+# in relativistic and non-relativistic regime
+require(lattice)
+E.MeV.u     <- 10^seq(-2, 5, length.out = 100)
+df          <- data.frame( E.MeV          = E.MeV.u,
+                           p.MeV.c        = AT.momentum.MeV.c.u.from.E.MeV.u(E.MeV.u)$momentum.MeV.c)
+
+xyplot( log10(p.MeV.c) ~ log10(E.MeV),
+        df,
+        type     = 'l',
+        xlab     = 'proton kinetic energy / MeV',
+        ylab     = 'proton momentum / (MeV/c)',
+        panel    = function(...){
+                       panel.abline(a = 0, b = 1, lty = 2, col = 'grey')
+                       panel.xyplot(...)})
+::AT.dose.Gy.from.fluence.cm2::
+# Compute dose from protons, He-3, C-12 and O-16 at
+# same energy and fluence in air
+AT.dose.Gy.from.fluence.cm2( E.MeV.u      = c(10, 10, 10, 10),
+                             fluence.cm2  = c(1e7, 1e7, 1e7, 1e7),
+                             particle.no  = c(1001, 2003, 6012, 8016),
+                             material.no  = 7)
+::AT.dose.Gy.from.fluence.cm2::
+# Compute fluence of protons, He-3, C-12 and O-16
+# to get 1 Gy in water at 10 MeV/u
+AT.fluence.cm2.from.dose.Gy( E.MeV.u      = c(10, 10, 10, 10),
+                             D.Gy         = c(1, 1, 1, 1),
+                             particle.no  = c(1001, 2003, 6012, 8016),
+                             material.no  = 1)
+::AT.total.D.Gy::
+# Compute dose of monoenergtic high energy
+# and a mixed (99/1) field of high and low 
+# energy protons in water at same fluence
+AT.total.D.Gy( E.MeV.u     = 100,
+               particle.no = 1001, 
+               fluence.cm2 = 100e8, 
+               material.no = 1)
+AT.total.D.Gy( E.MeV.u     = c(100, 5),
+               particle.no = c(1001, 1001), 
+               fluence.cm2 = c(99e8, 1e8), 
+               material.no = 1)
+::AT.total.fluence.cm2::
+# Compute total fluence in a 
+# and a mixed field of
+# high and low energy protons
+# that deliver the same dose to water
+AT.total.fluence.cm2( E.MeV.u     = c(100, 5),
+                      particle.no = c(1001, 1001), 
+                      D.Gy        = c(1, 1), 
+                      material.no = 1)
+::AT.max.E.transfer.MeV::
+# Plot maximum energy transferred in a collision in the range from 1 to 1000 MeV
+# (this is independent of the ion type!) and compare the classical with
+# the relativistic approach
+require(lattice)
+E.MeV.u     <- 10^seq(0, 3, length.out = 50)
+df          <- data.frame( E.MeV                  = E.MeV.u,
+                           max.E.keV.classical    = AT.max.E.transfer.MeV(-1.0 * E.MeV.u)$max.E.transfer.MeV * 1000,
+                           max.E.keV.relativistic = AT.max.E.transfer.MeV(E.MeV.u)$max.E.transfer.MeV * 1000)
+
+plot1 <- xyplot( log10(max.E.keV.relativistic) ~ log10(E.MeV),
+                 df,
+                 type     = 'o',
+                 xlab     = list('ion kinetic energy', font = 4),
+                 ylab     = list('maximum electron energy (relativistic)', font = 4),
+                 scales   = list( x = list( at = 0:3, labels = c("1 MeV/u", "10 MeV/u", "100 MeV/u", "1 GeV/u")),
+                                  y = list( at = 1:3, labels = c("10 keV", "100 keV", "1 MeV"))))
+
+plot2 <- xyplot( log10(max.E.keV.classical) ~ log10(max.E.keV.relativistic),
+                 df,
+                 type     = 'l',
+                 col      = 'red',
+                 lwd      = 2,
+                 xlab     = 'maximum electron energy (relativistic) / keV',
+                 ylab     = 'maximum electron energy (classical) / keV',
+                 xlim     = c(0, 4),
+                 ylim     = c(0, 4),
+                 scales   = list( at = 1:3, labels = c("10", "100", "1000")),
+                 panel    = function(...){
+                                panel.grid(-1, -1)
+                                panel.abline(a = 0, b = 1, lty = 2, col = 'grey')
+                                panel.xyplot(...)})
+plot(plot1, split = c(1, 1, 2, 1))
+plot(plot2, split = c(2, 1, 2, 1), newpage = FALSE)
+::AT.get.material.data::
+# Get material data for water found in libamtrack
+AT.get.material.data( material.no = AT.material.no.from.material.name( "Water, Liquid"))
+::AT.LET.MeV.cm2.g::
+# Compute the LET (in MeV*cm2/g) of a 270 MeV/u carbon ion in Aluminum:
+AT.LET.MeV.cm2.g( E.MeV.u     = 270,
+                  particle.no = 6012,
+                  material.no = 3)
+::AT.E.MeV.from.LET::
+# At which kinetic energy do proton and carbon ions have
+# the same LET in water (e.g. 15 keV/um)?
+#AT.E.MeV.from.LET( LET.MeV.cm2.g = c(150.0, 150.0), 
+#                   particle.no   = AT.particle.no.from.particle.name(c("1H", "12C")),
+#                   material.no   = AT.material.no.from.material.name("Water, Liquid"))
+::AT.stopping.power.ratio::
+require(lattice)
+
+df                <-    expand.grid( particle.name         = "1H",                                      # Define parameter space:
+                                     particle.energy.MeV.u = 10^seq(-1, 3, length.out = 500),           # 1 nuclid, energy between 0.1 and 1000 MeV/u,
+                                     material.name         = c("Air", "PMMA", "Aluminum Oxide"),        # and three materials
+                                     stopping.power.ratio  = 0)
+
+df$particle.no    <-    AT.particle.no.from.particle.name(df$particle.name)
+df$material.no    <-    AT.material.no.from.material.name(df$material.name)
+material.no.water <-    AT.material.no.from.material.name("Water, Liquid")
+
+for (i in 1:nrow(df)){
+    df$stopping.power.ratio[i]        <-    AT.stopping.power.ratio( E.MeV.u               = df$particle.energy.MeV.u[i],
+                                                                     particle.no           = df$particle.no[i],
+                                                                     fluence.cm2           = 1,                 # does not have any meaning here as  monoenergetic beams are assumed
+                                                                     material.no           = df$material.no[i],
+                                                                     reference.material.no = material.no.water)
+}
+
+xyplot( stopping.power.ratio ~ log10(particle.energy.MeV.u)|particle.name,
+        df,
+        groups      =    material.name,
+        type        =    "l",
+        layout      =    c(1,1),
+        aspect      =    1,
+        as.table    =    TRUE,
+        auto.key    =    list(    columns = 3, points = FALSE, lines = TRUE),
+        xlab        =    list(    "energy / (MeV/u)", cex = 1.25),
+        ylab        =    list( "stopping power ratio\nwith respect to water", cex = 1.25),
+        main        =    list("stopping powers based on PSTAR data", cex = 1.0),
+        panel       =    function(...){
+                            panel.grid(h = -1, v = -1)
+                            panel.abline(h = 1.0)
+                            panel.xyplot(...)
+                         },
+        between     =    list( x = .5),
+        scales      =    list( x = list(    at        =    log10(c(.1, 1, 10, 100, 1000)),
+                                            labels    =    c(".1", "1", "10", "100", "1000"),
+                                            cex       =    1.0))
+    )
+::AT.CSDA.range.m::
+require(lattice)
+
+df                <-    expand.grid( particle.name         = c("1H", "3He", "12C", "16O"),              # Define parameter space:
+                                     particle.energy.MeV.u = 10^seq(-1, 3, length.out = 500),           # 1 nuclid, energy between 0.1 and 1000 MeV/u,
+                                     CSDA.range.m          = 0)
+
+for (i in 1:nrow(df)){
+    df$CSDA.range.m[i]        <-    AT.CSDA.range.m( E.MeV.u               = df$particle.energy.MeV.u[i],
+                                                     particle.no           = AT.particle.no.from.particle.name(df$particle.name[i]),
+                                                     material.no           = AT.material.no.from.material.name("Water, Liquid"))$CSDA.range.m
+}
+
+xyplot( log10(CSDA.range.m) ~ log10(particle.energy.MeV.u)|"CSDA ranges in water",
+        df,
+        groups      =    particle.name,
+        type        =    "l",
+        aspect      =    1,
+        as.table    =    TRUE,
+        auto.key    =    list(    columns = 4, points = FALSE, lines = TRUE),
+        xlab        =    list(    "energy / (MeV/u)", cex = 1.25),
+        ylab        =    list( "CSDA range", cex = 1.25),
+        panel       =    function(...){
+                             panel.grid(h = -1, v = -1)
+                             panel.xyplot(...)
+                         },
+        scales      =    list( y = list(    at        =    -6:0,
+                                            labels    =    c("1 um", "10 um", "0.1 mm", "1 mm", "1 cm", "10 cm", "1 m"),
+                                            cex       =    1.0),
+                               x = list(    at        =    log10(c(.1, .3, 1, 3, 10, 30, 100, 300, 1000)),
+                                            labels    =    c("0.1", "0.3", "1", "3", "10", "30", "100", "300", "1000"),
+                                            cex       =    1.0))
+    )
+::AT.CSDA.range.g.cm2::
+# Range of 270 MeV/u carbon ions and 142 MeV/u protons in water
+AT.CSDA.range.g.cm2(    E.MeV.u               = c(270, 142),
+                        particle.no           = AT.particle.no.from.particle.name(c("12C", "1H")),
+                        material.no           = AT.material.no.from.material.name("Water, Liquid"))
+::AT.E.MeV.from.CDSA.range::
+# At which kinetic energy do these ions stop
+# in 15 cm of water
+AT.E.MeV.from.CDSA.range( CSDA.range.g.cm2 = rep(15.0, 5), 
+                          particle.no      = AT.particle.no.from.particle.name(c("1H", "3He", "12C", "16O", "238U")),
+                          material.no      = AT.material.no.from.material.name("Water, Liquid"))
+::AT.Bethe.Mass.Stopping.Power.MeV.cm2.g::
+# Reproduce restricted LET ratios found in ICRU49 for protons
+require(lattice)
+
+E.MeV.u            <-    10^seq(-1, 3, length.out = 100)
+particle.no        <-    1001
+material.no        <-    1
+E.restricted.keV   <-    c(0, 1, 3, 10, 30, 100)
+
+df       <-    expand.grid( E.MeV.u            = E.MeV.u,
+                            particle.no        = particle.no,
+                            material.no        = material.no,
+                            E.restricted.keV   = E.restricted.keV,
+                            LET.MeV.cm2.g      = 0,
+                            LET.ratio          = 0)
+
+df$particle.name    <-    AT.particle.name.from.particle.no(df$particle.no)
+
+for (cur.E.res in unique(df$E.restricted.keV)){
+    ii                      <- df$E.restricted.keV == cur.E.res
+    df$LET.MeV.cm2.g[ii]    <- AT.Bethe.Mass.Stopping.Power.MeV.cm2.g( E.MeV.u          = df$E.MeV.u[ii],
+                                                                       particle.no      = df$particle.no[ii],
+                                                                       material.no      = unique(df$material.no[ii]),
+                                                                       E.restricted.keV = cur.E.res)$Mass.Stopping.Power.MeV.cm2.g
+}
+
+xyplot( log10(LET.MeV.cm2.g) ~ log10(E.MeV.u)|particle.name,
+        df[is.element(df$E.restricted.keV, c(0,1,10,100)),],
+        type          = 'l',
+        groups        = E.restricted.keV,
+        auto.key      = list( title     = expression(paste(    "Cut off energy ", Delta, " /keV")),
+                              cex.title = 1.0, 
+                              cex       = 0.8, 
+                              columns   = 4, 
+                              lines     = TRUE, 
+                              points    = FALSE),
+        scales        = list( x = list( at     = -1:3,
+                                        labels = c("0.1", "1", "10", "100", "1000")),
+                              y = list( at     = 1:4,
+                                        labels = c("10", "100", "1000", "10000"))),
+        xlab          = "energy / (MeV/u)",
+        ylab          = "LET / (MeV*cm2/g)")
+
+
+
+for (cur.E.res in unique(df$E.restricted.keV)){
+    ii                <- df$E.restricted.keV == cur.E.res
+    jj                <- df$E.restricted.keV == 0
+    df$LET.ratio[ii]  <- df$LET.MeV.cm2.g[ii] / df$LET.MeV.cm2.g[jj]
+} 
+
+df        <-    df[order(df$E.restricted.keV, df$E.MeV.u),]
+
+xyplot( LET.ratio ~ log10(E.MeV.u),
+        df[is.element(df$E.restricted.keV, c(0,10,30,100)),],
+        type          = 'l',
+        groups        = E.restricted.keV,
+        panel         = function(...){
+                            panel.grid(-1,-1)
+                            panel.xyplot(...)
+                        },
+        auto.key      = list( title     = expression(paste(    "Cut off energy ", Delta, " /keV")),
+                              cex.title = 1.0, 
+                              cex       = 0.8, 
+                              columns   = 4, 
+                              lines     = TRUE, 
+                              points    = FALSE),
+        scales        = list( x = list( at     = 0:3,
+                                        labels = c("1", "10", "100", "1000"))),
+        xlim          = c(-0.2,3.2),
+        xlab          = "energy / (MeV/u)",
+        ylab          = "LET ratio (restricted/unrestricted)")
+::AT.fluence.weighted.LET.MeV.cm2.g::
+# fluence- and dose-weighted LET for a simple mixed field
+# of high and low (99/1) energy protons
+AT.fluence.weighted.LET.MeV.cm2.g( E.MeV.u       = c(100, 5),
+                                   particle.no   = c(1001, 1001),
+                                   fluence.cm2   = c(99e8, 1e8), 
+                                   material.no   = 1)              # water
+AT.dose.weighted.LET.MeV.cm2.g( E.MeV.u       = c(100, 5),
+                                particle.no   = c(1001, 1001),
+                                  fluence.cm2   = c(99e8, 1e8), 
+                                material.no   = 1)              
+::AT.dose.weighted.LET.MeV.cm2.g::
+# fluence- and dose-weighted LET for a simple mixed field
+# of high and low (99/1) energy protons
+AT.fluence.weighted.LET.MeV.cm2.g( E.MeV.u       = c(100, 5),
+                                   particle.no   = c(1001, 1001),
+                                   fluence.cm2   = c(99e8, 1e8), 
+                                   material.no   = 1)              # water
+AT.dose.weighted.LET.MeV.cm2.g( E.MeV.u       = c(100, 5),
+                                particle.no   = c(1001, 1001),
+                                  fluence.cm2   = c(99e8, 1e8), 
+                                material.no   = 1)     
+::AT.fluence.weighted.E.MeV.u::
+# fluence- and dose-weighted mean energy for a simple mixed field
+# of high and low (99/1) energy protons
+AT.fluence.weighted.E.MeV.u( E.MeV.u       = c(100, 1),
+                             fluence.cm2   = c(99e8, 1e8)) 
+AT.dose.weighted.E.MeV.u( E.MeV.u       = c(100, 1),
+                          particle.no   = c(1001, 1001),
+                          fluence.cm2   = c(99e8, 1e8), 
+                          material.no   = 1)    
+::AT.dose.weighted.E.MeV.u::
+# fluence- and dose-weighted mean energy for a simple mixed field
+# of high and low (99/1) energy protons
+AT.fluence.weighted.E.MeV.u( E.MeV.u       = c(100, 1),
+                             fluence.cm2   = c(99e8, 1e8)) 
+AT.dose.weighted.E.MeV.u( E.MeV.u       = c(100, 1),
+                          particle.no   = c(1001, 1001),
+                          fluence.cm2   = c(99e8, 1e8), 
+                          material.no   = 1)   
+::AT.beam.par.physical.to.technical::
+# Technical parameters for a double Gaussian beam
+# of Carbon ions at 270 MeV/u in water with 
+# 0.5 cm sigma width and 1 Gy in the peak
+AT.beam.par.physical.to.technical(  fluence.cm2 = AT.fluence.cm2.from.dose.Gy( E.MeV.u      = 270, 
+                                                                               D.Gy         = 1.0, 
+                                                                               particle.no  = AT.particle.no.from.particle.name("12C"), 
+                                                                               material.no  = AT.material.no.from.material.name("Water, Liquid")), 
+                                    sigma.cm    = 0.5)
+::AT.beam.par.technical.to.physical::
+# Get peak dose of a 142.66 MeV protons in Alox
+# from technical beam parameters
+peak.fluence.cm2 <- AT.beam.par.technical.to.physical(  N        = 3.2e8, 
+                                                        FWHM.mm  = 15.2)[1]
+AT.dose.Gy.from.fluence.cm2( E.MeV.u     = 142.66,
+                             particle.no = AT.particle.no.from.particle.name("1H"),
+                             material.no = AT.material.no.from.material.name("Aluminum Oxide"),
+                             fluence.cm2 = peak.fluence.cm2)
+::AT.effective.charge.from.E.MeV.u::
+# Charge pick-up of several nuclids depending on ion energy
+require(lattice)
+
+df          <- data.frame( E.MeV.u          = 10^seq(-1, 2, length.out = 50),
+                           particle.name    = c("1H", "3He", "6Li", "12C", "16O"),
+                           effective.charge = 0)
+
+for(i in 1:nrow(df)){
+   df$effective.charge[i] <- AT.effective.charge.from.E.MeV.u(  E.MeV.u     = df$E.MeV.u[i], 
+                                                                particle.no = AT.particle.no.from.particle.name(df$particle.name[i])[1])
+}
+
+xyplot( effective.charge ~ log10(E.MeV.u),
+        df,
+        type     = 'l',
+        groups   = particle.name,
+        auto.key = list( space = 'right', points = FALSE, lines = TRUE),
+        xlab     = 'kinetic energy / (MeV/u)',
+        ylab     = 'effective charge',
+        panel    = function(...){
+                       panel.grid(-1,-1)
+                       panel.xyplot(...)},
+        scales     = list( x = list( at        = -1:2,
+                                      labels = c("0.1", "1", "10", "100"))))
+::Was anderes::
+LALALALA
