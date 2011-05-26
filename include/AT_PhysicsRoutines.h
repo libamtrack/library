@@ -37,7 +37,7 @@
 #include "AT_Constants.h"
 #include "AT_DataMaterial.h"
 #include "AT_DataParticle.h"
-#include "AT_DataStoppingPower.h"
+#include "AT_DataLET.h"
 #include "AT_ElectronRange.h"
 #include "AT_NumericalRoutines.h"
 

@@ -251,7 +251,7 @@ double AT_dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
     const double  fluence_cm2,
     const long    material_no){
 
-	double LET_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no );
+	double LET_MeV_cm2_g = AT_LET_MeV_cm2_g_single( E_MeV_u, particle_no, material_no );
 
 	// Multiply by fluence, convert from MeV/g to Gy
 	return LET_MeV_cm2_g * fluence_cm2 * MeV_g_to_J_kg;
@@ -279,7 +279,7 @@ double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
     const double  D_Gy,
     const long    material_no )
 {
-  double LET_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no );
+  double LET_MeV_cm2_g = AT_LET_MeV_cm2_g_single( E_MeV_u, particle_no, material_no );
 
   return (D_Gy / MeV_g_to_J_kg) / LET_MeV_cm2_g;
 }
@@ -392,7 +392,7 @@ void AT_single_impact_dose_Gy( const long n,
 {
   long i;
   for( i = 0 ; i < n ; i++ ){
-    single_impact_dose_Gy[i] = AT_single_impact_dose_Gy_single(       AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u[i],
+    single_impact_dose_Gy[i] = AT_single_impact_dose_Gy_single(       AT_LET_MeV_cm2_g_single(  E_MeV_u[i],
                                                                                                 particle_no[i],
                                                                                                 material_no),
                                                                       AT_single_impact_fluence_cm2_single(      E_MeV_u[i],
@@ -526,8 +526,7 @@ double AT_fluence_weighted_LET_MeV_cm2_g( const long     number_of_field_compone
     total_fluence_cm2 += fluence_cm2[i];
   }
 
-  AT_Stopping_Power_MeV_cm2_g_multi( PSTAR, 
-	  number_of_field_components,
+  AT_LET_MeV_cm2_g(  number_of_field_components,
       E_MeV_u,
       particle_no,
       material_no,
@@ -557,8 +556,7 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
   double*  single_LETs_MeV_cm2_g  =  (double*)calloc(number_of_field_components, sizeof(double));
   double*  single_doses_Gy        =  (double*)calloc(number_of_field_components, sizeof(double));
 
-  AT_Stopping_Power_MeV_cm2_g_multi( PSTAR,
-      number_of_field_components,
+  AT_LET_MeV_cm2_g(  number_of_field_components,
       E_MeV_u,
       particle_no,
       material_no,
@@ -600,15 +598,13 @@ double AT_stopping_power_ratio( const long     number_of_field_components,
 	double* LET_MeV_cm2_g			= (double*)calloc(number_of_field_components, sizeof(double));
 	double* reference_LET_MeV_cm2_g	= (double*)calloc(number_of_field_components, sizeof(double));
 
-	AT_Stopping_Power_MeV_cm2_g_multi( PSTAR,
-	    number_of_field_components,
+	AT_LET_MeV_cm2_g(  number_of_field_components,
 	    E_MeV_u,
 	    particle_no,
 	    material_no,
 	    LET_MeV_cm2_g);
 
-	AT_Stopping_Power_MeV_cm2_g_multi( PSTAR,
-	    number_of_field_components,
+	AT_LET_MeV_cm2_g(  number_of_field_components,
 	    E_MeV_u,
 	    particle_no,
 	    reference_material_no,
@@ -648,7 +644,7 @@ double AT_mean_number_of_tracks_contrib(    const long number_of_field_component
   long i;
   for (i = 0; i < number_of_field_components; i++){
     double single_impact_fluence_cm2 =  AT_single_impact_fluence_cm2_single(  E_MeV_u[i], material_no, er_model);
-    double LET_MeV_cm2_g             = AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u[i], particle_no[i], material_no);
+    double LET_MeV_cm2_g             = AT_LET_MeV_cm2_g_single(  E_MeV_u[i], particle_no[i], material_no);
     u += norm_fluence[i] * AT_single_impact_dose_Gy_single(  LET_MeV_cm2_g, single_impact_fluence_cm2 );
   }
 

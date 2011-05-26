@@ -38,33 +38,8 @@ double AT_Bethe_wrapper(const double 	E_MeV_u,
 															particle_no,
 															material_no,
 															-1.0);
-}
+};
 
-double AT_ShieldHit_wrapper(const double 	E_MeV_u,
-		const long 	    particle_no,
-		const long 		material_no){
-	// TODO: Later - read-in data from table here
-	if(material_no != 1){		/* Water data only */
-		return 0.0;
-	}
-
-	long Z		= AT_Z_from_particle_no_single(particle_no);
-	if( Z > 18){				/* Data for H ... Ar */
-		return 0.0;
-	}
-
-	if (E_MeV_u < 0.025 || E_MeV_u > 1000){
-		return 0.0;
-	}
-
-	double	StoppingPower_MeV_cm2_g = 0.0;
-	StoppingPower_MeV_cm2_g = AT_get_interpolated_y_from_input_table(
-			AT_stopping_power_ShieldHit_table.E_MeV_u_and_stopping_power_total_MeV_cm2_g[0],
-			AT_stopping_power_ShieldHit_table.E_MeV_u_and_stopping_power_total_MeV_cm2_g[Z],
-			AT_stopping_power_ShieldHit_table.number_of_data_points,
-			E_MeV_u);
-	return StoppingPower_MeV_cm2_g;
-}
 
 double _AT_Stopping_Power_get_data(const long stopping_power_source_no,
 		const long 	    particle_no,
@@ -236,17 +211,13 @@ double AT_Energy_MeV_u_from_Stopping_Power_single( const long stopping_power_sou
 }
 
 
-int AT_stopping_power_source_model_name_from_number( const long source_no, char* source_name){
+void AT_stopping_power_source_model_name_from_number( const long source_no, char* source_name){
 
 	assert( source_no >= 0);
 	assert( source_no < STOPPING_POWER_SOURCE_N);
 	assert(AT_stopping_power_sources.stopping_power_source_no[source_no] == source_no);
-	if( source_no < 0)
-		return -1;	
-	if( source_no >= STOPPING_POWER_SOURCE_N)
-		return -1;	
+
     strcpy(source_name, AT_stopping_power_sources.stopping_power_source_name[source_no]);
-    return AT_Success;
 }
 
 

@@ -46,7 +46,6 @@
 #include "AT_NumericalRoutines.h"
 #include "AT_KatzModel.h"
 #include "AT_Algorithms_GSM.h"
-#include "AT_DataStoppingPower.h"
 
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_integration.h>
@@ -71,7 +70,6 @@
  * @see AT_ElectronRange.h for definition
  * @param[in]      gamma_model                      index number for chosen gamma response
  * @param[in]      gamma_parameters                 parameters for chosen gamma response (array of size 9)
- * @param[in]      stop_power_source                stopping power source number (PSTAR,...)
  * @see AT_GammaResponse.h for definition
  * @param[in]      saturation_cross_section_factor  scaling factor for the saturation cross section
  * @see Waligorski, 1988
@@ -94,7 +92,6 @@ void AT_run_IGK_method(  const long  number_of_field_components,
     const long    er_model,
     const long    gamma_model,
     const double  gamma_parameters[],
-    const long    stop_power_source,
     const double  saturation_cross_section_factor,
     const bool    write_output,
     double*       relative_efficiency,

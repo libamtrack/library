@@ -25,7 +25,7 @@
 rm( list = ls() )
 
 # Build latest version of libamtrack and load for direct access
-recompile <- TRUE
+recompile <- FALSE
 source("AT_Test_PreRun.R")
 
 require(lattice)
@@ -60,13 +60,12 @@ particle.no  <-  c(1001)
 
 # 1, D0, c, m, 0
 GR.parameters <- c(1, 3.0, 1, 2, 0)
-SP.source <- 0 # (0 -> PSTAR)
 
 for( i in ER.model) {
  ii 			<- df1$ER.model == i
 	for( j in RDD.model) {
  	jj 			<- ((df1$RDD.model == j) & (df1$ER.model == i)) 
-			df1$inact.prob[jj] <- AT.KatzModel.inactivation.probability(r.m = df1$r.m[jj], E.MeV.u, particle.no, material.no, rdd.model = j, rdd.parameters = RDD.parameters[[j]], er.model = i, GR.parameters, stop.power.source = SP.source)[[1]]
+			df1$inact.prob[jj] <- AT.KatzModel.inactivation.probability(r.m = df1$r.m[jj], E.MeV.u, particle.no, material.no, rdd.model = j, rdd.parameters = RDD.parameters[[j]], er.model = i, GR.parameters)[[1]]
 		}
 }
 
@@ -102,7 +101,7 @@ for( i in ER.model) {
  ii 			<- df1$ER.model == i
 	for( j in RDD.model) {
  	jj 			<- ((df1$RDD.model == j) & (df1$ER.model == i)) 
-			df1$inact.cross.sect.m2[jj] <- AT.KatzModel.inactivation.cross.section.m2(E.MeV.u = df1$E.MeV.u[jj], particle.no, material.no, rdd.model = j, rdd.parameters = RDD.parameters[[j]], er.model = i, GR.parameters, stop.power.source = SP.source)[[1]]
+			df1$inact.cross.sect.m2[jj] <- AT.KatzModel.inactivation.cross.section.m2(E.MeV.u = df1$E.MeV.u[jj], particle.no, material.no, rdd.model = j, rdd.parameters = RDD.parameters[[j]], er.model = i, GR.parameters)[[1]]
 		}
 }
 
@@ -147,7 +146,6 @@ for( i in ER.model) {
                 rdd.model = j,
                 rdd.parameters = RDD.parameters[[j]],
                 er.model = i,
-                stop.power.source = SP.source,
                 D0.characteristic.dose.Gy = GR.parameters[[2]],
                 m.number.of.targets = GR.parameters[[4]],
                 sigma0.m2 = sigma0.m2)[[1]]

@@ -93,18 +93,6 @@
             </preset>
             <data x="er_model" />
         </element>        
-        <element type="combo" label="source" datatype="long">
-			<description>data source</description>
-			<entry>
-				<item key="PSTAR tables" value="0" />
-				<item key="Bethe formula" value="1" />
-				<item key="SHIELDHit code" value="2" />
-			</entry>
-			<preset>
-				<item value="0" />
-			</preset>
-			<data x="source_no" />
-		</element>	
         <element type="field" label="a0 [m]" datatype="double">
             <description>a0 [m]</description>
             <preset>

@@ -5,11 +5,13 @@ AT_D_RDD_Gy
 AT_r_RDD_m
 AT_max_electron_range_m
 AT_max_electron_ranges_m
-AT_Stopping_Power_MeV_cm2_g_multi
-AT_Stopping_Power_MeV_cm2_g_single
+AT_LET_keV_um
+AT_LET_MeV_cm2_g
 AT_stopping_power_ratio
 AT_CSDA_range_g_cm2
 AT_CSDA_range_m
+AT_E_MeV_from_CDSA_range
+AT_E_MeV_from_LET
 AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_multi
 AT_fluence_weighted_E_MeV_u
 AT_dose_weighted_E_MeV_u

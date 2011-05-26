@@ -27,7 +27,6 @@ AT.run.IGK.method( particle.no                          = 1001,                 
                    er.model                             = 2,                           # Butts&Katz parametrization of track radius
                    gamma.model                          = 2,                           # Use general target/hit model but here...
                    gamma.parameters                     = c(1,500,1,1,0),              # ...as exponential saturation with characteristic dose 500 Gy
-                   stop.power.source                    = 0,						   # Use PSTAR data
                    saturation.cross.section.factor      = 1.4,                         # factor to take 'brush' around track into account
                    write.output                         = TRUE)                        # write a log file
 ::AT.run.CPPSC.method::

@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "AT_DataStoppingPower.h"
+#include "AT_DataLET.h"
 
 int main(int argc, char *argv[]) {
 	if (argc != 2) {
@@ -43,7 +43,6 @@ int main(int argc, char *argv[]) {
 
 	long material_no = Water_Liquid;
 	long particle_no_single = PARTICLE_PROTON_NUMBER;
-	long source_no = PSTAR;
 
 	double E_start = 0.1;
 	double E_end = 50.;
@@ -89,11 +88,6 @@ int main(int argc, char *argv[]) {
 			char* token = strtok(NULL, ":");
 			particle_no_single = atol(token);
 		}
-		if (strstr(Text, "source_no:")) {
-			strtok(Text, ":");
-			char* token = strtok(NULL, ":");
-			source_no = atol(token);
-		}
 	}
 
 	double * E_MeV_u    = (double*)calloc(n_points, sizeof(double));
@@ -131,8 +125,7 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	AT_Stopping_Power_keV_um_multi( source_no,  
-		n_points,
+	AT_LET_keV_um(  n_points,
 	    E_MeV_u,
 	    particle_no,
 	    material_no,

@@ -278,7 +278,7 @@ double AT_RDD_d_max_Gy(
   double d_max_Gy  = 0.0;
 
   const double max_electron_range_m      =  AT_max_electron_range_m( E_MeV_u, (int)material_no, (int)er_model);
-  const double LET_MeV_cm2_g             =  AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no);
+  const double LET_MeV_cm2_g             =  AT_LET_MeV_cm2_g_single(E_MeV_u, particle_no, material_no);
   const double precalculated_constant_Gy =  AT_RDD_precalculated_constant_Gy(max_electron_range_m, LET_MeV_cm2_g, E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model);
 
   // Get density // TODO move it down
@@ -377,7 +377,7 @@ void AT_RDD_f1_parameters_single_field(
 
   ///////////////////////////////////////////////////////////////////////////////
   // PARAMETER 0: Get the LET (same for all models)
-  LET_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no);
+  LET_MeV_cm2_g = AT_LET_MeV_cm2_g_single(E_MeV_u, particle_no, material_no);
 
   ////////////////////////////////////////////////////////////////////////////////
   // PARAMETER 2: Get the maximum electron range (same for all RDD models)
@@ -457,7 +457,7 @@ int AT_D_RDD_Gy( const long  n,
    ********* CALCULATION BEFORE PARTICLE LOOP *************
    *******************************************************/
 
-  const double LET_MeV_cm2_g          =  AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no);
+  const double LET_MeV_cm2_g          =  AT_LET_MeV_cm2_g_single(E_MeV_u, particle_no, material_no);
 
   const double max_electron_range_m   =  AT_max_electron_range_m( E_MeV_u, (int)material_no, (int)er_model);
 
@@ -614,7 +614,7 @@ int AT_r_RDD_m  ( const long  n,
 {
   long     i;
 
-  const double LET_MeV_cm2_g              =  AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no);
+  const double LET_MeV_cm2_g              =  AT_LET_MeV_cm2_g_single(E_MeV_u, particle_no, material_no);
 
   const double max_electron_range_m       =  AT_max_electron_range_m(E_MeV_u, (int)material_no, (int)er_model);
 
