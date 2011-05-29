@@ -90,6 +90,7 @@ void AT_GSM_sample_particle_positions( const long  number_of_field_components,
  * @see          AT_RDD.h for definition
  * @param[in]  er_model                                  index number for chosen electron-range model
  * @see          AT_ElectronRange.h for definition
+ * @param[in]  stopping_power_source_no                  TODO
  * @param[in]  number_of_particles_in_field_component    table of number of particles of each type in the mixed particle field
  * @param[in]  x_position                                two-dimensional table (1st dimension - component of mixed field,
  *                                                         2nd dimension - particle index for given component)
@@ -108,6 +109,7 @@ void AT_GSM_dose_grid_from_particles_positions( const long  number_of_field_comp
     const long     rdd_model,
     const double   rdd_parameter[],
     const long     er_model,
+    const long     stopping_power_source_no,
     const long     number_of_particles_in_field_component[],
     const double*  x_position[],
     const double*  y_position[],
@@ -235,6 +237,14 @@ void AT_run_GSM_method(  const long  number_of_field_components,
  * @see          AT_RDD.h for definition
  * @param[in]  er_model                                  index number for chosen electron-range model
  * @see          AT_ElectronRange.h for definition
+ * @param[in] stopping_power_source_no                   TODO
+ * @param[in] nX                                         TODO
+ * @param[in] pixel_size_m                               TODO
+ * @param[in] number_of_bins                             TODO
+ * @param[in] dose_bin_centers_Gy                        TODO
+ * @param[out] random_number_generator_seed              TODO
+ * @param[out] zero_dose_fraction                        TODO
+ * @param[out] dose_frequency_Gy                         TODO
  */
 void AT_GSM_local_dose_distrib( const long  number_of_field_components,
     const double   E_MeV_u[],
@@ -244,6 +254,7 @@ void AT_GSM_local_dose_distrib( const long  number_of_field_components,
     const long     rdd_model,
     const double   rdd_parameter[],
     const long     er_model,
+    const long     stopping_power_source_no,
     const long     nX,
     const double   pixel_size_m,
     const long     number_of_bins,
@@ -262,6 +273,7 @@ void AT_GSM_local_dose_distrib( const long  number_of_field_components,
  * @param rdd_model
  * @param rdd_parameter
  * @param er_model
+ * @param stopping_power_source_no
  * @param nX
  * @param pixel_size_m
  * @param N_runs
@@ -284,6 +296,7 @@ void AT_GSM_multiple_local_dose_distrib( const long  number_of_field_components,
     const long     	rdd_model,
     const double   	rdd_parameter[],
     const long     	er_model,
+    const long      stopping_power_source_no,
     const long     	nX,
     const double   	pixel_size_m,
     const long		N_runs,

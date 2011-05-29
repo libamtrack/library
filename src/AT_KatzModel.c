@@ -619,6 +619,7 @@ double AT_D_RDD_Gy_int( double  r_m,
       *(par->rdd_model),
       par->rdd_parameters,
       *(par->er_model),
+      PSTAR,
       &D_Gy);
 
   return (2.0 * M_PI * r_m * D_Gy);
@@ -651,6 +652,7 @@ double AT_P_RDD( double  r_m,
       *(par->rdd_model),
       par->rdd_parameters,
       *(par->er_model),
+      PSTAR,
       &D_Gy);
 
   long gamma_model = GR_GeneralTarget;
