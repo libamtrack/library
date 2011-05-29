@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
 	double * fluence_cm2 = (double*)calloc(n_points, sizeof(double));
 
 	for (i = 0; i < n_points; i++) {
-		fluence_cm2[i] = AT_fluence_cm2_from_dose_Gy_single(E_MeV_u, particle_no_single, D_Gy[i], material_no );
+		fluence_cm2[i] = AT_fluence_cm2_from_dose_Gy_single(E_MeV_u, particle_no_single, D_Gy[i], material_no, PSTAR );
 	}
 
 	int status = AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
@@ -179,6 +179,7 @@ int main(int argc, char *argv[]) {
 			D0_Gy,
 			m,
 			sigma0_m2,
+			PSTAR,
 			survival);
 
 	free(fluence_cm2);

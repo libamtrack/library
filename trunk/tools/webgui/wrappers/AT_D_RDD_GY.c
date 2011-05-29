@@ -152,6 +152,7 @@ int main(int argc, char *argv[]) {
 			rdd_model,
 			rdd_parameters,
 			er_model,
+			PSTAR,
 			RDD_GY);
 
 	if( status != EXIT_SUCCESS){

@@ -324,8 +324,12 @@ int main( int argc, char* argv[]){
 		for( i = 0 ; i < AT_RDD_number_of_parameters(rdd_model) ; i++)
 			printf("# RDD parameter %d : %s = %g\n", i , AT_RDD_Data.parameter_name[index][i], rdd_parameter[i]);
 		printf("#particle: %s (code: %ld)\n", particle_name, particle_no);
+		long source_no = PSTAR;
+		char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH];
+		AT_stopping_power_source_model_name_from_number( source_no, source_name);
+		printf("#data source: %s (code: %ld)\n", source_name, source_no);
 		printf("#r[m] D[Gy]\n");
-		int status = AT_D_RDD_Gy( number_of_points_on_x_axis, x, E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, y);
+		int status = AT_D_RDD_Gy( number_of_points_on_x_axis, x, E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, source_no, y);
 		if( status != AT_Success ){
 			fprintf(stderr, "Incompatible ER model (%s) used with RDD model (%s)\n", er_name, rdd_name);
 			exit(EXIT_FAILURE);

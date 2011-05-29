@@ -98,6 +98,7 @@ int main(int argc, char *argv[]) {
 	    particle_no,
 	    D_Gy,
 	    material_no,
+	    PSTAR,
 	    fluence_cm2);
 
 	fprintf(f , "fluence:");
