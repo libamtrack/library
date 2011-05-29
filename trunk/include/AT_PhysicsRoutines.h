@@ -382,12 +382,14 @@ void AT_dose_Gy_from_fluence_cm2(  const long  n,
  * @param[in]  D_Gy         dose in Gy
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
+ * @param[in]  stopping_power_source_no  TODO
  * @return fluence in 1/cm2
  */
 double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
     const long    particle_no,
     const double  D_Gy,
-    const long    material_no );
+    const long    material_no,
+    const long    stopping_power_source_no);
 
 
 /**
@@ -399,6 +401,7 @@ double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
  * @see          AT_DataParticle.h for definition
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
+ * @param[in]  stopping_power_source_no  TODO
  * @param[out] fluence_cm2         to be allocated by the user which will be used to return the results (array of size n)
  */
 void AT_fluence_cm2_from_dose_Gy(  const long  n,
@@ -406,6 +409,7 @@ void AT_fluence_cm2_from_dose_Gy(  const long  n,
     const long    particle_no[],
     const double  D_Gy[],
     const long    material_no,
+    const long    stopping_power_source_no,
     double        fluence_cm2[]);
 
 

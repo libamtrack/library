@@ -125,6 +125,7 @@ void  AT_single_impact_local_dose_distrib(
 				particle_no,
 				dose_Gy,
 				material_no,
+				PSTAR,
 				fluence_cm2);
 		free( dose_Gy );
 	}else{
