@@ -95,6 +95,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       rdd_model,
       rdd_parameters,
       er_model,
+      stopping_power_source_no,
       f1_parameters
   );
 
@@ -336,6 +337,7 @@ void AT_run_CPPSS_method(  const long  number_of_field_components,
       rdd_model,
       rdd_parameters,
       er_model,
+      stopping_power_source_no,
       f1_parameters
   );
 
