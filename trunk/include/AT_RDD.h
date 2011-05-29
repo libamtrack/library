@@ -162,6 +162,7 @@ int AT_RDD_number_of_parameters( const long RDD_model);
  * @param[in]   rdd_model      radial dose distribution model index
  * @param[in]   rdd_parameter  radial dose distribution model parameters (array of size 4)
  * @param[in]   er_model       electron range / track with model index
+ * @param[in]   stopping_power_source_no  TODO
  * @param[out]  D_RDD_Gy       dose [Gy] (array of size n)
  * @return status code
  */
@@ -173,6 +174,7 @@ int AT_D_RDD_Gy( const long  n,
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
+    const long    stopping_power_source_no,
     double        D_RDD_Gy[]);
 
 

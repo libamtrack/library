@@ -519,6 +519,7 @@ void AT_run_CPPSS_method(  const long  number_of_field_components,
           rdd_model,
           rdd_parameters,
           er_model,
+          stopping_power_source_no,
           &d_j_Gy);
 
       // (5) Add dose

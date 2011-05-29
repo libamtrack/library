@@ -455,13 +455,14 @@ int AT_D_RDD_Gy( const long  n,
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
+    const long    stopping_power_source_no,
     double        D_RDD_Gy[])
 {
   /********************************************************
    ********* CALCULATION BEFORE PARTICLE LOOP *************
    *******************************************************/
 
-  const double LET_MeV_cm2_g          =  AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no);
+  const double LET_MeV_cm2_g          =  AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u, particle_no, material_no);
 
   const double max_electron_range_m   =  AT_max_electron_range_m( E_MeV_u, (int)material_no, (int)er_model);
 
