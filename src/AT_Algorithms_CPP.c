@@ -131,6 +131,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
         particle_no,
         dose_Gy,
         material_no,
+        stopping_power_source_no,
         fluence_cm2);
     free( dose_Gy );
   }else{
@@ -370,6 +371,7 @@ void AT_run_CPPSS_method(  const long  number_of_field_components,
         particle_no,
         dose_Gy,
         material_no,
+        stopping_power_source_no,
         fluence_cm2);
   }else{
     for (i = 0; i < number_of_field_components; i++){

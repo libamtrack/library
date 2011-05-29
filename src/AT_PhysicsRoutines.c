@@ -279,9 +279,10 @@ void AT_dose_Gy_from_fluence_cm2(  const long  n,
 double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
     const long    particle_no,
     const double  D_Gy,
-    const long    material_no )
+    const long    material_no,
+    const long    stopping_power_source_no)
 {
-  double LET_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no );
+  double LET_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u, particle_no, material_no );
 
   return (D_Gy / MeV_g_to_J_kg) / LET_MeV_cm2_g;
 }
@@ -292,11 +293,12 @@ void AT_fluence_cm2_from_dose_Gy(  const long  n,
     const long    particle_no[],
     const double  D_Gy[],
     const long    material_no,
+    const long    stopping_power_source_no,
     double        fluence_cm2[])
 {
   long i;
   for (i = 0; i < n; i++){
-    fluence_cm2[i] =  AT_fluence_cm2_from_dose_Gy_single(  E_MeV_u[i], particle_no[i], D_Gy[i], material_no );
+    fluence_cm2[i] =  AT_fluence_cm2_from_dose_Gy_single(  E_MeV_u[i], particle_no[i], D_Gy[i], material_no, stopping_power_source_no );
   }
 }
 
@@ -446,6 +448,7 @@ double AT_total_fluence_cm2( const long number_of_field_components,
       particle_no,
       D_Gy,
       material_no,
+      PSTAR,
       single_fluences_cm2);
 
   double  total_fluence_cm2 = 0.0;
