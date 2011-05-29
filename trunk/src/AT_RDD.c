@@ -271,14 +271,15 @@ double AT_RDD_d_max_Gy(
     const long    material_no,
     const long    rdd_model,
     const double  rdd_parameter[],
-    const long    er_model){
+    const long    er_model,
+    const long    stopping_power_source_no){
 
   // TODO implement handling of non-compatible er and rdd
 
   double d_max_Gy  = 0.0;
 
   const double max_electron_range_m      =  AT_max_electron_range_m( E_MeV_u, (int)material_no, (int)er_model);
-  const double LET_MeV_cm2_g             =  AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no);
+  const double LET_MeV_cm2_g             =  AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u, particle_no, material_no);
   const double precalculated_constant_Gy =  AT_RDD_precalculated_constant_Gy(max_electron_range_m, LET_MeV_cm2_g, E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model);
 
   // Get density // TODO move it down
@@ -364,6 +365,7 @@ void AT_RDD_f1_parameters_single_field(
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
+    const long    stopping_power_source_no,
     double        f1_parameters[])
 {
   double LET_MeV_cm2_g              =  0.0;
@@ -377,7 +379,7 @@ void AT_RDD_f1_parameters_single_field(
 
   ///////////////////////////////////////////////////////////////////////////////
   // PARAMETER 0: Get the LET (same for all models)
-  LET_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no);
+  LET_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u, particle_no, material_no);
 
   ////////////////////////////////////////////////////////////////////////////////
   // PARAMETER 2: Get the maximum electron range (same for all RDD models)
@@ -405,7 +407,7 @@ void AT_RDD_f1_parameters_single_field(
 
   ////////////////////////////////////////////////////////////////////////////////
   // PARAMETER 4: Get minimum dose d_min_Gy (f1_parameters[4])
-  d_max_Gy = AT_RDD_d_max_Gy( E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model);
+  d_max_Gy = AT_RDD_d_max_Gy( E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, stopping_power_source_no);
 
   // write data to output table
   f1_parameters[0]  =  LET_MeV_cm2_g;
@@ -427,6 +429,7 @@ void AT_RDD_f1_parameters_mixed_field(
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
+    const long    stopping_power_source_no,
     double        f1_parameters[]){
 
   long  i;
@@ -438,6 +441,7 @@ void AT_RDD_f1_parameters_mixed_field(
         rdd_model,
         rdd_parameter,
         er_model,
+        stopping_power_source_no,
         &f1_parameters[i*AT_SC_F1_PARAMETERS_SINGLE_LENGTH]);
   }
 }
@@ -624,7 +628,7 @@ int AT_r_RDD_m  ( const long  n,
 
   const double d_min_Gy                   =  AT_RDD_d_min_Gy(E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, precalculated_constant_Gy );
 
-  const double d_max_Gy                   =  AT_RDD_d_max_Gy(E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model);
+  const double d_max_Gy                   =  AT_RDD_d_max_Gy(E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, PSTAR);
 
   if( rdd_model == RDD_Test){
     // Loop over all doses given

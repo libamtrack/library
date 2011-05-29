@@ -285,6 +285,7 @@ double AT_RDD_d_min_Gy(
  * @param[in] rdd_model                  Radial Dose Distribution model code number
  * @param[in] rdd_parameter              Radial Dose Distribution model parameters vector  (array of size 3)
  * @param[in] er_model                   delta electron range model code number
+ * @param[in] stopping_power_source_no   TODO
  * @return  Maximum dose [Gy]
  */
 double AT_RDD_d_max_Gy(
@@ -293,7 +294,8 @@ double AT_RDD_d_max_Gy(
     const long    material_no,
     const long    rdd_model,
     const double  rdd_parameter[],
-    const long    er_model);
+    const long    er_model,
+    const long    stopping_power_source_no);
 
 
 /**
@@ -304,6 +306,7 @@ double AT_RDD_d_max_Gy(
  * @param[in]  rdd_model             Radial Dose Distribution model code number
  * @param[in]  rdd_parameter         Radial Dose Distribution model parameters vector  (array of size 3)
  * @param[in]  er_model              delta electron range model code number
+ * @param[in]  stopping_power_source_no     TODO
  * @param[out] f1_parameters <br>
  *     0 - LET_MeV_cm2_g <br>
  *     1 - r_min_m <br>
@@ -321,6 +324,7 @@ void AT_RDD_f1_parameters_single_field(
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
+    const long    stopping_power_source_no,
     double        f1_parameters[]);
 
 
@@ -333,6 +337,7 @@ void AT_RDD_f1_parameters_single_field(
  * @param[in]  rdd_model             Radial Dose Distribution model code number
  * @param[in]  rdd_parameter         Radial Dose Distribution model parameters vector  (array of size 3)
  * @param[in]  er_model              delta electron range model code number
+ * @param[in]  stopping_power_source_no  TODO
  * @param[out] f1_parameters  (array of size 8)
  *     0 - LET_MeV_cm2_g \n
  *     1 - r_min_m \n
@@ -351,6 +356,7 @@ void AT_RDD_f1_parameters_mixed_field(
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
+    const long    stopping_power_source_no,
     double        f1_parameters[]);
 
 
