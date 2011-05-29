@@ -63,6 +63,7 @@
  * @see AT_DataParticle.h for definition
  * @param[in]      fluence_cm2_or_dose_Gy           if positive, particle fluence for each component in the mixed particle field [1/cm2]; if negative, particle dose for each component in the mixed particle field [Gy] (array of size number_of_field_components)
  * @param[in]      material_no                      index number for detector material
+ * @param[in]      stopping_power_source_no         stopping power source number (PSTAR,...)
  * @see AT_DataMaterial.h for definition
  * @param[in]      rdd_model                        index number for chosen radial dose distribution
  * @param[in]      rdd_parameters                   parameters for chosen radial dose distribution (array of size 4)
@@ -71,7 +72,6 @@
  * @see AT_ElectronRange.h for definition
  * @param[in]      gamma_model                      index number for chosen gamma response
  * @param[in]      gamma_parameters                 parameters for chosen gamma response (array of size 9)
- * @param[in]      stop_power_source                stopping power source number (PSTAR,...)
  * @see AT_GammaResponse.h for definition
  * @param[in]      saturation_cross_section_factor  scaling factor for the saturation cross section
  * @see Waligorski, 1988
@@ -89,12 +89,12 @@ void AT_run_IGK_method(  const long  number_of_field_components,
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
     const long    material_no,
+    const long    stopping_power_source_no,
     const long    rdd_model,
     const double  rdd_parameters[],
     const long    er_model,
     const long    gamma_model,
     const double  gamma_parameters[],
-    const long    stop_power_source,
     const double  saturation_cross_section_factor,
     const bool    write_output,
     double*       relative_efficiency,

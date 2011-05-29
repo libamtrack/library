@@ -264,12 +264,13 @@ void AT_dose_Gy_from_fluence_cm2(  const long  n,
     const long    particle_no[],
     const double  fluence_cm2[],
     const long    material_no,
+    const long    stopping_power_source_no,
     double        dose_Gy[])
 {
   // Multiply by fluence, convert from MeV/g to Gy
   long  i;
   for (i = 0; i < n; i++){
-    dose_Gy[i] =  AT_dose_Gy_from_fluence_cm2_single(  E_MeV_u[i], particle_no[i], fluence_cm2[i], material_no, PSTAR );
+    dose_Gy[i] =  AT_dose_Gy_from_fluence_cm2_single(  E_MeV_u[i], particle_no[i], fluence_cm2[i], material_no, stopping_power_source_no );
   }
 
 }
@@ -416,6 +417,7 @@ double  AT_total_D_Gy( const long  number_of_field_components,
       particle_no,
       fluence_cm2,
       material_no,
+      PSTAR,
       single_doses_Gy);
 
   long i;
@@ -478,10 +480,11 @@ double AT_fluence_weighted_E_MeV_u( const long    number_of_field_components,
 
 
 double AT_dose_weighted_E_MeV_u( const long   number_of_field_components,
-    const double  E_MeV_u[],
+    const double E_MeV_u[],
     const long   particle_no[],
-    const double  fluence_cm2[],
-    const long   material_no)
+    const double fluence_cm2[],
+    const long   material_no,
+    const long   stopping_power_source_no)
  {
   long i;
 
@@ -492,6 +495,7 @@ double AT_dose_weighted_E_MeV_u( const long   number_of_field_components,
       particle_no,
       fluence_cm2,
       material_no,
+      stopping_power_source_no,
       single_doses_Gy);
 
   double total_dose_Gy = 0.0;
@@ -551,14 +555,15 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
     const double  E_MeV_u[],
     const long   particle_no[],
     const double  fluence_cm2[],
-    const long   material_no)
+    const long   material_no,
+    const long stopping_power_source_no)
  {
   long i;
 
   double*  single_LETs_MeV_cm2_g  =  (double*)calloc(number_of_field_components, sizeof(double));
   double*  single_doses_Gy        =  (double*)calloc(number_of_field_components, sizeof(double));
 
-  AT_Stopping_Power_MeV_cm2_g_multi( PSTAR,
+  AT_Stopping_Power_MeV_cm2_g_multi( stopping_power_source_no,
       number_of_field_components,
       E_MeV_u,
       particle_no,
@@ -570,6 +575,7 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
       particle_no,
       fluence_cm2,
       material_no,
+      stopping_power_source_no,
       single_doses_Gy);
 
   double total_dose_Gy = 0.0;

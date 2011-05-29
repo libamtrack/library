@@ -362,6 +362,7 @@ double AT_dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
  * @see          AT_DataParticle.h for definition
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
+ * @param[in]  stopping_power_source_no  stopping power source index
  * @param[out] dose_Gy          be allocated by the user which will be used to return the results (array of size n)
  */
 void AT_dose_Gy_from_fluence_cm2(  const long  n,
@@ -369,6 +370,7 @@ void AT_dose_Gy_from_fluence_cm2(  const long  n,
     const long    particle_no[],
     const double  fluence_cm2[],
     const long    material_no,
+    const long    stopping_power_source_no,
     double        dose_Gy[]);
 
 
@@ -604,13 +606,15 @@ double AT_fluence_weighted_E_MeV_u( const long    number_of_field_components,
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
+ * @param[in]  stopping_power_source_no  TODO
  * @return     dose-weighted mean energy
  */
 double AT_dose_weighted_E_MeV_u( const long   number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
-    const long    material_no);
+    const long    material_no,
+    const long    stopping_power_source_no);
 
 
 /**
@@ -642,13 +646,15 @@ double AT_fluence_weighted_LET_MeV_cm2_g( const long     number_of_field_compone
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
+ * @param[in]  stopping_power_source_no  TODO
  * @return     dose-weighted LET
  */
 double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
-    const long    material_no);
+    const long    material_no,
+    const long    stopping_power_source_no);
 
 
 /**

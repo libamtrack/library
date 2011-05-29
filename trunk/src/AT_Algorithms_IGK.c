@@ -36,12 +36,12 @@ void AT_run_IGK_method(  const long  number_of_field_components,
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
     const long    material_no,
+    const long    stopping_power_source_no,
     const long    rdd_model,
     const double  rdd_parameters[],
     const long    er_model,
     const long    gamma_model,
     const double  gamma_parameters[],
-    const long    stop_power_source,
     const double  saturation_cross_section_factor,
     const bool    write_output,
     double*       relative_efficiency,
@@ -89,6 +89,7 @@ void AT_run_IGK_method(  const long  number_of_field_components,
         particle_no,
         fluence_cm2,
         material_no,
+        stopping_power_source_no,
         dose_Gy);
   }
 
@@ -112,7 +113,7 @@ void AT_run_IGK_method(  const long  number_of_field_components,
 
   /* TODO: Replace by explicit functions */
   for (i = 0; i < number_of_field_components; i++){
-	  double LET_MeV_cm2_g              = AT_Stopping_Power_MeV_cm2_g_single( stop_power_source, E_MeV_u[i], particle_no[i], material_no);	  
+	  double LET_MeV_cm2_g              = AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u[i], particle_no[i], material_no);
 	  double single_impact_fluence_cm2  = AT_single_impact_fluence_cm2_single(E_MeV_u[i], material_no, er_model);
 	  norm_fluence[i]                   =  fluence_cm2[i] / total_fluence_cm2;
 	  u_single                          =  fluence_cm2[i] / single_impact_fluence_cm2;
