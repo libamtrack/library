@@ -80,7 +80,8 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       rdd_model,
       rdd_parameters,
       er_model,
-      N2);
+      N2,
+      stopping_power_source_no);
 
   /* Get f1 parameters - containing the most
    * relevant information on the tracks of
@@ -321,7 +322,8 @@ void AT_run_CPPSS_method(  const long  number_of_field_components,
       rdd_model,
       rdd_parameters,
       er_model,
-      N2);
+      N2,
+      stopping_power_source_no);
 
   double* f1_parameters        = (double*)calloc(AT_SC_F1_PARAMETERS_SINGLE_LENGTH * number_of_field_components, sizeof(double));
 

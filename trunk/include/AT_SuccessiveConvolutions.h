@@ -49,6 +49,7 @@
  * @param[in]  rdd_parameter       parameters for chosen radial dose distribution (array of size 4)
  * @param[in]  er_model            index number for chosen electron-range model
  * @param[in]  N2                  number of bins per factor of two in local dose array
+ * @param[in]  stopping_power_source_no  TODO
  * @return number of bins to hold the f1 distribution
  */
 long AT_n_bins_for_single_impact_local_dose_distrib(
@@ -59,7 +60,8 @@ long AT_n_bins_for_single_impact_local_dose_distrib(
     const long   rdd_model,
     const double rdd_parameter[],
     const long   er_model,
-    const long   N2);
+    const long   N2,
+    const long   stopping_power_source_no);
 
 
 /**
