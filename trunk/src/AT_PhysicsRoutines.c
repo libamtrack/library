@@ -404,10 +404,11 @@ void AT_single_impact_dose_Gy( const long n,
 }
 
 double  AT_total_D_Gy( const long  number_of_field_components,
-    const double  E_MeV_u[],
+    const double E_MeV_u[],
     const long   particle_no[],
-    const double  fluence_cm2[],
-    const long   material_no)
+    const double fluence_cm2[],
+    const long   material_no,
+    const long   stopping_power_source_no)
 {
   double   total_dose_Gy    =  0.0;
   double*  single_doses_Gy  =  (double*)calloc(number_of_field_components, sizeof(double));
@@ -417,7 +418,7 @@ double  AT_total_D_Gy( const long  number_of_field_components,
       particle_no,
       fluence_cm2,
       material_no,
-      PSTAR,
+      stopping_power_source_no,
       single_doses_Gy);
 
   long i;
@@ -644,10 +645,11 @@ double AT_mean_number_of_tracks_contrib(    const long number_of_field_component
                 const long particle_no[],
                 const double fluence_cm2[],
                 const long material_no,
-                const long er_model)
+                const long er_model,
+                const long stopping_power_source_no)
 {
   double* norm_fluence    =  (double*)calloc(number_of_field_components, sizeof(double));
-  double total_D_Gy       =  AT_total_D_Gy( number_of_field_components, E_MeV_u, particle_no, fluence_cm2, material_no);
+  double total_D_Gy       =  AT_total_D_Gy( number_of_field_components, E_MeV_u, particle_no, fluence_cm2, material_no, stopping_power_source_no);
 
   AT_normalize( number_of_field_components, fluence_cm2, norm_fluence);
 
@@ -655,7 +657,7 @@ double AT_mean_number_of_tracks_contrib(    const long number_of_field_component
   long i;
   for (i = 0; i < number_of_field_components; i++){
     double single_impact_fluence_cm2 =  AT_single_impact_fluence_cm2_single(  E_MeV_u[i], material_no, er_model);
-    double LET_MeV_cm2_g             = AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u[i], particle_no[i], material_no);
+    double LET_MeV_cm2_g             = AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u[i], particle_no[i], material_no);
     u += norm_fluence[i] * AT_single_impact_dose_Gy_single(  LET_MeV_cm2_g, single_impact_fluence_cm2 );
   }
 
