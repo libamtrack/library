@@ -552,7 +552,6 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
     const long   rdd_model,
     const double rdd_parameters[],
     const long   er_model,
-    const long   stop_power_source,    
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
     const double sigma0_m2,
@@ -573,7 +572,7 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
 	    rdd_parameters,
 	    er_model,
 	    gamma_parameters,
-		stop_power_source,
+	    stopping_power_source_no,
 	    &inactivation_cross_section_m2);    /* here we use D0, m and a0 */
 
 	printf("Inactivation cross section = %g\n", inactivation_cross_section_m2);

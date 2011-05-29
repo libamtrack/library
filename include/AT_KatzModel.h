@@ -324,7 +324,6 @@ int AT_KatzModel_single_field_survival(
  * @param[in] rdd_model
  * @param[in] rdd_parameters (array of size 4)
  * @param[in] er_model
- * @param[in] stop_power_source             todo
  * @param[in] D0_characteristic_dose_Gy
  * @param[in] m_number_of_targets
  * @param[in] sigma0_m2
@@ -341,7 +340,6 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
     const long   rdd_model,
     const double rdd_parameters[],
     const long   er_model,
-    const long   stop_power_source,    
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
     const double sigma0_m2,
