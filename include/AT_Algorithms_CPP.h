@@ -125,6 +125,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
  * @param[in]  fluence_cm2_or_dose_Gy         fluences for the given particles, doses in Gy if negative (array of size number_of_field_components)
  * @param[in]  material_no         index number for detector material
  * @see          AT_DataMaterial.h for definition
+ * @param[in]  stopping_power_source_no         TODO
  * @param[in]  RDD_model           index number for chosen radial dose distribution
  * @param[in]  RDD_parameters      parameters for chosen radial dose distribution (array of size 4)
  * @see          AT_RDD.h for definition
@@ -155,6 +156,7 @@ void AT_run_CPPSS_method(  const long  number_of_field_components,
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
     const long    material_no,
+    const long    stopping_power_source_no,
     const long    RDD_model,
     const double  RDD_parameters[],
     const long    ER_model,
