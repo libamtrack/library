@@ -62,13 +62,14 @@ df1$r.m.check	<- numeric(nrow(df1))
 material.no <- c(1)
 E.MeV.u = c(100) 
 particle.no = c( 1001)
+source.no <- c(0) # PSTAR
 
 
 for( i in ER.model) {
     ii 			<- df1$ER.model == i
     for( j in RDD.model) {
         jj                  <- ((df1$RDD.model == j) & (df1$ER.model == i)) 
-        df1$D.Gy[jj]        <- AT.D.RDD.Gy(r.m = df1$r.m[jj], E.MeV.u, particle.no, material.no, rdd.model = j, rdd.parameter=RDD.parameters[[j]], er.model = i )[[1]]
+        df1$D.Gy[jj]        <- AT.D.RDD.Gy(r.m = df1$r.m[jj], E.MeV.u, particle.no, material.no, rdd.model = j, rdd.parameter=RDD.parameters[[j]], er.model = i, stopping.power.source.no = source.no )[[1]]
  		#df1$r.m.check[jj]    <- AT.r.RDD.m(D.Gy = df1$D.Gy[jj], E.MeV.u, particle.no, material.no, rdd.model = j, rdd.parameters=RDD.parameters[[j]], er.model = i )[[1]] 	
     }
 }

@@ -32,6 +32,7 @@ require(lattice)
 
 ####################### INACTIVATION PROBABILITY function test #########################################
 
+
 # radius definitions:
 r.m <- 10^seq (-10, -3, length.out=3)
 
@@ -142,15 +143,15 @@ for( i in ER.model) {
     jj          <- ((df1$RDD.model == j) & (df1$ER.model == i))
             for( k in D.Gy ) {
                 kk   <- ((df1$RDD.model == j) & (df1$ER.model == i) & (df1$D.Gy == k) )
-                fluence.cm2 <- AT.fluence.cm2.from.dose.Gy( E.MeV.u, D.Gy = df1$D.Gy[kk], particle.no, material.no)[[1]]                 
+                fluence.cm2 <- AT.fluence.cm2.from.dose.Gy( E.MeV.u, D.Gy = df1$D.Gy[kk], particle.no, material.no, SP.source)[[1]]                 
                 df1$survival[kk] <- AT.KatzModel.single.field.survival( fluence.cm2, E.MeV.u, particle.no, material.no,
                 rdd.model = j,
                 rdd.parameters = RDD.parameters[[j]],
                 er.model = i,
-                stop.power.source = SP.source,
                 D0.characteristic.dose.Gy = GR.parameters[[2]],
                 m.number.of.targets = GR.parameters[[4]],
-                sigma0.m2 = sigma0.m2)[[1]]
+                sigma0.m2 = sigma0.m2,
+                stopping.power.source.no = SP.source)[[1]]
             }
         }
 }
