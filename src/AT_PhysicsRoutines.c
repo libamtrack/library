@@ -390,11 +390,12 @@ void AT_single_impact_dose_Gy( const long n,
     const long    particle_no[],
     const long    material_no,
     const long    er_model,
+    const long    stopping_power_source_no,
     double        single_impact_dose_Gy[])
 {
   long i;
   for( i = 0 ; i < n ; i++ ){
-    single_impact_dose_Gy[i] = AT_single_impact_dose_Gy_single(       AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u[i],
+    single_impact_dose_Gy[i] = AT_single_impact_dose_Gy_single(       AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u[i],
                                                                                                 particle_no[i],
                                                                                                 material_no),
                                                                       AT_single_impact_fluence_cm2_single(      E_MeV_u[i],
@@ -517,11 +518,13 @@ double AT_dose_weighted_E_MeV_u( const long   number_of_field_components,
    return doseweighted_E_MeV_u;
 }
 
+
 double AT_fluence_weighted_LET_MeV_cm2_g( const long     number_of_field_components,
-    const double  E_MeV_u[],
+    const double E_MeV_u[],
     const long   particle_no[],
-    const double  fluence_cm2[],
-    const long   material_no)
+    const double fluence_cm2[],
+    const long   material_no,
+    const long   stopping_power_source_no)
  {
   long i;
 
@@ -532,7 +535,7 @@ double AT_fluence_weighted_LET_MeV_cm2_g( const long     number_of_field_compone
     total_fluence_cm2 += fluence_cm2[i];
   }
 
-  AT_Stopping_Power_MeV_cm2_g_multi( PSTAR, 
+  AT_Stopping_Power_MeV_cm2_g_multi( stopping_power_source_no,
 	  number_of_field_components,
       E_MeV_u,
       particle_no,
@@ -598,24 +601,26 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
    return doseweighted_LET_MeV_cm2_g;
  }
 
+
 double AT_stopping_power_ratio( const long     number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
     const long    material_no,
-    const long	  reference_material_no){
+    const long	  reference_material_no,
+    const long    stopping_power_source_no){
 
 	double* LET_MeV_cm2_g			= (double*)calloc(number_of_field_components, sizeof(double));
 	double* reference_LET_MeV_cm2_g	= (double*)calloc(number_of_field_components, sizeof(double));
 
-	AT_Stopping_Power_MeV_cm2_g_multi( PSTAR,
+	AT_Stopping_Power_MeV_cm2_g_multi( stopping_power_source_no,
 	    number_of_field_components,
 	    E_MeV_u,
 	    particle_no,
 	    material_no,
 	    LET_MeV_cm2_g);
 
-	AT_Stopping_Power_MeV_cm2_g_multi( PSTAR,
+	AT_Stopping_Power_MeV_cm2_g_multi( stopping_power_source_no,
 	    number_of_field_components,
 	    E_MeV_u,
 	    particle_no,

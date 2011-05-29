@@ -532,6 +532,7 @@ double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
  * @param[in]  particle_no                particle type
  * @param[in]  material_no                material
  * @param[in]  er_model                   electron-range model
+ * @param[in]  stopping_power_source_no   TODO
  * @param[out] single_impact_dose_Gy      resulting single impact doses
  */
 void AT_single_impact_dose_Gy( const long n,
@@ -539,6 +540,7 @@ void AT_single_impact_dose_Gy( const long n,
     const long    particle_no[],
     const long    material_no,
     const long    er_model,
+    const long    stopping_power_source_no,
     double        single_impact_dose_Gy[]);
 
 /**
@@ -629,13 +631,15 @@ double AT_dose_weighted_E_MeV_u( const long   number_of_field_components,
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
+ * @param[in]  stopping_power_source_no  TODO
  * @return     fluence-weighted LET
  */
 double AT_fluence_weighted_LET_MeV_cm2_g( const long     number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
     const double  fluence_cm2[],
-    const long    material_no);
+    const long    material_no,
+    const long    stopping_power_source_no);
 
 
 /**
@@ -674,6 +678,7 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[in]  reference_material_no  material index of reference material
+ * @param[in]  stopping_power_source_no  TODO
  * @return     stopping power ratio
  */
 double AT_stopping_power_ratio( const long     number_of_field_components,
@@ -681,7 +686,8 @@ double AT_stopping_power_ratio( const long     number_of_field_components,
     const long    particle_no[],
     const double  fluence_cm2[],
     const long    material_no,
-    const long	  reference_material_no);
+    const long	  reference_material_no,
+    const long    stopping_power_source_no);
 
 /**
  * Computes the number of track contributing to a representative point in a mixed field

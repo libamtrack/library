@@ -45,7 +45,8 @@ long  AT_n_bins_for_single_impact_local_dose_distrib(
 		const long    rdd_model,
 		const double  rdd_parameter[],
 		const long    er_model,
-		const long    N2)
+		const long    N2,
+		const long    stopping_power_source_no)
 {
 	/* get lowest and highest dose */
 	double d_max_Gy    =  0.0;
@@ -57,7 +58,7 @@ long  AT_n_bins_for_single_impact_local_dose_distrib(
 	for (i = 0; i < n; i++){
 
 		double max_electron_range_m = AT_max_electron_range_m( E_MeV_u[i], (int)material_no, (int)er_model);
-		double LET_MeV_cm2_g        = AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u[i], particle_no[i], material_no);
+		double LET_MeV_cm2_g        = AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u[i], particle_no[i], material_no);
 		double norm_constant_Gy     = AT_RDD_precalculated_constant_Gy(max_electron_range_m, LET_MeV_cm2_g, E_MeV_u[i], particle_no[i], material_no, rdd_model, rdd_parameter, er_model);
 		double current_d_min_Gy     = AT_RDD_d_min_Gy( E_MeV_u[i], particle_no[i], material_no, rdd_model, rdd_parameter, er_model, norm_constant_Gy);
 		double current_d_max_Gy     = AT_RDD_d_max_Gy( E_MeV_u[i], particle_no[i], material_no, rdd_model, rdd_parameter, er_model);
