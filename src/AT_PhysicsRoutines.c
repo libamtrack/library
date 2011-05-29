@@ -249,9 +249,10 @@ void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
 double AT_dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
     const long    particle_no,
     const double  fluence_cm2,
-    const long    material_no){
+    const long    material_no,
+    const long    stopping_power_source_no){
 
-	double LET_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no );
+	double LET_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no , E_MeV_u, particle_no, material_no );
 
 	// Multiply by fluence, convert from MeV/g to Gy
 	return LET_MeV_cm2_g * fluence_cm2 * MeV_g_to_J_kg;
@@ -268,7 +269,7 @@ void AT_dose_Gy_from_fluence_cm2(  const long  n,
   // Multiply by fluence, convert from MeV/g to Gy
   long  i;
   for (i = 0; i < n; i++){
-    dose_Gy[i] =  AT_dose_Gy_from_fluence_cm2_single(  E_MeV_u[i], particle_no[i], fluence_cm2[i], material_no );
+    dose_Gy[i] =  AT_dose_Gy_from_fluence_cm2_single(  E_MeV_u[i], particle_no[i], fluence_cm2[i], material_no, PSTAR );
   }
 
 }

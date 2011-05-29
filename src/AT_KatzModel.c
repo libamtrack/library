@@ -448,10 +448,11 @@ double AT_KatzModel_single_field_survival_from_inactivation_cross_section(
     const double inactivation_cross_section_m2,
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
-    const double sigma0_m2){
+    const double sigma0_m2,
+    const long   stopping_power_source_no){
 
 	/* some useful variables */
-	double dose_Gy = AT_dose_Gy_from_fluence_cm2_single( E_MeV_u, particle_no, fluence_cm2, material_no); /* fluence + LET -> dose */
+	double dose_Gy = AT_dose_Gy_from_fluence_cm2_single( E_MeV_u, particle_no, fluence_cm2, material_no, stopping_power_source_no); /* fluence + LET -> dose */
 
 	assert( sigma0_m2 > 0);
 
@@ -501,6 +502,7 @@ int AT_KatzModel_single_field_survival(
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
     const double sigma0_m2,
+    const long   stopping_power_source_no,
     double * survival){
 
 	assert( sigma0_m2 > 0);
@@ -534,7 +536,8 @@ int AT_KatzModel_single_field_survival(
 			inactivation_cross_section_m2,
 			D0_characteristic_dose_Gy,
 			m_number_of_targets,
-			sigma0_m2);
+			sigma0_m2,
+			stopping_power_source_no);
 
 	return EXIT_SUCCESS;
 }
@@ -553,6 +556,7 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
     const double sigma0_m2,
+    const long stopping_power_source_no,
     double * survival){
 
 	assert( sigma0_m2 > 0);
@@ -588,7 +592,8 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
 			inactivation_cross_section_m2,
 			D0_characteristic_dose_Gy,
 			m_number_of_targets,
-			sigma0_m2);
+			sigma0_m2,
+			stopping_power_source_no);
 	}
 
 	return EXIT_SUCCESS;
