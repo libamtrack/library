@@ -104,6 +104,7 @@ void  AT_single_impact_local_dose_distrib(
 		const long    N2,
 		const long    n_bins_f1,
 		const double  f1_parameters[],
+		const long    stopping_power_source_no,
 		double        f1_d_Gy[],
 		double        f1_dd_Gy[],
 		double        frequency_1_Gy_f1[])
@@ -125,7 +126,7 @@ void  AT_single_impact_local_dose_distrib(
 				particle_no,
 				dose_Gy,
 				material_no,
-				PSTAR,
+				stopping_power_source_no,
 				fluence_cm2);
 		free( dose_Gy );
 	}else{
