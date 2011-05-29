@@ -343,12 +343,14 @@ int AT_momentum_MeV_c_u_from_E_MeV_u( const long  n,
  * @see          AT_DataParticle.h for definition
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
+ * @param[in]  stopping_power_source_no  stopping power source index
  * @return     D_Gy         dose in Gy
  */
 double AT_dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
     const long    particle_no,
     const double  fluence_cm2,
-    const long    material_no);
+    const long    material_no,
+    const long    stopping_power_source_no);
 
 
 /**

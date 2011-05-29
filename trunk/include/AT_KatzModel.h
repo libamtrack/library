@@ -266,6 +266,7 @@ int AT_KatzModel_inactivation_cross_section_m2(
  * @param[in] D0_characteristic_dose_Gy
  * @param[in] m_number_of_targets
  * @param[in] sigma0_m2
+ * @param[in] stopping_power_source_no
  * @return TODO
  */
 double AT_KatzModel_single_field_survival_from_inactivation_cross_section(
@@ -276,7 +277,8 @@ double AT_KatzModel_single_field_survival_from_inactivation_cross_section(
     const double inactivation_cross_section_m2,
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
-    const double sigma0_m2);
+    const double sigma0_m2,
+    const long   stopping_power_source_no);
 
 
 /**
@@ -292,6 +294,7 @@ double AT_KatzModel_single_field_survival_from_inactivation_cross_section(
  * @param[in] D0_characteristic_dose_Gy
  * @param[in] m_number_of_targets
  * @param[in] sigma0_m2
+ * @param[in] stopping_power_source_no
  * @param[out] survival
  * @return status code
  */
@@ -307,6 +310,7 @@ int AT_KatzModel_single_field_survival(
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
     const double sigma0_m2,
+    const long   stopping_power_source_no,
     double*     survival);
 
 
@@ -324,6 +328,7 @@ int AT_KatzModel_single_field_survival(
  * @param[in] D0_characteristic_dose_Gy
  * @param[in] m_number_of_targets
  * @param[in] sigma0_m2
+ * @param[in] stopping_power_source_no
  * @param[out] survival (array of size number_of_items)
  * @return
  */
@@ -340,6 +345,7 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
     const double sigma0_m2,
+    const long   stopping_power_source_no,
     double* survival);
 
 /**
