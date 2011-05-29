@@ -248,6 +248,7 @@ void  AT_single_impact_local_dose_distrib(
 						rdd_model,
 						rdd_parameter,
 						er_model,
+						stopping_power_source_no,
 						&r_m_comp[1]);
 
 				if( inverse_RDD_status_code != 0 ){

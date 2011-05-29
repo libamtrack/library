@@ -189,6 +189,7 @@ int AT_D_RDD_Gy( const long  n,
  * @param[in]   rdd_model           Radial Dose Distribution model code number
  * @param[in]   rdd_parameter       Radial Dose Distribution model parameters vector (array of size 4)
  * @param[in]   er_model            delta electron range model code number
+ * @param[in]   stopping_power_source_no   TODO
  * @param[out]  r_RDD_m             distance [m] (array of size n)
  * @return status code
  */
@@ -200,6 +201,7 @@ int AT_r_RDD_m( const long  n,
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
+    const long    stopping_power_source_no,
     double        r_RDD_m[]);
 
 

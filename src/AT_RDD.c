@@ -615,11 +615,12 @@ int AT_r_RDD_m  ( const long  n,
     const long    rdd_model,
     const double  rdd_parameter[],
     const long    er_model,
+    const long    stopping_power_source_no,
     double        r_RDD_m[])
 {
   long     i;
 
-  const double LET_MeV_cm2_g              =  AT_Stopping_Power_MeV_cm2_g_single( PSTAR, E_MeV_u, particle_no, material_no);
+  const double LET_MeV_cm2_g              =  AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u, particle_no, material_no);
 
   const double max_electron_range_m       =  AT_max_electron_range_m(E_MeV_u, (int)material_no, (int)er_model);
 
@@ -629,7 +630,7 @@ int AT_r_RDD_m  ( const long  n,
 
   const double d_min_Gy                   =  AT_RDD_d_min_Gy(E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, precalculated_constant_Gy );
 
-  const double d_max_Gy                   =  AT_RDD_d_max_Gy(E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, PSTAR);
+  const double d_max_Gy                   =  AT_RDD_d_max_Gy(E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, stopping_power_source_no);
 
   if( rdd_model == RDD_Test){
     // Loop over all doses given
