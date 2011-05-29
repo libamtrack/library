@@ -277,6 +277,7 @@ void AT_run_GSM_method(  const long  number_of_field_components,
     const long     particle_no[],
     const double   fluence_cm2_or_dose_Gy[],
     const long     material_no,
+    const long     stopping_power_source_no,
     const long     rdd_model,
     const double   rdd_parameters[],
     const long     er_model,
@@ -326,7 +327,7 @@ void AT_run_GSM_method(  const long  number_of_field_components,
         particle_no,
         dose_Gy,
         material_no,
-        PSTAR,
+        stopping_power_source_no,
         fluence_cm2);
     free( dose_Gy );
   }else{

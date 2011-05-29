@@ -83,6 +83,7 @@ long AT_n_bins_for_single_impact_local_dose_distrib(
  * @param[in]  N2                    number of bins per factor of two in local dose array
  * @param[in]  f1_parameters         n field component characteristics (array of size 8) // TODO in R package should also work for 8*n, but is not working
  * @param[in]  n_bins_f1             number of bins holding the f1 distribution
+ * @param[in]  stopping_power_source_no     TODO
  * @param[out] f1_d_Gy               bin midpoints for f1 (array of size n_bins_f1)
  * @param[out] f1_dd_Gy              bin widths for f1 (array of size n_bins_f1)
  * @param[out] f1                    f1 values (array of size n_bins_f1)
@@ -99,6 +100,7 @@ void AT_single_impact_local_dose_distrib(
     const long   N2,
     const long   n_bins_f1,
     const double f1_parameters[],
+    const long   stopping_power_source_no,
     double       f1_d_Gy[],
     double       f1_dd_Gy[],
     double       f1[]);

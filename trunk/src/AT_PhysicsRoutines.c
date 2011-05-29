@@ -435,10 +435,11 @@ double  AT_total_D_Gy( const long  number_of_field_components,
 
 
 double AT_total_fluence_cm2( const long number_of_field_components,
-    const double   E_MeV_u[],
+    const double  E_MeV_u[],
     const long    particle_no[],
-    const double   D_Gy[],
-    const long    material_no)
+    const double  D_Gy[],
+    const long    material_no,
+    const long    stopping_power_source_no)
 {
 
   double*  single_fluences_cm2        =  (double*)calloc(number_of_field_components, sizeof(double));
@@ -448,7 +449,7 @@ double AT_total_fluence_cm2( const long number_of_field_components,
       particle_no,
       D_Gy,
       material_no,
-      PSTAR,
+      stopping_power_source_no,
       single_fluences_cm2);
 
   double  total_fluence_cm2 = 0.0;

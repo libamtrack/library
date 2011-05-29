@@ -577,6 +577,7 @@ double AT_total_D_Gy( const long  number_of_field_components,
  * @see AT_DataParticle.h for definition
  * @param[in]  D_Gy                                  doses of particles in the mixed particle field (array of size number_of_field_components)
  * @param[in]  material_no                           material index
+ * @param[in]  stopping_power_source_no              TODO
  * @see AT_DataMaterial.h for definition
  * @return     total_fluence_cm                      result
   */
@@ -584,7 +585,8 @@ double AT_total_fluence_cm2( const long number_of_field_components,
     const double   E_MeV_u[],
     const long     particle_no[],
     const double   D_Gy[],
-    const long     material_no);
+    const long     material_no,
+    const long     stopping_power_source_no);
 
 
 /**
