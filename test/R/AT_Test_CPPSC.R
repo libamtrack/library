@@ -43,11 +43,13 @@ ER.model               <- 4                                                    #
 gamma.model            <- 2                                                    # General hit/target
 gamma.parameters       <- c(1,10,1,1,0)                                        # Exp.-sat. (one-hit/one-target) with 10 Gy sat.-dose
 N2                     <- 10                                                   # 10 bins / factor of 2
+source.no              <- 0                                                    # PSTAR
 
 CPPSC.res              <- AT.run.CPPSC.method(        E.MeV.u                     = E.MeV.u,
 									particle.no                 = particle.no,
 									fluence.cm2.or.dose.Gy      = fluence.cm2.or.dose.Gy,
 									material.no                 = material.no,
+									stopping.power.source.no    = source.no,
 									rdd.model                   = RDD.model,
 									rdd.parameters              = RDD.parameters,
 									er.model                    = ER.model,

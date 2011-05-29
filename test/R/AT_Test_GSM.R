@@ -38,7 +38,8 @@ fluence.cm2.or.dose.Gy <- c( -1, -5, -4)  # in Gy
 
 factor <- 10^seq( -4, -2, length = 30)
 
-material.no <- 1
+material.no <- 1 # H20
+source.no   <- 0 # PSTAR
 
 # electron range models definition
 ER.model.names <- c("simple test",  "Butts & Katz' (linear)",  "Waligorski's (power-law wmax)",  "Geiss' (power-law E)", "Scholz' (power-law E)", "Edmund' (power-law wmax)","Tabata")
@@ -87,6 +88,7 @@ for( i in ER.model) {
                                     particle.no = particle.no,
                                     fluence.cm2.or.dose.Gy = current.fluence.cm2.or.dose.Gy,
                                     material.no = material.no,
+                                    stopping.power.source.no = source.no,
                                     rdd.model = j,
                                     rdd.parameters = RDD.parameters[[j]],
                                     er.model = i,

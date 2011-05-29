@@ -47,6 +47,7 @@ shrink.tails <- T				# cut insignificant tails
 shrink.tails.under <- 1e-30			# cut them in case contribution to first moment is lower than
 adjust.N2 <- T				# adjust bin width during convolution
 lethal.events.mode <- F				# use survival instead of activation
+stopping.power.source.no   <- 0    # PSTAR
 
 # Get histogram size for single-impact dose distribution
 res.get.f1.array.size	<-	AT.n.bins.for.single.impact.local.dose.distrib(E.MeV.u = E.MeV.u,
@@ -55,7 +56,8 @@ res.get.f1.array.size	<-	AT.n.bins.for.single.impact.local.dose.distrib(E.MeV.u 
 								rdd.model = RDD.model,
 								rdd.parameter = RDD.parameters,
 								er.model = ER.model,
-								N2 = N2)[[1]]
+								N2 = N2,
+								stopping.power.source.no = stopping.power.source.no)[[1]]
 								
 print(res.get.f1.array.size)
 
@@ -65,7 +67,8 @@ res.f1.parameters	<-	AT.RDD.f1.parameters.mixed.field(E.MeV.u = E.MeV.u,
 								material.no = material.no,
 								rdd.model = RDD.model,
 								rdd.parameter = RDD.parameters,
-								er.model = ER.model)[[1]]
+								er.model = ER.model,
+								stopping.power.source.no = stopping.power.source.no)[[1]]
 print(res.f1.parameters)
 
 # Get single-impact dose distribution
@@ -77,8 +80,9 @@ res.get.f1	<-	AT.single.impact.local.dose.distrib(	E.MeV.u = E.MeV.u,
 							rdd.parameter = RDD.parameters,
 							er.model = ER.model,
 							N2 = N2,
-							f1.parameters = res.f1.parameters,
-							n.bins.f1 = res.get.f1.array.size)
+							n.bins.f1 = res.get.f1.array.size,
+							f1.parameters = res.f1.parameters,							
+							stopping.power.source.no = stopping.power.source.no)
 
 print(res.get.f1)
 
@@ -90,7 +94,8 @@ res.u <- AT.mean.number.of.tracks.contrib(E.MeV.u = E.MeV.u,
 							particle.no = particle.no,
 							fluence.cm2 = fluence.cm2.or.dose.Gy,
 							material.no = material.no,
-							er.model = ER.model)
+							er.model = ER.model,
+							stopping.power.source.no = stopping.power.source.no)
 
 print(res.u)
 
