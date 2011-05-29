@@ -35,6 +35,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
     const long    particle_no[],
     const double  fluence_cm2_or_dose_Gy[],
     const long    material_no,
+    const long    stopping_power_source_no,
     const long    rdd_model,
     const double  rdd_parameters[],
     const long    er_model,
@@ -145,7 +146,8 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       particle_no,
       fluence_cm2,
       material_no,
-      er_model);
+      er_model,
+      stopping_power_source_no);
 
   free( fluence_cm2 );
 
@@ -391,7 +393,8 @@ void AT_run_CPPSS_method(  const long  number_of_field_components,
       particle_no,
       fluence_cm2,
       material_no,
-      er_model);
+      er_model,
+      stopping_power_source_no);
 
   free( fluence_cm2 );
   free( dose_Gy );
