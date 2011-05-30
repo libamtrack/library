@@ -66,6 +66,36 @@ double AT_ShieldHit_wrapper(const double 	E_MeV_u,
 	return StoppingPower_MeV_cm2_g;
 }
 
+double AT_ICRU_wrapper(const double 	E_MeV_u,
+		const long 	    particle_no,
+		const long 		material_no){
+	// TODO: Later - read-in data from table here
+	if(material_no != 1){		/* Water data only */
+		return 0.0;
+	}
+
+	long Z		= AT_Z_from_particle_no_single(particle_no);
+	if( Z > 18){				/* Data for H ... Ar */
+		return 0.0;
+	}
+
+	if (E_MeV_u < 0.025 || E_MeV_u > 1000){
+		return 0.0;
+	}
+
+	if (Z == 2 || E_MeV_u > 250){   // Data for He only until 250 MeV/u = 1000 MeV !
+		return 0.0;
+	}
+
+	double	StoppingPower_MeV_cm2_g = 0.0;
+	StoppingPower_MeV_cm2_g = AT_get_interpolated_y_from_input_table(
+			AT_stopping_power_ICRU_table.E_MeV_u_and_stopping_power_total_MeV_cm2_g[0],
+			AT_stopping_power_ICRU_table.E_MeV_u_and_stopping_power_total_MeV_cm2_g[Z],
+			AT_stopping_power_ICRU_table.number_of_data_points,
+			E_MeV_u);
+	return StoppingPower_MeV_cm2_g;
+}
+
 double _AT_Stopping_Power_get_data(const long stopping_power_source_no,
 		const long 	    particle_no,
 		const long 		material_no,
