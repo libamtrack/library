@@ -76,8 +76,8 @@ These functions handle the physics of proton and ion beams needed in libamtrack.
 Stopping-power routines:
 
 \tabular{ll}{
-\code{\link{AT.LET.keV.um}} \tab Unrestricted LET / Stopping power\cr
-\code{\link{AT.LET.MeV.cm2.g}} \tab Unrestricted LET per mass / mass stopping power\cr
+\code{\link{AT.Stopping.Power.keV.um}} \tab Unrestricted LET / Stopping power\cr
+\code{\link{AT.Stopping.Power.MeV.cm2.g}} \tab Unrestricted LET per mass / mass stopping power\cr
 \code{\link{AT.E.MeV.from.LET}} \tab Inverse routine: energy from LET (cave!)\cr
 \code{\link{AT.stopping.power.ratio}} \tab Computes stopping power ratios, also for mixed fields\cr
 
@@ -188,17 +188,20 @@ Package maintainer: Steffen Greilich \email{s.greilich@dkfz.de}
 
 ##############################################################################
 ############################ 1. LET ##########################################
-cat("Compute the LET (in MeV*cm2/g) of a 270 MeV/u carbon ion in Aluminum:\n")
+cat("Compute the LET (in MeV*cm2/g) of a 270 MeV/u carbon ion in Aluminum\n")
+cat("using the PSTAR stopping power data:\n")
 
-AT.LET.MeV.cm2.g( E.MeV.u     = 270,
+AT.Stopping.Power.MeV.cm2.g( E.MeV.u     = 270,
                   particle.no = AT.particle.no.from.particle.name("12C"),
-                  material.no = AT.material.no.from.material.name("Aluminum"))
+                  material.no = AT.material.no.from.material.name("Aluminum"),
+                  stopping.power.source.no             = 0)
                   
 cat("... and in water:\n")
 
-AT.LET.MeV.cm2.g( E.MeV.u     = 270,
+AT.Stopping.Power.MeV.cm2.g( E.MeV.u     = 270,
                   particle.no = AT.particle.no.from.particle.name("12C"),
-                  material.no = AT.material.no.from.material.name("Water, Liquid"))
+                  material.no = AT.material.no.from.material.name("Water, Liquid"),
+                  stopping.power.source.no             = 0)
 
 ########################################################################################
 ########################### 2. DOSE AROUND A TRACK #####################################
@@ -225,7 +228,8 @@ for (i in 1:nrow(df)){                                                          
                                          material.no      = df$material.no[i],
                                          rdd.model        = df$rdd.model[i],
                                          rdd.parameter    = df$rdd.parameter[i],
-                                         er.model         = df$er.model[i])[[1]]
+                                         er.model         = df$er.model[i],
+                                         stopping.power.source.no             = 0)[[1]]                           # use PSTAR data
 }
 
 xyplot( log10(D.Gy) ~ log10(r.m)|particle.name,                                     # Plot
@@ -249,5 +253,6 @@ AT.run.IGK.method( particle.no                          = 1001,                 
                    gamma.model                          = 2,                           # Use general target/hit model but here...
                    gamma.parameters                     = c(1,500,1,1,0),              # ...as exponential saturation with characteristic dose 500 Gy
                    saturation.cross.section.factor      = 1.4,                         # factor to take 'brush' around track into account
-                   write.output                         = TRUE)                        # write a log file
+                   write.output                         = TRUE,                        # write a log file
+                   stopping.power.source.no             = 0)                           # use PSTAR data
 }

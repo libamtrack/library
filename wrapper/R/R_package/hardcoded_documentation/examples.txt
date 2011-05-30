@@ -14,7 +14,8 @@ AT.run.GSM.method( particle.no                          = 1001,                 
                    write.output                         = TRUE,                        # write a log file
                    nX                                   = 10,                          # use a 10x10 grid
                    voxel.size.m                         = 5e-9,                        # with 5 nm voxel size
-                   lethal.events.mode                   = FALSE)                       # use independent subtargets
+                   lethal.events.mode                   = FALSE,                       # use independent subtargets
+                   stopping.power.source.no             = 0)                      
 ::AT.run.IGK.method::
 # Compute the relative efficiency of an Alanine detector in a mixed
 # carbon / proton field
@@ -27,9 +28,9 @@ AT.run.IGK.method( particle.no                          = 1001,                 
                    er.model                             = 2,                           # Butts&Katz parametrization of track radius
                    gamma.model                          = 2,                           # Use general target/hit model but here...
                    gamma.parameters                     = c(1,500,1,1,0),              # ...as exponential saturation with characteristic dose 500 Gy
-                   stop.power.source                    = 0,						   # Use PSTAR data
                    saturation.cross.section.factor      = 1.4,                         # factor to take 'brush' around track into account
-                   write.output                         = TRUE)                        # write a log file
+                   write.output                         = TRUE,                        # write a log file
+                   stopping.power.source.no             = 0)                      
 ::AT.run.CPPSC.method::
 # Compute the relative efficiency of an Alanine detector in a mixed
 # carbon / proton field
@@ -48,7 +49,8 @@ AT.run.CPPSC.method( particle.no                          = c(6012, 1001, 1001),
                      shrink.tails                         = TRUE,                        # cut tails of local dose distribution, if...
                      shrink.tails.under                   = 1e-30,                       # ... they contribute less then 1e-30 to first moment of histogram
                      adjust.N2                            = TRUE,                        # perform rebinning if local dose distribution becomes too narrow
-                     lethal.events.mode                   = FALSE)                       # use independent subtargets
+                     lethal.events.mode                   = FALSE,                       # use independent subtargets
+                     stopping.power.source.no             = 0)                      
 ::AT.beta.from.E::
 # Compute beta between 1 and 1000 MeV/u:
 AT.beta.from.E( E.MeV.u     = c(1,10,100,1000))
@@ -106,7 +108,8 @@ AT.D.RDD.Gy(    r.m              = 10^(-9:-4),
                 material.no      = 1,
                 rdd.model        = 4,
                 rdd.parameter    = c(5e-8, 1e-10),
-                er.model         = 2)
+                er.model         = 2,
+                stopping.power.source.no = 0)
 
 # Compare the Geiss parametrization of RDD for protons and Carbon ions at different energies:
 require(lattice)
@@ -130,7 +133,8 @@ for (i in 1:nrow(df)){                                                        # 
                                      material.no      = df$material.no[i],
                                      rdd.model        = df$rdd.model[i],
                                      rdd.parameter    = df$rdd.parameter[i],
-                                     er.model         = df$er.model[i])$D.RDD.Gy
+                                     er.model         = df$er.model[i],
+                                     stopping.power.source.no = 0)$D.RDD.Gy
 }
 
 xyplot( log10(D.Gy) ~ log10(r.m)|particle.name,                                # Plot
@@ -247,14 +251,16 @@ xyplot( log10(p.MeV.c) ~ log10(E.MeV),
 AT.dose.Gy.from.fluence.cm2( E.MeV.u      = c(10, 10, 10, 10),
                              fluence.cm2  = c(1e7, 1e7, 1e7, 1e7),
                              particle.no  = c(1001, 2003, 6012, 8016),
-                             material.no  = 7)
+                             material.no  = 7,
+                             stopping.power.source.no = 0)
 ::AT.dose.Gy.from.fluence.cm2::
 # Compute fluence of protons, He-3, C-12 and O-16
 # to get 1 Gy in water at 10 MeV/u
 AT.fluence.cm2.from.dose.Gy( E.MeV.u      = c(10, 10, 10, 10),
                              D.Gy         = c(1, 1, 1, 1),
                              particle.no  = c(1001, 2003, 6012, 8016),
-                             material.no  = 1)
+                             material.no  = 1,
+                             stopping.power.source.no = 0)
 ::AT.total.D.Gy::
 # Compute dose of monoenergtic high energy
 # and a mixed (99/1) field of high and low 
@@ -262,11 +268,13 @@ AT.fluence.cm2.from.dose.Gy( E.MeV.u      = c(10, 10, 10, 10),
 AT.total.D.Gy( E.MeV.u     = 100,
                particle.no = 1001, 
                fluence.cm2 = 100e8, 
-               material.no = 1)
+               material.no = 1,
+               stopping.power.source.no = 0)
 AT.total.D.Gy( E.MeV.u     = c(100, 5),
                particle.no = c(1001, 1001), 
                fluence.cm2 = c(99e8, 1e8), 
-               material.no = 1)
+               material.no = 1,
+               stopping.power.source.no = 0)
 ::AT.total.fluence.cm2::
 # Compute total fluence in a 
 # and a mixed field of
@@ -275,7 +283,8 @@ AT.total.D.Gy( E.MeV.u     = c(100, 5),
 AT.total.fluence.cm2( E.MeV.u     = c(100, 5),
                       particle.no = c(1001, 1001), 
                       D.Gy        = c(1, 1), 
-                      material.no = 1)
+                      material.no = 1,
+                      stopping.power.source.no = 0)
 ::AT.max.E.transfer.MeV::
 # Plot maximum energy transferred in a collision in the range from 1 to 1000 MeV
 # (this is independent of the ion type!) and compare the classical with
@@ -313,11 +322,11 @@ plot(plot2, split = c(2, 1, 2, 1), newpage = FALSE)
 ::AT.get.material.data::
 # Get material data for water found in libamtrack
 AT.get.material.data( material.no = AT.material.no.from.material.name( "Water, Liquid"))
-::AT.LET.MeV.cm2.g::
+#::AT.LET.MeV.cm2.g::
 # Compute the LET (in MeV*cm2/g) of a 270 MeV/u carbon ion in Aluminum:
-AT.LET.MeV.cm2.g( E.MeV.u     = 270,
-                  particle.no = 6012,
-                  material.no = 3)
+#AT.LET.MeV.cm2.g( E.MeV.u     = 270,
+#                  particle.no = 6012,
+#                  material.no = 3)
 ::AT.E.MeV.from.LET::
 # At which kinetic energy do proton and carbon ions have
 # the same LET in water (e.g. 15 keV/um)?
@@ -341,7 +350,8 @@ for (i in 1:nrow(df)){
                                                                      particle.no           = df$particle.no[i],
                                                                      fluence.cm2           = 1,                 # does not have any meaning here as  monoenergetic beams are assumed
                                                                      material.no           = df$material.no[i],
-                                                                     reference.material.no = material.no.water)
+                                                                     reference.material.no = material.no.water,
+                                                                     stopping.power.source.no = 0)
 }
 
 xyplot( stopping.power.ratio ~ log10(particle.energy.MeV.u)|particle.name,
@@ -487,22 +497,26 @@ xyplot( LET.ratio ~ log10(E.MeV.u),
 AT.fluence.weighted.LET.MeV.cm2.g( E.MeV.u       = c(100, 5),
                                    particle.no   = c(1001, 1001),
                                    fluence.cm2   = c(99e8, 1e8), 
-                                   material.no   = 1)              # water
+                                   material.no   = 1,                   # water
+                                   stopping.power.source.no = 0)              
 AT.dose.weighted.LET.MeV.cm2.g( E.MeV.u       = c(100, 5),
                                 particle.no   = c(1001, 1001),
                                   fluence.cm2   = c(99e8, 1e8), 
-                                material.no   = 1)              
+                                material.no   = 1,                   # water
+                                   stopping.power.source.no = 0)              
 ::AT.dose.weighted.LET.MeV.cm2.g::
 # fluence- and dose-weighted LET for a simple mixed field
 # of high and low (99/1) energy protons
 AT.fluence.weighted.LET.MeV.cm2.g( E.MeV.u       = c(100, 5),
                                    particle.no   = c(1001, 1001),
                                    fluence.cm2   = c(99e8, 1e8), 
-                                   material.no   = 1)              # water
+                                   material.no   = 1,                   # water
+                                   stopping.power.source.no = 0)           
 AT.dose.weighted.LET.MeV.cm2.g( E.MeV.u       = c(100, 5),
                                 particle.no   = c(1001, 1001),
                                   fluence.cm2   = c(99e8, 1e8), 
-                                material.no   = 1)     
+                                material.no   = 1,                   # water
+                                   stopping.power.source.no = 0)     
 ::AT.fluence.weighted.E.MeV.u::
 # fluence- and dose-weighted mean energy for a simple mixed field
 # of high and low (99/1) energy protons
@@ -511,7 +525,8 @@ AT.fluence.weighted.E.MeV.u( E.MeV.u       = c(100, 1),
 AT.dose.weighted.E.MeV.u( E.MeV.u       = c(100, 1),
                           particle.no   = c(1001, 1001),
                           fluence.cm2   = c(99e8, 1e8), 
-                          material.no   = 1)    
+                          material.no   = 1,                   # water
+                                   stopping.power.source.no = 0)    
 ::AT.dose.weighted.E.MeV.u::
 # fluence- and dose-weighted mean energy for a simple mixed field
 # of high and low (99/1) energy protons
@@ -520,7 +535,8 @@ AT.fluence.weighted.E.MeV.u( E.MeV.u       = c(100, 1),
 AT.dose.weighted.E.MeV.u( E.MeV.u       = c(100, 1),
                           particle.no   = c(1001, 1001),
                           fluence.cm2   = c(99e8, 1e8), 
-                          material.no   = 1)   
+                          material.no   = 1,                   # water
+                                   stopping.power.source.no = 0)   
 ::AT.beam.par.physical.to.technical::
 # Technical parameters for a double Gaussian beam
 # of Carbon ions at 270 MeV/u in water with 
@@ -528,7 +544,8 @@ AT.dose.weighted.E.MeV.u( E.MeV.u       = c(100, 1),
 AT.beam.par.physical.to.technical(  fluence.cm2 = AT.fluence.cm2.from.dose.Gy( E.MeV.u      = 270, 
                                                                                D.Gy         = 1.0, 
                                                                                particle.no  = AT.particle.no.from.particle.name("12C"), 
-                                                                               material.no  = AT.material.no.from.material.name("Water, Liquid")), 
+                                                                               material.no  = AT.material.no.from.material.name("Water, Liquid"),
+                                                                               stopping.power.source.no = 0), 
                                     sigma.cm    = 0.5)
 ::AT.beam.par.technical.to.physical::
 # Get peak dose of a 142.66 MeV protons in Alox
@@ -538,7 +555,8 @@ peak.fluence.cm2 <- AT.beam.par.technical.to.physical(  N        = 3.2e8,
 AT.dose.Gy.from.fluence.cm2( E.MeV.u     = 142.66,
                              particle.no = AT.particle.no.from.particle.name("1H"),
                              material.no = AT.material.no.from.material.name("Aluminum Oxide"),
-                             fluence.cm2 = peak.fluence.cm2)
+                             fluence.cm2 = peak.fluence.cm2,
+                             stopping.power.source.no = 0)
 ::AT.effective.charge.from.E.MeV.u::
 # Charge pick-up of several nuclids depending on ion energy
 require(lattice)

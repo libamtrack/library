@@ -1,6 +1,6 @@
 .First.lib <- function(lib, pkg){
  library.dynam("libamtrack", pkg, lib)
- cat("This is libamtrack 0.5.1 'Blue Wombat' (devel, r973, 2011-05-26).\nType '?libamtrack' for help.\n")
+ cat("This is libamtrack 0.5.1 'Blue Wombat' (devel, r988, 2011-05-30).\nType '?libamtrack' for help.\n")
 }
 
 .Last.lib <- function(libpath){
