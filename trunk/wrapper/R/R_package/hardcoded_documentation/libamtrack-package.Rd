@@ -16,7 +16,7 @@ Please note that libamtrack is still under heavy development and so is the R int
 \details{
 \tabular{ll}{
 Package: \tab libamtrack\cr
-Version: \tab 0.5.0 (Black Wombat)\cr
+Version: \tab 0.5.1 (Blue Wombat)\cr
 Date: \tab 2010-11-02\cr
 Depends: \tab R (>= 2.2.0)\cr
 License: \tab GPL (version 3 or later)
