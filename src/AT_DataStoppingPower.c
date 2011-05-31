@@ -58,6 +58,7 @@ double AT_ShieldHit_wrapper(const double 	E_MeV_u,
 	}
 
 	double	StoppingPower_MeV_cm2_g = 0.0;
+
 	StoppingPower_MeV_cm2_g = AT_get_interpolated_y_from_input_table(
 			AT_stopping_power_ShieldHit_table.E_MeV_u_and_stopping_power_total_MeV_cm2_g[0],
 			AT_stopping_power_ShieldHit_table.E_MeV_u_and_stopping_power_total_MeV_cm2_g[Z],
@@ -83,17 +84,17 @@ double AT_ICRU_wrapper(const double 	E_MeV_u,
 		return 0.0;
 	}
 
-	if (Z == 2 || E_MeV_u > 250){   // Data for He only until 250 MeV/u = 1000 MeV !
+	if (Z == 2 && E_MeV_u > 250){   // Data for He only until 250 MeV/u = 1000 MeV !
 		return 0.0;
 	}
 
-	double	StoppingPower_MeV_cm2_g = 0.0;
-	StoppingPower_MeV_cm2_g = AT_get_interpolated_y_from_input_table(
+	double	StoppingPower_MeV_cm2_mg = 0.0;
+	StoppingPower_MeV_cm2_mg = AT_get_interpolated_y_from_input_table(
 			AT_stopping_power_ICRU_table.E_MeV_u_and_stopping_power_total_MeV_cm2_g[0],
 			AT_stopping_power_ICRU_table.E_MeV_u_and_stopping_power_total_MeV_cm2_g[Z],
 			AT_stopping_power_ICRU_table.number_of_data_points,
 			E_MeV_u);
-	return StoppingPower_MeV_cm2_g;
+	return StoppingPower_MeV_cm2_mg * 1000;		// ICRU (73) gives stopping power in MeV*cm2/mg !
 }
 
 double _AT_Stopping_Power_get_data(const long stopping_power_source_no,
