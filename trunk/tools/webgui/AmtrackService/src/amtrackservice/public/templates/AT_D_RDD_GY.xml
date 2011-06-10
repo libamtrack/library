@@ -59,7 +59,7 @@
 			</entry>
 			<description>particle[br]Default value is set to Hydrogen</description>
 			<preset>
-				<item value="1001" />
+				<item value="6012" />
 			</preset>
 			<data x="particle_no" />
 		</element>
@@ -80,6 +80,19 @@
 			</preset>
 			<data x="material_no" />
 		</element>	
+		
+		<element type="combo" label="source" datatype="long">
+            <description>data source</description>
+            <entry>
+                <item key="PSTAR tables" value="0" />
+                <item key="Bethe formula" value="1" />
+                <item key="SHIELDHit code" value="2" />
+            </entry>
+            <preset>
+                <item value="0" />
+            </preset>
+            <data x="source_no" />
+        </element>  
 		
 		<element type="combo" label="radial-dose model" datatype="long">
 			<description>Radial Dose Distribution model</description>
@@ -117,7 +130,7 @@
 	</input>
 
 	<output>
-		<element type="plot" label="Radial Dose Distribution" datatype="double">
+		<element type="plot" label="Radial Dose Distribution" datatype="double" append="true">
 			<description>Radial Dose Distribution</description>
 			<data x= "r" y="RDD"/>
 			<axis x="log" y="log" labelx="distance [m]" labely="RDD [Gy]"/>
