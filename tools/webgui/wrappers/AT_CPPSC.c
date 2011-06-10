@@ -51,6 +51,7 @@ int main(int argc, char *argv[]) {
 	long er_model = ER_Geiss;
 	long gamma_model = GR_LinQuad;
 	double gamma_parameters[GR_MAX_NUMBER_OF_PARAMETERS];
+	long source_no = PSTAR;
 
 	double fluence_cm2_or_dose_Gy_single;
 
@@ -98,6 +99,11 @@ int main(int argc, char *argv[]) {
 			char* token = strtok(NULL, ":");
 			gamma_model = atol(token);
 		}
+		if (strstr(Text, "source_no:")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			source_no = atol(token);
+		}
 	}
 
 	int i;
@@ -136,7 +142,7 @@ int main(int argc, char *argv[]) {
 	    &particle_no_single,
 	    &fluence_cm2_or_dose_Gy_single,
 	    material_no,
-	    PSTAR,
+	    source_no,
 	    rdd_model,
 	    rdd_parameters,
 	    er_model,
@@ -171,7 +177,7 @@ int main(int argc, char *argv[]) {
 			rdd_parameters,
 			er_model,
 			N2,
-			PSTAR);
+			source_no);
 
 	/* Get f1 parameters - containing the most
 	 * relevant information on the tracks of
@@ -185,7 +191,7 @@ int main(int argc, char *argv[]) {
 			rdd_model,
 			rdd_parameters,
 			er_model,
-			PSTAR,
+			source_no,
 			f1_parameters
 	);
 
@@ -204,7 +210,7 @@ int main(int argc, char *argv[]) {
 			N2,
 			n_bins_f1,
 			f1_parameters,
-			PSTAR,
+			source_no,
 			f1_d_Gy,
 			f1_dd_Gy,
 			f1);
@@ -230,7 +236,7 @@ int main(int argc, char *argv[]) {
 			&fluence_cm2_or_dose_Gy_single,
 			material_no,
 			er_model,
-			PSTAR);
+			source_no);
 
 	/* Get array size for low fluence local dose
 	 * distribution for later memory allocation */

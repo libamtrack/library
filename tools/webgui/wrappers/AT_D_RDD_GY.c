@@ -47,6 +47,7 @@ int main(int argc, char *argv[]) {
 	long rdd_model = RDD_Geiss;
 	long er_model = ER_Geiss;
 	double E_MeV_u = 50.;
+	long source_no = PSTAR;
 
 	double r_start_m = 1e-10;
 	double r_stop_m = 1e-7;
@@ -107,6 +108,11 @@ int main(int argc, char *argv[]) {
 			char* token = strtok(NULL, ":");
 			er_model = atol(token);
 		}
+		if (strstr(Text, "source_no:")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			source_no = atol(token);
+		}
 	}
 
 	double * r_m    = (double*)calloc(n_points, sizeof(double));
@@ -152,7 +158,7 @@ int main(int argc, char *argv[]) {
 			rdd_model,
 			rdd_parameters,
 			er_model,
-			PSTAR,
+			source_no,
 			RDD_GY);
 
 	if( status != EXIT_SUCCESS){

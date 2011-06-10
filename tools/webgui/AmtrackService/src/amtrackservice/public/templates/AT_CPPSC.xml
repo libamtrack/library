@@ -53,7 +53,18 @@
             </preset>
             <data x="material_no" />
         </element>      
-        
+        <element type="combo" label="source" datatype="long">
+            <description>data source</description>
+            <entry>
+                <item key="PSTAR tables" value="0" />
+                <item key="Bethe formula" value="1" />
+                <item key="SHIELDHit code" value="2" />
+            </entry>
+            <preset>
+                <item value="0" />
+            </preset>
+            <data x="source_no" />
+        </element>  
         <element type="combo" label="rdd_model" datatype="long">
             <description>Radial Dose Distribution model</description>
             <entry>
