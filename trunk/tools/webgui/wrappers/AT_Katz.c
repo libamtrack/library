@@ -175,11 +175,10 @@ int main(int argc, char *argv[]) {
 			rdd_model,
 			rdd_parameters,
 			er_model,
-			source_no,
 			D0_Gy,
 			m,
 			sigma0_m2,
-			PSTAR,
+			source_no,
 			survival);
 
 	free(fluence_cm2);
