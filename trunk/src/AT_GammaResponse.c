@@ -130,6 +130,8 @@ void AT_gamma_response( const long  number_of_doses,
 			  if(c == 1){                    // in case of c = 1 use simplified, faster formula
 				  tmp      =  1.0 - exp(-1.0 * d_Gy[i] / D1);
 			  }else{                      // for c > 1 use incomplete gamma function
+				  assert( c > 0 );
+				  assert( d_Gy[i] >= 0 );
 				  tmp      =  gsl_sf_gamma_inc_P(c, d_Gy[i] / D1);
 			  }
 
