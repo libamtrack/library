@@ -4,12 +4,12 @@
         [b]CPPSC model calculations[/b]
     </description>
     <input>
-        <element type="field" label="fluence [1/cm2]" datatype="double">
-            <description>fluence [1/cm2]</description>
+        <element type="field" label="dose [Gy]" datatype="double">
+            <description>dose [Gy]</description>
             <preset>
-                <item value="1e8" />
+                <item value="10" />
             </preset>
-            <data x="fluence_cm2" />
+            <data x="dose_Gy" />
         </element>   
         <element type="field" label="ion kinetic energy [MeV/amu]" datatype="double">
             <description>E [MeV/amu]</description>
@@ -49,7 +49,7 @@
                 <item key="Air" value="7" />
             </entry>
             <preset>
-                <item value="4" />
+                <item value="1" />
             </preset>
             <data x="material_no" />
         </element>      
@@ -94,7 +94,7 @@
                 <item key="Tabata" value="7" />
             </entry>
             <preset>
-                <item value="7" />
+                <item value="4" />
             </preset>
             <data x="er_model" />
         </element>
@@ -110,7 +110,7 @@
                 <item key="Geiss" value="6" />
             </entry>
             <preset>
-                <item value="5" />
+                <item value="2" />
             </preset>
             <data x="gr_model" />
         </element>
@@ -125,11 +125,6 @@
                 <item value="1.0" />
             </preset>
         </element>  
-        <element type="plot" label="f1" datatype="double">
-            <description>f1 histogram</description>
-            <data x="f1_d_Gy" y="f1" />
-            <axis x="log" y="log" labelx="X" labely="Y"/>
-        </element>
         <element type="plot" label="f" datatype="double">
             <description>f histogram</description>
             <data x="fdd" y="f" />

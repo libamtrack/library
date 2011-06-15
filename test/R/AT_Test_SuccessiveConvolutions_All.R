@@ -23,7 +23,7 @@
 rm(list = ls())
 
 # Build latest version of libamtrack and load for direct access
-#recompile <- FALSE
+recompile <- TRUE
 source("AT_Test_PreRun.R")
 
 library(lattice)
@@ -33,14 +33,17 @@ library(lattice)
 
 E.MeV.u <- 50
 particle.no <- 6012
-fluence.cm2.or.dose.Gy <- 1e8
+dose.Gy <- 10
+fluence.cm2.or.dose.Gy <- -dose.Gy
 material.no <- 1				# Liquid water
 RDD.model <- 3				# Geiss RDD
 RDD.parameters <- 5e-8			# a0 = 50 nm
 ER.model <- 3				# Geiss ER
-gamma.model <- 5				# General hit-target
-gamma.parameters <- c(0.2,0.02,10,0,0)	# One single-hit-single-target (exp-sat) component, characteristic dose 10 Gy
-N2 <- 20				# 20 bins per factor 2 in histograms
+#gamma.model <- 5				# General hit-target
+#gamma.parameters <- c(0.2,0.02,10,0,0)	# One single-hit-single-target (exp-sat) component, characteristic dose 10 Gy
+gamma.model            <- 2                                                    # General hit/target
+gamma.parameters       <- c(1,10,1,1,0)                                        # Exp.-sat. (one-hit/one-target) with 10 Gy sat.-dose
+N2 <- 10				# 20 bins per factor 2 in histograms
 fluence.factor <- 1				# use fluence as given
 write.output <- F				# no log file
 shrink.tails <- T				# cut insignificant tails
@@ -48,6 +51,17 @@ shrink.tails.under <- 1e-30			# cut them in case contribution to first moment is
 adjust.N2 <- T				# adjust bin width during convolution
 lethal.events.mode <- F				# use survival instead of activation
 stopping.power.source.no   <- 0    # PSTAR
+
+print(dose.Gy)
+
+fluence.cm2 <- AT.fluence.cm2.from.dose.Gy(
+			E.MeV.u,
+			particle.no,
+			dose.Gy,
+			material.no,
+			stopping.power.source.no)
+
+print(fluence.cm2)
 
 # Get histogram size for single-impact dose distribution
 res.get.f1.array.size	<-	AT.n.bins.for.single.impact.local.dose.distrib(E.MeV.u = E.MeV.u,
@@ -92,7 +106,7 @@ p1 <- plot(log10(res.get.f1$f1)~log10(res.get.f1$f1.d.Gy))
 # Get mean impact number u
 res.u <- AT.mean.number.of.tracks.contrib(E.MeV.u = E.MeV.u,
 							particle.no = particle.no,
-							fluence.cm2 = fluence.cm2.or.dose.Gy,
+							fluence.cm2 = fluence.cm2,
 							material.no = material.no,
 							er.model = ER.model,
 							stopping.power.source.no = stopping.power.source.no)
@@ -131,10 +145,10 @@ res.SC	<-	AT.SuccessiveConvolutions(	final.mean.number.of.tracks.contrib = res.u
 									shrink.tails.under = shrink.tails.under,
 									adjust.N2 = adjust.N2)
 
-print(res.SC$N2)
-print(res.SC$n.bins.f.used)
-print(res.SC$f0)
-print(res.SC$d)
+#print(res.SC$N2)
+#print(res.SC$n.bins.f.used)
+#print(res.SC$f0)
+#print(res.SC$d)
 
 p2 <- xyplot(log10(res.SC$f)~log10(res.SC$f.d.Gy))
 
