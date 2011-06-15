@@ -36,7 +36,7 @@ fi
 rm package/src/*.h
 rm package/src/*.c
 cd package.Rcheck
-tar -zcf libamtrack_0.5.0.tar.gz libamtrack/ # packaging of real package 
-mv libamtrack_0.5.0.tar.gz ../
+tar -zcf libamtrack_0.5.1.tar.gz libamtrack/ # packaging of real package 
+mv libamtrack_0.5.1.tar.gz ../
 rm -rf package.Rcheck
 cd ../../..
