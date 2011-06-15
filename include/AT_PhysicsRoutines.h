@@ -396,9 +396,9 @@ double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
  * Returns fluence in 1/cm2 for each given particle
  * @param[in]  n            number of particle types in the mixed particle field
  * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
- * @param[in]  D_Gy         dose / Gy for each particle type (array of size n)
  * @param[in]  particle_no  type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
+ * @param[in]  D_Gy         dose / Gy for each particle type (array of size n)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[in]  stopping_power_source_no  TODO
