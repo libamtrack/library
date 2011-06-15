@@ -173,7 +173,8 @@ double AT_Stopping_Power_MeV_cm2_g_single( const long stopping_power_source_no, 
 		Stopping_Power_MeV_cm2_g = AT_Stopping_Power_data_interpolation(stopping_power_source_no, E_MeV_u, particle_no, material_no);
 	}
 
-	if( particle_no != PARTICLE_PROTON_NUMBER ){
+	// TODO: Move the following Z_eff scaling into separate PSTAR wrapper
+	if( particle_no != PARTICLE_PROTON_NUMBER & (stopping_power_source_no == PSTAR)){
 		double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
 		double Zeff_proton =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u, PARTICLE_PROTON_NUMBER);
 		Stopping_Power_MeV_cm2_g *= gsl_pow_2(Zeff_ion / Zeff_proton);
