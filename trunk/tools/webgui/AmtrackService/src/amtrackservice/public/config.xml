@@ -7,4 +7,5 @@
 	<template name="particle energy vs gamma" file="AT_E_from_gamma.xml" group="Basic Kinematics"/>
 	<template name="particle momentum vs energy" file="AT_momentum_from_E.xml" group="Basic Kinematics"/>
 	<template name="effective charge" file="AT_effective_charge.xml" group="Basic Kinematics"/>
+	<template name="cppsc model" file="AT_CPPSC.xml" group="Track Structure"/>
 </config>

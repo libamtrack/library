@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 	double gamma_parameters[GR_MAX_NUMBER_OF_PARAMETERS];
 	long source_no = PSTAR;
 
-	double fluence_cm2_or_dose_Gy_single;
+	double dose_Gy_single = 10.0;
 
 	FILE *file;
 	fflush(stdin);
@@ -69,10 +69,10 @@ int main(int argc, char *argv[]) {
 			char* token = strtok(NULL, ":");
 			E_MeV_u_single = atof(token);
 		}
-		if (strstr(Text, "fluence_cm2:")) {
+		if (strstr(Text, "dose_Gy:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
-			fluence_cm2_or_dose_Gy_single = atof(token);
+			dose_Gy_single = atof(token);
 		}
 		if (strstr(Text, "material_no:")) {
 			strtok(Text, ":");
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
 
 	long number_of_field_components = 1;
 	double fluence_factor = 1.0;
-	long N2 = 20;
+	long N2 = 10;
 	const bool    write_output = false;
 	const bool    shrink_tails = true;
 	const double  shrink_tails_under = 1e-30;
@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
 	double       mean_number_of_tracks_contrib;
 	double       start_number_of_tracks_contrib;
 	long         n_convolutions;
-	double		  lower_Jensen_bound;
+	double		 lower_Jensen_bound;
 	double       upper_Jensen_bound;
 
 	int rdd_index = AT_RDD_index_from_RDD_number(rdd_model);
@@ -136,6 +136,8 @@ int main(int argc, char *argv[]) {
 	for( i = 0; i < GR_MAX_NUMBER_OF_PARAMETERS; i++){
 		gamma_parameters[i] = AT_GR_Data.parameter_default[gr_index][i];
 	}
+
+	double fluence_cm2_or_dose_Gy_single = -dose_Gy_single;
 
 	AT_run_CPPSC_method(  number_of_field_components,
 	    &E_MeV_u_single,
@@ -230,10 +232,17 @@ int main(int argc, char *argv[]) {
 	/* Compute the mean number of tracks that
 	 * deposit dose in a representative point
 	 * of the detector/cell */
+
+	double fluence_cm2 = AT_fluence_cm2_from_dose_Gy_single(
+			E_MeV_u_single,
+			particle_no_single,
+			dose_Gy_single,
+			material_no,
+			source_no);
 	mean_number_of_tracks_contrib  =       AT_mean_number_of_tracks_contrib(     number_of_field_components,
 			&E_MeV_u_single,
 			&particle_no_single,
-			&fluence_cm2_or_dose_Gy_single,
+			&fluence_cm2,
 			material_no,
 			er_model,
 			source_no);
@@ -296,8 +305,8 @@ int main(int argc, char *argv[]) {
 
 	fprintf(file , "fdd:");
 	for (i = 0; i < n_bins_f; i++) {
-		if( fdd[i] > 0. )
-			fprintf(file, " %g", fdd[i]);
+		if( f_d_Gy[i] > 0. )
+			fprintf(file, " %g", f_d_Gy[i]);
 	}
 	fprintf(file, "\n");
 	fprintf(file , "f:");

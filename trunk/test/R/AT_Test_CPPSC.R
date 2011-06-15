@@ -25,6 +25,7 @@
 rm( list = ls() )
 
 # Build latest version of libamtrack and load for direct access
+recompile <- FALSE
 source("AT_Test_PreRun.R")
 
 require(lattice)
@@ -33,9 +34,9 @@ require(lattice)
 
 # Mixed field of 3 particles:
 
-E.MeV.u                <- c( 1, 10, 100)
-particle.no            <- c( 1001, 6012, 1001)
-fluence.cm2.or.dose.Gy <- c( -1, -5, -4)                                       # in Gy
+E.MeV.u                <- c( 50)
+particle.no            <- c( 6012)
+fluence.cm2.or.dose.Gy <- c( -10 )                                       # in Gy
 material.no            <- 1                                                    # Water, Liquid
 RDD.model              <- 3                                                    # Geiss
 RDD.parameters         <- 5e-8                                                 # a0
