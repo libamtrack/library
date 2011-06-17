@@ -211,10 +211,16 @@ public class Calculation {
 			final String helpText = widget.getDescription().toString();
 			helpButton.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-			          Window.confirm(helpText);
+					DecoratedPopupPanel helpPopUp = new DecoratedPopupPanel();
+					helpPopUp.setGlassEnabled(true);
+					helpPopUp.setAnimationEnabled(true);
+					helpPopUp.setAutoHideEnabled(true);
+					helpPopUp.setWidget(new HTML("<H2><B>Click outside this window to displace it</B></H2><BR>" + helpText));
+					helpPopUp.center();
+					helpPopUp.show();
 				}
 			});
-			//desc.add(helpButton);			
+			desc.add(helpButton);			
 			input.setWidget(inputRow, 0, desc);
 			input.setWidget(inputRow, 1, widget.getWidget());
 			
