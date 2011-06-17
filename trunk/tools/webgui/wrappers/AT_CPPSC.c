@@ -49,7 +49,10 @@ int main(int argc, char *argv[]) {
 	long rdd_model = RDD_Geiss;
 	double rdd_parameters[RDD_MAX_NUMBER_OF_PARAMETERS];
 	long er_model = ER_Geiss;
-	long gamma_model = GR_LinQuad;
+	long gamma_model = GR_GeneralTarget;
+	double D0_Gy = 10.;
+	double m = 1.;
+	double c = 1.;
 	double gamma_parameters[GR_MAX_NUMBER_OF_PARAMETERS];
 	long source_no = PSTAR;
 
@@ -94,10 +97,20 @@ int main(int argc, char *argv[]) {
 			char* token = strtok(NULL, ":");
 			er_model = atol(token);
 		}
-		if (strstr(Text, "gr_model:")) {
+		if (strstr(Text, "D0_Gy:")) {
 			strtok(Text, ":");
 			char* token = strtok(NULL, ":");
-			gamma_model = atol(token);
+			D0_Gy = atof(token);
+		}
+		if (strstr(Text, "c:")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			c = atof(token);
+		}
+		if (strstr(Text, "m:")) {
+			strtok(Text, ":");
+			char* token = strtok(NULL, ":");
+			m = atof(token);
 		}
 		if (strstr(Text, "source_no:")) {
 			strtok(Text, ":");
@@ -136,6 +149,9 @@ int main(int argc, char *argv[]) {
 	for( i = 0; i < GR_MAX_NUMBER_OF_PARAMETERS; i++){
 		gamma_parameters[i] = AT_GR_Data.parameter_default[gr_index][i];
 	}
+	gamma_parameters[1] = D0_Gy;
+	gamma_parameters[2] = c;
+	gamma_parameters[3] = m;
 
 	double fluence_cm2_or_dose_Gy_single = -dose_Gy_single;
 
