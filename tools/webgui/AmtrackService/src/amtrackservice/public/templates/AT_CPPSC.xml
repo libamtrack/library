@@ -95,23 +95,28 @@
                 <item value="4" />
             </preset>
             <data x="er_model" />
-        </element>
-        
-        <element type="combo" label="gamma-response model" datatype="long">
-            <description>GR model</description>
-            <entry>
-                <item key="GeneralTarget" value="2" />
-                <item key="Radioluminescence" value="3" />
-                <item key="ExpSaturation" value="4" />
-                <item key="LinQuad" value="5" />
-                <item key="Geiss" value="6" />
-            </entry>
+        </element>        
+        <element type="field" label="D0 [Gy]" datatype="double">
+            <description>dose D0 [Gy]</description>
             <preset>
-                <item value="2" />
+                <item value="10" />
             </preset>
-            <data x="gr_model" />
-        </element>
-        
+            <data x="D0_Gy" />
+        </element>  
+        <element type="field" label="c - number of hits" datatype="double">
+            <description>c</description>
+            <preset>
+                <item value="1" />
+            </preset>
+            <data x="c" />
+        </element>  
+        <element type="field" label="m - number of targets" datatype="double">
+            <description>m</description>
+            <preset>
+                <item value="1" />
+            </preset>
+            <data x="m" />
+        </element>  
     </input>
 
     <output>
