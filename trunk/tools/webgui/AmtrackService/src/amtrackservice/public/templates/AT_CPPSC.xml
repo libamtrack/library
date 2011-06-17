@@ -65,10 +65,9 @@
             </preset>
             <data x="source_no" />
         </element>  
-        <element type="combo" label="rdd_model" datatype="long">
+        <element type="combo" label="radial dose-model" datatype="long">
             <description>Radial Dose Distribution model</description>
             <entry>
-                <item key="Test" value="1" />
                 <item key="KatzPoint" value="2" />
                 <item key="Geiss" value="3" />
                 <item key="KatzSite" value="4" />
@@ -82,10 +81,9 @@
             <data x="rdd_model" />
         </element>          
 
-        <element type="combo" label="er_model" datatype="long">
+        <element type="combo" label="electron-range model" datatype="long">
             <description>delta electron range model</description>
             <entry>
-                <item key="Test" value="1" />
                 <item key="ButtsKatz" value="2" />
                 <item key="Waligorski" value="3" />
                 <item key="Geiss" value="4" />
@@ -99,10 +97,9 @@
             <data x="er_model" />
         </element>
         
-        <element type="combo" label="gr_model" datatype="long">
+        <element type="combo" label="gamma-response model" datatype="long">
             <description>GR model</description>
             <entry>
-                <item key="Test" value="1" />
                 <item key="GeneralTarget" value="2" />
                 <item key="Radioluminescence" value="3" />
                 <item key="ExpSaturation" value="4" />
@@ -118,6 +115,11 @@
     </input>
 
     <output>
+        <element type="plot" label="local dose distribution" datatype="double">
+            <description>f histogram</description>
+            <data x="fdd" y="f" />
+            <axis x="log" y="log" labelx="dose [Gy]" labely="frequency"/>
+        </element>
         <element type="field" label="efficiency" datatype="double">
             <description>efficiency</description>
             <data x="RE" />
@@ -125,10 +127,5 @@
                 <item value="1.0" />
             </preset>
         </element>  
-        <element type="plot" label="f" datatype="double">
-            <description>f histogram</description>
-            <data x="fdd" y="f" />
-            <axis x="log" y="log" labelx="X" labely="Y"/>
-        </element>
     </output>
 </root>
