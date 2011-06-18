@@ -117,14 +117,14 @@ double _AT_Stopping_Power_get_data(const long stopping_power_source_no,
 
 		*source_for_given_material =	(AT_stopping_power_tabulated_source_for_given_material_struct *)group_for_all_materials->stopping_power_source_data[material_no];
 		if( *source_for_given_material == NULL ){
-			char source_name[1000];
+			char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH];
 			AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
-			char material_name[1000];
+			char material_name[MATERIAL_NAME_LENGTH];
 			AT_material_name_from_number(material_no,material_name);
 			printf("Missing data for data source [%s] and material [%s]\n", source_name, material_name);
 		}
 	} else {
-		char source_name[1000];
+		char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH];
 		AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
 		printf("Missing data for data source [%s]\n", source_name);
 		return -1;
@@ -155,9 +155,9 @@ double AT_Stopping_Power_data_interpolation(const long stopping_power_source_no,
 
 		return result;
 	} else {
-		char source_name[1000];
+		char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH];
 		AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
-		char material_name[1000];
+		char material_name[MATERIAL_NAME_LENGTH];
 		AT_material_name_from_number(material_no,material_name);
 		printf("Missing data points for data source [%s] and material [%s]\n", source_name, material_name);
 	}
@@ -174,7 +174,7 @@ double AT_Stopping_Power_MeV_cm2_g_single( const long stopping_power_source_no, 
 	}
 
 	// TODO: Move the following Z_eff scaling into separate PSTAR wrapper
-	if( particle_no != PARTICLE_PROTON_NUMBER & (stopping_power_source_no == PSTAR)){
+	if( (particle_no != PARTICLE_PROTON_NUMBER) && (stopping_power_source_no == PSTAR)){
 		double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
 		double Zeff_proton =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u, PARTICLE_PROTON_NUMBER);
 		Stopping_Power_MeV_cm2_g *= gsl_pow_2(Zeff_ion / Zeff_proton);
@@ -258,9 +258,9 @@ double AT_Energy_MeV_u_from_Stopping_Power_single( const long stopping_power_sou
 
 		return result;
 	} else {
-		char source_name[1000];
+		char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH];
 		AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
-		char material_name[1000];
+		char material_name[MATERIAL_NAME_LENGTH];
 		AT_material_name_from_number(material_no,material_name);
 		printf("Missing data points for data source [%s] and material [%s]\n", source_name, material_name);
 	}
@@ -274,7 +274,7 @@ int AT_stopping_power_source_model_name_from_number( const long source_no, char*
 	assert( source_no < STOPPING_POWER_SOURCE_N);
 	assert(AT_stopping_power_sources.stopping_power_source_no[source_no] == source_no);
 	if( source_no < 0)
-		return -1;	
+		return -1;
 	if( source_no >= STOPPING_POWER_SOURCE_N)
 		return -1;	
     strcpy(source_name, AT_stopping_power_sources.stopping_power_source_name[source_no]);
