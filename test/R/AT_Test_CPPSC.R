@@ -25,7 +25,7 @@
 rm( list = ls() )
 
 # Build latest version of libamtrack and load for direct access
-recompile <- FALSE
+recompile <- TRUE
 source("AT_Test_PreRun.R")
 
 require(lattice)
