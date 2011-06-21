@@ -417,19 +417,24 @@ double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_single(	const double E_MeV_u,
 														const long material_no,
 														const double E_restricted_keV)
 {
-	  const double beta2 		= gsl_pow_2(AT_beta_from_E_single(E_MeV_u));
-	  assert( beta2 > 0);
-	  const double Z			= AT_average_Z_from_material_no(material_no);
-	  const double A			= AT_average_A_from_material_no(material_no);
-	  assert( A > 0 );
-	  const double z_eff		= AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
-	  const double k_MeV_cm2_g	= 0.307075;												// ICRU49, p.6, after Cohen and Taylor (1986)
-	  const double SN			= AT_Stopping_Power_Bethe_Number(	E_MeV_u,
-																	particle_no,
-																	material_no,
-																	E_restricted_keV);
+	double result = 0;
+	if( E_MeV_u > 1 ){
+		const double beta2 		= gsl_pow_2(AT_beta_from_E_single(E_MeV_u));
+		assert( beta2 > 0);
+		const double Z			= AT_average_Z_from_material_no(material_no);
+		const double A			= AT_average_A_from_material_no(material_no);
+		assert( A > 0 );
+		const double z_eff		= AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
+		const double k_MeV_cm2_g	= 0.307075;												// ICRU49, p.6, after Cohen and Taylor (1986)
+		const double SN			= AT_Stopping_Power_Bethe_Number(	E_MeV_u,
+				particle_no,
+				material_no,
+				E_restricted_keV);
+		result = k_MeV_cm2_g * (Z / A) * gsl_pow_2(z_eff) * SN / (beta2);
+	}
 
-	  return( k_MeV_cm2_g * Z / A * gsl_pow_2(z_eff) * SN / (beta2));
+	return result;
+
 }
 
 
