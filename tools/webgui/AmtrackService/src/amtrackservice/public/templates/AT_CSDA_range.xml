@@ -72,6 +72,13 @@
 			</preset>
 			<data x="material_no" />
 		</element>		
+		<element type="field" label="label" datatype="string">
+            <description>label</description>
+            <preset>
+                <item value="default" />
+            </preset>
+            <data x="label" />
+        </element>
 	</input>
 
 	<output>
