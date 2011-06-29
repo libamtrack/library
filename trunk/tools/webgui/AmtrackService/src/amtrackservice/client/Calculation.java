@@ -344,7 +344,8 @@ public class Calculation {
 				if( appending ){
 					status = widget.appendValue(result);
 				}else{
-					result.put("label", "default");
+					if(result.get("label") == null)
+						result.put("label", "default");
 					status = widget.setValue(result);
 				}
 				if( status != 0 ){
