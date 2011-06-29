@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root name="Gamma Response from dose" wrapper="AT_Gamma_Response.exe">
+    <description>
+        [b]Gamma Response as a function of dose[/b]
+    </description>
+    <input>
+        <element type="field" label="D min [Gy]" datatype="double">
+            <description>D [Gy] min</description>
+            <preset>
+                <item value="0" />
+            </preset>
+            <data x="D_start" />
+        </element>
+        <element type="field" label="D max [Gy]" datatype="double">
+            <description>D [Gy] max</description>
+            <preset>
+                <item value="10" />
+            </preset>
+            <data x="D_end" />
+        </element>
+        <element type="field" label="number of points" datatype="long">
+            <description>number of points</description>
+            <preset>
+                <item value="30" />
+            </preset>
+            <data x="n_points" />
+        </element>
+        <element type="combo" label="X axis spacing" datatype="long">
+            <entry>
+                <item key="Logarithmic" value="1" />
+                <item key="Linear" value="2" />
+            </entry>
+            <description>X axis spacing</description>
+            <preset>
+                <item value="2" />
+            </preset>
+            <data x="x_axis_type" />
+        </element>
+        
+        <element type="combo" label="gr_model" datatype="long">
+            <description>GR model</description>
+            <entry>
+                <item key="Test" value="1" />
+                <item key="GeneralTarget" value="2" />
+                <item key="Radioluminescence" value="3" />
+                <item key="ExpSaturation" value="4" />
+                <item key="LinQuad" value="5" />
+                <item key="Geiss" value="6" />
+            </entry>
+            <preset>
+                <item value="5" />
+            </preset>
+            <data x="gr_model" />
+        </element>
+        
+        <element type="field" label="label" datatype="string">
+            <description>label</description>
+            <preset>
+                <item value="default" />
+            </preset>
+            <data x="label" />
+        </element>
+    </input>
+
+    <output>
+        <element type="plot" label="Gamma Response" datatype="double" append="true">
+            <description>Gamma Response</description>
+            <data x= "D" y="GR"/>
+            <axis x="lin" y="lin" labelx="Dose [Gy]" labely="Response"/>         
+        </element>
+    </output>
+</root>

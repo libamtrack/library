@@ -75,7 +75,7 @@
 	</input>
 
 	<output>
-		<element type="plot" label="CSDA range vs particle energy" datatype="double">
+		<element type="plot" label="CSDA range vs particle energy" datatype="double" append="true">
 			<description>CSDA range</description>
 			<data x="E" y="range"/>
 			<axis labelx="Kinetic energy [MeV/amu]" labely="CSDA Range [m]"/>
