@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root name="max energy transferred to electron" wrapper="AT_Max_E_transfer_to_electron.exe">
+    <description>
+        [b]Returns max energy transferred to electron[/b]
+    </description>
+    <input>
+        <element type="field" label="ion kinetic energy min [MeV/amu]" datatype="double">
+            <description>E [MeV/amu] min</description>
+            <preset>
+                <item value="0.01" />
+            </preset>
+            <data x="E_start" />
+        </element>
+        <element type="field" label="ion kinetic energy max [MeV/amu]" datatype="double">
+            <description>E [MeV/amu] max</description>
+            <preset>
+                <item value="100" />
+            </preset>
+            <data x="E_end" />
+        </element>
+        <element type="field" label="number of points" datatype="long">
+            <description>number of points</description>
+            <preset>
+                <item value="40" />
+            </preset>
+            <data x="n_points" />
+        </element>
+        <element type="combo" label="X axis spacing" datatype="long">
+            <entry>
+                <item key="Logarithmic" value="1" />
+                <item key="Linear" value="2" />
+            </entry>
+            <description>X axis spacing</description>
+            <preset>
+                <item value="2" />
+            </preset>
+            <data x="x_axis_type" />
+        </element>
+    </input>
+
+    <output>
+        <element type="plot" label="Max energy transferred to electron" datatype="double">
+            <description>momentum [MeV/c]</description>
+            <data x= "ionE" y="electronE"/>
+            <axis x="lin" y="lin" labelx="ion kinetic energy [MeV/amu]" labely="electron kinetic energy [MeV]"/>         
+        </element>
+    </output>
+</root>

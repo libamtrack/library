@@ -8,4 +8,6 @@
 	<template name="particle momentum vs energy" file="AT_momentum_from_E.xml" group="Basic Kinematics"/>
 	<template name="effective charge" file="AT_effective_charge.xml" group="Basic Kinematics"/>
 	<template name="cppsc model" file="AT_CPPSC.xml" group="Track Structure"/>
+    <template name="gamma response" file="AT_Gamma_Response.xml" group="Track Structure"/>
+    <template name="max energy transferred to electron" file="AT_Max_E_transfer_to_electron.xml" group="Basic Kinematics"/>
 </config>
