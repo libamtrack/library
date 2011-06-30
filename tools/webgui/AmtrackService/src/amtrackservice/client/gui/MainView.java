@@ -49,14 +49,18 @@ public class MainView {
 	    Image leftPanelUpperLogo = new Image(resources.logo());
 		leftDownPanelFunctions = new DecoratedStackPanel();
 	    
-		rightMainTab = new HTML("<center><big><font size=\"+2\"><br><br>Welcome to libamtrack webGUI</font></big><br><br>" + 
+		rightMainTab = new HTML("<center><big><font size=\"+2\"><br><br>Welcome to <a href=\"http://libamtrack.dkfz.org\">libamtrack</a> webGUI</font></big><br><br>" + 
 					"<big>HOWTO</big><br><br>" +
 					"<font size=\"2\">1. Choose a function from the left panel.<br>"+
-					"2. Enter parameters and recalculate.<br>" +
-					"3. Results printed on the right.<br>"+
-					"4. Open another/close function.<br>"+
-		            "Please report any problems/feedback<br>"+
-		            "to: <b><u><a href=\"mailto:Leszek.Grzanka@ifj.edu.pl\" target=\"_blank\">Leszek.Grzanka@ifj.edu.pl</a></u></b><br></font>" +
+					"2. Enter desired values for the input parameters or use defaults.<br>"+
+					"3. Press \"Recalculate\" to start new computation (be careful: this will erase all previous computations).<br>"+
+					"4. Press \"Add plot\" to add a new computation to your plot (note that every computation needs a unique label).<br>"+
+					"5. Press \"Load default\" to reset input values.<br>"+
+					"6. Press \"Status\" to get information on computation on the server.<br>"+
+					"7. Results will be printed on the right.<br>"+
+					"8. Use the questionmark buttons to get more information on the input parameters.<br>"+
+					"9. If you experience problems, please try to clean your browser cache first. If problems persist, please contact:<br>"+
+		            "<b><u><a href=\"mailto:Leszek.Grzanka@ifj.edu.pl\" target=\"_blank\">Leszek.Grzanka@ifj.edu.pl</a></u> or <u><a href=\"mailto:Steffen.Greilich@dkfz.de\" target=\"_blank\">Steffen.Greilich@dkfz.de</a></u></b><br></font>" +
 		            "<I>libamtrack version: " + BuildInfo.revisionNumber + "</I>" + 
 		            "</center>");
 		
@@ -127,6 +131,12 @@ public class MainView {
 		centralTabPanel.selectTab(input);		
 	}
 	
+	/**
+	 * TODO
+	 * @param widget
+	 * @param string
+	 * @return
+	 */
 	private Widget newLabel(final Widget widget, final String string) {
 		final HorizontalPanel tabLabelHPanel = new HorizontalPanel();
 		final Label label = new Label(string);
@@ -154,8 +164,13 @@ public class MainView {
 		return tabLabelHPanel;
 	} 
 	
-	public void addWidgetToLeftPanel(Widget w, String description){
-		leftDownPanelFunctions.add(w,description,true);
+	/**
+	 * TODO
+	 * @param widget
+	 * @param description
+	 */
+	public void addWidgetToLeftPanel(Widget widget, String description){
+		leftDownPanelFunctions.add(widget,description,true);
 	}
 
 }
