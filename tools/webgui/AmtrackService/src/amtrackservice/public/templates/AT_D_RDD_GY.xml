@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root name="RDD vs distance" wrapper="AT_D_RDD_GY.exe">
 	<description>
-		Returns RDD as a function of distance
+		Returns radial dose distribution (RDD) as a function of radial distance from ion track.
 	</description>
 	<input>
 		<element type="field" label="radius min [m]" datatype="double">

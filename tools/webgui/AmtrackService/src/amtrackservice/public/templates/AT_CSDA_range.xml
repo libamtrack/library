@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root name="Range from energy" wrapper="AT_CSDA_range.exe">
 	<description>
-		[b]Returns CSDA range as a function of particle energy[/b]
+		[b]Returns CSDA range (from PSTAR tables) as a function of particle energy per nucleon[/b]
 	</description>
 	<input>
 		<element type="field" label="particle kinetic energy min [MeV/amu]" datatype="double">

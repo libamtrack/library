@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root name="RE calculations" wrapper="AT_CPPSC.exe">
     <description>
-        [b]CPPSC model calculations[/b]
+        [b]CPPSC model calculations of relative efficiency[/b]
     </description>
     <input>
         <element type="field" label="dose [Gy]" datatype="double">
