@@ -749,5 +749,20 @@ long AT_Rutherford_scatter_cross_section( const double E_Mev_u,
 		const double scattering_angle[],
 		double scatter_cross_section[]);
 
+/**
+ * Computes the gyroradius for a particle in a magnetic field. For this,
+ * the effective charge of the particle (as a function of the kinetic energy)
+ * is used.
+ *
+ * @param[in]  E_MeV_u      			energy of incoming particle
+ * @param[in]  particle_no  			particle index
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  B_T						magnetic B-field strength in Tesla
+ * @return     gyroradius in m
+ */
+double AT_gyroradius_m( const double E_MeV_u,
+		const long particle_no,
+		const double B_T);
+
 
 #endif /* AT_PHYSICSROUTINES_H_ */

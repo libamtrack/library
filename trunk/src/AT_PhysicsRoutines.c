@@ -710,3 +710,12 @@ long AT_Rutherford_scatter_cross_section(const double E_MeV_u,
 
 	return EXIT_SUCCESS;
 }
+
+double AT_gyroradius_m( const double E_MeV_u,
+		const long particle_no,
+		const double B_T)
+{
+	double momentum_GeV_c 	= AT_momentum_from_E_MeV_c_u_single(E_MeV_u) / 1000.0 * AT_A_from_particle_no_single(particle_no);
+	double effective_charge	= AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
+	return( momentum_GeV_c / (effective_charge * B_T));
+}
