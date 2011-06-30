@@ -19,7 +19,7 @@
             <data x="D_end" />
         </element>
         <element type="field" label="number of points" datatype="long">
-            <description>number of points</description>
+            <description>Number of points in each data serie</description>
             <preset>
                 <item value="30" />
             </preset>
@@ -30,7 +30,7 @@
                 <item key="Logarithmic" value="1" />
                 <item key="Linear" value="2" />
             </entry>
-            <description>X axis spacing</description>
+            <description>X axis spacing. Linear means that datapoints will be equally distributed on linear scale, while logarithmic means that datapoints will be equally distributed on logarithmic scale</description>
             <preset>
                 <item value="2" />
             </preset>

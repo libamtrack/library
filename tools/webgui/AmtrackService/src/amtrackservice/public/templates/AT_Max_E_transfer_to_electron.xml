@@ -5,21 +5,32 @@
     </description>
     <input>
         <element type="field" label="ion kinetic energy min [MeV/amu]" datatype="double">
-            <description>ion kinetic energy min (MeV/amu), minimum value for data serie</description>
+            <description>Ion kinetic energy (MeV/amu), minimum value for data series.[br][br] 
+            In libamtrack, the kinetic energy for particles is usually given in Megaelectronvolt per nucleon (MeV/u). 
+            For therapeutical beam these are usually in range between approx. 1 MeV/u and 500 MeV/u. [br]
+            Please note, that simply the number of nucleons is used, 
+            not the actual mass of the nucleon (amu) for a specific nuclid. 
+            So, for example for U-238 with 100 MeV/u the total kinetic energy is 23.8 GeV.</description>
             <preset>
                 <item value="0.01" />
             </preset>
             <data x="E_start" />
         </element>
         <element type="field" label="ion kinetic energy max [MeV/amu]" datatype="double">
-            <description>ion kinetic energy min (MeV/amu), minimum value for data serie</description>
+            <description>Ion kinetic energy (MeV/amu), maximum value for data series.[br][br] 
+            In libamtrack, the kinetic energy for particles is usually given in Megaelectronvolt per nucleon (MeV/u). 
+            For therapeutical beam these are usually in range between approx. 1 MeV/u and 500 MeV/u. [br]
+            Please note, that simply the number of nucleons is used, 
+            not the actual mass of the nucleon (amu) for a specific nuclid. 
+            So, for example for U-238 with 100 MeV/u the total kinetic energy is 23.8 GeV.
+            </description>
             <preset>
                 <item value="100" />
             </preset>
             <data x="E_end" />
         </element>
         <element type="field" label="number of points" datatype="long">
-            <description>number of points in data serie</description>
+            <description>Number of points in each data serie</description>
             <preset>
                 <item value="40" />
             </preset>

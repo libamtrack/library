@@ -19,14 +19,19 @@
             <data x="D_Gy_end" />
         </element>
         <element type="field" label="number of points" datatype="long">
-            <description>number of points</description>
+            <description>Number of points in each data serie</description>
             <preset>
                 <item value="30" />
             </preset>
             <data x="n_points" />
         </element>
         <element type="field" label="ion kinetic energy [MeV/amu]" datatype="double">
-            <description>Energy [MeV/amu]</description>
+            <description>Ion kinetic energy (MeV/amu)[br][br] 
+            In libamtrack, the kinetic energy for particles is usually given in Megaelectronvolt per nucleon (MeV/u). 
+            For therapeutical beam these are usually in range between approx. 1 MeV/u and 500 MeV/u. [br]
+            Please note, that simply the number of nucleons is used, 
+            not the actual mass of the nucleon (amu) for a specific nuclid. 
+            So, for example for U-238 with 100 MeV/u the total kinetic energy is 23.8 GeV.</description>
             <preset>
                 <item value="60.0" />
             </preset>
@@ -53,7 +58,9 @@
             <data x="particle_no" />
         </element>
         <element type="combo" label="material" datatype="long">
-            <description>material</description>
+            <description>Material name. Currently seven predefined materials exist in libamtrack. 
+            The material definition follows largely the pstar and astar definitions of NIST.
+            </description>
             <entry>
                 <item key="Liquid Water" value="1" />
                 <item key="Aluminum Oxide" value="2" />
@@ -70,7 +77,8 @@
         </element>      
         
         <element type="combo" label="rdd_model" datatype="long">
-            <description>Radial Dose Distribution model</description>
+            <description>Radial Dose Distribution model. More information on the radial dose distribution models, 
+             especially the explicit formulas used, valid energy ranges and references to literature are found in the libamtrack reference manual</description>
             <entry>
                 <item key="KatzExtTarget" value="6" />
                 <item key="CucinottaExtTarget" value="7" />
