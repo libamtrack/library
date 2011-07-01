@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root name="momentum from energy" wrapper="AT_momentum_from_E.exe">
+<root name="AT_momentum_MeV_c_u_from_E_MeV_u" wrapper="AT_momentum_from_E.exe">
     <description>
-        [b]Returnsparticle  momentum per nucleon as a function of particle energy per nucleon[/b]
+        [b]Returns particle  momentum per nucleon as a function of particle energy per nucleon[/b]
     </description>
     <input>
         <element type="field" label="kinetic energy min [MeV/amu]" datatype="double">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root name="Range from energy" wrapper="AT_CSDA_range.exe">
+<root name="AT_CSDA_range_m" wrapper="AT_CSDA_range.exe">
 	<description>
 		[b]Returns CSDA range (from PSTAR tables) as a function of particle energy per nucleon[/b]
 	</description>

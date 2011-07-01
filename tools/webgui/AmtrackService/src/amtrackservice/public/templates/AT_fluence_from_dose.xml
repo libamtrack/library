@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root name="fluence from dose" wrapper="AT_fluence_from_dose.exe">
+<root name="AT_fluence_cm2_from_dose_Gy" wrapper="AT_fluence_from_dose.exe">
 	<description>
 		[b]Returns fluence as a function of dose[b]
 	</description>

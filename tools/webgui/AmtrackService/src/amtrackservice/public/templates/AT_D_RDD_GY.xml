@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root name="RDD vs distance" wrapper="AT_D_RDD_GY.exe">
+<root name="AT_D_RDD_Gy" wrapper="AT_D_RDD_GY.exe">
 	<description>
 		Returns radial dose distribution (RDD) as a function of radial distance from ion track.
 	</description>
