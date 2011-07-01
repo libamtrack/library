@@ -5,14 +5,14 @@
     </description>
     <input>
         <element type="field" label="gamma min" datatype="double">
-            <description>gamma min</description>
+            <description>Relativistic gamma, minimum value for data series.</description>
             <preset>
                 <item value="1.1" />
             </preset>
             <data x="gamma_start" />
         </element>
         <element type="field" label="gamma max" datatype="double">
-            <description>gamma max</description>
+            <description>Relativistic gamma, maximum value for data series.</description>
             <preset>
                 <item value="2.0" />
             </preset>
