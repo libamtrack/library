@@ -5,14 +5,14 @@
 	</description>
 	<input>
 		<element type="field" label="radius min [m]" datatype="double">
-			<description>r [m] min</description>
+			<description>Distance from particle track (min).</description>
 			<preset>
 				<item value="1e-10" />
 			</preset>
 			<data x="r_min" />
 		</element>
 		<element type="field" label="radius max [m]" datatype="double">
-			<description>r [m] max</description>
+			<description>Distance from particle track (max).</description>
 			<preset>
 				<item value="1e-5" />
 			</preset>
@@ -121,9 +121,10 @@
 		</element>			
 
 		<element type="combo" label="electron-range model" datatype="long">
-			<description>delta electron range model</description>
+            <description>Delta electron range model. In libamtrack, there are currently six parametrizations of 
+            the maximal distance electrons travel from the center of a particle track as a function of the primary particle's energy.
+            More information on the electron-range models, especially the explicit formulas used, valid energy ranges and references to literature are found in the libamtrack reference manual</description>
 			<entry>
-				<item key="Test" value="1" />
 				<item key="ButtsKatz" value="2" />
 				<item key="Waligorski" value="3" />
 				<item key="Geiss" value="4" />

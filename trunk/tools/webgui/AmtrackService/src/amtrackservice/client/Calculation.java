@@ -215,7 +215,7 @@ public class Calculation {
 					helpPopUp.setGlassEnabled(true);
 					helpPopUp.setAnimationEnabled(true);
 					helpPopUp.setAutoHideEnabled(true);
-					helpPopUp.setWidget(new HTML("<H2><B>Click outside this window to displace it</B></H2><BR>" + helpText));
+					helpPopUp.setWidget(new HTML("<H4><B>Click outside this window to exit</B></H4><BR>" + helpText));
 					helpPopUp.center();
 					helpPopUp.show();
 				}
@@ -393,7 +393,7 @@ public class Calculation {
 	}
 	
 	public void clearLoggerMessages(){
-		this.loggerText = "<H1><B>Click outside this window to displace it</B></H1>";
+		this.loggerText = "<H4><B>Click outside this window to exit</B></H4>";
 	}
 	
 	public void addLoggerMessage(String message){

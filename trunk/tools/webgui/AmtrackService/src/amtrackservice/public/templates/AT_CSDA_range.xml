@@ -85,7 +85,7 @@
 			<data x="material_no" />
 		</element>		
 		<element type="field" label="label" datatype="string">
-            <description>label</description>
+            <description>Label for present data series in plot. Note that each series requires a unique label.</description>
             <preset>
                 <item value="default" />
             </preset>

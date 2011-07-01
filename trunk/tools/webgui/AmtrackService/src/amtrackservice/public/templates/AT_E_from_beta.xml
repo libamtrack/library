@@ -5,14 +5,14 @@
 	</description>
 	<input>
 		<element type="field" label="beta min" datatype="double">
-			<description>beta min</description>
+			<description>Speed of particle as fraction of speed of light: beta = v/c , minimum value for data series.</description>
 			<preset>
 				<item value="0.1" />
 			</preset>
 			<data x="beta_start" />
 		</element>
 		<element type="field" label="beta max" datatype="double">
-			<description>beta max</description>
+			<description>Speed of particle as fraction of speed of light: beta = v/c , maximum value for data series.</description>
 			<preset>
 				<item value="0.9" />
 			</preset>

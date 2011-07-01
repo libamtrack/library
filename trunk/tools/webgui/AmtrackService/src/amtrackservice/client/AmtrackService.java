@@ -2,6 +2,7 @@ package amtrackservice.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import amtrackservice.client.gui.MainView;
 import amtrackservice.client.parser.ConfigParser;
@@ -19,6 +20,7 @@ import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.rpc.core.java.util.Collections;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -120,7 +122,9 @@ public class AmtrackService implements EntryPoint {
 		AmtrackServiceResources resources = GWT.create(AmtrackServiceResources.class);
 		
 		HashMap<String, VerticalPanel> groupPanels = new HashMap<String, VerticalPanel>();
-		for(String groupName : getConfig().getGroupNames().values()){
+		ArrayList<String> groupNames = new ArrayList<String>(getConfig().getGroupNames().values());
+		java.util.Collections.sort(groupNames);		
+		for(String groupName : groupNames){
 			if( !groupPanels.containsKey(groupName) ){
 				groupPanels.put(groupName, new VerticalPanel());
 				groupPanels.get(groupName).setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
@@ -145,9 +149,7 @@ public class AmtrackService implements EntryPoint {
 			    openCalculationPanel.add(openCalculationText);
 			    String groupName = getConfig().getGroupNames().get(templateName);
 			    groupPanels.get(groupName).add(openCalculationPanel);
-		}			
-		
-		gui.addWidgetToLeftPanel(new Label("none yet"),"Others");
+		}					
 	}
 
 
