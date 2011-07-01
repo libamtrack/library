@@ -140,13 +140,15 @@ int main(int argc, char *argv[]) {
 
 	fprintf(f , "E:");
 	for (i = 0; i < n_points; i++) {
-		fprintf(f, " %g", E_MeV_u[i]);
+		if( LET_keV_um[i] > 0 )
+			fprintf(f, " %g", E_MeV_u[i]);
 	}
 	fprintf(f, "\n");
 
 	fprintf(f , "LET:");
 	for (i = 0; i < n_points; i++) {
-		fprintf(f, " %g", LET_keV_um[i]);
+		if( LET_keV_um[i] > 0 )
+			fprintf(f, " %g", LET_keV_um[i]);
 	}
 	fprintf(f, "\n");
 	free(LET_keV_um);
