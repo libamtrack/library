@@ -50,8 +50,8 @@ public class MainView {
 		leftDownPanelFunctions = new DecoratedStackPanel();
 	    
 		rightMainTab = new HTML("<center><big><font size=\"+2\"><br><br>Welcome to <a href=\"http://libamtrack.dkfz.org\">libamtrack</a> webGUI</font></big><br><br>" + 
-					"<big>HOWTO</big><br><br>" +
-					"<font size=\"2\">1. Choose a function from the left panel.<br>"+
+					"<big>HOWTO</big><br><br></center>" +
+					"<p style=\"margin-left:6cm\"><font size=\"2\">1. Choose a function from the left panel.<br>"+
 					"2. Enter desired values for the input parameters or use defaults.<br>"+
 					"3. Press \"Recalculate\" to start new computation (be careful: this will erase all previous computations).<br>"+
 					"4. Press \"Add plot\" to add a new computation to your plot (note that every computation needs a unique label).<br>"+
@@ -61,7 +61,7 @@ public class MainView {
 					"8. Use the questionmark buttons to get more information on the input parameters.<br>"+
 					"9. If you experience problems, please try to clean your browser cache first. If problems persist, please contact:<br>"+
 		            "<b><u><a href=\"mailto:Leszek.Grzanka@ifj.edu.pl\" target=\"_blank\">Leszek.Grzanka@ifj.edu.pl</a></u> or <u><a href=\"mailto:Steffen.Greilich@dkfz.de\" target=\"_blank\">Steffen.Greilich@dkfz.de</a></u></b><br></font>" +
-		            "<I>libamtrack version: " + BuildInfo.revisionNumber + "</I>" + 
+		            "</p><center><I>libamtrack version: " + BuildInfo.revisionNumber + "</I>" + 
 		            "</center>");
 		
 	    centralTabPanel = new TabLayoutPanel(32, Unit.PX);
