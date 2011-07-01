@@ -215,7 +215,7 @@ public class Calculation {
 					helpPopUp.setGlassEnabled(true);
 					helpPopUp.setAnimationEnabled(true);
 					helpPopUp.setAutoHideEnabled(true);
-					helpPopUp.setWidget(new HTML("<H4><B>Click outside this window to exit</B></H4><BR>" + helpText));
+					helpPopUp.setWidget(new HTML("<H4>Click outside this window to exit</H4><BR><B>" + helpText + "</B>"));
 					helpPopUp.center();
 					helpPopUp.show();
 				}

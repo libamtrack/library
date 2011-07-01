@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root name="energy from gamma" wrapper="AT_E_from_gamma.exe">
+<root name="AT_E_from_gamma" wrapper="AT_E_from_gamma.exe">
     <description>
         [b]Returns particle energy as a function of relativistic gamma[/b]        
     </description>

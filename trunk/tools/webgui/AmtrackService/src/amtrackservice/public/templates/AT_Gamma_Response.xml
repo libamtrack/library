@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root name="Gamma Response from dose" wrapper="AT_Gamma_Response.exe">
+<root name="AT_gamma_response" wrapper="AT_Gamma_Response.exe">
     <description>
         [b]Gamma Response as a function of dose[/b]
     </description>

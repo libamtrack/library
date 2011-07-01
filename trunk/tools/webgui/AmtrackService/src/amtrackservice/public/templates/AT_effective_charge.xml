@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root name="effective charge" wrapper="AT_Zeff_from_E.exe">
+<root name="AT_effective_charge_from_E_MeV_u" wrapper="AT_Zeff_from_E.exe">
     <description>
         [b]Returns effective charge (according to Barkas-Bethe approximation) as a function of particle energy per nucleon[/b]
     </description>

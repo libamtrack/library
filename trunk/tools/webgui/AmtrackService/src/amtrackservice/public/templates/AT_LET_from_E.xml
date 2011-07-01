@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root name="LET from energy" wrapper="AT_LET_from_E.exe">
+<root name="AT_Stopping_Power_MeV_cm2_g_single" wrapper="AT_LET_from_E.exe">
 	<description>
 		[b]Returns stopping power of ions in material as a function of ion energy per nucleon[/b]
 	</description>
