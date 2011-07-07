@@ -137,6 +137,13 @@
 			</preset>
 			<data x="er_model" />
 		</element>
+		<element type="field" label="label" datatype="string">
+            <description>Label for present data series in plot. Note that each series requires a unique label.</description>
+            <preset>
+                <item value="default" />
+            </preset>
+            <data x="label" />
+        </element>
 	</input>
 
 	<output>
