@@ -24,7 +24,9 @@
 		4 \tab PMMA (Polymethylmethacrylate, Perspex, Plexiglass, [C5H8O2]n) \cr
 		5 \tab Alanine \cr
 		6 \tab Lithium Fluoride (LiF) \cr
-		7 \tab Air (dry, at sea level)
+		7 \tab Air (dry, at sea level) \cr
+		8 \tab Silicon \cr
+		9 \tab Copper
 	}
 }
 
