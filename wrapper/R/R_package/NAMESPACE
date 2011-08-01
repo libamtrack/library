@@ -47,3 +47,5 @@ AT_effective_Z_from_composition
 AT_I_eV_from_composition
 AT_nuclear_spin_from_particle_no_multi
 AT_Rutherford_SDCS
+AT_energy_straggling_MeV2_cm2_g
+AT_energy_straggling_after_slab_E_MeV_u

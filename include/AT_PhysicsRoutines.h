@@ -237,15 +237,45 @@ int AT_effective_charge_from_beta(  const long  n,
 
 
 /**
- * Get energy spread with depth according to Bohr (Wilson, 1947, Phys Rev 71, 385)
- * @param[in]  n                        number of particles
- * @param[in]  material_no              index number for detector material
- * @param[out] dsE2dz                   Increase of energy spread (variance s_E2) with thickness of material, i.e. d(s_E2) per dz
+ * Get energy spread with depth according to Bohr's classical theory
+ * Bohr, N. (1915), Phil. Mag. 30, 581ff, see also Evans, R.D. (1955), The atomic nucleus, McGraw Hill, New York, p. 661
+ * In the literature dsE2dz is often given in units ergs2/cm. Here we report it mass-normalized MeV2*cm2/g
+ * Since the effective charge of the particle enters the equation, particle types and energies have to be given
+ * The equation is however limited to energies > 10 MeV/u and not too heavy ions
+ * TODO: add William extension for relativistic effects (Williams, E.J. (1945), Revs. Mod. Phys. 17, 217ff)
+ * @param[in]  n                        number particles
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[in]  particle_no              type of the particles in the mixed particle field (array of size n)
+ * @param[in]  material_no              index number for slab material
+ * @param[out] dsE2dz_MeV2_cm2_g        Increase of energy straggling variance sigma_E^2 per unit length of material (array of size n)
  */
-void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
-    const long*  material_no,
-    double*  dsE2dz);
+void AT_energy_straggling_MeV2_cm2_g(  const long  n,
+	const double	E_MeV_u[],
+	const long	particle_no[],
+    const long  material_no,
+    double	dsE2dz_MeV2_cm2_g[]);
 
+/**
+ * Get energy spread of an ion beam after traversing
+ * a material slab according to Bohr's classical theory.
+ * Bohr, N. (1915), Phil. Mag. 30, 581ff, see also Evans, R.D. (1955), The atomic nucleus, McGraw Hill, New York, p. 661
+ * Please note that the effective charge is assumed to be constant over the material slab
+ * If this is not the case you should apply this routine multiple times to subslices
+ * @param[in]  n                        number of particles
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[in]  particle_no              type of the particles in the mixed particle field (array of size n)
+ * @param[in]  material_no              index number for slab material
+ * @param[in]  slab_thickness_m         thickness of slab in m
+ * @param[in]  initial_sigma_E_MeV_u    energy spread - 1 sigma - before traversing the slab - can be 0 (array of size n)
+ * @param[out] sigma_E_MeV_u            energy spread - 1 sigma - after traversing the slab (array of size n)
+ */
+void AT_energy_straggling_after_slab_E_MeV_u( const long  n,
+	const double	E_MeV_u[],
+	const long	particle_no[],
+    const long	material_no,
+    const double	slab_thickness_m,
+    const double	initial_sigma_E_MeV_u[],
+    double	sigma_E_MeV_u[]);
 
 /**
  * Effective charge according to Barkas-Bethe-approximation
