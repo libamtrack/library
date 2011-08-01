@@ -227,23 +227,47 @@ int AT_momentum_MeV_c_u_from_E_MeV_u( const long  n,
   return 0;
 }
 
-void AT_Bohr_Energy_Straggling_g_cm2(  const long*  n,
-    const long*  material_no,
-    double*  dsE2dz)
-{ // TODO shall this function be defined for one or many materials ?
-  assert( n != NULL);
-  assert( *n > 0);
-  long  i;
-  double tmp;
-  for (i = 0; i < *n; i++){
-
-	double  electron_density_m3 = AT_electron_density_m3_from_material_no_single(material_no[i]);
-    tmp                  =  gsl_pow_4(e_C) * electron_density_m3;
-    tmp                 /=  4.0 * M_PI * gsl_pow_2(e0_F_m);
-    tmp                 /=  gsl_pow_2(MeV_to_J) * m_to_cm;
-    dsE2dz[i]            =  tmp;
-  }
+void AT_energy_straggling_MeV2_cm2_g(  const long  n,
+	const double	E_MeV_u[],
+	const long	particle_no[],
+    const long  material_no,
+    double	dsE2dz_MeV2_cm2_g[])
+{
+	assert( n > 0);
+	long  	i;
+	double  electron_density_m3 		= AT_electron_density_m3_from_material_no_single(material_no);
+	double 	tmp							=  gsl_pow_4(e_C) * electron_density_m3;
+	tmp                 				/=  4.0 * M_PI * gsl_pow_2(e0_F_m);
+	tmp                 				/=  gsl_pow_2(MeV_to_J) * m_to_cm;
+	for (i = 0; i < n; i++){
+		dsE2dz_MeV2_cm2_g[i] 				=  tmp * AT_effective_charge_from_E_MeV_u_single(E_MeV_u[i], particle_no[i]);
+	}
 }
+
+void AT_energy_straggling_after_slab_E_MeV_u( const long  n,
+	const double	E_MeV_u[],
+	const long	particle_no[],
+    const long	material_no,
+    const double	slab_thickness_m,
+    const double	initial_sigma_E_MeV_u[],
+    double	sigma_E_MeV_u[])
+{
+	assert( n > 0);
+	double*  dsE2dz_MeV2_cm2_g = (double*)calloc(n, sizeof(double));
+	AT_energy_straggling_MeV2_cm2_g(  n,
+			E_MeV_u,
+			particle_no,
+			material_no,
+			dsE2dz_MeV2_cm2_g);
+	long i;
+	double slab_thickness_g_cm2 = slab_thickness_m * m_to_cm * AT_density_g_cm3_from_material_no(material_no);
+	for (i = 0; i < n; i++){
+		sigma_E_MeV_u[i]	= sqrt(dsE2dz_MeV2_cm2_g[i] * slab_thickness_g_cm2 + initial_sigma_E_MeV_u[i] * initial_sigma_E_MeV_u[i]);
+	}
+
+	free(dsE2dz_MeV2_cm2_g);
+}
+
 
 
 double AT_dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
