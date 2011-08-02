@@ -72,14 +72,17 @@ double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_initial_MeV_u,
 	int status      = gsl_integration_qags (        &F,
 			lower_lim_m,
 			upper_lim_m,
-			1e-4,
+			1e-6,
 			1e-3,
 			10000,
 			w1,
 			&range_cm2_g,
 			&error);
-	if (status == GSL_EROUND || status == GSL_ESING){
-		printf("Error in integration of CSDA range from Bethe formula!\n");
+	if (status == GSL_EROUND){
+		printf("Error in integration of CSDA range from Bethe formula: round-off error.\n");
+	}
+	if (status == GSL_ESING){
+		printf("Error in integration of CSDA range from Bethe formula: singularity found!\n");
 	}
 
 	gsl_integration_workspace_free (w1);
@@ -135,7 +138,10 @@ double AT_CSDA_energy_after_slab_E_MeV_u_single( const double E_initial_MeV_u,
 	params.range_g_cm2          = slab_thickness_g_cm2;
 
 	const double  solver_accuracy  =  1e-6;
-    const double  min_possible_value_E_final_MeV_u = 0.0;
+    // Set lower limit to 1 MeV (= 25 µm range error for protons in water, which should be tolerable) to
+	// coincide with coded limits of Bethe formular routine. Otherwise, singularity error will appear
+	// TODO: Generalize lower limit for all stopping power sources, e.g. lowest value for tabulated data
+	const double  min_possible_value_E_final_MeV_u = 1.0;
     const double  max_possible_value_E_final_MeV_u = E_initial_MeV_u;
 
     double E_final_MeV_u =  zriddr(AT_CSDA_range_difference_solver,
