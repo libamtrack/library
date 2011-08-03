@@ -2,20 +2,20 @@ REM ************************************************
 REM Batch file for R package compiling under Windows
 REM ************************************************
 
-REM *** Remove old folders ***
-del package.Rcheck /Q
+REM *** Create new temporary folder from template package structure ***
+xcopy package package.tmp /E /I /EXCLUDE:exclude.txt
 
 REM *** Copy sources of libamtrack ***
-copy ..\..\..\include\*.h package\src\
-copy ..\..\..\src\*.c package\src\
+copy ..\..\..\include\*.h package.tmp\src\
+copy ..\..\..\src\*.c package.tmp\src\
 
 REM *** Copy hardcoded documentation ***
-copy .\hardcoded_documentation .\package\man\
+copy .\hardcoded_documentation .\package.tmp\man\
 
 REM *** Copy hardcoded wrappers ***
-copy .\hardcoded_wrappers\*.R .\package\R\
-copy .\hardcoded_wrappers\hardcoded_wrapper.c .\package\src\
-copy .\hardcoded_wrappers\hardcoded_wrapper.h .\package\src\
+copy .\hardcoded_wrappers\*.R .\package.tmp\R\
+copy .\hardcoded_wrappers\hardcoded_wrapper.c .\package.tmp\src\
+copy .\hardcoded_wrappers\hardcoded_wrapper.h .\package.tmp\src\
 
 REM *** Auto-generate wrappers and documentation ***
 R CMD BATCH ..\..\..\tools\automatic_wrapper_generator\collect.doxygen.information.R
@@ -26,34 +26,24 @@ R CMD BATCH ..\..\..\tools\automatic_wrapper_generator\R.generate.Rd.documentati
 move AT_R_Wrapper.* .\package\src
 move libamtrack.R .\package\R
 
+REM *** Copy GSL to src directory ***
+copy C:\Programme\GnuWin32\bin\libgsl.dll package.tmp\src
+copy C:\Programme\GnuWin32\bin\libgslcblas.dll package.tmp\src
+
 REM *** Build test package ***
-R CMD check ./package
+R CMD check package.tmp
 
 REM *** Enable for debugging ***
 REM goto :eof
 
-REM *** Copy GSL to libs ***
-copy C:\Programme\GnuWin32\bin\libgsl.dll package.Rcheck\libamtrack\libs
-copy C:\Programme\GnuWin32\bin\libgslcblas.dll package.Rcheck\libamtrack\libs
+REM *** Build actual package ***
+R CMD INSTALL --build package.tmp
 
-REM Pack into zip file
-cd package.Rcheck
-zip -r libamtrack.zip libamtrack
-move libamtrack.zip ..
-cd ..
-
-REM Delete temporary files
-del package\R\libamtrack.R
-del package\R\hardcoded_wrapper.R
-del package\R\AT*.R
-del package\src\*.o
-del package\src\*.c
-del package\src\*.h
-del package\src\*.dll
-del package\man\*.* /Q
+REM Delete temporary files and folders
+del package.tmp /Q
+del package.tmp.Rcheck /Q
 del .RData
 del functions.sdd
-REM del package.Rcheck /Q
 del ..\..\..\tools\automatic_wrapper_generator\*.Rout
 
 echo "Done."
