@@ -23,8 +23,10 @@ R CMD BATCH ..\..\..\tools\automatic_wrapper_generator\R.generate.C.wrapper.R
 R CMD BATCH ..\..\..\tools\automatic_wrapper_generator\R.generate.R.wrapper.R
 R CMD BATCH ..\..\..\tools\automatic_wrapper_generator\R.generate.Rd.documentation.R
 
+REM *** Move resulting file (wrapper C and R), dynamically coded documentation to temporary folder
 move AT_R_Wrapper.* .\package\src
 move libamtrack.R .\package\R
+move *.Rd package.tmp/man
 
 REM *** Copy GSL to src directory ***
 copy C:\Programme\GnuWin32\bin\libgsl.dll package.tmp\src

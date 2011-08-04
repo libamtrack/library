@@ -17,8 +17,10 @@ Please note that libamtrack is still under heavy development and so is the R int
 \tabular{ll}{
 Package: \tab libamtrack\cr
 Version: \tab 0.5.1 (Blue Wombat)\cr
-Date: \tab 2010-11-02\cr
-Depends: \tab R (>= 2.2.0)\cr
+Date: \tab 2011-08-04\cr
+Depends: \tab R (>= 2.12.0)\cr
+Suggests: \tab lattice\cr
+SystemRequirements: \tab gsl\cr
 License: \tab GPL (version 3 or later)
 }
 
@@ -78,12 +80,10 @@ Stopping-power routines:
 \tabular{ll}{
 \code{\link{AT.Stopping.Power.keV.um}} \tab Unrestricted LET / Stopping power\cr
 \code{\link{AT.Stopping.Power.MeV.cm2.g}} \tab Unrestricted LET per mass / mass stopping power\cr
-\code{\link{AT.E.MeV.from.LET}} \tab Inverse routine: energy from LET (cave!)\cr
 \code{\link{AT.stopping.power.ratio}} \tab Computes stopping power ratios, also for mixed fields\cr
 
 \code{\link{AT.CSDA.range.m}} \tab CSDA range in m\cr
 \code{\link{AT.CSDA.range.g.cm2}} \tab CSDA range in mass thickness\cr
-\code{\link{AT.E.MeV.from.CDSA.range}} \tab Inverse routine: energy from CSDA range\cr
 
 \code{\link{AT.Stopping.Power.Mass.Bethe.MeV.cm2.g}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formula\cr
 \code{\link{AT.CSDA.range.Bethe.g.cm2}} \tab CSDA range from Bethe formula\cr
