@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # *** Create new temporary folder from template package structure ***
-cp package package.tmp -r
+cp -r package libamtrack
 
 # *** Copy sources of libamtrack ***
-cp ../../../include/*.h package.tmp/src/
-cp ../../../src/*.c package.tmp/src/
+cp ../../../include/*.h libamtrack/src/
+cp ../../../src/*.c libamtrack/src/
 
 # *** Copy hardcoded documentation ***
-cp hardcoded_documentation/* package.tmp/man/
+cp hardcoded_documentation/* libamtrack/man/
 
 # *** Copy hardcoded wrappers ***
-cp hardcoded_wrappers/*.R package.tmp/R/
-cp hardcoded_wrappers/hardcoded_wrapper.c package.tmp/src/
-cp hardcoded_wrappers/hardcoded_wrapper.h package.tmp/src/
+cp hardcoded_wrappers/*.R libamtrack/R/
+cp hardcoded_wrappers/hardcoded_wrapper.c libamtrack/src/
+cp hardcoded_wrappers/hardcoded_wrapper.h libamtrack/src/
 
 R --no-save < ../../../tools/automatic_wrapper_generator/collect.doxygen.information.R
 if [ "$?" -ne "0" ]; then
@@ -37,31 +37,26 @@ if [ "$?" -ne "0" ]; then
 fi
 
 # *** Move resulting file (wrapper C and R), dynamically coded documentation to temporary folder
-mv AT_R_Wrapper.* package.tmp/src
-mv libamtrack.R package.tmp/R
-mv *.Rd package.tmp/man
+mv AT_R_Wrapper.* libamtrack/src
+mv libamtrack.R libamtrack/R
+mv *.Rd libamtrack/man
 
 # *** Build test package ***
-R CMD check ./package.tmp --no-manual
+R CMD check ./libamtrack --no-manual
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R CMD check ./package --no-manual"
   exit 1
 fi
 
 # *** Build binary distribution ***
-sudo R CMD INSTALL --build package.tmp
+sudo R CMD INSTALL --build libamtrack
 
-# Delete temporary files and folders
+# *** Build tarball source package ***
+R CMD build libamtrack
 
-# Uncomment if source package is not required
-# rm package.tmp -r -f
-
-# Create tar ball
-mv package.tmp libamtrack
-tar -zcf libamtrack_0.5-1.tar.gz libamtrack -X exclude.txt
-
-rm libamtrack -r -f
-rm functions.sdd -f
-rm ../../../tools/automatic_wrapper_generator/*.Rout -f
+# *** Remove transient files ***
+rm -f -r libamtrack
+rm -f -r libamtrack.Rcheck
+rm -f functions.sdd
 
 echo Done.
