@@ -162,7 +162,7 @@ double AT_Stopping_Power_data_interpolation(const long stopping_power_source_no,
 		printf("Missing data points for data source [%s] and material [%s]\n", source_name, material_name);
 	}
 	return -1;
-};
+}
 
 
 double AT_Stopping_Power_MeV_cm2_g_single( const long stopping_power_source_no, const double E_MeV_u, const long particle_no, const long material_no){
@@ -181,7 +181,7 @@ double AT_Stopping_Power_MeV_cm2_g_single( const long stopping_power_source_no, 
 	}
 
 	return Stopping_Power_MeV_cm2_g;
-};
+}
 
 
 void AT_Stopping_Power_MeV_cm2_g_multi( const long stopping_power_source_no, const long number_of_particles, const double E_MeV_u[], const long particle_no[], const long material_no, double Stopping_Power_MeV_cm2_g[]){
@@ -199,7 +199,7 @@ double AT_Stopping_Power_keV_um_single( const long stopping_power_source_no, con
     double material_density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
 
 	return Stopping_Power_MeV_cm2_g * material_density_g_cm3 * 0.1;
-};
+}
 
 
 void AT_Stopping_Power_keV_um_multi( const long stopping_power_source_no, const long number_of_particles, const double E_MeV_u[], const long particle_no[], const long material_no, double Stopping_Power_keV_um[]){

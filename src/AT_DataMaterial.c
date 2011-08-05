@@ -467,9 +467,9 @@ void AT_set_user_material_from_composition( const long n,
 	double* normalized_weight_fraction = (double*)calloc(n, sizeof(double));
 	AT_normalize(n, weight_fraction, normalized_weight_fraction);
 
-	double I_eV;
-	double average_Z;
-	double average_A;
+	double I_eV			= 0.0;
+	double average_Z	= 0.0;
+	double average_A	= 0.0;
 	AT_set_user_material(density_g_cm3,
 			I_eV,
 			average_A,

@@ -193,7 +193,7 @@ double AT_WEPL_Bethe_single(	const double 	E_MeV_u,
 	                                               Water_Liquid) / m_to_cm;
 
 	return (range_water_m - residual_range_m) / slab_thickness_m;
-};
+}
 
 void AT_WEPL_Bethe_multi(	const long    n,
 		const double 	E_MeV_u[],
