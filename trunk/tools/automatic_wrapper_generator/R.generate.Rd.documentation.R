@@ -201,7 +201,7 @@ for(i in 1:length(functions)){
       }
      
     # Write current description to file
-	write(c(cur.description, "\n"), file = paste("./package/man/", cur.function$name, ".Rd", sep = ""), append = T)
+	write(c(cur.description, "\n"), file = paste("./", cur.function$name, ".Rd", sep = ""), append = T)
 }
 
 

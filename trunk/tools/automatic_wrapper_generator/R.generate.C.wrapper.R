@@ -29,7 +29,7 @@ source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")
 
 load("functions.sdd")
 
-write("#ifndef AT_R_WRAPPER_H_\n#define AT_R_WRAPPER_H_\n// Automatically created header file\n\n#include \"AT_Algorithms_CPP.h\"\n#include \"AT_Algorithms_IGK.h\"\n#include <stdlib.h>\n#include <stdbool.h>\n", file = "AT_R_Wrapper.h")
+write("#ifndef AT_R_WRAPPER_H_\n#define AT_R_WRAPPER_H_\n// Automatically created header file\n\n#include \"AT_Algorithms_CPP.h\"\n#include \"AT_Algorithms_IGK.h\"\n#include \"AT_DataRange.h\"\n#include <stdlib.h>\n#include <stdbool.h>\n", file = "AT_R_Wrapper.h")
 
 write("// Automatically created header and body file\n\n#include \"AT_R_Wrapper.h\"\n", file = "AT_R_Wrapper.c")
 
