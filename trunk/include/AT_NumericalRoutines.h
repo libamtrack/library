@@ -36,9 +36,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <malloc.h>
 #include <string.h>
 #include <assert.h>
+
+// Some headers are found in different places in Mac OS X
+#ifdef __APPLE__
+	#include <sys/malloc.h>
+#else
+	#include <malloc.h>
+#endif
 
 #include "gsl/gsl_math.h"
 
