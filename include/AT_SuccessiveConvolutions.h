@@ -36,8 +36,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
-#include <malloc.h>
 #include <assert.h>
+
+// Some headers are found in different places in Mac OS X
+#ifdef __APPLE__
+	#include <sys/malloc.h>
+#else
+	#include <malloc.h>
+#endif
 
 /**
  * Computes the size of the array to hold the f1 (single impact) local dose distribution for a given field, rdd, er

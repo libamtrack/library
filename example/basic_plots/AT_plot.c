@@ -30,11 +30,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
 #include <math.h>
 #include <stdbool.h>
 #include <string.h>
 #include <getopt.h>
+
+// Some headers are found in different places in Mac OS X
+#ifdef __APPLE__
+	#include <sys/malloc.h>
+#else
+	#include <malloc.h>
+#endif
 
 #include "AT_RDD.h"
 #include "AT_DataLET.h"
