@@ -155,9 +155,14 @@ typedef struct {
   long			phase[MATERIAL_DATA_N];
 } AT_table_of_material_data_struct;
 
+// This is to suppress "defined but not used" warnings by gcc here
+#ifdef __GNUC__
+#define VARIABLE_IS_NOT_USED __attribute__ ((unused))
+#else
+#define VARIABLE_IS_NOT_USED
+#endif
 
-//static const
-static AT_table_of_material_data_struct AT_Material_Data = {
+static AT_table_of_material_data_struct VARIABLE_IS_NOT_USED AT_Material_Data = {
     MATERIAL_DATA_N,
     // material_no
     {  User_Defined_Material,

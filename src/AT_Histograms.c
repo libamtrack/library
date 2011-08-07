@@ -62,7 +62,7 @@ int AT_histo_left_limit( const long number_of_bins,
     const long bin_no,
     double * left_limit)
 {
-  int status_code;
+  int status_code = EXIT_FAILURE;
   if (histo_type == AT_histo_linear){
     status_code = AT_histo_linear_left_limit( number_of_bins,
                                    lowest_left_limit,
@@ -76,7 +76,7 @@ int AT_histo_left_limit( const long number_of_bins,
                                    bin_no,
                                    left_limit);
   }
-  return EXIT_FAILURE;
+  return status_code;
 }
 
 
