@@ -1,2 +1,7 @@
-PKG_CFLAGS=-I../../../../include -IC:/Programme/MinGW/include -IC:/Programme/GnuWin32/include
-PKG_LIBS=-L../../../../lib -LC:/Programme/GnuWin32/bin -lgsl -lgslcblas
+# We use the Makevars.win from package 'gsl'
+# appreciating their work
+
+# lines below supplied by Brian Ripley and Uwe Ligges
+
+PKG_CPPFLAGS=-I$(LIB_GSL)/include
+PKG_LIBS=-L$(LIB_GSL)/lib -lgsl
