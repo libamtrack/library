@@ -1,6 +1,3 @@
-# We use a modified version of the configure.ac from
-# CRAN package 'gsl'
-
 AC_INIT([src/AT_Algorithms_CPP.c])
 
 # Following lines kindly supplied by Dirk Eddelbuettel
