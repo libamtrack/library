@@ -1,6 +1,6 @@
 Package: libamtrack
 Version: 0.5.1
-Date: 2011-08-09
+Date: 2011-08-10
 Title: Computational routines for proton and ion radiotherapy
 Author: Steffen Greilich and the libamtrack team
 Maintainer: Steffen Greilich <s.greilich@dkfz.de> 

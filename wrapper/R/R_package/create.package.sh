@@ -41,6 +41,10 @@ mv AT_R_Wrapper.* libamtrack/src
 mv libamtrack.R libamtrack/R
 mv *.Rd libamtrack/man
 
+# *** Run autoconf
+autoconf libamtrack/configure.ac >libamtrack/configure
+chmod 755 libamtrack/configure
+
 # *** Build test package ***
 R CMD check ./libamtrack --no-manual
 if [ "$?" -ne "0" ]; then
