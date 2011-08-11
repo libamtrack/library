@@ -1,0 +1,19 @@
+This package is the R interface to the open-source, ANSI C library libamtrack (http://libamtrack.dkfz.org). libamtrack provides computational routines for the prediction of detector response and radiobiological efficiency in heavy charged particle beams. It is designed for research in proton and ion dosimetry and radiotherapy. libamtrack also provides many auxiliary physics routines for proton and ion beams. 
+
+Author(s): Steffen Greilich and the libamtrack team.
+
+Original package and C-to-R autoconversion routines developed by Felix A. Klein.
+
+Configure procedure adapted from package 'gsl', courtesy of Robin Hankin with contributions from Dirk Eddelbuettel, Brian Ripley and Uwe Ligges.
+
+Please send feedback, bug reports etc to: s.greilich@dkfz.de
+
+
+*** IMPORTANT ***
+
+Please note that libamtrack needs GSL, the GNU Scientific Library (http://www.gnu.org/software/gsl/), to work.
+
+GSL is included in most GNU/Linux distributions (you maybe have to install it via your package management system or similar). Binary installer exist for Mac OS X (http://ascend4.org/Binary_installer_for_GSL-1.13_on_Mac_OS_X) and Windows (http://gnuwin32.sourceforge.net/packages/gsl.htm). Of course, you can also compile GSL from sources yourself, also for Window using MSYS/MinGW (http://www.mingw.org/) or cygwin (http://www.cygwin.com/, where a precompiled package exists).
+
+
+
