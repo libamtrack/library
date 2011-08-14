@@ -50,7 +50,6 @@
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_randist.h>
 
-
 /**
  * Computes HCP response and relative efficiency/RBE using compound Poison processes and
  * successive convolutions (CPP_SC, the 'SPIFF' algorithm)

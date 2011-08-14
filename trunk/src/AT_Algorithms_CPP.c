@@ -30,6 +30,10 @@
 
 #include "AT_Algorithms_CPP.h"
 
+double AT_test_fun(double a, double b){
+	return(a+b);
+}
+
 void AT_run_CPPSC_method(  const long  number_of_field_components,
     const double  E_MeV_u[],
     const long    particle_no[],
