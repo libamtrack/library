@@ -1,0 +1,10 @@
+From revision r1037 on, libamtrack follow the GNU autotool conventions to improve portability and facilitate distribution.
+
+This required new files (such as configure.ac, Makefile.am, ChangeLog, NEWS, etc.) and folders (m4) that have be placed in the subversion repository.
+
+In addition, file and folders will be created during the autoconf/automake process (such as aclocal.m4, config.guess, configure, install.sh, Makefile, etc.). Those files *should not* be committed to the repository. Please refrain from doing so. Instead, you can trigger the autotool process and create those file in your local workspace using:
+
+autoreconf --force --install
+
+S. Greilich, 2011-08-14
+
