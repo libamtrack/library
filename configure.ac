@@ -5,6 +5,7 @@ LT_INIT
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/AT_Algorithms_CPP.c])
+AC_CONFIG_SRCDIR([test/C/AT_test.c])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
@@ -42,5 +43,5 @@ AC_FUNC_REALLOC
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([floor pow sqrt strstr strtol])
 
-AC_CONFIG_FILES(Makefile src/Makefile)
+AC_CONFIG_FILES(Makefile src/Makefile test/Makefile test/C/Makefile)
 AC_OUTPUT
