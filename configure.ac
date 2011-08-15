@@ -43,5 +43,5 @@ AC_FUNC_REALLOC
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([floor pow sqrt strstr strtol])
 
-AC_CONFIG_FILES(Makefile src/Makefile test/Makefile test/C/Makefile)
+AC_CONFIG_FILES(Makefile src/Makefile test/Makefile test/C/Makefile example/Makefile example/basic_plots/Makefile example/demo/Makefile)
 AC_OUTPUT
