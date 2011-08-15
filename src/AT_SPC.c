@@ -64,7 +64,7 @@ void readStruct(FILE *fp,
 {
   size_t n_read_elements = fread(str, sizeof(struct STRPSPCBTAG), 1, fp);
   if( n_read_elements != 1)
-	  printf("Read %d element(s), instead of %d !\n", n_read_elements, 1);
+	  printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
   if (switchEndian){
       endian_swap4(&(*str).ulLen);
       endian_swap4(&(*str).ulTag);
@@ -91,7 +91,7 @@ int AT_SPC_get_size(FILE *fp){
 	//Skip structure. Just going to assume the tags are right here.
     size_t n_read_elements = fread(string, sizeof(char), 80, fp);
     if( n_read_elements != 80)
-    	printf("Read %d element(s), instead of %d !\n", n_read_elements, 80);
+    	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 80);
 	if (strcmp(string,"SPCM")==0)
 		switchEndian=true;
 	fseek (fp ,  88*2, SEEK_CUR ); //Skip Fileversion and filedate
@@ -109,7 +109,7 @@ int AT_SPC_get_size(FILE *fp){
 	readStruct(fp,&nStepsTag,switchEndian);
 	n_read_elements = fread(&nSteps,sizeof(uint64_t),1,fp);
     if( n_read_elements != 1)
-    	printf("Read %d element(s), instead of %d !\n", n_read_elements, 1);
+    	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
 	if (switchEndian) endian_swap8(&nSteps);
 	uint64_t binsize;
 	int i;
@@ -124,7 +124,7 @@ int AT_SPC_get_size(FILE *fp){
 		}
 		n_read_elements = fread(&nSpecies,sizeof(int64_t),1,fp);
 	    if( n_read_elements != 1)
-	    	printf("Read %d element(s), instead of %d !\n", n_read_elements, 1);
+	    	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
 		if (switchEndian) endian_swap8(&nSpecies);
 		//    printf("Species: %u \n",nSpecies);
 		int j;
@@ -159,7 +159,7 @@ int AT_SPC_get_size(FILE *fp){
 			}
 			n_read_elements = fread(&binsize,sizeof(uint64_t),1,fp); //Read number of NE bins
 		    if( n_read_elements != 1)
-		    	printf("Read %d element(s), instead of %d !\n", n_read_elements, 1);
+		    	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
 			if (switchEndian) endian_swap8(&binsize);
 			size += binsize;
 
@@ -283,7 +283,7 @@ int AT_SPC_read_data(FILE* fp,
 	//Skip structure. Just going to assume the tags are right here.
 	size_t n_read_elements = fread(string, sizeof(char), 80, fp);
     if( n_read_elements != 80)
-    	printf("Read %d element(s), instead of %d !\n", n_read_elements, 80);
+    	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 80);
 	if (strcmp(string,"SPCM")==0)
 		switchEndian=true;
 	fseek (fp ,  88*2, SEEK_CUR ); //Skip Fileversion and filedate
@@ -301,7 +301,7 @@ int AT_SPC_read_data(FILE* fp,
 	readStruct(fp,&nStepsTag,switchEndian);
 	n_read_elements = fread(&nSteps,sizeof(uint64_t),1,fp);
 	if( n_read_elements != 1)
-	   	printf("Read %d element(s), instead of %d !\n", n_read_elements, 1);
+	   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
 	if (switchEndian) endian_swap8(&nSteps);
 
 	uint64_t binsize;
@@ -311,7 +311,7 @@ int AT_SPC_read_data(FILE* fp,
 		double curDepth;
 		n_read_elements = fread(&curDepth,sizeof(double),1,fp);
 		if( n_read_elements != 1)
-		   	printf("Read %d element(s), instead of %d !\n", n_read_elements, 1);
+		   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
 		if (switchEndian) endian_swap8((uint64_t*)(&curDepth));
 
 		fseek(fp,16, SEEK_CUR); //Skip normalization
@@ -324,7 +324,7 @@ int AT_SPC_read_data(FILE* fp,
 		}
 		n_read_elements = fread(&nSpecies,sizeof(uint64_t),1,fp);
 		if( n_read_elements != 1)
-		   	printf("Read %d element(s), instead of %d !\n", n_read_elements, 1);
+		   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
 		if (switchEndian) endian_swap8(&nSpecies);
 
 		int j;
@@ -339,10 +339,10 @@ int AT_SPC_read_data(FILE* fp,
 			uint32_t z,a;
 			n_read_elements = fread(&z,sizeof(uint32_t),1,fp);//Read A and Z values
 			if( n_read_elements != 1)
-			   	printf("Read %d element(s), instead of %d !\n", n_read_elements, 1);
+			   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
 			n_read_elements = fread(&a,sizeof(uint32_t),1,fp);
 			if( n_read_elements != 1)
-			   	printf("Read %d element(s), instead of %d !\n", n_read_elements, 1);
+			   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
 			fseek(fp,8*4,SEEK_CUR);//Skip Cum & nC
 			struct STRPSPCBTAG  nBins;
 			readStruct(fp,&nBins,switchEndian);
@@ -352,7 +352,7 @@ int AT_SPC_read_data(FILE* fp,
 			}
 			n_read_elements = fread(&binsize,sizeof(uint64_t),1,fp); //Read number of NE bins
 			if( n_read_elements != 1)
-			   	printf("Read %d element(s), instead of %d !\n", n_read_elements, 1);
+			   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
 			if (switchEndian) endian_swap8(&binsize);
 			size += binsize;
 
@@ -362,7 +362,7 @@ int AT_SPC_read_data(FILE* fp,
 				uint64_t pRef;
 				n_read_elements = fread(&pRef,sizeof(uint64_t),1,fp);
 				if( n_read_elements != 1)
-				   	printf("Read %d element(s), instead of %d !\n", n_read_elements, 1);
+				   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
 				if (pRef > k){
 					printf("SPC file corrupt \n");
 					return 0;
@@ -377,7 +377,8 @@ int AT_SPC_read_data(FILE* fp,
 				double tempBins[binsize];
 				n_read_elements = fread(tempBins, sizeof(double), binsize+1, fp);
 				if( n_read_elements != binsize+1)
-				   	printf("Read %d element(s), instead of %llu !\n", n_read_elements, binsize+1);
+//				   	printf("Read %zu element(s), instead of %llu !\n", n_read_elements, binsize+1);
+					printf("Read %zu element(s), instead of %lu !\n", n_read_elements, binsize+1);
 				int n;
 				for (n=0; n < binsize; n++){
 					E_MeV_u[k+n]=(tempBins[n+1]+tempBins[n])/2;
@@ -402,7 +403,7 @@ int AT_SPC_read_data(FILE* fp,
 			}
 			n_read_elements = fread(&fluence_cm2[k],sizeof(double),binsize,fp);
 			if( n_read_elements != binsize)
-			   	printf("Read %d element(s), instead of %llu !\n", n_read_elements, binsize);
+			   	printf("Read %zu element(s), instead of %lu !\n", n_read_elements, binsize);
 			int n;
 			for (n = 0; n < binsize; n++){
 				depth_g_cm2[k+n]=curDepth;
