@@ -1,5 +1,5 @@
 /**
- * @brief Dummy file to enable debugging...
+ * @brief A simple file to check the library and enable debugging
  */
 
 /*
@@ -34,33 +34,22 @@
 #include <math.h>
 #include <stdbool.h>
 #include <string.h>
-
-#include "AT_DataRange.h"
-
 #include <assert.h>
+
+#include "AT.h"
 
 int main(){
 
-	
-	const long n = 3;
-	const long Z[3] = {1,6,8};
-	const long A[3] = {1,12,16};
-	const double weight_fraction[3] = {6, 3, 1};
-	double average_A = 6666;
-	double effective_Z = 6666;
-    double exponent = 3.5;
-	double el_dens = 0;
-    double I_eV = 0;
-    double density = 2.0;
+	const double a = 2, b = 3;
 
-	AT_average_A_from_composition( n,
-	    A,
-	    weight_fraction,
-	    &average_A);
+	double result = AT_test_fun(a, b);
 
-	AT_effective_Z_from_composition(n, Z, weight_fraction, exponent, &effective_Z);
-	AT_I_eV_from_composition(n, A, Z, weight_fraction, &I_eV);
-	AT_electron_density_m3_from_composition(n, density, Z, A, weight_fraction, &el_dens);
-
-	return EXIT_SUCCESS;
+	if(result == a + b){
+		printf("libamtrack is working.\n");
+		return EXIT_SUCCESS;
+	}else{
+		printf("libamtrack is NOT working properly.\n");
+		return EXIT_FAILURE;
+	}
 };
+

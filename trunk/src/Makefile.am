@@ -13,8 +13,3 @@ include_HEADERS= ../include/AT.h ../include/AT_Algorithms_CPP.h ../include/AT_Al
  ../include/AT_Histograms.h ../include/AT_Algorithms_GSM.h ../include/AT_SPC.h
 libamtrack_la_CFLAGS =-I../include -Wall -std=gnu99 -fPIC
 libamtrack_la_LDFLAGS = -version-info 0:0:0
-
-bin_PROGRAMS = amtrack_test
-amtrack_test_SOURCES = AT_Test.c
-amtrack_test_CFLAGS =-I../include -Wall -std=gnu99 -fPIC
-amtrack_test_LDADD = libamtrack.la
