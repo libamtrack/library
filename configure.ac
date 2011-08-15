@@ -1,5 +1,6 @@
 AC_PREREQ([2.67])
-AC_INIT([libamtrack], [0.5.2], [s.greilich@dkfz.de])
+AC_INIT([libamtrack], [0.5.2], [s.greilich@dkfz.de], [libamtrack])
+AC_PACKAGE_URL([libamtrack.dkfz.org])
 LT_INIT
 #AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE
@@ -12,6 +13,15 @@ AC_CONFIG_HEADERS([config.h])
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_MAKE_SET
+
+# check if revision number can be found
+AC_CHECK_PROG(HAVE_SVNVERSION, svnversion, yes, [not found])
+if test "${HAVE_SVNVERSION}" == "yes"; then
+	define([svnversioncmd], esyscmd([sh -c "svnversion|tr -d '\n'"]))
+	AC_DEFINE(SVN_REVISION, "svnversioncmd", [SVN Revision])
+else
+	AC_DEFINE(SVN_REVISION, [svnversion not available], [SVN Revision])
+fi
 
 # Checks for libraries, add uset-set path to gsl if necessary (e.g. on Windows)
 if test "${LIB_GSL}" != ""; then
