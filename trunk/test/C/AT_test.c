@@ -37,18 +37,23 @@
 #include <assert.h>
 
 #include "AT.h"
+#include "config.h"
 
 int main(){
 
-	const double a = 2, b = 3;
+	const double 	a = 2, b = 3;
+	double 			result = AT_test_fun(a, b);
 
-	double result = AT_test_fun(a, b);
+	char			version_tag[255];
+	strcpy(version_tag, VERSION);		// from config.h <-- ./configure
+	strcat(version_tag, "r");
+	strcat(version_tag, SVN_REVISION);  // from config.h <-- ./configure
 
 	if(result == a + b){
-		printf("libamtrack is working.\n");
+		printf("libamtrack %s is working.\n", version_tag);
 		return EXIT_SUCCESS;
 	}else{
-		printf("libamtrack is NOT working properly.\n");
+		printf("libamtrack %s is NOT working properly [problem in calling AT_test_fun()].\n", version_tag);
 		return EXIT_FAILURE;
 	}
 };
