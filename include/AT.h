@@ -33,8 +33,14 @@
 
 #include <stdio.h>
 
-double AT_test_fun(double a, double b);
-
-// TODO: Add config function that uses definitions config.h
+/**
+ * Simple test function (sum) to check for availability and functionality of
+ * libamtrack during configure-process
+ *
+ * @param[in]      a     			first number to add
+ * @param[in]      b                second number to add
+ * @return                          sum of a and b
+ */
+ double AT_test_fun( double a, double b);
 
 #endif /* AT_ALGORITHMS_CPP_H_ */
