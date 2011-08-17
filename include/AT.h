@@ -12,6 +12,11 @@
  *    Created on: 14.08.2011
  *    Creator: greilich
  *
+ *    File name: $HeadURL$
+ *    Revision:  $Revision$
+ *    Last modified: $Date$
+ *    Last modified by: $Author$
+ *
  *    Copyright 2006, 2010 The libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
