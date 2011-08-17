@@ -46,8 +46,12 @@ int main(){
 
 	char			version_tag[255];
 	strcpy(version_tag, VERSION);		// from config.h <-- ./configure
-	strcat(version_tag, "r");
-	strcat(version_tag, SVN_REVISION);  // from config.h <-- ./configure
+
+#ifdef SVN_VERSION
+	strcat(version_tag, " (rev ");
+	strcat(version_tag, SVN_VERSION);  // from config.h <-- ./configure
+	strcat(version_tag, ")");
+#endif
 
 	if(result == a + b){
 		printf("libamtrack %s is working.\n", version_tag);

@@ -2,11 +2,11 @@
 #define AT_H_
 
 /**
- * @brief Algorithms for ATMs based on Compound Poisson Processes (CPP)
+ * @brief Routines concerning general topis of libamtrack
  */
 
 /*
- *    AT_Algorithms.h
+ *    AT.h
  *    ===============
  *
  *    Created on: 14.08.2011
