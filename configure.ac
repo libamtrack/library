@@ -13,14 +13,8 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_MAKE_SET
 
-# check if revision number can be found
-AC_CHECK_PROG(HAVE_SVNVERSION, svnversion, yes, [not found])
-if test "${HAVE_SVNVERSION}" == "yes"; then
-	define([svnversioncmd], esyscmd([sh -c "svnversion|tr -d '\n'"]))
-	AC_DEFINE(SVN_REVISION, "svnversioncmd", [SVN Revision])
-else
-	AC_DEFINE(SVN_REVISION, [svnversion not available], [SVN Revision])
-fi
+# Set revision automatically by svn:keywords
+AC_DEFINE(SVN_REVISION, $Rev$, [SVN Revision])
 
 # Checks for libraries, add uset-set path to gsl if necessary (e.g. on Windows)
 if test "${LIB_GSL}" != ""; then
