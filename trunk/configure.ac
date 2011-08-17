@@ -2,7 +2,6 @@ AC_PREREQ([2.67])
 AC_INIT([libamtrack], [0.5.2], [s.greilich@dkfz.de], [libamtrack])
 AC_PACKAGE_URL([libamtrack.dkfz.org])
 LT_INIT
-#AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/AT_Algorithms_CPP.c])
@@ -28,8 +27,7 @@ if test "${LIB_GSL}" != ""; then
 	CFLAGS="${CFLAGS} -I${LIB_GSL}/include"
 	LDFLAGS="${LDFLAGS} -L${LIB_GSL}/lib -lgsl"
 fi
-#AC_CHECK_LIB([m],[cos])
-#AC_CHECK_LIB([gslcblas],[cblas_dgemm])
+
 AC_SEARCH_LIBS(cos, m)
 AC_SEARCH_LIBS([cblas_dgemm], [gslcblas], [], [
   AC_MSG_ERROR([unable to find the cblas_dgemm() function in gslcblas])
