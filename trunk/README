@@ -19,6 +19,10 @@ libamtrack's main website: http://libamtrack.dkfz.org
 
 libamtrack as a shared library cannot be run as a single executable. A number of interfaces are already provided. You can also use libamtrack in your own code (e.g. in C, Python, Matlab, ...).
 
+== Important ==
+Please note that libamtrack (but not the web interface version) needs GSL, the GNU Scientific Library ([http://www.gnu.org/software/gsl/) to work.
+GSL is included in most GNU/Linux distributions (you maybe have to install it via your package management system or similar). Binary installer exist for Mac OS X (http://ascend4.org/Binary_installer_for_GSL-1.13_on_Mac_OS_X) and Windows (http://gnuwin32.sourceforge.net/packages/gsl.htm). Of course, you can also compile GSL from sources yourself, also for Window using MSYS/MinGW (http://www.mingw.org/) or cygwin (http://www.cygwin.com/, where a precompiled package exists.
+
 i. Web-interface
 ----------------
 The web interface covers a subset of libamtrack functions for easy access and can be found on libamtrack's website: http://libamtrack.dkfz.org. The sources can be found at (/tools/webgui). The interface development was started by Christoph Kolb within his Bachelor thesis and consolidated by Leszek Grzanka.
@@ -50,7 +54,6 @@ libamtrack can be build on Windows using MinGW/MSYS. Add --build=mingw32 ('--bui
 
 -- Mac OS X-specific:
 Remember to adapt the --build option for 'configure' to match your GSL installation.
-
 
 
 3. CAN I USE LIBAMTRACK IN MY RESEARCH AND/OR MODIFY THE CODE?
