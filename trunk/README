@@ -10,29 +10,46 @@ libamtrack is written in ANSI C.
 libamtrack is free, open-source software under GNU GPL licence.
 libamtrack is intended to facilitate the comparison of and the communication on amorphous track models for particle beam research.
 
+libamtrack's main website: http://libamtrack.dkfz.org
+
 
 
 2. HOW CAN I USE LIBAMTRACK?
 ============================
 
-libamtrack as a shared library cannot be run as a single executable. The are a number of interfaces already provided. You can also use libamtrack locally in your own code (e.g. in C, Matlab, ...).
+libamtrack as a shared library cannot be run as a single executable. A number of interfaces are already provided. You can also use libamtrack in your own code (e.g. in C, Python, Matlab, ...).
 
 i. Web-interface
 ----------------
-- Tba
+The web interface covers a subset of libamtrack functions for easy access and can be found on libamtrack's website: http://libamtrack.dkfz.org. The sources can be found at (/tools/webgui). The interface development was started by Christoph Kolb within his Bachelor thesis and consolidated by Leszek Grzanka.
 
-ii. R-package
--------------
-- Tba
+ii. R
+-----
+libamtrack is a contributed package (http://cran.r-project.org/web/packages/libamtrack) on the Comprehensive R Archive Network (CRAN, http://cran.r-project.org). The sources for the R package can be found at /wrapper/R/R_package. Its compilation process uses scripts found at /tools/automatic_wrapper_generator (TODO: should be 'autobindings').
+There is also a more simple direct access by using the 'dyn.load' command (/wrapper/R/R_direct_access), mainly used for test scripts run on the Hudson night build system to maintain functionality during development (/test/R).
 
-iii. Python wrappers
+iii. Python, Matlab wrappers
 --------------------
-- libamtrack comes with a collection of Python wrappers (/wrapper/Python).
+ibamtrack comes with a collection of wrappers for Python and Matlab (/wrapper/Python, /wrapper/Matlab).
 
-iv. Local use of libamtrack
----------------------------
-- Download the lastest precompiled binary (plus C-headers) for your OS from https://sourceforge.net/projects/libamtrack/files/
-- Follow the instructions given in INSTALL.txt
+iv. Use precompiled binaries
+----------------------------
+- Precompiled binaries (incl. headers) for your OS are found on libamtrack's website. In the future, rpm/deb packages will be provided (TODO).
+
+v. Compile libamtrack from sources
+----------------------------------
+- Download the latest source release from libamtrack's website or the current development version from the svn repository ().
+- Compilation is done via the GNU autotools tool chain (./configure && make && make install). 
+- Detailed instructions for the GNU autotools are found in /INSTALL.
+
+-- Linux-specific:
+It can be necessary to run 'ldconfig' after installation.
+
+-- Windows-specific:
+libamtrack can be build on Windows using MinGW/MSYS. Add --build=mingw32 ('--build=x86-winnt-mingw') and an appropriate '--prefix=...' option for 'configure'. Also, an environmental variable has to be set to point to your GSL installation, e.g. "set LIB_GSL=C:/GnuWin32" (forward slashes!).
+
+-- Mac OS X-specific:
+Remember to adapt the --build option for 'configure' to match your GSL installation.
 
 
 
