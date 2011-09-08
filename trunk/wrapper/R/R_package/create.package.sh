@@ -53,6 +53,14 @@ if [ "$?" -ne "0" ]; then
   exit 1
 fi
 
+echo "Running R script to add metainformation (date, version, etc.) to R package description..."
+R --no-save CMD BATCH ../../../tools/automatic_wrapper_generator/R.add.metainfo.R
+if [ "$?" -ne "0" ]; then
+  echo "Problem with executing R.add.metainfo.R"
+  exit 1
+fi
+
+
 # *** Move resulting file (wrapper C and R), dynamically coded documentation to temporary folder
 echo "Moving results from R scripts into package structure..."
 mv AT_R_Wrapper.* libamtrack/src
