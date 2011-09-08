@@ -73,7 +73,14 @@ for(header.file.name in header.file.names){
      
      # Read the current header file (in lines)
      raw.header.file.text             <- scan(header.file.name, what = "character", sep = "\n")
-     
+
+     # Read the corresponding source file (in lines)
+     source.file.name                 <- gsub(".h$", ".c", header.file.name)
+     source.file.text                 <- scan( paste("../src/", source.file.name, sep = ""),
+                                               what = "character", 
+                                               sep = "\n", 
+                                               blank.lines.skip = FALSE)
+
      print(paste("Read: ", header.file.name))
 
      # Find the start of doxygen comments ("/**") and the end of a declaration (");")
@@ -180,7 +187,14 @@ for(header.file.name in header.file.names){
                raw.declaration.text                     <- reduced.header.file.text[idx.declaration]
           
                # Function name
-               current.function$name   <- name     
+               current.function$name                    <- name     
+
+               # Store line in header file (for links to code in documentation)
+               # TODO: To take the first appearance of the function name as the actual
+               # source code and not a call to the function (grep will find both)
+               # is a pretty sloppy approach and should be improved
+               current.function$src.line.no             <- grep(name, source.file.text, fixed = TRUE)[1]
+               current.function$src.file.name           <- source.file.name
 
                ########################################
                # B1. Process doxygen parameter comments
