@@ -29,6 +29,7 @@ rm(list = ls())
 
 # Load the function information extracted by 'read.cur.description.R'
 load("functions.sdd")
+load("meta.information.sdd")
 
 # Replacement for "grepl" function to ensure compatibility with R <= 2.9.0
 grep.bool	<-	function(pattern, x, ...){
@@ -51,17 +52,6 @@ pos.start.examples                 <- grep("::", hardcoded.examples)
 names.examples                     <- substring( hardcoded.examples[pos.start.examples],
                                                  3,
                                                  nchar(hardcoded.examples[pos.start.examples]) - 2)
-
-# Read in links to sources
-links.to.sources                   <- scan( "./hardcoded_documentation/links.to.sources.txt", 
-                                            what  = "character",
-                                            sep   = "\n") 
-
-# Find first line of links and read the names
-idx.links.to.sources               <- grep("::", links.to.sources) + 1
-names.links                        <- substring( links.to.sources[idx.links.to.sources - 1],
-                                                 3,
-                                                 nchar(links.to.sources[idx.links.to.sources - 1]) - 2)
 
 # Read in type conversion table for C to R
 source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")
@@ -175,15 +165,26 @@ for(i in 1:length(functions)){
 	}
 	cur.description <- c(cur.description, "}")
 
-    # Add link to source if exists
-      if(cur.function$name %in% names.links){
-           idx.link              <- idx.links.to.sources[grep(cur.function$name, names.links)]
+    # Add link to source code
+           if(meta.infomation$code.status == "Development"){
+             cur.src.link          <- paste("http://sourceforge.net/apps/trac/libamtrack/browser/trunk/src/", 
+                                          cur.function$src.file.name, 
+                                          "#L",
+                                          cur.function$src.line.no,
+                                          sep = "")
+           }else{ # code.status == "Release"
+             cur.src.link          <- paste("http://sourceforge.net/apps/trac/libamtrack/browser/tags/", 
+                                          meta.information$code.version,
+                                          "/src/",
+                                          cur.function$src.file.name, 
+                                          "#L",
+                                          cur.function$src.line.no,
+                                          sep = "")
+           }
            cur.description       <- c(cur.description, "\\seealso{\nView the C source code here:\n")
-           cur.description       <- c(cur.description, paste("\\url{", links.to.sources[idx.link]), "}", sep = "")
+           cur.description       <- c(cur.description, paste("\\url{", cur.src.link, "}", sep = ""))
            cur.description       <- c(cur.description, "}")
            
-      }
-
 	  # Add example(s) if exists
       if(cur.function$name %in% names.examples){
            idx.start.example         <- pos.start.examples[grep(cur.function$name, names.examples)] + 1

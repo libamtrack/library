@@ -24,6 +24,12 @@ cp hardcoded_wrappers/*.R libamtrack/R/
 cp hardcoded_wrappers/hardcoded_wrapper.c libamtrack/src/
 cp hardcoded_wrappers/hardcoded_wrapper.h libamtrack/src/
 
+# *** Run autoconfigure (to update svn version) ***
+echo "Running autoreconf in main folder (to update svnversion information)..."
+cd ../../..
+autoreconf --force --install
+cd wrapper/R/R_package
+
 echo
 echo "Running R script to parse doxygen information from sources..."
 R --no-save CMD BATCH ../../../tools/automatic_wrapper_generator/collect.doxygen.information.R
@@ -46,17 +52,17 @@ if [ "$?" -ne "0" ]; then
   exit 1
 fi
 
-echo "Running R script to create Rd documentation from parsed doxygen information..."
-R --no-save CMD BATCH ../../../tools/automatic_wrapper_generator/R.generate.Rd.documentation.R
-if [ "$?" -ne "0" ]; then
-  echo "Problem with executing R.generate.Rd.documentation.R"
-  exit 1
-fi
-
 echo "Running R script to add metainformation (date, version, etc.) to R package description..."
 R --no-save CMD BATCH ../../../tools/automatic_wrapper_generator/R.add.metainfo.R
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.add.metainfo.R"
+  exit 1
+fi
+
+echo "Running R script to create Rd documentation from parsed doxygen information..."
+R --no-save CMD BATCH ../../../tools/automatic_wrapper_generator/R.generate.Rd.documentation.R
+if [ "$?" -ne "0" ]; then
+  echo "Problem with executing R.generate.Rd.documentation.R"
   exit 1
 fi
 
@@ -97,7 +103,7 @@ echo
 echo "Removing transient files and folder..."
 rm -f -r libamtrack
 rm -f -r libamtrack.Rcheck
-rm -f functions.sdd
+rm -f *.sdd
 rm -f *.Rout
 rm -f *.RData
 

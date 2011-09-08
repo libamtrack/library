@@ -29,6 +29,14 @@ code.status <- get.argument(configure.ac.file[ii&kk])
 # Get svn revision from saved file (which works whether svnversion runs or not)
 code.rev    <- scan("../../../saved_svn_version.txt", what = character())
 
+# Write to transient file to use in other scripts
+meta.infomation <- list( code.version = code.version, 
+            code.name    = code.name, 
+            code.status  = code.status, 
+            date.short   = date.short, 
+            date.long    = date.long)
+save( meta.infomation,
+      file = "meta.information.sdd")
 
 # Insert information
 desc.file   <- scan("./libamtrack/DESCRIPTION", what = character(), sep = "\n")
