@@ -16,8 +16,8 @@ Please note that libamtrack is still under heavy development and so is the R int
 \details{
 \tabular{ll}{
 Package: \tab libamtrack\cr
-Version: \tab 0.5.1 (Blue Wombat)\cr
-Date: \tab 2011-08-05\cr
+Version: \tab ##VERSION## (##NAME##)\cr
+Date: \tab ##DATE##\cr
 Depends: \tab R (>= 2.12.0)\cr
 Suggests: \tab lattice\cr
 SystemRequirements: \tab gsl\cr
