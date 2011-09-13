@@ -91,9 +91,9 @@ if [ "$?" -ne "0" ]; then
 fi
 
 # *** Build binary distribution ***
-echo
-echo "Building binary distribution package..."
-sudo R CMD INSTALL --build libamtrack
+#echo
+#echo "Building binary distribution package..."
+#sudo R CMD INSTALL --build libamtrack
 
 # *** Build tarball source package ***
 echo
