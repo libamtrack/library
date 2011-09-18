@@ -15,13 +15,14 @@ Presently, two versions of the reader exists: a slower but stable R version ('va
   \item{compress}{ if TRUE all entries with zero fluence will be removed to save memory.}
 }
 \value{
-  A data frame with the following columns
+  A list with (1) the 'spc' data frame with the following columns
   \item{depth.step}{ Index number of depth step (one-based)}
   \item{depth.g.cm2}{ Depth in g/cm2}
   \item{particle.no}{ Particle index number (see also(\code{\link{particle.no}}).}
   \item{E.MeV.u}{ Energy bin mid point in MeV/u (see also(\code{\link{E.MeV.u}}).}
   \item{DE.MeV.u}{ Energy bin width in MeV/u}
   \item{fluence.cm2}{ Fluence in 1/cm2 for each bin (NOT normalized per bin width).}
+  and (2) variables containing information as beam energy, peak position, projectile and target material.
 }
 \examples{
 # Read in TRiP data from 142 MeV protons and
