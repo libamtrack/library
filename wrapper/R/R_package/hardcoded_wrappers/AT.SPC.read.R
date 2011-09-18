@@ -193,6 +193,11 @@ AT.SPC.read <- function( file.name,
 			df  <- df[df$fluence.cm2 != 0,]
 		}	
 	}
-	return(df)
+	return(list( spc                 = df,
+	             n.depth.steps       = n.depth.steps,
+	             projectile          = projectile,
+	             target.material     = target.material,
+	             energy.MeV.u        = beam.energy.MeV.u,
+	             peak.position.g.cm2 = peak.position.g.cm2))
 }
 
