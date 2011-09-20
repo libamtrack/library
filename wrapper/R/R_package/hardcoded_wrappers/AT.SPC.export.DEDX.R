@@ -3,23 +3,26 @@
 #
 # S. Greilich, Jul 2011 / Sep 2011
 #############################################################
-AT.SPC.export.DEDX <- function(stopping.power.source.no, file.name.DEDX = NULL, particle.names = NULL, energy.MeV.u = NULL, write = TRUE)
+AT.SPC.export.DEDX <- function(stopping.power.source.no, file.name.DEDX = NULL, element.names = NULL, energy.MeV.u = NULL, plot = TRUE, write = TRUE)
 {
+# debug: stopping.power.source.no <- 2
+#       require(libamtrack)
+  
 # for documentation only: this code will convert a text file in ICRU49/73 format directly
 #	df                <- read.table("Water.txt", header = FALSE, sep = "\t")
-#	particle.names    <- c("H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar")
-#	names(df)         <- c("E.MeV.u", particle.names)
+#	element.names    <- c("H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar")
+#	names(df)         <- c("E.MeV.u", element.names)
 #
 #	df2               <- reshape( df,
 #								  direction       = "long",
 #								  idvar           = "E.MeV.u",
-#								  timevar         = "particle.name",
-#								  times           = particle.names,
+#								  timevar         = "element.name",
+#								  times           = element.names,
 #								  varying         = list(2:ncol(df)),
 #								  v.names         = "LET.MeV.cm2.g")
 #								  
-#	df2$particle.name <- factor( df2$particle.name,
-#								 levels     = particle.names,
+#	df2$element.name <- factor( df2$element.name,
+#								 levels     = element.names,
 #								 ordered    = TRUE)
 #
 #	row.names(df2)    <- 1:nrow(df2)
@@ -27,17 +30,22 @@ AT.SPC.export.DEDX <- function(stopping.power.source.no, file.name.DEDX = NULL, 
 	if(is.null(file.name.DEDX)){
 		file.name.DEDX    <- "libamtrack.dedx"
 	}
-	# If no particles given, use ICRU49/73 - use A = 2*Z for simplicity
-	if(is.null(particle.names)){
-		particle.names    <- c(	"H",  "He", "Li", "Be", "B", 
+	# If no elements given, use ICRU49/73 - and A = 2*Z for simplicity
+	if(is.null(element.names)){
+		element.names    <- c(	"H",  "He", "Li", "Be", "B", 
 								"C",  "N",  "O",  "F",  "Ne", 
 								"Na", "Mg", "Al", "Si", "P", 
 								"S",  "Cl", "Ar")
-		particle.nos      <- c(	"1H",   "4He",  "6Li",  "8Be",  "10B", 
+		particle.names    <- c(	"1H",   "4He",  "6Li",  "8Be",  "10B", 
 								"12C",  "14N",  "16O",  "18F",  "20Ne", 
 								"22Na", "24Mg", "26Al", "28Si", "30P", 
 								"32S",  "34Cl", "36Ar")
+	}else{
+	# TODO: Add 2*Z as A to particle.names
 	}
+	
+	particle.nos <- AT.particle.no.from.particle.name(particle.name = particle.names)
+	
 	# if no energy grid given, use ICRU49/73
 	if(is.null(energy.MeV.u)){
 		energy.MeV.u  	  <- c( 2.5e-02, 3.0e-02, 4.0e-02, 5.0e-02, 6.0e-02, 7.0e-02, 8.0e-02, 9.0e-02, 1.0e-01, 1.5e-01, 2.0e-01, 2.5e-01, 3.0e-01, 4.0e-01,
@@ -48,48 +56,64 @@ AT.SPC.export.DEDX <- function(stopping.power.source.no, file.name.DEDX = NULL, 
 	
 	# Get stopping power data
 	df <- expand.grid( energy.MeV.u      = energy.MeV.u,
-	                   particle.names    = particle.names,
+	                   particle.name     = particle.names,
 					   particle.no       = 0,
 					   stopping.power.MeV.cm2.g = 0)
 
-	df$particle.no   <- particle.nos[which(df$particle.names, particle.names)]
+	df$particle.no   <- particle.nos[match(df$particle.name, particle.names)]
+  df$stopping.power.MeV.cm2.g <- AT.Stopping.Power.MeV.cm2.g( stopping.power.source.no = stopping.power.source.no,
+                                                              E.MeV.u     = df$energy.MeV.u,
+                                                              particle.no = df$particle.no,
+                                                              material.no = AT.material.no.from.material.name(material.name = "Water, Liquid"))$Stopping.Power.MeV.cm2.g
 	
-	
-	
-	output, <-, "!filetype, , , , dEdx
-	!fileversion, , , , 19980515
-	!filedate, , , , "
+	output <- "!filetype    dEdx
+	!fileversion    19980515
+	!filedate    "
 
-	output, <-, paste(output,, date(),, "\n",, sep, =, "")
-	output, <-, paste(output,, "!material, , , , H2O
-	!density, , , , 1
+	output <- paste(output, date(), "\n", sep = "")
+	output <- paste(output, "!material    H2O
+	!density    1
 	#############################################################
-	#Export, of, SHIELD-HIT, Bethe, stopping, powers, for, use, in, TRiP98
+	#Export of SHIELD-HIT Bethe stopping powers for use in TRiP98
 	#
-	#, S., Greilich,, Jul, 2011
+	# S. Greilich, Jul 2011
 	#############################################################
-	\n",, sep, =, "")
+	\n", sep = "")
 
 
-	for(cur.particle, in, unique(df2$particle.name)){
-		#, cur.particle, <-, unique(df2$particle.name)[1]
-		ii, <-, df2$particle.name, ==, cur.particle
-		output, <-, paste(output,, 
-						"!projectile, , , , ",, cur.particle,, "\n",, 
-						"#, E/(MeV/u), dE/dx(MeVcm**2/g)\n",
-						"!dedx\n",, 
-						sep, =, "")
+	for(cur.particle in unique(df$particle.name)){
+		# cur.particle <- unique(df2$particle.name)[1]
+		ii <- df$particle.name == cur.particle
+		output <- paste(output, 
+						"!projectile    ", cur.particle, "\n", 
+						"# E/(MeV/u) dE/dx(MeVcm**2/g)\n",
+						"!dedx\n", 
+						sep = "")
 
-		for(i, in, 1:nrow(df2[ii,])){
-			output, <-, paste(output,
-							df2[ii,]$E.MeV.u[i],, ", ",
-							df2[ii,]$LET.MeV.cm2.g[i],, "\n",
-							sep, =, "")
+		for(i in 1:nrow(df[ii,])){
+			output <- paste(output,
+							df[ii,]$energy.MeV.u[i], " ",
+							df[ii,]$stopping.power.MeV.cm2.g[i], "\n",
+							sep = "")
 		}
 	}
 
-	if(write, ==, TRUE){
-		write(output,, file, =, file.name)
+	if(write == TRUE){
+		write(output, file = file.name.DEDX)
 	}
+ 
+  if(plot == TRUE){
+    require(lattice)
+    xyplot( log10(stopping.power.MeV.cm2.g) ~ log10(energy.MeV.u)|sprintf("data source no. %d", stopping.power.source.no),
+            df,
+            groups   = particle.name,
+            type     = 'o',
+            auto.key = list(space = 'right'))
+  }
+
+  if(sum(is.na(df$stopping.power.MeV.cm2.g))>0){
+    print("Warning: NAs in stopping power data! Check your energy grid.")
+  }
+  
 	return(df)
 }
