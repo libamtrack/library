@@ -1,18 +1,22 @@
 AT.SPC.spectrum.at.depth.g.cm2 <- function(spc, depth.g.cm2)
 {
-    depth.g.cm2.in.spc    <- unique(spc$depth.g.cm2)
-    closest.depth.idx     <- which(abs(depth.g.cm2.in.spc - depth.g.cm2) == min(abs(depth.g.cm2.in.spc - depth.g.cm2)))
-    closest.depth.g.cm2   <- depth.g.cm2.in.spc[closest.depth.idx]
-    depth.step            <- unique(spc$depth.step)[closest.depth.idx]
+    depth.step.of.spc      <- unique(spc$depth.step)
+    depth.g.cm2.of.spc     <- unique(spc$depth.g.cm2)
+    # find depth index (step)
+    depth.step.interp      <- approx( x    = depth.g.cm2.of.spc,
+                                      y    = depth.step.of.spc,
+                                      xout = depth.g.cm2)$y
+    
+    depth.step.int         <- floor(depth.step.interp)
+    depth.step.frac        <- depth.step.interp - depth.step.int
 
-    cat( paste( "Closest depth [g/cm2] is ", 
-                sprintf("%4.3f", closest.depth.g.cm2), 
-                " (depth step ", 
-                depth.step, 
-                ") with offset ", 
-                sprintf("%4.3f", depth.g.cm2 - closest.depth.g.cm2), 
-                ".\n", 
-                sep = ""))
+    spc.before             <- spc[spc$depth.step == depth.step.int,]  
+    spc.after              <- spc[spc$depth.step == (depth.step.int+1),]  
 
-   return(AT.SPC.spectrum.at.depth.step(spc, depth.step))
+    spc.interp             <- spc.before
+    spc.interp$depth.step  <- depth.step.interp
+    spc.interp$depth.g.cm2 <- depth.g.cm2
+    spc.interp$fluence.cm2 <- (1 - depth.step.frac) * spc.before$fluence.cm2 + depth.step.frac * spc.after$fluence.cm2
+      
+    return(spc.interp)
 }

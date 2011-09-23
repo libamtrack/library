@@ -5,31 +5,10 @@
 #############################################################
 AT.SPC.export.DEDX <- function(stopping.power.source.no, file.name.DEDX = NULL, element.names = NULL, energy.MeV.u = NULL, plot = TRUE, write = TRUE)
 {
-# debug: stopping.power.source.no <- 2
-#       require(libamtrack)
-  
-# for documentation only: this code will convert a text file in ICRU49/73 format directly
-#	df                <- read.table("Water.txt", header = FALSE, sep = "\t")
-#	element.names    <- c("H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar")
-#	names(df)         <- c("E.MeV.u", element.names)
-#
-#	df2               <- reshape( df,
-#								  direction       = "long",
-#								  idvar           = "E.MeV.u",
-#								  timevar         = "element.name",
-#								  times           = element.names,
-#								  varying         = list(2:ncol(df)),
-#								  v.names         = "LET.MeV.cm2.g")
-#								  
-#	df2$element.name <- factor( df2$element.name,
-#								 levels     = element.names,
-#								 ordered    = TRUE)
-#
-#	row.names(df2)    <- 1:nrow(df2)
-
 	if(is.null(file.name.DEDX)){
 		file.name.DEDX    <- "libamtrack.dedx"
 	}
+
 	# If no elements given, use ICRU49/73 - and A = 2*Z for simplicity
 	if(is.null(element.names)){
 		element.names    <- c(	"H",  "He", "Li", "Be", "B", 
@@ -82,7 +61,7 @@ AT.SPC.export.DEDX <- function(stopping.power.source.no, file.name.DEDX = NULL, 
 
 
 	for(cur.particle in unique(df$particle.name)){
-		# cur.particle <- unique(df2$particle.name)[1]
+		# cur.particle <- unique(df$particle.name)[1]
 		ii <- df$particle.name == cur.particle
 		output <- paste(output, 
 						"!projectile    ", cur.particle, "\n", 
@@ -106,7 +85,7 @@ AT.SPC.export.DEDX <- function(stopping.power.source.no, file.name.DEDX = NULL, 
     require(lattice)
     xyplot( log10(stopping.power.MeV.cm2.g) ~ log10(energy.MeV.u)|sprintf("data source no. %d", stopping.power.source.no),
             df,
-            groups   = particle.name,
+            groups   = df$particle.name,
             type     = 'o',
             auto.key = list(space = 'right'))
   }

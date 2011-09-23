@@ -4,15 +4,16 @@
 \description{Read a spc-formatted data file with energy-fluence in n depth steps. For original TRiP format definition by M. Kraemer, please see \url{http://bio.gsi.de/DOCS/TRiP98BEAM/DOCS/trip98fmtspc.html}. Please note that the user has to take care of picking the spc-file for the projectile and target material desired.
 
 Presently, two versions of the reader exists: a slower but stable R version ('vanilla') and a faster but still buggy C version.
+
+Please note that the "compress" statement has been depreciated due to preparation for C translation of spc handling.
 }
-\usage{AT.SPC.read( file.name, flavour, endian, mean, compress)
+\usage{AT.SPC.read( file.name, flavour, endian, mean)
 }
 \arguments{
   \item{file.name}{ name of spc-file to be read (with extension).}
   \item{flavour}{ 'vanilla' (default) to use stable R version.}
   \item{endian}{ byte-order of the spc file to read, "big" (AIX) or "little" (Linux, VMS, etc., default). Only necessary if flavour = 'vanilla'}
   \item{mean}{ method for computing bin midpoints, "geometric" or "arithmetic" (default).}
-  \item{compress}{ if TRUE all entries with zero fluence will be removed to save memory.}
 }
 \value{
   A list with (1) the 'spc' data frame with the following columns

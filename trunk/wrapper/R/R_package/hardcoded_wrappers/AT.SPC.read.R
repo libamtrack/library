@@ -27,12 +27,15 @@
 # still at troubles at r904 rolled back and combined
 # with C version
 # Now both R ('vanilla') and C (unstable) version can be used
+#
+# revised 2011/09/19, sgre
+# removed "compress option" since it interferes with
+# interpolation (maybe not in R but in later C translation of this code)
 
 AT.SPC.read <- function( file.name, 
                          flavour        = "vanilla",
 						 endian         = c("big", "little")[1], 
-                         mean           = c("geometric", "arithmetic")[2],
-                         compress       = TRUE)
+                         mean           = c("geometric", "arithmetic")[2])
 {
 	if(flavour == "vanilla"){
     # R version
@@ -141,11 +144,11 @@ AT.SPC.read <- function( file.name,
 		}
 		close(to.read)
 
-		# Remove zero fluence bins if requested
-		if(compress == TRUE){
-		  ii         <- mm[,7] != 0
-		  mm         <- mm[ii,]
-		}
+#		# Remove zero fluence bins if requested
+#		if(compress == TRUE){
+#		  ii         <- mm[,7] != 0
+#		  mm         <- mm[ii,]
+#		}
 		mm           <- mm[,-3]
 		mm[,6]       <- mm[,6] * mm[,5]         # convert fluence / binwidth -> fluence
 		df           <- as.data.frame(mm)
@@ -189,9 +192,9 @@ AT.SPC.read <- function( file.name,
 							 particle.no            = res$particle.no,
 							 fluence.cm2            = res$fluence.cm2)
 
-		if (compress == TRUE){
-			df  <- df[df$fluence.cm2 != 0,]
-		}	
+#		if (compress == TRUE){
+#			df  <- df[df$fluence.cm2 != 0,]
+#		}	
 	}
 	return(list( spc                 = df,
 	             n.depth.steps       = n.depth.steps,
