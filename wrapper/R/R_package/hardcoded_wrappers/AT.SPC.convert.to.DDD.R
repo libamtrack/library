@@ -11,8 +11,8 @@ AT.SPC.convert.to.DDD <- function(file.name.spc, file.name.ddd = NULL, endian = 
 
 	# Read data
 	data           <- AT.SPC.read( file.name = file.name.spc, 
-								  endian    = endian,
-								  ...)
+								   endian    = endian,
+								   ...)
 								  
 	if(!is.null(file.name.ddd)){
 		file.name.ddd <- gsub(".spc", ".ddd", file.name.spc, fixed = TRUE)
