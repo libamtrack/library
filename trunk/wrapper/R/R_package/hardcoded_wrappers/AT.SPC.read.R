@@ -34,8 +34,9 @@
 
 AT.SPC.read <- function( file.name, 
                          flavour        = "vanilla",
-						 endian         = c("big", "little")[1], 
-                         mean           = c("geometric", "arithmetic")[2])
+                         endian         = c("big", "little")[1], 
+                         mean           = c("geometric", "arithmetic")[2],
+                         header.only    = FALSE)
 {
 	if(flavour == "vanilla"){
     # R version
@@ -95,67 +96,66 @@ AT.SPC.read <- function( file.name,
 		seek(to.read, where = mtag[mtag[,2] == 7,1] + 8, origin = 'start')
 		peak.position.g.cm2<- readBin( to.read, double(), size = 8, n = floor(mtag[mtag[,2] == 7,3]/8), endian = endian)
 		
-		mm                 <- matrix(data = 0, ncol = 7, nrow = sum(bins))
-		mm[,1]             <- rep.int(rep.int(1:n.depth.steps, n.particle.species), bins)
-		mm[,2]             <- rep.int(rep.int(depth.g.cm2, n.particle.species), bins)
-		mm[,3]             <- rep.int(sequence(n.particle.species), bins)
-		mm[,4]             <- rep.int(particle.no, bins)
-
-		fluence.tags       <- mtag[mtag[,2] == 19,]
-		idx                <- 1
-		for(i in 1:nrow(fluence.tags)){
-			# i <- 1
-			seek(to.read, where = fluence.tags[i,1] + 8, origin = 'start')
-			size                   <- floor(fluence.tags[i,3]/8)
-			mm[idx:(idx+size-1),7] <- readBin( to.read, double(), size = 8, n = size, endian = endian)
-			idx                    <- idx + size
+    if(header.only == FALSE){
+  		mm                 <- matrix(data = 0, ncol = 7, nrow = sum(bins))
+  		mm[,1]             <- rep.int(rep.int(1:n.depth.steps, n.particle.species), bins)
+  		mm[,2]             <- rep.int(rep.int(depth.g.cm2, n.particle.species), bins)
+  		mm[,3]             <- rep.int(sequence(n.particle.species), bins)
+  		mm[,4]             <- rep.int(particle.no, bins)
+  
+  		fluence.tags       <- mtag[mtag[,2] == 19,]
+  		idx                <- 1
+  		for(i in 1:nrow(fluence.tags)){
+  			# i <- 1
+  			seek(to.read, where = fluence.tags[i,1] + 8, origin = 'start')
+  			size                   <- floor(fluence.tags[i,3]/8)
+  			mm[idx:(idx+size-1),7] <- readBin( to.read, double(), size = 8, n = size, endian = endian)
+  			idx                    <- idx + size
+  		}
+  
+  		E.grid.tags        <- cbind( mtag[mtag[,2] %in% c(17,18),], 
+  									 rep.int(1:n.depth.steps, n.particle.species),   # depth step
+  									 sequence(n.particle.species),                   # species
+  									 cumsum(bins)-bins[1]+1,                         # index in mm
+  									 bins)                                           # size
+  		idx                <- 1
+  		for(i in 1:nrow(E.grid.tags)){
+  			# i <- 2
+  			if(E.grid.tags[i,2] == 17){
+  				seek(to.read, where = E.grid.tags[i,1] + 8, origin = 'start')
+  				size                   <- floor(E.grid.tags[i,3]/8)
+  				E.bins.MeV.u           <- readBin( to.read, double(), size = 8, n = size, endian = endian)
+  				E.low.MeV.u            <- E.bins.MeV.u[-length(E.bins.MeV.u)]
+  				E.high.MeV.u           <- E.bins.MeV.u[-1]
+  				mm[idx:(idx+size-2),6] <- E.high.MeV.u - E.low.MeV.u
+  				if(mean == "geometric"){  
+  					mm[idx:(idx+size-2),5]  <- sqrt(E.low.MeV.u * E.high.MeV.u)
+  				}else{
+  					mm[idx:(idx+size-2),5]  <- (E.low.MeV.u + E.high.MeV.u)/2
+  				}            
+  				idx                    <- idx + size - 1
+  			}else{
+  				ii                      <- E.grid.tags[,5] == E.grid.tags[i,5]
+  				ref.idx                 <- which((E.grid.tags[i,4]+1) == E.grid.tags[ii,6])
+  				size                    <- E.grid.tags[ii,8][ref.idx]
+  				from                    <- E.grid.tags[ii,7][ref.idx]
+  				mm[idx:(idx+size-1),5]  <- mm[from:(from+size-1),5]
+  				mm[idx:(idx+size-1),6]  <- mm[from:(from+size-1),6]
+  				idx                     <- idx + size
+  			}
+  		}
+    	mm           <- mm[,-3]
+  		mm[,6]       <- mm[,6] * mm[,5]         # convert fluence / binwidth -> fluence
+  		df           <- as.data.frame(mm)
+  		names(df)    <- c("depth.step", "depth.g.cm2", "particle.no", "E.MeV.u", "DE.MeV.u", "fluence.cm2")
+  
+  		cat(paste("Read ", n.depth.steps, " depth steps for projectile ", projectile, " on ", target.material, " with ", beam.energy.MeV.u, " MeV/u and peak at ", peak.position.g.cm2, " g/cm2.\n", sep = ""))
+		}else{
+      df           <- NULL
 		}
+    
+    close(to.read)
 
-		E.grid.tags        <- cbind( mtag[mtag[,2] %in% c(17,18),], 
-									 rep.int(1:n.depth.steps, n.particle.species),   # depth step
-									 sequence(n.particle.species),                   # species
-									 cumsum(bins)-bins[1]+1,                         # index in mm
-									 bins)                                           # size
-		idx                <- 1
-		for(i in 1:nrow(E.grid.tags)){
-			# i <- 2
-			if(E.grid.tags[i,2] == 17){
-				seek(to.read, where = E.grid.tags[i,1] + 8, origin = 'start')
-				size                   <- floor(E.grid.tags[i,3]/8)
-				E.bins.MeV.u           <- readBin( to.read, double(), size = 8, n = size, endian = endian)
-				E.low.MeV.u            <- E.bins.MeV.u[-length(E.bins.MeV.u)]
-				E.high.MeV.u           <- E.bins.MeV.u[-1]
-				mm[idx:(idx+size-2),6] <- E.high.MeV.u - E.low.MeV.u
-				if(mean == "geometric"){  
-					mm[idx:(idx+size-2),5]  <- sqrt(E.low.MeV.u * E.high.MeV.u)
-				}else{
-					mm[idx:(idx+size-2),5]  <- (E.low.MeV.u + E.high.MeV.u)/2
-				}            
-				idx                    <- idx + size - 1
-			}else{
-				ii                      <- E.grid.tags[,5] == E.grid.tags[i,5]
-				ref.idx                 <- which((E.grid.tags[i,4]+1) == E.grid.tags[ii,6])
-				size                    <- E.grid.tags[ii,8][ref.idx]
-				from                    <- E.grid.tags[ii,7][ref.idx]
-				mm[idx:(idx+size-1),5]  <- mm[from:(from+size-1),5]
-				mm[idx:(idx+size-1),6]  <- mm[from:(from+size-1),6]
-				idx                     <- idx + size
-			}
-		}
-		close(to.read)
-
-#		# Remove zero fluence bins if requested
-#		if(compress == TRUE){
-#		  ii         <- mm[,7] != 0
-#		  mm         <- mm[ii,]
-#		}
-		mm           <- mm[,-3]
-		mm[,6]       <- mm[,6] * mm[,5]         # convert fluence / binwidth -> fluence
-		df           <- as.data.frame(mm)
-		names(df)    <- c("depth.step", "depth.g.cm2", "particle.no", "E.MeV.u", "DE.MeV.u", "fluence.cm2")
-
-		cat(paste("Read ", n.depth.steps, " depth steps for projectile ", projectile, " on ", target.material, " with ", beam.energy.MeV.u, " MeV/u and peak at ", peak.position.g.cm2, " g/cm2.\n", sep = ""))
-		
 	}else{
 	# C version
 		 spc.size            <- numeric(1)
