@@ -33,6 +33,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 
 
 /**
@@ -220,5 +227,14 @@ int AT_SPC_read_data( FILE* fp,
 		int particle_no[],
 		double fluence_cm2[]);
 
+/**
+ * TODO
+ */
+int AT_SPC_get_number_of_bytes_in_file(char * filename);
+
+/**
+ * TODO
+ */
+int AT_SPC_fast_read(char *filename, int32_t * content);
 
 #endif /* AT_SPC_H_ */
