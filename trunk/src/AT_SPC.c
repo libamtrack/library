@@ -78,6 +78,7 @@ int AT_SPC_get_size_from_filename(const char filename[FILE_NAME_NCHAR])
 	fp = fopen(filename, "rb");
     int size = AT_SPC_get_size(fp);
     fclose(fp);
+
 	return(size);
 }
 
@@ -197,6 +198,84 @@ int AT_SPC_get_size(FILE *fp){
 
 	}
 	return size;
+}
+
+
+int AT_SPC_get_number_of_bytes_in_file(char * filename){
+	int fd = open(filename, O_RDONLY);
+	if (fd == -1)
+		return -1;
+	struct stat sb;
+	if (fstat(fd, &sb) == -1){
+		close(fd);
+		return -2;
+	}
+	int result = sb.st_size;
+	close(fd);
+	return result;
+}
+
+
+int AT_SPC_fast_read(char * filename, int32_t * content){
+	int32_t *addr;
+	int fd;
+	struct stat sb;
+	off_t offset, pa_offset;
+	size_t length;
+	ssize_t s;
+
+	/** almost copy-paste code from "man mmap" example */
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+		printf("open");
+
+	if (fstat(fd, &sb) == -1)           /* To obtain file size */
+		printf("fstat");
+
+	offset = 0;
+
+	pa_offset = offset & ~(sysconf(_SC_PAGE_SIZE) - 1);
+	/* offset for mmap() must be page aligned */
+
+	if (offset >= sb.st_size) {
+		fprintf(stderr, "offset is past end of file\n");
+		exit(EXIT_FAILURE);
+	}
+
+	length = sb.st_size;
+	if (offset + length > sb.st_size)
+		length = sb.st_size - offset;
+
+	addr = mmap(NULL, length + offset - pa_offset, PROT_READ,
+			MAP_PRIVATE, fd, pa_offset);
+	if (addr == MAP_FAILED)
+		printf("mmap");
+
+	/**
+	FILE * fp = fopen("/home/grzanka/workspace/libamtrack/test.spc","wb");
+	s = write(fileno(fp), addr + offset - pa_offset, length);
+	fclose(fp); */
+
+	int i;
+	for( i = 0 ; i < length ; i++ ){
+		content[i] = addr[i];
+	}
+
+	int n = munmap( addr, length);
+	//printf("n = %d\n", n);
+
+	close(fd);
+
+	if (s != length) {
+		if (s == -1)
+			printf("write");
+
+		fprintf(stderr, "partial write");
+		exit(EXIT_FAILURE);
+	}
+
+
+	return EXIT_SUCCESS;
 }
 
 
