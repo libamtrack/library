@@ -216,68 +216,275 @@ int AT_SPC_get_number_of_bytes_in_file(char * filename){
 }
 
 
-int AT_SPC_fast_read(char * filename, int32_t * content){
-	int32_t *addr;
-	int fd;
-	struct stat sb;
-	off_t offset, pa_offset;
-	size_t length;
-	ssize_t s;
+int AT_SPC_fast_read(char * filename, int content_size, int32_t * content){
 
-	/** almost copy-paste code from "man mmap" example */
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
+	/** see "man mmap" from Linux man pages, good example there */
+
+	/* open the file */
+	int fd = open(filename, O_RDONLY);
+	if (fd == -1){
 		printf("open");
+		return EXIT_FAILURE;
+	}
 
-	if (fstat(fd, &sb) == -1)           /* To obtain file size */
+	/* obtain file size */
+	struct stat sb;
+	if (fstat(fd, &sb) == -1){
 		printf("fstat");
-
-	offset = 0;
-
-	pa_offset = offset & ~(sysconf(_SC_PAGE_SIZE) - 1);
-	/* offset for mmap() must be page aligned */
-
-	if (offset >= sb.st_size) {
-		fprintf(stderr, "offset is past end of file\n");
-		exit(EXIT_FAILURE);
+		close(fd);
+		return EXIT_FAILURE;
 	}
 
-	length = sb.st_size;
-	if (offset + length > sb.st_size)
-		length = sb.st_size - offset;
+	/* check output array size */
+	size_t length = sb.st_size;
+	if( length != content_size * sizeof(int32_t)){
+		printf("content has wrong size");
+		close(fd);
+		return EXIT_FAILURE;
+	}
 
-	addr = mmap(NULL, length + offset - pa_offset, PROT_READ,
-			MAP_PRIVATE, fd, pa_offset);
-	if (addr == MAP_FAILED)
+	/* map whole file into addr pointer */
+	off_t pa_offset = 0;
+	int32_t *addr = mmap(NULL, length, PROT_READ, MAP_PRIVATE, fd, pa_offset);
+	if (addr == MAP_FAILED){
 		printf("mmap");
-
-	/**
-	FILE * fp = fopen("/home/grzanka/workspace/libamtrack/test.spc","wb");
-	s = write(fileno(fp), addr + offset - pa_offset, length);
-	fclose(fp); */
-
-	int i;
-	for( i = 0 ; i < length ; i++ ){
-		content[i] = addr[i];
+		close(fd);
+		return EXIT_FAILURE;
 	}
 
-	int n = munmap( addr, length);
-	//printf("n = %d\n", n);
+	/* copy memory mapped area into content pointer */
+	memcpy( content, addr, length );
 
+	/* un-map memory */
+	munmap( addr, length);
+
+	/* close file */
 	close(fd);
-
-	if (s != length) {
-		if (s == -1)
-			printf("write");
-
-		fprintf(stderr, "partial write");
-		exit(EXIT_FAILURE);
-	}
-
 
 	return EXIT_SUCCESS;
 }
 
+
+void decomposeStructIntoString( const int32_t content[], char * string, int * length ){
+//	printf("Tag = %d\n", content[0]);
+//	printf("Tag length = %d\n", content[1]);
+	(*length) = content[1];
+	string = (char*)calloc(sizeof(char),*length);
+	memcpy( string, content+2, *length);
+//	printf("String = %s\n\n", string);
+}
+
+
+void decomposeStructIntoDouble( const int32_t content[], double * value, int * length ){
+//	printf("Tag = %d\n", content[0]);
+//	printf("Tag length = %d\n", content[1]);
+	(*length) = content[1];
+	memcpy( value, content+2, *length);
+//	printf("String = %g\n\n", *value);
+}
+
+
+void decomposeStructIntoInteger( const int32_t content[], uint64_t * value, int * length ){
+//	printf("Tag = %d\n", content[0]);
+//	printf("Tag length = %d\n", content[1]);
+	(*length) = content[1];
+	memcpy( value, content+2, *length);
+//	printf("String = %d\n\n", *value);
+}
+
+int skipStruct(int32_t ** content){
+	int length = (*content)[1];
+	(*content) += (length / sizeof(int32_t)) + 2;
+}
+
+int decomposeTag(const int32_t content[]){
+	return content[0];
+}
+
+int decomposeLength(const int32_t content[]){
+	return content[1];
+}
+
+
+int AT_SPC_decompose_size(const int content_size, const int32_t content_orig[]){
+	int size=0;
+	int length=0;
+
+	int32_t * content = content_orig;
+
+	skipStruct(&content); // filetype
+	skipStruct(&content); // fileversion
+	skipStruct(&content); // filedate
+	skipStruct(&content); // targname
+	skipStruct(&content); // projname
+	skipStruct(&content); // beamenergy
+	skipStruct(&content); // peak position
+	skipStruct(&content); // normalisation
+
+	uint64_t numberOfDepthSteps;
+	decomposeStructIntoInteger(content, &numberOfDepthSteps, &length);
+	skipStruct(&content);
+
+	uint64_t stepNumber = 0;
+
+	for( stepNumber = 0 ; stepNumber < numberOfDepthSteps ; stepNumber += 1){
+
+//		printf("-----> Step nr %d\n", stepNumber);
+
+		skipStruct(&content); // depth
+		skipStruct(&content); // normalization
+
+		uint64_t numberOfSpecies;
+		decomposeStructIntoInteger(content, &numberOfSpecies, &length);
+		skipStruct(&content);
+
+		uint64_t specieNumber = 0;
+
+		for( specieNumber = 0 ; specieNumber < numberOfSpecies ; specieNumber += 1){
+
+//			printf("--------------> Specie nr %d\n", specieNumber);
+
+			skipStruct(&content); // NZ
+			skipStruct(&content); // Cum
+			skipStruct(&content); // nC
+
+			uint64_t nE;
+			decomposeStructIntoInteger(content, &nE, &length);
+			skipStruct(&content);
+
+			size += nE;
+
+	//			printf("Tag = %d\n", decomposeTag(content));
+	//			printf("Length = %d\n", decomposeLength(content));
+			skipStruct(&content); // energy bins
+
+	//			printf("Tag = %d\n", decomposeTag(content));
+	//			printf("Length = %d\n", decomposeLength(content));
+			skipStruct(&content); // histo
+
+	//			printf("Tag = %d\n", decomposeTag(content));
+	//			printf("Length = %d\n", decomposeLength(content));
+			skipStruct(&content); // running sum
+
+		}
+	}
+
+	return size;
+}
+
+
+int AT_SPC_decompose_data(
+		const int content_size,
+		const int32_t content_orig[],
+		int* depth_step[],
+		double* depth_g_cm2[],
+		double* E_MeV_u[],
+		double* DE_MeV_u[],
+		int* particle_no[],
+		double* fluence_cm2[]){
+	int length=0;
+
+	int32_t * content = content_orig;
+
+	char * filetype;
+	decomposeStructIntoString(content, filetype, &length);
+	bool switchEndian=false;
+	if (strcmp(filetype,"SPCM")==0)
+		switchEndian=true;
+	free(filetype);
+	skipStruct(&content);
+
+	char * fileversion;
+	decomposeStructIntoString(content, fileversion, &length);
+	free(fileversion);
+	skipStruct(&content);
+
+	char * filedate;
+	decomposeStructIntoString(content, filedate, &length);
+	free(filedate);
+	skipStruct(&content);
+
+	char * targname;
+	decomposeStructIntoString(content, targname, &length);
+	free(targname);
+	skipStruct(&content);
+
+	char * projname;
+	decomposeStructIntoString(content, projname, &length);
+	free(projname);
+	skipStruct(&content);
+
+	double beamEnergy;
+	decomposeStructIntoDouble(content, &beamEnergy, &length);
+	skipStruct(&content);
+
+	double peakPosition;
+	decomposeStructIntoDouble(content, &peakPosition, &length);
+	skipStruct(&content);
+
+	double normalization;
+	decomposeStructIntoDouble(content, &normalization, &length);
+	skipStruct(&content);
+
+	uint64_t numberOfDepthSteps;
+	decomposeStructIntoInteger(content, &numberOfDepthSteps, &length);
+	skipStruct(&content);
+
+	uint64_t stepNumber = 0;
+
+	for( stepNumber = 0 ; stepNumber < numberOfDepthSteps ; stepNumber += 1){
+
+		printf("-----> Step nr %d\n", stepNumber);
+
+		double depth;
+		decomposeStructIntoDouble(content, &depth, &length);
+		skipStruct(&content);
+
+		double normalizationStep;
+		decomposeStructIntoDouble(content, &normalizationStep, &length);
+		skipStruct(&content);
+
+		uint64_t numberOfSpecies;
+		decomposeStructIntoInteger(content, &numberOfSpecies, &length);
+		skipStruct(&content);
+
+		uint64_t specieNumber = 0;
+
+		for( specieNumber = 0 ; specieNumber < numberOfSpecies ; specieNumber += 1){
+
+			printf("--------------> Specie nr %d\n", specieNumber);
+
+			skipStruct(&content);
+
+			double Cum;
+			decomposeStructIntoDouble(content, &Cum, &length);
+			skipStruct(&content);
+
+			uint64_t nC;
+			decomposeStructIntoInteger(content, &nC, &length);
+			skipStruct(&content);
+
+			uint64_t nE;
+			decomposeStructIntoInteger(content, &nE, &length);
+			skipStruct(&content);
+
+			printf("Tag = %d\n", decomposeTag(content));
+			printf("Length = %d\n", decomposeLength(content));
+			skipStruct(&content);
+
+			printf("Tag = %d\n", decomposeTag(content));
+			printf("Length = %d\n", decomposeLength(content));
+			skipStruct(&content);
+
+			printf("Tag = %d\n", decomposeTag(content));
+			printf("Length = %d\n", decomposeLength(content));
+			skipStruct(&content);
+
+		}
+
+	}
+	return EXIT_FAILURE;
+}
 
 int AT_SPC_read(const char filename[FILE_NAME_NCHAR],
 		int* depth_step[],
