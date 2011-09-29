@@ -217,6 +217,7 @@ int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
  * @param[out]		DE_MeV_u		widths of energy bins (array of size total_n_bins)
  * @param[out]		particle_no		particle index numbers (array of size total_n_bins)
  * @param[out]      fluence_cm2		fluence values differential in energy and particle number
+ * @return 			TODO
  */
 int AT_SPC_read_data( FILE* fp,
 		const int n,
@@ -227,14 +228,54 @@ int AT_SPC_read_data( FILE* fp,
 		int particle_no[],
 		double fluence_cm2[]);
 
+
 /**
  * TODO
+ * @param[in]	    filename  	    path and name for spc file (incl. extension)
+ * @return			number of bytes in file
  */
 int AT_SPC_get_number_of_bytes_in_file(char * filename);
+
+
+/**
+ * TODO
+ * @param[in]	    filename  	    path and name for spc file (incl. extension)
+ * @param[in]	    content_size 	number of elements in content arrays
+ * @param[out]      content  	    binary content of SPC file (array of size content_size)
+ * @return			status code
+ */
+int AT_SPC_fast_read(char *filename, int content_size, int32_t content[]);
+
+void decomposeStructIntoString( const int32_t content[], char * string, int * length );
+
+void decomposeStructIntoDouble( const int32_t content[], double * value, int * length );
+
+void decomposeStructIntoInteger( const int32_t content[], uint64_t * value, int * length );
+
+int skipStruct(int32_t ** content);
+
+int decomposeTag(const int32_t content[]);
+
+int decomposeLength(const int32_t content[]);
 
 /**
  * TODO
  */
-int AT_SPC_fast_read(char *filename, int32_t * content);
+int AT_SPC_decompose_size(const int content_size, const int32_t content_orig[]);
+
+
+/**
+ * TODO
+ */
+int AT_SPC_decompose_data(
+		const int content_size,
+		const int32_t content_orig[],
+		int* depth_step[],
+		double* depth_g_cm2[],
+		double* E_MeV_u[],
+		double* DE_MeV_u[],
+		int* particle_no[],
+		double* fluence_cm2[]);
+
 
 #endif /* AT_SPC_H_ */
