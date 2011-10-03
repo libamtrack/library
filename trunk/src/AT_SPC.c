@@ -201,7 +201,7 @@ int AT_SPC_get_size(FILE *fp){
 }
 
 
-int AT_SPC_get_number_of_bytes_in_file(char * filename){
+int AT_SPC_get_number_of_bytes_in_file(const char * filename){
 	int fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		return -1;
@@ -216,7 +216,7 @@ int AT_SPC_get_number_of_bytes_in_file(char * filename){
 }
 
 
-int AT_SPC_fast_read(char * filename, int content_size, int32_t * content){
+int AT_SPC_fast_read(const char * filename, int content_size, int32_t * content){
 
 	/** see "man mmap" from Linux man pages, good example there */
 
@@ -266,35 +266,27 @@ int AT_SPC_fast_read(char * filename, int content_size, int32_t * content){
 
 
 void decomposeStructIntoString( const int32_t content[], char * string, int * length ){
-//	printf("Tag = %d\n", content[0]);
-//	printf("Tag length = %d\n", content[1]);
 	(*length) = content[1];
-	string = (char*)calloc(sizeof(char),*length);
+	string = (char*)calloc(sizeof(char),*length); // TODO move allocation outside
 	memcpy( string, content+2, *length);
-//	printf("String = %s\n\n", string);
 }
 
 
 void decomposeStructIntoDouble( const int32_t content[], double * value, int * length ){
-//	printf("Tag = %d\n", content[0]);
-//	printf("Tag length = %d\n", content[1]);
 	(*length) = content[1];
 	memcpy( value, content+2, *length);
-//	printf("String = %g\n\n", *value);
 }
 
 
 void decomposeStructIntoInteger( const int32_t content[], uint64_t * value, int * length ){
-//	printf("Tag = %d\n", content[0]);
-//	printf("Tag length = %d\n", content[1]);
 	(*length) = content[1];
 	memcpy( value, content+2, *length);
-//	printf("String = %d\n\n", *value);
 }
 
 int skipStruct(int32_t ** content){
 	int length = (*content)[1];
 	(*content) += (length / sizeof(int32_t)) + 2;
+	return length;
 }
 
 int decomposeTag(const int32_t content[]){
@@ -306,7 +298,7 @@ int decomposeLength(const int32_t content[]){
 }
 
 
-int AT_SPC_decompose_size(const int content_size, const int32_t content_orig[]){
+int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]){
 	int size=0;
 	int length=0;
 
@@ -321,13 +313,13 @@ int AT_SPC_decompose_size(const int content_size, const int32_t content_orig[]){
 	skipStruct(&content); // peak position
 	skipStruct(&content); // normalisation
 
-	uint64_t numberOfDepthSteps;
+	uint64_t numberOfDepthSteps = 0;
 	decomposeStructIntoInteger(content, &numberOfDepthSteps, &length);
 	skipStruct(&content);
 
 	uint64_t stepNumber = 0;
 
-	for( stepNumber = 0 ; stepNumber < numberOfDepthSteps ; stepNumber += 1){
+	for( stepNumber = 0 ; stepNumber < numberOfDepthSteps ; stepNumber++ ){
 
 //		printf("-----> Step nr %d\n", stepNumber);
 
@@ -340,7 +332,7 @@ int AT_SPC_decompose_size(const int content_size, const int32_t content_orig[]){
 
 		uint64_t specieNumber = 0;
 
-		for( specieNumber = 0 ; specieNumber < numberOfSpecies ; specieNumber += 1){
+		for( specieNumber = 0 ; specieNumber < numberOfSpecies ; specieNumber++ ){
 
 //			printf("--------------> Specie nr %d\n", specieNumber);
 
@@ -354,16 +346,8 @@ int AT_SPC_decompose_size(const int content_size, const int32_t content_orig[]){
 
 			size += nE;
 
-	//			printf("Tag = %d\n", decomposeTag(content));
-	//			printf("Length = %d\n", decomposeLength(content));
 			skipStruct(&content); // energy bins
-
-	//			printf("Tag = %d\n", decomposeTag(content));
-	//			printf("Length = %d\n", decomposeLength(content));
 			skipStruct(&content); // histo
-
-	//			printf("Tag = %d\n", decomposeTag(content));
-	//			printf("Length = %d\n", decomposeLength(content));
 			skipStruct(&content); // running sum
 
 		}
@@ -375,18 +359,20 @@ int AT_SPC_decompose_size(const int content_size, const int32_t content_orig[]){
 
 int AT_SPC_decompose_data(
 		const int content_size,
-		const int32_t content_orig[],
+		int32_t content_orig[],
 		int* depth_step[],
 		double* depth_g_cm2[],
 		double* E_MeV_u[],
 		double* DE_MeV_u[],
 		int* particle_no[],
 		double* fluence_cm2[]){
-	int length=0;
+
+	int index=0;
+	int length = 0;
 
 	int32_t * content = content_orig;
 
-	char * filetype;
+	char * filetype = NULL;
 	decomposeStructIntoString(content, filetype, &length);
 	bool switchEndian=false;
 	if (strcmp(filetype,"SPCM")==0)
@@ -394,93 +380,141 @@ int AT_SPC_decompose_data(
 	free(filetype);
 	skipStruct(&content);
 
-	char * fileversion;
+	char * fileversion = NULL;
 	decomposeStructIntoString(content, fileversion, &length);
+	// TODO for future use
 	free(fileversion);
 	skipStruct(&content);
 
-	char * filedate;
+	char * filedate = NULL;
 	decomposeStructIntoString(content, filedate, &length);
+	// TODO for future use
 	free(filedate);
 	skipStruct(&content);
 
-	char * targname;
+	char * targname = NULL;
 	decomposeStructIntoString(content, targname, &length);
+	// TODO for future use
 	free(targname);
 	skipStruct(&content);
 
-	char * projname;
+	char * projname = NULL;
 	decomposeStructIntoString(content, projname, &length);
+	// TODO for future use
 	free(projname);
 	skipStruct(&content);
 
-	double beamEnergy;
+	double beamEnergy = 0.0;
 	decomposeStructIntoDouble(content, &beamEnergy, &length);
+	// TODO for future use
 	skipStruct(&content);
 
-	double peakPosition;
+	double peakPosition = 0.0;
 	decomposeStructIntoDouble(content, &peakPosition, &length);
+	// TODO for future use
 	skipStruct(&content);
 
-	double normalization;
+	double normalization = 0.0;
 	decomposeStructIntoDouble(content, &normalization, &length);
+	// TODO for future use
 	skipStruct(&content);
 
-	uint64_t numberOfDepthSteps;
+	uint64_t numberOfDepthSteps = 0;
 	decomposeStructIntoInteger(content, &numberOfDepthSteps, &length);
 	skipStruct(&content);
 
 	uint64_t stepNumber = 0;
 
-	for( stepNumber = 0 ; stepNumber < numberOfDepthSteps ; stepNumber += 1){
+	for( stepNumber = 0 ; stepNumber < numberOfDepthSteps ; stepNumber++){
 
-		printf("-----> Step nr %d\n", stepNumber);
+		//printf("-----> Step nr %llu\n", stepNumber);
 
-		double depth;
+		double depth = 0.0;
 		decomposeStructIntoDouble(content, &depth, &length);
 		skipStruct(&content);
 
-		double normalizationStep;
+		double normalizationStep = 0.0;
 		decomposeStructIntoDouble(content, &normalizationStep, &length);
+		// TODO for future use
 		skipStruct(&content);
 
-		uint64_t numberOfSpecies;
+		uint64_t numberOfSpecies = 0;
 		decomposeStructIntoInteger(content, &numberOfSpecies, &length);
 		skipStruct(&content);
 
 		uint64_t specieNumber = 0;
 
-		for( specieNumber = 0 ; specieNumber < numberOfSpecies ; specieNumber += 1){
+		double ** binPointersE = (double**)calloc(sizeof(double*), numberOfSpecies);
+		double ** binPointersDE = (double**)calloc(sizeof(double*), numberOfSpecies);
 
-			printf("--------------> Specie nr %d\n", specieNumber);
+		for( specieNumber = 0 ; specieNumber < numberOfSpecies ; specieNumber++){
 
+			// TODO comment needed
+			binPointersE[specieNumber] = (*E_MeV_u) + index;
+			binPointersDE[specieNumber] = (*DE_MeV_u) + index;
+
+			//printf("--------------> Specie nr %llu\n", specieNumber);
+
+			// TODO comment needed
+			double tmp[2];
+			decomposeStructIntoDouble(content, &(tmp[0]), &length);
 			skipStruct(&content);
+			long particle_no_spc = AT_particle_no_from_Z_and_A_single((int)(tmp[0]),(int)(tmp[1]));
 
-			double Cum;
+			double Cum = 0.0;
 			decomposeStructIntoDouble(content, &Cum, &length);
+			// TODO for future use
 			skipStruct(&content);
 
-			uint64_t nC;
+			uint64_t nC = 0;
 			decomposeStructIntoInteger(content, &nC, &length);
+			// TODO for future use
 			skipStruct(&content);
 
-			uint64_t nE;
+			uint64_t nE = 0;
 			decomposeStructIntoInteger(content, &nE, &length);
 			skipStruct(&content);
 
-			printf("Tag = %d\n", decomposeTag(content));
-			printf("Length = %d\n", decomposeLength(content));
+			int i = 0;
+			for( i = index ; i < index + nE; i++){
+				(*depth_step)[i] = stepNumber;
+				(*depth_g_cm2)[i] = depth;
+				(*particle_no)[i] = particle_no_spc;
+			}
+
+			if( decomposeTag(content) == TRPSPCDTAG_E ){
+				length = decomposeLength(content);
+				if( length != (nE + 1)*sizeof(double) ) {
+					printf("problem nE  = %llu, length = %d\n", nE, length);
+				} else {
+					double * tempBins = (double*)calloc(sizeof(double), nE+1);
+					decomposeStructIntoDouble(content, tempBins, &length);
+					for( i = index ; i < index + nE; i++){
+						(*E_MeV_u)[i] = 0.5 * (tempBins[i+1-index] + tempBins[i-index]);
+						(*DE_MeV_u)[i] = tempBins[i+1-index] - tempBins[i-index];
+					}
+					free(tempBins);
+				}
+			}
+			if( decomposeTag(content) == TRPSPCDTAG_EREF ){
+				uint64_t lSRef;
+				decomposeStructIntoInteger(content, &lSRef, &length);
+				memcpy( (*E_MeV_u)+index , binPointersE[lSRef], nE * sizeof(double));
+				memcpy( (*DE_MeV_u)+index , binPointersDE[lSRef], nE * sizeof(double));
+			}
 			skipStruct(&content);
 
-			printf("Tag = %d\n", decomposeTag(content));
-			printf("Length = %d\n", decomposeLength(content));
+			decomposeStructIntoDouble(content, (*fluence_cm2) + index, &length);
 			skipStruct(&content);
 
-			printf("Tag = %d\n", decomposeTag(content));
-			printf("Length = %d\n", decomposeLength(content));
-			skipStruct(&content);
+			skipStruct(&content); // running cumulated spectrum bin values
+			// TODO for future use
 
+			index += nE;
 		}
+
+		free(binPointersE);
+		free(binPointersDE);
 
 	}
 	return EXIT_FAILURE;
@@ -522,7 +556,7 @@ int AT_SPC_read(const char filename[FILE_NAME_NCHAR],
 
 
 int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
-		const int n,
+		int n,
 		int depth_step[],
 		double depth_g_cm2[],
 		double E_MeV_u[],
@@ -545,6 +579,36 @@ int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
 	fclose(fp);
 
 	return(n_bins_read);
+}
+
+int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
+		int n,
+		int depth_step[],
+		double depth_g_cm2[],
+		double E_MeV_u[],
+		double DE_MeV_u[],
+		int particle_no[],
+		double fluence_cm2[])
+{
+	int nb = AT_SPC_get_number_of_bytes_in_file( filename );
+	int size = nb / sizeof(int32_t);
+
+	int32_t * content = (int32_t*)calloc(sizeof(int32_t), size);
+	AT_SPC_fast_read(filename, size, content);
+
+	int res = AT_SPC_decompose_data(
+			size,
+			content,
+			&depth_step,
+			&depth_g_cm2,
+			&E_MeV_u,
+			&DE_MeV_u,
+			&particle_no,
+			&fluence_cm2);
+
+	free(content);
+
+	return res;
 }
 
 
@@ -663,8 +727,7 @@ int AT_SPC_read_data(FILE* fp,
 				double tempBins[binsize];
 				n_read_elements = fread(tempBins, sizeof(double), binsize+1, fp);
 				if( n_read_elements != binsize+1)
-//				   	printf("Read %zu element(s), instead of %llu !\n", n_read_elements, binsize+1);
-					printf("Read %zu element(s), instead of %lu !\n", n_read_elements, binsize+1);
+				   	printf("Read %zu element(s), instead of %llu !\n", n_read_elements, binsize+1);
 				int n;
 				for (n=0; n < binsize; n++){
 					E_MeV_u[k+n]=(tempBins[n+1]+tempBins[n])/2;
@@ -689,7 +752,7 @@ int AT_SPC_read_data(FILE* fp,
 			}
 			n_read_elements = fread(&fluence_cm2[k],sizeof(double),binsize,fp);
 			if( n_read_elements != binsize)
-			   	printf("Read %zu element(s), instead of %lu !\n", n_read_elements, binsize);
+			   	printf("Read %zu element(s), instead of %llu !\n", n_read_elements, binsize);
 			int n;
 			for (n = 0; n < binsize; n++){
 				depth_g_cm2[k+n]=curDepth;
