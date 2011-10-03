@@ -39,7 +39,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
+#include "AT_DataParticle.h"
 
 
 /**
@@ -190,7 +190,7 @@ int AT_SPC_get_size(  FILE *fp);
  * @return                          number of bins read. Must match the array size n
  */
 int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
-		const int n,
+		int n,
 		int depth_step[],
 		double depth_g_cm2[],
 		double E_MeV_u[],
@@ -198,6 +198,28 @@ int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
 		int particle_no[],
 		double fluence_cm2[]);
 
+/**
+ * TODO
+ *
+ * @param[in]	    filename  	    path and name for spc file (incl. extension)
+ * @param[in]       n               array size, total number of bins expected
+ * @see AT_SPC_get_size
+ * @param[out]		depth_step		depth step index, zero-based (array of size n)
+ * @param[out]		depth_g_cm2		depth in g/cm2 (array of size n)
+ * @param[out]		E_MeV_u			midpoints of energy bins (array of size n)
+ * @param[out]		DE_MeV_u		widths of energy bins (array of size n)
+ * @param[out]		particle_no		particle index numbers (array of size n)
+ * @param[out]      fluence_cm2		fluence values differential in energy and particle number
+ * @return                          number of bins read. Must match the array size n
+ */
+int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
+		int n,
+		int depth_step[],
+		double depth_g_cm2[],
+		double E_MeV_u[],
+		double DE_MeV_u[],
+		int particle_no[],
+		double fluence_cm2[]);
 
 /**
  * Reads data from spc file into pre-allocated arrays. It will be converted
@@ -234,7 +256,7 @@ int AT_SPC_read_data( FILE* fp,
  * @param[in]	    filename  	    path and name for spc file (incl. extension)
  * @return			number of bytes in file
  */
-int AT_SPC_get_number_of_bytes_in_file(char * filename);
+int AT_SPC_get_number_of_bytes_in_file(const char * filename);
 
 
 /**
@@ -244,24 +266,42 @@ int AT_SPC_get_number_of_bytes_in_file(char * filename);
  * @param[out]      content  	    binary content of SPC file (array of size content_size)
  * @return			status code
  */
-int AT_SPC_fast_read(char *filename, int content_size, int32_t content[]);
+int AT_SPC_fast_read(const char *filename, int content_size, int32_t content[]);
 
+/**
+ * TODO
+ */
 void decomposeStructIntoString( const int32_t content[], char * string, int * length );
 
+/**
+ * TODO
+ */
 void decomposeStructIntoDouble( const int32_t content[], double * value, int * length );
 
+/**
+ * TODO
+ */
 void decomposeStructIntoInteger( const int32_t content[], uint64_t * value, int * length );
 
+/**
+ * TODO
+ */
 int skipStruct(int32_t ** content);
 
+/**
+ * TODO
+ */
 int decomposeTag(const int32_t content[]);
 
+/**
+ * TODO
+ */
 int decomposeLength(const int32_t content[]);
 
 /**
  * TODO
  */
-int AT_SPC_decompose_size(const int content_size, const int32_t content_orig[]);
+int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]);
 
 
 /**
@@ -269,7 +309,7 @@ int AT_SPC_decompose_size(const int content_size, const int32_t content_orig[]);
  */
 int AT_SPC_decompose_data(
 		const int content_size,
-		const int32_t content_orig[],
+		int32_t content_orig[],
 		int* depth_step[],
 		double* depth_g_cm2[],
 		double* E_MeV_u[],
