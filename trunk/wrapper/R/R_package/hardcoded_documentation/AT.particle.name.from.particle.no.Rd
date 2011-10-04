@@ -1,20 +1,20 @@
-\name{AT.particle.no.from.particle.name}
-\alias{AT.particle.no.from.particle.name}
-\title{AT.particle.no.from.particle.name}
+\name{AT.particle.name.from.particle.no}
+\alias{AT.particle.name.from.particle.no}
+\title{AT.particle.name.from.particle.no}
 \description{Returns particle name(s) for given particle index number(s)
 }
-\usage{AT.particle.no.from.particle.name(particle.name)
+\usage{AT.particle.name.from.particle.no(particle.no)
 }
 \arguments{
-  \item{particle.name}{ particle name(s) (see also \code{\link{particle.name}}).}
+  \item{particle.no}{ particle name(s) (see also \code{\link{particle.no}}).}
 }
 \value{
-  \item{particle.no}{ particle index number(s) (see also \code{\link{particle.no}}).}
+  \item{particle.name}{ particle index number(s) (see also \code{\link{particle.name}}).}
 }
 
 \examples{
-# Get particle index numbers for some nuclides
-AT.particle.no.from.particle.name( particle.name     = c("1H", "2H", "3He", "12C", "16O", "238U"))
+# Get particle index names for some nuclides
+AT.particle.name.from.particle.no( particle.name     = c("1001", "6012"))
 }
 
 

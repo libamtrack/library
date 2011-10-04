@@ -28,6 +28,7 @@ void AT_material_no_from_material_name_R( const char** material_name,
 void AT_SPC_get_size_from_filename_R(const char** filename,
     int* spc_size);
 
+// TODO add double -> float conversion
 void AT_SPC_read_data_from_filename_R( const char** filename,
 		const int* n,
 		int* depth_step,
