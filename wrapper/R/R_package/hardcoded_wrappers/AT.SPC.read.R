@@ -174,16 +174,16 @@ AT.SPC.read <- function( file.name,
 		n.bins.read          <- integer(1)
 		
 		res                  <- .C( "AT_SPC_read_data_from_filename_R",
-									file.name          = as.character(file.name),
-									n                  = as.integer(n),
-									depth.step         = depth.step,
-									depth.g.cm2        = depth.g.cm2,
-									E.MeV.u            = E.MeV.u,
-									DE.MeV.u           = DE.MeV.u,
-									particle.no        = particle.no,
-									fluence.cm2        = fluence.cm2,
-									n.bins.read        = n.bins.read,
-									PACKAGE            = "libamtrack")
+				file.name          = as.character(file.name),
+				n                  = as.integer(n),
+				depth.step         = as.integer(depth.step),
+				depth.g.cm2        = as.single(depth.g.cm2),
+				E.MeV.u            = as.single(E.MeV.u),
+				DE.MeV.u           = as.single(DE.MeV.u),
+				particle.no        = as.integer(particle.no),
+				fluence.cm2        = as.single(fluence.cm2),
+				n.bins.read        = as.integer(n.bins.read),
+				PACKAGE            = "libamtrack")
 		
 		df   <- data.frame(  depth.step             = res$depth.step,
 							 depth.g.cm2            = res$depth.g.cm2,
@@ -192,9 +192,13 @@ AT.SPC.read <- function( file.name,
 							 particle.no            = res$particle.no,
 							 fluence.cm2            = res$fluence.cm2)
 
-#		if (compress == TRUE){
-#			df  <- df[df$fluence.cm2 != 0,]
-#		}	
+		# TODO to be implemented
+		n.depth.steps <- 1
+		projectile <- "X"
+		target.material     <- 1
+		beam.energy.MeV.u   <- 1
+		peak.position.g.cm2 <- 1
+					 
 	}
 	return(list( spc                 = df,
 	             n.depth.steps       = n.depth.steps,

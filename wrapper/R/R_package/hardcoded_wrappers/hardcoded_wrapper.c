@@ -129,31 +129,49 @@ void AT_SPC_get_size_from_filename_R(const char** filename,
       *spc_size = (int)spc_size_long;
 }
 
-// TODO add double -> float conversion
 void AT_SPC_read_data_from_filename_R( const char** filename,
 		const int* n,
 		int* depth_step,
-		double* depth_g_cm2,
-		double* E_MeV_u,
-		double* DE_MeV_u,
+		float* depth_g_cm2,
+		float* E_MeV_u,
+		float* DE_MeV_u,
 		int* particle_no,
-		double* fluence_cm2,
+		float* fluence_cm2,
 		int* n_bins_read){
 
 	char * filename_str = (char*)calloc(256, sizeof(char)); // TODO replace by FILE_NAME_NCHAR
 	strcpy(filename_str, *filename);
 
+	/* double -> float conversion */
+	double * depth_g_cm2_double = (double*)calloc(*n,sizeof(double));
+	double * E_MeV_u_double     = (double*)calloc(*n,sizeof(double));
+	double * DE_MeV_u_double    = (double*)calloc(*n,sizeof(double));
+	double * fluence_cm2_double = (double*)calloc(*n,sizeof(double));
+
 	int n_bins_read_tmp = AT_SPC_read_data_from_filename_fast( filename_str,
 			*n,
 			depth_step,
-			depth_g_cm2,
-			E_MeV_u,
-			DE_MeV_u,
+			depth_g_cm2_double,
+			E_MeV_u_double,
+			DE_MeV_u_double,
 			particle_no,
-			fluence_cm2);
+			fluence_cm2_double);
 
+	int i;
+	for(i = 0 ; i < *n ; i++){
+		depth_g_cm2[i] = (float)(depth_g_cm2_double[i]);
+		E_MeV_u[i] = (float)(E_MeV_u_double[i]);
+		DE_MeV_u[i] = (float)(DE_MeV_u_double[i]);
+		fluence_cm2[i] = (float)(fluence_cm2_double[i]);
+		if( i < 5 )
+			printf("old = %g, new = %g\n", fluence_cm2_double[i], fluence_cm2[i]);
+	}
 
-	free( filename_str);
+	free(filename_str);
+	free(depth_g_cm2_double);
+	free(E_MeV_u_double);
+	free(DE_MeV_u_double);
+	free(fluence_cm2_double);
 
 	*n_bins_read = n_bins_read_tmp;
 }

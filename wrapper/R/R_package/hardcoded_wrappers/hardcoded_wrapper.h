@@ -28,15 +28,14 @@ void AT_material_no_from_material_name_R( const char** material_name,
 void AT_SPC_get_size_from_filename_R(const char** filename,
     int* spc_size);
 
-// TODO add double -> float conversion
 void AT_SPC_read_data_from_filename_R( const char** filename,
 		const int* n,
 		int* depth_step,
-		double* depth_g_cm2,
-		double* E_MeV_u,
-		double* DE_MeV_u,
+		float* depth_g_cm2,
+		float* E_MeV_u,
+		float* DE_MeV_u,
 		int* particle_no,
-		double* fluence_cm2,
+		float* fluence_cm2,
         int* n_bins_read);
 
 #endif /* AT_HARDCODED_WRAPPER_H_ */
