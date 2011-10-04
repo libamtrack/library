@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "*************************************************"
-echo "Batch file for R wrappers compiling under Windows"
+echo "Batch file for R wrappers compiling under Linux"
 echo "*************************************************"
 
 echo "Auto-generate wrappers and documentation"
