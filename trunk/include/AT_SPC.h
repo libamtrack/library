@@ -139,11 +139,11 @@ void readStruct(      FILE *fp,
  * @return                          array sizes after reallocation
  */
 int AT_SPC_read( const char filename[FILE_NAME_NCHAR],
-		int* depth_step[],
+		int*    depth_step[],
 		double* depth_g_cm2[],
 		double* E_MeV_u[],
 		double* DE_MeV_u[],
-		int* particle_no[],
+		long*   particle_no[],
 		double* fluence_cm2[]);
 
 
@@ -190,12 +190,12 @@ int AT_SPC_get_size(  FILE *fp);
  * @return                          number of bins read. Must match the array size n
  */
 int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
-		int n,
-		int depth_step[],
+		int    n,
+		int    depth_step[],
 		double depth_g_cm2[],
 		double E_MeV_u[],
 		double DE_MeV_u[],
-		int particle_no[],
+		long   particle_no[],
 		double fluence_cm2[]);
 
 /**
@@ -213,12 +213,12 @@ int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
  * @return                          number of bins read. Must match the array size n
  */
 int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
-		int n,
-		int depth_step[],
+		int    n,
+		int    depth_step[],
 		double depth_g_cm2[],
 		double E_MeV_u[],
 		double DE_MeV_u[],
-		int particle_no[],
+		long   particle_no[],
 		double fluence_cm2[]);
 
 /**
@@ -243,11 +243,11 @@ int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
  */
 int AT_SPC_read_data( FILE* fp,
 		const int n,
-		int depth_step[],
+		int    depth_step[],
 		double depth_g_cm2[],
 		double E_MeV_u[],
 		double DE_MeV_u[],
-		int particle_no[],
+		long   particle_no[],
 		double fluence_cm2[]);
 
 
@@ -309,13 +309,13 @@ int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]);
  */
 int AT_SPC_decompose_data(
 		const int content_size,
-		int32_t content_orig[],
-		int* depth_step[],
-		double* depth_g_cm2[],
-		double* E_MeV_u[],
-		double* DE_MeV_u[],
-		int* particle_no[],
-		double* fluence_cm2[]);
+		int32_t   content_orig[],
+		int*      depth_step[],
+		double*   depth_g_cm2[],
+		double*   E_MeV_u[],
+		double*   DE_MeV_u[],
+		long*     particle_no[],
+		double*   fluence_cm2[]);
 
 
 #endif /* AT_SPC_H_ */
