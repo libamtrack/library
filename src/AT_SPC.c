@@ -359,13 +359,13 @@ int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]){
 
 int AT_SPC_decompose_data(
 		const int content_size,
-		int32_t content_orig[],
-		int* depth_step[],
-		double* depth_g_cm2[],
-		double* E_MeV_u[],
-		double* DE_MeV_u[],
-		int* particle_no[],
-		double* fluence_cm2[]){
+		int32_t   content_orig[],
+		int*      depth_step[],
+		double*   depth_g_cm2[],
+		double*   E_MeV_u[],
+		double*   DE_MeV_u[],
+		long*     particle_no[],
+		double*   fluence_cm2[]){
 
 	int index=0;
 	int length = 0;
@@ -521,11 +521,11 @@ int AT_SPC_decompose_data(
 }
 
 int AT_SPC_read(const char filename[FILE_NAME_NCHAR],
-		int* depth_step[],
+		int*    depth_step[],
 		double* depth_g_cm2[],
 		double* E_MeV_u[],
 		double* DE_MeV_u[],
-		int* particle_no[],
+		long*   particle_no[],
 		double* fluence_cm2[]){
 
 	FILE* fp;
@@ -533,11 +533,11 @@ int AT_SPC_read(const char filename[FILE_NAME_NCHAR],
 
 	int total_n_bins = AT_SPC_get_size(fp);
 
-	*depth_step    = (int*)realloc(*depth_step, total_n_bins * sizeof(int));
+	*depth_step    =    (int*)realloc(*depth_step,  total_n_bins * sizeof(int));
 	*depth_g_cm2   = (double*)realloc(*depth_g_cm2, total_n_bins * sizeof(double));
-	*E_MeV_u       = (double*)realloc(*E_MeV_u, total_n_bins * sizeof(double));
-	*DE_MeV_u      = (double*)realloc(*DE_MeV_u, total_n_bins * sizeof(double));
-	*particle_no   = (int*)realloc(*particle_no, total_n_bins * sizeof(int));
+	*E_MeV_u       = (double*)realloc(*E_MeV_u,     total_n_bins * sizeof(double));
+	*DE_MeV_u      = (double*)realloc(*DE_MeV_u,    total_n_bins * sizeof(double));
+	*particle_no   =   (long*)realloc(*particle_no, total_n_bins * sizeof(long));
 	*fluence_cm2   = (double*)realloc(*fluence_cm2, total_n_bins * sizeof(double));
 
 	int n_bins_read = AT_SPC_read_data(fp,
@@ -556,12 +556,12 @@ int AT_SPC_read(const char filename[FILE_NAME_NCHAR],
 
 
 int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
-		int n,
-		int depth_step[],
+		int    n,
+		int    depth_step[],
 		double depth_g_cm2[],
 		double E_MeV_u[],
 		double DE_MeV_u[],
-		int particle_no[],
+		long   particle_no[],
 		double fluence_cm2[])
 {
 	FILE* fp;
@@ -583,11 +583,11 @@ int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
 
 int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 		int n,
-		int depth_step[],
+		int    depth_step[],
 		double depth_g_cm2[],
 		double E_MeV_u[],
 		double DE_MeV_u[],
-		int particle_no[],
+		long   particle_no[],
 		double fluence_cm2[])
 {
 	int nb = AT_SPC_get_number_of_bytes_in_file( filename );
@@ -614,11 +614,11 @@ int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 
 int AT_SPC_read_data(FILE* fp,
 		const int n,
-		int depth_step[],
+		int    depth_step[],
 		double depth_g_cm2[],
 		double E_MeV_u[],
 		double DE_MeV_u[],
-		int particle_no[],
+		long   particle_no[],
 		double fluence_cm2[]){
 
 	char string[80];
