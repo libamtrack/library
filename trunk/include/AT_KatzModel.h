@@ -258,6 +258,13 @@ int AT_KatzModel_inactivation_cross_section_m2(
 
 /**
  * TODO
+ */
+double AT_KatzModel_KatzExtTarget_ButtsKatz_TrackWidth(
+		const double z2kappabeta2,
+		const double m);
+
+/**
+ * TODO
  * @param[in] fluence_cm2
  * @param[in] E_MeV_u
  * @param[in] particle_no
@@ -293,6 +300,8 @@ double AT_KatzModel_single_field_survival_from_inactivation_cross_section(
  * @param[in] D0_characteristic_dose_Gy
  * @param[in] m_number_of_targets
  * @param[in] sigma0_m2
+ * @param[in] use_approximation
+ * @param[in] kappa
  * @param[in] stopping_power_source_no
  * @param[out] survival
  * @return status code
@@ -308,8 +317,31 @@ int AT_KatzModel_single_field_survival(
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
     const double sigma0_m2,
+    const bool   use_approximation,
+    const double kappa,
     const long   stopping_power_source_no,
-    double*     survival);
+    double * survival);
+
+
+/**
+ * TODO
+ */
+int AT_KatzModel_mixed_field_survival(
+	const long   number_of_items,
+    double fluence_cm2[],
+	const double E_MeV_u[],
+    const long   particle_no[],
+    const long   material_no,
+    const long   rdd_model,
+    const double rdd_parameters[],
+    const long   er_model,
+    const double D0_characteristic_dose_Gy,
+    const double m_number_of_targets,
+    const double sigma0_m2,
+    const bool   use_approximation,
+    const double kappa,
+    const long   stopping_power_source_no,
+    double * survival);
 
 
 /**
@@ -325,6 +357,8 @@ int AT_KatzModel_single_field_survival(
  * @param[in] D0_characteristic_dose_Gy
  * @param[in] m_number_of_targets
  * @param[in] sigma0_m2
+ * @param[in] use_approximation
+ * @param[in] kappa
  * @param[in] stopping_power_source_no
  * @param[out] survival (array of size number_of_items)
  * @return
@@ -341,8 +375,10 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
     const double sigma0_m2,
-    const long   stopping_power_source_no,
-    double* survival);
+    const bool   use_approximation,
+    const double kappa,
+    const long stopping_power_source_no,
+    double * survival);
 
 /**
  * TODO
