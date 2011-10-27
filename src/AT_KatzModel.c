@@ -440,6 +440,98 @@ int AT_KatzModel_inactivation_cross_section_m2(
 }
 
 
+double AT_KatzModel_KatzExtTarget_ButtsKatz_TrackWidth(
+		const double z2kappabeta2,
+		const double m) {
+
+	const double    am[6] = { 1.5,   2.0,  2.5,   3.0,   4.0,   5.0};
+	const double conx1[6] = { 4.314, 4.6,  4.82,  5.0,   5.29,  5.51};
+	const double cony1[6] = { 6.55,  5.25, 4.7,   4.6,   4.4,   4.33};
+	const double conx2[6] = { 4.4,   6.3,  8.3,  10.3,  12.8,  14.3};
+	const double cony2[6] = { 6.65,  6.05, 5.95,  5.85,  5.75,  5.65};
+
+	int i;
+	double factor,ylo,yhi,yval,con,track;
+
+	if ( (m<1.5) || (m>5.) ){
+		return -1;
+	} else{
+
+		i = 1;
+		while (m >= am[i]) {
+			i++;
+		}
+		i--;
+
+		factor = (m - am[i])/(am[i+1]-am[i]);
+		if (z2kappabeta2 < conx1[i+1]){
+			return 1.0;
+		} else if (z2kappabeta2 >= conx2[i+1]){
+			//    for z2/kb2 high enough that both y values for low & high
+			//    m can be calculated using a translated y=(1-exp(-z2/kb2))
+			ylo = (cony2[i]*7.7687e-1)/(1-exp(-(conx2[i]*1.5e0)/z2kappabeta2));
+			yhi = (cony2[i+1]*7.7687e-1)/(1-exp(-(conx2[i+1]*1.5e0)/z2kappabeta2));
+		} else if (z2kappabeta2 > conx2[i]){
+			//    for values where y for low m must be calculated using trans-
+			//    lated y=(1-exp(-z2/kb2)) and high m y=straight line approximation
+			ylo = (cony2[i]*7.7687e-1)/(1-exp(-(conx2[i]*1.5e0)/z2kappabeta2));
+			yhi = (((cony2[i+1]-cony1[i+1])/(conx2[i+1]-conx1[i+1]))*(z2kappabeta2-conx1[i+1]))+cony1[i+1];
+		} else {
+			//    if z2/kb2 does not fit into any of above intervals, then it must
+			//    be in region where both curves are approximated by straight lines
+			//	 std::cout << "both straight lines" << std::endl;
+			ylo = (((cony2[i]-cony1[i])/(conx2[i]-conx1[i]))*(z2kappabeta2-conx1[i]))+cony1[i];
+			yhi = (((cony2[i+1]-cony1[i+1])/(conx2[i+1]-conx1[i+1]))*(z2kappabeta2-conx1[i+1]))+cony1[i+i];
+		}
+
+		//    having found y values for low and high m, perform interpolation
+		//    on the logs of these values to find the value for the unknown m
+		//    an interpolation is also done on the z2/kb2 constant which is the
+		//    start of the track width region, to find this for the unknown m
+		yval = exp(log(ylo)+(factor*(log(yhi)-log(ylo))));
+		con = exp(log(cony1[i])+(factor*(log(cony1[i+1])-log(cony1[i]))));
+		track = yval/con;
+	}
+	return track;
+}
+
+
+double AT_KatzModel_inactivation_cross_section_approximation_m2(
+		const double E_MeV_u,
+		const long   particle_no,
+		const long   material_no,
+		const long   rdd_model,
+		const long   er_model,
+		const double m_number_of_targets,
+		const double sigma0_m2,
+		const double kappa){
+
+	double result = -1.0;
+
+	if( rdd_model == RDD_KatzExtTarget && er_model == ER_ButtsKatz ){
+
+		double beta = AT_beta_from_E_single(E_MeV_u);
+		double zeff = AT_effective_charge_from_beta_single(beta, AT_Z_from_particle_no_single(particle_no));
+		double z2kappabeta2 = gsl_pow_2( zeff / beta ) / kappa;
+
+		double Pi = pow( 1.0 - exp( - z2kappabeta2) , m_number_of_targets);
+
+		double factor = 1;
+		if( Pi > 0.98 ){
+			factor = AT_KatzModel_KatzExtTarget_ButtsKatz_TrackWidth( z2kappabeta2, m_number_of_targets );
+		} else {
+			factor = Pi;
+		}
+
+		result = factor * sigma0_m2;
+
+	}
+
+	return result;
+}
+
+
+
 double AT_KatzModel_single_field_survival_from_inactivation_cross_section(
     const double fluence_cm2,
 	const double E_MeV_u,
@@ -501,6 +593,8 @@ int AT_KatzModel_single_field_survival(
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
     const double sigma0_m2,
+    const bool   use_approximation,
+    const double kappa,
     const long   stopping_power_source_no,
     double * survival){
 
@@ -509,24 +603,36 @@ int AT_KatzModel_single_field_survival(
 	/* single particle inactivation cross section calculation */
 	double inactivation_cross_section_m2 = 0.0;
 	double gamma_parameters[5] = {1.,D0_characteristic_dose_Gy,1.,m_number_of_targets,0.};
-	int status = AT_KatzModel_inactivation_cross_section_m2(
-	    1,
-	    &E_MeV_u,
-	    particle_no,
-	    material_no,
-	    rdd_model,
-	    rdd_parameters,
-	    er_model,
-	    gamma_parameters,
-	    stopping_power_source_no,
-	    &inactivation_cross_section_m2);    /* here we use D0, m and a0 */
 
-	printf("Inactivation cross section = %g\n", inactivation_cross_section_m2);
+	if(  use_approximation == false ){
+		int status = AT_KatzModel_inactivation_cross_section_m2(
+				1,
+				&E_MeV_u,
+				particle_no,
+				material_no,
+				rdd_model,
+				rdd_parameters,
+				er_model,
+				gamma_parameters,
+				stopping_power_source_no,
+				&inactivation_cross_section_m2);    /* here we use D0, m and a0 */
 
-	if( status != EXIT_SUCCESS ){
-		fprintf(stderr, "Problem with evaluating inactivation cross section\n");
-		return status;
+		if( status != EXIT_SUCCESS ){
+			fprintf(stderr, "Problem with evaluating inactivation cross section\n");
+			return status;
+		}
+	} else {
+		inactivation_cross_section_m2 = AT_KatzModel_inactivation_cross_section_approximation_m2(
+				E_MeV_u,
+				particle_no,
+				material_no,
+				rdd_model,
+				er_model,
+				m_number_of_targets,
+				sigma0_m2,
+				kappa);    /* here we use sigma0, m and kappa */
 	}
+
 
 	*survival = AT_KatzModel_single_field_survival_from_inactivation_cross_section( fluence_cm2,
 			E_MeV_u,
@@ -542,6 +648,82 @@ int AT_KatzModel_single_field_survival(
 }
 
 
+
+int AT_KatzModel_mixed_field_survival(
+	const long   number_of_items,
+    double fluence_cm2[],
+	const double E_MeV_u[],
+    const long   particle_no[],
+    const long   material_no,
+    const long   rdd_model,
+    const double rdd_parameters[],
+    const long   er_model,
+    const double D0_characteristic_dose_Gy,
+    const double m_number_of_targets,
+    const double sigma0_m2,
+    const bool   use_approximation,
+    const double kappa,
+    const long   stopping_power_source_no,
+    double * survival){
+
+	assert( sigma0_m2 > 0);
+
+	/* single particle inactivation cross section calculation */
+	double inactivation_cross_section_m2 = 0.0;
+	double gamma_parameters[5] = {1.,D0_characteristic_dose_Gy,1.,m_number_of_targets,0.};
+
+	long i = 0;
+	double sum1 = 0.0;
+	double sum2 = 0.0;
+
+	for( i = 0 ; i < number_of_items; i++){
+
+		if( use_approximation ){
+			inactivation_cross_section_m2 = AT_KatzModel_inactivation_cross_section_approximation_m2(E_MeV_u[i], particle_no[i], material_no, rdd_model, er_model, m_number_of_targets, sigma0_m2, kappa );
+		} else {
+			int status = AT_KatzModel_inactivation_cross_section_m2(
+					1,
+					&(E_MeV_u[i]),
+					particle_no[i],
+					material_no,
+					rdd_model,
+					rdd_parameters,
+					er_model,
+					gamma_parameters,
+					stopping_power_source_no,
+					&inactivation_cross_section_m2);    /* here we use D0, m and a0 */
+
+			if( status != EXIT_SUCCESS ){
+				fprintf(stderr, "Problem with evaluating inactivation cross section\n");
+				return status;
+			}
+		}
+
+		double Pi = 1.0;
+		if( inactivation_cross_section_m2 < sigma0_m2 ){
+			Pi = inactivation_cross_section_m2 / sigma0_m2;
+		};
+
+		double Di = AT_dose_Gy_from_fluence_cm2_single( E_MeV_u[i], particle_no[i], fluence_cm2[i], material_no, stopping_power_source_no);
+
+		sum1 += inactivation_cross_section_m2 * fluence_cm2[i] * 1e4;
+		sum2 += (1.0 - Pi) * Di;
+
+	}
+
+	double IonKill = exp( - sum1 );
+	double GammaKill = 1.0 - pow( 1 - exp( - sum2 / D0_characteristic_dose_Gy), m_number_of_targets);
+
+	//	printf("ionkill = %g\n", IonKill);
+	//	printf("gammakill = %g\n", GammaKill);
+
+	*survival = IonKill * GammaKill;
+
+	return EXIT_SUCCESS;
+}
+
+
+
 int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
 	const long   number_of_items,
     const double fluence_cm2[],
@@ -554,6 +736,8 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
     const double D0_characteristic_dose_Gy,
     const double m_number_of_targets,
     const double sigma0_m2,
+    const bool   use_approximation,
+    const double kappa,
     const long stopping_power_source_no,
     double * survival){
 
@@ -562,23 +746,36 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
 	/* single particle inactivation cross section calculation */
 	double inactivation_cross_section_m2 = 0.0;
 	double gamma_parameters[5] = {1.,D0_characteristic_dose_Gy,1.,m_number_of_targets,0.};
-	int status = AT_KatzModel_inactivation_cross_section_m2(
-	    1,
-	    &E_MeV_u,
-	    particle_no,
-	    material_no,
-	    rdd_model,
-	    rdd_parameters,
-	    er_model,
-	    gamma_parameters,
-	    stopping_power_source_no,
-	    &inactivation_cross_section_m2);    /* here we use D0, m and a0 */
 
-	printf("Inactivation cross section = %g\n", inactivation_cross_section_m2);
+	if(  use_approximation == false ){
+		int status = AT_KatzModel_inactivation_cross_section_m2(
+				1,
+				&E_MeV_u,
+				particle_no,
+				material_no,
+				rdd_model,
+				rdd_parameters,
+				er_model,
+				gamma_parameters,
+				stopping_power_source_no,
+				&inactivation_cross_section_m2);    /* here we use D0, m and a0 */
 
-	if( status != EXIT_SUCCESS ){
-		fprintf(stderr, "Problem with evaluating inactivation cross section\n");
-		return status;
+		printf("Inactivation cross section = %g\n", inactivation_cross_section_m2);
+
+		if( status != EXIT_SUCCESS ){
+			fprintf(stderr, "Problem with evaluating inactivation cross section\n");
+			return status;
+		}
+	} else {
+		inactivation_cross_section_m2 = AT_KatzModel_inactivation_cross_section_approximation_m2(
+				E_MeV_u,
+				particle_no,
+				material_no,
+				rdd_model,
+				er_model,
+				m_number_of_targets,
+				sigma0_m2,
+				kappa);    /* here we use sigma0, m and kappa */
 	}
 
 	long i;
