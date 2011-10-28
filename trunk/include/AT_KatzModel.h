@@ -320,7 +320,7 @@ int AT_KatzModel_single_field_survival(
     const bool   use_approximation,
     const double kappa,
     const long   stopping_power_source_no,
-    double * survival);
+    double*      survival);
 
 
 /**
@@ -341,7 +341,7 @@ int AT_KatzModel_mixed_field_survival(
     const bool   use_approximation,
     const double kappa,
     const long   stopping_power_source_no,
-    double * survival);
+    double*      survival);
 
 
 /**
@@ -377,8 +377,8 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
     const double sigma0_m2,
     const bool   use_approximation,
     const double kappa,
-    const long stopping_power_source_no,
-    double * survival);
+    const long   stopping_power_source_no,
+    double*      survival);
 
 /**
  * TODO
