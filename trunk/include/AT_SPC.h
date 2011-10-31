@@ -266,7 +266,7 @@ int AT_SPC_get_number_of_bytes_in_file(const char * filename);
  * @param[out]      content  	    binary content of SPC file (array of size content_size)
  * @return			status code
  */
-int AT_SPC_fast_read(const char *filename, int content_size, int32_t content[]);
+int AT_SPC_fast_read_buffer(const char * filename, int content_size, int32_t * content);
 
 /**
  * TODO

@@ -216,9 +216,7 @@ int AT_SPC_get_number_of_bytes_in_file(const char * filename){
 }
 
 
-int AT_SPC_fast_read(const char * filename, int content_size, int32_t * content){
-
-	/** see "man mmap" from Linux man pages, good example there */
+int AT_SPC_fast_read_buffer(const char * filename, int content_size, int32_t * content){
 
 	/* open the file */
 	int fd = open(filename, O_RDONLY);
@@ -238,28 +236,21 @@ int AT_SPC_fast_read(const char * filename, int content_size, int32_t * content)
 	/* check output array size */
 	size_t length = sb.st_size;
 	if( length != content_size * sizeof(int32_t)){
-		printf("content has wrong size");
+		printf("content has wrong size\n");
 		close(fd);
 		return EXIT_FAILURE;
 	}
-
-	/* map whole file into addr pointer */
-	off_t pa_offset = 0;
-	int32_t *addr = mmap(NULL, length, PROT_READ, MAP_PRIVATE, fd, pa_offset);
-	if (addr == MAP_FAILED){
-		printf("mmap");
-		close(fd);
-		return EXIT_FAILURE;
-	}
-
-	/* copy memory mapped area into content pointer */
-	memcpy( content, addr, length );
-
-	/* un-map memory */
-	munmap( addr, length);
-
-	/* close file */
 	close(fd);
+
+	/* read whole file into addr pointer */
+	const char * mode = "r";
+	FILE * fs = fopen( filename , mode);
+	size_t no_items_read = fread(content , sizeof(int32_t), length, fs);
+
+	if (!feof(fs))
+		printf("error, expected to be at the end of file %s, read %d items\n", filename, no_items_read);
+
+	fclose(fs);
 
 	return EXIT_SUCCESS;
 }
@@ -594,7 +585,7 @@ int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 	int size = nb / sizeof(int32_t);
 
 	int32_t * content = (int32_t*)calloc(sizeof(int32_t), size);
-	AT_SPC_fast_read(filename, size, content);
+	AT_SPC_fast_read_buffer(filename, size, content);
 
 	int res = AT_SPC_decompose_data(
 			size,
