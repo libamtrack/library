@@ -11,6 +11,7 @@
 \usepackage{lineno}
 \usepackage{tensor}
 \usepackage{graphicx}
+\usepackage{fancyvrb} % To include text files ``as is''
 
 % include hyperlinks in document and gives the pdf a title
 \usepackage[pdftitle={The libAmTrack Reference Manual}]{hyperref}
@@ -47,6 +48,12 @@
 \include{PhysicsRoutines}
 \include{wrapper}
 \include{ListOfSymbols}
+
+\part{Appendix}
+\section{Readme files etc.}
+\subsection{Main readme (/README)}
+
+\VerbatimInput[baselinestretch=1,fontsize=\footnotesize,numbers=left]{../../README}
 
 \bibliographystyle{unsrt}
 \bibliography{libamtrackManual}
