@@ -7,11 +7,12 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{array}
-\usepackage[version=3]{mhchem}
-\usepackage{lineno}
+% \usepackage[version=3]{mhchem}
+% \usepackage{lineno}
 \usepackage{tensor}
 \usepackage{graphicx}
 \usepackage{fancyvrb} % To include text files ``as is''
+\usepackage{listings}
 
 % include hyperlinks in document and gives the pdf a title
 \usepackage[pdftitle={The libAmTrack Reference Manual}]{hyperref}
@@ -53,6 +54,7 @@
 \section{Readme files etc.}
 \subsection{Main readme (/README)}
 
+\lstset{fancyvrb=true,breaklines}
 \VerbatimInput[baselinestretch=1,fontsize=\footnotesize,numbers=left]{../../README}
 
 \bibliographystyle{unsrt}
