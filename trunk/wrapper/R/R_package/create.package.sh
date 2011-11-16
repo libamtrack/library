@@ -68,12 +68,19 @@ if [ "$?" -ne "0" ]; then
   exit 1
 fi
 
-
 # *** Move resulting file (wrapper C and R), dynamically coded documentation to temporary folder
 echo "Moving results from R scripts into package structure..."
 mv AT_R_Wrapper.* libamtrack/src
 mv libamtrack.R libamtrack/R
 mv *.Rd libamtrack/man
+
+# *** Create namespace for package
+echo "Create NAMESPACE file for package..."
+R --no-save CMD BATCH ../../../tools/automatic_wrapper_generator/R.create.package.namespace.R
+if [ "$?" -ne "0" ]; then
+  echo "Problem with executing R.create.package.namespace.R"
+  exit 1
+fi
 
 # *** Run autoconf
 echo
@@ -108,5 +115,7 @@ rm -f -r libamtrack.Rcheck
 rm -f *.sdd
 rm -f *.Rout
 rm -f *.RData
+# These files should not even be there, TODO: check RD creation script
+rm -f ./package/man/*.Rd
 
 echo "Done!"
