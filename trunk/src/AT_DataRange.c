@@ -34,16 +34,15 @@
 #include <gsl/gsl_randist.h>
 
 double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_int( double  E_MeV_u,
-    void*   params){
-  assert( params != NULL );
-  AT_CSDA_range_Bethe_parameters* int_params = (AT_CSDA_range_Bethe_parameters*)params;
-
-  const double E_restricted_keV = 0.0;
-  double  StPow = AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_single(	E_MeV_u,
+		void*   params){
+	assert( params != NULL );
+	AT_CSDA_range_Bethe_parameters* int_params = (AT_CSDA_range_Bethe_parameters*)params;
+	const double E_restricted_keV = 0.0;
+	double  StPow = AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_single(	E_MeV_u,
 			int_params->particle_no,
 			int_params->material_no,
 			E_restricted_keV);
-  return (1.0 / (StPow));
+	return (1.0 / (StPow));
 }
 
 double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_initial_MeV_u,
@@ -104,24 +103,24 @@ void AT_CSDA_range_Bethe_g_cm2_multi(	const long    n,
 	for (i = 0; i < n; i++){
 		CSDA_range_cm2_g[i] = AT_CSDA_range_Bethe_g_cm2_single(	E_initial_MeV_u[i],
 				E_final_MeV_u[i],
-                particle_no[i],
+				particle_no[i],
 				material_no);
 	}
 }
 
 
 double AT_CSDA_range_difference_solver( double  E_final_MeV_u,
-	    void*   params)
+		void*   params)
 {
-	  assert( params != NULL );
-	  AT_CSDA_range_difference_parameters* solver_params = (AT_CSDA_range_difference_parameters*)params;
+	assert( params != NULL );
+	AT_CSDA_range_difference_parameters* solver_params = (AT_CSDA_range_difference_parameters*)params;
 
-	  double material_range_g_cm2 = AT_CSDA_range_Bethe_g_cm2_single(	solver_params->E_initial_MeV_u,
-	  		E_final_MeV_u,
-	  		solver_params->particle_no,
-	  		solver_params->material_no);
+	double material_range_g_cm2 = AT_CSDA_range_Bethe_g_cm2_single(	solver_params->E_initial_MeV_u,
+			E_final_MeV_u,
+			solver_params->particle_no,
+			solver_params->material_no);
 
-	  return (material_range_g_cm2 - solver_params->range_g_cm2);
+	return (material_range_g_cm2 - solver_params->range_g_cm2);
 }
 
 
@@ -138,19 +137,19 @@ double AT_CSDA_energy_after_slab_E_MeV_u_single( const double E_initial_MeV_u,
 	params.range_g_cm2          = slab_thickness_g_cm2;
 
 	const double  solver_accuracy  =  1e-6;
-    // Set lower limit to 1 MeV (= 25 µm range error for protons in water, which should be tolerable) to
+	// Set lower limit to 1 MeV (= 25 ï¿½m range error for protons in water, which should be tolerable) to
 	// coincide with coded limits of Bethe formular routine. Otherwise, singularity error will appear
 	// TODO: Generalize lower limit for all stopping power sources, e.g. lowest value for tabulated data
 	const double  min_possible_value_E_final_MeV_u = 1.0;
-    const double  max_possible_value_E_final_MeV_u = E_initial_MeV_u;
+	const double  max_possible_value_E_final_MeV_u = E_initial_MeV_u;
 
-    double E_final_MeV_u =  zriddr(AT_CSDA_range_difference_solver,
-	          (void*)(&params),
-	          min_possible_value_E_final_MeV_u,
-	          max_possible_value_E_final_MeV_u,
-	          solver_accuracy);
+	double E_final_MeV_u =  zriddr(AT_CSDA_range_difference_solver,
+			(void*)(&params),
+			min_possible_value_E_final_MeV_u,
+			max_possible_value_E_final_MeV_u,
+			solver_accuracy);
 
-	return E_final_MeV_u;
+	return (E_final_MeV_u);//E_final_MeV_u;
 }
 
 void AT_CSDA_energy_after_slab_E_MeV_u_multi( const long n,
@@ -181,16 +180,16 @@ double AT_WEPL_Bethe_single(	const double 	E_MeV_u,
 			slab_thickness_m);
 
 	double residual_range_g_cm2   = AT_CSDA_range_Bethe_g_cm2_single( E_final_MeV_u,
-			0,
+			BETHE_LOWER_LIMIT_E_MEV_U,
 			particle_no,
 			Water_Liquid);
 
 	double residual_range_m       = residual_range_g_cm2 / AT_density_g_cm3_from_material_no(Water_Liquid) / m_to_cm;
 
 	double range_water_m          = AT_CSDA_range_Bethe_g_cm2_single(E_MeV_u,
-	                                               0,
-	                                               particle_no,
-	                                               Water_Liquid) / m_to_cm;
+			BETHE_LOWER_LIMIT_E_MEV_U,
+			particle_no,
+			Water_Liquid) / m_to_cm;
 
 	return (range_water_m - residual_range_m) / slab_thickness_m;
 }
