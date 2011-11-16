@@ -422,7 +422,7 @@ double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_single(	const double E_MeV_u,
 	 * below return zero */
 	// TODO: Find smarter criterion because this may cause problems in the code (as it did
 	// TODO: with the inappropriatly set lower limit for CSDA range integration (was 0, now 1.0 MeV)
-	if(E_MeV_u >= 1.0){
+	if(E_MeV_u >= BETHE_LOWER_LIMIT_E_MEV_U){
 		const double beta2 		= gsl_pow_2(AT_beta_from_E_single(E_MeV_u));
 		assert( beta2 > 0);
 		const double Z			= AT_average_Z_from_material_no(material_no);
@@ -436,8 +436,7 @@ double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_single(	const double E_MeV_u,
 				E_restricted_keV);
 		result = k_MeV_cm2_g * (Z / A) * gsl_pow_2(z_eff) * SN / (beta2);
 	}
-
-	return result;
+    return result;
 
 }
 

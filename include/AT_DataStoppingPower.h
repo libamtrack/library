@@ -47,6 +47,8 @@ enum stoppingPowerSource_no{
 };
 
 
+#define BETHE_LOWER_LIMIT_E_MEV_U 1.0
+
 /**
  * TODO
  */
