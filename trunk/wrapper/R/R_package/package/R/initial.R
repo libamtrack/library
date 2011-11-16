@@ -1,6 +1,6 @@
-.First.lib <- function(lib, pkg){
+.onLoad <- function(lib, pkg){
  library.dynam("libamtrack", pkg, lib)
- cat("This is libamtrack ##VERSION## '##NAME##' (##STATUS##, ##REVISION##, ##DATE##).\nType '?libamtrack' for help.\n")
+ packageStartupMessage("This is libamtrack ##VERSION## '##NAME##' (##STATUS##, ##REVISION##, ##DATE##).\nType '?libamtrack' for help.\n")
 }
 
 .Last.lib <- function(libpath){
