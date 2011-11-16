@@ -23,6 +23,17 @@ libamtrack as a shared library cannot be run as a single executable. A number of
 Please note that libamtrack (but not the web interface version) needs GSL, the GNU Scientific Library ([http://www.gnu.org/software/gsl/) to work.
 GSL is included in most GNU/Linux distributions (you maybe have to install it via your package management system or similar). Binary installer exist for Mac OS X (http://ascend4.org/Binary_installer_for_GSL-1.13_on_Mac_OS_X) and Windows (http://gnuwin32.sourceforge.net/packages/gsl.htm). Of course, you can also compile GSL from sources yourself, also for Window using MSYS/MinGW (http://www.mingw.org/) or cygwin (http://www.cygwin.com/, where a precompiled package exists.
 
+Mac specific:
+The easiest way to fetch GSL for Mac is to use MacPorts (see below). You can also compile from sources, most likely you then have to add two flags while configuring:
+./configure --disable-shared --disable-dependency-tracking
+
+By default, GSL is built for 32bit. This is equivalent to:
+./configure CFLAGS="-arch i386" && make && make install
+
+To compile for 64bit also, use:
+./configure CFLAGS="-arch x86_64" && make && make install
+./configure CFLAGS=-m64 --with-pic
+
 i. Web-interface
 ----------------
 The web interface covers a subset of libamtrack functions for easy access and can be found on libamtrack's website: http://libamtrack.dkfz.org. The sources can be found at (/tools/webgui). The interface development was started by Christoph Kolb within his Bachelor thesis and consolidated by Leszek Grzanka.
@@ -50,11 +61,18 @@ v. Compile libamtrack from sources
 It can be necessary to run 'ldconfig' after installation.
 
 -- Windows-specific:
-libamtrack can be build on Windows using MinGW/MSYS. Add --build=mingw32 ('--build=x86-winnt-mingw') and an appropriate '--prefix=...' option for 'configure'. Also, an environmental variable has to be set to point to your GSL installation, e.g. "set LIB_GSL=C:/GnuWin32" (forward slashes!).
+libamtrack can be build on Windows using MinGW/MSYS. Add --build=mingw32 ('--build=x86-winnt-mingw') and 
+an appropriate '--prefix=...' option for 'configure'. Also, an environmental variable has to be set to point to your GSL installation,
+e.g. "set LIB_GSL=C:/GnuWin32" (forward slashes!).
 
 -- Mac OS X-specific:
-Remember to adapt the --build option for 'configure' to match your GSL installation.
 
+Remember to adapt the --build option for 'configure' to match your GSL installation, i.e.
+./configure --build="i386"
+
+Mac OS X comes with rather outdated versions of the GNU autotools. To update we recommend to use MacPorts (www.macports.org), and do:
+sudo port install autoconf automake libtool
+Using 'Fink' (www.finkproject.org) is another possibility.
 
 3. CAN I USE LIBAMTRACK IN MY RESEARCH AND/OR MODIFY THE CODE?
 ==============================================================
