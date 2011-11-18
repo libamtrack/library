@@ -168,12 +168,20 @@ int AT_effective_charge_from_E_MeV_u( const  long  n,
 }
 
 
+ double AT_mass_correction_terms( const double E_MeV_u){
+  double	beta = AT_beta_from_E_single( E_MeV_u );
+  double	m_MeV_c2 = 1.0079 * proton_mass_MeV_c2;
+  return	1.0 + (2.0 * (electron_mass_MeV_c2 / m_MeV_c2) / sqrt(1.0 - beta * beta)) + gsl_pow_2(electron_mass_MeV_c2 / m_MeV_c2);
+ }
+
+
  double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u ){
-  const double beta = AT_beta_from_E_single(E_MeV_u);
-  // TODO what does it mean MeV_c2, are units correct ?
-  // TODO add m/M terms (ICRU49, p. 6, eq. 2.4
-  return 2.0 * electron_mass_MeV_c2 * gsl_pow_2(beta) / (1.0 - gsl_pow_2(beta));
-}
+  const double	beta = AT_beta_from_E_single(E_MeV_u);
+  double		mass_correction_terms = AT_mass_correction_terms(beta);
+  double		m_MeV_c2 = 1.0079 * proton_mass_MeV_c2;
+   // TODO what does it mean MeV_c2, are units correct ?
+   return (2.0 * electron_mass_MeV_c2 * gsl_pow_2(beta) / (1.0 - gsl_pow_2(beta))) / mass_correction_terms;
+ }
 
 
  double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u ){
