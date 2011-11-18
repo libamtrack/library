@@ -42,10 +42,6 @@
 #include "AT_NumericalRoutines.h"
 
 /**
- * Grischa Test
- */
-
-/**
  * Structure to carry essential single, monoenergetic particle field information
  */
 typedef struct {
@@ -308,12 +304,21 @@ int AT_effective_charge_from_E_MeV_u(  const long  n,
     double        effective_charge[]);
 
 
-/**
- * Max relativistic energy transfer for single particle
- *
- * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
- * @return max_E_transfer_MeV
- */
+ /**
+  * Mass correction terms of max relativistic energy transfer for single particle
+  *
+  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
+  * @return mass_correction_terms
+  */
+ double AT_mass_correction_terms( const double E_MeV_u);
+
+
+ /**
+  * Max relativistic energy transfer with mass correction terms for single particle
+  *
+  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
+  * @return max_E_transfer_MeV_testGrischa
+  */
  double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u );
 
 
