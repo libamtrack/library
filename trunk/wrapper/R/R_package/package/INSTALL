@@ -2,7 +2,7 @@
 
 Start R (as root, if you want) and type
 
-'install.packages("libamtrack")
+'install.packages("libamtrack")'
 
 
 *** INSTALLATION FROM SOURCE PACKAGE ***

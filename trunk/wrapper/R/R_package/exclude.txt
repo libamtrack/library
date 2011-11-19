@@ -1,3 +1,0 @@
-.svn
-Makevars.linux
-Makevars.windows
