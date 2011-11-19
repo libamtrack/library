@@ -407,7 +407,7 @@ void AT_effective_Z_from_composition( const long n,
 	double effective_Z_sum = 0.0;
 	long i;
 	for (i = 0; i < n; i++){
-		effective_Z_sum += pow(normalized_weight_fraction[i] * Z[i], exponent);
+		effective_Z_sum += normalized_weight_fraction[i] * pow(Z[i], exponent);
 		*effective_Z = pow(effective_Z_sum, 1/exponent);
 	}
 
