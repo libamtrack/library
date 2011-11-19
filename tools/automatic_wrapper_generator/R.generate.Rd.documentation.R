@@ -56,6 +56,9 @@ names.examples                     <- substring( hardcoded.examples[pos.start.ex
 # Read in type conversion table for C to R
 source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")
 
+# exclude function with "C only" flag
+noR       <- sapply(functions, check.type <- function(x){x$wrapper.type == "C only"})
+functions <- functions[!noR]
 
 for(i in 1:length(functions)){
 	# i <- 4

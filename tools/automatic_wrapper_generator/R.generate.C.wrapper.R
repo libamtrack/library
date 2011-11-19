@@ -29,7 +29,17 @@ source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")
 
 load("functions.sdd")
 
-write("#ifndef AT_R_WRAPPER_H_\n#define AT_R_WRAPPER_H_\n// Automatically created header file\n\n#include \"AT_Algorithms_CPP.h\"\n#include \"AT_Algorithms_IGK.h\"\n#include \"AT_DataRange.h\"\n#include <stdlib.h>\n#include <stdbool.h>\n", file = "AT_R_Wrapper.h")
+write("#ifndef AT_R_WRAPPER_H_\n#define AT_R_WRAPPER_H_\n// Automatically created header file\n\n#include <stdlib.h>\n#include <stdbool.h>\n", file = "AT_R_Wrapper.h")
+# Add include files for functions used
+used.header.files <- unique(sapply(functions, function(x){x$header.file.name}))
+for (header.file in used.header.files){
+   write(paste("#include\"",
+               header.file,
+               "\"", 
+               sep = ""),
+         file = "AT_R_Wrapper.h", append = TRUE)  
+}
+write("\n", file = "AT_R_Wrapper.h", append = TRUE)  
 
 write("// Automatically created header and body file\n\n#include \"AT_R_Wrapper.h\"\n", file = "AT_R_Wrapper.c")
 
@@ -41,7 +51,7 @@ grep.bool	<-	function(pattern, x, ...){
 }
 
 for(i in 1:length(functions)){
-	# i <- 43
+	# i <- 51
 	tmp <- functions[[i]]
 	
 	##############################
@@ -98,12 +108,12 @@ for(i in 1:length(functions)){
 	}
 	body         <- c(body, "")
 
-	# get the length of the arrays and check for numbers (this will produce a warning!
-	para.length           <- para$length
-	numbers               <- !is.na(as.numeric(para.length)) 
-
+	# check for those array lengths that are given by a variable 
+	numbers               <- para$length%in%para$name
+  para.length           <- para$length
+  
 	# add "_long" to all variables that are no numbers
-	para.length[!numbers] <- paste(para.length[!numbers], "_long", sep = "")
+	para.length[numbers]  <- paste(para.length[numbers], "_long", sep = "")
 
 	# write changed para.length back into data.frame
 	para$length           <- para.length
@@ -123,14 +133,26 @@ for(i in 1:length(functions)){
 			}
 			body <- c(body, "")
 			# fill the data into the allocated space
-			body <- c(body, "\n//Fill in the input parameter.")
-			body <- c(body, paste("  for(i = 0 ; i < ", l, "; i++){", sep = ""))
-			for(k in jj){
-				body <- c(body, paste("\t", para$name[k], get.extension(para$type[k]),
-						"[i] = (", gsub("const ", "", para$type[k]), ")", para$name[k],
-						"[i];", sep = ""))
-			}
-			body <- c(body, "  }")
+			if(sum(grepl("char", para$type[jj]))==0){
+        body <- c(body, "\n//Fill in the input parameter.")
+			  body <- c(body, paste("  for(i = 0 ; i < ", l, "; i++){", sep = ""))
+			  for(k in jj){
+				  body <- c(body, paste("\t", para$name[k], get.extension(para$type[k]),
+						  "[i] = (", gsub("const ", "", para$type[k]), ")", para$name[k],
+						  "[i];", sep = ""))
+			  }
+			  body <- c(body, "  }")
+		  }else{
+        body <- c(body, "\n// Copy strings\n")
+  		  for(k in jj){
+				  body <- c(body, paste("\tstrcpy(", 
+                                para$name[k], get.extension(para$type[k]),
+                                ",(*",
+                                para$name[k], 
+                                "));",
+                                sep = ""))
+			  }
+		  }
 		}
 		kk <-  which(!input & vector & para$length == l)
 		if(length(kk) > 0){

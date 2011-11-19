@@ -173,7 +173,8 @@ AT.SPC.read <- function( file.name,
 		fluence.cm2          <- numeric(n)
 		n.bins.read          <- integer(1)
 		
-		res                  <- .C( "AT_SPC_read_data_from_filename_R",
+#  	res                  <- .C( "AT_SPC_read_data_from_filename_R",
+		res                  <- .C( "AT_SPC_read_data_from_filename_fast_R",
 				file.name          = as.character(file.name),
 				n                  = as.integer(n),
 				depth.step         = as.integer(depth.step),

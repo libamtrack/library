@@ -30,7 +30,12 @@ rm(list = ls())
 cur.dir           <- getwd()
 
 # Read in namespace header.file.name
-namespace         <- scan(file = "NAMESPACE", what = "character")
+namespace         <- scan(file = "NAMESPACE", what = "character", sep = "\n")
+
+# find those function marked with "noR: " for which no R wrapper,
+# only C wrapper will be created
+noR               <- grepl("noR: ", namespace)
+namespace         <- gsub("^noR: ", "", namespace)
 
 # Navigate to include path within libamtrack trunk. Stop if this fails
 if((try(setwd("../../../include")) == FALSE)&(try(setwd("../../include")) == FALSE)){
@@ -448,7 +453,7 @@ for(header.file.name in header.file.names){
                for(j in 1:nrow(current.function$parameter)){
                   # j <- 1
                   if(regexpr("[[:alpha:]]", current.function$parameter$length[j]) == -1){                   # only length with digits
-				if(as.numeric(current.function$parameter$length[j])>1){
+				                if(as.numeric(current.function$parameter$length[j])>1){
                              if(current.function$parameter$in.out[j] == "in"){
                                   current.function$parameter$fixed.size.array[j]     <- TRUE
                              }
@@ -456,7 +461,15 @@ for(header.file.name in header.file.names){
                   }
                }
  
-
+               # Add flag if both R and C wrappers or C wrappers only will be built
+               current.function$wrapper.type <- "R and C"
+               if(noR[match(name,namespace)]){
+                  current.function$wrapper.type <- "C only"
+               }
+               
+               # Add header file name for later include
+               current.function$header.file.name <- header.file.name
+               
                # Store processed function data
                functions[[function.no]]    <- current.function
                processed.functions         <- c(processed.functions, name)

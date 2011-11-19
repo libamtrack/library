@@ -24,10 +24,10 @@
 ################################################################################################
 
 
-types <- c("bool", "long", "int", "double")
-conversion.c <- c("int*\t", "int*\t", "int*\t", "float*")
-conversion.R <- c("as.integer", "as.integer", "as.integer", "as.single")
-extension <- c("_bool", "_long", "_long", "_double")
+types <- c("bool", "long", "int", "double", "char")
+conversion.c <- c("int*\t", "int*\t", "int*\t", "float*", "char**")
+conversion.R <- c("as.integer", "as.integer", "as.integer", "as.single", "as.character")
+extension <- c("_bool", "_long", "_long", "_double", "_char")
 
 conversion.table <- data.frame(	type = c(types, paste("const", types),  paste(types, "*", sep = "")),
 						conversion.c = c(paste(conversion.c, "\t", sep = ""),

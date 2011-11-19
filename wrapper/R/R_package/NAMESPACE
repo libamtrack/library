@@ -48,3 +48,4 @@ AT_nuclear_spin_from_particle_no_multi
 AT_Rutherford_SDCS
 AT_energy_straggling_MeV2_cm2_g
 AT_energy_straggling_after_slab_E_MeV_u
+noR: AT_SPC_read_data_from_filename_fast

@@ -46,6 +46,10 @@ grep.bool	<-	function(pattern, x, ...){
 	bool.res	<-	is.element(indices, results)
 }
 
+# exclude function with "C only" flag
+noR       <- sapply(functions, check.type <- function(x){x$wrapper.type == "C only"})
+functions <- functions[!noR]
+
 for(i in 1:length(functions)){
 	#i<-3
 	tmp <- functions[[i]]
