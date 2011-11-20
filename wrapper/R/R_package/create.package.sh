@@ -27,9 +27,9 @@ cp hardcoded_wrappers/hardcoded_wrapper.h libamtrack/src/
 # *** Run autoconfigure (to update svn version) ***
 echo "Running autoreconf and configure in main folder (to update svnversion information)..."
 cd ../../..
-#autoreconf --force --install
-#chmod 755 configure
-#./configure
+autoreconf --force --install
+chmod 755 configure
+./configure
 cd wrapper/R/R_package
 
 echo
