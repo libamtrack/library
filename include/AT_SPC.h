@@ -309,6 +309,15 @@ int decomposeLength(const int32_t content[]);
  */
 int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]);
 
+/**
+ * TODO
+ */
+int AT_SPC_decompose_header(
+		const int content_size,
+		int32_t   content_orig[],
+		double*   E_MeV_u,
+		double*   peak_position_g_cm2,
+		double*   normalisation);
 
 /**
  * TODO

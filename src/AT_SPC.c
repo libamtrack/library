@@ -348,6 +348,36 @@ int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]){
 }
 
 
+int AT_SPC_decompose_header(
+		const int content_size,
+		int32_t   content_orig[],
+		double*   E_MeV_u,
+		double*   peak_position_g_cm2,
+		double*   normalisation){
+
+	int length = 0;
+	int32_t * content = content_orig;
+
+	skipStruct(&content); // filetype
+	skipStruct(&content); // fileversion
+	skipStruct(&content); // filedate
+	skipStruct(&content); // targname
+	skipStruct(&content); // projname
+
+	decomposeStructIntoDouble(content, E_MeV_u, &length);
+	skipStruct(&content); // beamenergy
+
+	decomposeStructIntoDouble(content, peak_position_g_cm2, &length);
+	skipStruct(&content); // peak position
+
+	decomposeStructIntoDouble(content, normalisation, &length);
+	skipStruct(&content); // normalisation
+
+	return EXIT_SUCCESS;
+}
+
+
+
 int AT_SPC_decompose_data(
 		const int content_size,
 		int32_t   content_orig[],
@@ -508,7 +538,7 @@ int AT_SPC_decompose_data(
 		free(binPointersDE);
 
 	}
-	return EXIT_FAILURE;
+	return EXIT_SUCCESS;
 }
 
 int AT_SPC_read(const char filename[FILE_NAME_NCHAR],
