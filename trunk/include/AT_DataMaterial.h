@@ -511,15 +511,17 @@ void AT_average_Z_from_composition( const long n,
 /**
  * Computes the effective atomic number for a given material composition
  *
- * @param[in]  n                     number of constituents in material
- * @param[in]  Z                     atomic numbers of constituents (array of size n)
- * @param[in]  weight_fraction       relative fractions of weight of constituents (array of size n)
- * @param[in]  exponent              exponent for additivity rule reflecting the photon energy regime (usually 3.5 at ~ 100 kV)
- * @param[out] effective_Z           effective Z
+ * @param[in]  n                     	number of constituents in material
+ * @param[in]  Z                     	atomic numbers of constituents (array of size n)
+ * @param[in]  weight_fraction       	relative fractions of weight of constituents (array of size n)
+ * @param[in]  electron_densities_cm3   if not zero, weight fractions will additionally include electron densities per volume (array of size n)
+ * @param[in]  exponent              	exponent for additivity rule reflecting the photon energy regime (usually 3.5 at ~ 100 kV)
+ * @param[out] effective_Z           	effective Z
  */
 void AT_effective_Z_from_composition( const long n,
     const long Z[],
     const double weight_fraction[],
+    const double electron_densities_cm3[],
     const double exponent,
     double* effective_Z);
 
