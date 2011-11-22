@@ -398,19 +398,32 @@ void AT_average_Z_from_composition( const long n,
 void AT_effective_Z_from_composition( const long n,
     const long Z[],
     const double weight_fraction[],
+    const double electron_densities_cm3[],
     const double exponent,
     double* effective_Z)
 {
 	double* normalized_weight_fraction = (double*)calloc(n, sizeof(double));
 	AT_normalize(n, weight_fraction, normalized_weight_fraction);
 
+	double* normalized_electron_densities = (double*)calloc(n, sizeof(double));
+    bool use_electron_densities = false;
+    if(AT_sum(n, electron_densities_cm3) > 0){
+    	AT_normalize(n, electron_densities_cm3, normalized_electron_densities);
+    	use_electron_densities = true;
+    }
+
 	double effective_Z_sum = 0.0;
 	long i;
 	for (i = 0; i < n; i++){
-		effective_Z_sum += normalized_weight_fraction[i] * pow(Z[i], exponent);
-		*effective_Z = pow(effective_Z_sum, 1/exponent);
+		double tmp = normalized_weight_fraction[i] * pow(Z[i], exponent);
+		if(use_electron_densities){
+			tmp *= normalized_electron_densities[i];
+		}
+		effective_Z_sum += tmp;
 	}
+	*effective_Z = pow(effective_Z_sum, 1/exponent);
 
+	free(normalized_electron_densities);
 	free(normalized_weight_fraction);
 }
 
