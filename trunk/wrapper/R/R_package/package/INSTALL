@@ -28,3 +28,11 @@ For Windows, you will have to install the Rtools (http://www.murdoch-sutherland.
 to set the environmental variable necessary. <path/to/gsl> should point to your installation directory of GSL (using forward slahes!), e.g. "c:/program files/GnuWin32" or "c:/GnuWin32"
 
 
+*** REMOVING INSTALLED PACKAGE ***
+
+To remove an installed package either use the 'remove.packages(<package_name>)' command within R or
+'R CMD REMOVE <package_name>' (sudo if you used administrator right for installation)
+from command-line where <package_name> refers to the package name (for example 'libamtrack').
+
+
+
