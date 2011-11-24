@@ -84,7 +84,7 @@ struct STRPSPCBTAG { uint32_t ulTag; uint32_t ulLen; };
 /**
  * Swaps endianess of two-byte types
  *
- * @param[in/out]	x	pointer to variable to be swapped
+ * @param[in,out]	x	pointer to variable to be swapped
  */
 void endian_swap2(    unsigned short* x);
 
@@ -92,7 +92,7 @@ void endian_swap2(    unsigned short* x);
 /**
  * Swaps endianess of four-byte types
  *
- * @param[in/out]	x	pointer to variable to be swapped
+ * @param[in,out]	x	pointer to variable to be swapped
  */
 void endian_swap4(    unsigned int* x);
 
@@ -100,7 +100,7 @@ void endian_swap4(    unsigned int* x);
 /**
  * Swaps endianess of eight-byte types (uint64_t MSVC, long long in gcc)
  *
- * @param[in/out]	x	pointer to variable to be swapped
+ * @param[in,out]	x	pointer to variable to be swapped
  */
 void endian_swap8(     uint64_t * x);
 
@@ -108,9 +108,9 @@ void endian_swap8(     uint64_t * x);
 /**
  * Reads tag into tag structure
  *
- * @param[in/out]	fp				pointer to spc file
- * @param[in/out]	str				pointer to spc tag structure to be filled
- * @param[in]		switchEndian	if TRUE endianess will be swapped
+ * @param[in,out]	fp				pointer to spc file
+ * @param[in,out]	str				pointer to spc tag structure to be filled
+ * @param[in]	switchEndian	if TRUE endianess will be swapped
  */
 void readStruct(      FILE *fp,
 		struct STRPSPCBTAG * str,
@@ -162,7 +162,7 @@ int AT_SPC_get_size_from_filename(const char filename[FILE_NAME_NCHAR]);
  * This is needed for later memory allocation when reading the
  * actual data.
  *
- * @param[in/out]	fp				pointer to spc file
+ * @param[in,out]	fp				pointer to spc file
  * @return							total number of bins in spc file
  */
 int AT_SPC_get_size(  FILE *fp);
@@ -276,41 +276,64 @@ int AT_SPC_fast_read_buffer(const char * filename, int content_size, int32_t * c
 
 /**
  * TODO
+ * @param[in]	    content  	    table of bytes containing binary content of SPC file
+ * @param[out]	    string 			string stored in first tag (item) of SPC content table
+ * @param[out]      length  	    length of string
  */
 void decomposeStructIntoString( const int32_t content[], char * string, int * length );
 
 /**
  * TODO
+ * @param[in]	    content  	    table of bytes containing binary content of SPC file
+ * @param[out]	    value 			floating point value (single or pointer to beginning of table) stored in first tag (item) of SPC content table
+ * @param[out]      length  	    number of items under "value" pointer
  */
 void decomposeStructIntoDouble( const int32_t content[], double * value, int * length );
 
 /**
  * TODO
+ * @param[in]	    content  	    table of bytes containing binary content of SPC file
+ * @param[out]	    value 			integer value (single or pointer to beginning of table) stored in first tag (item) of SPC content table
+ * @param[out]      length  	    number of items under "value" pointer
  */
 void decomposeStructIntoInteger( const int32_t content[], uint64_t * value, int * length );
 
 /**
- * TODO
+ * Increase pointer (binary content of SPC file) to move it to next tag (item).
+ * @param[in,out]	content  	    table of bytes containing binary content of SPC file
  */
 int skipStruct(int32_t ** content);
 
 /**
  * TODO
+ * @param[in]	content  	    table of bytes containing binary content of SPC file
+ * @return
  */
 int decomposeTag(const int32_t content[]);
 
 /**
  * TODO
+ * @param[in]	content  	    table of bytes containing binary content of SPC file
+ * @return
  */
 int decomposeLength(const int32_t content[]);
 
 /**
  * TODO
+ * @param[in]	content_size  	    size of table content_orig
+ * @param[in]	content_orig  	    table of bytes containing binary content of SPC file (array of size content_size)
+ * @return
  */
 int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]);
 
 /**
  * TODO
+ * @param[in]	content_size  	    size of table content_orig
+ * @param[in]	content_orig  	    table of bytes containing binary content of SPC file (array of size content_size)
+ * @param[out]	E_MeV_u  	        beam energy [MeV]
+ * @param[out]	peak_position_g_cm2 peak position
+ * @param[out]	normalisation  	    normalisation
+ * return       status code
  */
 int AT_SPC_decompose_header(
 		const int content_size,
@@ -321,6 +344,15 @@ int AT_SPC_decompose_header(
 
 /**
  * TODO
+ * @param[in]	content_size  	    size of table content_orig
+ * @param[in]	content_orig  	    table of bytes containing binary content of SPC file (array of size content_size)
+ * @param[out]  depth_step          TODO
+ * @param[out]  depth_g_cm2         TODO
+ * @param[out]	E_MeV_u  	        energy
+ * @param[out]	DE_MeV_u  	        energy
+ * @param[out]	particle_no         TODO
+ * @param[out]	fluence_cm2  	    TODO
+ * return       status code
  */
 int AT_SPC_decompose_data(
 		const int content_size,
