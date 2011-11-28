@@ -287,7 +287,6 @@ void AT_energy_straggling_after_slab_E_MeV_u( const long  n,
 double AT_effective_charge_from_E_MeV_u_single(  const double E_MeV_u,
     const long  particle_no);
 
-
 /**
  * Effective charge according to Barkas-Bethe-approximation:
  * for particles with given kinetic energy per nucleon
@@ -303,33 +302,49 @@ int AT_effective_charge_from_E_MeV_u(  const long  n,
     const long    particle_no[],
     double        effective_charge[]);
 
+/**
+ * Returns mean excitation energy for elements (according to Sternheimer: Phys. Rev. 145, 247 in 1966)
+ *
+ * @param[in]  Z            		    atomic number
+ * @return I_eV
+ */
+double AT_mean_excitation_energy_eV_from_Z_single( const long Z );
+
+/**
+ *  Returns mean excitation energies for elements
+ *
+ * @param[in]  n                        number of elements
+ * @param[in]  Z                   		vector of atomic numbers (array of size n)
+ * @param[out] I_eV        				vector of mean excitation energies (array of size n)
+ * @return     status code
+ */
+int AT_mean_excitation_energy_eV_from_Z( const long n,
+	const double Z[],
+	double I_eV[]);
 
  /**
-  * Mass correction terms of max relativistic energy transfer for single particle
+  * Returns mass correction terms of max relativistic energy transfer for single particle
   *
   * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
   * @return mass_correction_terms
   */
  double AT_mass_correction_terms( const double E_MeV_u);
 
-
  /**
   * Max relativistic energy transfer with mass correction terms for single particle
   *
   * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
-  * @return max_E_transfer_MeV_testGrischa
+  * @return max_rel_E_transfer_MeV
   */
  double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u );
-
 
 /**
  * Max classic energy transfer for single particle
  *
  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
- * @return max_E_transfer_MeV
+ * @return max_classic_E_transfer_MeV
  */
  double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u );
-
 
 /**
  * Max energy transfer for single particle
@@ -338,7 +353,6 @@ int AT_effective_charge_from_E_MeV_u(  const long  n,
  * @return     max_E_transfer_MeV
  */
  double AT_max_E_transfer_MeV_single( const double E_MeV_u);
-
 
 /**
  * Kinetic energy maximally transferred from an ion to an electron
