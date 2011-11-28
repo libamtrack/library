@@ -101,6 +101,26 @@ int AT_Z_from_particle_no( const long  n,
   return AT_Success;
 }
 
+int AT_atomic_weight_from_Z( const long  n,
+    const long  Z[],
+    double  atomic_weight[])
+{
+  long i;
+  long*    matches  =  (long*)calloc(n, sizeof(long));
+
+  find_elements_int(  Z,
+      n,
+      AT_Particle_Data.Z,
+      AT_Particle_Data.n,
+      matches);
+
+  for (i = 0; i < n; i++){
+    atomic_weight[i]    = AT_Particle_Data.atomic_weight[matches[i]];
+  }
+
+  free(matches);
+  return AT_Success;
+}
 
 int AT_atomic_weight_from_particle_no( const long  n,
     const long  particle_no[],
