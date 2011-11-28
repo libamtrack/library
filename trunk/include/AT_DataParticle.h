@@ -175,6 +175,16 @@ int AT_A_from_particle_no(  const long  n,
     const long  particle_no[],
     long  A[]);
 
+/**
+ * Returns atomic weight for given Z
+ * @param[in]  n                length of arrays
+ * @param[in]  Z                atomic number (array of size n)
+ * @param[out] atomic_weight    atomic weight (array of size n)
+ * @return     return code
+ */
+int AT_atomic_weight_from_Z( const long  n,
+    const long  Z[],
+    double  atomic_weight[]);
 
 /**
  * Calculates atomic number Z for particle with given code number
