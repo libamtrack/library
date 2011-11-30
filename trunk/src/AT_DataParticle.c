@@ -101,6 +101,7 @@ int AT_Z_from_particle_no( const long  n,
   return AT_Success;
 }
 
+
 int AT_atomic_weight_from_Z( const long  n,
     const long  Z[],
     double  atomic_weight[])
