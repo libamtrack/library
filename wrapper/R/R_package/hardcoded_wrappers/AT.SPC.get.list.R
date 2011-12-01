@@ -17,7 +17,7 @@ AT.SPC.get.list <- function(path.to.files, endian = "little"){
   for (i in 1:nrow(df)){
       # i <- 1
       tmp    <- AT.SPC.read(file.name   =  df$file.name[i],
-                            flavour     = "vanilla",
+                            flavour     = "C",
                             endian      = endian,
                             header.only = TRUE)
       df$n.depth.steps[i]       <- tmp$n.depth.steps

@@ -57,7 +57,7 @@ xyplot(log10(fluence.cm2) ~ E.MeV.u,
 first.depth <- unique(spc.upper$spc$depth.g.cm2[spc.upper$spc$depth.step == 2])
 sec.depth <- unique(spc.upper$spc$depth.g.cm2[spc.upper$spc$depth.step == 3])
 spc.depth.g.cm2 <- c(seq(0,first.depth,length.out = 6),
-                     seq(first.depth, sec.depth, length.out = 7))
+                     seq(first.depth*1.16, sec.depth, length.out = 6))
 df <- NULL
 for (i in 1:length(spc.depth.g.cm2)){
   spectrum <- AT.SPC.spectrum.at.depth.g.cm2(spc = spc.upper$spc, 
@@ -70,8 +70,8 @@ for (i in 1:length(spc.depth.g.cm2)){
 custom.panel <- function(x,y,subscripts,...){
   panel.grid(h = -1, v = -1)
   panel.xyplot(x=x,y=y,subscripts=subscripts,...)
-  sum.fluence <- sum(y[subscripts])
-  panel.text(sum.fluence, x= 800, y = 0.3)
+  sum.fluence <- sum(y, na.rm = TRUE)
+  panel.text(sprintf("%3.2f",sum.fluence), x = 800, y = 0.3)
 }
 
 xyplot( fluence.cm2 ~ E.MeV.u|sprintf("depth %04.3f g/cm2", depth.g.cm2),
