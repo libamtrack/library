@@ -5,7 +5,8 @@ AT.SPC.spectrum.at.depth.g.cm2 <- function(spc, depth.g.cm2)
     # find depth index (step)
     depth.step.interp      <- approx( x    = depth.g.cm2.of.spc,
                                       y    = depth.step.of.spc,
-                                      xout = depth.g.cm2)$y
+                                      xout = depth.g.cm2,
+                                      rule = 2)$y
     
     depth.step.int         <- floor(depth.step.interp)
     depth.step.frac        <- depth.step.interp - depth.step.int

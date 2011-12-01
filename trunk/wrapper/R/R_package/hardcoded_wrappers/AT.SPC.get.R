@@ -7,6 +7,9 @@ AT.SPC.get <- function(spc.list, energy.MeV.u){
   # find two closest matches
   distance    <- abs(spc.list$energy.MeV.u - energy.MeV.u)
   closest.idx <- match(head(sort(distance), 2), distance)
+  if(closest.idx[1] == closest.idx[2]){
+    closest.idx[2] <- closest.idx[1] + 1
+  }
   
   # read and interpolate SPCs
   spc.lower   <- AT.SPC.read( file.name        = spc.list$file.name[closest.idx[1]],,
