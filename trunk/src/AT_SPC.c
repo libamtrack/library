@@ -245,10 +245,10 @@ int AT_SPC_fast_read_buffer(const char * filename, int content_size, int32_t * c
 	/* read whole file into addr pointer */
 	const char * mode = "r";
 	FILE * fs = fopen( filename , mode);
-	size_t no_items_read = fread(content , sizeof(int32_t), length, fs);
+	size_t no_items_read = fread(content , sizeof(int32_t), content_size, fs);
 
-	if (!feof(fs))
-		printf("error, expected to be at the end of file %s, read %d items\n", filename, no_items_read);
+	if (no_items_read != content_size)
+		printf("error, expected to be at the end of file %s, read %d items (out of %d)\n", filename, no_items_read, content_size);
 
 	fclose(fs);
 
