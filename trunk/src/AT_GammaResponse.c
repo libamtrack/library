@@ -60,7 +60,9 @@ void AT_Gamma_name_from_number( const long Gamma_no,
 long AT_Gamma_number_of_parameters( const long Gamma_no){
     long  index = AT_Gamma_index_from_material_number( Gamma_no );
     if( index == -1){
+#ifndef NDEBUG
       printf("gamma model no %ld not found\n", Gamma_no);
+#endif
       return 0;
     }
     return AT_GR_Data.n_parameters[index];

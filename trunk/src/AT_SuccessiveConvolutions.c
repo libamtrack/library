@@ -85,8 +85,10 @@ long  AT_n_bins_for_single_impact_local_dose_distrib(
 				AT_histo_log,
 				&n_bins_for_singe_impact_local_dose_ditrib);
 	} else {
+#ifndef NDEBUG
 		printf("AT_n_bins_for_singe_impact_local_dose_ditrib: problem in evaluating n_bins_for_singe_impact_local_dose_ditrib: d_min = %g [Gy], d_max = %g [Gy] \n", d_min_Gy, d_max_Gy);
 		exit(EXIT_FAILURE);
+#endif
 	}
 	return n_bins_for_singe_impact_local_dose_ditrib + 1;
 }
@@ -252,13 +254,17 @@ void  AT_single_impact_local_dose_distrib(
 						&r_m_comp[1]);
 
 				if( inverse_RDD_status_code != 0 ){
+#ifndef NDEBUG
 					printf("Problem in evaluating inverse RDD in AT_SC_get_f1, probably wrong combination of ER and RDD used\n");
+#endif
 					char rdd_model_name[100];
 					AT_RDD_name_from_number(rdd_model, rdd_model_name);
 					char er_model_name[100];
 					getERName( er_model, er_model_name);
+#ifndef NDEBUG
 					printf("rdd_model: %ld (%s), er_model: %ld (%s)\n", rdd_model, rdd_model_name, er_model, er_model_name);
 					exit(EXIT_FAILURE);
+#endif
 				}
 
 				// compute F1 as function of radius

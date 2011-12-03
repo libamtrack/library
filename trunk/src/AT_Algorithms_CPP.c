@@ -306,10 +306,12 @@ void AT_run_CPPSS_method(  const long  number_of_field_components,
     const long    importance_sampling,
     double        results[])
 {
+#ifndef NDEBUG
   printf("\n############################################################\n");
   printf("\n############################################################\n");
   printf("This is AmTrack - SPISS algorithm\n");
   printf("\n");
+#endif
 
   FILE*    output_file = NULL;
   if( write_output ){
@@ -457,6 +459,7 @@ void AT_run_CPPSS_method(  const long  number_of_field_components,
     f[i] = 0;
   }
 
+#ifndef NDEBUG
   if(importance_sampling){
     printf("\n");
     printf("Importance sampling chosen. Biasing function G(r)=r^%ld\n", importance_sampling);
@@ -464,6 +467,7 @@ void AT_run_CPPSS_method(  const long  number_of_field_components,
     printf("\n");
     printf("No importance sampling chosen.\n");
   }
+#endif
 
   // init RNG
   gsl_rng * rng1   = gsl_rng_alloc (gsl_rng_taus);
@@ -536,10 +540,12 @@ void AT_run_CPPSS_method(  const long  number_of_field_components,
       if (bin_no > n_bins_f) bin_no = n_bins_f;
       f[bin_no - 1]             += weight / f_dd_Gy[bin_no - 1];
     }
+#ifndef NDEBUG
     if(i%100 == 0){
       printf("Run %ld done.\n", i);
     }
-  }
+#endif
+    }
 
   // Normalize f
   double norm    = 0.0;

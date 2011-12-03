@@ -245,8 +245,10 @@ double AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2(
   F.params = (void*)(&inact_prob_parameters);
   int status = gsl_integration_qag (&F, low_lim_m, max_electron_range_m + a0_m, 0, 1e-4, 1000, GSL_INTEG_GAUSS21, w1, &integral_m2, &error);
   if (status == GSL_EROUND || status == GSL_ESING){
-    fprintf(stderr,"Error in AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2: er_model = %ld, integration from %g to %g [m] + %g [m]\n", er_model, low_lim_m, max_electron_range_m, a0_m);
-    integral_m2 = 0.0;
+#ifndef NDEBUG
+	  fprintf(stderr,"Error in AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2: er_model = %ld, integration from %g to %g [m] + %g [m]\n", er_model, low_lim_m, max_electron_range_m, a0_m);
+#endif
+	  integral_m2 = 0.0;
   }
   gsl_integration_workspace_free (w1);
 
@@ -325,7 +327,9 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2(
   F.params = (void*)(&inact_prob_parameters);
   int status = gsl_integration_qag (&F, low_lim_m, max_electron_range_m + a0_m, 0, 1e-4, 1000, GSL_INTEG_GAUSS21, w1, &integral_m2, &error);
   if (status == GSL_EROUND || status == GSL_ESING){
+#ifndef NDEBUG
     fprintf(stderr,"Error in AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2: integration from %g to %g [m] + %g [m]\n", low_lim_m, max_electron_range_m, a0_m);
+#endif
     integral_m2 = 0.0;
   }
   gsl_integration_workspace_free (w1);
@@ -435,7 +439,9 @@ int AT_KatzModel_inactivation_cross_section_m2(
 
   char rdd_name[200];
   AT_RDD_name_from_number(rdd_model, rdd_name);
+#ifndef NDEBUG
   fprintf(stderr, "RDD model %ld [%s] not supported\n", rdd_model, rdd_name);
+#endif
   return EXIT_FAILURE;
 }
 
@@ -618,7 +624,9 @@ int AT_KatzModel_single_field_survival(
 				&inactivation_cross_section_m2);    /* here we use D0, m and a0 */
 
 		if( status != EXIT_SUCCESS ){
+#ifndef NDEBUG
 			fprintf(stderr, "Problem with evaluating inactivation cross section\n");
+#endif
 			return status;
 		}
 	} else {
@@ -694,7 +702,9 @@ int AT_KatzModel_mixed_field_survival(
 					&inactivation_cross_section_m2);    /* here we use D0, m and a0 */
 
 			if( status != EXIT_SUCCESS ){
+#ifndef NDEBUG
 				fprintf(stderr, "Problem with evaluating inactivation cross section\n");
+#endif
 				return status;
 			}
 		}
@@ -760,10 +770,14 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
 				stopping_power_source_no,
 				&inactivation_cross_section_m2);    /* here we use D0, m and a0 */
 
+#ifndef NDEBUG
 		printf("Inactivation cross section = %g\n", inactivation_cross_section_m2);
+#endif
 
 		if( status != EXIT_SUCCESS ){
+#ifndef NDEBUG
 			fprintf(stderr, "Problem with evaluating inactivation cross section\n");
+#endif
 			return status;
 		}
 	} else {
