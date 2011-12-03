@@ -14,7 +14,7 @@
 
 \examples{
 # Get material names for all predefined materials
-#AT.material.name.from.material.no( material.no     = c(1:7))
+ #AT.material.name.from.material.no( material.no = 1:7)
 }
 
 
