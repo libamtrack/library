@@ -638,6 +638,30 @@ int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
 	return(n_bins_read);
 }
 
+
+int AT_SPC_read_header_from_filename_fast( const char filename[FILE_NAME_NCHAR],
+		double*   E_MeV_u,
+		double*   peak_position_g_cm2,
+		double*   normalisation)
+{
+	int nb = AT_SPC_get_number_of_bytes_in_file( filename );
+	int size = nb / sizeof(int32_t);
+
+	int32_t * content = (int32_t*)calloc(sizeof(int32_t), size);
+	AT_SPC_fast_read_buffer(filename, size, content);
+
+	int res = AT_SPC_decompose_header(
+			size,
+			content,
+			E_MeV_u,
+			peak_position_g_cm2,
+			normalisation);
+
+	free(content);
+
+	return res;
+}
+
 int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 		int n,
 		int    depth_step[],

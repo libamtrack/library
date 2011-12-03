@@ -158,41 +158,56 @@ AT.SPC.read <- function( file.name,
 
 	}else{
 	# C version
-		 spc.size            <- numeric(1)
-		 res                 <- .C( "AT_SPC_get_size_from_filename_R",
-									file.name          = as.character(file.name),
-									spc.size           = as.integer(spc.size),
-									PACKAGE            = "libamtrack")
+		 if(header.only == FALSE){
+			 spc.size            <- numeric(1)
+			 res                 <- .C( "AT_SPC_get_size_from_filename_R",
+										file.name          = as.character(file.name),
+										spc.size           = as.integer(spc.size),
+										PACKAGE            = "libamtrack")
+	
+			n                    <- res$spc.size
+			depth.step           <- integer(n)
+			depth.g.cm2          <- numeric(n)
+			E.MeV.u              <- numeric(n)
+			DE.MeV.u             <- numeric(n)
+			particle.no          <- integer(n)
+			fluence.cm2          <- numeric(n)
+			n.bins.read          <- integer(1)
+			
+	#  	res                  <- .C( "AT_SPC_read_data_from_filename_R",
+			res                  <- .C( "AT_SPC_read_data_from_filename_fast_R",
+					file.name          = as.character(file.name),
+					n                  = as.integer(n),
+					depth.step         = as.integer(depth.step),
+					depth.g.cm2        = as.single(depth.g.cm2),
+					E.MeV.u            = as.single(E.MeV.u),
+					DE.MeV.u           = as.single(DE.MeV.u),
+					particle.no        = as.integer(particle.no),
+					fluence.cm2        = as.single(fluence.cm2),
+					n.bins.read        = as.integer(n.bins.read),
+					PACKAGE            = "libamtrack")
+			
+			df   <- data.frame(  depth.step             = res$depth.step,
+								 depth.g.cm2            = res$depth.g.cm2,
+								 E.MeV.u                = res$E.MeV.u,
+								 DE.MeV.u               = res$DE.MeV.u,
+								 particle.no            = res$particle.no,
+								 fluence.cm2            = res$fluence.cm2)
+		}else{
+			df <- NULL
+			 E.MeV.u <- numeric(1)
+			 peak.position.g.cm2 <- numeric(1)
+			 normalization <- numeric(1)
+			 res                 <- .C( "AT_SPC_read_header_from_filename_fast",
+										file.name          = as.character(file.name),
+										E.MeV.u            = as.single(E.MeV.u),
+										peak.position.g.cm2 = as.single(peak.position.g.cm2),
+										normalization      = as.single(normalization),
+										PACKAGE            = "libamtrack")
+			beam.energy.MeV.u <- res$E.MeV.u
+			peak.position.g.cm2 <- res$peak.position.g.cm2
 
-		n                    <- res$spc.size
-		depth.step           <- integer(n)
-		depth.g.cm2          <- numeric(n)
-		E.MeV.u              <- numeric(n)
-		DE.MeV.u             <- numeric(n)
-		particle.no          <- integer(n)
-		fluence.cm2          <- numeric(n)
-		n.bins.read          <- integer(1)
-		
-#  	res                  <- .C( "AT_SPC_read_data_from_filename_R",
-		res                  <- .C( "AT_SPC_read_data_from_filename_fast_R",
-				file.name          = as.character(file.name),
-				n                  = as.integer(n),
-				depth.step         = as.integer(depth.step),
-				depth.g.cm2        = as.single(depth.g.cm2),
-				E.MeV.u            = as.single(E.MeV.u),
-				DE.MeV.u           = as.single(DE.MeV.u),
-				particle.no        = as.integer(particle.no),
-				fluence.cm2        = as.single(fluence.cm2),
-				n.bins.read        = as.integer(n.bins.read),
-				PACKAGE            = "libamtrack")
-		
-		df   <- data.frame(  depth.step             = res$depth.step,
-							 depth.g.cm2            = res$depth.g.cm2,
-							 E.MeV.u                = res$E.MeV.u,
-							 DE.MeV.u               = res$DE.MeV.u,
-							 particle.no            = res$particle.no,
-							 fluence.cm2            = res$fluence.cm2)
-
+		}
 		# TODO to be implemented
 		n.depth.steps <- 1
 		projectile <- "X"
