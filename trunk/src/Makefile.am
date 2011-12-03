@@ -11,5 +11,5 @@ include_HEADERS= ../include/AT.h ../include/AT_Algorithms_CPP.h ../include/AT_Al
  ../include/AT_NumericalRoutines.h ../include/AT_PhysicsRoutines.h ../include/AT_RDD.h ../include/AT_RDD_Simple.h \
  ../include/AT_RDD_ShellAveraged.h ../include/AT_RDD_ExtendedTarget.h ../include/AT_KatzModel.h ../include/AT_SuccessiveConvolutions.h \
  ../include/AT_Histograms.h ../include/AT_Algorithms_GSM.h ../include/AT_SPC.h
-libamtrack_la_CFLAGS =-I../include -Wall -std=gnu99 -fPIC
-libamtrack_la_LDFLAGS = -version-info 0:0:0
+libamtrack_la_CFLAGS =-I../include -Wall -std=gnu99 -fPIC $(GSL_CFLAGS)
+libamtrack_la_LDFLAGS = -version-info 0:0:0 $(GSL_LIBS)

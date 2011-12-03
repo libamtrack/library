@@ -50,19 +50,15 @@ fi
 ## I can live with that.  Someone more savvy might point out that there probably a hook you 
 ## could write somewhere to update saved_svn_version.txt at some point in the process.
 
-# Checks for libraries, add uset-set path to gsl if necessary (e.g. on Windows)
+# Checks for libraries, add user-set path to gsl if necessary (e.g. on Windows)
 if test "${LIB_GSL}" != ""; then
-	CFLAGS="${CFLAGS} -I${LIB_GSL}/include"
-	LDFLAGS="${LDFLAGS} -L${LIB_GSL}/lib -lgsl"
+        GSL_CFLAGS="-I${LIB_GSL}/include"
+	GSL_LIBS="-L${LIB_GSL}/lib -lgsl"
+else
+        AX_PATH_GSL(1.8,[], AC_MSG_ERROR[No gsl>=1.8 found!])
 fi
 
 AC_SEARCH_LIBS(cos, m)
-AC_SEARCH_LIBS([cblas_dgemm], [gslcblas], [], [
-  AC_MSG_ERROR([unable to find the cblas_dgemm() function in gslcblas])
-])
-AC_SEARCH_LIBS([gsl_blas_dgemm], [gsl], [], [
-  AC_MSG_ERROR([unable to find the gsl_blas_dgemm() function in gsl])
-])
 
 # Checks for header files.
 AC_CHECK_HEADERS([malloc.h stdint.h stdlib.h string.h])
