@@ -3,6 +3,17 @@
 echo "################################################"
 echo "This script creates the R package for libamtrack"
 echo "################################################"
+echo 
+
+if [ "$1" == "--help" ] ; then
+   echo "This script compiles libamtrack to an R package source tarball"
+   echo
+   echo "Use --fast to skip svn information update (really slow)."
+   echo
+   exit
+fi
+
+echo "Use --help for information"
 echo
 
 # *** Create new temporary folder from template package structure ***
@@ -16,7 +27,7 @@ cp ../../../src/*.c libamtrack/src/
 
 # *** Copy hardcoded documentation ***
 echo "Copying hardcoded documentation..."
-cp hardcoded_documentation/* libamtrack/man/
+cp hardcoded_documentation/*.Rd libamtrack/man/
 
 # *** Copy hardcoded wrappers ***
 echo "Copying hardcoded wrappers..."
@@ -25,12 +36,15 @@ cp hardcoded_wrappers/hardcoded_wrapper.c libamtrack/src/
 cp hardcoded_wrappers/hardcoded_wrapper.h libamtrack/src/
 
 # *** Run autoconfigure (to update svn version) ***
-echo "Running autoreconf and configure in main folder (to update svnversion information)..."
-cd ../../..
-autoreconf --force --install
-chmod 755 configure
-./configure
-cd wrapper/R/R_package
+if [ "$1" != "--fast" ] ; then
+	echo "Running autoreconf and configure in main folder (to update svnversion information)..."
+	cd ../../..
+	autoreconf --force --install
+	chmod 755 configure
+	./configure
+	cd wrapper/R/R_package
+fi
+
 
 echo
 echo "Running R script to parse doxygen information from sources..."
