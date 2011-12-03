@@ -55,7 +55,9 @@ int AT_particle_no_from_Z_and_A( const long  n,
   if( (1 <= A) && (A <= 300)){
     return A;
   } else {
+#ifndef NDEBUG
     printf( "Wrong particle number %ld, please provide it in correct format \n(XXXYYY, where XXX is Z (from 1 to 118) and YYY is A (from 1 to 300)\n", particle_no);
+#endif
     return -1;
   }
 }
@@ -81,7 +83,9 @@ int AT_A_from_particle_no( const long  n,
   if( (1 <= Z) && (Z <= 118) ){
     return Z;
   } else {
+#ifndef NDEBUG
     printf( "Wrong particle number %ld, please provide it in correct format \n(XXXYYY, where XXX is Z (from 1 to 118) and YYY is A (from 1 to 300)\n", particle_no);
+#endif
     return -1;
   }
 }

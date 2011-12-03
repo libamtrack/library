@@ -78,7 +78,9 @@ long AT_RDD_number_from_name(const char* RDD_name){
 int AT_RDD_number_of_parameters( const long RDD_model){
   long  index = AT_RDD_index_from_RDD_number( RDD_model );
   if( index == -1){
+#ifndef NDEBUG
     printf("RDD no %ld not found\n", RDD_model);
+#endif
     return 0;
   }
   return AT_RDD_Data.n_parameters[index];
@@ -193,8 +195,10 @@ double AT_RDD_precalculated_constant_Gy(
     const double  LET_J_m  =  LET_MeV_cm2_g * density_g_cm3 * 100.0 * MeV_to_J; // [MeV / cm] -> [J/m]
     precalculated_constant_Gy      =  AT_RDD_Cucinotta_Cnorm(r_min_m, max_electron_range_m, beta, density_kg_m3, LET_J_m, Katz_point_coeff_Gy);
     if( precalculated_constant_Gy == 0){
+#ifndef NDEBUG
       printf("problem in AT_RDD_precalculated_constant_Gy\n"); // TODO handle this situation
-    }
+#endif
+      }
   }// end RDD_CucinottaPoint
 
 

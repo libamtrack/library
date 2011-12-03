@@ -78,11 +78,15 @@ double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_initial_MeV_u,
 			&range_cm2_g,
 			&error);
 	if (status == GSL_EROUND){
+#ifndef NDEBUG
 		printf("Error in integration of CSDA range from Bethe formula: round-off error.\n");
-	}
+#endif
+		}
 	if (status == GSL_ESING){
+#ifndef NDEBUG
 		printf("Error in integration of CSDA range from Bethe formula: singularity found!\n");
-	}
+#endif
+		}
 
 	gsl_integration_workspace_free (w1);
 

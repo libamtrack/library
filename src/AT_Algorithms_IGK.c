@@ -246,7 +246,9 @@ void AT_run_IGK_method(  const long  number_of_field_components,
 			  &sI_m2,
 			  &error);
 	  if (status == GSL_EROUND || status == GSL_ESING){
-		  printf("Error in integration (cross section calculation) - IGK\n");
+#ifndef NDEBUG
+		printf("Error in integration (cross section calculation) - IGK\n");
+#endif
 	  }
 
 	  /* Transform ion cross-section and close integration workspace */

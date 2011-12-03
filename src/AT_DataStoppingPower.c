@@ -121,12 +121,16 @@ double _AT_Stopping_Power_get_data(const long stopping_power_source_no,
 			AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
 			char material_name[MATERIAL_NAME_LENGTH];
 			AT_material_name_from_number(material_no,material_name);
+#ifndef NDEBUG
 			printf("Missing data for data source [%s] and material [%s]\n", source_name, material_name);
-		}
+#endif
+			}
 	} else {
 		char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH];
 		AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
+#ifndef NDEBUG
 		printf("Missing data for data source [%s]\n", source_name);
+#endif
 		return -1;
 	}
 	return -1;
@@ -159,8 +163,10 @@ double AT_Stopping_Power_data_interpolation(const long stopping_power_source_no,
 		AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
 		char material_name[MATERIAL_NAME_LENGTH];
 		AT_material_name_from_number(material_no,material_name);
+#ifndef NDEBUG
 		printf("Missing data points for data source [%s] and material [%s]\n", source_name, material_name);
-	}
+#endif
+		}
 	return -1;
 }
 
@@ -246,7 +252,9 @@ double AT_Energy_MeV_u_from_Stopping_Power_single( const long stopping_power_sou
 		}
 
 		if( (Stopping_Power_MeV_cm2_g < tab[highest_index - lowest_index][1] ) || (Stopping_Power_MeV_cm2_g > tab[0][1]) ){
+#ifndef NDEBUG
 			printf("Only energy region 5-1000 MeV supported\n");
+#endif
 			return -1;
 		}
 
@@ -262,8 +270,10 @@ double AT_Energy_MeV_u_from_Stopping_Power_single( const long stopping_power_sou
 		AT_stopping_power_source_model_name_from_number(stopping_power_source_no,source_name);
 		char material_name[MATERIAL_NAME_LENGTH];
 		AT_material_name_from_number(material_no,material_name);
+#ifndef NDEBUG
 		printf("Missing data points for data source [%s] and material [%s]\n", source_name, material_name);
-	}
+#endif
+		}
 	return -1;
 }
 

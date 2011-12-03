@@ -112,7 +112,9 @@ double   AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
   // Dav(r1,r2) = 2 * coeff/ ((r2/rmax)^2 - (r1/rmax)^2) * \int_r1^r2 fS(r) * fL(r) * 1/r dr
 
   if( (r2_m > max_electron_range_m) || (r1_m > max_electron_range_m) || (r1_m > r2_m)){
+#ifndef NDEBUG
     printf("wrong parameters given to AT_RDD_Cucinotta_Ddelta_average_Gy\n");
+#endif
     return 0.0;
   }
 
@@ -130,7 +132,9 @@ double   AT_RDD_Cucinotta_Ddelta_average_Gy(  const double r1_m,
   int status = gsl_integration_qags (&F, r1_m, r2_m, 1e-11, 1e-7, 10000, w1, &delta_average_integral, &error);
   //printf("integral = %g , error = %g, status = %d\n", delta_average_integral, error, status);
   if (status > 0){
+#ifndef NDEBUG
     printf("integration error %d in AT_RDD_Cucinotta_Ddelta_average_Gy\n", status);
+#endif
     delta_average_integral = -1.0;
   }
   gsl_integration_workspace_free (w1);
@@ -146,7 +150,9 @@ double   AT_RDD_Cucinotta_Dexc_average_Gy(  const double r1_m,
     const double Katz_point_coeff_Gy){
 
   if( (r2_m > max_electron_range_m) || (r1_m > max_electron_range_m) || (r1_m > r2_m) || (r1_m < 0.0) ){
+#ifndef NDEBUG
     printf("wrong parameters given to AT_RDD_Cucinotta_Dexc_average_Gy\n");
+#endif
     return 0.0;
   }
 
@@ -179,7 +185,9 @@ double   AT_RDD_Cucinotta_Cnorm( const double r_min_m,
   if( (LETfactor_Gy > 0.0) && (Ddelta_average_Gy > 0.0) && (Dexc_average_Gy > 0.0)){
     return (LETfactor_Gy - Ddelta_average_Gy) / Dexc_average_Gy;
   } else {
+#ifndef NDEBUG
     printf("problem in AT_RDD_Cucinotta_Cnorm\n");
+#endif
     return 0.0;
   }
 }
@@ -192,7 +200,9 @@ double   AT_RDD_Geiss_average_Gy(  const double r1_m,
     const double norm_Gy){
 
   if( (r2_m > max_electron_range_m) || (r1_m > max_electron_range_m) || (r1_m > r2_m) || (r1_m < 0.0) ){
+#ifndef NDEBUG
     printf("wrong parameters given to AT_RDD_Geiss_average_Gy\n");
+#endif
     return 0.0;
   }
 

@@ -110,7 +110,9 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(
   F.params = (void*)(&RDD_parameters);
   int status = gsl_integration_qags (&F, low_lim_m, r_m + a0_m, 0, 1e-5, 1000, w1, &ext_integral_Gy, &error);
   if (status == GSL_EROUND || status == GSL_ESING){
+#ifndef NDEBUG
     printf("Error in AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration\n");
+#endif
     ext_integral_Gy = -1.0;
   }
   gsl_integration_workspace_free (w1);
@@ -262,7 +264,9 @@ double AT_RDD_ExtendedTarget_CucinottaPoint_Gy_by_integration(
   F.params = (void*)(&RDD_parameters);
   int status = gsl_integration_qags (&F, low_lim_m, r_m + a0_m, 0, 1e-5, 1000, w1, &ext_integral_Gy, &error);
   if (status == GSL_EROUND || status == GSL_ESING){
+#ifndef NDEBUG
     printf("Error in AT_RDD_ExtendedTarget_CucinottaPoint_Gy_by_integration\n");
+#endif
     ext_integral_Gy = -1.0;
   }
   gsl_integration_workspace_free (w1);

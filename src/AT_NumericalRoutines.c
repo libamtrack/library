@@ -454,11 +454,13 @@ double gammln(const double xx)
 
 void nrerror(const char error_text[])
 {
+#ifndef NDEBUG
   fprintf(stderr,"Numerical Recipes run-time error...\n");
   fprintf(stderr,"%s\n",error_text);
   fprintf(stderr,"...now exiting to system...\n");
   exit(1);
-}
+#endif
+ }
 
 
 /* TODO could SIGN be replaced by some system call ?*/
