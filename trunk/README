@@ -46,7 +46,7 @@ iv. Use precompiled binaries
 
 v. Compile libamtrack from sources
 ----------------------------------
-- Download the latest source release from libamtrack's website or the current development version from the svn repository ().
+- Download the latest source release from libamtrack's website or the current development version from the svn repository (svn co https://libamtrack.svn.sourceforge.net/svnroot/libamtrack/trunk).
 - Compilation is done via the GNU autotools tool chain (./configure && make && make install). 
 - Detailed instructions for the GNU autotools are found in /INSTALL.
 
@@ -54,10 +54,12 @@ v. Compile libamtrack from sources
 It can be necessary to run 'ldconfig' after installation.
 
 -- Windows-specific:
-libamtrack can be build on Windows using MinGW/MSYS. Add --build=mingw32 ('--build=x86-winnt-mingw') and 
-an appropriate '--prefix=...' option for 'configure'. Also, an environmental variable has to be set to point to your GSL installation,
-e.g. "set LIB_GSL=C:/GnuWin32" (forward slashes!).
-
+libamtrack can be build on Windows using MinGW/MSYS. Add an appropriate '--prefix=...' option for 'configure'. 
+Also, an environmental variable has to be set to point to your GSL installation,
+"export LIB_GSL=C:/GnuWin32" (forward slashes!). autotools package provided with MSYS doesn't cope well
+with directory names that have spaces (like "Program Files"), so please install GSL, MSYS and libamtrack in
+directories that doesn't have spaces or non-alphanumeric characters in names. 
+ 
 -- Mac OS X-specific:
 
 You may have to the architecture to your GSL installation, i.e. by
