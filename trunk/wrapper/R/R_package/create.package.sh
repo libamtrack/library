@@ -5,10 +5,39 @@ echo "This script creates the R package for libamtrack"
 echo "################################################"
 echo 
 
-if [ "$1" == "--help" ] ; then
+HELP_ARG="FALSE"
+FAST_ARG="FALSE"
+INSTALL_ARG="FALSE"
+NOCLEAN_ARG="FALSE"
+
+for var in "$@"
+do
+    if [ "$var" == "--help" ] ; then
+       HELP_ARG="TRUE"
+    fi
+
+    if [ "$var" == "--fast" ] ; then
+       FAST_ARG="TRUE"
+       echo "Fast execution chosen."
+    fi
+
+    if [ "$var" == "--install" ] ; then
+       INSTALL_ARG="TRUE"
+       echo "Will install package after compilation."
+    fi
+
+    if [ "$var" == "--noclean" ] ; then
+       NOCLEAN_ARG="TRUE"
+       echo "Will not remove transient files and folders."
+    fi
+done
+
+if [ $HELP_ARG == "TRUE" ] ; then
    echo "This script compiles libamtrack to an R package source tarball"
    echo
    echo "Use --fast to skip svn information update (really slow)."
+   echo "Use --install to install package after compilation."
+   echo "Use --noclean to leave transient files after compilation for debugging."
    echo
    exit
 fi
@@ -36,7 +65,7 @@ cp hardcoded_wrappers/hardcoded_wrapper.c libamtrack/src/
 cp hardcoded_wrappers/hardcoded_wrapper.h libamtrack/src/
 
 # *** Run autoconfigure (to update svn version) ***
-if [ "$1" != "--fast" ] ; then
+if [ -d $FAST_ARG ] ; then
 	echo "Running autoreconf and configure in main folder (to update svnversion information)..."
 	cd ../../..
 	autoreconf --force --install
@@ -122,14 +151,20 @@ echo "Building source package tarball..."
 R CMD build libamtrack
 
 # *** Remove transient files ***
-echo
-echo "Removing transient files and folder..."
-rm -f -r libamtrack
-rm -f -r libamtrack.Rcheck
-rm -f *.sdd
-rm -f *.Rout
-rm -f *.RData
-# These files should not even be there, TODO: check RD creation script
-rm -f ./package/man/*.Rd
+if [ ! $NOCLEAN_ARG == "TRUE" ] ; then
+	echo
+	echo "Removing transient files and folder..."
+	rm -f -r libamtrack
+	rm -f -r libamtrack.Rcheck
+	rm -f *.sdd
+	rm -f *.Rout
+	rm -f *.RData
+	# These files should not even be there, TODO: check RD creation script
+	rm -f ./package/man/*.Rd
+fi
 
+# *** Install package if chose ***
+if [ $INSTALL_ARG == "TRUE" ] ; then
+    sudo R CMD INSTALL libamtrack_*.tar.gz
+fi
 echo "Done!"
