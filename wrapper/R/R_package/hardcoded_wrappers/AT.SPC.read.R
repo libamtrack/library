@@ -194,27 +194,22 @@ AT.SPC.read <- function( file.name,
 								 particle.no            = res$particle.no,
 								 fluence.cm2            = res$fluence.cm2)
 		}else{
-			df <- NULL
+			 df <- 0
 			 E.MeV.u <- numeric(1)
 			 peak.position.g.cm2 <- numeric(1)
 			 normalization <- numeric(1)
-			 res                 <- .C( "AT_SPC_read_header_from_filename_fast",
+			 returnValue <- integer(1)
+			 res                 <- .C( "AT_SPC_read_header_from_filename_fast_R",
 										file.name          = as.character(file.name),
 										E.MeV.u            = as.single(E.MeV.u),
 										peak.position.g.cm2 = as.single(peak.position.g.cm2),
 										normalization      = as.single(normalization),
+										returnValue        = as.integer(returnValue),
 										PACKAGE            = "libamtrack")
 			beam.energy.MeV.u <- res$E.MeV.u
 			peak.position.g.cm2 <- res$peak.position.g.cm2
 
 		}
-		# TODO to be implemented
-		n.depth.steps <- 1
-		projectile <- "X"
-		target.material     <- 1
-		beam.energy.MeV.u   <- 1
-		peak.position.g.cm2 <- 1
-					 
 	}
 	return(list( spc                 = df,
 	             n.depth.steps       = n.depth.steps,
