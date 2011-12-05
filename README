@@ -47,7 +47,8 @@ iv. Use precompiled binaries
 v. Compile libamtrack from sources
 ----------------------------------
 - Download the latest source release from libamtrack's website or the current development version from the svn repository (svn co https://libamtrack.svn.sourceforge.net/svnroot/libamtrack/trunk).
-- Compilation is done via the GNU autotools tool chain (./configure && make && make install). 
+- Compilation is done via the GNU autotools tool chain (./configure && make && make install).
+- More details on using GNU autotools during code development is found in /README_DEVELOPERS 
 - Detailed instructions for the GNU autotools are found in /INSTALL.
 
 -- Linux-specific:
