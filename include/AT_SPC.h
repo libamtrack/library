@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "AT_DataParticle.h"
+#include "AT_DataMaterial.h"
 
 
 /**
@@ -239,12 +240,16 @@ int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
  * @param[in]	    filename  	    	path and name for spc file, incl. extension (array of size FILE_NAME_NCHAR)
  * @param[out]		E_MeV_u				primary beam energy in MeV/u
  * @param[out]		peak_position_g_cm2	position of peak in g/cm2
+ * @param[out]	particle_no         projectile - particle no
+ * @param[out]	material_no         target - material no
  * @param[out]		normalisation		normalisation
  * @return                          	number of bins read
  */
 int AT_SPC_read_header_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 		double*   E_MeV_u,
 		double*   peak_position_g_cm2,
+		long*     particle_no,
+		int*      material_no,
 		double*   normalisation);
 /**
  * Reads data from spc file into pre-allocated arrays. It will be converted
@@ -360,6 +365,8 @@ int AT_SPC_decompose_size(const int content_size,
  * @param[in]	content_orig  	    table of bytes containing binary content of SPC file (array of size content_size)
  * @param[out]	E_MeV_u  	        beam energy [MeV]
  * @param[out]	peak_position_g_cm2 peak position
+ * @param[out]	particle_no         projectile - particle no
+ * @param[out]	material_no         target - material no
  * @param[out]	normalisation  	    normalisation
  * return       status code
  */
@@ -368,6 +375,8 @@ int AT_SPC_decompose_header(
 		int32_t   content_orig[],
 		double*   E_MeV_u,
 		double*   peak_position_g_cm2,
+		long*     particle_no,
+		int*      material_no,
 		double*   normalisation);
 
 /**
