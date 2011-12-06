@@ -66,7 +66,7 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py', library_path 
     header_string +='\n__status__ = \'Prototype\'\n\n'
     header_string +='operating_system = os_system()\n'
     header_string +='if operating_system == \'Windows\':\n\tlibamtrack = ctypes.cdll.libamtrack\nelse:\n\tlibamtrack = ctypes.cdll.LoadLibrary("' + library_path + '")\n\npy_version = python_version()\n'
-    header_string +='if int(py_version[0]) < 3 and int(py_version[2]) <= 5:\n\tprint \'ERROR:\\nYou are using Python%s\\nPython2.6 or later needed!\\n\'%py_version\n\tsys.exit(0)\n\n\n'
+    header_string +='if int(py_version[0]) < 3 and int(py_version[2]) <= 5:\n\tprint \'ERROR:\\nYou are using Python%s\\nPython2.6 or later needed!\\n\'%py_version\n\tsys.exit(1)\n\n\n'
     
     outfile = open(outfile_name, 'w+')
     outfile.write(header_string)
