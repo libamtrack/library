@@ -387,6 +387,8 @@ int AT_SPC_decompose_header(
 		int32_t   content_orig[],
 		double*   E_MeV_u,
 		double*   peak_position_g_cm2,
+		long*     particle_no,
+		int*      material_no,
 		double*   normalisation){
 
 	int length = 0;
@@ -395,8 +397,16 @@ int AT_SPC_decompose_header(
 	skipStruct(&content); // filetype
 	skipStruct(&content); // fileversion
 	skipStruct(&content); // filedate
+
+	char * targetName = NULL;
+	decomposeStructIntoString(content, targetName, &length);
 	skipStruct(&content); // targname
+	*material_no = Water_Liquid; // TODO write converter from targetName to material_no
+
+	char * projectileName = NULL;
+	decomposeStructIntoString(content, projectileName, &length);
 	skipStruct(&content); // projname
+	*particle_no = 6012;  // TODO write converter from projectileName to particle_no
 
 	decomposeStructIntoDouble(content, E_MeV_u, &length);
 	skipStruct(&content); // beamenergy
@@ -642,6 +652,8 @@ int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
 int AT_SPC_read_header_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 		double*   E_MeV_u,
 		double*   peak_position_g_cm2,
+		long*     particle_no,
+		int*      material_no,
 		double*   normalisation)
 {
 	int nb = AT_SPC_get_number_of_bytes_in_file( filename );
@@ -655,6 +667,8 @@ int AT_SPC_read_header_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 			content,
 			E_MeV_u,
 			peak_position_g_cm2,
+			particle_no,
+			material_no,
 			normalisation);
 
 	free(content);
