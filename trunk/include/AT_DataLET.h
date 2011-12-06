@@ -857,8 +857,7 @@ static const AT_pstar_data_struct AT_PSTAR_Data = {
  * @param[in]  y_table       y part of data table
  * @param[out] y             array of interpolated y values
  */
-void get_table_value(
-    const long    n,
+void get_table_value( const long    n,
     const double  x[],
     const long    subset_no,
     const double  x_table[],

@@ -266,7 +266,8 @@ double AT_inverse_RDD_KatzPoint_LinearER_m( const double D_Gy,
  * @param params
  * @return
  */
-double AT_inverse_RDD_KatzPoint_PowerLawER_solver_function_Gy( const double r_m , void * params );
+double AT_inverse_RDD_KatzPoint_PowerLawER_solver_function_Gy( const double r_m ,
+		void* params );
 
 
 /**
@@ -425,7 +426,8 @@ typedef struct {
  * @param params
  * @return
  */
-double AT_inverse_RDD_Cucinotta_solver_function_Gy( const double r_m , void * params );
+double AT_inverse_RDD_Cucinotta_solver_function_Gy( const double r_m ,
+		void* params );
 
 
 /**

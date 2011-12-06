@@ -53,11 +53,11 @@ enum AT_histo_type{
  * @param[out] left_limit            left limit of bin
  * @return     status code
  */
-int AT_histo_linear_left_limit(      const long number_of_bins,
+int AT_histo_linear_left_limit( const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const long bin_no,
-                                double * left_limit);
+                                double* left_limit);
 
 
 /**
@@ -73,7 +73,7 @@ int AT_histo_logarithmic_left_limit(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const long bin_no,
-                                double * left_limit);
+                                double* left_limit);
 
 
 /**
@@ -92,7 +92,7 @@ int AT_histo_left_limit( const long number_of_bins,
     const double step,
     const long histo_type,
     const long bin_no,
-    double * left_limit);
+    double* left_limit);
 
 
 /**
@@ -141,7 +141,7 @@ int AT_histo_logarithmic_bin_width(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const long bin_no,
-                                double * bin_width);
+                                double* bin_width);
 
 
 /**
@@ -160,7 +160,7 @@ int AT_histo_bin_width(      const long number_of_bins,
                                 const double step,
                                 const long histo_type,
                                 const long bin_no,
-                                double * bin_width);
+                                double* bin_width);
 
 
 /**
@@ -191,11 +191,11 @@ int AT_histo_bin_widths( const long number_of_bins,
  * @param[out] midpoint              midpoint of bin
  * @return status code
  */
-int AT_histo_linear_midpoint(      const long number_of_bins,
+int AT_histo_linear_midpoint(   const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const long bin_no,
-                                double * midpoint);
+                                double* midpoint);
 
 
 /**
@@ -211,7 +211,7 @@ int AT_histo_logarithmic_midpoint(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double step,
                                 const long bin_no,
-                                double * midpoint);
+                                double* midpoint);
 
 
 /**
@@ -230,7 +230,7 @@ int AT_histo_midpoint(      const long number_of_bins,
                                 const double step,
                                 const long histo_type,
                                 const long bin_no,
-                                double * midpoint);
+                                double* midpoint);
 
 
 /**
@@ -262,7 +262,7 @@ int AT_histo_midpoints( const long number_of_bins,
 int AT_histo_linear_step(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double highest_left_limit,
-                                double * step);
+                                double* step);
 
 /**
  * Returns step for given range for logarithmic histograms
@@ -275,7 +275,7 @@ int AT_histo_linear_step(      const long number_of_bins,
 int AT_histo_logarithmic_step(      const long number_of_bins,
                                 const double lowest_left_limit,
                                 const double highest_left_limit,
-                                double * step);
+                                double* step);
 
 /**
  * Returns step for given range
@@ -291,7 +291,7 @@ int AT_histo_step(      const long number_of_bins,
                         const double lowest_left_limit,
                         const double highest_left_limit,
                         const long histo_type,
-                        double * step);
+                        double* step);
 
 ///////////////////////////////// Number of bin routines ////////////////////////////////////
 /**
@@ -305,7 +305,7 @@ int AT_histo_step(      const long number_of_bins,
 int AT_histo_linear_n_bins(     const double lowest_left_limit,
                                 const double highest_left_limit,
                                 const double step,
-                                long * number_of_bins);
+                                long* number_of_bins);
 
 /**
  * Returns number of bins for given range for logarithmic histograms
@@ -318,7 +318,7 @@ int AT_histo_linear_n_bins(     const double lowest_left_limit,
 int AT_histo_logarithmic_n_bins(     const double lowest_left_limit,
                                 const double highest_left_limit,
                                 const double step,
-                                long * number_of_bins);
+                                long* number_of_bins);
 
 /**
  * Returns number of bins for given range for logarithmic histograms
@@ -334,7 +334,7 @@ int AT_histo_n_bins(     const double lowest_left_limit,
     const double highest_left_limit,
     const double step,
     const long histo_type,
-    long * number_of_bins);
+    long* number_of_bins);
 
 ///////////////////////////////// Access routines ////////////////////////////////////
 /**

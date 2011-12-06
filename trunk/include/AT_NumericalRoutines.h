@@ -114,12 +114,12 @@ double AT_Dyx(  double  y,
  *  param[out]  pdf     Dv(x)
  *  param[out]  pdd     Dv'(x)
  */
-int pbdv_(  double *v,
-		double *x,
-		double *dv,
-		double *dp,
-		double *pdf,
-		double *pdd);
+int pbdv_(  double* v,
+		double* x,
+		double* dv,
+		double* dp,
+		double* pdf,
+		double* pdd);
 
 
 /**
@@ -129,9 +129,9 @@ int pbdv_(  double *v,
  * @param va order
  * @param pd output Dv(x)
  */
-int dvsa_(  double *va,
-		double *x,
-		double *pd);
+int dvsa_(  double* va,
+		double* x,
+		double* pd);
 
 
 /**
@@ -143,9 +143,9 @@ int dvsa_(  double *va,
  * @param va order
  * @param pd output Dv(x)
  */
-int dvla_(  double *va,
-		double *x,
-		double *pd);
+int dvla_(  double* va,
+		double* x,
+		double* pd);
 
 
 /**
@@ -157,15 +157,15 @@ int dvla_(  double *va,
  * @param va order
  * @param pv output Vv(x)
  */
-int vvla_(  double *va,
-		double *x,
-		double *pv);
+int vvla_(  double* va,
+		double* x,
+		double* pv);
 
 
 /**
  * TODO
- * @param a
- * @param b
+ * @param[in] a
+ * @param[in] b
  * @return
  */
  double d_sign( const double a,
@@ -177,14 +177,14 @@ int vvla_(  double *va,
  * @param x argument (x is not equal to 0,-1,-2,...)
  * @param ga output
  */
-int gamma_( const double *x,
-		double *ga);
+int gamma_( const double* x,
+		double* ga);
 
 
 /* TODO it is logarithm of which gamma function ? it is not used */
 /**
  * Numerical Recipes: Logarithm of gamma function
- * @param xx argument for gamma function
+ * @param[in] xx argument for gamma function
  * @return
  */
 double gammln(const double xx);
@@ -192,7 +192,7 @@ double gammln(const double xx);
 
 /**
  * Numerical Recipes: standard error handler
- * @param error_text
+ * @param[in] error_text
  */
 void nrerror(const char error_text[]);
 
@@ -219,11 +219,11 @@ double zriddr(double (*func)(double,void*),
 /**
  * finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
  * is reported per element a vector "matches" of length n_elements has to be provided
- * @param elements
- * @param n_elements
- * @param set
- * @param n_set
- * @param matches
+ * @param[in] elements
+ * @param[in] n_elements
+ * @param[in] set
+ * @param[in] n_set
+ * @param[out] matches
  */
 void are_elements_int(const int elements[],
 		const int n_elements,
@@ -235,13 +235,17 @@ void are_elements_int(const int elements[],
 /**
  * finds integer (32bit) elements in a set (n elements) and returns indices - only one (the first) match
  * is reported per element a vector "matches" of length n_elements has to be provided
- * @param elements
- * @param n_elements
- * @param set
- * @param n_set
- * @param matches
+ * @param[in] elements
+ * @param[in] n_elements
+ * @param[in] set
+ * @param[in] n_set
+ * @param[out] matches
  */
-void find_elements_int(const long elements[], const long n_elements, const long set[], const long n_set, long matches[]);
+void find_elements_int(const long elements[],
+		const long n_elements,
+		const long set[],
+		const long n_set,
+		long matches[]);
 
 
 /**
@@ -253,7 +257,11 @@ void find_elements_int(const long elements[], const long n_elements, const long 
  * @param n_set
  * @param matches
  */
-void find_elements_char(const char** elements, const long n_elements, const char* const * set, const long n_set, long matches[]);
+void find_elements_char(const char** elements,
+		const long n_elements,
+		const char* const * set,
+		const long n_set,
+		long matches[]);
 
 
 /**
@@ -264,7 +272,10 @@ void find_elements_char(const char** elements, const long n_elements, const char
  * @param n_set
  * @param matches
  */
-void is_element_char(const char element[], const char* const * set, const long n_set, bool matches[]);
+void is_element_char(const char element[],
+		const char* const * set,
+		const long n_set,
+		bool matches[]);
 
 
 /**
@@ -275,7 +286,10 @@ void is_element_char(const char element[], const char* const * set, const long n
  * @param n_set
  * @param matches
  */
-void is_element_int(const long element, const long set[], const long n_set, bool matches[]);
+void is_element_int(const long element,
+		const long set[],
+		const long n_set,
+		bool matches[]);
 
 
 /**
@@ -308,7 +322,9 @@ void is_element_int(const long element, const long set[], const long n_set, bool
  * @param x   TODO
  * return j   result
  */
-long locate(const double xx[], const long n, const double x);
+long locate(const double xx[],
+		const long n,
+		const double x);
 
 
 /**
@@ -321,7 +337,11 @@ long locate(const double xx[], const long n, const double x);
  * @param index_in_row
  * @return
  */
-long locate_index_in_2d_table(const double xx[][2], const long lowest_index, const long highest_index, const double x, int index_in_row);
+long locate_index_in_2d_table(const double xx[][2],
+		const long lowest_index,
+		const long highest_index,
+		const double x,
+		int index_in_row);
 
 
 /**
@@ -332,7 +352,10 @@ long locate_index_in_2d_table(const double xx[][2], const long lowest_index, con
  * @param intermediate_x
  * @return
  */
-double AT_get_interpolated_y_from_input_table(const double input_data_x[], const double input_data_y[], const long length_of_input_data, const double intermediate_x);
+double AT_get_interpolated_y_from_input_table(const double input_data_x[],
+		const double input_data_y[],
+		const long   length_of_input_data,
+		const double intermediate_x);
 
 
 /**
@@ -342,7 +365,9 @@ double AT_get_interpolated_y_from_input_table(const double input_data_x[], const
  * @param intermediate_x
  * @return
  */
-double AT_get_interpolated_y_from_input_2d_table(const double input_data_xy[][2], const long length_of_input_data, const double intermediate_x);
+double AT_get_interpolated_y_from_input_2d_table(const double input_data_xy[][2],
+		const long length_of_input_data,
+		const double intermediate_x);
 
 
 /**
@@ -353,7 +378,10 @@ double AT_get_interpolated_y_from_input_2d_table(const double input_data_xy[][2]
  * @param intermediate_y
  * @return
  */
-double AT_get_interpolated_x_from_input_2d_table(const double input_data_xy[][2], const long lowest_index, const long highest_index, const double intermediate_y);
+double AT_get_interpolated_x_from_input_2d_table(const double input_data_xy[][2],
+		const long lowest_index,
+		const long highest_index,
+		const double intermediate_y);
 
 
 /**

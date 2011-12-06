@@ -58,8 +58,7 @@
  * @param[in]  stopping_power_source_no  TODO
  * @return number of bins to hold the f1 distribution
  */
-long AT_n_bins_for_single_impact_local_dose_distrib(
-    const long   n,
+long AT_n_bins_for_single_impact_local_dose_distrib( const long   n,
     const double E_MeV_u[],
     const long   particle_no[],
     const long   material_no,
@@ -94,8 +93,7 @@ long AT_n_bins_for_single_impact_local_dose_distrib(
  * @param[out] f1_dd_Gy              bin widths for f1 (array of size n_bins_f1)
  * @param[out] f1                    f1 values (array of size n_bins_f1)
  */
-void AT_single_impact_local_dose_distrib(
-    const long   n,
+void AT_single_impact_local_dose_distrib( const long   n,
     const double E_MeV_u[],
     const long   particle_no[],
     const double fluence_cm2_or_dose_Gy[],
