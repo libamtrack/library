@@ -114,7 +114,7 @@ typedef struct {
  */
 int AT_beta_from_E( const long  n,
     const double  E_MeV_u[],
-    double  beta[]);
+    double        beta[]);
 
 
 /**
@@ -136,7 +136,7 @@ int AT_beta_from_E( const long  n,
  */
 int AT_E_from_beta(  const long  n,
     const double  beta[],
-    double  E_MeV_u[]);
+    double        E_MeV_u[]);
 
 
 /**
@@ -249,10 +249,10 @@ int AT_effective_charge_from_beta(  const long  n,
  * @param[out] dsE2dz_MeV2_cm2_g        Increase of energy straggling variance sigma_E^2 per unit length of material (array of size n)
  */
 void AT_energy_straggling_MeV2_cm2_g(  const long  n,
-	const double	E_MeV_u[],
-	const long	particle_no[],
-    const long  material_no,
-    double	dsE2dz_MeV2_cm2_g[]);
+	const double E_MeV_u[],
+	const long	 particle_no[],
+    const long   material_no,
+    double	     dsE2dz_MeV2_cm2_g[]);
 
 /**
  * Get energy spread of an ion beam after traversing
@@ -269,12 +269,12 @@ void AT_energy_straggling_MeV2_cm2_g(  const long  n,
  * @param[out] sigma_E_MeV_u            energy spread - 1 sigma - after traversing the slab (array of size n)
  */
 void AT_energy_straggling_after_slab_E_MeV_u( const long  n,
-	const double	E_MeV_u[],
-	const long	particle_no[],
-    const long	material_no,
-    const double	slab_thickness_m,
-    const double	initial_sigma_E_MeV_u[],
-    double	sigma_E_MeV_u[]);
+	const double  E_MeV_u[],
+	const long    particle_no[],
+    const long    material_no,
+    const double  slab_thickness_m,
+    const double  initial_sigma_E_MeV_u[],
+    double	      sigma_E_MeV_u[]);
 
 /**
  * Effective charge according to Barkas-Bethe-approximation
@@ -320,7 +320,7 @@ double AT_mean_excitation_energy_eV_from_Z_single( const long Z );
  */
 int AT_mean_excitation_energy_eV_from_Z( const long n,
 	const double Z[],
-	double I_eV[]);
+	double       I_eV[]);
 
  /**
   * Returns mass correction terms of max relativistic energy transfer for single particle
@@ -480,8 +480,8 @@ void AT_fluence_cm2_from_dose_Gy(  const long  n,
 void AT_beam_par_physical_to_technical(  const long  n,
     const double fluence_cm2[],
     const double sigma_cm[],
-    double N[],
-    double FWHM_mm[]);
+    double       N[],
+    double       FWHM_mm[]);
 
 /**
  * Converts technical, accelerator parameters of a symmetric, double lateral Gaussian shape beam, i.e.
@@ -498,8 +498,8 @@ void AT_beam_par_physical_to_technical(  const long  n,
 void AT_beam_par_technical_to_physical(  const long  n,
     const double N[],
     const double FWHM_mm[],
-    double fluence_cm2[],
-    double sigma_cm[]);
+    double       fluence_cm2[],
+    double       sigma_cm[]);
 
 /**
  * Interparticle distance

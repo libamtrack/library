@@ -165,7 +165,7 @@ int AT_SPC_get_size_from_filename(const char filename[FILE_NAME_NCHAR]);
  * @param[in,out]	fp				pointer to spc file
  * @return							total number of bins in spc file
  */
-int AT_SPC_get_size(  FILE *fp);
+int AT_SPC_get_size(  FILE* fp);
 
 
 /**
@@ -281,7 +281,7 @@ int AT_SPC_read_data( FILE* fp,
  * @param[in]	    filename  	    path and name for spc file (incl. extension)
  * @return			number of bytes in file
  */
-int AT_SPC_get_number_of_bytes_in_file(const char * filename);
+int AT_SPC_get_number_of_bytes_in_file(const char* filename);
 
 
 /**
@@ -291,7 +291,9 @@ int AT_SPC_get_number_of_bytes_in_file(const char * filename);
  * @param[out]      content  	    binary content of SPC file (array of size content_size)
  * @return			status code
  */
-int AT_SPC_fast_read_buffer(const char * filename, int content_size, int32_t * content);
+int AT_SPC_fast_read_buffer(const char* filename,
+		int content_size,
+		int32_t* content);
 
 /**
  * TODO
@@ -299,7 +301,9 @@ int AT_SPC_fast_read_buffer(const char * filename, int content_size, int32_t * c
  * @param[out]	    string 			string stored in first tag (item) of SPC content table
  * @param[out]      length  	    length of string
  */
-void decomposeStructIntoString( const int32_t content[], char * string, int * length );
+void decomposeStructIntoString( const int32_t content[],
+		char* string,
+		int*  length );
 
 /**
  * TODO
@@ -307,7 +311,9 @@ void decomposeStructIntoString( const int32_t content[], char * string, int * le
  * @param[out]	    value 			floating point value (single or pointer to beginning of table) stored in first tag (item) of SPC content table
  * @param[out]      length  	    number of items under "value" pointer
  */
-void decomposeStructIntoDouble( const int32_t content[], double * value, int * length );
+void decomposeStructIntoDouble( const int32_t content[],
+		double* value,
+		int*    length );
 
 /**
  * TODO
@@ -315,7 +321,9 @@ void decomposeStructIntoDouble( const int32_t content[], double * value, int * l
  * @param[out]	    value 			integer value (single or pointer to beginning of table) stored in first tag (item) of SPC content table
  * @param[out]      length  	    number of items under "value" pointer
  */
-void decomposeStructIntoInteger( const int32_t content[], uint64_t * value, int * length );
+void decomposeStructIntoInteger( const int32_t content[],
+		uint64_t* value,
+		int*      length );
 
 /**
  * Increase pointer (binary content of SPC file) to move it to next tag (item).
@@ -343,7 +351,8 @@ int decomposeLength(const int32_t content[]);
  * @param[in]	content_orig  	    table of bytes containing binary content of SPC file (array of size content_size)
  * @return
  */
-int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]);
+int AT_SPC_decompose_size(const int content_size,
+		int32_t content_orig[]);
 
 /**
  * TODO

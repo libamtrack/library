@@ -132,7 +132,7 @@ void AT_GSM_local_dose_distrib_from_dose_grid( const long     nX,
     const double** grid,
     const long     number_of_bins,
     const double   bin_centers_Gy[],
-    double *       zero_fraction,
+    double*        zero_fraction,
     double         frequency[]);
 
 

@@ -214,8 +214,7 @@ int AT_r_RDD_m( const long  n,
  * @param[in] rdd_parameter                  Radial Dose Distribution model parameters vector  (array of size 3)
  * @return rmin - lower integration limit for given RDD [m]
  */
-double AT_RDD_r_min_m(
-    const double  max_electron_range_m,
+double AT_RDD_r_min_m( const double  max_electron_range_m,
     const long    rdd_model,
     const double  rdd_parameter[]);
 
@@ -227,8 +226,7 @@ double AT_RDD_r_min_m(
  * @param[in] rdd_parameter                  Radial Dose Distribution model parameters vector  (array of size 3)
  * @return a0 - target size (core size) for given RDD [m]
  */
-double AT_RDD_a0_m(
-    const double  max_electron_range_m,
+double AT_RDD_a0_m( const double  max_electron_range_m,
     const long    rdd_model,
     const double  rdd_parameter[]);
 
@@ -245,8 +243,7 @@ double AT_RDD_a0_m(
  * @param[in] er_model                       delta electron range model code number
  * @return precalculated constant for given RDD [Gy]
  */
-double AT_RDD_precalculated_constant_Gy(
-    const double  max_electron_range_m,
+double AT_RDD_precalculated_constant_Gy( const double  max_electron_range_m,
     const double  LET_MeV_cm2_g,
     const double  E_MeV_u,
     const long    particle_no,
@@ -268,10 +265,9 @@ double AT_RDD_precalculated_constant_Gy(
  * @param[in] rdd_parameter                   Radial Dose Distribution model parameters vector  (array of size 3)
  * @param[in] er_model                        delta electron range model code number
  * @param[in] precalculated_constant_Gy
- * @return miminal dose for given RDD [Gy]
+ * @return minimal dose for given RDD [Gy]
  */
-double AT_RDD_d_min_Gy(
-    const double  E_MeV_u,
+double AT_RDD_d_min_Gy( const double  E_MeV_u,
     const long    particle_no,
     const long    material_no,
     const long    rdd_model,
@@ -292,8 +288,7 @@ double AT_RDD_d_min_Gy(
  * @param[in] stopping_power_source_no   TODO
  * @return  Maximum dose [Gy]
  */
-double AT_RDD_d_max_Gy(
-    const double  E_MeV_u,
+double AT_RDD_d_max_Gy( const double  E_MeV_u,
     const long    particle_no,
     const long    material_no,
     const long    rdd_model,
@@ -321,8 +316,7 @@ double AT_RDD_d_max_Gy(
  *     6 - single_impact_fluence_cm2 <br>
  *     7 - single_impact_dose_Gy
  */
-void AT_RDD_f1_parameters_single_field(
-    const double  E_MeV_u,
+void AT_RDD_f1_parameters_single_field( const double  E_MeV_u,
     const long    particle_no,
     const long    material_no,
     const long    rdd_model,
@@ -352,8 +346,7 @@ void AT_RDD_f1_parameters_single_field(
  *     6 - single_impact_fluence_cm2 \n
  *     7 - single_impact_dose_Gy
  */
-void AT_RDD_f1_parameters_mixed_field(
-    const long    n,
+void AT_RDD_f1_parameters_mixed_field( const long    n,
     const double  E_MeV_u[],
     const long    particle_no[],
     const long    material_no,

@@ -79,8 +79,7 @@ typedef struct {
  * @param params
  * @return
  */
-double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy(
-    double t_m,
+double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy( double t_m,
     void* params);
 
 
@@ -95,8 +94,7 @@ double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy(
  * @param Katz_point_coeff_Gy
  * @return
  */
-double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(
-    const double  r_m,
+double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration( const double  r_m,
     const double  a0_m,
     const long    er_model,
     const double  KatzPoint_r_min_m,
@@ -117,8 +115,7 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration(
  * @param Katz_point_coeff_Gy
  * @return
  */
-double AT_RDD_ExtendedTarget_KatzPoint_Gy(
-    const double  r_m,
+double AT_RDD_ExtendedTarget_KatzPoint_Gy( const double  r_m,
     const double  a0_m,
     const long    er_model,
     const double  KatzPoint_r_min_m,
@@ -149,7 +146,8 @@ typedef struct {
  * @param params
  * @return
  */
-double AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy( const double r_m , void * params );
+double AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy( const double r_m ,
+		void* params );
 
 
 /**
@@ -195,8 +193,7 @@ typedef struct {
  * @param params
  * @return
  */
-double AT_RDD_ExtendedTarget_CucinottaPoint_integrand_Gy(
-    double t_m,
+double AT_RDD_ExtendedTarget_CucinottaPoint_integrand_Gy( double t_m,
     void* params);
 
 
@@ -211,8 +208,7 @@ double AT_RDD_ExtendedTarget_CucinottaPoint_integrand_Gy(
  * @param C_norm
  * @return
  */
-double AT_RDD_ExtendedTarget_CucinottaPoint_Gy_by_integration(
-    const double  r_m,
+double AT_RDD_ExtendedTarget_CucinottaPoint_Gy_by_integration( const double  r_m,
     const double  a0_m,
     const double  KatzPoint_r_min_m,
     const double  max_electron_range_m,
@@ -233,8 +229,7 @@ double AT_RDD_ExtendedTarget_CucinottaPoint_Gy_by_integration(
  * @param Cucinotta_plateau_Gy
  * @return
  */
-double AT_RDD_ExtendedTarget_CucinottaPoint_Gy(
-    const double  r_m,
+double AT_RDD_ExtendedTarget_CucinottaPoint_Gy( const double  r_m,
     const double  a0_m,
     const double  KatzPoint_r_min_m,
     const double  max_electron_range_m,
@@ -265,7 +260,8 @@ typedef struct {
  * @param params
  * @return
  */
-double AT_inverse_RDD_ExtendedTarget_CucinottaPoint_solver_function_Gy( const double r_m , void * params );
+double AT_inverse_RDD_ExtendedTarget_CucinottaPoint_solver_function_Gy( const double r_m ,
+		void* params );
 
 
 /**

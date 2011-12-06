@@ -267,7 +267,7 @@ double AT_nuclear_spin_from_Z_and_A( const long  Z,
  * @return status
  */
 int AT_particle_name_from_particle_no_single( const long  particle_no,
-    char * particle_name);
+    char* particle_name);
 
 /**
  * Returns particle index number for given particle name
@@ -298,7 +298,7 @@ int AT_particle_name_from_particle_no(const long  n,
  * @return status
  */
 int AT_particle_no_from_particle_name( const long  n,
-    char * particle_name[],
+    char* particle_name[],
     long particle_no[]);
 
 
