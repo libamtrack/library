@@ -41,7 +41,7 @@ DEBUG = False
 
 def read_namespace(name_file ='NAMESPACE'):
     '''
-    reads llist of functions from NAMESPACE file and 
+    reads list of functions from NAMESPACE file and 
     returns list of functions, which then should be wrapped to python
     '''
     functions = []
@@ -53,7 +53,7 @@ def read_namespace(name_file ='NAMESPACE'):
     in_file.close()
     return functions
 
-def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py'):
+def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py', library_path = './libamtrack.so'):
     '''
     @param[in] func_objects  list of function objects 
     @return : string containing python code to call function
@@ -65,7 +65,7 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py'):
     header_string +='import sys\nfrom platform import python_version\nfrom platform import system as os_system\n'
     header_string +='\n__status__ = \'Prototype\'\n\n'
     header_string +='operating_system = os_system()\n'
-    header_string +='if operating_system == \'Windows\':\n\tlibamtrack = ctypes.cdll.libamtrack\nelse:\n\tlibamtrack = ctypes.cdll.LoadLibrary("libamtrack.so")\n\npy_version = python_version()\n'
+    header_string +='if operating_system == \'Windows\':\n\tlibamtrack = ctypes.cdll.libamtrack\nelse:\n\tlibamtrack = ctypes.cdll.LoadLibrary("' + library_path + '")\n\npy_version = python_version()\n'
     header_string +='if int(py_version[0]) < 3 and int(py_version[2]) <= 5:\n\tprint \'ERROR:\\nYou are using Python%s\\nPython2.6 or later needed!\\n\'%py_version\n\tsys.exit(0)\n\n\n'
     
     outfile = open(outfile_name, 'w+')
@@ -239,7 +239,4 @@ def harvest(functions,  path = '../../../include/'):
 if __name__ == "__main__":
     print 'py_wrapper tools\nrun generate_Py_wrapper.py in order to generate the Python wrapper'
 
-    
-    
-    
     
