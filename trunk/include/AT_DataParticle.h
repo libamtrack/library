@@ -302,4 +302,83 @@ int AT_particle_no_from_particle_name( const long  n,
     long particle_no[]);
 
 
+/**
+ * Returns Z for given elemental symbol
+ * @param[in]  elemental symbol
+ * @return corresponding Z
+ */
+
+int AT_Z_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] );
+
+
+/**
+ * Returns Z for given elemental symbols
+ * @param[in]  n
+ * @param[in]  elemental symbols (array of size n)
+ * @param[out] corresponding Z (array of size n)
+ * @return status
+ */
+
+int AT_Z_from_element_acronym(const long n, char* acronym[], long Z[]);
+
+
+
+
+/**
+ * Returns A for given elemental symbol
+ * @param[in]  elemental symbol
+ * @return corresponding atomic weight
+ */
+double AT_A_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] );
+
+
+
+/**
+ * Returns A for given elemental symbols
+ * @param[in]  n
+ * @param[in]  elemental symbols (array of size n)
+ * @param[out] corresponding A (array of size n)
+ * @return status
+ */
+int AT_A_from_element_acronym(const long n, char* acronym[], double A[]);
+
+
+/**
+ * Returns the elemental density in g/cm3 for given elemental symbol
+ * @param[in]  elemental symbol
+ * @return elemental density in g/cm3
+ */
+double AT_density_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] );
+
+
+
+/**
+ * Returns the elemental densities in g/cm3 for given elemental symbols
+ * @param[in]  n
+ * @param[in]  elemental symbols (array of size n)
+ * @param[out] corresponding elemental densities in g/cm3 (array of size n)
+ * @return status
+ */
+int AT_density_from_element_acronym(const long n, char* acronym[], double density[]);
+
+
+/**
+ * Returns the I value in eV for given elemental symbol
+ * @param[in]  elemental symbol
+ * @return corresponding I value in eV
+ */
+double AT_I_eV_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] );
+
+
+
+/**
+ * Returns the I values in eV for given elemental symbols
+ * @param[in]  n
+ * @param[in]  elemental symbols (array of size n)
+ * @param[out] corresponding I values in eV (array of size n)
+ * @return status
+ */
+int AT_I_eV_from_element_acronym(const long n, char* acronym[], double I[]);
+
+
 #endif /* AT_DATAPARTICLE_H_ */
