@@ -322,3 +322,119 @@ int AT_particle_no_from_particle_name( const long  n,
   }
   return AT_Success;
 }
+
+int AT_Z_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] ){
+
+	long match;
+
+	find_elements_char((const char **) (&acronym),
+			1,
+			AT_Particle_Data.element_acronym,
+			PARTICLE_DATA_N,
+			&match );
+
+	if(-1 == match) return -1;
+
+	return AT_Particle_Data.Z[match];
+}
+
+
+int AT_Z_from_element_acronym(const long n, char* acronym[], long Z[]){
+
+	long i;
+
+	for(i = 0; i < n; i++){
+		Z[i] = AT_Z_from_element_acronym_single( acronym[i] );
+		if (Z[i] < 0)
+			return AT_Particle_Not_Defined;
+	}
+	return AT_Success;
+}
+
+
+double AT_A_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] ){
+
+	long match;
+
+	find_elements_char((const char **) (&acronym),
+			1,
+			AT_Particle_Data.element_acronym,
+			PARTICLE_DATA_N,
+			&match );
+
+	if(-1 == match) return -1;
+
+	return AT_Particle_Data.atomic_weight[match];
+}
+
+
+int AT_A_from_element_acronym(const long n, char* acronym[], double A[]){
+
+	long i;
+
+	for(i = 0; i < n; i++){
+		A[i] = AT_A_from_element_acronym_single( acronym[i] );
+		if (A[i] < 0)
+			return AT_Particle_Not_Defined;
+	}
+	return AT_Success;
+}
+
+
+double AT_density_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] ){
+
+	long match;
+
+		find_elements_char((const char **) (&acronym),
+				1,
+				AT_Particle_Data.element_acronym,
+				PARTICLE_DATA_N,
+				&match );
+
+		if(-1 == match) return -1;
+
+		return AT_Particle_Data.density_g_cm3[match];
+
+}
+
+int AT_density_from_element_acronym(const long n, char* acronym[], double density[]){
+
+	long i;
+
+		for(i = 0; i < n; i++){
+			density[i] = AT_density_from_element_acronym_single( acronym[i] );
+			if (density[i] < 0)
+				return AT_Particle_Not_Defined;
+		}
+		return AT_Success;
+
+}
+
+double AT_I_eV_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] ){
+
+	long match;
+
+		find_elements_char((const char **) (&acronym),
+				1,
+				AT_Particle_Data.element_acronym,
+				PARTICLE_DATA_N,
+				&match );
+
+		if(-1 == match) return -1;
+
+		return AT_Particle_Data.I_eV_per_Z[match] * AT_Particle_Data.Z[match];
+
+}
+
+int AT_I_eV_from_element_acronym(const long n, char* acronym[], double I[]){
+
+	long i;
+
+		for(i = 0; i < n; i++){
+			I[i] = AT_I_eV_from_element_acronym_single( acronym[i] );
+			if (I[i] < 0)
+				return AT_Particle_Not_Defined;
+		}
+		return AT_Success;
+
+}
