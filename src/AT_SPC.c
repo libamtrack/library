@@ -281,7 +281,7 @@ int AT_SPC_fast_read_buffer(const char * filename, int content_size, int32_t * c
 
 #ifndef NDEBUG
 	if (no_items_read != content_size)
-		printf("error, expected to be at the end of file %s, read %d items (out of %d)\n", filename, no_items_read, content_size);
+		printf("error, expected to be at the end of file %s, read %lu items (out of %d)\n", filename, (unsigned long)no_items_read, content_size);
 #endif
 
 	fclose(fs);
@@ -551,7 +551,7 @@ int AT_SPC_decompose_data(
 				length = decomposeLength(content);
 				if( length != (nE + 1)*sizeof(double) ) {
 #ifndef NDEBUG
-						printf("problem nE  = %llu, length = %d\n", nE, length);
+						printf("problem nE  = %llu, length = %d\n", (long long unsigned int)nE, length);
 #endif
 					} else {
 					double * tempBins = (double*)calloc(sizeof(double), nE+1);
@@ -847,7 +847,7 @@ int AT_SPC_read_data(FILE* fp,
 				n_read_elements = fread(tempBins, sizeof(double), binsize+1, fp);
 #ifndef NDEBUG
 				if( n_read_elements != binsize+1)
-				   	printf("Read %zu element(s), instead of %llu !\n", n_read_elements, binsize+1);
+				   	printf("Read %zu element(s), instead of %llu !\n", n_read_elements, (long long unsigned int)(binsize+1));
 #endif
 				int n;
 				for (n=0; n < binsize; n++){
@@ -878,7 +878,7 @@ int AT_SPC_read_data(FILE* fp,
 			n_read_elements = fread(&fluence_cm2[k],sizeof(double),binsize,fp);
 #ifndef NDEBUG
 			if( n_read_elements != binsize)
-			   	printf("Read %zu element(s), instead of %llu !\n", n_read_elements, binsize);
+			   	printf("Read %zu element(s), instead of %llu !\n", n_read_elements, (long long unsigned int)binsize);
 #endif
 			int n;
 			for (n = 0; n < binsize; n++){
