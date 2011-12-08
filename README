@@ -31,6 +31,10 @@ i. Web-interface
 ----------------
 The web interface covers a subset of libamtrack functions for easy access and can be found on libamtrack's website: http://libamtrack.dkfz.org. The sources can be found at (/tools/webgui). The interface development was started by Christoph Kolb within his Bachelor thesis and consolidated by Leszek Grzanka.
 
+##############
+TODO: ADD MORE EXTENSIVE INSTALL INSTRUCTIONS HERE, ESP. MERGE / SYNC WITH THOSE GIVEN ON WEBSITE AND IN REFERENCE MANUAL
+##############
+
 ii. R
 -----
 libamtrack is a contributed package (http://cran.r-project.org/web/packages/libamtrack) on the Comprehensive R Archive Network (CRAN, http://cran.r-project.org). The sources for the R package can be found at /wrapper/R/R_package. Its compilation process uses scripts found at /tools/automatic_wrapper_generator (TODO: should be 'autobindings').
