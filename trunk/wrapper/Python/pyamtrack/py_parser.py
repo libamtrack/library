@@ -108,16 +108,21 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py', library_path 
         c_output_list= []
         for para_name in c_func.parameter.keys():
             if c_func.parameter[para_name].direction == 'out':
-                c_output_list.append(str(c_func.parameter[para_name].no) +'_c_' +para_name)        
+                if c_func.parameter[para_name].array:
+                    c_output_list.append(str(c_func.parameter[para_name].no) +'_c_' +para_name + '._obj')
+                else:
+                    c_output_list.append(str(c_func.parameter[para_name].no) +'_c_' +para_name + '._obj.value')
         if c_output_list != []:
             c_output_list.sort()
-            py_func_string += '\treturn '
+            py_func_string += '\treturn c_output, '
 
             for  i,item in enumerate(c_output_list):
                 tmp_no = len(string.split(item,'_')[0])+1
-                py_func_string += ' ' + item[tmp_no:]+'._obj.value'
+                py_func_string += ' ' + item[tmp_no:]
                 if i < len(c_output_list)-1:
                     py_func_string += ','
+        else:
+            py_func_string += '\treturn c_output'            
             
         py_func_string+='\n\n'
         outfile.write(py_func_string)
@@ -131,22 +136,31 @@ def translate_type(parameter):
     c_lookup = {'double': 'ctypes.c_double', 
                 'long': 'ctypes.c_long', 
                 'bool': 'ctypes.c_bool',
-                'int' : 'ctypes.c_int'}
+                'int' : 'ctypes.c_int',
+                'char' : 'ctypes.c_char'}
     
     py_line =''
+    
+    if parameter.type not in c_lookup.keys():
+        print "Problem with parameter: " + parameter.name + " of type " + parameter.type
+        return py_line
+    
     if parameter.direction == 'in'or  parameter.direction == 'in,out':
         if not parameter.array:
             py_line += 'c_' + parameter.name + ' = '
             py_line += c_lookup[parameter.type] + '(' +parameter.name+')'
         if parameter.array:
-            py_line += 'tmp_array =' +c_lookup[parameter.type] +'* len('+parameter.name + ')\n'
-            py_line += '\tc_'+ parameter.name + ' = ctypes.byref(tmp_array(*' +parameter.name +'))\n'
+            if parameter.type == 'char':
+                py_line += 'c_'+ parameter.name + ' = ctypes.c_char_p(' +parameter.name +')\n'
+            else:
+                py_line += 'tmp_array =' +c_lookup[parameter.type] +'* len('+parameter.name + ')\n'
+                py_line += '\tc_'+ parameter.name + ' = ctypes.byref(tmp_array(*' +parameter.name +'))\n'
     
     if parameter.direction == 'out':
         if not parameter.array:
             py_line += 'c_'+parameter.name +' =  ctypes.byref('+ c_lookup[parameter.type] +'(' +parameter.name+'))\n'
         if parameter.array :
-            py_line += 'tmp_array = ' + c_lookup[parameter.type] + '*' +parameter.array_size + '\n'
+            py_line += 'tmp_array = (' + c_lookup[parameter.type] + '*' +parameter.array_size + ')()\n'
             py_line += '\tc_' +parameter.name + '= ctypes.byref(tmp_array)\n'
 
         

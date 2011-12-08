@@ -77,17 +77,19 @@ class amtrack_func:
             oneline = False
             item =string.split(item, ',')[0]
             if len(string.split(item, '(')) == 2:
-                tmp_string_ls = string.split(item, '(')
+                tmp_string_ls = string.split(item, '(')[-1]
                 if len(string.split(item, ')')) == 2:
                     oneline =True
                 if oneline :
-                    tmp_name = string.split(tmp_string_ls[-1])[-2]
+                    tmp_name = string.split(tmp_string_ls)[-2]
                 else:
-                     tmp_name = string.split(tmp_string_ls[-1])[-1]
+                    tmp_name = string.split(tmp_string_ls)[-1]
                 if tmp_name [-2:] == '[]':
                     tmp_name = tmp_name[:-2]
                     self.parameter[tmp_name].array = True
-                tmp_type = string.split(item)[-2] 
+                tmp_type = string.split(tmp_string_ls)[-2]
+                if oneline :
+                    tmp_type = string.split(tmp_string_ls)[-3]
                 if tmp_type[-1] == '*':
                     tmp_type = tmp_type[:-1]
                     self.parameter[tmp_name].pointer =True
@@ -97,7 +99,7 @@ class amtrack_func:
                 tmp_name = string.split(tmp_string_ls[0])[-1]
                 if tmp_name [-2:] == '[]':
                     tmp_name = tmp_name[:-2]
-                    self.parameter[tmp_name].array = True  
+                    self.parameter[tmp_name].array = True                      
                 tmp_type = string.split(item)[-2] 
                 if tmp_type[-1] == '*':
                     tmp_type = tmp_type[:-1]
