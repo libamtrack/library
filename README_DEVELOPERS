@@ -1,3 +1,17 @@
+############################################################################################################################
+libamtrack information for code developers
+############################################################################################################################
+
+1.  Basic workflow using autotools
+2.  Workflow using eclipse
+3.  Doxygen comments
+
+Contact and feedback
+
+############################################################################################################################
+i. Basic workflow using autotools
+############################################################################################################################
+
 From revision r1037 on, libamtrack follow the GNU autotool conventions to improve portability and facilitate distribution.
 
 This required new files (such as configure.ac, Makefile.am, ChangeLog, NEWS, etc.) and folders (m4) 
@@ -7,8 +21,7 @@ In addition, file and folders will be created during the autoconf/automake proce
 config.guess, configure, install.sh, Makefile, etc.). Those files *should not* be committed to the repository. 
 Please refrain from doing so. 
 
-############################################################################################################################
-Basic workflow using autotools
+Steps for compilation:
 
 1. After you downloaded libamtrack OR 
    you updated your local workspace (which could have changed configure.ac) OR
@@ -33,7 +46,57 @@ Basic workflow using autotools
    
    make all
 
+
+############################################################################################################################
+2. Basic workflow using eclipse
 ############################################################################################################################
 
-S. Greilich, 2011-12-05
+Eclipse 3.6+ supports the autotool toolchain. There are, however, some peculiarities to be considered:
 
+You have to manually set include path:
+   Right click libamtrack project > Properties > C/C++ general > Path and Symbols
+   
+When using a second build configuration with debug flags (see above), eclipse gets confused and you have (TODO: fix)
+to prepare debugged code to use with gbd in eclipse using the command line.
+
+    
+############################################################################################################################
+3. Doxygen comments
+############################################################################################################################
+
+Doxygen comments are not only used to document libamtrack's C code but they are also used during the scripted generation of
+R and Python wrappers. It is essential for them to have it very carefully formatted.
+
+- After @param[??] parameter name should go and then description.
+- @param[in] defines an input, @param[out] an return parameter.
+- The size of array HAS to be provided in brackets with key word "array of size". It should not be provided in function 
+  declaration in the header file. Both other parameters passed to the function (see example, "n"), numbers and macro
+  expansions can be used as size, also in mixed or multiple form. 
+- A whitespace is needed after the first and before last bracket in the function declaration.
+- In the function declaration there is one parameter per line, with the first parameter in the same line as function name.
+- Please refrain from using "/", ";" in the description
+
+
+Example:
+
+/**
+  * Returns Z for given elemental symbols
+  * @param[in]   n         number of elements in arrays
+  * @param[in]   acronym   elemental symbols (array of size n)
+  * @param[out]  Z         corresponding Z (array of size n)
+  * @return                status
+  */
+
+int AT_Z_from_element_acronym( const long n,
+		char* acronym[],
+		long Z[] );
+
+
+############################################################################################################################
+Contact and feedback
+############################################################################################################################
+
+Please send mails considering code development to:
+
+steffen.greilich@dkfz.de or
+leszek.grzanka@ifj.edu.pl
