@@ -240,14 +240,14 @@ void AT_Kellerer_interpolation( const long N2,
  *
  * @param[in]       N2             TODO
  * @param[in]       array_size             TODO
- * @param[in/out]       LEF             TODO
- * @param[in/out]       MIE             TODO
- * @param[in/out]       MIF             TODO
+ * @param[in,out]       LEF             TODO
+ * @param[in,out]       MIE             TODO
+ * @param[in,out]       MIF             TODO
  * @param[in]       E0             TODO
- * @param[in/out]       E             TODO (array of size array_size)
- * @param[in/out]       DE             TODO (array of size array_size)
- * @param[in/out]       F             TODO (array of size array_size)
- * @param[in/out]       DI             TODO (array of size array_size)
+ * @param[in,out]       E             TODO (array of size array_size)
+ * @param[in,out]       DE             TODO (array of size array_size)
+ * @param[in,out]       F             TODO (array of size array_size)
+ * @param[in,out]       DI             TODO (array of size array_size)
  */
 void AT_Kellerer_reset( long* N2,
 		const long array_size,
@@ -271,9 +271,9 @@ void AT_Kellerer_reset( long* N2,
  * @param[in]       F0             TODO
  * @param[in]       F             TODO (array of size array_size)
  * @param[in]       DE             TODO (array of size array_size)
- * @param[in/out]       MIH             TODO
- * @param[in/out]       LEH             TODO
- * @param[in/out]       H             TODO (array of size array_size)
+ * @param[in,out]       MIH             TODO
+ * @param[in,out]       LEH             TODO
+ * @param[in,out]       H             TODO (array of size array_size)
  */
 void AT_Kellerer_zero( const long MIF,
 		const long array_size,
@@ -293,9 +293,9 @@ void AT_Kellerer_zero( const long MIF,
  * @param[in]       MIE             TODO
  * @param[in]       shrink_tails_under             TODO
  * @param[in]       DE             TODO (array of size array_size)
- * @param[in/out]       MIH             TODO
- * @param[in/out]       LEH             TODO
- * @param[in/out]       H             TODO (array of size array_size)
+ * @param[in,out]       MIH             TODO
+ * @param[in,out]       LEH             TODO
+ * @param[in,out]       H             TODO (array of size array_size)
  */
 void AT_Kellerer_shrink( const long array_size,
 		const long MIE,
@@ -317,11 +317,11 @@ void AT_Kellerer_shrink( const long array_size,
  * @param[in]       frequency_n_bins_last             TODO
  * @param[in]       frequency_first_bin_last             TODO
  * @param[in]       frequency_zero_bin_last             TODO
- * @param[in/out]   frequency_last             TODO (array of size array_size)
- * @param[in/out]   frequency_n_bins             TODO
- * @param[in/out]   frequency_first_bin             TODO
- * @param[in/out]   frequency_zero_bin             TODO
- * @param[in/out]   frequency             TODO (array of size array_size)
+ * @param[in,out]   frequency_last             TODO (array of size array_size)
+ * @param[in,out]   frequency_n_bins             TODO
+ * @param[in,out]   frequency_first_bin             TODO
+ * @param[in,out]   frequency_zero_bin             TODO
+ * @param[in,out]   frequency             TODO (array of size array_size)
  */
 void AT_Kellerer_folding( const long n_bins,
 		const long bins_per_factor_2,
@@ -338,6 +338,4 @@ void AT_Kellerer_folding( const long n_bins,
 		double frequency[]);
 
 
-
 #endif // AT_SUCCESSIVECONVOLUTIONS_H_
-
