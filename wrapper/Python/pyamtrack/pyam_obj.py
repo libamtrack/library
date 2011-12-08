@@ -99,8 +99,8 @@ class amtrack_func:
                 tmp_name = string.split(tmp_string_ls[0])[-1]
                 if tmp_name [-2:] == '[]':
                     tmp_name = tmp_name[:-2]
-                    self.parameter[tmp_name].array = True                      
-                tmp_type = string.split(item)[-2] 
+                    self.parameter[tmp_name].array = True
+                tmp_type = string.split(tmp_string_ls[0])[-2] 
                 if tmp_type[-1] == '*':
                     tmp_type = tmp_type[:-1]
                     self.parameter[tmp_name].pointer =True
