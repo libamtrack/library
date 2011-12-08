@@ -255,11 +255,11 @@ void find_elements_int(const long elements[],
  * @param[in] n_elements
  * @param[in] set
  * @param[in] n_set
- * @param[out] matches
+ * @param[out] matches (array of size n_elements)
  */
 void find_elements_char(const char** elements,
 		const long n_elements,
-		const char* const * set,
+		const char* const* set,
 		const long n_set,
 		long matches[]);
 

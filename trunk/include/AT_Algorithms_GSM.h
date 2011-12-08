@@ -122,6 +122,7 @@ void AT_GSM_dose_grid_from_particles_positions( const long  number_of_field_comp
  * Computes histogram from given grid
  *
  * @param[in]   nX                 number of cells on one grid side
+ * @param[in]   grid               grid
  * @param[in]   number_of_bins     number of bins for resulting histogram
  * @param[in]   bin_centers_Gy     midpoints of bins for resulting histogram (array of size number_of_bins)
  * @param[out]  zero_fraction      zero bin content - frequency of value zero
@@ -134,7 +135,6 @@ void AT_GSM_local_dose_distrib_from_dose_grid( const long     nX,
     const double   bin_centers_Gy[],
     double*        zero_fraction,
     double         frequency[]);
-
 
 
 /**
@@ -154,6 +154,7 @@ void AT_GSM_response_grid_from_dose_grid( const long      nX,
                 const double**  grid_D_Gy,
                 const bool      lethal_events_mode,
                 double**        grid_response);
+
 
 /**
  * Computes HCP response and relative efficiency/RBE using summation of tracks
@@ -260,7 +261,7 @@ void AT_GSM_local_dose_distrib( const long  number_of_field_components,
     const long     number_of_bins,
     const double   dose_bin_centers_Gy[],
     unsigned long* random_number_generator_seed,
-    double *       zero_dose_fraction,
+    double*        zero_dose_fraction,
     double         dose_frequency_Gy[]);
 
 /**

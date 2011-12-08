@@ -180,16 +180,11 @@ double AT_ICRU_wrapper(const double 	E_MeV_u,
 
 /**
  * TODO
- * @param[in] stopping_power_source_no
- * @param[in] particle_no
- * @param[in] material_no
- * @param[out] source_for_given_material
- * @return
  */
 double _AT_Stopping_Power_get_data(const long stopping_power_source_no,
 		const long 	    particle_no,
 		const long 		material_no,
-		AT_stopping_power_tabulated_source_for_given_material_struct ** source_for_given_material);
+		AT_stopping_power_tabulated_source_for_given_material_struct** source_for_given_material);
 
 /**
  * Interpolation over tabulated Stopping Power data
