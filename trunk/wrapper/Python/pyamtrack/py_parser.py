@@ -89,8 +89,25 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py', library_path 
             py_func_string += '\t'+ line 
         py_func_string +='\t\'\'\'\n'
         
+        translation_problem = False
         for i,  key in enumerate(c_func.parameter.keys()):
-            py_func_string += '\t' + translate_type(c_func.parameter[key])
+            translated_type = translate_type(c_func.parameter[key])
+            if translated_type is not None:
+                py_func_string += '\t' + translated_type
+            else:
+                py_func_string = '# problem with function ' + c_func.name + '\n'
+                translation_problem = True
+                outfile.write(py_func_string)
+                break
+        
+        if translation_problem is True:
+            continue
+            
+        if len(c_func.parameter.keys()) == 0:
+            py_func_string = '# problem with function ' + c_func.name + ' (zero parameters)\n'
+            py_func_string += '# comment ' + str(c_func.comment) + '\n'
+            outfile.write(py_func_string)
+            continue
         
         py_func_string += '\tc_function =  libamtrack.' + c_func.name + '\n'
         py_func_string += '\tc_output = c_function('
@@ -137,13 +154,18 @@ def translate_type(parameter):
                 'long': 'ctypes.c_long', 
                 'bool': 'ctypes.c_bool',
                 'int' : 'ctypes.c_int',
-                'char' : 'ctypes.c_char'}
+                'char' : 'ctypes.c_char',
+                'bool' : 'ctypes.c_bool',
+                'short' : 'ctypes.c_short',
+                'int32_t' : 'ctypes.c_int32',
+                'uint64_t' : 'ctypes.c_uint64',
+                'void' : ''}
     
     py_line =''
     
     if parameter.type not in c_lookup.keys():
         print "Problem with parameter: " + parameter.name + " of type " + parameter.type
-        return py_line
+        return None
     
     if parameter.direction == 'in'or  parameter.direction == 'in,out':
         if not parameter.array:
@@ -152,6 +174,8 @@ def translate_type(parameter):
         if parameter.array:
             if parameter.type == 'char':
                 py_line += 'c_'+ parameter.name + ' = ctypes.c_char_p(' +parameter.name +')\n'
+            elif parameter.type == 'void':
+                py_line += 'c_'+ parameter.name + ' = ctypes.c_void_p(' +parameter.name +')\n'
             else:
                 py_line += 'tmp_array =' +c_lookup[parameter.type] +'* len('+parameter.name + ')\n'
                 py_line += '\tc_'+ parameter.name + ' = ctypes.byref(tmp_array(*' +parameter.name +'))\n'
@@ -160,7 +184,7 @@ def translate_type(parameter):
         if not parameter.array:
             py_line += 'c_'+parameter.name +' =  ctypes.byref('+ c_lookup[parameter.type] +'(' +parameter.name+'))\n'
         if parameter.array :
-            py_line += 'tmp_array = (' + c_lookup[parameter.type] + '*' +parameter.array_size + ')()\n'
+            py_line += 'tmp_array = (' + c_lookup[parameter.type] + '*' +str(parameter.array_size) + ')()\n'
             py_line += '\tc_' +parameter.name + '= ctypes.byref(tmp_array)\n'
 
         
