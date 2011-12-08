@@ -5,6 +5,7 @@ libamtrack information for code developers
 1.  Basic workflow using autotools
 2.  Workflow using eclipse
 3.  Doxygen comments
+4.  R package compilation
 
 Contact and feedback
 
@@ -91,6 +92,39 @@ int AT_Z_from_element_acronym( const long n,
 		char* acronym[],
 		long Z[] );
 
+
+############################################################################################################################
+4. R package compilation
+############################################################################################################################
+
+The necessary files for producing an R package from libamtrack are found in:
+  /wrapper/R/R_package                     package folder structure and input files, script for compilation, hardcoded wrappers
+                                           and documentation
+  /tools/automatic_wrapper_generation      R scripts for automatic creation of R/C wrappers
+
+To compile a package, navigate to /wrapper/R/R_package:
+
+Select functions that should go to R package and add them to text file NAMESPACE
+
+Run ./create.package.sh 
+Use --help to see options
+
+If your function is not in resulting package, use --noclean option and check output file "collect.doxygen.information.Rout"
+for functions that fails (most likely due to faulty doxygen formatting).
+
+The resulting package is an source tarball. It can be installed by typing
+
+(sudo) R CMD INSTALL <package_name>
+
+
+Windows specific: Under standard Windows, source tarballs cannot be installed. To compile a package, you have to prepare your system and 
+the best way to do so, is to use the RTools by Murdoch and Sutherland: http://www.murdoch-sutherland.com/Rtools/
+If you use the --build option during this process (R CMD INSTALL --build <package_name>) you will get a binary package <package_name>.zip
+that you can then install on any Windows system.
+
+The process is only needed for intermediate packages. Release packages will be uploaded to CRAN, the R repository, where Windows and Mac
+binaries are automatically provided.
+ 
 
 ############################################################################################################################
 Contact and feedback
