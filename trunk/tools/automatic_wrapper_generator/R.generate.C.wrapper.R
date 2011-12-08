@@ -123,13 +123,19 @@ for(i in 1:length(functions)){
 		
 		jj <- which(input & vector & para$length == l)
 		if(length(jj) != 0){
-			body <- c(body, "\n//Allocate space for the input parameter.")
 			for(k in jj){
-				body <- c(body, paste("  ", gsub("const ", "", para$type[k]), "* ",
-						para$name[k],  get.extension(para$type[k]),
-						" = (", gsub("const ", "", para$type[k]), 
-						"*)calloc(", l,  ",sizeof(", gsub("const ", "", para$type[k]),
-						"));", sep = ""))
+##
+	            if(grepl("char", para$type[k]) != TRUE){
+##
+					body <- c(body, "\n//Allocate space for the input parameter.")
+					body <- c(body, paste("  ", gsub("const ", "", para$type[k]), "* ",
+							para$name[k],  get.extension(para$type[k]),
+							" = (", gsub("const ", "", para$type[k]), 
+							"*)calloc(", l,  ",sizeof(", gsub("const ", "", para$type[k]),
+							"));", sep = ""))
+##
+				}
+##
 			}
 			body <- c(body, "")
 			# fill the data into the allocated space
@@ -143,15 +149,15 @@ for(i in 1:length(functions)){
 			  }
 			  body <- c(body, "  }")
 		  }else{
-        body <- c(body, "\n// Copy strings\n")
-  		  for(k in jj){
-				  body <- c(body, paste("\tstrcpy(", 
-                                para$name[k], get.extension(para$type[k]),
-                                ",(*",
-                                para$name[k], 
-                                "));",
-                                sep = ""))
-			  }
+#        body <- c(body, "\n// Copy strings\n")
+#  		  for(k in jj){
+#				  body <- c(body, paste("\tstrcpy(", 
+#                                para$name[k], get.extension(para$type[k]),
+#                                ",(*",
+#                                para$name[k], 
+#                                "));",
+#                                sep = ""))
+#			  }
 		  }
 		}
 		kk <-  which(!input & vector & para$length == l)
@@ -195,8 +201,14 @@ for(i in 1:length(functions)){
 		return.var.txt	<-	""
 	}
 
-	body <- c(body, paste("\n  ", return.var.txt, tmp$name, "( ", para$name[1], 
-				 get.extension(para$type[1]), ",", sep = ""))
+   
+	if(grepl("char", para$type[1], fixed = TRUE) == TRUE & grepl("char*", para$type[1], fixed = TRUE) == FALSE){
+		body <- c(body, paste("\n  ", return.var.txt, tmp$name, "( ", para$name[1], 
+					 get.extension(para$type[1]), "[0],", sep = ""))
+	}else{
+		body <- c(body, paste("\n  ", return.var.txt, tmp$name, "( ", para$name[1], 
+					 get.extension(para$type[1]), ",", sep = ""))
+	}
 	if(tmp$type != "void"){
 		para.max	<-	nrow(para) - 1
 	}else{
@@ -204,13 +216,23 @@ for(i in 1:length(functions)){
 	}
 
 	for(j in 2:(para.max - 1)){
-		if(length(grep("*", para$type[j], fixed = T)) == 0)
-			body <- c(body, paste("\t", para$name[j], get.extension(para$type[j]), ",", sep = ""))
+		if((length(grep("*", para$type[j], fixed = TRUE)) == 0) | (grepl("char*", para$type[j], fixed = TRUE) == TRUE)){
+				if(grepl("char", para$type[j], fixed = TRUE) == TRUE & grepl("char*", para$type[j], fixed = TRUE) == FALSE){
+				    body <- c(body, paste("\t", para$name[j], get.extension(para$type[j]), "[0],", sep = ""))
+				}else{
+				    body <- c(body, paste("\t", para$name[j], get.extension(para$type[j]), ",", sep = ""))
+				}
+			}
 		else
 			body <- c(body, paste("\t&", para$name[j], get.extension(para$type[j]), ",", sep = ""))
 	} 			
-	if(length(grep("*", para$type[para.max], fixed = T)) == 0){
-	      body <- c(body, paste("\t", para$name[para.max], get.extension(para$type[para.max]), ");", sep = ""))
+	
+	if((length(grep("*", para$type[para.max], fixed = TRUE)) == 0) | (grepl("char*", para$type[para.max], fixed = TRUE) == TRUE)){
+	  	if(grepl("char", para$type[para.max], fixed = TRUE) == TRUE & grepl("char*", para$type[para.max], fixed = TRUE) == FALSE){
+	    	body <- c(body, paste("\t", para$name[para.max], get.extension(para$type[para.max]), "[0]);", sep = ""))
+	    }else{
+	    	body <- c(body, paste("\t", para$name[para.max], get.extension(para$type[para.max]), ");", sep = ""))
+	    }
       }else{
 	      body <- c(body, paste("\t&", para$name[para.max], get.extension(para$type[para.max]), ");", sep = ""))
       }

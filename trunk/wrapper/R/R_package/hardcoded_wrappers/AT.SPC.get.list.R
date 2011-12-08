@@ -15,7 +15,7 @@ AT.SPC.get.list <- function(path.to.files, endian = "little"){
                         stringsAsFactors    = FALSE)
 
   for (i in 1:nrow(df)){
-      # i <- 1
+      # i <- 2
       tmp    <- AT.SPC.read(file.name   =  df$file.name[i],
                             flavour     = "C",
                             endian      = endian,

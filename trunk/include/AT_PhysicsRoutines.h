@@ -136,7 +136,7 @@ int AT_beta_from_E( const long  n,
  */
 int AT_E_from_beta(  const long  n,
     const double  beta[],
-    double        E_MeV_u[] );
+    double        E_MeV_u[]);
 
 
 /**
@@ -157,7 +157,7 @@ int AT_E_from_beta(  const long  n,
  */
 int AT_E_from_gamma( const long  n,
     const double  gamma[],
-    double        E_MeV_u[] );
+    double        E_MeV_u[]);
 
 
 
@@ -179,7 +179,7 @@ int AT_E_from_gamma( const long  n,
  */
 int AT_E_MeV_u_from_momentum_MeV_c_u(  const long  n,
     const double  momentum_MeV_c_u[],
-    double        E_MeV_u[] );
+    double        E_MeV_u[]);
 
 /**
  *  Returns relativistic gamma for single value of energy
@@ -199,7 +199,7 @@ int AT_E_MeV_u_from_momentum_MeV_c_u(  const long  n,
  */
 int AT_gamma_from_E( const long  n,
     const double  E_MeV_u[],
-    double        gamma[] );
+    double        gamma[]);
 
 /**
  * Effective charge according to Barkas-Bethe-approximation:
@@ -232,7 +232,7 @@ int AT_gamma_from_E( const long  n,
 int AT_effective_charge_from_beta(  const long  n,
     const double  beta[],
     const long    Z[],
-    double        effective_charge[] );
+    double        effective_charge[]);
 
 
 /**
@@ -252,7 +252,7 @@ void AT_energy_straggling_MeV2_cm2_g(  const long  n,
 	const double E_MeV_u[],
 	const long	 particle_no[],
     const long   material_no,
-    double	     dsE2dz_MeV2_cm2_g[] );
+    double	     dsE2dz_MeV2_cm2_g[]);
 
 /**
  * Get energy spread of an ion beam after traversing
@@ -274,7 +274,7 @@ void AT_energy_straggling_after_slab_E_MeV_u( const long  n,
     const long    material_no,
     const double  slab_thickness_m,
     const double  initial_sigma_E_MeV_u[],
-    double	      sigma_E_MeV_u[] );
+    double	      sigma_E_MeV_u[]);
 
 /**
  * Effective charge according to Barkas-Bethe-approximation
@@ -300,7 +300,7 @@ double AT_effective_charge_from_E_MeV_u_single(  const double E_MeV_u,
 int AT_effective_charge_from_E_MeV_u(  const long  n,
     const double  E_MeV_u[],
     const long    particle_no[],
-    double        effective_charge[] );
+    double        effective_charge[]);
 
 /**
  * Returns mean excitation energy for elements (according to Sternheimer: Phys. Rev. 145, 247 in 1966)
@@ -365,7 +365,7 @@ int AT_mean_excitation_energy_eV_from_Z( const long n,
  */
 int AT_max_E_transfer_MeV(  const long  n,
     const double  E_MeV_u[],
-    double        max_E_transfer_MeV[] );
+    double        max_E_transfer_MeV[]);
 
 /**
  *  Returns relativistic momentum (per nucleon) of particle
@@ -385,7 +385,7 @@ int AT_max_E_transfer_MeV(  const long  n,
  */
 int AT_momentum_MeV_c_u_from_E_MeV_u( const long  n,
     const double  E_MeV_u[],
-    double        momentum_MeV_c[] );
+    double        momentum_MeV_c[]);
 
 /**
  * Returns dose in Gy for particle with given fluence and energy
@@ -423,7 +423,7 @@ void AT_dose_Gy_from_fluence_cm2(  const long  n,
     const double  fluence_cm2[],
     const long    material_no,
     const long    stopping_power_source_no,
-    double        dose_Gy[] );
+    double        dose_Gy[]);
 
 
 /**
@@ -462,7 +462,7 @@ void AT_fluence_cm2_from_dose_Gy(  const long  n,
     const double  D_Gy[],
     const long    material_no,
     const long    stopping_power_source_no,
-    double        fluence_cm2[] );
+    double        fluence_cm2[]);
 
 
 /**
@@ -481,7 +481,7 @@ void AT_beam_par_physical_to_technical(  const long  n,
     const double fluence_cm2[],
     const double sigma_cm[],
     double       N[],
-    double       FWHM_mm[] );
+    double       FWHM_mm[]);
 
 /**
  * Converts technical, accelerator parameters of a symmetric, double lateral Gaussian shape beam, i.e.
@@ -499,7 +499,7 @@ void AT_beam_par_technical_to_physical(  const long  n,
     const double N[],
     const double FWHM_mm[],
     double       fluence_cm2[],
-    double       sigma_cm[] );
+    double       sigma_cm[]);
 
 /**
  * Interparticle distance
@@ -526,7 +526,7 @@ void AT_interparticleDistance_m(       const long   n,
 void AT_inv_interparticleDistance_Gy(  const long   n,
     const double   LET_MeV_cm2_g[],
     const double   distance_m[],
-    double         results_Gy[] );
+    double         results_Gy[]);
 
 
 /**
@@ -595,7 +595,7 @@ void AT_single_impact_dose_Gy( const long n,
     const long    material_no,
     const long    er_model,
     const long    stopping_power_source_no,
-    double        single_impact_dose_Gy[] );
+    double        single_impact_dose_Gy[]);
 
 /**
  * Computes the total dose of a mixed particle field
