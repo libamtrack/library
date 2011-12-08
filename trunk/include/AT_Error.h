@@ -84,7 +84,7 @@ static const AT_error_msg error_messages[6] = {
 /**
  * TODO
  * @param[in] error_no
- * @param[ou] error_message
+ * @param[out] error_message
  * @return
  */
 int AT_get_error_msg( const int error_no,
