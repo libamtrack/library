@@ -323,11 +323,11 @@ double AT_RDD_Cucinotta_Cnorm( const double r_min_m,
 
 /**
  * TODO
- * @param r1_m
- * @param r2_m
- * @param a0_m
- * @param max_electron_range_m
- * @param norm_Gy
+ * @param[in] r1_m
+ * @param[in] r2_m
+ * @param[in] a0_m
+ * @param[in] max_electron_range_m
+ * @param[in] norm_Gy
  * @return
  */
 double AT_RDD_Geiss_average_Gy(  const double r1_m,
@@ -443,16 +443,16 @@ double AT_RDD_Katz_PowerLawER_DSite_Gy( const double r_m,
 
 /**
  * TODO
- * @param r_m
- * @param r_min_m                  minimum radius cut-off distance [m]
- * @param max_electron_range_m     delta electron maximum range rmax [m]
- * @param a0_m                     inner radius a0 (lower integration limit) [m]
- * @param er_model                 delta electron range model code number
- * @param alpha                    parameter of ER model
- * @param density_kg_m3            material density @f$\rho@f$ [kg/m^3]
- * @param LET_J_m                  LET [J/m]
- * @param dEdx_J_m                 dEdx [J/m]
- * @param Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @param[in] r_m
+ * @param[in] r_min_m                  minimum radius cut-off distance [m]
+ * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
+ * @param[in] a0_m                     inner radius a0 (lower integration limit) [m]
+ * @param[in] er_model                 delta electron range model code number
+ * @param[in] alpha                    parameter of ER model
+ * @param[in] density_kg_m3            material density @f$\rho@f$ [kg/m^3]
+ * @param[in] LET_J_m                  LET [J/m]
+ * @param[in] dEdx_J_m                 dEdx [J/m]
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return
  */
  double AT_RDD_KatzSite_Gy( const double r_m,
@@ -469,14 +469,14 @@ double AT_RDD_Katz_PowerLawER_DSite_Gy( const double r_m,
 
 /**
  * TODO
- * @param D_Gy
- * @param r_min_m                  minimum radius cut-off distance [m]
- * @param max_electron_range_m     delta electron maximum range rmax [m]
- * @param a0_m                     radius target [m]
- * @param er_model                 delta electron range model code number
- * @param alpha                    parameter of ER model
- * @param d_max_Gy                 TODO
- * @param Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @param[in] D_Gy
+ * @param[in] r_min_m                  minimum radius cut-off distance [m]
+ * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
+ * @param[in] a0_m                     radius target [m]
+ * @param[in] er_model                 delta electron range model code number
+ * @param[in] alpha                    parameter of ER model
+ * @param[in] d_max_Gy                 TODO
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return
  */
 double AT_inverse_RDD_KatzSite_m( const double D_Gy,

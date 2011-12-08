@@ -55,10 +55,10 @@
 
 /**
  * Test RDD, flat for given range of r.
- * @param r_m
- * @param r_min_m                  minimum radius cut-off distance [m]
- * @param r_max_m
- * @param norm_constant_Gy
+ * @param[in] r_m
+ * @param[in] r_min_m                  minimum radius cut-off distance [m]
+ * @param[in] r_max_m
+ * @param[in] norm_constant_Gy
  * @return
  */
  double AT_RDD_Test_Gy( const double r_m,
@@ -68,8 +68,8 @@
 
 /**
  * TODO
- * @param D_Gy
- * @param r_max_m                  delta electron maximum range rmax [m]
+ * @param[in] D_Gy
+ * @param[in] r_max_m                  delta electron maximum range rmax [m]
  * @return
  */
  double AT_inverse_RDD_Test_m( const double D_Gy,
@@ -79,11 +79,11 @@
 
 /**
  * TODO
- * @param r_m
- * @param r_min_m                  minimum radius cut-off distance [m]
- * @param max_electron_range_m
- * @param a0_m
- * @param norm_constant_Gy
+ * @param[in] r_m
+ * @param[in] r_min_m                  minimum radius cut-off distance [m]
+ * @param[in] max_electron_range_m
+ * @param[in] a0_m
+ * @param[in] norm_constant_Gy
  * @return
  */
  double AT_RDD_Geiss_Gy( const double r_m,
@@ -95,11 +95,11 @@
 
 /**
  * TODO
- * @param D_Gy
- * @param d_min_Gy
- * @param d_max_Gy
- * @param a0_m
- * @param norm_constant_Gy
+ * @param[in] D_Gy
+ * @param[in] d_min_Gy
+ * @param[in] d_max_Gy
+ * @param[in] a0_m
+ * @param[in] norm_constant_Gy
  * @return
  */
  double AT_inverse_RDD_Geiss_m( const double D_Gy,
@@ -151,10 +151,10 @@ static const double AT_Katz_C1_J_m2 = \
 
 /**
  * TODO
- * @param E_MeV_u
- * @param particle_no
- * @param material_no
- * @param er_model
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] material_no
+ * @param[in] er_model
  * @return
  */
  double AT_RDD_Katz_coeff_Gy_general(     const double  E_MeV_u,
@@ -217,12 +217,12 @@ static const double AT_Katz_C1_J_m2 = \
 
 /**
  * Single particle implementation of Katz model RDD
- * @param r_m                      distance r [m]
- * @param r_min_m                  minimum radius cut-off distance [m]
- * @param max_electron_range_m     delta electron maximum range rmax [m]
- * @param er_model                 delta electron range model code number
- * @param alpha                    parameter of ER model
- * @param Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @param[in] r_m                      distance r [m]
+ * @param[in] r_min_m                  minimum radius cut-off distance [m]
+ * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
+ * @param[in] er_model                 delta electron range model code number
+ * @param[in] alpha                    parameter of ER model
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return
  */
  double AT_RDD_KatzPoint_Gy( const double r_m,
@@ -248,10 +248,10 @@ typedef struct {
 
 /**
  * TODO
- * @param D_Gy
- * @param r_min_m                  minimum radius cut-off distance [m]
- * @param max_electron_range_m     delta electron maximum range rmax [m]
- * @param Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @param[in] D_Gy
+ * @param[in] r_min_m                  minimum radius cut-off distance [m]
+ * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return
  */
 double AT_inverse_RDD_KatzPoint_LinearER_m( const double D_Gy,
@@ -262,8 +262,8 @@ double AT_inverse_RDD_KatzPoint_LinearER_m( const double D_Gy,
 
 /**
  * TODO
- * @param r_m
- * @param params
+ * @param[in] r_m
+ * @param[in] params
  * @return
  */
 double AT_inverse_RDD_KatzPoint_PowerLawER_solver_function_Gy( const double r_m ,
@@ -272,12 +272,12 @@ double AT_inverse_RDD_KatzPoint_PowerLawER_solver_function_Gy( const double r_m 
 
 /**
  * Single particle implementation of inverse Katz model RDD
- * @param D_Gy
- * @param r_min_m                  minimum radius cut-off distance [m]
- * @param max_electron_range_m     delta electron maximum range rmax [m]
- * @param er_model                 delta electron range model code number
- * @param alpha                    parameter of ER model
- * @param Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @param[in] D_Gy
+ * @param[in] r_min_m                  minimum radius cut-off distance [m]
+ * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
+ * @param[in] er_model                 delta electron range model code number
+ * @param[in] alpha                    parameter of ER model
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return
  */
 double AT_inverse_RDD_KatzPoint_m( const double D_Gy,
@@ -422,8 +422,8 @@ typedef struct {
 
 /**
  * TODO
- * @param r_m
- * @param params
+ * @param[in] r_m
+ * @param[in] params
  * @return
  */
 double AT_inverse_RDD_Cucinotta_solver_function_Gy( const double r_m ,
@@ -432,13 +432,13 @@ double AT_inverse_RDD_Cucinotta_solver_function_Gy( const double r_m ,
 
 /**
  * TODO
- * @param D_Gy
- * @param r_min_m                  minimum cut-off [m]
- * @param max_electron_range_m     delta electron maximum range rmax [m]
- * @param er_model
- * @param beta                     relative ion speed beta = v/c
- * @param C_norm
- * @param Katz_point_coeff_Gy      precalculated coefficient [Gy]
+ * @param[in] D_Gy
+ * @param[in] r_min_m                  minimum cut-off [m]
+ * @param[in] max_electron_range_m     delta electron maximum range rmax [m]
+ * @param[in] er_model
+ * @param[in] beta                     relative ion speed beta = v/c
+ * @param[in] C_norm
+ * @param[in] Katz_point_coeff_Gy      precalculated coefficient [Gy]
  * @return
  */
 double AT_inverse_RDD_Cucinotta_m( const double D_Gy,

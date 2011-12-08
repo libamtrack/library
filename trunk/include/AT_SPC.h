@@ -131,7 +131,7 @@ void readStruct(      FILE *fp,
  * particle number to another routine such as total dose). Please note that
  * the fluence IS NOT normalized to bin width but given in absolute fluence!
  *
- * @param[in]	    file  	        path and name of spc file to open (incl. suffix)
+ * @param[in]	    filename        path and name of spc file to open (incl. suffix) (array of size FILE_NAME_NCHAR)
  * @param[out]		depth_step		depth step index, zero-based (pointer to array of initial size 1)
  * @param[out]		depth_g_cm2		depth in g/cm2 (pointer to array of initial size 1)
  * @param[out]		E_MeV_u			midpoints of energy bins (pointer to array of initial size 1)
@@ -140,7 +140,7 @@ void readStruct(      FILE *fp,
  * @param[out]      fluence_cm2		fluence values differential in energy and particle number
  * @return                          array sizes after reallocation
  */
-int AT_SPC_read( const char filename[FILE_NAME_NCHAR],
+int AT_SPC_read( const char filename[],
 		int*    depth_step[],
 		double* depth_g_cm2[],
 		double* E_MeV_u[],
@@ -154,10 +154,10 @@ int AT_SPC_read( const char filename[FILE_NAME_NCHAR],
  * This is needed for later memory allocation when reading the
  * actual data.
  *
- * @param[in]	    filename  	    path and name for spc file (incl. extension)
+ * @param[in]	    filename  	    path and name for spc file (incl. extension) (array of size FILE_NAME_NCHAR)
  * @return							total number of bins in spc file
  */
-int AT_SPC_get_size_from_filename( const char filename[FILE_NAME_NCHAR] );
+int AT_SPC_get_size_from_filename( const char filename[] );
 
 
 /**
@@ -180,7 +180,7 @@ int AT_SPC_get_size(  FILE* fp );
  * particle number to another routine such as total dose). Please note that
  * the fluence IS NOT normalized to bin width but given in absolute fluence!
  *
- * @param[in]	    filename  	    path and name for spc file (incl. extension)
+ * @param[in]	    filename  	    path and name for spc file (incl. extension) (array of size FILE_NAME_NCHAR)
  * @param[in]       n               array size, total number of bins expected
  * @see AT_SPC_get_size
  * @param[out]		depth_step		depth step index, zero-based (array of size n)
@@ -191,7 +191,7 @@ int AT_SPC_get_size(  FILE* fp );
  * @param[out]      fluence_cm2		fluence values differential in energy and particle number
  * @return                          number of bins read. Must match the array size n
  */
-int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
+int AT_SPC_read_data_from_filename( const char filename[],
 		int    n,
 		int    depth_step[],
 		double depth_g_cm2[],

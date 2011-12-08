@@ -83,17 +83,18 @@ static const AT_error_msg error_messages[6] = {
 
 /**
  * TODO
- * @param error_no
- * @param error_message
+ * @param[in] error_no
+ * @param[ou] error_message
  * @return
  */
-int AT_get_error_msg(const int error_no, char * error_message);
+int AT_get_error_msg( const int error_no,
+		char* error_message);
 
 
 /**
  * TODO
- * @param E_MeV_u
- * @param purpose_energy_range
+ * @param[in] E_MeV_u
+ * @param[in] purpose_energy_range
  * @return
  */
 int AT_check_energy_range_single_particle( const double E_MeV_u,
@@ -102,9 +103,9 @@ int AT_check_energy_range_single_particle( const double E_MeV_u,
 
 /**
  * TODO
- * @param n
- * @param E_MeV_u
- * @param purpose_energy_range
+ * @param[in] n
+ * @param[in] E_MeV_u (array of size n)
+ * @param[in] purpose_energy_range
  * @return
  */
 int AT_check_energy_range_single_field(   const long n,
@@ -114,16 +115,16 @@ int AT_check_energy_range_single_field(   const long n,
 
 /**
  * TODO
- * @param particle_no
+ * @param[in] particle_no
  * @return
  */
-int AT_check_particle_no_single_particle( const long particle_no);
+int AT_check_particle_no_single_particle( const long particle_no );
 
 
 /**
  * TODO
- * @param n
- * @param particle_no
+ * @param[in] n
+ * @param[in] particle_no (array of size n)
  * @return
  */
 int AT_check_particle_no_single_field(   const long n,

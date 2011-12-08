@@ -259,7 +259,7 @@ static AT_table_of_material_data_struct VARIABLE_IS_NOT_USED AT_Material_Data = 
  * Get index of material in AT_Material_Data for given material_no
  * (currently for example material with number 2 has index 1)
  *
- * @param material_number  material number
+ * @param[in] material_number  material number
  * @return                 material index in AT_Material_Data table
  */
 long AT_material_index_from_material_number( const long material_number );
@@ -426,21 +426,21 @@ void AT_electron_density_m3_from_material_no_multi( const long n,
 /**
  * Returns material's plasma energy needed for Sternheimer
  * computation of density effect in stopping power
- * @param[in]  electron_density_m3  electron density in 1/m3
+ * @param[in]  material_no  material number
  */
-double AT_plasma_energy_J_from_material_no(const long material_no);
+double AT_plasma_energy_J_from_material_no( const long material_no );
 
 // ROUTINES FOR COMPUTING DERIVED PARAMETERS
 /**
  * Computes the electron density from average A and Z
- * @param density_g_cm3      physical density (in g/cm3) of material
- * @param average_Z          average atomic number of material
- * @param average_A          mass number of material
- * @return                   electron density in 1/m3
+ * @param[in] density_g_cm3      physical density (in g/cm3) of material
+ * @param[in] average_Z          average atomic number of material
+ * @param[in] average_A          mass number of material
+ * @return                       electron density in 1/m3
  */
 double AT_electron_density_m3_single( const double density_g_cm3,
     const double average_Z,
-    const double average_A);
+    const double average_A );
 
 /**
  * Returns electron density from average A and Z
@@ -461,7 +461,7 @@ void AT_electron_density_m3_multi( const long n,
  * computation of density effect in stopping power
  * @param[in]  electron_density_m3  electron density in 1/m3
  */
-double AT_plasma_energy_J_single(const double electron_density_m3);
+double AT_plasma_energy_J_single( const double electron_density_m3 );
 
 /**
  * Computes the electron density for a given material composition

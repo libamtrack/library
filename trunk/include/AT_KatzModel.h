@@ -250,6 +250,9 @@ int AT_KatzModel_inactivation_cross_section_m2( const long   n,
 
 /**
  * TODO
+ * @param[in] z2kappabeta2  TODO
+ * @param[in] m             TODO
+ * @return track width
  */
 double AT_KatzModel_KatzExtTarget_ButtsKatz_TrackWidth( const double z2kappabeta2,
 		const double m);
@@ -385,6 +388,9 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector( const long 
 
 /**
  * TODO
+ * @param[in] r_m
+ * @param[in] params
+ * @return TODO
  */
 double AT_P_RDD(                    double  r_m,
     void* params);
@@ -392,6 +398,9 @@ double AT_P_RDD(                    double  r_m,
 
 /**
  * TODO
+ * @param[in] r_m
+ * @param[in] params
+ * @return TODO
  */
 double AT_sI_int(                   double  r_m,
     void* params);
@@ -399,6 +408,9 @@ double AT_sI_int(                   double  r_m,
 
 /**
  * TODO
+ * @param[in] r_m
+ * @param[in] params
+ * @return TODO
  */
 double AT_D_RDD_Gy_int(             double  r_m,
     void* params);

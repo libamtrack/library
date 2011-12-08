@@ -94,8 +94,8 @@ double AT_range_straggling_convolution(  const double z,
  *  S. Greilich, reworked as subroutine for libamtrack.dll, abandoning
  *  f2c.h and libf2c.lib, as well as computation (returning) of derivatives
  *
- *  param[in]   x       argument of Dy(x)
- *  param[in]   y       order of Dy(x)
+ *  @param[in]   x       argument of Dy(x)
+ *  @param[in]   y       order of Dy(x)
  *  return  Dyx
  */
 double AT_Dyx(  double  y,
@@ -107,12 +107,12 @@ double AT_Dyx(  double  y,
  *  see comments for AT_Dyx
  *  The function calls dvsa for small |x| and dvla for large |x|
  *
- *  param[in]   v       order of Dv(x)
- *  param[in]   x       argument of Dv(x)
- *  param[out]  dv      DV(na) = Dn+v0(x) with na = |n|, v0 = v-n, |v0| < 1, n = 0, +/-1, +/-2, ...
- *  param[out]  dp      DP(na) = Dn+v0'(x) with na = |n|, v0 = v-n, |v0| < 1, n = 0, +/-1, +/-2, ...
- *  param[out]  pdf     Dv(x)
- *  param[out]  pdd     Dv'(x)
+ *  @param[in]   v       order of Dv(x)
+ *  @param[in]   x       argument of Dv(x)
+ *  @param[out]  dv      DV(na) = Dn+v0(x) with na = |n|, v0 = v-n, |v0| < 1, n = 0, +/-1, +/-2, ...
+ *  @param[out]  dp      DP(na) = Dn+v0'(x) with na = |n|, v0 = v-n, |v0| < 1, n = 0, +/-1, +/-2, ...
+ *  @param[out]  pdf     Dv(x)
+ *  @param[out]  pdd     Dv'(x)
  */
 int pbdv_(  double* v,
 		double* x,
@@ -125,9 +125,9 @@ int pbdv_(  double* v,
 /**
  * Compute parabolic cylinder function Dv(x) for small argument
  * routines called: GAMMA
- * @param x argument
- * @param va order
- * @param pd output Dv(x)
+ * @param[in]  va order
+ * @param[in]  x argument
+ * @param[out] pd output Dv(x)
  */
 int dvsa_(  double* va,
 		double* x,
@@ -139,9 +139,9 @@ int dvsa_(  double* va,
  * Routines called:
  *             (1) VVLA for computing Vv(x) for large |x|
  *             (2) GAMMA for computing Gamma(x)
- * @param x argument
- * @param va order
- * @param pd output Dv(x)
+ * @param[in]  va order
+ * @param[in]  x argument
+ * @param[out] pd output Dv(x)
  */
 int dvla_(  double* va,
 		double* x,
@@ -153,9 +153,9 @@ int dvla_(  double* va,
  * Routines called:
  *             (1) DVLA for computing Dv(x) for large |x|
  *             (2) GAMMA for computing Gamma(x)
- * @param x argument
- * @param va order
- * @param pv output Vv(x)
+ * @param[in] va order
+ * @param[in] x argument
+ * @param[out] pv output Vv(x)
  */
 int vvla_(  double* va,
 		double* x,
@@ -174,8 +174,8 @@ int vvla_(  double* va,
 
 /**
  * Compute parabolic gamma function
- * @param x argument (x is not equal to 0,-1,-2,...)
- * @param ga output
+ * @param[in]  x argument (x is not equal to 0,-1,-2,...)
+ * @param[out] ga output
  */
 int gamma_( const double* x,
 		double* ga);
@@ -187,14 +187,14 @@ int gamma_( const double* x,
  * @param[in] xx argument for gamma function
  * @return
  */
-double gammln(const double xx);
+double gammln( const double xx );
 
 
 /**
  * Numerical Recipes: standard error handler
  * @param[in] error_text
  */
-void nrerror(const char error_text[]);
+void nrerror( const char error_text[] );
 
 
 // TODO equation solvers implemented in GSL should be tested and should possibly replace numerical recipes algorithms
@@ -202,11 +202,11 @@ void nrerror(const char error_text[]);
  * From Numerical Recipes in C, 2nd ed., 1992:
  * Using Ridders' method, return the root of a function func known to lie between x1 and x2.
  * The root, returned as zriddr, will be refined to an approximate accuracy xacc.
- * @param func
- * @param params
- * @param x1
- * @param x2
- * @param xacc
+ * @param[in] func
+ * @param[in] params
+ * @param[in] x1
+ * @param[in] x2
+ * @param[in] xacc
  * @return
  */
 double zriddr(double (*func)(double,void*),
@@ -251,11 +251,11 @@ void find_elements_int(const long elements[],
 /**
  * finds character elements in a set (n elements) and returns indices - only one (the first) match
  * is reported per element a vector "matches" of length n_elements has to be provided
- * @param elements
- * @param n_elements
- * @param set
- * @param n_set
- * @param matches
+ * @param[in] elements
+ * @param[in] n_elements
+ * @param[in] set
+ * @param[in] n_set
+ * @param[out] matches
  */
 void find_elements_char(const char** elements,
 		const long n_elements,
@@ -267,10 +267,10 @@ void find_elements_char(const char** elements,
 /**
  * finds a character element in a set and returns boolean match vector
  * a vector "matches" of length n_set has to be provided
- * @param element
- * @param set
- * @param n_set
- * @param matches
+ * @param[in] element
+ * @param[in] set
+ * @param[in] n_set
+ * @param[out] matches
  */
 void is_element_char(const char element[],
 		const char* const * set,
@@ -281,10 +281,10 @@ void is_element_char(const char element[],
 /**
  * finds a integer element in a set and returns boolean match vector
  * a vector "matches" of length n_set has to be provided
- * @param element
- * @param set
- * @param n_set
- * @param matches
+ * @param[in] element
+ * @param[in] set
+ * @param[in] n_set
+ * @param[out] matches
  */
 void is_element_int(const long element,
 		const long set[],
@@ -294,8 +294,8 @@ void is_element_int(const long element,
 
 /**
  * Sums all elements in a data array
- * @param  n                number of array elements
- * @param  data             data to sum
+ * @param[in]  n                number of array elements
+ * @param[out]  data            data to sum (array of size n)
  * @return  sum of all elements
  */
  double AT_sum(     const long n,
@@ -317,12 +317,12 @@ void is_element_int(const long element,
  * interpolation on a table: code (w/ adapted indices) from Numerical Recipes, 2rd ed., chapter 3.1
  * added wrapping function interp which allows to chose degree of interpolation polynomial
  * (1 = linear, 2 = quadratic, etc.)
- * @param xx  TODO
- * @param n   TODO
- * @param x   TODO
+ * @param[in] xx  TODO
+ * @param[in] n   TODO
+ * @param[in] x   TODO
  * return j   result
  */
-long locate(const double xx[],
+long locate( const double xx[],
 		const long n,
 		const double x);
 
@@ -330,14 +330,14 @@ long locate(const double xx[],
 /**
  * Locates such index i that following inequation holds:
  * xx[i-1] <= x < x[i]
- * @param xx
- * @param n
- * @param n
- * @param x
- * @param index_in_row
+ * @param[in] xx
+ * @param[in] lowest_index
+ * @param[in] highest_index
+ * @param[in] x
+ * @param[in] index_in_row
  * @return
  */
-long locate_index_in_2d_table(const double xx[][2],
+long locate_index_in_2d_table( const double xx[][2],
 		const long lowest_index,
 		const long highest_index,
 		const double x,
@@ -346,13 +346,13 @@ long locate_index_in_2d_table(const double xx[][2],
 
 /**
  * TODO
- * @param input_data_x
- * @param input_data_y
- * @param length_of_input_data
- * @param intermediate_x
+ * @param[in] input_data_x (array of size length_of_input_data)
+ * @param[in] input_data_y (array of size length_of_input_data)
+ * @param[in] length_of_input_data
+ * @param[in] intermediate_x
  * @return
  */
-double AT_get_interpolated_y_from_input_table(const double input_data_x[],
+double AT_get_interpolated_y_from_input_table( const double input_data_x[],
 		const double input_data_y[],
 		const long   length_of_input_data,
 		const double intermediate_x);
@@ -360,25 +360,25 @@ double AT_get_interpolated_y_from_input_table(const double input_data_x[],
 
 /**
  * TODO
- * @param input_data_xy
- * @param length_of_input_data
- * @param intermediate_x
+ * @param[in] input_data_xy
+ * @param[in] length_of_input_data
+ * @param[in] intermediate_x
  * @return
  */
-double AT_get_interpolated_y_from_input_2d_table(const double input_data_xy[][2],
+double AT_get_interpolated_y_from_input_2d_table( const double input_data_xy[][2],
 		const long length_of_input_data,
 		const double intermediate_x);
 
 
 /**
  *TODO
- * @param input_data_xy
- * @param lowest_index
- * @param highest_index
- * @param intermediate_y
+ * @param[in] input_data_xy
+ * @param[in] lowest_index
+ * @param[in] highest_index
+ * @param[in] intermediate_y
  * @return
  */
-double AT_get_interpolated_x_from_input_2d_table(const double input_data_xy[][2],
+double AT_get_interpolated_x_from_input_2d_table( const double input_data_xy[][2],
 		const long lowest_index,
 		const long highest_index,
 		const double intermediate_y);
@@ -386,14 +386,18 @@ double AT_get_interpolated_x_from_input_2d_table(const double input_data_xy[][2]
 
 /**
  * TODO
- * @param left_x
- * @param left_y
- * @param right_x
- * @param right_y
- * @param intermediate_x
+ * @param[in] left_x
+ * @param[in] left_y
+ * @param[in] right_x
+ * @param[in] right_y
+ * @param[in] intermediate_x
  * @return
  */
-double AT_get_interpolated_y_from_interval(const double left_x, const double left_y, const double right_x, const double right_y, const double intermediate_x);
+double AT_get_interpolated_y_from_interval( const double left_x,
+		const double left_y,
+		const double right_x,
+		const double right_y,
+		const double intermediate_x);
 
 
 // TODO implement linear interpolation on logarithmic scale
