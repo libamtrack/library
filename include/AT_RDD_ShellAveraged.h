@@ -203,11 +203,11 @@ typedef struct {
  *
  *  fS(r) * fL(r) /r;
  * @param[in] r_m                      distance [m]
- * @param[in] params                   vector of parameters (table of doubles)
+ * @param[in] params                   vector of parameters
  * @return integrand  fS(r) * fL(r) /r
  */
 double AT_RDD_Cucinotta_Ddelta_average_integrand_m(  double r_m,
-    void * params);
+    void* params);
 
 
 /**
