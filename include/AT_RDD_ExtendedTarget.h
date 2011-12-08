@@ -75,8 +75,8 @@ typedef struct {
 
 /**
  * TODO
- * @param t_m
- * @param params
+ * @param[in] t_m
+ * @param[in] params
  * @return
  */
 double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy( double t_m,
@@ -85,13 +85,13 @@ double AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy( double t_m,
 
 /**
  * TODO
- * @param r_m
- * @param a0_m
- * @param er_model
- * @param KatzPoint_r_min_m
- * @param max_electron_range_m
- * @param alpha
- * @param Katz_point_coeff_Gy
+ * @param[in] r_m
+ * @param[in] a0_m
+ * @param[in] er_model
+ * @param[in] KatzPoint_r_min_m
+ * @param[in] max_electron_range_m
+ * @param[in] alpha
+ * @param[in] Katz_point_coeff_Gy
  * @return
  */
 double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration( const double  r_m,
@@ -105,14 +105,14 @@ double AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration( const double  r_m,
 
 /**
  * TODO
- * @param r_m
- * @param a0_m
- * @param er_model
- * @param KatzPoint_r_min_m
- * @param max_electron_range_m
- * @param alpha
- * @param Katz_plateau_Gy
- * @param Katz_point_coeff_Gy
+ * @param[in] r_m
+ * @param[in] a0_m
+ * @param[in] er_model
+ * @param[in] KatzPoint_r_min_m
+ * @param[in] max_electron_range_m
+ * @param[in] alpha
+ * @param[in] Katz_plateau_Gy
+ * @param[in] Katz_point_coeff_Gy
  * @return
  */
 double AT_RDD_ExtendedTarget_KatzPoint_Gy( const double  r_m,
@@ -142,8 +142,8 @@ typedef struct {
 
 /**
  * TODO
- * @param r_m
- * @param params
+ * @param[in] r_m
+ * @param[in] params
  * @return
  */
 double AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy( const double r_m ,
@@ -152,14 +152,14 @@ double AT_inverse_RDD_ExtendedTarget_KatzPoint_solver_function_Gy( const double 
 
 /**
  * TODO
- * @param D_Gy
- * @param r_min_m
- * @param max_electron_range_m
- * @param a0_m
- * @param er_model
- * @param alpha
- * @param Katz_plateau_Gy
- * @param Katz_point_coeff_Gy
+ * @param[in] D_Gy
+ * @param[in] r_min_m
+ * @param[in] max_electron_range_m
+ * @param[in] a0_m
+ * @param[in] er_model
+ * @param[in] alpha
+ * @param[in] Katz_plateau_Gy
+ * @param[in] Katz_point_coeff_Gy
  * @return
  */
 double AT_inverse_RDD_ExtendedTarget_KatzPoint_m( const double D_Gy,
@@ -189,8 +189,8 @@ typedef struct {
 
 /**
  * TODO
- * @param t_m
- * @param params
+ * @param[in] t_m
+ * @param[in] params
  * @return
  */
 double AT_RDD_ExtendedTarget_CucinottaPoint_integrand_Gy( double t_m,
@@ -199,13 +199,13 @@ double AT_RDD_ExtendedTarget_CucinottaPoint_integrand_Gy( double t_m,
 
 /**
  * TODO
- * @param r_m
- * @param a0_m
- * @param KatzPoint_r_min_m
- * @param max_electron_range_m
- * @param beta
- * @param Katz_point_coeff_Gy
- * @param C_norm
+ * @param[in] r_m
+ * @param[in] a0_m
+ * @param[in] KatzPoint_r_min_m
+ * @param[in] max_electron_range_m
+ * @param[in] beta
+ * @param[in] Katz_point_coeff_Gy
+ * @param[in] C_norm
  * @return
  */
 double AT_RDD_ExtendedTarget_CucinottaPoint_Gy_by_integration( const double  r_m,
@@ -219,14 +219,14 @@ double AT_RDD_ExtendedTarget_CucinottaPoint_Gy_by_integration( const double  r_m
 
 /**
  * TODO
- * @param r_m
- * @param a0_m
- * @param KatzPoint_r_min_m
- * @param max_electron_range_m
- * @param beta
- * @param Katz_point_coeff_Gy
- * @param C_norm
- * @param Cucinotta_plateau_Gy
+ * @param[in] r_m
+ * @param[in] a0_m
+ * @param[in] KatzPoint_r_min_m
+ * @param[in] max_electron_range_m
+ * @param[in] beta
+ * @param[in] Katz_point_coeff_Gy
+ * @param[in] C_norm
+ * @param[in] Cucinotta_plateau_Gy
  * @return
  */
 double AT_RDD_ExtendedTarget_CucinottaPoint_Gy( const double  r_m,
@@ -256,8 +256,8 @@ typedef struct {
 
 /**
  * TODO
- * @param r_m
- * @param params
+ * @param[in] r_m
+ * @param[in] params
  * @return
  */
 double AT_inverse_RDD_ExtendedTarget_CucinottaPoint_solver_function_Gy( const double r_m ,
@@ -266,14 +266,14 @@ double AT_inverse_RDD_ExtendedTarget_CucinottaPoint_solver_function_Gy( const do
 
 /**
  * TODO
- * @param D_Gy
- * @param a0_m
- * @param KatzPoint_r_min_m
- * @param max_electron_range_m
- * @param beta
- * @param Katz_point_coeff_Gy
- * @param C_norm
- * @param Cucinotta_plateau_Gy
+ * @param[in] D_Gy
+ * @param[in] a0_m
+ * @param[in] KatzPoint_r_min_m
+ * @param[in] max_electron_range_m
+ * @param[in] beta
+ * @param[in] Katz_point_coeff_Gy
+ * @param[in] C_norm
+ * @param[in] Cucinotta_plateau_Gy
  * @return
  */
 double AT_inverse_RDD_ExtendedTarget_CucinottaPoint_m( const double D_Gy,

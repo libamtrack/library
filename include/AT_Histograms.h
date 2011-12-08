@@ -391,15 +391,14 @@ long AT_histo_bin_no(      const long number_of_bins,
  * @see AT_histo_type
  * @param[in] value                value
  * @param[in] weight               weight by which the bin frequency content for 'value' is increase (usually 1)
- * @param[in,out] frequency        vector of frequencies for the histogram
- * length number_of_bins
+ * @param[in,out] frequency        vector of frequencies for the histogram (array of number_of_bins)
  */
 void AT_histo_add_single(      const long number_of_bins,
     const double lowest_left_limit,
     const double step,
     const long histo_type,
-    const double values,
-    const double weights,
+    const double value,
+    const double weight,
     double frequency[]);
 
 /**
@@ -410,11 +409,10 @@ void AT_histo_add_single(      const long number_of_bins,
  * @param[in] step                 step between bin limits
  * @param[in] histo_type           type of histogram (linear or logarithmic)
  * @see AT_histo_type
- * @param[in] number_of_values     number of values given
- * @param[in] values               values (array of size number_of_values)
- * @param[in] weights              weights by which the bin frequency content for 'value' is increase (array of size number_of_values)
- * @param[in,out] frequency        vector of frequencies for the histogram
- * length number_of_bins
+ * @param[in] n_values             number of values given
+ * @param[in] value                values (array of size number_of_values)
+ * @param[in] weight               weights by which the bin frequency content for 'value' is increase (array of size number_of_values)
+ * @param[in,out] frequency        vector of frequencies for the histogram (array of size number_of_bins)
  */
 void AT_histo_add_multi(      const long number_of_bins,
     const double lowest_left_limit,
@@ -427,12 +425,12 @@ void AT_histo_add_multi(      const long number_of_bins,
 
 /**
  * TODO
- * @param number_of_bins
- * @param lowest_left_limit
- * @param step
- * @param histo_type
- * @param frequency
- * @param sum
+ * @param[in] number_of_bins
+ * @param[in] lowest_left_limit
+ * @param[in] step
+ * @param[in] histo_type
+ * @param[in] frequency (array of size number_of_bins)
+ * @param[out] sum
  */
 void AT_histo_sum(	const long number_of_bins,
 		const double lowest_left_limit,
@@ -444,11 +442,11 @@ void AT_histo_sum(	const long number_of_bins,
 
 /**
  * TODO
- * @param number_of_bins
- * @param lowest_left_limit
- * @param step
- * @param histo_type
- * @param frequency
+ * @param[in] number_of_bins
+ * @param[in] lowest_left_limit
+ * @param[in] step
+ * @param[in] histo_type
+ * @param[out] frequency  (array of size number_of_bins)
  */
 void AT_histo_normalize(	const long number_of_bins,
 		const double lowest_left_limit,
@@ -457,9 +455,19 @@ void AT_histo_normalize(	const long number_of_bins,
 		double frequency[]);
 
 /* TRANSIENT ROUTINES FOR TRANSFORMING OLD-STYLE KELLERER HISTOGRAMS INTO NEW STYLE */
-double AT_N2_to_step(double N2);
+/**
+ * TODO
+ * @param[in] N2
+ * @return step
+ */
+double AT_N2_to_step( double N2 );
 
-double AT_step_to_N2(double step);
+/**
+ * TODO
+ * @param[in] step
+ * @return N2
+ */
+double AT_step_to_N2( double step );
 
 
 /* OLD ROUTINES, KEPT FOR COMPATIBILITY */
@@ -518,7 +526,7 @@ double AT_histoOld_get_bin_width(	const long number_of_bins,
  *
  * @param[in] number_of_bins               number of bin in histogram
  * @param[in] bin_centers                  bin centers (array of size number_of_bins)
- * @param[out] bin_width                   resulting bin widths (array of size number_of_bins)
+ * @param[out] bin_widths                  resulting bin widths (array of size number_of_bins)
  */
 void AT_histoOld_get_bin_widths(	const long number_of_bins,
 								const double bin_centers[],

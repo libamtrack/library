@@ -123,9 +123,9 @@ void AT_GSM_dose_grid_from_particles_positions( const long  number_of_field_comp
  *
  * @param[in]   nX                 number of cells on one grid side
  * @param[in]   number_of_bins     number of bins for resulting histogram
- * @param[in]   bin_centers_Gy     midpoints of bins for resulting histogram
+ * @param[in]   bin_centers_Gy     midpoints of bins for resulting histogram (array of size number_of_bins)
  * @param[out]  zero_fraction      zero bin content - frequency of value zero
- * @param[out]  frequency          frequency vector for resulting histogram
+ * @param[out]  frequency          frequency vector for resulting histogram (array of size number_of_bins)
  * @length number_of_bins
  */
 void AT_GSM_local_dose_distrib_from_dose_grid( const long     nX,
@@ -265,28 +265,28 @@ void AT_GSM_local_dose_distrib( const long  number_of_field_components,
 
 /**
  * TODO
- * @param number_of_field_components
- * @param E_MeV_u
- * @param fluence_cm2
- * @param particle_no
- * @param material_no
- * @param rdd_model
- * @param rdd_parameter
- * @param er_model
- * @param stopping_power_source_no
- * @param nX
- * @param pixel_size_m
- * @param N_runs
- * @param N_repetitions
- * @param number_of_bins
- * @param dose_bin_centers_Gy
- * @param dose_bin_width_Gy
- * @param mean_d_check_Gy
- * @param sd_d_check_Gy
- * @param mean_zero_dose_fraction
- * @param sd_zero_dose_fraction
- * @param mean_dose_frequency_Gy
- * @param sd_dose_frequency_Gy
+ * @param[in] number_of_field_components
+ * @param[in] E_MeV_u (array of size number_of_field_components)
+ * @param[in] fluence_cm2 (array of size number_of_field_components)
+ * @param[in] particle_no (array of size number_of_field_components)
+ * @param[in] material_no
+ * @param[in] rdd_model
+ * @param[in] rdd_parameter (array of size 4)
+ * @param[in] er_model
+ * @param[in] stopping_power_source_no
+ * @param[in] nX
+ * @param[in] pixel_size_m
+ * @param[in] N_runs
+ * @param[in] N_repetitions
+ * @param[in] number_of_bins
+ * @param[in] dose_bin_centers_Gy (array of size number_of_bins)
+ * @param[out] dose_bin_width_Gy (array of size number_of_bins)
+ * @param[out] mean_d_check_Gy
+ * @param[out] sd_d_check_Gy
+ * @param[out] mean_zero_dose_fraction
+ * @param[out] sd_zero_dose_fraction
+ * @param[out] mean_dose_frequency_Gy (array of size number_of_bins)
+ * @param[out] sd_dose_frequency_Gy (array of size number_of_bins)
  */
 void AT_GSM_multiple_local_dose_distrib( const long  number_of_field_components,
     const double   	E_MeV_u[],
@@ -304,10 +304,10 @@ void AT_GSM_multiple_local_dose_distrib( const long  number_of_field_components,
     const long     	number_of_bins,
     const double   	dose_bin_centers_Gy[],
     double    		dose_bin_width_Gy[],
-    double *       	mean_d_check_Gy,
-    double *       	sd_d_check_Gy,
-    double *       	mean_zero_dose_fraction,
-    double *       	sd_zero_dose_fraction,
+    double*       	mean_d_check_Gy,
+    double*       	sd_d_check_Gy,
+    double*       	mean_zero_dose_fraction,
+    double*       	sd_zero_dose_fraction,
     double        	mean_dose_frequency_Gy[],
     double        	sd_dose_frequency_Gy[]);
 

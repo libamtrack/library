@@ -114,7 +114,7 @@ static const AT_rdd_data_struct AT_RDD_Data = {
  * Get index of RDD in AT_RDD_Data for given RDD_number
  * (currently for example RDD with number 2 has index 1)
  *
- * @param RDD_number  RDD number
+ * @param[in] RDD_number  RDD number
  * @return            RDD index in AT_RDD_Data table
  */
 long AT_RDD_index_from_RDD_number( const long RDD_number );
@@ -146,7 +146,7 @@ long AT_RDD_number_from_name( const char* RDD_name );
  * @param[in]   RDD_model   radial dose distribution model number
  * return                   number of RDD parameters
  */
-int AT_RDD_number_of_parameters( const long RDD_model);
+int AT_RDD_number_of_parameters( const long RDD_model );
 
 
 //////////////////////////////////////////////////////// GENERAL FUNCTIONS ////////////////////////////////////////////////////////

@@ -53,6 +53,9 @@ typedef struct {
 /**
  * Integrand function for CSDA computation:
  * inverse stopping power as function of energy (all other dependencies [particle, material] in params structre)
+ * @param[in] E_MeV_u
+ * @param[in] params
+ * @return TODO
  */
 double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_int( double  E_MeV_u,
     void*   params);
@@ -71,6 +74,9 @@ typedef struct {
 /**
  * Integrand function for CSDA computation:
  * inverse stopping power as function of energy (all other dependencies [particle, material] in params structre)
+ * @param[in] E_MeV_u
+ * @param[in] params
+ * @return TODO
  */
 double AT_CSDA_range_g_cm_int( double  E_MeV_u,
     void*   params);
@@ -99,7 +105,7 @@ void AT_CSDA_range_Bethe_g_cm2_multi(	const long    n,
  * Computes the CSDA range using the Bethe formula (AT_Stopping_Power_Bethe_Number)
  * according to ICRU49, p.6, Eq. 2.1
  * BUT WITHOUT shell or density, Bloch or Barkas correction!
- * @param[in]  	   E_inital_MeV_u      initial energy of particle per nucleon
+ * @param[in]  	   E_initial_MeV_u      initial energy of particle per nucleon
  * @param[in]  	   E_final_MeV_u       final energy of particle per nucleon
  * @param[in]  	   particle_no  particle index
  * @see          AT_DataParticle.h for definition
@@ -114,6 +120,9 @@ double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_initial_MeV_u,
 
 /**
  * Solver function for CSDA energy after slab
+ * @param[in] E_final_MeV_u
+ * @param[in] params
+ * @return TODO
  */
 double AT_CSDA_range_difference_solver( double  E_final_MeV_u,
 	    void*   params);
@@ -121,6 +130,12 @@ double AT_CSDA_range_difference_solver( double  E_final_MeV_u,
 /**
  * Computes the ion energy after transversing a slab of material using Bethe stopping power
  * and CSDA approach
+ * @param[in]  	   E_initial_MeV_u      initial energy of particle per nucleon (array of size n)
+ * @param[in]  	   particle_no          particle index (array of size n)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]      material_no          material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]      slab_thickness_m     thickness of slab to transversed
  */
 double AT_CSDA_energy_after_slab_E_MeV_u_single( const double E_initial_MeV_u,
 		const long   particle_no,

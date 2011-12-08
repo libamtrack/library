@@ -120,7 +120,7 @@ static const AT_GR_data_struct AT_GR_Data = {
  * Get index of gamma response model in AT_GR_Data for given Gamma_no
  * (currently for example gamma response model with number 2 has index 1)
  *
- * @param Gamma_no  gamma response model number
+ * @param[in] Gamma_no  gamma response model number
  * @return          gamma response model index in AT_GR_Data table
  */
 long AT_Gamma_index_from_material_number( const long Gamma_no );
@@ -142,7 +142,7 @@ void AT_Gamma_name_from_number(  const long Gamma_no,
  * @param[in]   Gamma_no   gamma response model number
  * return                  number of GR parameters
  */
-long AT_Gamma_number_of_parameters( const long Gamma_no);
+long AT_Gamma_number_of_parameters( const long Gamma_no );
 
 
 /**

@@ -93,7 +93,7 @@ int getERName( const int ER_no,
  * @param[in] wmax_keV
  * @return
  */
-double AT_ER_ButtsKatz_range_g_cm2( double wmax_keV);
+double AT_ER_ButtsKatz_range_g_cm2( double wmax_keV );
 
 
 /**
@@ -101,7 +101,7 @@ double AT_ER_ButtsKatz_range_g_cm2( double wmax_keV);
  * @param[in] wmax_keV
  * @return
  */
-double AT_ER_Waligorski_range_g_cm2( double wmax_keV);
+double AT_ER_Waligorski_range_g_cm2( double wmax_keV );
 
 
 /**
@@ -109,7 +109,7 @@ double AT_ER_Waligorski_range_g_cm2( double wmax_keV);
  * @param[in] wmax_keV
  * @return
  */
-double AT_ER_Edmund_range_g_cm2( double wmax_keV);
+double AT_ER_Edmund_range_g_cm2( double wmax_keV );
 
 
 /**
@@ -117,7 +117,7 @@ double AT_ER_Edmund_range_g_cm2( double wmax_keV);
  * @param[in] E_MeV_u
  * @return
  */
-double AT_ER_Geiss_range_g_cm2( double E_MeV_u);
+double AT_ER_Geiss_range_g_cm2( double E_MeV_u );
 
 
 /**
@@ -125,20 +125,20 @@ double AT_ER_Geiss_range_g_cm2( double E_MeV_u);
  * @param[in] E_MeV_u
  * @return
  */
-double AT_ER_Scholz_range_g_cm2( double E_MeV_u);
+double AT_ER_Scholz_range_g_cm2( double E_MeV_u );
 
 
 /**
  *  tau = 2.0 * gsl_pow_2(beta) / (1.0 - gsl_pow_2(beta))
  * (a1_g_cm2)*(((gsl_sf_log(1.0 + a2 * tau))/a2) - ((a3*tau)/(1.0 + a4*pow(tau,a5))) )
  *
- * @param beta
- * @param a1_g_cm2
- * @param a2
- * @param a3
- * @param a4
- * @param a5
- * @return
+ * @param[in] beta
+ * @param[in] a1_g_cm2
+ * @param[in] a2
+ * @param[in] a3
+ * @param[in] a4
+ * @param[in] a5
+ * @return range
  */
 double AT_ER_Tabata_range_g_cm2( double beta,
     double a1_g_cm2,
@@ -156,7 +156,7 @@ double AT_ER_Tabata_range_g_cm2( double beta,
  * @param[in] E_MeV_u  kinetic energy for particle [in MeV/u]
  * @return
  */
-double AT_ER_PowerLaw_alpha( const double E_MeV_u);
+double AT_ER_PowerLaw_alpha( const double E_MeV_u );
 
 
 /**
