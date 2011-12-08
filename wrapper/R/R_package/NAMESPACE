@@ -49,5 +49,6 @@ AT_Rutherford_SDCS
 AT_energy_straggling_MeV2_cm2_g
 AT_energy_straggling_after_slab_E_MeV_u
 AT_atomic_weight_from_Z
+AT_Z_from_element_acronym
 noR: AT_SPC_read_data_from_filename_fast
 noR: AT_SPC_read_header_from_filename_fast

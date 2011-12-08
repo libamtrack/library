@@ -330,7 +330,7 @@ int AT_Z_from_element_acronym_single( const char acronym[] );
 
 /**
  * Returns Z for given elemental symbols
- * @param[in]  n       TODO
+ * @param[in]  n       number of elements
  * @param[in]  acronym elemental symbols (array of size n)
  * @param[out] Z       corresponding Z (array of size n)
  * @return status
@@ -338,7 +338,7 @@ int AT_Z_from_element_acronym_single( const char acronym[] );
 
 int AT_Z_from_element_acronym( const long n,
 		char* acronym[],
-		long Z[] );
+		long Z[]);
 
 
 /**
