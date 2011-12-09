@@ -50,7 +50,7 @@ enum material_no{
   Air				        		= 7,  /**< Air dry (at sea level) */
   Silicon                    		= 8,  /**< Silicon */
   Copper                    		= 9,  /**< Copper */
-  Dummy10                   		= 10, /**< Dummy */
+  Tungsten                   		= 10, /**< Tungsten */
   Gammex_Lung_LN450         		= 11, /**< Gammex tissue surrogate "Lung (LN450)" */
   Gammex_AP6_Adipose_RMI453 		= 12, /**< Gammex tissue surrogate "AP6 Adipose RMI 453" */
   Gammex_BR12_Breast_RMI454 		= 13, /**< Gammex tissue surrogate "BR12 Breast RMI454" */
@@ -167,7 +167,7 @@ static AT_table_of_material_data_struct VARIABLE_IS_NOT_USED AT_Material_Data = 
     // material_no
     {  User_Defined_Material,
        Water_Liquid,      Aluminum_Oxide,   Aluminum,     PMMA,      Alanine,
-       LiF,	              Air,              Silicon,      Copper,    Dummy10,
+       LiF,	              Air,              Silicon,      Copper,    Tungsten,
        Gammex_Lung_LN450,		Gammex_AP6_Adipose_RMI453,	Gammex_BR12_Breast_RMI454,		  Gammex_CT_Solid_Water_RMI451,		Gammex_Water,
 	   Gammex_Muscle_RMI452,	Gammex_LV1_RMI,				Gammex_SR2_Brain, 		   		  Gammex_IB3_Inner_Bone_RMI456,	   	Gammex_B200_Bone_Mineral,
 	   Gammex_CB2_30_CaCO3,		Gammex_CB2_50_CaCO3,	    Gammex_SB3_Cortical_Bone_RMI450},
@@ -182,21 +182,21 @@ static AT_table_of_material_data_struct VARIABLE_IS_NOT_USED AT_Material_Data = 
     // ICRU_ID
     {  0,
        276,               106,              13,           223,       0,
-       185,               104,              14,           29,        0,
+       185,               104,              14,           29,       74,
        0,                 0,              	0,            0,         0,
        0,              	  0,              	0,            0,         0,
        0,                 0,				0},
     // density_g_cm3
     {  0.0,
        1.00,              3.97,             2.6989,       1.188,     1.42,
-       2.64,   			  1.20479E-03,      2.33,         8.96,      0,
+       2.64,   			  1.20479E-03,      2.33,         8.96,      19.3,
        0.450,             0.920,            0.980,        1.015,     1.0,
        1.050,          	  1.039,         	1.049,        1.133,   	 1.145,
        1.340,	          1.560,			1.819},
     // I_eV
     {  0.0,
        75.0,              145.2,            166.0,        74.0,      71.9,
-       10.0,              85.7,             173.0,        322.0,     0,
+       10.0,              85.7,             173.0,        322.0,     727.0,
        71.45,             65.38,            66.81,        68.72,     68.86,
        68.55,             68.64,            62.51,        77.01,     77.09,
        77.48,             87.94,			97.40},
@@ -224,28 +224,28 @@ static AT_table_of_material_data_struct VARIABLE_IS_NOT_USED AT_Material_Data = 
     // average_A
     {  0.0,
        13.0,              21.72,            27.0,         11.556,    12.8088,
-       17.7333,           14.78,            28.085,       63.546,    0,
+       17.7333,           14.78,            28.085,       63.546,    183.84,
        12.33, 		      10.84,		 	11.24,        11.78,     12.98,
        11.76,          	  11.77,          	10.43,        14.45,  	 14.46,
        14.80,             17.62,			19.99},
     // average_Z
     {  0.0,
        7.22,              10.637,           13.0,         6.24,      6.44,
-       8.0,		          7.375,            14.0,         29.0,      0,
+       8.0,		          7.375,            14.0,         29.0,      74.0,
        6.68,     	      5.91,      	    6.10,    	  6.36,      7.22,
        6.36,           	  6.36,           	5.78,         7.70,      7.71,
        7.89,              9.23,				10.34},
     // material_name
     {  "User defined",
        "Water, Liquid",   "Aluminum Oxide", "Aluminum",   "PMMA",    "Alanine",
-       "Lithium Fluoride","Air", "Silicon", "Copper", "Dummy10",
+       "Lithium Fluoride","Air", "Silicon", "Copper", "Tungsten",
        "Gammex Lung LN450", "Gammex AP6 Adipose RMI453", "BR12 Breast RMI454",	"CT Solid Water RMI451", "Gammex Water",
 		"Muscle RMI452" , "LV1 Liver RMI" ,	"SR2 Brain", "IB3 Inner Bone RMI 456", "B200 Bone Mineral",
 		"CB2 30% CaCO3", "CB2 50% CaCO3", "SB3 Cortical Bone RMI 450" },
 	// phase
 	{  phase_undefined,
 	   phase_condensed, phase_condensed, phase_condensed, phase_condensed, phase_condensed,
-	   phase_condensed, phase_gaseous,   phase_condensed, phase_condensed, phase_undefined,
+	   phase_condensed, phase_gaseous,   phase_condensed, phase_condensed, phase_condensed,
 	   phase_condensed, phase_condensed, phase_condensed, phase_condensed, phase_condensed,
 	   phase_condensed, phase_condensed, phase_condensed, phase_condensed, phase_condensed,
 	   phase_condensed, phase_condensed, phase_condensed}
