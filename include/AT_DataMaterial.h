@@ -63,7 +63,8 @@ enum material_no{
   Gammex_B200_Bone_Mineral			= 20, /**< Gammex tissue surrogate "B200 Bone Mineral" */
   Gammex_CB2_30_CaCO3				= 21, /**< Gammex tissue surrogate "CB2 30%  CaCO3" */
   Gammex_CB2_50_CaCO3				= 22, /**< Gammex tissue surrogate "CB2 50%  CaCO3" */
-  Gammex_SB3_Cortical_Bone_RMI450	= 23 /**< Gammex tissue surrogate "SB3 Cortical Bone RMI 450" */
+  Gammex_SB3_Cortical_Bone_RMI450	= 23, /**< Gammex tissue surrogate "SB3 Cortical Bone RMI 450" */
+  Lead                              = 24  /**< Lead */
 };
 
 enum material_phase{
@@ -72,7 +73,7 @@ enum material_phase{
   phase_gaseous			= 2
 };
 
-#define MATERIAL_DATA_N    24
+#define MATERIAL_DATA_N    25
 
 // TODO The next two LET-related structures must be declared here rather than in AT_DataLET.h to avoid circular dependencies
 
@@ -170,7 +171,7 @@ static AT_table_of_material_data_struct VARIABLE_IS_NOT_USED AT_Material_Data = 
        LiF,	              Air,              Silicon,      Copper,    Tungsten,
        Gammex_Lung_LN450,		Gammex_AP6_Adipose_RMI453,	Gammex_BR12_Breast_RMI454,		  Gammex_CT_Solid_Water_RMI451,		Gammex_Water,
 	   Gammex_Muscle_RMI452,	Gammex_LV1_RMI,				Gammex_SR2_Brain, 		   		  Gammex_IB3_Inner_Bone_RMI456,	   	Gammex_B200_Bone_Mineral,
-	   Gammex_CB2_30_CaCO3,		Gammex_CB2_50_CaCO3,	    Gammex_SB3_Cortical_Bone_RMI450},
+	   Gammex_CB2_30_CaCO3,		Gammex_CB2_50_CaCO3,	    Gammex_SB3_Cortical_Bone_RMI450,  Lead},
 
     // ready
     {  false,
@@ -178,77 +179,77 @@ static AT_table_of_material_data_struct VARIABLE_IS_NOT_USED AT_Material_Data = 
        true,			  true,             true,         true,      true,
 	   true,              true,             true,         true,      true,
        true,			  true,             true,         true,      true,
-	   true,              true,				true},
+	   true,              true,				true,         true},
     // ICRU_ID
     {  0,
        276,               106,              13,           223,       0,
        185,               104,              14,           29,       74,
        0,                 0,              	0,            0,         0,
        0,              	  0,              	0,            0,         0,
-       0,                 0,				0},
+       0,                 0,				0,            82},
     // density_g_cm3
     {  0.0,
        1.00,              3.97,             2.6989,       1.188,     1.42,
        2.64,   			  1.20479E-03,      2.33,         8.96,      19.3,
        0.450,             0.920,            0.980,        1.015,     1.0,
        1.050,          	  1.039,         	1.049,        1.133,   	 1.145,
-       1.340,	          1.560,			1.819},
+       1.340,	          1.560,			1.819,        11.35},
     // I_eV
     {  0.0,
        75.0,              145.2,            166.0,        74.0,      71.9,
        10.0,              85.7,             173.0,        322.0,     727.0,
        71.45,             65.38,            66.81,        68.72,     68.86,
        68.55,             68.64,            62.51,        77.01,     77.09,
-       77.48,             87.94,			97.40},
+       77.48,             87.94,			97.40,        823.0},
     // alpha_g_cm2 - TODO No data for LiF, air
     {  0.0,
        0.00231,           0.003058,         0.003266,     0.001988,  0.00216381,
        0.0,	  		      0.0,              0.0,          0.0,       0.0,
        0.0,               0.0,              0.0,          0.0,       0.0,
        0.0,            	  0.0,              0.0,          0.0,       0.0,
-       0.0,               0.0,				0.0},
+       0.0,               0.0,				0.0,          0.0},
 	// p_MeV - TODO No data for LiF, air
     {  0.0,
        1.761,             1.748,            1.745,        1.762,     1.79165987,
        0.0,	  		      0.0,              0.0,          0.0,       0.0,
        0.0,               0.0,              0.0,          0.0,       0.0,
        0.0,            	  0.0,              0.0,          0.0,       0.0,
-       0.0,               0.0,				0.0},
+       0.0,               0.0,				0.0,          0.0},
     // m_g_cm2 - TODO No data processed for nuclear interactions in Alanine, hence set to -100
     {  0.0,
        0.01153,           0.01305,          0.01230,      0.01338,   -100.0,
 	   0.0,	 			  0.0,              0.0,          0.0,       0.0,
        0.0,               0.0,              0.0,          0.0,       0.0,
        0.0,            	  0.0,              0.0,          0.0,       0.0,
-       0.0,               0.0,				0.0},
+       0.0,               0.0,				0.0,          0.0},
     // average_A
     {  0.0,
        13.0,              21.72,            27.0,         11.556,    12.8088,
        17.7333,           14.78,            28.085,       63.546,    183.84,
        12.33, 		      10.84,		 	11.24,        11.78,     12.98,
        11.76,          	  11.77,          	10.43,        14.45,  	 14.46,
-       14.80,             17.62,			19.99},
+       14.80,             17.62,			19.99,        207.2},
     // average_Z
     {  0.0,
        7.22,              10.637,           13.0,         6.24,      6.44,
        8.0,		          7.375,            14.0,         29.0,      74.0,
        6.68,     	      5.91,      	    6.10,    	  6.36,      7.22,
        6.36,           	  6.36,           	5.78,         7.70,      7.71,
-       7.89,              9.23,				10.34},
+       7.89,              9.23,				10.34,        82.0},
     // material_name
     {  "User defined",
        "Water, Liquid",   "Aluminum Oxide", "Aluminum",   "PMMA",    "Alanine",
        "Lithium Fluoride","Air", "Silicon", "Copper", "Tungsten",
        "Gammex Lung LN450", "Gammex AP6 Adipose RMI453", "BR12 Breast RMI454",	"CT Solid Water RMI451", "Gammex Water",
 		"Muscle RMI452" , "LV1 Liver RMI" ,	"SR2 Brain", "IB3 Inner Bone RMI 456", "B200 Bone Mineral",
-		"CB2 30% CaCO3", "CB2 50% CaCO3", "SB3 Cortical Bone RMI 450" },
+		"CB2 30% CaCO3", "CB2 50% CaCO3", "SB3 Cortical Bone RMI 450", "Lead" },
 	// phase
 	{  phase_undefined,
 	   phase_condensed, phase_condensed, phase_condensed, phase_condensed, phase_condensed,
 	   phase_condensed, phase_gaseous,   phase_condensed, phase_condensed, phase_condensed,
 	   phase_condensed, phase_condensed, phase_condensed, phase_condensed, phase_condensed,
 	   phase_condensed, phase_condensed, phase_condensed, phase_condensed, phase_condensed,
-	   phase_condensed, phase_condensed, phase_condensed}
+	   phase_condensed, phase_condensed, phase_condensed, phase_condensed}
 };
 
 /* Cucinnotta calculated average A for water as 14.3, but it seems that it is 13.0 (Leszek) *
