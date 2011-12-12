@@ -6,6 +6,7 @@ libamtrack information for code developers
 2.  Workflow using eclipse
 3.  Doxygen comments
 4.  R package compilation
+5.  Python wrappers
 
 Contact and feedback
 
@@ -126,6 +127,20 @@ that you can then install on any Windows system.
 The process is only needed for intermediate packages. Release packages will be uploaded to CRAN, the R repository, where Windows and Mac
 binaries are automatically provided.
  
+
+############################################################################################################################
+5. Python wrappers
+############################################################################################################################
+
+i.   make "wrapper/Python/pyamtrack/NAMESPACE" file completely empty this will cause wrappers will be created for (almost) all functions
+
+ii.  run "python generate_Py_wrapper.py" to generate file "pyamtrack.py". The script will complain, but ignore it - some functions are
+impossible to translate yet.
+
+iii. copy compiled library to the same directory as "pyamtrack.py": cp ../../../src/.libs/libamtrack.so.0.0.0 libamtrack.so
+
+iv.  run "python pyamtrack_example.py" to check sample file.
+
 
 ############################################################################################################################
 Contact and feedback
