@@ -73,7 +73,8 @@ R and Python wrappers. It is essential for them to have it very carefully format
 - The size of array HAS to be provided in brackets with key word "array of size". It should not be provided in function 
   declaration in the header file. Both other parameters passed to the function (see example, "n"), numbers and macro
   expansions can be used as size, also in mixed or multiple form. 
-- A whitespace is needed after the first and before last bracket in the function declaration.
+- A whitespace is needed after the first and before last bracket in the function declaration (TODO: Really? When last
+  variable is an array "[]", the example below fails until the whitespace is removed for the closing bracket).
 - In the function declaration there is one parameter per line, with the first parameter in the same line as function name.
 - Please refrain from using "/", ";" in the description
 
