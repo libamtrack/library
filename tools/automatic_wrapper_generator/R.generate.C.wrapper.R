@@ -280,7 +280,9 @@ for(i in 1:length(functions)){
 	kk <- which(vector)	
 	if(length(kk) > 0){
 		for(j in kk){
-			body <- c(body, paste("  free(", para$name[j], get.extension(para$type[j]), ");", sep = ""))			
+			if(grepl("char", para$type[j], fixed = TRUE) == FALSE){
+				body <- c(body, paste("  free(", para$name[j], get.extension(para$type[j]), ");", sep = ""))
+			}			
 		}
 	}
 
