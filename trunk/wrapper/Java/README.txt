@@ -81,12 +81,12 @@ Both make_jar scripts do the same job, just with slightly different parameters o
 
 
 First - please read SWIG tutorial : http://www.swig.org/tutorial.html then please 
-inspect file wrapper/example.i
+inspect file example.i
 This file includes header files from libamtrack C library and contains list
 of function that we will use in GUI.
 
 Command 
-swig -java -o c-swig-src/$SWIGWRAPPER.c -outdir java-swig-src ../example.i
+swig -java -o c-swig-src/$SWIGWRAPPER.c -outdir java-swig-src example.i
 will create interface files which consist of two sets:
 
 A) C interface (*.c) which will be saved into c-swig-src directory and will be later compiled
@@ -176,9 +176,9 @@ In the second line of that file you will find:
 
 Instead of XX you need to put URL. If you test how the applet works
 locally, please put there local URL, like:
-file:///home/grzanka/workspace/AmTrack_reorgan/wrapper/Java/webstart
+file:///home/libamtrack/workspace/AmTrack_reorgan/wrapper/Java/webstart
 if you test it on the webserver, put there usuall URL:
-http://braciszek.eu/libamtrack
+http://libamtrack.dkfz.org/libamtrack
 
 This URL should point to location where JAR file is stored.
 

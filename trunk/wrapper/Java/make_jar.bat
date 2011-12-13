@@ -17,7 +17,7 @@ set gccexe="C:\Program Files\MinGW\bin\gcc.exe"
 mkdir java-swig-src
 mkdir c-swig-src
 set swigwrapper=example_wrap
-%swigexe% -java -o c-swig-src\%swigwrapper%.c -outdir java-swig-src ..\example.i
+%swigexe% -java -o c-swig-src\%swigwrapper%.c -outdir java-swig-src example.i
 
 ::  Compile libamtrack C library + SWIG C wrapper
 

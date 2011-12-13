@@ -16,7 +16,7 @@ GCCEXE=gcc
 mkdir java-swig-src
 mkdir c-swig-src
 SWIGWRAPPER=example_wrap
-$SWIGEXE -java -o c-swig-src/$SWIGWRAPPER.c -outdir java-swig-src ../example.i
+$SWIGEXE -java -o c-swig-src/$SWIGWRAPPER.c -outdir java-swig-src example.i
 
 # Compile libamtrack C library + SWIG C wrapper
 
@@ -27,7 +27,7 @@ for a in ../../src/*.c
 do
  $GCCEXE -I.. -I../../include -I../../include/sys -I$JAVAINCLUDE -I$SYSINCLUDE -I$GSLINCLUDE -O3 -fmessage-length=0 -fPIC -arch i386 -c $a -oobj/`basename $a .c`.o
 done
-$GCCEXE -I.. -I../../include -I$JAVAINCLUDE -I$SYSINCLUDE -I$GSLINCLUDE -fPIC -arch i386 -c ../example.c -oobj/example.o
+$GCCEXE -I.. -I../../include -I$JAVAINCLUDE -I$SYSINCLUDE -I$GSLINCLUDE -fPIC -arch i386 -c example.c -oobj/example.o
 $GCCEXE -DDUPA -I.. -I../../include -I$JAVAINCLUDE -I$SYSINCLUDE -fPIC -arch i386 -c c-swig-src/$SWIGWRAPPER.c -oobj/$SWIGWRAPPER.o
 
 # Linking
