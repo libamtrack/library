@@ -352,7 +352,7 @@ int AT_Z_from_element_acronym(const long n, char* acronym[], long Z[]){
 }
 
 
-double AT_A_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] ){
+double AT_atomic_weight_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] ){
 
 	long match;
 
@@ -368,12 +368,12 @@ double AT_A_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR]
 }
 
 
-int AT_A_from_element_acronym(const long n, char* acronym[], double A[]){
+int AT_atomic_weight_from_element_acronym(const long n, char* acronym[], double A[]){
 
 	long i;
 
 	for(i = 0; i < n; i++){
-		A[i] = AT_A_from_element_acronym_single( acronym[i] );
+		A[i] = AT_atomic_weight_from_element_acronym_single( acronym[i] );
 		if (A[i] < 0)
 			return AT_Particle_Not_Defined;
 	}
@@ -381,7 +381,7 @@ int AT_A_from_element_acronym(const long n, char* acronym[], double A[]){
 }
 
 
-double AT_density_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] ){
+double AT_density_g_cm3_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] ){
 
 	long match;
 
@@ -397,12 +397,12 @@ double AT_density_from_element_acronym_single( const char acronym[PARTICLE_NAME_
 
 }
 
-int AT_density_from_element_acronym(const long n, char* acronym[], double density[]){
+int AT_density_g_cm3_from_element_acronym(const long n, char* acronym[], double density[]){
 
 	long i;
 
 		for(i = 0; i < n; i++){
-			density[i] = AT_density_from_element_acronym_single( acronym[i] );
+			density[i] = AT_density_g_cm3_from_element_acronym_single( acronym[i] );
 			if (density[i] < 0)
 				return AT_Particle_Not_Defined;
 		}

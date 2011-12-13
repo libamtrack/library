@@ -325,7 +325,7 @@ int AT_particle_no_from_particle_name( const long  n,
  * @return corresponding Z
  */
 
-int AT_Z_from_element_acronym_single( const char acronym[] );
+int AT_Z_from_element_acronym_single( const char acronym[]);
 
 
 /**
@@ -346,19 +346,19 @@ int AT_Z_from_element_acronym( const long n,
  * @param[in]  acronym   elemental symbols (array of size PARTICLE_NAME_NCHAR)
  * @return corresponding atomic weight
  */
-double AT_A_from_element_acronym_single( const char acronym[] );
+double AT_atomic_weight_from_element_acronym_single( const char acronym[]);
 
 
 /**
  * Returns A for given elemental symbols
- * @param[in]  n        TODO
+ * @param[in]  n        number of elements in array
  * @param[in]  acronym  elemental symbols (array of size n)
  * @param[out] A        corresponding A (array of size n)
  * @return status
  */
-int AT_A_from_element_acronym( const long n,
+int AT_atomic_weight_from_element_acronym( const long n,
 		char* acronym[],
-		double A[] );
+		double A[]);
 
 
 /**
@@ -366,19 +366,19 @@ int AT_A_from_element_acronym( const long n,
  * @param[in]  acronym   elemental symbols (array of size PARTICLE_NAME_NCHAR)
  * @return elemental density in g/cm3
  */
-double AT_density_from_element_acronym_single( const char acronym[] );
+double AT_density_g_cm3_from_element_acronym_single( const char acronym[]);
 
 
 /**
  * Returns the elemental densities in g/cm3 for given elemental symbols
- * @param[in]  n        TODO
+ * @param[in]  n        number of elements in array
  * @param[in]  acronym  elemental symbols (array of size n)
  * @param[out] density  corresponding elemental densities in g/cm3 (array of size n)
  * @return status
  */
-int AT_density_from_element_acronym( const long n,
+int AT_density_g_cm3_from_element_acronym( const long n,
 		char* acronym[],
-		double density[] );
+		double density[]);
 
 
 /**
@@ -386,18 +386,18 @@ int AT_density_from_element_acronym( const long n,
  * @param[in]  acronym  elemental symbol (array of size PARTICLE_NAME_NCHAR)
  * @return corresponding I value in eV
  */
-double AT_I_eV_from_element_acronym_single( const char acronym[] );
+double AT_I_eV_from_element_acronym_single( const char acronym[]);
 
 
 /**
  * Returns the I values in eV for given elemental symbols
- * @param[in]  n        TODO
+ * @param[in]  n        number of elements in array
  * @param[in]  acronym  elemental symbols (array of size n)
  * @param[out] I        corresponding I values in eV (array of size n)
  * @return status
  */
 int AT_I_eV_from_element_acronym( const long n,
 		char* acronym[],
-		double I[] );
+		double I[]);
 
 #endif /* AT_DATAPARTICLE_H_ */
