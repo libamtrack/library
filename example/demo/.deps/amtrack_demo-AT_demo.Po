@@ -1,4 +1,4 @@
-amtrack_test-AT_test.o: AT_test.c /usr/include/stdio.h \
+amtrack_demo-AT_demo.o: AT_demo.c /usr/include/stdio.h \
  /usr/include/features.h /usr/include/x86_64-linux-gnu/bits/predefs.h \
  /usr/include/x86_64-linux-gnu/sys/cdefs.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
@@ -24,7 +24,8 @@ amtrack_test-AT_test.o: AT_test.c /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/time.h \
  /usr/include/x86_64-linux-gnu/sys/sysmacros.h \
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h /usr/include/alloca.h \
- /usr/include/x86_64-linux-gnu/bits/stdlib.h /usr/include/math.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h \
+ ../../include/AT_PhysicsRoutines.h /usr/include/math.h \
  /usr/include/x86_64-linux-gnu/bits/huge_val.h \
  /usr/include/x86_64-linux-gnu/bits/huge_valf.h \
  /usr/include/x86_64-linux-gnu/bits/huge_vall.h \
@@ -37,8 +38,25 @@ amtrack_test-AT_test.o: AT_test.c /usr/include/stdio.h \
  /usr/include/string.h /usr/include/xlocale.h \
  /usr/include/x86_64-linux-gnu/bits/string.h \
  /usr/include/x86_64-linux-gnu/bits/string2.h \
- /usr/include/x86_64-linux-gnu/bits/string3.h /usr/include/assert.h \
- /usr/include/malloc.h ../../config.h ../../include/AT.h
+ /usr/include/x86_64-linux-gnu/bits/string3.h \
+ ../../include/AT_Constants.h ../../include/AT_DataMaterial.h \
+ /usr/include/assert.h ../../include/AT_Error.h \
+ ../../include/AT_DataParticle.h ../../include/AT_NumericalRoutines.h \
+ /usr/include/malloc.h /usr/include/gsl/gsl_math.h \
+ /usr/include/gsl/gsl_sys.h /usr/include/gsl/gsl_inline.h \
+ /usr/include/gsl/gsl_machine.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed/limits.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed/syslimits.h \
+ /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+ /usr/include/linux/limits.h \
+ /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.6.1/include/float.h \
+ /usr/include/gsl/gsl_precision.h /usr/include/gsl/gsl_types.h \
+ /usr/include/gsl/gsl_nan.h /usr/include/gsl/gsl_pow_int.h \
+ /usr/include/gsl/gsl_minmax.h ../../include/AT_DataStoppingPower.h \
+ ../../include/AT_PhysicsRoutines.h ../../include/AT_ElectronRange.h \
+ /usr/include/gsl/gsl_sf_log.h /usr/include/gsl/gsl_sf_result.h
 
 /usr/include/stdio.h:
 
@@ -108,6 +126,8 @@ amtrack_test-AT_test.o: AT_test.c /usr/include/stdio.h \
 
 /usr/include/x86_64-linux-gnu/bits/stdlib.h:
 
+../../include/AT_PhysicsRoutines.h:
+
 /usr/include/math.h:
 
 /usr/include/x86_64-linux-gnu/bits/huge_val.h:
@@ -138,10 +158,60 @@ amtrack_test-AT_test.o: AT_test.c /usr/include/stdio.h \
 
 /usr/include/x86_64-linux-gnu/bits/string3.h:
 
+../../include/AT_Constants.h:
+
+../../include/AT_DataMaterial.h:
+
 /usr/include/assert.h:
+
+../../include/AT_Error.h:
+
+../../include/AT_DataParticle.h:
+
+../../include/AT_NumericalRoutines.h:
 
 /usr/include/malloc.h:
 
-../../config.h:
+/usr/include/gsl/gsl_math.h:
 
-../../include/AT.h:
+/usr/include/gsl/gsl_sys.h:
+
+/usr/include/gsl/gsl_inline.h:
+
+/usr/include/gsl/gsl_machine.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed/limits.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed/syslimits.h:
+
+/usr/include/limits.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/local_lim.h:
+
+/usr/include/linux/limits.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include/float.h:
+
+/usr/include/gsl/gsl_precision.h:
+
+/usr/include/gsl/gsl_types.h:
+
+/usr/include/gsl/gsl_nan.h:
+
+/usr/include/gsl/gsl_pow_int.h:
+
+/usr/include/gsl/gsl_minmax.h:
+
+../../include/AT_DataStoppingPower.h:
+
+../../include/AT_PhysicsRoutines.h:
+
+../../include/AT_ElectronRange.h:
+
+/usr/include/gsl/gsl_sf_log.h:
+
+/usr/include/gsl/gsl_sf_result.h:
