@@ -24,8 +24,8 @@ set swigwrapper=example_wrap
 mkdir obj
 del obj\%swigwrapper%.o
 :: Compilation
-%gccexe% -DDUPA -I.. -I..\..\include -I%javaincludeB% -I%javaincludeA% -I%gslinclude% -O3 -fno-strict-aliasing -c c-swig-src\%swigwrapper%.c -oobj\%swigwrapper%.o
-%gccexe% -I.. -I..\..\include -I%javaincludeB% -I%javaincludeA% -I%gslinclude% -O3 -fno-strict-aliasing -c ../example.c -oobj\example.o
+%gccexe% -DSWIG -I. -I..\..\include -I%javaincludeB% -I%javaincludeA% -I%gslinclude% -O3 -fno-strict-aliasing -c c-swig-src\%swigwrapper%.c -oobj\%swigwrapper%.o
+%gccexe% -I. -I..\..\include -I%javaincludeB% -I%javaincludeA% -I%gslinclude% -O3 -fno-strict-aliasing -c example.c -oobj\example.o
 for /f %%a IN ('dir /b ..\..\src\*.c') do %gccexe% -DDUPA -I.. -I..\..\include -I%javaincludeB% -I%javaincludeA% -I%gslinclude% -O3 -fno-strict-aliasing -c ..\..\src\%%a -oobj\%%~na.o
 :: Linking
 %gccexe% -shared -L%gsllib% -mno-cygwin -Wl,--add-stdcall-alias -oexample.dll obj\*.o -lgsl -lgslcblas -lm 
@@ -48,7 +48,7 @@ del bin\*.class
 
 ::  Sign JAR file
 
-:: keystore created using command "keystore -keygen -keystore myk -alias jdc", password "libamtrack"
+:: keystore created using command "keytool -genkey -keystore myk -alias jdc", password "libamtrack"
 
 %jarsignerexe% -keystore myk -signedjar examplesigned-Windows.jar example.jar jdc
 move examplesigned-Windows.jar webstart\

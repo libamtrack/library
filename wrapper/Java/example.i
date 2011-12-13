@@ -5,7 +5,7 @@
  %{
  /* Put header files here or function declarations like below */
  #include "example.h"
- #include "AmTrack.h" 
+ #include "AT.h" 
  #include "AT_ElectronRange.h"
  %}
  

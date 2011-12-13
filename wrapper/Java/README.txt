@@ -156,7 +156,7 @@ needs to be signed. I've prepared self-signed certificate, stored
 in myk file. During signing process it will ask for password, which
 is "libamtrack". If you want to generate your own certificate,
 please use command:
-keystore -keygen -keystore myk -alias jdc
+keytool -genkey -keystore myk -alias jdc
 
 Signed JAR file will be save as webstart/examplesigned-Linux.jar or
 webstart/examplesigned-Windows.jar 
