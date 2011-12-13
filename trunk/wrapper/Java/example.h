@@ -1,7 +1,7 @@
 /* File : example.h */
 
-#ifndef DUPA
-#define DUPA
+#ifndef SWIG
+#define SWIG
 
 #include <time.h>
 #include <math.h>

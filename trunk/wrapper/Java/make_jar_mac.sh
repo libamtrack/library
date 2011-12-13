@@ -25,10 +25,10 @@ rm obj/$SWIGWRAPPER.o
 # Compilation
 for a in ../../src/*.c
 do
- $GCCEXE -I.. -I../../include -I../../include/sys -I$JAVAINCLUDE -I$SYSINCLUDE -I$GSLINCLUDE -O3 -fmessage-length=0 -fPIC -arch i386 -c $a -oobj/`basename $a .c`.o
+ $GCCEXE -I. -I../../include -I../../include/sys -I$JAVAINCLUDE -I$SYSINCLUDE -I$GSLINCLUDE -O3 -fmessage-length=0 -fPIC -arch i386 -c $a -oobj/`basename $a .c`.o
 done
-$GCCEXE -I.. -I../../include -I$JAVAINCLUDE -I$SYSINCLUDE -I$GSLINCLUDE -fPIC -arch i386 -c example.c -oobj/example.o
-$GCCEXE -DDUPA -I.. -I../../include -I$JAVAINCLUDE -I$SYSINCLUDE -fPIC -arch i386 -c c-swig-src/$SWIGWRAPPER.c -oobj/$SWIGWRAPPER.o
+$GCCEXE -I. -I../../include -I$JAVAINCLUDE -I$SYSINCLUDE -I$GSLINCLUDE -fPIC -arch i386 -c example.c -oobj/example.o
+$GCCEXE -DSWIG -I. -I../../include -I$JAVAINCLUDE -I$SYSINCLUDE -fPIC -arch i386 -c c-swig-src/$SWIGWRAPPER.c -oobj/$SWIGWRAPPER.o
 
 # Linking
 $GCCEXE -shared -arch i386 -L$GSLLIB -o libexample.dylib obj/*.o -lgsl -lgslcblas -lm 
@@ -50,7 +50,7 @@ rm libexample.dylib libgsl.dylib libgslcblas.dylib
 rm bin/*.class
 
 # Sign JAR file
-# keystore created using command "keystore -keygen -keystore myk -alias jdc", password "libamtrack"
+# keystore created using command "keytool -genkey -keystore myk -alias jdc", password "libamtrack"
 
 $JARSIGNEREXE -keystore myk -signedjar examplesigned-Mac.jar example.jar jdc
 mv examplesigned-Mac.jar webstart/
