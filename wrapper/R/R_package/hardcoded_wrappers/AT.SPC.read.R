@@ -197,17 +197,31 @@ AT.SPC.read <- function( file.name,
 			 df <- 0
 			 E.MeV.u <- numeric(1)
 			 peak.position.g.cm2 <- numeric(1)
+			 particle.no <- integer(1)
+			 material.no <- integer(1)
 			 normalization <- numeric(1)
 			 returnValue <- integer(1)
 			 res                 <- .C( "AT_SPC_read_header_from_filename_fast_R",
 										file.name          = as.character(file.name),
 										E.MeV.u            = as.single(E.MeV.u),
 										peak.position.g.cm2 = as.single(peak.position.g.cm2),
+										particle.no        = as.integer(particle.no),
+										material.no        = as.integer(material.no),
 										normalization      = as.single(normalization),
 										returnValue        = as.integer(returnValue),
 										PACKAGE            = "libamtrack")
 			beam.energy.MeV.u <- res$E.MeV.u
 			peak.position.g.cm2 <- res$peak.position.g.cm2
+
+            # TODO: projectile/material is hardcoded, replace by more flexible code
+            projectile <- "12C"
+            target.material <- "H2O"
+            n.depths.steps <- numeric(1)
+			 res                 <- .C( "AT_SPC_get_number_of_bins_from_filename_fast",
+										file.name          = as.character(file.name),
+										n.depths.steps     = as.integer(n.depths.steps),
+										PACKAGE            = "libamtrack")
+            n.depths.steps <- res$n.depths.steps
 
 		}
 	}
