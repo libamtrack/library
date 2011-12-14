@@ -55,3 +55,4 @@ AT_density_g_cm3_from_element_acronym
 AT_I_eV_from_element_acronym
 noR: AT_SPC_read_data_from_filename_fast
 noR: AT_SPC_read_header_from_filename_fast
+noR: AT_SPC_get_number_of_bins_from_filename_fast
