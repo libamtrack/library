@@ -39,7 +39,7 @@ def main():
     print 'Harvesting function definitions in header files'
     c_functions = py_parser.harvest(desired_func)
     print 'Writing \'pyamtrack.py\' wrapper file'
-    py_parser.write_func_in_py(c_functions, 'pyamtrack.py', './libamtrack.so')
+    py_parser.write_func_in_py(c_functions, 'pyamtrack.py', 'libamtrack.so')
     print 'Done'
     
     
