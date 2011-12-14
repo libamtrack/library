@@ -74,19 +74,23 @@ for(header.file.name in header.file.names){
 
      # Read the current header file (separated into 'words' (=chunks of strings that were separated by whitespaces, line
      # break etc. All whitespaces are removed during read in
-     header.file.text                 <- scan(header.file.name, what = "character", strip.white = T)
+     cat("\nReading header file",
+         header.file.name,
+         "...\n")
+     header.file.text                 <- invisible( scan(header.file.name, what = "character", strip.white = T))
      
      # Read the current header file (in lines)
-     raw.header.file.text             <- scan(header.file.name, what = "character", sep = "\n")
+     raw.header.file.text             <- invisible( scan(header.file.name, what = "character", sep = "\n"))
 
      # Read the corresponding source file (in lines)
      source.file.name                 <- gsub(".h$", ".c", header.file.name)
-     source.file.text                 <- scan( paste("../src/", source.file.name, sep = ""),
-                                               what = "character", 
-                                               sep = "\n", 
-                                               blank.lines.skip = FALSE)
-
-     print(paste("Read: ", header.file.name))
+     cat("Reading header file",
+         source.file.name,
+         "...\n")
+     source.file.text                 <- invisible( scan( paste("../src/", source.file.name, sep = ""),
+                                                          what = "character", 
+                                                          sep = "\n", 
+                                                          blank.lines.skip = FALSE))
 
      # Find the start of doxygen comments ("/**") and the end of a declaration (");")
      # They should embrase a function declaration (but also others, like enumerators etc.)
@@ -169,7 +173,8 @@ for(header.file.name in header.file.names){
 
      # Loop through all functions found
      for (i in 1:length(pos.start.doxygen.comment)){
-          # DEBUG: i <- 2
+          # DEBUG: i <- 12
+       
           current.function    <- NULL
           
           # Indices for reduced.header.file.text that hold comment and declaration
@@ -180,7 +185,17 @@ for(header.file.name in header.file.names){
 
           # Extract the function name (which is on second position of the declaration, opening bracket has to be removed
           name                <- gsub("(", "", reduced.header.file.text[idx.declaration[2]], fixed = T)
-          print(paste("Processing:", name))
+          cat("Processing function no. ",
+              i,
+              " (",
+              name,
+              ") from header file no.",
+              match(header.file.name, header.file.names),
+              " (",
+              header.file.name,
+              ")...",
+              sep = "")
+
 
           # Check if name is in namespace otherwise skip
           if(name %in% namespace){
@@ -309,7 +324,7 @@ for(header.file.name in header.file.names){
                pos.declaration.line.breaks        <- grep(",", raw.declaration.text, fixed = T)
 
                # remove additional comments in the code "//...."
-               if(length(pos.declaration.line.breaks) > 0){
+               if(length(pos.declaration.line.breaks) >= 0){
                     to.remove                          <- grep("//", raw.declaration.text, fixed = T)
                     if(length(to.remove) > 0){
                          for(k in 1:length(to.remove)){
@@ -367,14 +382,15 @@ for(header.file.name in header.file.names){
                          parameter$name[length(pos.declaration.line.breaks) + 1] <- gsub(");", "", raw.declaration.text[pos[3]])
                     }
                }else{ # if no line break, the second last entry *should* be the type, the last the name
-                    parameter$name[1] <-raw.declaration.text[length(raw.declaration.text)-1]
-                    parameter$type[1] <- gsub(");", "", raw.declaration.text[length(raw.declaration.text)])
+                    raw.declaration.text <- raw.declaration.text[-grep(");", raw.declaration.text)]
+                    parameter$name[1] <- raw.declaration.text[length(raw.declaration.text)]
+                    parameter$type[1] <- paste(raw.declaration.text[-length(raw.declaration.text)], collapse = " ")
                }
 
                # find the vectors and remove "[x]" from the name
                vectors        <- grep("[", parameter$name, fixed = T)
                if(length(vectors) > 0){               
-                    parameter$name[vectors]   <- unlist(strsplit(parameter$name[vectors], "[", fixed = T))[(seq(2, length(vectors)*2, by = 2) - 1)]     
+                    parameter$name[vectors]   <- unlist(strsplit(parameter$name[vectors], "[", fixed = T))[(seq(2, length(vectors)*2, by = 2) - 1)] 
                     # get the array.size from the doxgen comment
                     pos.array.size            <- match(parameter$name[vectors], current.function$parameter.comment$name)
                     parameter$length[vectors] <- current.function$parameter.comment$array.size[pos.array.size]
@@ -474,9 +490,9 @@ for(header.file.name in header.file.names){
                functions[[function.no]]    <- current.function
                processed.functions         <- c(processed.functions, name)
                function.no                 <- function.no + 1
-               print(paste("Successfully done.", name))
+               cat(" successfully processed.\n")
         }else{ # name %in% namespace
-               print(paste("Skipped as not in namespace.", name))
+               cat(" skipped as not in namespace.\n")
         }
      } # end function loop --- for (i in 1:length(pos.start.doxygen.comment)
 } # end header file loop --- for(header.file.name in header.file.names)   

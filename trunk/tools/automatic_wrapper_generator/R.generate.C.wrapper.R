@@ -23,15 +23,23 @@
 # If not, see <http://www.gnu.org/licenses/>
 ################################################################################################
 
+# Clean workspace
 rm(list = ls())
 
+# Read type conversion functions (R <-> C types)
 source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")
 
+# Read function information from parsed doxygen comments
 load("functions.sdd")
 
-write("#ifndef AT_R_WRAPPER_H_\n#define AT_R_WRAPPER_H_\n// Automatically created header file\n\n#include <stdlib.h>\n#include <stdbool.h>\n", file = "AT_R_Wrapper.h")
-# Add include files for functions used
-used.header.files <- unique(sapply(functions, function(x){x$header.file.name}))
+# Write first part of header wrapper file, macros to avoid multi include,
+# include standard headers
+write("#ifndef AT_R_WRAPPER_H_\n#define AT_R_WRAPPER_H_\n// Automatically created header file\n\n#include <stdlib.h>\n#include <stdbool.h>\n", 
+      file = "AT_R_Wrapper.h")
+
+# Add include statements for the functions used
+used.header.files <- unique( sapply( functions, 
+                                     function(x){x$header.file.name}))
 for (header.file in used.header.files){
    write(paste("#include\"",
                header.file,
@@ -41,254 +49,419 @@ for (header.file in used.header.files){
 }
 write("\n", file = "AT_R_Wrapper.h", append = TRUE)  
 
-write("// Automatically created header and body file\n\n#include \"AT_R_Wrapper.h\"\n", file = "AT_R_Wrapper.c")
 
-# replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
-grep.bool	<-	function(pattern, x, ...){
-	results	<-	grep(pattern, x, ...)
-	indices	<-	1:length(x)
-	bool.res	<-	is.element(indices, results)
-}
+# Create source wrapper file
+write("// Automatically created header and body file\n\n#include \"AT_R_Wrapper.h\"\n", 
+      file = "AT_R_Wrapper.c")
 
+# Loop over all functions from doxygen parsing
 for(i in 1:length(functions)){
-	# i <- 51
-	tmp <- functions[[i]]
+	# i <- 56
 	
+  # Extract current function, parameters and number of parameters
+  curFun    <- functions[[i]]
+	para      <- functions[[i]]$parameter
+  n.para    <- nrow(para)          
+
+  cat( "Processing function no. ",
+       i,
+       " (",
+       curFun$name,
+       ")\n",
+       sep = "")
+  
+  ##############################
+	# create function declaration
 	##############################
-	# create header
-	##############################
-	header <- character(nrow(tmp$parameter))
-	
-#SG:	header[1] <- paste(tmp$type, " ", tmp$name, "_R( ", 
-	header[1] <- paste("void ", tmp$name, "_R( ", 
-					convert.c(tmp$parameter$type[1]), "\t",
-					tmp$parameter$name[1], ",", sep = "")
+	header    <- character(n.para + 1)
+	header[1] <- paste( "void ",         # function name
+                      curFun$name, 
+                      "_R( ", 
+	                    sep = "")
+  
+  if(n.para>0){            # function parameters
+    for(j in 1:n.para){
+      # j <- 1
+      start.line <- "\t\t"
+      if(j == 1){
+        start.line <- ""
+      }  
+      end.line    <- ""
+      if(j != n.para){
+        end.line    <- ","
+      }
+      header[j] <- paste(   header[j],
+                            start.line,
+                            convert.c( curFun$parameter$type[j] ), 
+                            "\t",
+  				                  curFun$parameter$name[j], 
+                            end.line, 
+                            sep = "") 
+    }
+  }
+  
+  header[length(header)] <- ");"      # end of function declaration
+    
+	write( c(header, "\n"), 
+         file   = "AT_R_Wrapper.h", 
+         append = TRUE)
 
-	if(length(header) > 2){
-		for(j in 2:(length(header)-1)){
-			header[j] <- paste( "\t", convert.c(tmp$parameter$type[j]), " ",
-							tmp$parameter$name[j], ",", sep = "")
-		}
-	}
-
-	if(length(header) > 1){
-		header[length(header)] <- paste( "\t", convert.c(tmp$parameter$type[length(header)]), " ",
-							tmp$parameter$name[length(header)], ");", sep = "")
-	}
-	write(c(header, "\n"), file = "AT_R_Wrapper.h", append = T)
-
+    
 	###########################
 	# create function body
 	###########################
 
-	# get parameter information for current functions
-	para         <- functions[[i]]$parameter
+	##############################################
+  # copy function declaration, replace semicolon
+	body               <- header
+  body[length(body)] <- "){"
 
-	# function declaration
-	body         <- gsub("\n", "", gsub(";", "", header), fixed = T)
-	body         <- c(body, "{")
+	# get input parameters and which of them are arrays, which chars
+  input.para.idx         <- grepl(pattern = "in", 
+                                  x       = para$in.out)
+  output.para.idx        <- grepl(pattern = "out", 
+                                  x       = para$in.out)
+  inoutput.para.idx      <- grepl(pattern = "in.out", 
+                                  x       = para$in.out)
 
-	# select input parameters and arrays (vectors)
-      input        <- grep.bool(pattern = "in", x = para$in.out)
-	vector       <- (para$length != 1)
+  array.idx              <- para$length != 1
+  pointer.idx            <- grepl("*", para$type, fixed = TRUE)
+  char.idx               <- grepl("char", para$type)
+  char.pointer.idx       <- grepl("char*", para$type, fixed = TRUE)
+  length.by.variable.idx <- para$length%in%para$name
 
-	# create count variable i, if sum(vector) > 0
-	if(sum(vector) > 0){
-		body        <- c(body, "  long i;")
-	}
-
-	# add the input parameters	
-	ii           <- which(input & !vector)
-	if(length(ii) > 0){
-		for(j in ii){
-			body <- c(body, paste("  ", gsub("*", "", para$type[j], , fixed = T), " ", para$name[j], get.extension(para$type[j]), " = (",
-					gsub("*", "", gsub("const ", "", para$type[j]), fixed = T), ")(*",  para$name[j], 
-					");", sep = ""))
-		}
-	}
-	body         <- c(body, "")
-
-	# check for those array lengths that are given by a variable 
-	numbers               <- para$length%in%para$name
-  para.length           <- para$length
   
-	# add "_long" to all variables that are no numbers
-	para.length[numbers]  <- paste(para.length[numbers], "_long", sep = "")
+	# add a count variable i, if arrays are present
+	if(sum(array.idx) > 0){
+		body  <- c( body, 
+                "  long i;")
+	}
 
-	# write changed para.length back into data.frame
-	para$length           <- para.length
-	para.length           <- unique(para$length)[unique(para$length) != 1]
-
-	for(l in para.length){
-		
-		jj <- which(input & vector & para$length == l)
-		if(length(jj) != 0){
-			for(k in jj){
-##
-	            if(grepl("char", para$type[k]) != TRUE){
-##
-					body <- c(body, "\n//Allocate space for the input parameter.")
-					body <- c(body, paste("  ", gsub("const ", "", para$type[k]), "* ",
-							para$name[k],  get.extension(para$type[k]),
-							" = (", gsub("const ", "", para$type[k]), 
-							"*)calloc(", l,  ",sizeof(", gsub("const ", "", para$type[k]),
-							"));", sep = ""))
-##
-				}
-##
-			}
-			body <- c(body, "")
-			# fill the data into the allocated space
-			if(sum(grepl("char", para$type[jj]))==0){
-        body <- c(body, "\n//Fill in the input parameter.")
-			  body <- c(body, paste("  for(i = 0 ; i < ", l, "; i++){", sep = ""))
-			  for(k in jj){
-				  body <- c(body, paste("\t", para$name[k], get.extension(para$type[k]),
-						  "[i] = (", gsub("const ", "", para$type[k]), ")", para$name[k],
-						  "[i];", sep = ""))
-			  }
-			  body <- c(body, "  }")
-		  }else{
-#        body <- c(body, "\n// Copy strings\n")
-#  		  for(k in jj){
-#				  body <- c(body, paste("\tstrcpy(", 
-#                                para$name[k], get.extension(para$type[k]),
-#                                ",(*",
-#                                para$name[k], 
-#                                "));",
-#                                sep = ""))
-#			  }
-		  }
+  ###########################################################
+	# add type convert statements for non-array input variables
+	idx           <- which(input.para.idx & !array.idx)
+	if(length(idx) > 0){
+		for(j in idx){
+			# j <- idx[1]
+      
+      body <- c( body, 
+                 paste( "  ", 
+                        type.no.pointer( para$type[j] ), 
+                        " ", 
+                        para$name[j], 
+                        get.extension( para$type[j]), 
+                        " = (",
+                        type.no.pointer.no.const ( para$type[j] ),
+                        ")(*",  
+                        para$name[j], 
+					              ");", 
+                        sep = ""))
 		}
-		kk <-  which(!input & vector & para$length == l)
-		if(length(kk) > 0){
+	}
+	
+  body         <- c(body, "")
+
+  ######################################
+  # add conversion statements for arrays
+  
+	# also input parameters that are used to
+  # give the size of input array, thus
+  # change the parameter names for those
+  # ! assumed that they are all int/long
+	para$length[length.by.variable.idx]  <- paste( para$length[length.by.variable.idx], 
+                                                 "_long", 
+                                                 sep = "")
+
+  # loop through all array lengths
+  # this way, we can group arrays of same length in
+  # one type casting loop
+	array.lengths <- unique(para$length)[unique(para$length) != 1]
+	for(array.length in array.lengths){
+		# array.length <- array.lengths[1]
+		
+    ##############
+    # INPUT ARRAYS
+    # find those non-char input arrays that match in length
+    cur.array.idxs <- which( input.para.idx & 
+                             array.idx &
+                             !char.idx &
+                             para$length == array.length)
+		if(length(cur.array.idxs) > 0){
+  	  # Allocate array space
+      body <- c(body, "\n//Allocate space for the input parameter.")
+      for(k in cur.array.idxs){
+				# k <- cur.array.idxs[1]
+        body <- c(body,
+                  paste("  ", 
+                        type.no.const( para$type[k] ), 
+                        "* ",
+				  		          para$name[k],
+                        get.extension( para$type[k] ),
+							          " = (",
+                        type.no.const( para$type[k] ), 
+                        "*)calloc(", 
+                        array.length,  
+                        ",sizeof(", 
+                        type.no.const( para$type[k] ), 
+                        "));", 
+                        sep = ""))
+			}
+
+      body <- c(body, "")
+			
+      # Copy  data into the allocated space
+      body <- c(body, 
+                "\n//Fill in the input parameter.")
+			body <- c(body, 
+                paste( "  for(i = 0 ; i < ", 
+                       array.length, 
+                       "; i++){", 
+                       sep = ""))
+			for(k in cur.array.idxs){
+				  body <- c(body, 
+                    paste( "\t", 
+                           para$name[k], 
+                           get.extension( para$type[k] ),
+						               "[i] = (", 
+                           type.no.const( para$type[k] ),
+                           ")", 
+                           para$name[k],
+						               "[i];",
+                           sep = ""))
+			}
+			body <- c(body, "  }")
+		  
+		}
+
+    ###############
+    # OUTPUT ARRAYS
+    cur.array.idxs <- which( !input.para.idx & 
+                             array.idx &
+                             !char.idx &
+                             para$length == array.length)
+		if(length(cur.array.idxs) > 0){
 			body <- c(body, "\n//Allocate space for the results.")
-			for(j in kk){
-				body <- c(body, paste("  ", gsub("const ", "", para$type[j]), "* ",
-						para$name[j], get.extension(para$type[j]),
-						" = (", gsub("const ", "", para$type[j]), 
-						"*)calloc(", l, ",sizeof(", gsub("const ", "", para$type[j]),
-						"));", sep = ""))
+			for(k in cur.array.idxs){
+				body <- c( body, 
+                   paste( "  ", 
+                          type.no.const( para$type[k] ),
+                          "* ",
+						              para$name[k], 
+                          get.extension(para$type[k]),
+						              " = (", 
+                          type.no.const(  para$type[k] ), 
+						              "*)calloc(", 
+                          array.length, 
+                          ",sizeof(", 
+                          type.no.const( para$type[k] ),
+						              "));", 
+                          sep = ""))
 			}
 		}
 	}
       
-      # Add definition of non-array pointers that are used as output variables
-      idx.output.pointers     <- grep.bool(pattern = "out", x = para$in.out) & para$length == 1 & !grep.bool(pattern = "in.out", x = para$in.out)
-      if(sum(idx.output.pointers) > 0){
-      output.pointers         <- para[idx.output.pointers, ]
-      body                    <- c(body, "\n//Define type-casted output variables")
-      for (i in 1:nrow(output.pointers)){
-	     # DEBUG: i <- 1
-           output.pointers$type[i] <- gsub("*", "", output.pointers$type[i], fixed = T)
-           body                    <- c( body, 
-                                         paste( "\t", 
-                                                output.pointers$type[i], 
-                                                " ", 
-                                                output.pointers$name[i], 
-                                                get.extension(output.pointers$type[i]),
-						            " = 0;", 
-                                                sep = ""))
-      }
-	}
+  # Casting of non-array, non-char pointers that are used as output-only variables
+  idx.output.pointers     <- output.para.idx &
+                             pointer.idx &
+                             !char.idx &
+                             !inoutput.para.idx
+  if(sum(idx.output.pointers) > 0){
+    output.pointers         <- para[idx.output.pointers, ]
+    body                    <- c(body, "\n//Define type-casted output variables")
+    for (j in 1:nrow(output.pointers)){
+     # DEBUG: j <- 1
+       body                    <- c( body, 
+                                     paste( "\t", 
+                                     type.no.pointer( output.pointers$type[j] ), 
+                                     " ", 
+                                     output.pointers$name[j], 
+                                     get.extension( type.no.pointer( output.pointers$type[j] )),
+				                             " = 0;", 
+                                     sep = ""))
+    }
+  }
 
 	########################
-      # Generate function call
+  # Generate function call
 	########################
-	if(tmp$type != "void"){
-		return.var.txt	<-	paste(tmp$type, "returnValue_internal = \t")
+
+  # Has function a return value
+  if(curFun$type == "void"){
+  	return.var.txt	<-	""
+  	para.max	      <-	nrow(para)
 	}else{
-		return.var.txt	<-	""
+  	return.var.txt	<-	paste( curFun$type, 
+                               "returnValue_internal = \t")
+  	para.max	      <-	nrow(para) - 1
 	}
 
-   
-	if(grepl("char", para$type[1], fixed = TRUE) == TRUE & grepl("char*", para$type[1], fixed = TRUE) == FALSE){
-		body <- c(body, paste("\n  ", return.var.txt, tmp$name, "( ", para$name[1], 
-					 get.extension(para$type[1]), "[0],", sep = ""))
-	}else{
-		body <- c(body, paste("\n  ", return.var.txt, tmp$name, "( ", para$name[1], 
-					 get.extension(para$type[1]), ",", sep = ""))
-	}
-	if(tmp$type != "void"){
-		para.max	<-	nrow(para) - 1
-	}else{
-		para.max	<-	nrow(para)
-	}
-
-	for(j in 2:(para.max - 1)){
-		if((length(grep("*", para$type[j], fixed = TRUE)) == 0) | (grepl("char*", para$type[j], fixed = TRUE) == TRUE)){
-				if(grepl("char", para$type[j], fixed = TRUE) == TRUE & grepl("char*", para$type[j], fixed = TRUE) == FALSE){
-				    body <- c(body, paste("\t", para$name[j], get.extension(para$type[j]), "[0],", sep = ""))
+  # Parameter characteristics (char will be treated differently)
+  char.but.no.pointer    <- input.para.idx &
+                            char.idx &
+                            !char.pointer.idx
+  array.or.char.pointer  <- array.idx |
+                            !pointer.idx |
+                            (char.idx & char.pointer.idx)
+    
+	for(j in 1:para.max){
+		# j <- 1
+    
+    start.line <- "\t"
+    if(j == 1){
+      start.line <- paste( "\n  ", 
+                           return.var.txt, 
+                           curFun$name, 
+                           "( ",
+                           sep = "")
+    }  
+    
+    end.line <- ","
+    if(j == para.max){
+      end.line <- ");"
+    }
+     
+    if(array.or.char.pointer[j] | char.but.no.pointer[j]){
+				if(char.but.no.pointer[j]){        # "char*" but not "char**"
+				    body <- c( body, 
+                       paste( start.line,
+                              para$name[j], 
+                              get.extension(para$type[j]), 
+                              "[0]", 
+                              end.line,
+                              sep = ""))
 				}else{
-				    body <- c(body, paste("\t", para$name[j], get.extension(para$type[j]), ",", sep = ""))
+				    body <- c( body,              # "char**", array or casted single variable
+                       paste( start.line,
+                              para$name[j], 
+                              get.extension(para$type[j]), 
+                              end.line,
+                              sep = ""))
 				}
 			}
 		else
-			body <- c(body, paste("\t&", para$name[j], get.extension(para$type[j]), ",", sep = ""))
+			body <- c( body,                    # no array
+                 paste( start.line,
+                        "&", 
+                        para$name[j], 
+                        get.extension( para$type[j] ), 
+                        end.line,
+                        sep = ""))
 	} 			
 	
-	if((length(grep("*", para$type[para.max], fixed = TRUE)) == 0) | (grepl("char*", para$type[para.max], fixed = TRUE) == TRUE)){
-	  	if(grepl("char", para$type[para.max], fixed = TRUE) == TRUE & grepl("char*", para$type[para.max], fixed = TRUE) == FALSE){
-	    	body <- c(body, paste("\t", para$name[para.max], get.extension(para$type[para.max]), "[0]);", sep = ""))
-	    }else{
-	    	body <- c(body, paste("\t", para$name[para.max], get.extension(para$type[para.max]), ");", sep = ""))
-	    }
-      }else{
-	      body <- c(body, paste("\t&", para$name[para.max], get.extension(para$type[para.max]), ");", sep = ""))
-      }
+	############################
+  # Cast and copy back results
+	############################
 
-	output <- grep.bool(pattern = "out", x = para$in.out) 
-
-	body <- c(body, paste("\n//Results:"))
-	if(tmp$type != "void"){
-		body <- c(body, paste("\n\t*returnValue = (", gsub("*", "", gsub("\t", "", convert.c(para$type[nrow(para)]), fixed = T), fixed = T), ")returnValue_internal;"), sep = "")
+	body <- c( body, 
+             paste("\n//Results:"))
+	
+  # Cast return value, if any
+  if(curFun$type != "void"){
+		body <- c( body, 
+               paste( "\n\t*returnValue = (", 
+                      gsub( "*", 
+                            "", 
+                            gsub( "\t", 
+                                  "", 
+                                  convert.c(para$type[nrow(para)]), 
+                                  fixed = TRUE), 
+                            fixed = TRUE), 
+                      ")returnValue_internal;"), 
+                      sep = "")
 	}
 	
-	kk <-  which(output & !vector)
+	# Cast non-array variables
+  kk <-  which(output.para.idx & !array.idx)
 	if(length(kk) > 0){
 		for(j in kk){
-			body <- c(body, paste("  *", para$name[j],	" = (", 
-					gsub("\t", "", gsub("*", "", gsub("const ", "", convert.c(para$type[j])), fixed = T), fixed = T),			
-					 ")", para$name[j], get.extension(para$type[j]), 
-					";", sep = ""))
-			body <- c(body, "")
+			# j <- kk[1]
+      body <- c( body, 
+                 paste( "  *", 
+                        para$name[j],	
+                        " = (", 
+					              gsub( "\t", 
+                              "", 
+                              gsub( "*", 
+                                    "", 
+                                    gsub( "const ", 
+                                          "", 
+                                          convert.c(para$type[j])), 
+                                    fixed = TRUE), 
+                              fixed = TRUE),			
+					              ")", 
+                        para$name[j], 
+                        get.extension(para$type[j]), 
+					              ";", 
+                        sep = ""))
+			body <- c( body, 
+                 "")
 		}
 	}
 
-	ll <-  which(output & vector)
+	# Cast and copy arrays
+  ll <-  which( output.para.idx & array.idx)
 	if(length(ll) > 0){
-		for(l in para.length){
-#			kk <-  which(!input & vector & para$length == l)
-#			kk <-  which(vector & para$length == l)
-		kk <-  which(output & vector & para$length == l)
-		if(length(kk) > 0){
+		for(l in unique(para$length)){
+		  kk <-  which( output.para.idx & 
+                    array.idx & 
+                    para$length == l)
+		  if(length(kk) > 0){
 				# fill the data into the allocated space
-				body <- c(body, paste("  for(i = 0 ; i < ", l, "; i++){", sep = ""))
+				body <- c( body, 
+                   paste( "  for(i = 0 ; i < ", 
+                          l, 
+                          "; i++){", 
+                          sep = ""))
 				for(j in kk){
-					body <- c(body, paste("\t", para$name[j],	"[i] = (", 
-							gsub("\t", "", gsub("*", "", gsub("const ", "", convert.c(para$type[j])), fixed = T), fixed = T),			
-							 ")", para$name[j], get.extension(para$type[j]),
-							"[i];", sep = ""))
+					body <- c( body, 
+                     paste( "\t", 
+                            para$name[j],	
+                            "[i] = (", 
+							              gsub( "\t", 
+                                  "", 
+                                  gsub( "*", 
+                                        "", 
+                                        gsub( "const ", 
+                                              "", 
+                                              convert.c(para$type[j])), 
+                                        fixed = TRUE), 
+                                  fixed = TRUE),			
+							              ")", 
+                            para$name[j], 
+                            get.extension(para$type[j]),
+							              "[i];", 
+                            sep = ""))
 				}
-				body <- c(body, "  }")
+				body <- c( body, 
+                   "  }")
 			}
 		}
 	}
 	
-
+  # Free space allocated for arrays
 	body <- c(body, "\n//Free allocated space")
-	kk <- which(vector)	
+	kk <- which(array.idx & !char.idx)	
 	if(length(kk) > 0){
 		for(j in kk){
-			if(grepl("char", para$type[j], fixed = TRUE) == FALSE){
-				body <- c(body, paste("  free(", para$name[j], get.extension(para$type[j]), ");", sep = ""))
-			}			
+				body <- c( body, 
+                   paste( "  free(", 
+                          para$name[j], 
+                          get.extension(para$type[j]), 
+                          ");", 
+                          sep = ""))
 		}
 	}
 
-	# close body
-	body <- c(body, "}\n\n")
-	write(body, file = "AT_R_Wrapper.c", append = T)
-}
+	# write body to source file
+	body <- c( body, 
+             "}\n\n")
+	write( body, 
+         file   = "AT_R_Wrapper.c", 
+         append = TRUE)
 
-write("#endif\n", file = "AT_R_Wrapper.h", append = T)
+}# loop: functions from doxygen parsing
+
+# write header to file
+write( "#endif\n", 
+       file    = "AT_R_Wrapper.h", 
+       append  = TRUE)
