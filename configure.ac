@@ -9,6 +9,7 @@ AC_DEFINE(CODE_NAME, ["Red Wombat"], [Cryptonym to faciliate versioning for user
 AC_DEFINE(CODE_STATUS, ["Development"], [Status of the code])
 
 
+
 LT_INIT
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4])
