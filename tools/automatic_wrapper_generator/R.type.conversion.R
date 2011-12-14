@@ -44,7 +44,6 @@ conversion.table$conversion.c[conversion.table$conversion.c == "float*\t"] <- "f
 
 convert.c <- function(type){
 				ii <- type == conversion.table$type
-#				cat("type=_",type,"_ ",conversion.table$type,ii,"\n",sep="")
 				if( sum(ii) > 0 )
 					return(conversion.table$conversion.c[ii])
 				else{
@@ -73,3 +72,25 @@ convert.R <- function(type){
 					return(type)
 				}
 			}
+
+# Function that return types but without some selected features
+type.no.pointer          <- function(x){
+  return( gsub( "*", 
+                "", 
+                x, 
+                fixed = TRUE))
+}
+
+type.no.const            <- function(x){
+  return( gsub( "const ", 
+                "", 
+                x, 
+                fixed = TRUE))
+}
+
+type.no.pointer.no.const <- function(x){
+  return( gsub( "*", 
+                "", 
+                type.no.const(x),
+                fixed = TRUE))
+}
