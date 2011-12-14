@@ -53,7 +53,7 @@ def read_namespace(name_file ='NAMESPACE'):
     in_file.close()
     return functions
 
-def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py', library_path = './libamtrack.so'):
+def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py', library_path = 'libamtrack.so'):
     '''
     @param[in] func_objects  list of function objects 
     @return : string containing python code to call function
