@@ -106,7 +106,11 @@ The necessary files for producing an R package from libamtrack are found in:
 
 To compile a package, navigate to /wrapper/R/R_package:
 
-Select functions that should go to R package and add them to text file NAMESPACE
+Select functions that should go to R package and add them to text file NAMESPACE. The suffix "_multi" will automatically be
+skipped, as R functions are supposed to be able to work on vectors as you should always prefer the "<function_name>_multi"
+version of the function over the "<function_name>_single", if possible. If you place "noR: " in front of the function name
+in NAMESPACE a C wrapper will be generated but no corresponding R wrapper. This can be useful if you want to have access 
+to a function within an R function via ".C" but not a full R function on its own. 
 
 Run ./create.package.sh 
 Use --help to see options
