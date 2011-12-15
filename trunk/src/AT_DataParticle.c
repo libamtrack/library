@@ -352,6 +352,44 @@ int AT_Z_from_element_acronym(const long n, char* acronym[], long Z[]){
 }
 
 
+int AT_element_acronym_from_Z_single( const long Z, char acronym[PARTICLE_NAME_NCHAR]){
+
+	 long  match;
+
+	 find_elements_int(  &Z,
+				  1,
+				  AT_Particle_Data.Z,
+				  AT_Particle_Data.n,
+				  &match);
+
+	if( match > -1 ) strcat(acronym, AT_Particle_Data.element_acronym[match]);
+	else {
+		 const char  unknown_acronym[PARTICLE_NAME_NCHAR] = "??";
+		 strcat(acronym, unknown_acronym);
+	}
+	return AT_Success;
+}
+
+
+
+int AT_element_acronym_from_Z( const long n,
+		long Z[],
+		char acronym[][PARTICLE_NAME_NCHAR]){
+
+	long i;
+
+	for(i =0; i < n; i++){
+		char ith_acronym[PARTICLE_NAME_NCHAR];
+		ith_acronym[0] = NULL;
+		acronym[i][0] = NULL;
+		AT_element_acronym_from_Z_single(Z[i], ith_acronym);
+		strcat(acronym[i], ith_acronym);
+	}
+	return AT_Success;
+}
+
+
+
 double AT_atomic_weight_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] ){
 
 	long match;
