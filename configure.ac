@@ -56,7 +56,7 @@ if test "${LIB_GSL}" != ""; then
         GSL_CFLAGS="-I${LIB_GSL}/include"
 	GSL_LIBS="-L${LIB_GSL}/lib -lgsl"
 else
-        AX_PATH_GSL(1.8,[], AC_MSG_ERROR[No gsl>=1.8 found!])
+        AX_PATH_GSL(1.8,, AC_MSG_ERROR([No gsl>=1.8 found!]))
 fi
 
 AC_SEARCH_LIBS(cos, m)
