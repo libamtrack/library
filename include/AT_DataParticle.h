@@ -328,6 +328,7 @@ int AT_particle_no_from_particle_name( const long  n,
 int AT_Z_from_element_acronym_single( const char acronym[]);
 
 
+
 /**
  * Returns Z for given elemental symbols
  * @param[in]  n       number of elements
@@ -339,6 +340,31 @@ int AT_Z_from_element_acronym_single( const char acronym[]);
 int AT_Z_from_element_acronym( const long n,
 		char* acronym[],
 		long Z[]);
+
+/**
+ * Returns elemental symbol for given Z
+ * @param[in]  Z      atomic number
+ * @param[out] corresponding elemental symbol
+ * return status
+ */
+
+int AT_element_acronym_from_Z_single( const long Z,
+		char acronym[PARTICLE_NAME_NCHAR]);
+
+
+/**
+ * Returns elemental symbols for given Z
+ * @param[in]  n       number of elements
+ * @param[in]  Z       atomic numbers (array of size n)
+ * @param[out] acronym corresponding elemental symbols (array of size n)
+ * @return status
+ */
+
+int AT_element_acronym_from_Z( const long n,
+		long Z[],
+		char acronym[][PARTICLE_NAME_NCHAR]);
+
+
 
 
 /**
@@ -390,7 +416,7 @@ double AT_I_eV_from_element_acronym_single( const char acronym[]);
 
 
 /**
- * Returns the I values in eV for given elemental symbols
+ * Returns the I values in eV for given elemental symbol
  * @param[in]  n        number of elements in array
  * @param[in]  acronym  elemental symbols (array of size n)
  * @param[out] I        corresponding I values in eV (array of size n)
