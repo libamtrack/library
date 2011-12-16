@@ -41,7 +41,7 @@ write("#ifndef AT_R_WRAPPER_H_\n#define AT_R_WRAPPER_H_\n// Automatically create
 used.header.files <- unique( sapply( functions, 
                                      function(x){x$header.file.name}))
 for (header.file in used.header.files){
-   write(paste("#include\"",
+   write(paste("#include \"",
                header.file,
                "\"", 
                sep = ""),
