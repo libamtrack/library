@@ -7,7 +7,7 @@ spc.list <- AT.SPC.get.list(path.to.files = path.to.files)
 
 spc <- AT.SPC.get(spc.list = spc.list, energy.MeV.u = 255)
 
-spc.lower <- AT.SPC.read(spc.list$file.name[2], endian = "little")
+spc.lower <- AT.SPC.read("/home/greilich/workspace/eclipse/libamtrack/data/SPC/auswahl/libamtrack.12C.H2O.active3.MeV24000.spc", endian = "little")
 spc.upper <- AT.SPC.read(spc.list$file.name[3], endian = "little")
 
 ddd.lower <- AT.SPC.tapply(spc = spc.lower$spc, INDEX = c("depth.g.cm2"), 

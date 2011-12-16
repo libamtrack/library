@@ -24,12 +24,10 @@
 # clear workspace
 rm( list = ls() )
 
-# Build latest version of libamtrack and load for direct access
-#recompile <- FALSE
-source("AT_Test_PreRun.R")
+# Load local version of library
+require(libamtrack, lib.loc = ".")
 
 require(lattice)
-#require(libamtrack)
 
 # Materials
 
