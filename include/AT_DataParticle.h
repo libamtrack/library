@@ -362,7 +362,7 @@ int AT_element_acronym_from_Z_single( const long Z,
 
 int AT_element_acronym_from_Z( const long n,
 		long Z[],
-		char acronym[][PARTICLE_NAME_NCHAR]);
+		char* acronym[]);
 
 
 

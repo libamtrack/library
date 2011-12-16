@@ -374,14 +374,12 @@ int AT_element_acronym_from_Z_single( const long Z, char acronym[PARTICLE_NAME_N
 
 int AT_element_acronym_from_Z( const long n,
 		long Z[],
-		char acronym[][PARTICLE_NAME_NCHAR]){
+		char* acronym[]){
 
 	long i;
 
 	for(i =0; i < n; i++){
-		char ith_acronym[PARTICLE_NAME_NCHAR];
-		ith_acronym[0] = NULL;
-		acronym[i][0] = NULL;
+		char ith_acronym[PARTICLE_NAME_NCHAR] = "";
 		AT_element_acronym_from_Z_single(Z[i], ith_acronym);
 		strcat(acronym[i], ith_acronym);
 	}

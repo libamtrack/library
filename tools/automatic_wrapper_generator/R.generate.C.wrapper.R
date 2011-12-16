@@ -371,7 +371,7 @@ for(i in 1:length(functions)){
 	}
 	
 	# Cast non-array variables
-  kk <-  which(output.para.idx & !array.idx)
+  kk <-  which(output.para.idx & !array.idx & !char.idx)
 	if(length(kk) > 0){
 		for(j in kk){
 			# j <- kk[1]
@@ -399,7 +399,7 @@ for(i in 1:length(functions)){
 	}
 
 	# Cast and copy arrays
-  ll <-  which( output.para.idx & array.idx)
+  ll <-  which( output.para.idx & array.idx & !char.idx)
 	if(length(ll) > 0){
 		for(l in unique(para$length)){
 		  kk <-  which( output.para.idx & 
