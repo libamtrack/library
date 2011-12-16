@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SWIGEXE=/home/grzanka/usr/swig/bin/swig
+SWIGEXE=swig
 JARSIGNEREXE=jarsigner
 JAVACEXE=javac
 JAREXE=jar
@@ -52,5 +52,5 @@ rm -f bin/*.class
 # Sign JAR file
 # keystore created using command "keytool -genkey -keystore myk -alias jdc", password "libamtrack"
 
-$JARSIGNEREXE -keystore myk -signedjar examplesigned-Linux.jar example.jar jdc
+$JARSIGNEREXE -keystore myk -storepass libamtrack -signedjar examplesigned-Linux.jar example.jar jdc
 mv examplesigned-Linux.jar webstart/

@@ -52,5 +52,5 @@ rm bin/*.class
 # Sign JAR file
 # keystore created using command "keytool -genkey -keystore myk -alias jdc", password "libamtrack"
 
-$JARSIGNEREXE -keystore myk -signedjar examplesigned-Mac.jar example.jar jdc
+$JARSIGNEREXE -keystore myk -storepass libamtrack -signedjar examplesigned-Mac.jar example.jar jdc
 mv examplesigned-Mac.jar webstart/
