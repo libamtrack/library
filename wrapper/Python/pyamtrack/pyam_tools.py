@@ -52,6 +52,7 @@ class PyAmRun(object):
         self.particle_no = list
         self.fluence_cm2 = list
         self.material_no = int
+        self.stopping_power_source_no = 0 # PSTAR
         self.rdd_model =int
         self.rdd_parameters = [0.0]*4
         self.er_model = int
@@ -123,6 +124,7 @@ class PyAmRun(object):
                                                  self.particle_no,
                                                  self.fluence_cm2,
                                                  self.material_no,
+                                                 self.stopping_power_source_no,
                                                  self.rdd_model,
                                                  self.rdd_parameters,
                                                  self.er_model,
@@ -144,15 +146,15 @@ class PyAmRun(object):
                                                  self.n_convolutions,
                                                  self.lower_Jensen_bound,
                                                  self.upper_Jensen_bound)
-        self.relative_efficiency = results[0]
-        self.d_check = results[1]
-        self.S_HCP = results[2]
-        self.S_gamma = results[3]
-        self.mean_number_of_tracks_contrib = results[4]
-        self.start_number_of_tracks_contrib = results[5]
-        self.n_convolutions = results[6]
-        self.lower_Jensen_bound = results[7]
-        self.upper_Jensen_bound  = results[8]
+        self.relative_efficiency = results[1]
+        self.d_check = results[2]
+        self.S_HCP = results[3]
+        self.S_gamma = results[4]
+        self.mean_number_of_tracks_contrib = results[5]
+        self.start_number_of_tracks_contrib = results[6]
+        self.n_convolutions = results[7]
+        self.lower_Jensen_bound = results[8]
+        self.upper_Jensen_bound  = results[9]
 
         
         
@@ -165,6 +167,7 @@ class PyAmRun(object):
                                                 self.particle_no,
                                                 self.fluence_cm2,
                                                 self.material_no,
+                                                self.stopping_power_source_no,
                                                 self.rdd_model,
                                                 self.rdd_parameters,
                                                 self.er_model,
@@ -179,13 +182,13 @@ class PyAmRun(object):
                                                 self.gamma_dose_Gy,
                                                 self.P_I,
                                                 self.P_g)
-        self.relative_efficiency= results[0]
-        self.S_HCP = results[1]
-        self.S_gamma = results[2]
-        self.sI_cm2 = results[3]
-        self.gamma_dose_Gy = results[4]
-        self.P_I = results[5]
-        self.P_g = results[6]
+        self.relative_efficiency= results[1]
+        self.S_HCP = results[2]
+        self.S_gamma = results[3]
+        self.sI_cm2 = results[4]
+        self.gamma_dose_Gy = results[5]
+        self.P_I = results[6]
+        self.P_g = results[7]
 
     def runGSM(self):
         '''
@@ -196,6 +199,7 @@ class PyAmRun(object):
                                                 self.particle_no,
                                                 self.fluence_cm2,
                                                 self.material_no,
+                                                self.stopping_power_source_no,
                                                 self.rdd_model,
                                                 self.rdd_parameters,
                                                 self.er_model,
@@ -216,13 +220,13 @@ class PyAmRun(object):
                                                 self.sd_S_HCP,
                                                 self.sd_S_gamma,
                                                 self.sd_n_particles)
-        self.relative_efficiency = results[0]
-        self.d_check = results[1]
-        self.S_HCP = results[2]
-        self.S_gamma = results[3]
-        self.n_particles = results[4]
-        self.sd_relative_efficiency = results[5]
-        self.sd_d_check = results[6]
-        self.sd_S_HCP = results[7]
-        self.sd_S_gamma = results[8]
-        self.sd_n_particles = results[9]
+        self.relative_efficiency = results[1]
+        self.d_check = results[2]
+        self.S_HCP = results[3]
+        self.S_gamma = results[4]
+        self.n_particles = results[5]
+        self.sd_relative_efficiency = results[6]
+        self.sd_d_check = results[7]
+        self.sd_S_HCP = results[8]
+        self.sd_S_gamma = results[9]
+        self.sd_n_particles = results[10]
