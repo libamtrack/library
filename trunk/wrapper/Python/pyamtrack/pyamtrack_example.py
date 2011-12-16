@@ -36,8 +36,8 @@ def main():
     #example use of libamtrack function \'  AT_average_A_from_composition\'
     # first have a look at the description
     print pyamtrack.AT_average_A_from_composition.__doc__
-    result =  pyamtrack.AT_average_A_from_composition(2, [1,16], [2./18.,16./18.], 0.0)
+    status_code, average_A =  pyamtrack.AT_average_A_from_composition(2, [1,16], [2./18.,16./18.], 0.0)
     
-    print result
+    print average_A
 
 main()
