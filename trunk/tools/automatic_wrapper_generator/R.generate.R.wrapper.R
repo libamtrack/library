@@ -162,9 +162,14 @@ for(i in 1:length(functions)){
 	if(length(pos.only.out) > 0){
 		# j <- 6
 		for(j in 1:(length(pos.only.out))){
+			R.type.name <- "numeric"
+			if(grepl("char", para$type[pos.only.out[j]])==TRUE){
+			  R.type.name <- "character"
+			}
 			header <- c(header, paste( "\t", para$name[pos.only.out[j]], 
-								" <- numeric(", gsub("_", ".", para$length[pos.only.out[j]], fixed = T),
+								" <- ", R.type.name,"(", gsub("_", ".", para$length[pos.only.out[j]], fixed = T),
 								")", sep = ""))
+								
 		}
 	}
 	
