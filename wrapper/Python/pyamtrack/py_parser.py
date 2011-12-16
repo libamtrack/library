@@ -71,7 +71,7 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py', library_path 
     if    library_path == '.' or library_path == './':
         header_string +='\tos.environ[\'LD_LIBRARY_PATH\']= os.getcwd()\n'
     else:
-        header_string += '\tos.environ[\'LD_LIBRARY_PATH\']=\'' + library_path +'\')\n'
+        header_string += '\tos.environ[\'LD_LIBRARY_PATH\']=\'' + library_path +'\'\n'
     header_string +='\tlibamtrack = ctypes.cdll.LoadLibrary("libamtrack.so")\n\npy_version = python_version()\n'
     header_string +='if int(py_version[0]) < 3 and int(py_version[2]) <= 5:\n\tprint \'ERROR:\\nYou are using Python%s\\nPython2.6 or later needed!\\n\'%py_version\n\tsys.exit(1)\n\n\n'
     
