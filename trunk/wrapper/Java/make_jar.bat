@@ -50,5 +50,5 @@ del bin\*.class
 
 :: keystore created using command "keytool -genkey -keystore myk -alias jdc", password "libamtrack"
 
-%jarsignerexe% -keystore myk -signedjar examplesigned-Windows.jar example.jar jdc
+%jarsignerexe% -keystore myk -storepass libamtrack -signedjar examplesigned-Windows.jar example.jar jdc
 move examplesigned-Windows.jar webstart\
