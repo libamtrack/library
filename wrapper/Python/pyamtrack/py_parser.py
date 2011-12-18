@@ -53,6 +53,19 @@ def read_namespace(name_file ='NAMESPACE'):
     in_file.close()
     return functions
 
+
+c_lookup = {'double': 'ctypes.c_double', 
+                'long': 'ctypes.c_long', 
+                'bool': 'ctypes.c_bool',
+                'int' : 'ctypes.c_int',
+                'char' : 'ctypes.c_char',
+                'bool' : 'ctypes.c_bool',
+                'short' : 'ctypes.c_short',
+                'int32_t' : 'ctypes.c_int32',
+                'uint64_t' : 'ctypes.c_uint64',
+                'void' : ''}
+    
+    
 def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py', library_path = '.'):
     '''
     @param[in] func_objects  list of function objects 
@@ -117,6 +130,9 @@ def write_func_in_py(func_objects,  outfile_name = 'pyamtrack.py', library_path 
             continue
         
         py_func_string += '\tc_function =  libamtrack.' + c_func.name + '\n'
+        if c_func.c_return and c_func.c_return_type != 'void':
+            if c_func.c_return_type in c_lookup.keys():
+                py_func_string += '\tc_function.restype = ' + c_lookup[c_func.c_return_type] + '\n'
         py_func_string += '\tc_output = c_function('
         i=0
         # loop over positions, to match the one in the function call of libamtrack
@@ -157,16 +173,6 @@ def translate_type(parameter):
     '''
     takes an amtrack_para object and returns the python lines necessary to access it from python
     '''
-    c_lookup = {'double': 'ctypes.c_double', 
-                'long': 'ctypes.c_long', 
-                'bool': 'ctypes.c_bool',
-                'int' : 'ctypes.c_int',
-                'char' : 'ctypes.c_char',
-                'bool' : 'ctypes.c_bool',
-                'short' : 'ctypes.c_short',
-                'int32_t' : 'ctypes.c_int32',
-                'uint64_t' : 'ctypes.c_uint64',
-                'void' : ''}
     
     py_line =''
     
@@ -233,16 +239,20 @@ def harvest(functions,  path = '../../../include/'):
                     if function_end:
                         function_end = False     
                         if all:
-                            desired_func.append(tools.amtrack_func(string.split(string.split(tmp_header_content[tmp_definition_start] )[1] , '(') [0]))
+                            func_name = string.split(string.split(tmp_header_content[tmp_definition_start] )[1] , '(') [0]
+                            desired_func.append(tools.amtrack_func(func_name))
                             desired_func[-1].comment = tmp_header_content[comment_start:comment_stop]
                             desired_func[-1].definition = tmp_header_content[tmp_definition_start:tmp_definition_stop]
+                            desired_func[-1].c_return_type = string.split(tmp_header_content[tmp_definition_start])[0]
                             tmp_comment = ''
                             tmp_definition =''
                         
                         elif string.split(string.split(tmp_header_content[tmp_definition_start])[1], '(') [0] in functions:              
-                            desired_func.append(tools.amtrack_func(string.split(string.split(tmp_header_content[tmp_definition_start])[1], '(') [0]))
+                            func_name = string.split(string.split(tmp_header_content[tmp_definition_start] )[1] , '(') [0]
+                            desired_func.append(tools.amtrack_func(func_name))
                             desired_func[-1].comment = tmp_header_content[comment_start:comment_stop]
                             desired_func[-1].definition = tmp_header_content[tmp_definition_start:tmp_definition_stop]
+                            desired_func[-1].c_return_type = string.split(tmp_header_content[tmp_definition_start])[0]
                             tmp_comment = ''
                             tmp_definition = ''
                             
