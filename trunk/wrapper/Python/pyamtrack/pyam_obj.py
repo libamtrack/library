@@ -41,6 +41,7 @@ class amtrack_func:
         self.comment = ''
         self.definition =''
         self.c_return = False
+        self.c_return_type = ''
         
     def extract_params (self):
         '''
