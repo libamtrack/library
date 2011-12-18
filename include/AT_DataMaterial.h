@@ -418,7 +418,6 @@ double AT_electron_density_m3_from_material_no_single( const long   material_no 
  * @param[in]     n                    number of materials
  * @param[in]     material_no          material indices (array of size n)
  * @param[out]    electron_density_m3  electron densities per m3 (array of size n)
- * @return        none
  */
 void AT_electron_density_m3_from_material_no_multi( const long n,
 		const long   material_no[],
