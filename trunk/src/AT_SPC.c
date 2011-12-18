@@ -680,7 +680,6 @@ int AT_SPC_read_header_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 long AT_SPC_get_number_of_bins_from_filename_fast( const char filename[FILE_NAME_NCHAR] )
 {
 
-	printf("will open file %s\n", filename);
 	int nb = AT_SPC_get_number_of_bytes_in_file( filename );
 	int size = nb / sizeof(int32_t);
 
