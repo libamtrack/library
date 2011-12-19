@@ -160,7 +160,7 @@ AT.SPC.read <- function( file.name,
 	# C version
 		 if(header.only == FALSE){
 			 spc.size            <- numeric(1)
-			 res                 <- .C( "AT_SPC_get_size_from_filename_R",
+			 res                 <- .C( "AT_SPC_get_number_of_bins_from_filename_fast_R",
 										file.name          = as.character(file.name),
 										spc.size           = as.integer(spc.size),
 										PACKAGE            = "libamtrack")
@@ -174,7 +174,6 @@ AT.SPC.read <- function( file.name,
 			fluence.cm2          <- numeric(n)
 			n.bins.read          <- integer(1)
 			
-	#  	res                  <- .C( "AT_SPC_read_data_from_filename_R",
 			res                  <- .C( "AT_SPC_read_data_from_filename_fast_R",
 					file.name          = as.character(file.name),
 					n                  = as.integer(n),
