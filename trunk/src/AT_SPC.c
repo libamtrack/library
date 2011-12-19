@@ -28,205 +28,8 @@
 
 #include "AT_SPC.h"
 
-void endian_swap2(unsigned short* x)
-{
-  *x = (*x>>8) | (*x<<8);
-}
 
-
-void endian_swap4(unsigned int* x)
-{
-  *x = (*x>>24) |
-    ((*x<<8) & 0x00FF0000) |
-    ((*x>>8) & 0x0000FF00) |
-    (*x<<24);
-}
-
-
-// __int64 for MSVC, "int int" for gcc
-void endian_swap8(uint64_t * x)
-{
-  *x = (*x>>56) |
-    ((*x<<40) & 0x00FF000000000000) |
-    ((*x<<24) & 0x0000FF0000000000) |
-    ((*x<<8)  & 0x000000FF00000000) |
-    ((*x>>8)  & 0x00000000FF000000) |
-    ((*x>>24) & 0x0000000000FF0000) |
-    ((*x>>40) & 0x000000000000FF00) |
-    (*x<<56);
-}
-
-
-void readStruct(FILE *fp,
-		struct STRPSPCBTAG * str,
-		bool switchEndian)
-{
-  size_t n_read_elements = fread(str, sizeof(struct STRPSPCBTAG), 1, fp);
-#ifndef NDEBUG
-  if( n_read_elements != 1)
-	  printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
-#endif
-  if (switchEndian){
-      endian_swap4(&(*str).ulLen);
-      endian_swap4(&(*str).ulTag);
-  }
-}
-
-
-int AT_SPC_get_size_from_filename(const char filename[FILE_NAME_NCHAR])
-{
-	FILE* fp;
-	fp = fopen(filename, "rb");
-    int size = AT_SPC_get_size(fp);
-    fclose(fp);
-
-	return(size);
-}
-
-
-int AT_SPC_get_size(FILE *fp){
-	char string[80];
-	bool switchEndian=false;
-	int size=0;
-	struct STRPSPCBTAG  filetype;
-	readStruct(fp,&filetype,false);
-	//Skip structure. Just going to assume the tags are right here.
-    size_t n_read_elements = fread(string, sizeof(char), 80, fp);
-#ifndef NDEBUG
-    if( n_read_elements != 80)
-    	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 80);
-#endif
-    if (strcmp(string,"SPCM")==0)
-		switchEndian=true;
-	fseek (fp ,  88*2, SEEK_CUR ); //Skip Fileversion and filedate
-
-	struct STRPSPCBTAG targetName;
-	readStruct(fp,&targetName,switchEndian);
-	fseek (fp ,  targetName.ulLen, SEEK_CUR );
-	struct STRPSPCBTAG projectileName;
-	readStruct(fp,&projectileName,switchEndian);
-	fseek (fp , projectileName.ulLen, SEEK_CUR );
-	fseek(fp,16*3, SEEK_CUR); //Skip beam energy, peak position and normalization
-
-	struct STRPSPCBTAG  nStepsTag;
-	uint64_t nSteps;
-	readStruct(fp,&nStepsTag,switchEndian);
-	n_read_elements = fread(&nSteps,sizeof(uint64_t),1,fp);
-#ifndef NDEBUG
-    if( n_read_elements != 1)
-    	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
-#endif
-    if (switchEndian) endian_swap8(&nSteps);
-	uint64_t binsize;
-	int i;
-	for (i=0; i < nSteps; i++){
-		fseek(fp,16*2, SEEK_CUR); //Skip depth and normalization
-		struct STRPSPCBTAG  nSpeciesTag;
-		uint64_t nSpecies;
-		readStruct(fp,&nSpeciesTag,switchEndian);
-		if (nSpeciesTag.ulTag != TRPSPCDTAG_NS){
-#ifndef NDEBUG
-			printf("Species tag corrupt: %u \n",nSpeciesTag.ulTag);
-#endif
-			return 0;
-		}
-		n_read_elements = fread(&nSpecies,sizeof(int64_t),1,fp);
-#ifndef NDEBUG
-	    if( n_read_elements != 1)
-	    	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
-#endif
-	    if (switchEndian) endian_swap8(&nSpecies);
-		//    printf("Species: %u \n",nSpecies);
-		int j;
-		for (j=0; j < nSpecies; j++){
-			struct STRPSPCBTAG  zA;
-			readStruct(fp,&zA,switchEndian);
-			if (zA.ulTag != TRPSPCDTAG_S){
-#ifndef NDEBUG
-				printf("ZA tag corrupt: %u \n",zA.ulTag);
-#endif
-				return 0;
-			}
-			fseek(fp,8*3,SEEK_CUR);
-
-			struct STRPSPCBTAG  cum;
-			readStruct(fp,&cum,switchEndian);
-			if (cum.ulTag != TRPSPCDTAG_CUM){
-#ifndef NDEBUG
-				printf("Cum tag corrupt: %u \n",cum.ulTag);
-#endif
-				return 0;
-			}
-			fseek(fp,8,SEEK_CUR);
-			struct STRPSPCBTAG  nC;
-			readStruct(fp,&nC,switchEndian);
-			if (nC.ulTag != TRPSPCDTAG_NC){
-#ifndef NDEBUG
-				printf("Cum tag corrupt: %u \n",cum.ulTag);
-#endif
-				return 0;
-			}
-			fseek(fp,8,SEEK_CUR);
-			struct STRPSPCBTAG  nBins;
-			readStruct(fp,&nBins,switchEndian);
-			if (nBins.ulTag != TRPSPCDTAG_NE){
-#ifndef NDEBUG
-				printf("Energy bin tag corrupt: %u \n",nBins.ulTag);
-#endif
-				return 0;
-			}
-			n_read_elements = fread(&binsize,sizeof(uint64_t),1,fp); //Read number of NE bins
-#ifndef NDEBUG
-		    if( n_read_elements != 1)
-		    	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
-#endif
-		    if (switchEndian) endian_swap8(&binsize);
-			size += binsize;
-
-			struct STRPSPCBTAG  energyBins;
-			readStruct(fp,&energyBins,switchEndian);
-			if (energyBins.ulTag==TRPSPCDTAG_EREF){ //If it's a reference, skip just 8 bytes
-				fseek(fp,energyBins.ulLen,SEEK_CUR);
-			}
-			else if (energyBins.ulTag==TRPSPCDTAG_E){
-				fseek(fp,energyBins.ulLen,SEEK_CUR);
-			} //Else skip energybins
-			else {
-#ifndef NDEBUG
-				printf("SPC file corrupt! \n");
-				printf("%ld \n",ftell(fp));
-				printf("%u \n",energyBins.ulTag);
-#endif
-				return 0;
-			}
-			struct STRPSPCBTAG  histoBins;
-			readStruct(fp,&histoBins,switchEndian);
-			if (histoBins.ulTag != TRPSPCDTAG_HISTO){
-#ifndef NDEBUG
-				printf("History bin tag corrupt: %u \n",histoBins.ulTag);
-#endif
-				return 0;
-			}
-			fseek(fp,histoBins.ulLen,SEEK_CUR);
-
-			struct STRPSPCBTAG  runSum;
-			readStruct(fp,&runSum,switchEndian);
-			if (runSum.ulTag != TRPSPCDTAG_RUNNINGSUM){
-#ifndef NDEBUG
-				printf("History bin tag corrupt: %u \n",runSum.ulTag);
-#endif
-				return 0;
-			}
-			fseek(fp,runSum.ulLen,SEEK_CUR);
-			//      printf("RunSum: %u %u \n",runSum.ulTag,runSum.ulLen);
-		}
-
-	}
-	return size;
-}
-
-
-int AT_SPC_get_number_of_bytes_in_file(const char * filename){
+int AT_SPC_get_number_of_bytes_in_file(const char* filename){
 	int fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		return -1;
@@ -241,7 +44,9 @@ int AT_SPC_get_number_of_bytes_in_file(const char * filename){
 }
 
 
-int AT_SPC_fast_read_buffer(const char * filename, int content_size, int32_t * content){
+int AT_SPC_fast_read_buffer(const char* filename,
+		int content_size,
+		int32_t* content){
 
 	/* open the file */
 	int fd = open(filename, O_RDONLY);
@@ -289,23 +94,30 @@ int AT_SPC_fast_read_buffer(const char * filename, int content_size, int32_t * c
 }
 
 
-void decomposeStructIntoString( const int32_t content[], char * string, int * length ){
+void decomposeStructIntoString( const int32_t content[],
+		char * string,
+		int * length ){
 	(*length) = content[1];
 	string = (char*)calloc(sizeof(char),*length); // TODO move allocation outside
 	memcpy( string, content+2, *length);
 }
 
 
-void decomposeStructIntoDouble( const int32_t content[], double * value, int * length ){
+void decomposeStructIntoDouble( const int32_t content[],
+		double * value,
+		int * length ){
 	(*length) = content[1];
 	memcpy( value, content+2, *length);
 }
 
 
-void decomposeStructIntoInteger( const int32_t content[], uint64_t * value, int * length ){
+void decomposeStructIntoInteger( const int32_t content[],
+		uint64_t * value,
+		int * length ){
 	(*length) = content[1];
 	memcpy( value, content+2, *length);
 }
+
 
 int skipStruct(int32_t ** content){
 	int length = (*content)[1];
@@ -313,18 +125,21 @@ int skipStruct(int32_t ** content){
 	return length;
 }
 
+
 int decomposeTag(const int32_t content[]){
 	return content[0];
 }
+
 
 int decomposeLength(const int32_t content[]){
 	return content[1];
 }
 
 
-int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]){
-	int size=0;
-	int length=0;
+int AT_SPC_decompose_size(const int content_size,
+		int32_t content_orig[]){
+	int size   = 0;
+	int length = 0;
 
 	int32_t * content = content_orig;
 
@@ -342,11 +157,9 @@ int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]){
 	skipStruct(&content);
 
 	uint64_t stepNumber = 0;
-
 	for( stepNumber = 0 ; stepNumber < numberOfDepthSteps ; stepNumber++ ){
 
 //		printf("-----> Step nr %d\n", stepNumber);
-
 		skipStruct(&content); // depth
 		skipStruct(&content); // normalization
 
@@ -355,11 +168,9 @@ int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]){
 		skipStruct(&content);
 
 		uint64_t specieNumber = 0;
-
 		for( specieNumber = 0 ; specieNumber < numberOfSpecies ; specieNumber++ ){
 
 //			printf("--------------> Specie nr %d\n", specieNumber);
-
 			skipStruct(&content); // NZ
 			skipStruct(&content); // Cum
 			skipStruct(&content); // nC
@@ -373,7 +184,6 @@ int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]){
 			skipStruct(&content); // energy bins
 			skipStruct(&content); // histo
 			skipStruct(&content); // running sum
-
 		}
 	}
 
@@ -381,8 +191,7 @@ int AT_SPC_decompose_size(const int content_size, int32_t content_orig[]){
 }
 
 
-int AT_SPC_decompose_header(
-		const int content_size,
+int AT_SPC_decompose_header( const int content_size,
 		int32_t   content_orig[],
 		double*   E_MeV_u,
 		double*   peak_position_g_cm2,
@@ -421,8 +230,7 @@ int AT_SPC_decompose_header(
 
 
 
-int AT_SPC_decompose_data(
-		const int content_size,
+int AT_SPC_decompose_data( const int content_size,
 		int32_t   content_orig[],
 		int*      depth_step[],
 		double*   depth_g_cm2[],
@@ -431,7 +239,7 @@ int AT_SPC_decompose_data(
 		long*     particle_no[],
 		double*   fluence_cm2[]){
 
-	int index=0;
+	int index  = 0;
 	int length = 0;
 
 	int32_t * content = content_orig;
@@ -586,67 +394,6 @@ int AT_SPC_decompose_data(
 	return EXIT_SUCCESS;
 }
 
-int AT_SPC_read(const char filename[FILE_NAME_NCHAR],
-		int*    depth_step[],
-		double* depth_g_cm2[],
-		double* E_MeV_u[],
-		double* DE_MeV_u[],
-		long*   particle_no[],
-		double* fluence_cm2[]){
-
-	FILE* fp;
-	fp = fopen(filename, "rb");
-
-	int total_n_bins = AT_SPC_get_size(fp);
-
-	*depth_step    =    (int*)realloc(*depth_step,  total_n_bins * sizeof(int));
-	*depth_g_cm2   = (double*)realloc(*depth_g_cm2, total_n_bins * sizeof(double));
-	*E_MeV_u       = (double*)realloc(*E_MeV_u,     total_n_bins * sizeof(double));
-	*DE_MeV_u      = (double*)realloc(*DE_MeV_u,    total_n_bins * sizeof(double));
-	*particle_no   =   (long*)realloc(*particle_no, total_n_bins * sizeof(long));
-	*fluence_cm2   = (double*)realloc(*fluence_cm2, total_n_bins * sizeof(double));
-
-	int n_bins_read = AT_SPC_read_data(fp,
-			total_n_bins,
-			*depth_step,
-			*depth_g_cm2,
-			*E_MeV_u,
-			*DE_MeV_u,
-			*particle_no,
-			*fluence_cm2);
-
-	fclose(fp);
-
-    return(n_bins_read);
-}
-
-
-int AT_SPC_read_data_from_filename( const char filename[FILE_NAME_NCHAR],
-		int    n,
-		int    depth_step[],
-		double depth_g_cm2[],
-		double E_MeV_u[],
-		double DE_MeV_u[],
-		long   particle_no[],
-		double fluence_cm2[])
-{
-	FILE* fp;
-	fp = fopen(filename, "rb");
-
-	int n_bins_read = AT_SPC_read_data(fp,
-			n,
-			depth_step,
-			depth_g_cm2,
-			E_MeV_u,
-			DE_MeV_u,
-			particle_no,
-			fluence_cm2);
-
-	fclose(fp);
-
-	return(n_bins_read);
-}
-
 
 int AT_SPC_read_header_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 		double*   E_MeV_u,
@@ -748,198 +495,3 @@ int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 	return res;
 }
 
-
-int AT_SPC_read_data(FILE* fp,
-		const int n,
-		int    depth_step[],
-		double depth_g_cm2[],
-		double E_MeV_u[],
-		double DE_MeV_u[],
-		long   particle_no[],
-		double fluence_cm2[]){
-
-	char string[80];
-	bool switchEndian=false;
-	int size=0;
-	unsigned int i=0;
-	unsigned int k =0;
-	int particles[1000];
-	rewind(fp);
-	struct STRPSPCBTAG  filetype;
-	readStruct(fp,&filetype,false);
-	//Skip structure. Just going to assume the tags are right here.
-	size_t n_read_elements = fread(string, sizeof(char), 80, fp);
-#ifndef NDEBUG
-    if( n_read_elements != 80)
-    	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 80);
-#endif
-    if (strcmp(string,"SPCM")==0)
-		switchEndian=true;
-	fseek (fp ,  88*2, SEEK_CUR ); //Skip Fileversion and filedate
-
-	struct STRPSPCBTAG targetName;
-	readStruct(fp,&targetName,switchEndian);
-	fseek (fp ,  targetName.ulLen, SEEK_CUR );
-	struct STRPSPCBTAG projectileName;
-	readStruct(fp,&projectileName,switchEndian);
-	fseek (fp , projectileName.ulLen, SEEK_CUR );
-	fseek(fp,16*3, SEEK_CUR); //Skip beam energy, peak position and normalization
-
-	struct STRPSPCBTAG  nStepsTag;
-	uint64_t nSteps;
-	readStruct(fp,&nStepsTag,switchEndian);
-	n_read_elements = fread(&nSteps,sizeof(uint64_t),1,fp);
-#ifndef NDEBUG
-	if( n_read_elements != 1)
-	   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
-#endif
-	if (switchEndian) endian_swap8(&nSteps);
-
-	uint64_t binsize;
-	for (i=0; i < nSteps; i++){
-		struct STRPSPCBTAG depthTag;
-		readStruct(fp,&depthTag,switchEndian);
-		double curDepth;
-		n_read_elements = fread(&curDepth,sizeof(double),1,fp);
-#ifndef NDEBUG
-		if( n_read_elements != 1)
-		   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
-#endif
-		if (switchEndian) endian_swap8((uint64_t*)(&curDepth));
-
-		fseek(fp,16, SEEK_CUR); //Skip normalization
-		struct STRPSPCBTAG  nSpeciesTag;
-		uint64_t nSpecies;
-		readStruct(fp,&nSpeciesTag,switchEndian);
-		if (nSpeciesTag.ulTag != TRPSPCDTAG_NS){
-#ifndef NDEBUG
-			printf("Species tag corrupt: %u \n",nSpeciesTag.ulTag);
-#endif
-			return 0;
-		}
-		n_read_elements = fread(&nSpecies,sizeof(uint64_t),1,fp);
-#ifndef NDEBUG
-		if( n_read_elements != 1)
-		   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
-#endif
-		if (switchEndian) endian_swap8(&nSpecies);
-
-		int j;
-		for (j=0; j < nSpecies; j++){
-			struct STRPSPCBTAG  zA;
-			readStruct(fp,&zA,switchEndian);
-			if (zA.ulTag != TRPSPCDTAG_S){
-#ifndef NDEBUG
-				printf("ZA tag corrupt: %u \n",zA.ulTag);
-#endif
-				return 0;
-			}
-			fseek(fp,8*2,SEEK_CUR);//Skip double version of A and Z
-			uint32_t z,a;
-			n_read_elements = fread(&z,sizeof(uint32_t),1,fp);//Read A and Z values
-#ifndef NDEBUG
-			if( n_read_elements != 1)
-			   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
-#endif
-			n_read_elements = fread(&a,sizeof(uint32_t),1,fp);
-#ifndef NDEBUG
-			if( n_read_elements != 1)
-			   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
-#endif
-			fseek(fp,8*4,SEEK_CUR);//Skip Cum & nC
-			struct STRPSPCBTAG  nBins;
-			readStruct(fp,&nBins,switchEndian);
-			if (nBins.ulTag != TRPSPCDTAG_NE){
-#ifndef NDEBUG
-				printf("Energy bin tag corrupt: %u \n",nBins.ulTag);
-#endif
-				return 0;
-			}
-			n_read_elements = fread(&binsize,sizeof(uint64_t),1,fp); //Read number of NE bins
-#ifndef NDEBUG
-			if( n_read_elements != 1)
-			   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
-#endif
-			if (switchEndian) endian_swap8(&binsize);
-			size += binsize;
-
-			struct STRPSPCBTAG  energyBins;
-			readStruct(fp,&energyBins,switchEndian);
-			if (energyBins.ulTag==TRPSPCDTAG_EREF){ //If it's a reference, copy the referred particle
-				uint64_t pRef;
-				n_read_elements = fread(&pRef,sizeof(uint64_t),1,fp);
-#ifndef NDEBUG
-			if( n_read_elements != 1)
-				   	printf("Read %zu element(s), instead of %d !\n", n_read_elements, 1);
-#endif
-			if (pRef > k){
-#ifndef NDEBUG
-					printf("SPC file corrupt \n");
-#endif
-					return 0;
-				}
-				particles[j]=particles[pRef];
-				int n;
-				for (n=0; n < binsize; n++){ // Copy reference
-					E_MeV_u[k+n]=E_MeV_u[particles[pRef]+n];
-					DE_MeV_u[k+n]=DE_MeV_u[particles[pRef]+n];
-				}
-			} else if (energyBins.ulTag==TRPSPCDTAG_E){
-				double tempBins[binsize];
-				n_read_elements = fread(tempBins, sizeof(double), binsize+1, fp);
-#ifndef NDEBUG
-				if( n_read_elements != binsize+1)
-				   	printf("Read %zu element(s), instead of %llu !\n", n_read_elements, (long long unsigned int)(binsize+1));
-#endif
-				int n;
-				for (n=0; n < binsize; n++){
-					E_MeV_u[k+n]=(tempBins[n+1]+tempBins[n])/2;
-					DE_MeV_u[k+n]=(tempBins[n+1]-tempBins[n]);
-				}
-				particles[j]=k;
-
-			} //Else skip energybins
-			else {
-#ifndef NDEBUG
-				printf("SPC file corrupt! \n");
-				printf("%ld \n",ftell(fp));
-				printf("%u \n",energyBins.ulTag);
-#endif
-				return 0;
-			}
-
-
-			struct STRPSPCBTAG  histoBins;
-			readStruct(fp,&histoBins,switchEndian);
-			if (histoBins.ulTag != TRPSPCDTAG_HISTO){
-#ifndef NDEBUG
-				printf("History bin tag corrupt: %u \n",histoBins.ulTag);
-#endif
-				return 0;
-			}
-			n_read_elements = fread(&fluence_cm2[k],sizeof(double),binsize,fp);
-#ifndef NDEBUG
-			if( n_read_elements != binsize)
-			   	printf("Read %zu element(s), instead of %llu !\n", n_read_elements, (long long unsigned int)binsize);
-#endif
-			int n;
-			for (n = 0; n < binsize; n++){
-				depth_g_cm2[k+n]=curDepth;
-				depth_step[k+n]=i;
-				particle_no[k+n]=z*1000+a;
-			}
-			k = k+binsize;
-			struct STRPSPCBTAG  runSum;
-			readStruct(fp,&runSum,switchEndian);
-			if (runSum.ulTag != TRPSPCDTAG_RUNNINGSUM){
-#ifndef NDEBUG
-				printf("History bin tag corrupt: %u \n",runSum.ulTag);
-#endif
-				return 0;
-			}
-			fseek(fp,runSum.ulLen,SEEK_CUR);
-		}
-
-	}
-	return size;
-}
