@@ -474,3 +474,26 @@ int AT_I_eV_from_element_acronym(const long n, char* acronym[], double I[]){
 		return AT_Success;
 
 }
+
+double AT_electron_density_cm3_from_element_acronym_single( const char acronym[PARTICLE_NAME_NCHAR] ){
+
+    double Z = AT_Z_from_element_acronym_single( acronym);
+    double A = AT_atomic_weight_from_element_acronym_single( acronym);
+    double density_g_cm3 = AT_density_g_cm3_from_element_acronym_single( acronym);
+
+    return Z * density_g_cm3 * Avogadro_constant_1_mol / A;
+
+}
+
+int AT_electron_density_cm3_from_element_acronym( const long n, char* acronym[], double electron_density[]){
+
+    long i;
+
+    for (i=0; i < n; i++) {
+        electron_density[i] = AT_electron_density_cm3_from_element_acronym_single( acronym[i] );
+        if (electron_density[i] < 0)
+            return AT_Particle_Not_Defined;
+    }
+    return AT_Success;
+
+}
