@@ -426,4 +426,24 @@ int AT_I_eV_from_element_acronym( const long n,
 		char* acronym[],
 		double I[]);
 
+
+/**
+ * Returns the electron density per cm3 for given elemental symbol
+ * @param[in]   acronym  elemental symbol (array of size PARTICLE_NAME_NCHAR)
+ * @return      corresponding electron density per cm3
+ */
+double AT_electron_density_cm3_from_element_acronym_single( const char acronym[]);
+
+
+/**
+ * Returns the electron densities per cm3 for given elemental symbols
+ * @param[in]  n                       TODO
+ * @param[in]  acronym                 elemental symbols (array of size n)
+ * @param[out] electron_density        corresponding electron densities per cm3 (array of size n)
+ * @return status
+ */
+int AT_electron_density_cm3_from_element_acronym( const long n,
+                                                 char* acronym[],
+                                                 double electron_density[]);
+
 #endif /* AT_DATAPARTICLE_H_ */
