@@ -33,7 +33,7 @@
 # interpolation (maybe not in R but in later C translation of this code)
 
 AT.SPC.read <- function( file.name, 
-                         flavour        = "vanilla",
+                         flavour        = "C",
                          endian         = c("big", "little")[1], 
                          mean           = c("geometric", "arithmetic")[2],
                          header.only    = FALSE)
@@ -157,34 +157,61 @@ AT.SPC.read <- function( file.name,
     close(to.read)
 
 	}else{
-	# C version
-		 if(header.only == FALSE){
-			 spc.size            <- numeric(1)
-			 res                 <- .C( "AT_SPC_get_number_of_bins_from_filename_fast_R",
-										file.name          = as.character(file.name),
-										spc.size           = as.integer(spc.size),
-										PACKAGE            = "libamtrack")
+	     # C version
+		 E.MeV.u             <- numeric(1)
+		 peak.position.g.cm2 <- numeric(1)
+		 particle.no         <- integer(1)
+		 material.no         <- integer(1)
+		 normalization       <- numeric(1)
+		 n.depth.steps       <- integer(1)
+		 returnValue         <- integer(1)
+	     res                 <- .C( "AT_SPC_read_header_from_filename_fast_R",
+										file.name           = as.character(file.name),
+										E.MeV.u             = as.single(E.MeV.u),
+										peak.position.g.cm2 = as.single(peak.position.g.cm2),
+										particle.no         = as.integer(particle.no),
+										material.no         = as.integer(material.no),
+										normalization       = as.single(normalization),
+										n.depth.steps       = as.integer(n.depth.steps),
+										returnValue         = as.integer(returnValue),
+										PACKAGE             = "libamtrack")
+		 beam.energy.MeV.u   <- res$E.MeV.u
+		 peak.position.g.cm2 <- res$peak.position.g.cm2
+     n.depth.steps       <- res$n.depth.steps
+
+         # TODO: projectile/material is hardcoded, replace by more flexible code
+         projectile          <- "12C"
+         target.material     <- "H2O"
+         
+   		 if(header.only == TRUE){
+		   df                  <- 0
+	     }else{
+		   spc.size            <- numeric(1)
+		   res                 <- .C( "AT_SPC_get_number_of_bins_from_filename_fast_R",
+			  						  file.name          = as.character(file.name),
+									  spc.size           = as.integer(spc.size),
+									  PACKAGE            = "libamtrack")
 	
-			n                    <- res$spc.size
-			depth.step           <- integer(n)
-			depth.g.cm2          <- numeric(n)
-			E.MeV.u              <- numeric(n)
-			DE.MeV.u             <- numeric(n)
-			particle.no          <- integer(n)
-			fluence.cm2          <- numeric(n)
-			n.bins.read          <- integer(1)
+		   n                    <- res$spc.size
+		   depth.step           <- integer(n)
+		   depth.g.cm2          <- numeric(n)
+		   E.MeV.u              <- numeric(n)
+		   DE.MeV.u             <- numeric(n)
+		   particle.no          <- integer(n)
+		   fluence.cm2          <- numeric(n)
+		   n.bins.read          <- integer(1)
 			
-			res                  <- .C( "AT_SPC_read_data_from_filename_fast_R",
-					file.name          = as.character(file.name),
-					n                  = as.integer(n),
-					depth.step         = as.integer(depth.step),
-					depth.g.cm2        = as.single(depth.g.cm2),
-					E.MeV.u            = as.single(E.MeV.u),
-					DE.MeV.u           = as.single(DE.MeV.u),
-					particle.no        = as.integer(particle.no),
-					fluence.cm2        = as.single(fluence.cm2),
-					n.bins.read        = as.integer(n.bins.read),
-					PACKAGE            = "libamtrack")
+		   res                  <- .C( "AT_SPC_read_data_from_filename_fast_R",
+					                file.name          = as.character(file.name),
+					                n                  = as.integer(n),
+					                depth.step         = as.integer(depth.step),
+					                depth.g.cm2        = as.single(depth.g.cm2),
+					                E.MeV.u            = as.single(E.MeV.u),
+					                DE.MeV.u           = as.single(DE.MeV.u),
+					                particle.no        = as.integer(particle.no),
+					                fluence.cm2        = as.single(fluence.cm2),
+					                n.bins.read        = as.integer(n.bins.read),
+					                PACKAGE            = "libamtrack")
 			
 			df   <- data.frame(  depth.step             = res$depth.step,
 								 depth.g.cm2            = res$depth.g.cm2,
@@ -192,43 +219,14 @@ AT.SPC.read <- function( file.name,
 								 DE.MeV.u               = res$DE.MeV.u,
 								 particle.no            = res$particle.no,
 								 fluence.cm2            = res$fluence.cm2)
-		}else{
-			 df <- 0
-			 E.MeV.u <- numeric(1)
-			 peak.position.g.cm2 <- numeric(1)
-			 particle.no <- integer(1)
-			 material.no <- integer(1)
-			 normalization <- numeric(1)
-			 returnValue <- integer(1)
-			 res                 <- .C( "AT_SPC_read_header_from_filename_fast_R",
-										file.name          = as.character(file.name),
-										E.MeV.u            = as.single(E.MeV.u),
-										peak.position.g.cm2 = as.single(peak.position.g.cm2),
-										particle.no        = as.integer(particle.no),
-										material.no        = as.integer(material.no),
-										normalization      = as.single(normalization),
-										returnValue        = as.integer(returnValue),
-										PACKAGE            = "libamtrack")
-			beam.energy.MeV.u <- res$E.MeV.u
-			peak.position.g.cm2 <- res$peak.position.g.cm2
-
-            # TODO: projectile/material is hardcoded, replace by more flexible code
-            projectile <- "12C"
-            target.material <- "H2O"
-            n.depths.steps <- numeric(1)
-			 res                 <- .C( "AT_SPC_get_number_of_bins_from_filename_fast",
-										file.name          = as.character(file.name),
-										n.depths.steps     = as.integer(n.depths.steps),
-										PACKAGE            = "libamtrack")
-            n.depths.steps <- res$n.depths.steps
 
 		}
-	}
-	return(list( spc                 = df,
-	             n.depth.steps       = n.depth.steps,
-	             projectile          = projectile,
-	             target.material     = target.material,
-	             energy.MeV.u        = beam.energy.MeV.u,
-	             peak.position.g.cm2 = peak.position.g.cm2))
+	  }
+	  return(list( spc                 = df,
+	               n.depth.steps       = n.depth.steps,
+	               projectile          = projectile,
+	               target.material     = target.material,
+	               energy.MeV.u        = beam.energy.MeV.u,
+	               peak.position.g.cm2 = peak.position.g.cm2))
 }
 
