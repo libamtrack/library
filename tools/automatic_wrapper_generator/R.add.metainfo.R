@@ -30,12 +30,12 @@ code.status <- get.argument(configure.ac.file[ii&kk])
 code.rev    <- scan("../../../saved_svn_version.txt", what = character())
 
 # Write to transient file to use in other scripts
-meta.infomation <- list( code.version = code.version, 
+meta.information <- list( code.version = code.version, 
             code.name    = code.name, 
             code.status  = code.status, 
             date.short   = date.short, 
             date.long    = date.long)
-save( meta.infomation,
+save( meta.information,
       file = "meta.information.sdd")
 
 # Insert information
