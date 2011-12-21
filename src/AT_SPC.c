@@ -401,6 +401,32 @@ int AT_SPC_decompose_data( const int content_size,
 }
 
 
+long AT_SPC_get_number_of_bins_from_filename_fast( const char filename[FILE_NAME_NCHAR] )
+{
+
+	int nb = AT_SPC_get_number_of_bytes_in_file( filename );
+	if( nb <= 0){
+		return nb-1;
+	}
+
+	int size = nb / sizeof(int32_t);
+
+	int32_t * content = (int32_t*)calloc(sizeof(int32_t), size);
+	int status = AT_SPC_fast_read_buffer(filename, size, content);
+
+	int res;
+	if( status == EXIT_FAILURE ){
+		res = -1;
+	} else {
+		res = AT_SPC_decompose_size( size,
+				content);
+	}
+	free(content);
+
+	return res;
+}
+
+
 int AT_SPC_read_header_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 		double*   E_MeV_u,
 		double*   peak_position_g_cm2,
@@ -433,32 +459,6 @@ int AT_SPC_read_header_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 				depth_steps_no);
 	}
 
-	free(content);
-
-	return res;
-}
-
-
-long AT_SPC_get_number_of_bins_from_filename_fast( const char filename[FILE_NAME_NCHAR] )
-{
-
-	int nb = AT_SPC_get_number_of_bytes_in_file( filename );
-	if( nb <= 0){
-		return nb-1;
-	}
-
-	int size = nb / sizeof(int32_t);
-
-	int32_t * content = (int32_t*)calloc(sizeof(int32_t), size);
-	int status = AT_SPC_fast_read_buffer(filename, size, content);
-
-	int res;
-	if( status == EXIT_FAILURE ){
-		res = -1;
-	} else {
-		res = AT_SPC_decompose_size( size,
-				content);
-	}
 	free(content);
 
 	return res;
@@ -501,5 +501,40 @@ int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 	free(content);
 
 	return res;
+}
+
+
+int AT_SPC_read_from_filename_fast( const char filename[FILE_NAME_NCHAR],
+		int 	  n,
+		double*   E_MeV_u_initial,
+		double*   peak_position_g_cm2,
+		long*     particle_no_initial,
+		int*      material_no,
+		double*   normalisation,
+		int*      depth_steps_no,
+		int       depth_step[],
+		double    depth_g_cm2[],
+		double    E_MeV_u[],
+		double    DE_MeV_u[],
+		long      particle_no[],
+		double    fluence_cm2[]){
+
+	AT_SPC_read_header_from_filename_fast( filename,
+			E_MeV_u_initial,
+			peak_position_g_cm2,
+			particle_no_initial,
+			material_no,
+			normalisation,
+			depth_steps_no);
+
+	return (AT_SPC_read_data_from_filename_fast( filename,
+			n,
+			depth_step,
+			depth_g_cm2,
+			E_MeV_u,
+			DE_MeV_u,
+			particle_no,
+			fluence_cm2));
+
 }
 
