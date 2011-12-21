@@ -1,0 +1,156 @@
+############################################################################################################################
+libamtrack information for code developers
+############################################################################################################################
+
+1.  Basic workflow using autotools
+2.  Workflow using eclipse
+3.  Doxygen comments
+4.  R package compilation
+5.  Python wrappers
+
+Contact and feedback
+
+############################################################################################################################
+i. Basic workflow using autotools
+############################################################################################################################
+
+From revision r1037 on, libamtrack follow the GNU autotool conventions to improve portability and facilitate distribution.
+
+This required new files (such as configure.ac, Makefile.am, ChangeLog, NEWS, etc.) and folders (m4) 
+that have be placed in the subversion repository.
+
+In addition, file and folders will be created during the autoconf/automake process (such as aclocal.m4, 
+config.guess, configure, install.sh, Makefile, etc.). Those files *should not* be committed to the repository. 
+Please refrain from doing so. 
+
+Steps for compilation:
+
+1. After you downloaded libamtrack OR 
+   you updated your local workspace (which could have changed configure.ac) OR
+   you changed configure.ac yourself:
+   
+   autoreconf --force --install
+
+   This will create a configure script plus all necessary other files.
+
+2. After (1.) OR
+   you changed a makefile.am OR
+   you want to switch between RELEASE / DEBUG (or any other) configuration
+   
+   ./configure                                (for an optimized, 'release' code)
+   ./configure CFLAGS="-O0 -g -DDEBUG"        (for a 'debug' version of the code, e.g. to use with gdb)
+
+   If you use eclipse, you can simplify this step by using a separate build configurations.
+
+3. After (1.) OR
+   (2.) OR
+   any local change in the code:
+   
+   make all
+
+
+############################################################################################################################
+2. Basic workflow using eclipse
+############################################################################################################################
+
+Eclipse 3.6+ supports the autotool toolchain. There are, however, some peculiarities to be considered:
+
+You have to manually set include path:
+   Right click libamtrack project > Properties > C/C++ general > Path and Symbols
+   
+When using a second build configuration with debug flags (see above), eclipse gets confused and you have (TODO: fix)
+to prepare debugged code to use with gbd in eclipse using the command line.
+
+    
+############################################################################################################################
+3. Doxygen comments
+############################################################################################################################
+
+Doxygen comments are not only used to document libamtrack's C code but they are also used during the scripted generation of
+R and Python wrappers. It is essential for them to have it very carefully formatted.
+
+- After @param[??] parameter name should go and then description.
+- @param[in] defines an input, @param[out] an return parameter.
+- The size of array HAS to be provided in brackets with key word "array of size". It should not be provided in function 
+  declaration in the header file. Both other parameters passed to the function (see example, "n"), numbers and macro
+  expansions can be used as size, also in mixed or multiple form. 
+- A whitespace is needed after the first and before last bracket in the function declaration (TODO: Really? When last
+  variable is an array "[]", the example below fails until the whitespace is removed for the closing bracket).
+- In the function declaration there is one parameter per line, with the first parameter in the same line as function name.
+- Please refrain from using "/", ";" in the description
+
+
+Example:
+
+/**
+  * Returns Z for given elemental symbols
+  * @param[in]   n         number of elements in arrays
+  * @param[in]   acronym   elemental symbols (array of size n)
+  * @param[out]  Z         corresponding Z (array of size n)
+  * @return                status
+  */
+
+int AT_Z_from_element_acronym( const long n,
+		char* acronym[],
+		long Z[] );
+
+
+############################################################################################################################
+4. R package compilation
+############################################################################################################################
+
+The necessary files for producing an R package from libamtrack are found in:
+  /wrapper/R/R_package                     package folder structure and input files, script for compilation, hardcoded wrappers
+                                           and documentation
+  /tools/automatic_wrapper_generation      R scripts for automatic creation of R/C wrappers
+
+To compile a package, navigate to /wrapper/R/R_package:
+
+Select functions that should go to R package and add them to text file NAMESPACE. The suffix "_multi" will automatically be
+skipped, as R functions are supposed to be able to work on vectors as you should always prefer the "<function_name>_multi"
+version of the function over the "<function_name>_single", if possible. If you place "noR: " in front of the function name
+in NAMESPACE a C wrapper will be generated but no corresponding R wrapper. This can be useful if you want to have access 
+to a function within an R function via ".C" but not a full R function on its own. 
+
+Run ./create.package.sh 
+Use --help to see options
+
+If your function is not in resulting package, use --noclean option and check output file "collect.doxygen.information.Rout"
+for functions that fails (most likely due to faulty doxygen formatting).
+
+The resulting package is an source tarball. It can be installed by typing
+
+(sudo) R CMD INSTALL <package_name>
+
+
+Windows specific: Under standard Windows, source tarballs cannot be installed. To compile a package, you have to prepare your system and 
+the best way to do so, is to use the RTools by Murdoch and Sutherland: http://www.murdoch-sutherland.com/Rtools/
+If you use the --build option during this process (R CMD INSTALL --build <package_name>) you will get a binary package <package_name>.zip
+that you can then install on any Windows system.
+
+The process is only needed for intermediate packages. Release packages will be uploaded to CRAN, the R repository, where Windows and Mac
+binaries are automatically provided.
+ 
+
+############################################################################################################################
+5. Python wrappers
+############################################################################################################################
+
+i.   make "wrapper/Python/pyamtrack/NAMESPACE" file completely empty this will cause wrappers will be created for (almost) all functions
+
+ii.  run "python generate_Py_wrapper.py" to generate file "pyamtrack.py". The script will complain, but ignore it - some functions are
+impossible to translate yet.
+
+iii. copy compiled library to the same directory as "pyamtrack.py": cp ../../../src/.libs/libamtrack.so.0.0.0 libamtrack.so
+
+iv.  run "python pyamtrack_example.py" to check sample file.
+
+
+############################################################################################################################
+Contact and feedback
+############################################################################################################################
+
+Please send mails considering code development to:
+
+steffen.greilich@dkfz.de or
+leszek.grzanka@ifj.edu.pl

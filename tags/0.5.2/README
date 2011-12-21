@@ -1,0 +1,89 @@
+1. WHAT IS LIBAMTRACK?
+======================
+
+libamtrack provides computational routines for the prediction of detector response and radiobiological efficiency in heavy charged particle beams.
+libamtrack is designed for research in proton and ion dosimetry and radiotherapy.
+libamtrack also provides many auxiliary routines for the work with proton and ion beams.
+libamtrack is a program library.
+libamtrack works both under Linux, Windows, and Mac OS.
+libamtrack is written in ANSI C.
+libamtrack is free, open-source software under GNU GPL licence.
+libamtrack is intended to facilitate the comparison of and the communication on amorphous track models for particle beam research.
+
+libamtrack's main website: http://libamtrack.dkfz.org
+
+
+
+2. HOW CAN I USE LIBAMTRACK?
+============================
+
+libamtrack as a shared library cannot be run as a single executable. A number of interfaces are already provided. You can also use libamtrack in your own code (e.g. in C, Python, Matlab, ...).
+
+== Important ==
+Please note that libamtrack (but not the web interface version) needs GSL, the GNU Scientific Library ([http://www.gnu.org/software/gsl/) to work.
+GSL is included in most GNU/Linux distributions (you maybe have to install it via your package management system or similar). Binary installer exist for Mac OS X (http://ascend4.org/Binary_installer_for_GSL-1.13_on_Mac_OS_X) and Windows (http://gnuwin32.sourceforge.net/packages/gsl.htm). Of course, you can also compile GSL from sources yourself, also for Window using MSYS/MinGW (http://www.mingw.org/) or cygwin (http://www.cygwin.com/, where a precompiled package exists.
+
+Mac specific:
+The easiest way to fetch GSL for Mac is to use MacPorts (see below, you should use the multiple architecture version: sudo port install gsl +universal). You can also compile from sources, most likely you then have to add two flags while configuring:
+./configure --disable-shared --disable-dependency-tracking
+
+i. Web-interface
+----------------
+The web interface covers a subset of libamtrack functions for easy access and can be found on libamtrack's website: http://libamtrack.dkfz.org. The sources can be found at (/tools/webgui). The interface development was started by Christoph Kolb within his Bachelor thesis and consolidated by Leszek Grzanka.
+
+##############
+TODO: ADD MORE EXTENSIVE INSTALL INSTRUCTIONS HERE, ESP. MERGE / SYNC WITH THOSE GIVEN ON WEBSITE AND IN REFERENCE MANUAL
+##############
+
+ii. R
+-----
+libamtrack is a contributed package (http://cran.r-project.org/web/packages/libamtrack) on the Comprehensive R Archive Network (CRAN, http://cran.r-project.org). The sources for the R package can be found at /wrapper/R/R_package. Its compilation process uses scripts found at /tools/automatic_wrapper_generator (TODO: should be 'autobindings').
+There is also a more simple direct access by using the 'dyn.load' command (/wrapper/R/R_direct_access), mainly used for test scripts run on the Hudson night build system to maintain functionality during development (/test/R).
+
+iii. Python, Matlab wrappers
+--------------------
+ibamtrack comes with a collection of wrappers for Python and Matlab (/wrapper/Python, /wrapper/Matlab).
+
+iv. Use precompiled binaries
+----------------------------
+- Precompiled binaries (incl. headers) for your OS are found on libamtrack's website. In the future, rpm/deb packages will be provided (TODO).
+
+v. Compile libamtrack from sources
+----------------------------------
+- Download the latest source release from libamtrack's website or the current development version from the svn repository (svn co https://libamtrack.svn.sourceforge.net/svnroot/libamtrack/trunk).
+- Compilation is done via the GNU autotools tool chain (./configure && make && make install).
+- More details on using GNU autotools during code development is found in /README_DEVELOPERS 
+- Detailed instructions for the GNU autotools are found in /INSTALL.
+
+-- Linux-specific:
+For Debian and derivatives the packages autotools, autoconf and libtool are required in order to run the installation process.
+It can be necessary to run 'ldconfig' after installation.
+
+-- Windows-specific:
+libamtrack can be build on Windows using MinGW/MSYS. Add an appropriate '--prefix=...' option for 'configure'. 
+Also, an environmental variable has to be set to point to your GSL installation,
+"export LIB_GSL=C:/GnuWin32" (forward slashes!). autotools package provided with MSYS doesn't cope well
+with directory names that have spaces (like "Program Files"), so please install GSL, MSYS and libamtrack in
+directories that doesn't have spaces or non-alphanumeric characters in names. 
+ 
+-- Mac OS X-specific:
+
+You may have to the architecture to your GSL installation, i.e. by
+./configure --build="i386"
+
+Mac OS X comes with rather outdated versions of the GNU autotools. To update we recommend to use MacPorts (www.macports.org), and do:
+sudo port install autoconf automake libtool
+Using 'Fink' (www.finkproject.org) is another possibility.
+
+3. CAN I USE LIBAMTRACK IN MY RESEARCH AND/OR MODIFY THE CODE?
+==============================================================
+
+Everybody is welcome to read, use and modify (preferably to improve) the code according to GNU GPL 3.
+
+
+
+4. WHERE DO I FIND DOCUMENTATION ON LIBAMTRACK?
+===============================================
+
+- The libamtrack manual is found here: /docs/libamtrackManual.pdf
+- On the webpage: libamtrack.dkfz.org

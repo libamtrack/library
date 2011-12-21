@@ -1,0 +1,19 @@
+Changes in 0.5.2 (2011-12-20)
+=============================
+
+- R wrappers: introduced namespace mandatory as from R 2.14, automated passing of char arguments (input and output), NDEBUG switch for printf, assert, exit and similar unwanted statements in C code, improved package compilation.
+- Updated Python wrappers.
+- Updated Java wrappers.
+- Transport data: prototyped workflow for particle fluence data - differential in energy, type and depth - as a function of the primary particle energy. Data sets (for C-12 on water) are provided in TRiP98's spc format for separate download on the libamtrack website. To read an SPC file use AT.SPC.read, to get data for an arbitrary energy covered by the energy range of the data set AT.SPC.get (which uses AT.SPC.interpolate). To get the fluence spectrum at any depth, use AT.SPC.spectrum.at.depth.g.cm2. 
+- New routines and bug fixed in material routines, esp. concerning electron density and effective atomic number.
+- Added lead and tungsten as materials.
+- Improved autotools
+- Added deb-package compilation.
+
+Changes in 0.5.1 (2011-08-11)
+=============================
+
+- Ability to use multiple stopping power data sources (was hard-coded PSTAR data only), in new AT_DataStoppingPower.*, both tabulated or analytical.
+- Stopping power data shipped with libamtrack: PSTAR (for all predefined materials), Bethe formula (for arbitrary material), SHIELD-HIT (advanced Bethe, v10, for water only), ICRU49&73 (for water only). Further development will allow external data tables and libraries, such as libdEdx (http://sourceforge.net/projects/libdedx/).
+- Reworked webGUI to cover basic ion physics for educational purposes, new categories, improved functionality
+- Reworked R package compilation (including autoconf ability), now canonical source package tarball can be produced and uploaded to CRAN. Will replace providing binary distributions of R package on sf.net.
