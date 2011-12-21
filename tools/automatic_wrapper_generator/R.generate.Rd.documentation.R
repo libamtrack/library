@@ -169,7 +169,7 @@ for(i in 1:length(functions)){
 	cur.description <- c(cur.description, "}")
 
     # Add link to source code
-           if(meta.infomation$code.status == "Development"){
+           if(meta.information$code.status == "Development"){
              cur.src.link          <- paste("http://sourceforge.net/apps/trac/libamtrack/browser/trunk/src/", 
                                           cur.function$src.file.name, 
                                           "#L",
