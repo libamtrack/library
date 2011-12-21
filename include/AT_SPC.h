@@ -117,6 +117,7 @@ int AT_SPC_read_data_from_filename_fast( const char filename[],
  * @param[out]	particle_no         projectile - particle no
  * @param[out]	material_no         target - material no
  * @param[out]	normalisation		normalisation
+ * @param[out]  depth_steps_no      number of depth steps
  * @return               status code
  */
 int AT_SPC_read_header_from_filename_fast( const char filename[],
@@ -124,7 +125,8 @@ int AT_SPC_read_header_from_filename_fast( const char filename[],
 		double*   peak_position_g_cm2,
 		long*     particle_no,
 		int*      material_no,
-		double*   normalisation);
+		double*   normalisation,
+		int*      depth_steps_no);
 
 /**
  * TODO
@@ -229,6 +231,7 @@ int AT_SPC_decompose_size( const int content_size,
  * @param[out]	particle_no         projectile - particle no
  * @param[out]	material_no         target - material no
  * @param[out]	normalisation  	    normalisation
+ * @param[out]  depth_steps_no      number of depth steps
  * return       status code
  */
 int AT_SPC_decompose_header(		const int content_size,
@@ -237,7 +240,8 @@ int AT_SPC_decompose_header(		const int content_size,
 		double*   peak_position_g_cm2,
 		long*     particle_no,
 		int*      material_no,
-		double*   normalisation);
+		double*   normalisation,
+		int*      depth_steps_no);
 
 
 /**
