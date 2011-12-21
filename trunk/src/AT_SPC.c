@@ -197,7 +197,8 @@ int AT_SPC_decompose_header( const int content_size,
 		double*   peak_position_g_cm2,
 		long*     particle_no,
 		int*      material_no,
-		double*   normalisation){
+		double*   normalisation,
+		int*      depth_steps_no){
 
 	int length = 0;
 	int32_t * content = content_orig;
@@ -224,6 +225,11 @@ int AT_SPC_decompose_header( const int content_size,
 
 	decomposeStructIntoDouble(content, normalisation, &length);
 	skipStruct(&content); // normalisation
+
+    uint64_t numberOfDepthSteps = 0;
+    decomposeStructIntoInteger(content, &numberOfDepthSteps, &length);
+    skipStruct(&content);
+    *depth_steps_no = numberOfDepthSteps;
 
 	return EXIT_SUCCESS;
 }
@@ -400,7 +406,8 @@ int AT_SPC_read_header_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 		double*   peak_position_g_cm2,
 		long*     particle_no,
 		int*      material_no,
-		double*   normalisation)
+		double*   normalisation,
+		int*      depth_steps_no)
 {
 	int nb = AT_SPC_get_number_of_bytes_in_file( filename );
 	if( nb <= 0){
@@ -422,7 +429,8 @@ int AT_SPC_read_header_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 				peak_position_g_cm2,
 				particle_no,
 				material_no,
-				normalisation);
+				normalisation,
+				depth_steps_no);
 	}
 
 	free(content);
