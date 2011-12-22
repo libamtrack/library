@@ -291,7 +291,7 @@ int AT_SPC_read_data_from_filename_fast( const char filename[],
  * @param[out]  fluence_cm2		    fluence values differential in energy and particle number (array of size n)
  * @return                          number of bins read. Must match the array size n
  */
-int AT_SPC_read_from_filename_fast( const char filename[FILE_NAME_NCHAR],
+int AT_SPC_read_from_filename_fast( const char filename[],
 		int 	  n,
 		double*   E_MeV_u_initial,
 		double*   peak_position_g_cm2,
