@@ -41,7 +41,7 @@ tar -zcf libamtrack-0.5.3.tar.gz libamtrack-0.5.3
 
 cd libamtrack-0.5.3
 
-dh_make -s -c gpl2 -p libamtrack -e Leszek.Grzanka@ifj.edu.pl -f ../libamtrack-0.5.3.tar.gz
+dh_make -s -c gpl -p libamtrack -e Leszek.Grzanka@ifj.edu.pl -f ../libamtrack-0.5.3.tar.gz
 cp -f ../../debian/control debian/control
 
 dpkg-buildpackage -rfakeroot
