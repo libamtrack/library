@@ -131,6 +131,8 @@ that you can then install on any Windows system.
 The process is only needed for intermediate packages. Release packages will be uploaded to CRAN, the R repository, where Windows and Mac
 binaries are automatically provided.
  
+Before uploading a release package to CRAN, please doublecheck carefully using R CMD check <package_name>, also as a differnt user. Checking
+as the same user who compiled the package might mask errors.
 
 ############################################################################################################################
 5. Python wrappers
