@@ -538,3 +538,258 @@ int AT_SPC_read_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 
 }
 
+
+int compare_SPC_Pairs (const void *a,
+		const void *b){
+  const struct spc_pair *pa = (const struct spc_pair *) a;
+  const struct spc_pair *pb = (const struct spc_pair *) b;
+
+  return (pa->range_gcm2 > pb->range_gcm2) - (pa->range_gcm2 < pb->range_gcm2);
+}
+
+
+long AT_SPC_number_of_bins_at_range( const char path[],
+		double range_g_cm2){
+
+	DIR *dir;
+	struct dirent *ent;
+
+	// replace 1000 by exact number of .spc files in the directory
+	struct spc_pair * table = (struct spc_pair*)calloc(1000,sizeof(struct spc_pair));
+
+	int index = 0;
+
+	dir = opendir(path);
+	if (dir != NULL) {
+		/* print all the files and directories within directory */
+		while ((ent = readdir(dir)) != NULL) {
+		    if (strcmp(ent->d_name, ".") == 0) continue;   /* current dir */
+		    if (strcmp(ent->d_name, "..") == 0) continue;  /* parent dir  */
+
+		    if( strlen(ent->d_name) > 4){
+		    	char * lastPart = ent->d_name + strlen (ent->d_name) - 4;
+				if( strcmp(lastPart,".spc") == 0){
+					char fullPath[2048];
+					strcpy(fullPath, path);
+					strcat(fullPath, "/");
+					strcat(fullPath, ent->d_name);
+
+					double    E_MeV_u;
+					double    peak_position_g_cm2;
+					long      particle_no;
+					int       material_no;
+					double    normalisation;
+					int       depth_steps_no;
+
+					int status = AT_SPC_read_header_from_filename_fast( fullPath,
+							&E_MeV_u,
+							&peak_position_g_cm2,
+							&particle_no,
+							&material_no,
+							&normalisation,
+							&depth_steps_no);
+
+					if( status == EXIT_SUCCESS){
+//						printf("path: %s\npeak %g\n\n", fullPath, peak_position_g_cm2);
+						struct spc_pair tmp;
+						strcpy(tmp.filename, fullPath);
+						tmp.range_gcm2 = peak_position_g_cm2;
+						table[index] = tmp;
+						index++;
+					}
+				}
+		    }
+		}
+		closedir (dir);
+	} else {
+		perror ("could not open directory");
+		return -1;
+	}
+
+	long result = -1;
+
+	qsort (table, index, sizeof (struct spc_pair), compare_SPC_Pairs);
+
+	int i;
+	for( i = 0 ; i < index ; i++){
+		if( range_g_cm2 <= table[i].range_gcm2 ){
+			result = AT_SPC_get_number_of_bins_from_filename_fast(table[i].filename );
+			break;
+		}
+	}
+
+	return result;
+}
+
+
+int AT_SPC_spectrum_at_range( const char path[],
+		double range_g_cm2,
+		int n,
+		int    depth_step[],
+		double depth_g_cm2[],
+		double E_MeV_u[],
+		double DE_MeV_u[],
+		long   particle_no[],
+		double fluence_cm2[]){
+
+
+	DIR *dir;
+	struct dirent *ent;
+
+	// replace 1000 by exact number of .spc files in the directory
+	struct spc_pair * table = (struct spc_pair*)calloc(1000,sizeof(struct spc_pair));
+
+	int index = 0;
+
+	dir = opendir(path);
+	if (dir != NULL) {
+		/* print all the files and directories within directory */
+		while ((ent = readdir(dir)) != NULL) {
+		    if (strcmp(ent->d_name, ".") == 0) continue;   /* current dir */
+		    if (strcmp(ent->d_name, "..") == 0) continue;  /* parent dir  */
+
+		    if( strlen(ent->d_name) > 4){
+		    	char * lastPart = ent->d_name + strlen (ent->d_name) - 4;
+				if( strcmp(lastPart,".spc") == 0){
+					char fullPath[2048];
+					strcpy(fullPath, path);
+					strcat(fullPath, "/");
+					strcat(fullPath, ent->d_name);
+
+					double    E_MeV_u;
+					double    peak_position_g_cm2;
+					long      particle_no;
+					int       material_no;
+					double    normalisation;
+					int       depth_steps_no;
+
+					int status = AT_SPC_read_header_from_filename_fast( fullPath,
+							&E_MeV_u,
+							&peak_position_g_cm2,
+							&particle_no,
+							&material_no,
+							&normalisation,
+							&depth_steps_no);
+
+					if( status == EXIT_SUCCESS){
+//						printf("path: %s\npeak %g\n\n", fullPath, peak_position_g_cm2);
+						struct spc_pair tmp;
+						strcpy(tmp.filename, fullPath);
+						tmp.range_gcm2 = peak_position_g_cm2;
+						table[index] = tmp;
+						index++;
+					}
+				}
+		    }
+		}
+		closedir (dir);
+	} else {
+		perror ("could not open directory");
+		return -1;
+	}
+
+	qsort (table, index, sizeof (struct spc_pair), compare_SPC_Pairs);
+
+	double ratio = 0.;
+
+	// replace 2048 by some constant
+	char previous_file[2048];
+	char next_file[2048];
+
+	int i;
+	for( i = 0 ; i < index ; i++){
+		if( range_g_cm2 <= table[i].range_gcm2 ){
+			ratio = (range_g_cm2 - table[i-1].range_gcm2) / (table[i].range_gcm2 - table[i-1].range_gcm2);
+			strcpy(previous_file, table[i-1].filename);
+			strcpy(next_file, table[i].filename);
+			break;
+		}
+	}
+
+	int*    depth_step_prev = (int*)calloc(n, sizeof(int));
+	double* depth_g_cm2_prev = (double*)calloc(n, sizeof(double));
+	double* E_MeV_u_prev = (double*)calloc(n, sizeof(double));
+	double* DE_MeV_u_prev = (double*)calloc(n, sizeof(double));
+	long*   particle_no_prev = (long*)calloc(n, sizeof(long));
+	double* fluence_cm2_prev = (double*)calloc(n, sizeof(double));
+
+//	printf("prev: %s\nnext: %s\n", previous_file, next_file);
+
+	int status = AT_SPC_read_data_from_filename_fast( previous_file,
+			n,
+			depth_step_prev,
+			depth_g_cm2_prev,
+			E_MeV_u_prev,
+			DE_MeV_u_prev,
+			particle_no_prev,
+			fluence_cm2_prev);
+
+	if( status != EXIT_SUCCESS ){
+		free(depth_step_prev);
+		free(depth_g_cm2_prev);
+		free(E_MeV_u_prev);
+		free(DE_MeV_u_prev);
+		free(particle_no_prev);
+		free(fluence_cm2_prev);
+		return EXIT_FAILURE;
+	}
+
+	int*    depth_step_next = (int*)calloc(n, sizeof(int));
+	double* depth_g_cm2_next = (double*)calloc(n, sizeof(double));
+	double* E_MeV_u_next = (double*)calloc(n, sizeof(double));
+	double* DE_MeV_u_next = (double*)calloc(n, sizeof(double));
+	long*   particle_no_next = (long*)calloc(n, sizeof(long));
+	double* fluence_cm2_next = (double*)calloc(n, sizeof(double));
+
+	status = AT_SPC_read_data_from_filename_fast( next_file,
+			n,
+			depth_step_next,
+			depth_g_cm2_next,
+			E_MeV_u_next,
+			DE_MeV_u_next,
+			particle_no_next,
+			fluence_cm2_next);
+
+	if( status != EXIT_SUCCESS ){
+		free(depth_step_prev);
+		free(depth_g_cm2_prev);
+		free(E_MeV_u_prev);
+		free(DE_MeV_u_prev);
+		free(particle_no_prev);
+		free(fluence_cm2_prev);
+		free(depth_step_next);
+		free(depth_g_cm2_next);
+		free(E_MeV_u_next);
+		free(DE_MeV_u_next);
+		free(particle_no_next);
+		free(fluence_cm2_next);
+		return EXIT_FAILURE;
+	}
+
+
+	// TODO add checks for if both SPC contains data ordered in the same way !!!!
+	for( i = 0; i < n ; i++ ){
+		depth_step[i] = depth_step_prev[i];
+		depth_g_cm2[i] = depth_g_cm2_prev[i];
+		E_MeV_u[i] = E_MeV_u_prev[i];
+		DE_MeV_u[i] = DE_MeV_u_prev[i];
+		particle_no[i] = particle_no_prev[i];
+		fluence_cm2[i] = (1.0 - ratio)*fluence_cm2_prev[i] + ratio * fluence_cm2_next[i];
+	}
+
+	free(depth_step_prev);
+	free(depth_g_cm2_prev);
+	free(E_MeV_u_prev);
+	free(DE_MeV_u_prev);
+	free(particle_no_prev);
+	free(fluence_cm2_prev);
+
+	free(depth_step_next);
+	free(depth_g_cm2_next);
+	free(E_MeV_u_next);
+	free(DE_MeV_u_next);
+	free(particle_no_next);
+	free(fluence_cm2_next);
+
+	return EXIT_SUCCESS;
+}

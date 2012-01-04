@@ -38,6 +38,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <dirent.h>
+
 #include "AT_DataParticle.h"
 #include "AT_DataMaterial.h"
 
@@ -305,5 +308,58 @@ int AT_SPC_read_from_filename_fast( const char filename[],
 		double    DE_MeV_u[],
 		long      particle_no[],
 		double    fluence_cm2[]);
+	
+
+struct spc_pair {
+	double range_gcm2;
+	char filename[2048];
+};
+
+
+/**
+ * TODO
+ * @param[in]   a  TODO
+ * @param[in]   b  TODO
+ * @return  TODO
+ */
+int compare_SPC_Pairs (const void *a,
+		const void *b);
+
+
+/**
+ * TODO
+ *
+ * @param[in]   path            	path to spc file dir (array of size 2048)
+ * @param[in]   range_g_cm2         range in g/cm2
+ * @return                          number of bins for given range
+ */
+long AT_SPC_number_of_bins_at_range( const char path[],
+        double range_g_cm2);
+
+
+/**
+ * TODO
+ *
+ * @param[in]   path            	path to spc file dir (array of size 2048)
+ * @param[in]   range_g_cm2         range in g/cm2
+ * @param[in]   n                   array size, total number of bins expected
+ * @param[out]	depth_step		    depth step index, zero-based (array of size n)
+ * @param[out]	depth_g_cm2		    depth in g/cm2 (array of size n)
+ * @param[out]	E_MeV_u			    midpoints of energy bins (array of size n)
+ * @param[out]	DE_MeV_u		    widths of energy bins (array of size n)
+ * @param[out]	particle_no		    particle index numbers (array of size n)
+ * @param[out]  fluence_cm2		    fluence values differential in energy and particle number (array of size n)
+ * @return                          status code
+ */
+int AT_SPC_spectrum_at_range( const char path[],
+		double range_g_cm2,
+		int n,
+		int    depth_step[],
+		double depth_g_cm2[],
+		double E_MeV_u[],
+		double DE_MeV_u[],
+		long   particle_no[],
+		double fluence_cm2[]);
+
 
 #endif /* AT_SPC_H_ */
