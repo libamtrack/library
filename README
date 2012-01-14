@@ -60,7 +60,11 @@ For Debian and derivatives the packages autotools, autoconf and libtool are requ
 It can be necessary to run 'ldconfig' after installation.
 
 -- Windows-specific:
-libamtrack can be build on Windows using MinGW/MSYS. Add an appropriate '--prefix=...' option for 'configure'. 
+libamtrack can be build on Windows using MinGW/MSYS. Beside specifying the build system, please add an appropriate prefix-option
+while configuring:
+
+./configure --build=x86-winnt-mingw32 --prefix="/c/temp"
+
 Also, an environmental variable has to be set to point to your GSL installation,
 "export LIB_GSL=C:/GnuWin32" (forward slashes!). autotools package provided with MSYS doesn't cope well
 with directory names that have spaces (like "Program Files"), so please install GSL, MSYS and libamtrack in
