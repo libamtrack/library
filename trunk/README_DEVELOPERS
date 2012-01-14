@@ -2,8 +2,8 @@
 libamtrack information for code developers
 ############################################################################################################################
 
-1.  Basic workflow using autotools
-2.  Workflow using eclipse
+1.  Basic workflow
+2.  Using the eclipse IDE
 3.  Doxygen comments
 4.  R package compilation
 5.  Python wrappers
@@ -11,17 +11,23 @@ libamtrack information for code developers
 Contact and feedback
 
 ############################################################################################################################
-i. Basic workflow using autotools
+i. Basic workflow
 ############################################################################################################################
 
-From revision r1037 on, libamtrack follow the GNU autotool conventions to improve portability and facilitate distribution.
+From revision r1037 on, libamtrack follows the GNU autotool conventions to improve portability and facilitate distribution.
 
-This required new files (such as configure.ac, Makefile.am, ChangeLog, NEWS, etc.) and folders (m4) 
-that have be placed in the subversion repository.
+This required files (such as configure.ac, Makefile.am, ChangeLog, NEWS, etc.) and folders (m4) 
+to be placed in the subversion repository.
 
 In addition, file and folders will be created during the autoconf/automake process (such as aclocal.m4, 
 config.guess, configure, install.sh, Makefile, etc.). Those files *should not* be committed to the repository. 
 Please refrain from doing so. 
+
+
+The libamtrack sources can be checkout from it svn repository at sourceforce.net by:
+
+svn co https://libamtrack.svn.sourceforge.net/svnroot/libamtrack/trunk libamtrack
+
 
 Steps for compilation:
 
@@ -50,7 +56,7 @@ Steps for compilation:
 
 
 ############################################################################################################################
-2. Basic workflow using eclipse
+2. Using the eclipse IDE
 ############################################################################################################################
 
 Eclipse 3.6+ supports the autotool toolchain. There are, however, some peculiarities to be considered:
