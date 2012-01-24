@@ -684,8 +684,18 @@ int AT_KatzModel_mixed_field_survival(
 	double sum1 = 0.0;
 	double sum2 = 0.0;
 
+#ifdef HAVE_OPENMP
+#pragma omp parallel for shared(sum1,sum2)
+#endif
 	for( i = 0 ; i < number_of_items; i++){
 
+#ifdef HAVE_OPENMP
+		if( fluence_cm2[i] == 0 || E_MeV_u[i] == 0){
+			inactivation_cross_section_m2 = 0.0;
+		} else {
+			inactivation_cross_section_m2 = AT_KatzModel_inactivation_cross_section_approximation_m2(E_MeV_u[i], particle_no[i], material_no, rdd_model, er_model, m_number_of_targets, sigma0_m2, kappa );
+		}
+#else
 		if( use_approximation ){
 			inactivation_cross_section_m2 = AT_KatzModel_inactivation_cross_section_approximation_m2(E_MeV_u[i], particle_no[i], material_no, rdd_model, er_model, m_number_of_targets, sigma0_m2, kappa );
 		} else {
@@ -708,13 +718,17 @@ int AT_KatzModel_mixed_field_survival(
 				return status;
 			}
 		}
+#endif
 
 		double Pi = 1.0;
 		if( inactivation_cross_section_m2 < sigma0_m2 ){
 			Pi = inactivation_cross_section_m2 / sigma0_m2;
 		};
 
-		double Di = AT_dose_Gy_from_fluence_cm2_single( E_MeV_u[i], particle_no[i], fluence_cm2[i], material_no, stopping_power_source_no);
+		double Di = 0.0;
+		if( fluence_cm2[i] > 0 && E_MeV_u[i] > 0){
+			Di = AT_dose_Gy_from_fluence_cm2_single( E_MeV_u[i], particle_no[i], fluence_cm2[i], material_no, stopping_power_source_no);
+		}
 
 		sum1 += inactivation_cross_section_m2 * fluence_cm2[i] * 1e4;
 		sum2 += (1.0 - Pi) * Di;

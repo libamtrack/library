@@ -51,6 +51,20 @@ fi
 ## I can live with that.  Someone more savvy might point out that there probably a hook you 
 ## could write somewhere to update saved_svn_version.txt at some point in the process.
 
+# check for OpenMP flags
+AC_ARG_ENABLE(openmp,
+          [AS_HELP_STRING([--enable-openmp],[use OpenMP directives for parallelism])],
+          enable_openmp=$enableval, enable_openmp=no)
+          
+if test "$enable_openmp" = "yes"; then
+      AC_DEFINE(HAVE_OPENMP,1,[Define to 1 to enable OpenMP.])
+      OPENMP_CFLAGS="-fopenmp"
+      OPENMP_LDFLAGS="-lgomp"
+fi
+
+AC_SUBST(OPENMP_CFLAGS)
+AC_SUBST(OPENMP_LDFLAGS)
+
 # Checks for libraries, add user-set path to gsl if necessary (e.g. on Windows)
 if test "${LIB_GSL}" != ""; then
     GSL_CFLAGS="-I${LIB_GSL}/include"
