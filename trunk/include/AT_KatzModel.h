@@ -31,6 +31,9 @@
 #include "AT_RDD.h"
 #include "AT_GammaResponse.h"
 
+#ifdef HAVE_OPENMP
+#include <omp.h>
+#endif
 
 /**
  * TODO
