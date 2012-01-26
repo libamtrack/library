@@ -74,6 +74,8 @@ if [ -d $FAST_ARG ] ; then
 	cd wrapper/R/R_package
 fi
 
+# *** Copy generated file ***
+cp ../../../config.h libamtrack/src/
 
 echo
 echo "Running R script to parse doxygen information from sources..."
