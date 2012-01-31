@@ -685,7 +685,7 @@ int AT_KatzModel_mixed_field_survival(
 	double sum2 = 0.0;
 
 #ifdef HAVE_OPENMP
-#pragma omp parallel for shared(sum1,sum2)
+#pragma omp parallel for reduction(+:sum1,sum2) private(inactivation_cross_section_m2)
 #endif
 	for( i = 0 ; i < number_of_items; i++){
 
