@@ -51,7 +51,9 @@ header.file.names <- header.file.names[grep(".h", header.file.names)]
 to.remove         <- c("AT_NumericalRoutines.h")
 pos.remove        <- match(to.remove, header.file.names)
 #pos.remove        <- c(pos.remove, grep("Data", header.file.names))
-header.file.names <- header.file.names[-pos.remove]
+if(!is.na(pos.remove)){
+  header.file.names <- header.file.names[-pos.remove]
+}
 
 # Initialize vectors to hold extracted information
 functions             <- NULL
@@ -66,7 +68,7 @@ grep.bool     <-     function(pattern, x, ...){
 }
 
 for(header.file.name in header.file.names){
-     # DEBUG: header.file.name <- header.file.names[21]
+     # DEBUG: header.file.name <- header.file.names[1]
      
      #####################################################
      # A. Extract doxygen comment and function declaration
