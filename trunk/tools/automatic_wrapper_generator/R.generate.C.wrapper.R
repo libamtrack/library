@@ -27,7 +27,10 @@
 rm(list = ls())
 
 # Read type conversion functions (R <-> C types)
-source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")
+if((try(source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")) == FALSE) & 
+   (try(source("../../../libamtrack/tools/automatic_wrapper_generator/R.type.conversion.R")) == FALSE)){
+    stop("I do not see from current folder R.type.conversion.R. Please move to other place !")
+}
 
 # Read function information from parsed doxygen comments
 load("functions.sdd")
