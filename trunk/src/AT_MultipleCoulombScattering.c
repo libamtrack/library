@@ -1,5 +1,5 @@
 /**
- * @brief Molière theory of multiple Coulomb scattering
+ * @brief Moliere theory of multiple Coulomb scattering
  */
 
 /*
