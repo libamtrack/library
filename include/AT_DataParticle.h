@@ -325,7 +325,7 @@ int AT_particle_no_from_particle_name( const long  n,
  * @return corresponding Z
  */
 
-int AT_Z_from_element_acronym_single( const char acronym[]);
+int AT_Z_from_element_acronym_single( const char acronym[] );
 
 
 
@@ -344,12 +344,12 @@ int AT_Z_from_element_acronym( const long n,
 /**
  * Returns elemental symbol for given Z
  * @param[in]  Z      atomic number
- * @param[out] corresponding elemental symbol
+ * @param[out] acronym  corresponding elemental symbol (array of size PARTICLE_NAME_NCHAR)
  * return status
  */
 
 int AT_element_acronym_from_Z_single( const long Z,
-		char acronym[PARTICLE_NAME_NCHAR]);
+		char acronym[]);
 
 
 /**
@@ -372,7 +372,7 @@ int AT_element_acronym_from_Z( const long n,
  * @param[in]  acronym   elemental symbols (array of size PARTICLE_NAME_NCHAR)
  * @return corresponding atomic weight
  */
-double AT_atomic_weight_from_element_acronym_single( const char acronym[]);
+double AT_atomic_weight_from_element_acronym_single( const char acronym[] );
 
 
 /**
@@ -392,7 +392,7 @@ int AT_atomic_weight_from_element_acronym( const long n,
  * @param[in]  acronym   elemental symbols (array of size PARTICLE_NAME_NCHAR)
  * @return elemental density in g/cm3
  */
-double AT_density_g_cm3_from_element_acronym_single( const char acronym[]);
+double AT_density_g_cm3_from_element_acronym_single( const char acronym[] );
 
 
 /**
@@ -412,7 +412,7 @@ int AT_density_g_cm3_from_element_acronym( const long n,
  * @param[in]  acronym  elemental symbol (array of size PARTICLE_NAME_NCHAR)
  * @return corresponding I value in eV
  */
-double AT_I_eV_from_element_acronym_single( const char acronym[]);
+double AT_I_eV_from_element_acronym_single( const char acronym[] );
 
 
 /**
@@ -432,7 +432,7 @@ int AT_I_eV_from_element_acronym( const long n,
  * @param[in]   acronym  elemental symbol (array of size PARTICLE_NAME_NCHAR)
  * @return      corresponding electron density per cm3
  */
-double AT_electron_density_cm3_from_element_acronym_single( const char acronym[]);
+double AT_electron_density_cm3_from_element_acronym_single( const char acronym[] );
 
 
 /**
