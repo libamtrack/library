@@ -97,7 +97,7 @@ double AT_screening_angle_single( const double E_MeV_u,
  * @param[out] chi_a                    vector of screening angles in rad (array of size n)
  * @return     status code
  */
-int AT_screening_angle( const long  	n,
+int AT_screening_angle( const long 		 n,
 						const double 	E_MeV_u[],
 						const int		particle_charge_e[],
     					char*			element_acronym[],
@@ -130,10 +130,10 @@ double AT_effective_collision_number_single( const double E_MeV_u,
  * @param[out] exp_b	                vector of effective collision numbers (array of size n)
  * @return     status code
  */
-int AT_effective_collision_number( const long  n,
+int AT_effective_collision_number( const long  		n,
 								   const double 	E_MeV_u[],
 								   const int		particle_charge_e[],
-								   const double	target_thickness_cm[],
+								   const double		target_thickness_cm[],
 								   char*			element_acronym[],
 								   double        	exp_b[]);
 
@@ -164,7 +164,7 @@ double AT_reduced_target_thickness_single( const double E_MeV_u,
  * @param[out] B		                vector of reduced target thicknesses (array of size n)
  * @return     status code
  */
-int AT_reduced_target_thickness( const long  n,
+int AT_reduced_target_thickness( const long  	n,
 								 const double 	E_MeV_u[],
 								 const int		particle_charge_e[],
 								 const double	target_thickness_cm[],
@@ -207,40 +207,41 @@ int AT_characteristic_multiple_scattering_angle( const long  	n,
 
 
 /**
- *  Returns values f0(red_Theta) of the first Moliere function
+ *  Returns values f0(red_Theta) of the first Molière function
  *
  * @param[in]  red_Theta                reduced angle variable
  * @return     first Moliere function
  */
-double AT_Moliere_function_f0( double red_Theta );
+double AT_Moliere_function_f0( double red_Theta);
 
 
 /**
- *  Returns values f1(red_Theta) of the second Moliere function
+ *  Returns values f1(red_Theta) of the second Molière function
  *
  * @param[in]  red_Theta                reduced angle variable
  * @return     second Moliere function
  */
-double AT_Moliere_function_f1( double red_Theta );
+double AT_Moliere_function_f1( double red_Theta);
 
 
 /**
- *  Returns values f2(red_Theta) of the third Moliere function
+ *  Returns values f2(red_Theta) of the third Molière function
  *
  * @param[in]  red_Theta                reduced angle variable
  * @return     third Moliere function
  */
-double AT_Moliere_function_f2( double red_Theta );
+double AT_Moliere_function_f2( double red_Theta);
 
 
 /**
- *  Returns value of scattering angle distribution f(Theta)
+ *  Returns scattering angle distribution f(Theta)
+ *  The distribution is not normalized because the energy loss in the target is not considered.
  *
  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
  * @param[in]  particle_charge_e    	charge number of particle
  * @param[in]  target_thickness_cm      thickness of the target material in cm
  * @param[in]  element_acronym		    elemental symbol of target material (array of size PARTICLE_NAME_NCHAR)
- * @param[in]  Theta				   	multiple scattering angle in rad
+ * @param[in]  Theta				   	polar angle in rad
  * @return     f(Theta)
  */
 double AT_scattering_angle_distribution_single( const double E_MeV_u,
@@ -257,7 +258,7 @@ double AT_scattering_angle_distribution_single( const double E_MeV_u,
  * @param[in]  n                        number of particles
  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
  * @param[in]  particle_charge_e    	charge number of particle
- * @param[in]  target_thickness_cm      thicknesses of target material in cm
+ * @param[in]  target_thickness_cm      thickness of the target material in cm
  * @param[in]  element_acronym		    elemental symbol of target material (array of size PARTICLE_NAME_NCHAR)
  * @param[in]  Theta				   	vector of polar angles in rad (array of size n)
  * @param[out] distribution		        vector of scattering angle distribution values (array of size n)
@@ -267,7 +268,7 @@ int AT_scattering_angle_distribution( const long  	n,
 									  const double 	E_MeV_u,
 									  const int		particle_charge_e,
 									  const double	target_thickness_cm,
-									  const char	element_acronym[],
+									  const char	element_acronym[PARTICLE_NAME_NCHAR],
 									  const double	Theta[],
 									  double        distribution[]);
 
@@ -291,14 +292,14 @@ double AT_Highland_angle_single( const double E_MeV_u,
  * @param[in]  n                        number of particles
  * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
  * @param[in]  particle_charge_e    	vector of charge numbers of particle (array of size n)
- * @param[in]  l_overlR		            vector of thicknesses of target material in radiation lengths (array of size n)
+ * @param[in]  l_over_lR		        vector of thicknesses of target material in radiation lengths (array of size n)
  * @param[out] Theta0		            vector of Highland angles in rad (array of size n)
  * @return     status code
  */
 int AT_Highland_angle( const long  		n,
 					   const double 	E_MeV_u[],
 					   const int		particle_charge_e[],
-					   const double		l_overlR[],
+					   const double		l_over_lR[],
 					   double        	Theta0[]);
 
 

@@ -81,7 +81,7 @@ double AT_screening_angle_single( const double E_MeV_u,
 }
 
 
-int AT_screening_angle( const long  	n,
+int AT_screening_angle( const long 		n,
 						const double 	E_MeV_u[],
 						const int		particle_charge_e[],
     					char*			element_acronym[],
@@ -194,7 +194,7 @@ double AT_characteristic_multiple_scattering_angle_single( const double E_MeV_u,
 }
 
 
-int AT_characteristic_multiple_scattering_angle( const long 	n,
+int AT_characteristic_multiple_scattering_angle( const long  	n,
 												 const double 	E_MeV_u[],
 												 const int		particle_charge_e[],
 												 const double	target_thickness_cm[],
@@ -270,7 +270,7 @@ double AT_Moliere_function_f2( double red_Theta){
 	const double	amplitude3	=  -6.11463;
 	double			peak3		=	offset3 + (amplitude3/(width3*sqrt(M_PI/2)))*exp(-2*gsl_pow_2((red_Theta-mean3)/width3));
 
-	const double	offset4		=	0.00064;
+	const double	offset4		=	0.000064;
 	const double	mean4		=	1.32168;
 	const double	width4		=	1.08239;
 	const double	amplitude4	=   3.71941;
@@ -284,7 +284,7 @@ double AT_scattering_angle_distribution_single( const double E_MeV_u,
 												const int    particle_charge_e,
 												const double target_thickness_cm,
 												const char   element_acronym[PARTICLE_NAME_NCHAR],
-												double		 Theta){
+												const double Theta){
 
 	double	Theta_M			=	AT_characteristic_multiple_scattering_angle_single( E_MeV_u,
 													particle_charge_e,
@@ -299,15 +299,15 @@ double AT_scattering_angle_distribution_single( const double E_MeV_u,
 													target_thickness_cm,
 													element_acronym );
 
-	double	red_Theta_pos		=	Theta/(chi_c*sqrt(B));
-	double	correction0_pos		=	AT_Moliere_function_f0(red_Theta_pos);
-	double	correction1_pos		=	AT_Moliere_function_f1(red_Theta_pos);
-	double	correction2_pos		=	AT_Moliere_function_f2(red_Theta_pos);
+	double	red_Theta_pos	=	Theta/(chi_c*sqrt(B));
+	double	correction0_pos	=	AT_Moliere_function_f0(red_Theta_pos);
+	double	correction1_pos	=	AT_Moliere_function_f1(red_Theta_pos);
+	double	correction2_pos	=	AT_Moliere_function_f2(red_Theta_pos);
 
-	double	red_Theta_neg		=  -red_Theta_pos;
-	double	correction0_neg		=	AT_Moliere_function_f0(red_Theta_neg);
-	double	correction1_neg		=	AT_Moliere_function_f1(red_Theta_neg);
-	double	correction2_neg		=	AT_Moliere_function_f2(red_Theta_neg);
+	double	red_Theta_neg	=  -red_Theta_pos;
+	double	correction0_neg	=	AT_Moliere_function_f0(red_Theta_neg);
+	double	correction1_neg	=	AT_Moliere_function_f1(red_Theta_neg);
+	double	correction2_neg	=	AT_Moliere_function_f2(red_Theta_neg);
 
 	if(Theta>0){
 		return	(1/(4*M_PI*gsl_pow_2(Theta_M)))*(correction0_pos + correction1_pos/B + correction2_pos/(B*B));
@@ -330,10 +330,10 @@ int AT_scattering_angle_distribution( const long  	n,
 	long  i;
 	for(i = 0; i < n; i++){
 	    distribution[i] = AT_scattering_angle_distribution_single( E_MeV_u,
-	    														   particle_charge_e,
-	    														   target_thickness_cm,
-	    														   element_acronym,
-	    														   Theta[i]);
+	    												particle_charge_e,
+	    												target_thickness_cm,
+	    												element_acronym,
+	    												Theta[i]);
 	  	}
 
 	return 0;
