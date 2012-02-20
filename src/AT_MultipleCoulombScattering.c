@@ -47,10 +47,10 @@ double AT_characteristic_single_scattering_angle_single( const double E_MeV_u,
 }
 
 
-int AT_characteristic_single_scattering_angle( const long  n,
+int AT_characteristic_single_scattering_angle( const long  		n,
 											   const double 	E_MeV_u[],
 											   const int		particle_charge_e[],
-											   const double	target_thickness_cm[],
+											   const double		target_thickness_cm[],
 											   char*			element_acronym[],
 											   double        	chi_c[]){
 
@@ -81,7 +81,7 @@ double AT_screening_angle_single( const double E_MeV_u,
 }
 
 
-int AT_screening_angle( const long  n,
+int AT_screening_angle( const long  	n,
 						const double 	E_MeV_u[],
 						const int		particle_charge_e[],
     					char*			element_acronym[],
@@ -113,7 +113,7 @@ double AT_effective_collision_number_single( const double E_MeV_u,
 	double	exp_b	=	gsl_pow_2(chi_c)/(1.167*gsl_pow_2(chi_a));
 
 	if( exp_b < 1.14 ){
-		printf("Molière theory cannot be applied because the number of collisions in the target material is too small.");
+		printf("Moliere theory cannot be applied because the number of collisions in the target material is too small.");
 		return	0;
 	}
 	else{
@@ -122,10 +122,10 @@ double AT_effective_collision_number_single( const double E_MeV_u,
 }
 
 
-int AT_effective_collision_number( const long  n,
+int AT_effective_collision_number( const long  		n,
 								   const double 	E_MeV_u[],
 								   const int		particle_charge_e[],
-								   const double	target_thickness_cm[],
+								   const double		target_thickness_cm[],
 								   char*			element_acronym[],
 								   double        	exp_b[]){
 
@@ -156,7 +156,7 @@ double AT_reduced_target_thickness_single( const double E_MeV_u,
 }
 
 
-int AT_reduced_target_thickness( const long  n,
+int AT_reduced_target_thickness( const long  	n,
 								 const double 	E_MeV_u[],
 								 const int		particle_charge_e[],
 								 const double	target_thickness_cm[],
@@ -194,7 +194,7 @@ double AT_characteristic_multiple_scattering_angle_single( const double E_MeV_u,
 }
 
 
-int AT_characteristic_multiple_scattering_angle( const long  n,
+int AT_characteristic_multiple_scattering_angle( const long 	n,
 												 const double 	E_MeV_u[],
 												 const int		particle_charge_e[],
 												 const double	target_thickness_cm[],
@@ -298,31 +298,42 @@ double AT_scattering_angle_distribution_single( const double E_MeV_u,
 													particle_charge_e,
 													target_thickness_cm,
 													element_acronym );
-	double	red_Theta	=	Theta/(chi_c*sqrt(B));
-	double	correction0	=	AT_Moliere_function_f0(red_Theta);
-	double	correction1	=	AT_Moliere_function_f1(red_Theta);
-	double	correction2	=	AT_Moliere_function_f2(red_Theta);
 
-	return	(1/(4*M_PI*gsl_pow_2(Theta_M)))*(correction0 + correction1/B + correction2/(B*B));
+	double	red_Theta_pos		=	Theta/(chi_c*sqrt(B));
+	double	correction0_pos		=	AT_Moliere_function_f0(red_Theta_pos);
+	double	correction1_pos		=	AT_Moliere_function_f1(red_Theta_pos);
+	double	correction2_pos		=	AT_Moliere_function_f2(red_Theta_pos);
+
+	double	red_Theta_neg		=  -red_Theta_pos;
+	double	correction0_neg		=	AT_Moliere_function_f0(red_Theta_neg);
+	double	correction1_neg		=	AT_Moliere_function_f1(red_Theta_neg);
+	double	correction2_neg		=	AT_Moliere_function_f2(red_Theta_neg);
+
+	if(Theta>0){
+		return	(1/(4*M_PI*gsl_pow_2(Theta_M)))*(correction0_pos + correction1_pos/B + correction2_pos/(B*B));
+	}
+	else{
+		return	(1/(4*M_PI*gsl_pow_2(Theta_M)))*(correction0_neg + correction1_neg/B + correction2_neg/(B*B));
+	}
 }
 
 
-int AT_scattering_angle_distribution( const long  n,
-									  const double 	E_MeV_u[],
-									  const int		particle_charge_e[],
-									  const double	target_thickness_cm[],
-									  char*			element_acronym[],
-									  double			Theta,
-									  double        	distribution[]){
+int AT_scattering_angle_distribution( const long  	n,
+									  const double 	E_MeV_u,
+									  const int		particle_charge_e,
+									  const double	target_thickness_cm,
+									  const char	element_acronym[PARTICLE_NAME_NCHAR],
+									  const double	Theta[],
+									  double        distribution[]){
 
 	// loop over n to find scattering angle distributions for all particles
 	long  i;
 	for(i = 0; i < n; i++){
-	    distribution[i] = AT_scattering_angle_distribution_single( E_MeV_u[i],
-	    												particle_charge_e[i],
-	    												target_thickness_cm[i],
-	    												element_acronym[i],
-	    												Theta);
+	    distribution[i] = AT_scattering_angle_distribution_single( E_MeV_u,
+	    														   particle_charge_e,
+	    														   target_thickness_cm,
+	    														   element_acronym,
+	    														   Theta[i]);
 	  	}
 
 	return 0;
@@ -341,7 +352,7 @@ double AT_Highland_angle_single( const double E_MeV_u,
 }
 
 
-int AT_Highland_angle( const long  n,
+int AT_Highland_angle( const long  		n,
 					   const double 	E_MeV_u[],
 					   const int		particle_charge_e[],
 					   const double		l_over_lR[],

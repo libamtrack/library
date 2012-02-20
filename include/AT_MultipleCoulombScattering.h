@@ -66,10 +66,10 @@ double AT_characteristic_single_scattering_angle_single( const double E_MeV_u,
  * @param[out] chi_c                    vector of characteristic single scattering angles in rad (array of size n)
  * @return     status code
  */
-int AT_characteristic_single_scattering_angle( const long  n,
+int AT_characteristic_single_scattering_angle( const long  		n,
 											   const double 	E_MeV_u[],
 											   const int		particle_charge_e[],
-											   const double	target_thickness_cm[],
+											   const double		target_thickness_cm[],
 											   char*			element_acronym[],
 											   double        	chi_c[]);
 
@@ -97,7 +97,7 @@ double AT_screening_angle_single( const double E_MeV_u,
  * @param[out] chi_a                    vector of screening angles in rad (array of size n)
  * @return     status code
  */
-int AT_screening_angle( const long  n,
+int AT_screening_angle( const long  	n,
 						const double 	E_MeV_u[],
 						const int		particle_charge_e[],
     					char*			element_acronym[],
@@ -198,7 +198,7 @@ double AT_characteristic_multiple_scattering_angle_single( const double E_MeV_u,
  * @param[out] Theta_M		            vector of characteristic multiple scattering angles in rad (array of size n)
  * @return     status code
  */
-int AT_characteristic_multiple_scattering_angle( const long  n,
+int AT_characteristic_multiple_scattering_angle( const long  	n,
 												 const double 	E_MeV_u[],
 												 const int		particle_charge_e[],
 												 const double	target_thickness_cm[],
@@ -234,7 +234,7 @@ double AT_Moliere_function_f2( double red_Theta );
 
 
 /**
- *  Returns scattering angle distribution f(Theta)
+ *  Returns value of scattering angle distribution f(Theta)
  *
  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
  * @param[in]  particle_charge_e    	charge number of particle
@@ -251,24 +251,25 @@ double AT_scattering_angle_distribution_single( const double E_MeV_u,
 
 
 /**
- *  Returns scattering angle distributions f(Theta)
+ *  Returns scattering angle distribution f(Theta)
+ *  The distribution is not normalized because the energy loss in the target is not considered.
  *
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
- * @param[in]  particle_charge_e    	vector of charge numbers of particle (array of size n)
- * @param[in]  target_thickness_cm      vector of thicknesses of target material in cm (array of size n)
- * @param[in]  element_acronym		    vector of elemental symbols of target material (array of size n)
- * @param[in]  Theta				   	multiple scattering angle in rad
- * @param[out] distribution		        vector of scattering angle distributions (array of size n)
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
+ * @param[in]  particle_charge_e    	charge number of particle
+ * @param[in]  target_thickness_cm      thicknesses of target material in cm
+ * @param[in]  element_acronym		    elemental symbol of target material (array of size PARTICLE_NAME_NCHAR)
+ * @param[in]  Theta				   	vector of polar angles in rad (array of size n)
+ * @param[out] distribution		        vector of scattering angle distribution values (array of size n)
  * @return     status code
  */
-int AT_scattering_angle_distribution( const long  n,
-									  const double 	E_MeV_u[],
-									  const int		particle_charge_e[],
-									  const double	target_thickness_cm[],
-									  char*			element_acronym[],
-									  double			Theta,
-									  double        	distribution[]);
+int AT_scattering_angle_distribution( const long  	n,
+									  const double 	E_MeV_u,
+									  const int		particle_charge_e,
+									  const double	target_thickness_cm,
+									  const char	element_acronym[],
+									  const double	Theta[],
+									  double        distribution[]);
 
 
 /**
@@ -294,7 +295,7 @@ double AT_Highland_angle_single( const double E_MeV_u,
  * @param[out] Theta0		            vector of Highland angles in rad (array of size n)
  * @return     status code
  */
-int AT_Highland_angle( const long  n,
+int AT_Highland_angle( const long  		n,
 					   const double 	E_MeV_u[],
 					   const int		particle_charge_e[],
 					   const double		l_overlR[],
