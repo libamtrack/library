@@ -37,10 +37,11 @@ namespace         <- scan(file = "NAMESPACE", what = "character", sep = "\n")
 noR               <- grepl("noR: ", namespace)
 namespace         <- gsub("^noR: ", "", namespace)
 
-# Navigate to include path within libamtrack trunk. Stop if this fails
-if((try(setwd("../../../include")) == FALSE)&(try(setwd("../../include")) == FALSE)){
-    stop("I do not see from current folder /include. Please move to other place !")
-}
+# Navigate to include path, has to be given as argument 1
+setwd(commandArgs(trailingOnly = TRUE)[1])
+
+# stop("I do not see from current folder /include. Please move to other place !")
+
 
 # Read in all header file names
 header.file.names <- list.files(".")
