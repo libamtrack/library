@@ -266,8 +266,7 @@ def harvest(functions,  path = '../../../include/'):
                     if len(string.split(line,'(') )==2  and comment_end: #function definition starts here
                         tmp_definition_start = lineno    
                         comment_end =False
-                    tmp_line = line    # copy, since the following strip command would change the line
-                    if tmp_line.strip()[-2:] == ');' and not function_end : #function definition ends here
+                    if splitted_line[-1][-2:] == ');' and not function_end : #function definition ends here
                         tmp_definition_stop = lineno+1
                         function_end = True
     
