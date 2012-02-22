@@ -207,7 +207,7 @@ int AT_characteristic_multiple_scattering_angle( const long  	n,
 
 
 /**
- *  Returns values f0(red_Theta) of the first Molière function
+ *  Returns values f0(red_Theta) of the first Moliere function
  *
  * @param[in]  red_Theta                reduced angle variable
  * @return     first Moliere function
@@ -216,7 +216,7 @@ double AT_Moliere_function_f0( double red_Theta);
 
 
 /**
- *  Returns values f1(red_Theta) of the second Molière function
+ *  Returns values f1(red_Theta) of the second Moliere function
  *
  * @param[in]  red_Theta                reduced angle variable
  * @return     second Moliere function
@@ -225,7 +225,7 @@ double AT_Moliere_function_f1( double red_Theta);
 
 
 /**
- *  Returns values f2(red_Theta) of the third Molière function
+ *  Returns values f2(red_Theta) of the third Moliere function
  *
  * @param[in]  red_Theta                reduced angle variable
  * @return     third Moliere function
@@ -268,7 +268,7 @@ int AT_scattering_angle_distribution( const long  	n,
 									  const double 	E_MeV_u,
 									  const int		particle_charge_e,
 									  const double	target_thickness_cm,
-									  const char	element_acronym[PARTICLE_NAME_NCHAR],
+									  const char	element_acronym[],
 									  const double	Theta[],
 									  double        distribution[]);
 
