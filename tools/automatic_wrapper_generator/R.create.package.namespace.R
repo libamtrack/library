@@ -6,20 +6,23 @@
 
 rm(list = ls())
 
-namespace.file          <- "# Namespace for package libamtrack\n#Created by R.create.package.namespace.R script\n\n"
+args <- commandArgs(TRUE)
+
+namespace.file          <- paste("# Namespace for package ", args[1], "\n#Created by R.create.package.namespace.R script\n\n", sep = "")
 
 # Add loading hook for library
 namespace.file          <- paste( namespace.file,
-                                  "useDynLib(\"libamtrack\", .registration = TRUE)\n\n",
+                                  "useDynLib(\"",args[1], "\", .registration = TRUE)\n\n",
                                   sep = "")
 
 # Read functions from documentation directory. This is easiest as all functions have their corresponding
 # Rd file (alternatively one could browse C code NAMESPACE and hardcoded wrappers).
 # Remove Rd files for variables and other entities (which does not start with "AT.")
-Code.namespace         <- list.files(path = "./libamtrack/man", 
+Code.namespace         <- list.files(path = paste("./", args[1], "/man", sep = ""), 
                                      pattern = "*.Rd")
 Code.namespace         <- gsub(".Rd", "", Code.namespace)
-Code.namespace         <- Code.namespace[grepl("^AT.", Code.namespace)]
+library.acronym        <- paste("^", args[2], ".", sep = "")
+Code.namespace         <- Code.namespace[grepl(library.acronym, Code.namespace)]
 
 namespace.file          <- paste( namespace.file,
                                   "export(\n",
@@ -44,5 +47,5 @@ namespace.file          <- paste( namespace.file,
                                   ")\n\n",
                                   sep = "")
 
-write(namespace.file, file = "./libamtrack/NAMESPACE")
+write(namespace.file, file = paste("./", args[1], "/NAMESPACE", sep = ""))
 

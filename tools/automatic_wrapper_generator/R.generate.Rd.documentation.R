@@ -3,7 +3,7 @@
 ################################################################################################
 # Copyright 2006, 2010 The libamtrack team
 # 
-# This file is part of the AmTrack program (libamtrack.sourceforge.net).
+# This file is part of the AmTrack program (libamtrack.forge.net).
 #
 #    Created on: 13.09.2010
 #    Creator: kleinf
@@ -27,6 +27,8 @@
 # Clean workspace
 rm(list = ls())
 
+args <- commandArgs(TRUE)
+
 # Load the function information extracted by 'read.cur.description.R'
 load("functions.sdd")
 load("meta.information.sdd")
@@ -39,13 +41,17 @@ grep.bool	<-	function(pattern, x, ...){
       return(bool.res)
 }
 
+
 # List of hard-coded Rd files for variable descriptions
 hardcoded.variable.descriptions    <- c("E.MeV.u", "particle.no", "material.no", "er.model", "rdd.model", "fluence.cm2.or.dose.Gy", "number.of.field.components", "stopping.power.source.no")
 
 # Read in hard-coded examples
-hardcoded.examples                 <- scan( "./hardcoded_documentation/examples.txt", 
+
+if(args[2] == "libmaterials"){ hardcoded.examples <- scan("../../../libmaterials/wrapper/R/hardcoded_documentation/examples.txt", 
                                             what  = "character",
-                                            sep   = "\n") 
+                                            sep   = "\n")}else {hardcoded.examples <- scan( paste(args[1], "examples.txt", sep = ""), 
+                                            what  = "character",
+                                            sep   = "\n")}
 
 # Find first line of examples and read the names
 pos.start.examples                 <- grep("::", hardcoded.examples)
@@ -54,7 +60,7 @@ names.examples                     <- substring( hardcoded.examples[pos.start.ex
                                                  nchar(hardcoded.examples[pos.start.examples]) - 2)
 
 # Read in type conversion table for C to R
-source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")
+source(args[1])
 
 # exclude function with "C only" flag
 noR       <- sapply(functions, check.type <- function(x){x$wrapper.type == "C only"})
@@ -170,13 +176,13 @@ for(i in 1:length(functions)){
 
     # Add link to source code
            if(meta.information$code.status == "Development"){
-             cur.src.link          <- paste("http://sourceforge.net/apps/trac/libamtrack/browser/trunk/src/", 
+             cur.src.link          <- paste("http://sourceforge.net/apps/trac/",args[2], "/browser/trunk/src/", 
                                           cur.function$src.file.name, 
                                           "#L",
                                           cur.function$src.line.no,
                                           sep = "")
            }else{ # code.status == "Release"
-             cur.src.link          <- paste("http://sourceforge.net/apps/trac/libamtrack/browser/tags/", 
+             cur.src.link          <- paste("http://sourceforge.net/apps/trac/", args[2], "/browser/tags/", 
                                           meta.information$code.version,
                                           "/src/",
                                           cur.function$src.file.name, 

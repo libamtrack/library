@@ -27,10 +27,14 @@
 rm(list = ls())
 
 # Read type conversion functions (R <-> C types)
-if((try(source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")) == FALSE) & 
-   (try(source("../../../libamtrack/tools/automatic_wrapper_generator/R.type.conversion.R")) == FALSE)){
-    stop("I do not see from current folder R.type.conversion.R. Please move to other place !")
-}
+
+
+
+#Arguments passed by shell (arg1: path and arg2: library name)
+args <- commandArgs(TRUE)
+
+source(paste(args[1], "/R.type.conversion.R", sep = ""))
+
 
 # Read function information from parsed doxygen comments
 load("functions.sdd")
@@ -59,7 +63,7 @@ write("// Automatically created header and body file\n\n#include \"AT_R_Wrapper.
 
 # Loop over all functions from doxygen parsing
 for(i in 1:length(functions)){
-	# i <- 56
+	# i <- 1
 	
   # Extract current function, parameters and number of parameters
   curFun    <- functions[[i]]

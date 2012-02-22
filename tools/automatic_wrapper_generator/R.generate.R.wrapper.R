@@ -25,19 +25,23 @@
 
 rm(list = ls())
 
-source("../../../tools/automatic_wrapper_generator/R.type.conversion.R")
+#try(source("../../../tools/automatic_wrapper_generator/R.type.conversion.R"))
+#try(source("../../../libamtrack/tools/automatic_wrapper_generator/R.type.conversion.R"))
 
-cmd_args <- commandArgs(trailingOnly = TRUE)
+args <- commandArgs(TRUE)
+source(args[1])
+
+#cmd_args <- commandArgs(trailingOnly = TRUE)
 package  <- TRUE
-if(length(cmd_args)>0){
-  if(cmd_args[1] == "nopackage"){
-    package    <- FALSE
-  }
-}
+#if(length(cmd_args)>0){
+#  if(cmd_args[1] == "nopackage"){
+#    package    <- FALSE
+#  }
+#}
 
 load("functions.sdd")
 
-write("# Automatically created wrapper file\n", file = "./libamtrack.R")
+write("# Automatically created wrapper file\n", file = paste("./",args[2],".R", sep = ""))
 
 # replacement for "grepl" function to ensure compatibilty with R <= 2.9.0
 grep.bool	<-	function(pattern, x, ...){
@@ -188,7 +192,7 @@ for(i in 1:length(functions)){
 	}
 	
 	if(package == TRUE){
-	  package.ref  <- ",PACKAGE=\"libamtrack\""
+	  package.ref  <- paste(",PACKAGE=\"",args[2],"\"", sep = "")
 	}else{
 	  package.ref  <- ""
 	}
@@ -237,7 +241,7 @@ for(i in 1:length(functions)){
 	}
 
 
-	write(c(header, "\n"), file = "./libamtrack.R", append = T)
+	write(c(header, "\n"), file = paste("./", args[2], ".R", sep = ""), append = T)
 
 }
 #tmp
