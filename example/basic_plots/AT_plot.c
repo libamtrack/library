@@ -68,7 +68,6 @@ void usage(int argc, char* argv[]){
 }
 
 
-
 int main( int argc, char* argv[]){
 
 	int c;
@@ -107,44 +106,36 @@ int main( int argc, char* argv[]){
 		if (c == -1) /* Detect the end of the options. */
 			break;
 
+		char * test = 0;
 		switch (c) {
 		case 't':
 			plottype = optarg;
 			break;
 
 		case 'n':
-		{
-			char * test1 = 0;
-			x_start = strtod(optarg,&test1);
-			if( ((x_start == 0) && (*test1 != 0)) || (*test1 != '\0')){
+			x_start = strtod(optarg,&test);
+			if( ((x_start == 0) && (*test != 0)) || (*test != '\0')){
 				fprintf(stderr, "Error in decoding xmin (--xmin option)\n");
 			}
 			break;
-		};
 
 		case 'x':
-		{
-			char * test2 = 0;
-			x_stop = strtod(optarg,&test2);
-			if( ((x_stop == 0) && (*test2 != 0)) || (*test2 != '\0')){
+			x_stop = strtod(optarg,&test);
+			if( ((x_stop == 0) && (*test != 0)) || (*test != '\0')){
 				fprintf(stderr, "Error in decoding xmax (--xmax option)\n");
 			}
 			break;
-		};
 
 		case 'l':
 			xlogscale_flag = true;
 			break;
 
 		case 'm':
-		{
-			char * test3 = 0;
-			number_of_points_on_x_axis = strtol(optarg,&test3,10);
-			if( ((number_of_points_on_x_axis == 0) && (*test3 != 0)) || (*test3 != '\0')){
+			number_of_points_on_x_axis = strtol(optarg,&test,10);
+			if( ((number_of_points_on_x_axis == 0) && (*test != 0)) || (*test != '\0')){
 				fprintf(stderr, "Error in decoding npoints (--npoints option)\n");
 			}
 			break;
-		};
 
 		case 'p':
 			strncpy(particle_name, optarg, PARTICLE_NAME_NCHAR-1);
@@ -154,30 +145,25 @@ int main( int argc, char* argv[]){
 			break;
 
 		case 's':
-		{
-			char * test3 = 0;
-			modeltype = strtol(optarg,&test3,10);
-			if( ((modeltype == 0) && (*test3 != 0)) || (*test3 != '\0')){
+			modeltype = strtol(optarg,&test,10);
+			if( ((modeltype == 0) && (*test != 0)) || (*test != '\0')){
 				fprintf(stderr, "Error in decoding modeltype (--modeltype option)\n");
 			}
 			break;
-		};
 
 		case 'y':
-		{
-			char * test3 = 0;
-			submodeltype = strtol(optarg,&test3,10);
-			if( ((submodeltype == 0) && (*test3 != 0)) || (*test3 != '\0')){
+			submodeltype = strtol(optarg,&test,10);
+			if( ((submodeltype == 0) && (*test != 0)) || (*test != '\0')){
 				fprintf(stderr, "Error in decoding submodeltype (--submodeltype option)\n");
 			}
 			break;
-		};
 
 		case '?': /* getopt_long already printed an error message. */
 			break;
 
 		default:
 			abort ();
+			break;
 		}
 	}
 
@@ -334,10 +320,13 @@ int main( int argc, char* argv[]){
 		char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH];
 		AT_stopping_power_source_model_name_from_number( source_no, source_name);
 		printf("#data source: %s (code: %ld)\n", source_name, source_no);
+		printf("#E: %g [MeV/u]\n", E_MeV_u);
 		printf("#r[m] D[Gy]\n");
 		int status = AT_D_RDD_Gy( number_of_points_on_x_axis, x, E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model, source_no, y);
 		if( status != AT_Success ){
 			fprintf(stderr, "Incompatible ER model (%s) used with RDD model (%s)\n", er_name, rdd_name);
+			free(x);
+			free(y);
 			exit(EXIT_FAILURE);
 		}
 	} else if( strcmp( plottype , "LET") == 0){
@@ -361,6 +350,8 @@ int main( int argc, char* argv[]){
 	}  else {
 		printf("Plottype %s not supported\n", plottype);
 		plottype_usage();
+		free(x);
+		free(y);
 		exit(EXIT_FAILURE);
 	}
 
