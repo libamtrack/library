@@ -79,35 +79,35 @@ cp ../../../config.h libamtrack/src/
 
 echo
 echo "Running R script to parse doxygen information from sources..."
-R --no-save CMD BATCH ../../../tools/automatic_wrapper_generator/collect.doxygen.information.R
+Rscript --no-save ../../../tools/automatic_wrapper_generator/collect.doxygen.information.R ../../../include libamtrack >collect.doxygen.information.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing collect.doxygen.information.R"
   exit 1
 fi
 
 echo "Running R script to create C headers from parsed doxygen information..."
-R --no-save CMD BATCH ../../../tools/automatic_wrapper_generator/R.generate.C.wrapper.R
+Rscript --no-save ../../../tools/automatic_wrapper_generator/R.generate.C.wrapper.R ../../../tools/automatic_wrapper_generator libamtrack >R.generate.C.wrapper.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.generate.C.wrapper.R"
   exit 1
 fi
 
 echo "Running R script to create R headers from parsed doxygen information..."
-R --no-save CMD BATCH ../../../tools/automatic_wrapper_generator/R.generate.R.wrapper.R
+Rscript --no-save ../../../tools/automatic_wrapper_generator/R.generate.R.wrapper.R ../../../tools/automatic_wrapper_generator/R.type.conversion.R libamtrack >R.generate.R.wrapper.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.generate.R.wrapper.R"
   exit 1
 fi
 
 echo "Running R script to add metainformation (date, version, etc.) to R package description..."
-R --no-save CMD BATCH ../../../tools/automatic_wrapper_generator/R.add.metainfo.R
+Rscript --no-save ../../../tools/automatic_wrapper_generator/R.add.metainfo.R ../../../ libamtrack >R.add.metainfo.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.add.metainfo.R"
   exit 1
 fi
 
 echo "Running R script to create Rd documentation from parsed doxygen information..."
-R --no-save CMD BATCH ../../../tools/automatic_wrapper_generator/R.generate.Rd.documentation.R
+Rscript --no-save ../../../tools/automatic_wrapper_generator/R.generate.Rd.documentation.R ./hardcoded_documentation/ libamtrack >R.generate.Rd.documentation.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.generate.Rd.documentation.R"
   exit 1
@@ -121,7 +121,7 @@ mv *.Rd libamtrack/man
 
 # *** Create namespace for package
 echo "Create NAMESPACE file for package..."
-R --no-save CMD BATCH ../../../tools/automatic_wrapper_generator/R.create.package.namespace.R
+Rscript --no-save ../../../tools/automatic_wrapper_generator/R.create.package.namespace.R libamtrack AT >R.create.package.namespace.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.create.package.namespace.R"
   exit 1
