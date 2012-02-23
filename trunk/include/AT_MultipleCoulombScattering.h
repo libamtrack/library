@@ -268,7 +268,7 @@ int AT_scattering_angle_distribution( const long  	n,
 									  const double 	E_MeV_u,
 									  const int		particle_charge_e,
 									  const double	target_thickness_cm,
-									  const char	element_acronym[PARTICLE_NAME_NCHAR],
+									  const char	element_acronym[],
 									  const double	Theta[],
 									  double        distribution[]);
 
