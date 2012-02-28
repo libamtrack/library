@@ -38,17 +38,17 @@
 #include "AT_NumericalRoutines.h"
 
 /**
- * TODO
+ * Total number of particles in data table
  */
 #define PARTICLE_DATA_N    96
 
 /**
- * TODO
+ * Particle no of proton
  */
 #define PARTICLE_PROTON_NUMBER   1001
 
 /**
- * TODO
+ * Maximum length of particle name acronym
  */
 #define PARTICLE_NAME_NCHAR 6
 
@@ -225,10 +225,10 @@ int AT_Z_from_particle_no(  const long  n,
 
 
 /**
- * TODO
- * @param[in]  n              TODO
- * @param[in]  particle_no    TODO
- * @param[out] atomic_weight  TODO
+ * Calculates atomic weight for particle with given code number
+ * @param[in]  n              length of arrays
+ * @param[in]  particle_no    particle index number (array of size n)
+ * @param[out] atomic_weight  atomic weight (array of size n)
  * @return                    status code
  */
 int AT_atomic_weight_from_particle_no(  const long  n,
@@ -368,7 +368,7 @@ int AT_element_acronym_from_Z( const long n,
 
 
 /**
- * Returns A for given elemental symbol
+ * Returns atomic weight for given elemental symbol
  * @param[in]  acronym   elemental symbols (array of size PARTICLE_NAME_NCHAR)
  * @return corresponding atomic weight
  */
@@ -376,15 +376,15 @@ double AT_atomic_weight_from_element_acronym_single( const char acronym[] );
 
 
 /**
- * Returns A for given elemental symbols
- * @param[in]  n        number of elements in array
- * @param[in]  acronym  elemental symbols (array of size n)
- * @param[out] A        corresponding A (array of size n)
+ * Returns atomic weight for given elemental symbols
+ * @param[in]  n               number of elements in array
+ * @param[in]  acronym         elemental symbols (array of size n)
+ * @param[out] atomic_weight   corresponding A (array of size n)
  * @return status
  */
 int AT_atomic_weight_from_element_acronym( const long n,
 		char* acronym[],
-		double A[]);
+		double atomic_weight[]);
 
 
 /**
@@ -437,7 +437,7 @@ double AT_electron_density_cm3_from_element_acronym_single( const char acronym[]
 
 /**
  * Returns the electron densities per cm3 for given elemental symbols
- * @param[in]  n                       TODO
+ * @param[in]  n                       array length
  * @param[in]  acronym                 elemental symbols (array of size n)
  * @param[out] electron_density        corresponding electron densities per cm3 (array of size n)
  * @return status
