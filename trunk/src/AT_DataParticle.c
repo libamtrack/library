@@ -404,13 +404,12 @@ double AT_atomic_weight_from_element_acronym_single( const char acronym[PARTICLE
 }
 
 
-int AT_atomic_weight_from_element_acronym(const long n, char* acronym[], double A[]){
+int AT_atomic_weight_from_element_acronym(const long n, char* acronym[], double atomic_weight[]){
 
 	long i;
-
 	for(i = 0; i < n; i++){
-		A[i] = AT_atomic_weight_from_element_acronym_single( acronym[i] );
-		if (A[i] < 0)
+		atomic_weight[i] = AT_atomic_weight_from_element_acronym_single( acronym[i] );
+		if (atomic_weight[i] < 0)
 			return AT_Particle_Not_Defined;
 	}
 	return AT_Success;
