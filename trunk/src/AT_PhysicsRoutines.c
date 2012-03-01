@@ -195,7 +195,7 @@ int AT_mean_excitation_energy_eV_from_Z( const long n,
 
  double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u ){
   const double	beta = AT_beta_from_E_single(E_MeV_u);
-  const double	mass_correction_terms = AT_mass_correction_terms(beta);
+  const double	mass_correction_terms = AT_mass_correction_terms(E_MeV_u);
   return (2.0 * electron_mass_MeV_c2 * gsl_pow_2(beta) / (1.0 - gsl_pow_2(beta))) / mass_correction_terms;
  }
 
