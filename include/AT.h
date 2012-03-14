@@ -48,4 +48,6 @@
  */
  double AT_test_fun( double a, double b);
 
+ // Just a test
+ 
 #endif /* AT_ALGORITHMS_CPP_H_ */
