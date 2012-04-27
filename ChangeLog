@@ -1,3 +1,12 @@
+Changes in 0.5.3 (2012-04-27)
+=============================
+
+- Bug fixes to Python and R bindings
+- Esp., R calls to functions that return character vectors (such as AT.particle.name.from.particle.no) reworked using ".Call" in order to avoid array over-runs which now can be checked by R_C_BOUNDS_CHECK in R)
+- Improved scripts for automatic generation of R wrapper, ensuring better portability - they should be applicable for projects similar to libamtrack now (e.g. libmaterials).
+- Added Multicoulomb-Scattering (MCS) physics
+- Started parallelization of code using OpenMP
+
 Changes in 0.5.2 (2011-12-20)
 =============================
 
