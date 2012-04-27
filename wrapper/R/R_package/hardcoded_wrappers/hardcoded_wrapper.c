@@ -58,7 +58,7 @@ SEXP AT_particle_name_from_particle_no_R(SEXP particle_no){
   R_len_t i, n = length(particle_no);
 
   long    n_single = 1, cur_particle_no;
-  char    particle_name_str[PARTICLE_NAME_NCHAR] = "HHH";
+  char    particle_name_str[PARTICLE_NAME_NCHAR];
   SEXP    ans, int_particle_no;
   PROTECT(ans = allocVector(STRSXP, n));
   PROTECT(int_particle_no = coerceVector(particle_no, INTSXP));
@@ -93,19 +93,27 @@ void AT_particle_no_from_particle_name_R(const char** particle_name,
   *particle_no = (int)particle_no_long;
 }
 
-void AT_material_name_from_material_no_R( const int* material_no,
-    char** material_name){
+SEXP AT_material_name_from_material_no_R( SEXP material_no){
 
-	const long material_no_long = (long)(*material_no);
-	char * material_name_str = (char*)calloc(MATERIAL_NAME_LENGTH, sizeof(char));
+  R_len_t i, n = length(material_no);
 
-	AT_material_name_from_number( material_no_long,
-	      material_name_str);
+  long    cur_material_no;
+  char    material_name_str[MATERIAL_NAME_LENGTH];
+  SEXP    ans, int_material_no;
+  PROTECT(ans = allocVector(STRSXP, n));
+  PROTECT(int_material_no = coerceVector(material_no, INTSXP));
 
-	strcpy(*material_name, material_name_str);
+  for(i = 0; i < n; i++){
+    cur_material_no  = INTEGER(int_material_no)[i];
+    AT_material_name_from_number( cur_material_no,
+                                  &material_name_str);
+    SET_STRING_ELT(ans, i, mkChar(material_name_str));
+  }
 
-	free(material_name_str);
+  UNPROTECT(2);
+  return(ans);
 }
+
 
 void AT_material_no_from_material_name_R( const char** material_name,
 	int* material_no){
