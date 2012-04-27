@@ -24,18 +24,9 @@ AT.gamma.response <- function( d.Gy,
 
 AT.particle.name.from.particle.no <- function(particle.no){
 
-     n                   <- length(particle.no)
-     particle.name       <- character(n)
-     
-     for (i in 1:n){
-          cur.particle.name     <- character(1)
-          res                   <- .C( "AT_particle_name_from_particle_no_R",
-		                               particle.no    = as.integer(particle.no[i]),           
-									   particle.name  = as.character(cur.particle.name),
-									   PACKAGE        = "libamtrack")
-          particle.name[i]     <-     res$particle.name
-     }          
-     return(particle.name)
+    .Call( "AT_particle_name_from_particle_no_R",
+		  particle.no,
+                  PACKAGE        = "libamtrack")
 }
      
 

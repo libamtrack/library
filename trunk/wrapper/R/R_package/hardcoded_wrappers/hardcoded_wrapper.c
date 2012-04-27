@@ -53,20 +53,26 @@ void AT_gamma_response_R( const int*  n,
   free(S_double);
 }
 
-void AT_particle_name_from_particle_no_R(const int* particle_no,
-    char** particle_name){
+SEXP AT_particle_name_from_particle_no_R(SEXP particle_no){
 
-  const long n = 1;
-  const long particle_no_long = (long)(*particle_no);
-  char particle_name_str[1][6];
+  R_len_t i, n = length(particle_no);
 
-  strcpy(particle_name_str[0], *particle_name);
+  long    n_single = 1, cur_particle_no;
+  char    particle_name_str[PARTICLE_NAME_NCHAR] = "HHH";
+  SEXP    ans, int_particle_no;
+  PROTECT(ans = allocVector(STRSXP, n));
+  PROTECT(int_particle_no = coerceVector(particle_no, INTSXP));
 
-  AT_particle_name_from_particle_no( n,
-      &particle_no_long,
-      particle_name_str);
+  for(i = 0; i < n; i++){
+    cur_particle_no  = INTEGER(int_particle_no)[i];
+    AT_particle_name_from_particle_no( n_single,
+                                       &cur_particle_no,
+                                       &particle_name_str);
+    SET_STRING_ELT(ans, i, mkChar(particle_name_str));
+  }
 
-  strcpy(*particle_name, particle_name_str[0]);
+  UNPROTECT(2);
+  return(ans);
 }
 
 

@@ -10,6 +10,9 @@ FAST_ARG="FALSE"
 INSTALL_ARG="FALSE"
 NOCLEAN_ARG="FALSE"
 
+# set bound checking environmental variable
+export R_C_BOUNDS_CHECK=yes
+
 for var in "$@"
 do
     if [ "$var" == "--help" ] ; then
