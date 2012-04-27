@@ -6,6 +6,9 @@
 #include "AT_GammaResponse.h"
 #include "AT_DataMaterial.h"
 
+#include <R.h>
+#include <Rinternals.h>
+
 void AT_gamma_response_R( const int*  n,
     const float*  d_Gy,
     const int*    gamma_model,
@@ -13,8 +16,10 @@ void AT_gamma_response_R( const int*  n,
     const int*	  lethal_events_mode,
     float*        S);
 
-void AT_particle_name_from_particle_no_R(const int* particle_no,
-    char** particle_name);
+//void AT_particle_name_from_particle_no_R(const int* particle_no,
+//    char** particle_name);
+
+SEXP AT_particle_name_from_particle_no_R(SEXP particle_no);
 
 void AT_particle_no_from_particle_name_R(const char** particle_name,
     int* particle_no);
