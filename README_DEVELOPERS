@@ -7,6 +7,7 @@ libamtrack information for code developers
 3.  Doxygen comments
 4.  R package compilation
 5.  Python wrappers
+6.  Install GSL under Windows
 
 Contact and feedback
 
@@ -132,12 +133,12 @@ The resulting package is an source tarball. It can be installed by typing
 Windows specific: Under standard Windows, source tarballs cannot be installed. To compile a package, you have to prepare your system and 
 the best way to do so, is to use the RTools by Murdoch and Sutherland: http://www.murdoch-sutherland.com/Rtools/
 If you use the --build option during this process (R CMD INSTALL --build <package_name>) you will get a binary package <package_name>.zip
-that you can then install on any Windows system.
+that you can then install on any Windows system. For how to install GSL on Windows, see below. Remember to set an environmental variable (set LIB_GSL=C:/GnuWin32 or C:/Rtools/MinGW/msys/1.0/local etc.) to make the compiler aware of gsl's location.
 
 The process is only needed for intermediate packages. Release packages will be uploaded to CRAN, the R repository, where Windows and Mac
 binaries are automatically provided.
  
-Before uploading a release package to CRAN, please doublecheck carefully using R CMD check <package_name>, also as a differnt user. Checking
+Before uploading a release package to CRAN, please doublecheck carefully using R CMD check <package_name> --as-cran, also as a differnt user. Checking
 as the same user who compiled the package might mask errors.
 
 ############################################################################################################################
@@ -153,6 +154,32 @@ iii. copy compiled library to the same directory as "pyamtrack.py": cp ../../../
 
 iv.  run "python pyamtrack_example.py" to check sample file.
 
+############################################################################################################################
+6. Install GSL under Windows
+############################################################################################################################
+
+We assume you have Rtools installed in C:\Rtools. Then the MSYS environment is installed C:\Rtools\MinGW\msys\1.0. You can start MSYS (a Linux-like environment under Windows) by executing msys.bat. You can create a link on the desktop etc. when you start MSYS often. 
+
+Download the tarball for the latest GSL version, e.g. gsl-1.15.tar.gz and unzip in you home directory, i.e. C:\Rtools\MinGW\msys\1.0\home\yourname.
+
+In MSYS navigate into the gsl-1.15 directory and execute
+./configure
+make
+
+To check your compiled library
+make check > log 2>&1
+
+To install
+make install
+
+gsl is now found at: C:\Rtools\MinGW\msys\1.0\local\include\gsl
+
+You can change this location using the --prefix flag during configure.
+
+The CFLAGS (e.g. for R package compilation) can be accessed by gsl-config --cflags and returns
+-I/usr/local/include
+
+A installation guide is found in the gsl directory in file INSTALL, including Windows specific notes.
 
 ############################################################################################################################
 Contact and feedback
