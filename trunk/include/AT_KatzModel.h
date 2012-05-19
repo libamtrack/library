@@ -263,6 +263,28 @@ double AT_KatzModel_KatzExtTarget_ButtsKatz_TrackWidth( const double z2kappabeta
 
 /**
  * TODO
+ * @param[in] E_MeV_u                   TODO
+ * @param[in] particle_no               TODO
+ * @param[in] material_no               TODO
+ * @param[in] rdd_model                 TODO
+ * @param[in] er_model                  TODO
+ * @param[in] m_number_of_targets       TODO
+ * @param[in] sigma0_m2                 TODO
+ * @param[in] kappa                     TODO
+ * @return inact cross section
+ */
+double AT_KatzModel_inactivation_cross_section_approximation_m2(	const double E_MeV_u,
+		const long   particle_no,
+		const long   material_no,
+		const long   rdd_model,
+		const long   er_model,
+		const double m_number_of_targets,
+		const double sigma0_m2,
+		const double kappa);
+
+
+/**
+ * TODO
  * @param[in] fluence_cm2
  * @param[in] E_MeV_u
  * @param[in] particle_no
