@@ -172,16 +172,51 @@ make check > log 2>&1
 To install
 make install
 
-The 32bit version of gsl is now found at: C:\Rtools\MinGW\msys\1.0\local\include\gsl. To then compile the 64bit version type
+The 32bit version of gsl is now found at: C:\Rtools\MinGW\msys\1.0\local\include\gsl. You can change this location using the --prefix flag during configure.
+
+To then compile the 64bit version type
 ./configure --build=x86_64-mingw32 --host=x86_64-mingw32
 --host=i686-w64-mingw32 --build=i686-w64-mingw32
 --target=x86_64-w64-mingw32,i686-w64-mingw32
-You can change this location using the --prefix flag during configure.
 
 i686-w64-mingw32-gcc is the 32-bit compiler and x86_64-w64-mingw32-gcc the 64-bit one
 
 The CFLAGS (e.g. for R package compilation) can be accessed by gsl-config --cflags and returns
 -I/usr/local/include
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+THIS GUIDE IS STILL NOT WORKING. IT IS A MAJOR OBSTACLE THAT WE (I) AM NOT ABLE TO COMPILE GSL
+UNDER WINDOWS...
+
+Here is what I do:
+
+- Say MinGW is located at c:\Rtools\MinGW
+- Other folders in Rtools: bin, gcc-4.6.3, MinGW64
+- Start MSYS from MinGW suite (located in the MinGW directory, but seems to include the 64bit extensions in MinGW64)
+- Download gsl-1.15.tar.gz and untar to my MSYS home directory (C:\Rtools\MinGW\msys\1.0\home\greilich)
+- As described in README_DEVELOPERS I then do
+
+./configure --build=i686-pc-mingw32 --host=i686-pc-mingw32
+make  
+make check > log 2>&1
+make install
+
+- The 32bit version of gsl is now found at: C:\Rtools\MinGW\msys\1.0\local\include\gsl
+
+Now comes the trouble: I want to compile and install the 64bit version
+
+That also works find (setting x86_64-w64-mingw32 as target, host, build whatever). But the outcome
+is NOT 64 but 32 bit. I am just unable to figure out how crosscompilation works for MinGW.
+
+But it has to work (also with the current installation from Rtools as using R CMD INSTALL compiles
+c Code (for R package shared libraries) flawlessly both for i386 and x64 (in one go).
+
+AARRRGHHHH - COULD SOMEBODY HELP, PLEASE?
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+
 
 A installation guide is found in the gsl directory in file INSTALL, including Windows specific notes.
 
