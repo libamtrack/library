@@ -234,6 +234,9 @@ Release (any OS):
 		New development name:	AC_DEFINE(CODE_NAME, ["Violet Wombat"], [Cryptonym to faciliate versioning for users])
 - Commit changes to SVN (this will be the release's revision number)
 
+Code on sourceforge:
+- Execute make dist
+
 R package (Linux):
 - Check out "/tags/VERSION" form SVN to new local folder ("pathTo")
 - Compile library according to (1) Basic Workflow, as given above (mainly to update autoconf files, but also to check integrity).
@@ -241,8 +244,8 @@ R package (Linux):
 - If successful, navigate to /wrapper/R/R_package and execute "./create.package.sh" (you might have to make it executable by "chmod 755 create.package.sh")
 - Run tests on tarball:
 	R CMD check --as-cran libamtrack.VERSION.tar.gz, both as current as alternative user and both with latest stable and development R release (4 tests)
-- If successful, upload package tarball to
-- Send mail to
+- If successful, upload package tarball to ftp://CRAN.R-project.org/incoming/ using ‘anonymous’ as log-in name and your e-mail address as password (use ‘ftp’)
+- Send mail to CRAN@R-project.org about it with your package name and version in the subject line of the form "CRAN submission ‘package’ ‘version’"
 	
 		
 		

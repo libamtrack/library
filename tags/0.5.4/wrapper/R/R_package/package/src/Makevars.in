@@ -4,7 +4,7 @@ GSL_CFLAGS = @GSL_CFLAGS@
 GSL_LIBS   = @GSL_LIBS@
 
 # combine to standard arguments for R
-PKG_CPPFLAGS =  $(GSL_CFLAGS) -I. -DNDEBUG
+PKG_CPPFLAGS =  $(GSL_CFLAGS) -I. -DNDEBUG -Wall -pedantic
 PKG_LIBS = $(GSL_LIBS)
 
 
