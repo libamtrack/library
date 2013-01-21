@@ -244,6 +244,7 @@ R package (Linux):
 - If successful, navigate to /wrapper/R/R_package and execute "./create.package.sh" (you might have to make it executable by "chmod 755 create.package.sh")
 - Run tests on tarball:
 	R CMD check --as-cran libamtrack.VERSION.tar.gz, both as current as alternative user and both with latest stable and development R release (4 tests)
+	Make sure to switch on "-Wall -pedantic" in ~/.R/Makevars (NOT in the package Makevars) - or similar if you are not using gcc
 - If successful, upload package tarball to ftp://CRAN.R-project.org/incoming/ using ‘anonymous’ as log-in name and your e-mail address as password (use ‘ftp’)
 - Send mail to CRAN@R-project.org about it with your package name and version in the subject line of the form "CRAN submission ‘package’ ‘version’"
 	

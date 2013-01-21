@@ -113,7 +113,9 @@ double AT_effective_collision_number_single( const double E_MeV_u,
 	double	exp_b	=	gsl_pow_2(chi_c)/(1.167*gsl_pow_2(chi_a));
 
 	if( exp_b < 1.14 ){
+#ifndef NDEBUG
 		printf("Moliere theory cannot be applied because the number of collisions in the target material is too small.");
+#endif
 		return	0;
 	}
 	else{
