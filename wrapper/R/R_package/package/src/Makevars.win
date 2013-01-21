@@ -1,5 +1,5 @@
 # lines below supplied by Brian Ripley and Uwe Ligges
 
-PKG_CPPFLAGS=-I$(LIB_GSL)/include -DNDEBUG -Wall -pedantic
+PKG_CPPFLAGS=-I$(LIB_GSL)/include -DNDEBUG
 PKG_LIBS=-L$(LIB_GSL)/lib -lgsl
 
