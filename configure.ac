@@ -1,10 +1,10 @@
 AC_PREREQ([2.67])
-AC_INIT([libamtrack], [0.5.4], [s.greilich@dkfz.de], [libamtrack])
+AC_INIT([libamtrack], [0.5.5], [s.greilich@dkfz.de], [libamtrack])
 AC_PACKAGE_URL([libamtrack.dkfz.org])
 # Code names: 
 # minor - 4: Ocelot, 5: Wombat
-# micro - 0: Black, 1: Blue, 2: Red, 3: Green, 4: Yellow
-AC_DEFINE(CODE_NAME, ["Yellow Wombat"], [Cryptonym to faciliate versioning for users])
+# micro - 0: Black, 1: Blue, 2: Red, 3: Green, 4: Yellow, 5: Violet
+AC_DEFINE(CODE_NAME, ["Violet Wombat"], [Cryptonym to faciliate versioning for users])
 # Status: "Development" or "Release" (will trigger some different actions, e.g. with R package)
 AC_DEFINE(CODE_STATUS, ["Development"], [Status of the code])
 
