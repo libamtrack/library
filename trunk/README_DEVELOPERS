@@ -13,7 +13,7 @@ libamtrack information for code developers
 Contact and feedback
 
 ############################################################################################################################
-i. Basic workflow
+1. Basic workflow
 ############################################################################################################################
 
 From revision r1037 on, libamtrack follows the GNU autotool conventions to improve portability and facilitate distribution.
@@ -225,13 +225,25 @@ A installation guide is found in the gsl directory in file INSTALL, including Wi
 7.  Make a release (including R package)
 ############################################################################################################################
 
+Release (any OS):
 - Augment "/trunk/ChangeLog", e.g. from svn logs
 - Make new folder in /tags, correspoding to version to release, e.g. "0.5.4"
 - Adjust "/tags/VERSION/configure.ac": AC_DEFINE(CODE_STATUS, ["Development"], [Status of the code]) --> AC_DEFINE(CODE_STATUS, ["Release"], [Status of the code])
 - Adjust "/trunk/configure.ac":  
 		New development number: AC_INIT([libamtrack], [0.5.5], [s.greilich@dkfz.de], [libamtrack])
 		New development name:	AC_DEFINE(CODE_NAME, ["Violet Wombat"], [Cryptonym to faciliate versioning for users])
+- Commit changes to SVN (this will be the release's revision number)
 
+R package (Linux):
+- Check out "/tags/VERSION" form SVN to new local folder ("pathTo")
+- Compile library according to (1) Basic Workflow, as given above (mainly to update autoconf files, but also to check integrity).
+- In most cases you have to the change permissions for "pathTo/wrapper/R/R_package/package/cleanup" to be executable for the owner "chmod 775 cleanup" (in the given directory)
+- If successful, navigate to /wrapper/R/R_package and execute "./create.package.sh" (you might have to make it executable by "chmod 755 create.package.sh")
+- Run tests on tarball:
+	R CMD check --as-cran libamtrack.VERSION.tar.gz, both as current as alternative user and both with latest stable and development R release (4 tests)
+- If successful, upload package tarball to
+- Send mail to
+	
 		
 		
 ############################################################################################################################
