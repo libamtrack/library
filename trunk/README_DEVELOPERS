@@ -8,6 +8,7 @@ libamtrack information for code developers
 4.  R package compilation
 5.  Python wrappers
 6.  Install GSL under Windows
+7.  Make a release (including R package)
 
 Contact and feedback
 
@@ -220,6 +221,19 @@ AARRRGHHHH - COULD SOMEBODY HELP, PLEASE?
 
 A installation guide is found in the gsl directory in file INSTALL, including Windows specific notes.
 
+############################################################################################################################
+7.  Make a release (including R package)
+############################################################################################################################
+
+- Augment "/trunk/ChangeLog", e.g. from svn logs
+- Make new folder in /tags, correspoding to version to release, e.g. "0.5.4"
+- Adjust "/tags/VERSION/configure.ac": AC_DEFINE(CODE_STATUS, ["Development"], [Status of the code]) --> AC_DEFINE(CODE_STATUS, ["Release"], [Status of the code])
+- Adjust "/trunk/configure.ac":  
+		New development number: AC_INIT([libamtrack], [0.5.5], [s.greilich@dkfz.de], [libamtrack])
+		New development name:	AC_DEFINE(CODE_NAME, ["Violet Wombat"], [Cryptonym to faciliate versioning for users])
+
+		
+		
 ############################################################################################################################
 Contact and feedback
 ############################################################################################################################

@@ -1,0 +1,12 @@
+Source: libamtrack
+Section: unknown
+Priority: extra
+Maintainer: Leszek Grzanka <Leszek.Grzanka@ifj.edu.pl>
+Build-Depends: 
+Standards-Version: 3.8.4
+Homepage: http://libamtrack.dkfz.org
+
+Package: libamtrack
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: TODO

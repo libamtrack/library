@@ -1,0 +1,17 @@
+/*!
+@image html libamtrack_logo_with_text_small.png "doxygen documentation"
+@author The libamtrack team<br>
+Copyright (C) 2006, 2010<br>
+
+@section desc What is libamtrack? 
+
+\li libamtrack provides computational routines for the prediction of detector response and radiobiological efficiency in ion beams together with many auxiliary routines.
+\li libamtrack is a program library.
+\li libamtrack is written in ANSI C intended to work under Linux, Windows, and Mac OS.
+\li libamtrack is free, open-source software under GNU GPL 3 licence.
+
+@section docs Further documentation 
+\li The libamtrack manual is found here: /docs/libamtrackManual.pdf
+\li On the webpage: http://libamtrack.dkfz.org
+
+*/
