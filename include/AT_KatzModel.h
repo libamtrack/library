@@ -263,25 +263,13 @@ double AT_KatzModel_KatzExtTarget_ButtsKatz_TrackWidth( const double z2kappabeta
 
 /**
  * TODO
- * @param[in] E_MeV_u                   TODO
- * @param[in] particle_no               TODO
- * @param[in] material_no               TODO
- * @param[in] rdd_model                 TODO
- * @param[in] er_model                  TODO
- * @param[in] m_number_of_targets       TODO
- * @param[in] sigma0_m2                 TODO
- * @param[in] kappa                     TODO
- * @return inact cross section
+ * @param[in] z2kappabeta2  TODO
+ * @param[in] m             TODO
+ * @return track width
  */
-double AT_KatzModel_inactivation_cross_section_approximation_m2(	const double E_MeV_u,
-		const long   particle_no,
-		const long   material_no,
-		const long   rdd_model,
-		const long   er_model,
-		const double m_number_of_targets,
-		const double sigma0_m2,
-		const double kappa);
-
+double AT_KatzModel_KatzExtTarget_Zhang_TrackWidth(
+		const double z2kappabeta2,
+		const double m);
 
 /**
  * TODO
@@ -306,6 +294,27 @@ double AT_KatzModel_single_field_survival_from_inactivation_cross_section( const
     const double sigma0_m2,
     const long   stopping_power_source_no);
 
+
+/**
+ * TODO
+ * @param[in] E_MeV_u                   TODO
+ * @param[in] particle_no               TODO
+ * @param[in] material_no               TODO
+ * @param[in] rdd_model                 TODO
+ * @param[in] er_model                  TODO
+ * @param[in] m_number_of_targets       TODO
+ * @param[in] sigma0_m2                 TODO
+ * @param[in] kappa                     TODO
+ * @return status inact cross section
+ */
+double AT_KatzModel_inactivation_cross_section_approximation_m2(	const double E_MeV_u,
+		const long   particle_no,
+		const long   material_no,
+		const long   rdd_model,
+		const long   er_model,
+		const double m_number_of_targets,
+		const double sigma0_m2,
+		const double kappa);
 
 /**
  * TODO

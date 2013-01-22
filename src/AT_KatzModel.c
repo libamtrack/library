@@ -459,7 +459,7 @@ double AT_KatzModel_KatzExtTarget_ButtsKatz_TrackWidth(
 	int i;
 	double factor,ylo,yhi,yval,con,track;
 
-	if ( (m<1.5) || (m>5.) ){
+	if ( (m<1.5) || (m>5.0) ){
 		return -1;
 	} else{
 
@@ -502,6 +502,37 @@ double AT_KatzModel_KatzExtTarget_ButtsKatz_TrackWidth(
 }
 
 
+double AT_KatzModel_KatzExtTarget_Zhang_TrackWidth(
+		const double z2kappabeta2,
+		const double m) {
+
+	const double XA = -log(1.0-pow(0.98,1.0/m));
+	const double YA = 0.98;
+
+	const double gi[6] = { -0.223198, 6.79973, -9.08647, 7.62573, -3.42814,  0.632902};
+	const double hi[6] = { -1.03134, 5.06363, -9.39776, 9.3199, -4.75329, 0.97801};
+
+	const double logm = log(m);
+
+	const double XB = exp( gi[0] + gi[1]*logm + gi[2]*logm*logm + gi[3]*pow(logm,3) + gi[4]*pow(logm,4) + gi[5]*pow(logm,5));
+
+
+	const double YB = exp( hi[0] + hi[1]*logm + hi[2]*logm*logm + hi[3]*pow(logm,3) + hi[4]*pow(logm,4) + hi[5]*pow(logm,5));
+
+	double result = -1;
+	if ( (m<1.5) || (m>3.5) ){
+		return -1;
+	} else{
+		if( z2kappabeta2 >= XB ){
+			result = YB * 0.8209 / ( 1.0 - exp(-XB * 1.72 / z2kappabeta2 ));
+		} else {
+			result = ((YA-YB)/(XA-XB))*(z2kappabeta2 - XA) + YA;
+		}
+	}
+	return result;
+}
+
+
 double AT_KatzModel_inactivation_cross_section_approximation_m2(
 		const double E_MeV_u,
 		const long   particle_no,
@@ -514,13 +545,13 @@ double AT_KatzModel_inactivation_cross_section_approximation_m2(
 
 	double result = -1.0;
 
+	double beta = AT_beta_from_E_single(E_MeV_u);
+	double zeff = AT_effective_charge_from_beta_single(beta, AT_Z_from_particle_no_single(particle_no));
+	double z2kappabeta2 = gsl_pow_2( zeff / beta ) / kappa;
+
+	double Pi = pow( 1.0 - exp( - z2kappabeta2) , m_number_of_targets);
+
 	if( rdd_model == RDD_KatzExtTarget && er_model == ER_ButtsKatz ){
-
-		double beta = AT_beta_from_E_single(E_MeV_u);
-		double zeff = AT_effective_charge_from_beta_single(beta, AT_Z_from_particle_no_single(particle_no));
-		double z2kappabeta2 = gsl_pow_2( zeff / beta ) / kappa;
-
-		double Pi = pow( 1.0 - exp( - z2kappabeta2) , m_number_of_targets);
 
 		double factor = 1;
 		if( Pi > 0.98 ){
@@ -528,9 +559,18 @@ double AT_KatzModel_inactivation_cross_section_approximation_m2(
 		} else {
 			factor = Pi;
 		}
-
 		result = factor * sigma0_m2;
+	}
 
+	if( rdd_model == RDD_KatzExtTarget && ((er_model == ER_Waligorski) || (er_model == ER_Edmund)) ){
+
+		double factor = 1;
+		if( Pi > 0.98 ){
+			factor = AT_KatzModel_KatzExtTarget_Zhang_TrackWidth( z2kappabeta2, m_number_of_targets );
+		} else {
+			factor = Pi;
+		}
+		result = factor * sigma0_m2;
 	}
 
 	return result;
