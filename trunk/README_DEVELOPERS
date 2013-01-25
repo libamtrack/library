@@ -163,37 +163,40 @@ We assume you have Rtools installed in C:\Rtools. Then the MSYS environment is i
 
 Download the tarball for the latest GSL version, e.g. gsl-1.15.tar.gz and unzip in you home directory, i.e. C:\Rtools\MinGW\msys\1.0\home\yourname.
 
-In MSYS navigate into the gsl-1.15 directory and execute
-	./configure --host=i686-pc-mingw32     [32 bit, OR]
-	./configure --host=x86_64-w64-mingw32  [64 bit]
+Start MSYS shell (C:\Rtools\MinGW\msys\1.0\msys.bat)
 
-#######
-PREFIX?
-#######
+Navigate into the gsl directory (cd ~/gsl-x.y), build, test and install the 64bit version of gsl (static). Some people might prefer a using a different install directory (here: /local), such as /opt/gsl/gsl-x.y/x64. The important thing is that the last folder name corresponds to $R_ARCH_BIN (needed only on Windows and being either "x64" or "i386"):
 
-	make  
-
-To check your compiled library
-	make check > log 2>&1
-
-To install
-
+	./configure --host=x86_64-w64-mingw32 --prefix=/local/x64 --enable-shared=no
+	make
+	make check >log 2>&1
 	make install
 
-	
+Then build, test and install the 32bit version of gsl (again static):
 
-Gsl is now found at --prefix:
+	./configure --host=i686-w64-mingw32 --prefix=/local/i386 --enable-shared=no
+	make
+	make check >log 2>&1
+	make install
 
-The CFLAGS (e.g. for R package compilation) can be accessed by gsl-config --cflags and returns
--I/usr/local/include
+Since we built static libraries, the dlls in libamtrack will contain the gsl routines and not depend on an external dynamic library, making the package portable. I.e. the user DOES NOT NEED TO HAVE GSL installed!
 
-LIB_GSL auf --prefix (in LINUX!, d.h. C:/GSL/gsl-1.15 o.ä.)
-Für Ausführung PATH (in WINDOWS) setzen auf bin(s) folder
-BESSER: in /dist und dann mit Skript kopieren?
+Now start Windows command shell (with administrative priviledges, i.e. Start button > Search programs and files > Enter "cmd" > Press "Ctrl+Shift+Enter"
+
+Navigate to directory where the package's source tarball (created using ./create.package.sh under Linux) is located.
+
+R has integrated support for GSL, so all we need to do is to set R's environmental variable LIB_GSL to point first to top folder of the GSL installation (assuming the directories used above with correspding subdirectories for the two architectures. NB: Linux-style slashes!):
+
+	set LIB_GSL=C:/Rtools/MinGW/msys/1.0/local/
+
+Now build binary package (NB: Windows environmental variable PATH has to include the R version you are using):
+
+	R CMD INSTALL --no-multiarch --no-inst --build package.tar.gz
+  
 
 
 ############################################################################################################################
-7.  Make a release (including R package)
+7.  Make a release (including R package for CRAN)
 ############################################################################################################################
 
 Release (any OS):
