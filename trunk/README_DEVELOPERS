@@ -1,8 +1,9 @@
 ############################################################################################################################
-libamtrack information for code developers
+LIBAMTRACK INFORMATION FOR CODE DEVELOPERS --- PLEASE READ CAREFULLY
 ############################################################################################################################
 
-1.  Basic workflow
+0.	Requirements
+1.  Basic workflow for compilation of libamtrack from full source - using autotools
 2.  Using the eclipse IDE
 3.  Doxygen comments
 4.  R package compilation
@@ -13,7 +14,29 @@ libamtrack information for code developers
 Contact and feedback
 
 ############################################################################################################################
-1. Basic workflow
+0. Requirements
+############################################################################################################################
+
+The GNU Scientific Library (GSL) is required for all OSs (see section 6.).
+
+Linux
+-----
+
+- autotools
+
+Mac OS X
+--------
+
+- autotools from XCode
+
+Windows
+-------
+
+- autotools from MinGW, the best way to install for libamtrack is to use Rtools
+
+
+############################################################################################################################
+1. Basic workflow for compilation of libamtrack from full source - using autotools
 ############################################################################################################################
 
 From revision r1037 on, libamtrack follows the GNU autotool conventions to improve portability and facilitate distribution.
@@ -22,41 +45,68 @@ This required files (such as configure.ac, Makefile.am, ChangeLog, NEWS, etc.) a
 to be placed in the subversion repository.
 
 In addition, file and folders will be created during the autoconf/automake process (such as aclocal.m4, 
-config.guess, configure, install.sh, Makefile, etc.). Those files *should not* be committed to the repository. 
+config.guess, configure, install.sh, Makefile, etc.). Those files *SHOULD NOT* be committed to the repository. 
 Please refrain from doing so. 
 
+Basic instruction on the use of GNU autotools are found in INSTALL.
 
 The libamtrack sources can be checkout from it svn repository at sourceforce.net by:
 
 svn co https://libamtrack.svn.sourceforge.net/svnroot/libamtrack/trunk libamtrack
 
+Of course you can also check out previous tags or branches from:
+svn co https://libamtrack.svn.sourceforge.net/svnroot/libamtrack/tags/RELEASE_VERSION_NUMBER libamtrack
+svn co https://libamtrack.svn.sourceforge.net/svnroot/libamtrack/branches/BRANCH_ID libamtrack
+
+To commit changes you did to the code you have to register as a developer at sourceforge and join the libamtrack project.
+
+In order to compile from sources you have to have the GNU Scientific library installed. Please see chapter below how this
+is to be done for your system.
+
 
 Steps for compilation:
 
-1. After you downloaded libamtrack OR 
-   you updated your local workspace (which could have changed configure.ac) OR
-   you changed configure.ac yourself:
+i.   After you check out libamtrack OR 
+     you updated your local workspace (which could have changed configure.ac) OR
+     you changed configure.ac yourself run:
    
-   autoreconf --force --install
+     autoreconf --force --install
 
-   This will create a configure script plus all necessary other files.
+     This will create a configure script plus all necessary other files.
 
-2. After (1.) OR
-   you changed a makefile.am OR
-   you want to switch between RELEASE / DEBUG (or any other) configuration
+ii.  After (i.) OR
+     you changed a makefile.am OR
+     you want to switch between RELEASE / DEBUG (or any other) configuration
    
-   ./configure                                (for an optimized, 'release' code)
-   ./configure CFLAGS="-O0 -g -DDEBUG"        (for a 'debug' version of the code, e.g. to use with gdb)
+     ./configure                                (for an optimized, 'release' code)
+     ./configure CFLAGS="-O0 -g -DDEBUG"        (for a 'debug' version of the code, e.g. to use with gdb)
 
-   If you use eclipse, you can simplify this step by using a separate build configurations.
-
-3. After (1.) OR
-   (2.) OR
-   any local change in the code:
+     If you use eclipse, you can simplify this step by using a separate build configurations.
    
-   make all
+     When using Mac OS X you might consider using multiarchtecture compilation by adding appropriate "-arch" flags (will create a single library that can be used with
+     multiple architectures)
+   
+     ./configure CC="gcc -arch i386 -arch x86_64" 	32 AND 64 bit on Intel-based Mac, for PowerPC: add "-arch ppc" (32 bit) and/or "-arch ppc64"
 
+     When using Windows and the MinGW toolset, select 32 or 64 bit by "--host=i686-w64-mingw32" or "--host=x86_64-w64-mingw32", resp.
+   
+     You can change the default path for installation by "--prefix=/my/installation/path"
+   
+iii. After (i.) OR
+     (ii.) OR
+     any local change in the code:
+   
+     make all
 
+iv.  TODO: Describe (and enable)
+
+     make check >log.txt 2>&1
+	 make install
+	 
+     make uninstall
+	 make distclean
+	 
+	 
 ############################################################################################################################
 2. Using the eclipse IDE
 ############################################################################################################################
@@ -107,14 +157,16 @@ int AT_Z_from_element_acronym( const long n,
 4. R package compilation
 ############################################################################################################################
 
-This step requires working under Linux (for simplicity, in principle it would work with Windows and appropriate Rtools as well).
+This step requires working under Linux or Mac OS X with XCode installed (for simplicity, in principle it would work with 
+Windows and appropriate Rtools as well).
 
 The necessary files for producing an R package from libamtrack are found in:
   /wrapper/R/R_package                     package folder structure and input files, script for compilation, hardcoded wrappers
                                            and documentation
   /tools/automatic_wrapper_generation      R scripts for automatic creation of R/C wrappers
 
-To compile a package, follow first the instructions given in section 1., then navigate to /wrapper/R/R_package:
+To compile a package, follow first the instructions given in section 1. (if you want to have the correct svn revision number,
+make sure you start at step (i)!), then navigate to /wrapper/R/R_package:
 
 Functions that should go to R package are referenced in the text file NAMESPACE. The suffix "_multi" will automatically be
 skipped, as R functions are supposed to be able to work on vectors as you should always prefer the "<function_name>_multi"
@@ -135,17 +187,11 @@ Under Linux and Mac OS, the source package can be simply installed by typing
 
 (sudo) R CMD INSTALL <package_name>
 
-
 Windows specific: Under standard Windows, source tarballs cannot be installed. To compile a package, you have to prepare your system and 
 the best way to do so, is to use the RTools by Murdoch and Sutherland: http://www.murdoch-sutherland.com/Rtools/
-If you use the --build option during this process (R CMD INSTALL --build <package_name>) you will get a binary package <package_name>.zip
-that you can then install on any Windows system. For how to install GSL on Windows, see below. Remember to set an environmental variable (set LIB_GSL=C:/GnuWin32 or C:/Rtools/MinGW/msys/1.0/local etc.) to make the compiler aware of gsl's location.
 
-The process is only needed for intermediate packages. Release packages will be uploaded to CRAN, the R repository, where Windows and Mac
-binaries are automatically provided.
- 
-Before uploading a release package to CRAN, please doublecheck carefully using R CMD check <package_name> --as-cran, also as a differnt user. Checking
-as the same user who compiled the package might mask errors.
+See section 7. How to make a release on how to produce binary packages
+
 
 ############################################################################################################################
 5. Python wrappers
@@ -160,9 +206,50 @@ iii. copy compiled library to the same directory as "pyamtrack.py": cp ../../../
 
 iv.  run "python pyamtrack_example.py" to check sample file.
 
+
 ############################################################################################################################
-6. Install GSL under Windows
+6. Install GSL
 ############################################################################################################################
+
+6a. Linux
+#########
+Most popular distribution offer GSL (libgsl) in their repositories. Please make sure that you install the development version 
+including headers.
+
+
+6b. Mac OS X
+############
+
+Please make sure you have XCode and the XCode Command Line Tools installed (tested on Mac OS X 10.8 Mountain Lion, Xcode tools 4.5.2, 
+gcc version 4.2.1 (Based on Apple Inc. build 5658)).
+
+Download the latest gsl from the GNU homepage, untar (tar zxvf) and navigate into top directory of the sources.
+
+As we want to have both 32 and 64 bit versions (Intel-based Mac) run
+
+./configure CC="gcc -arch i386 -arch x86_64" --enable-shared=NO 
+
+For PowerPC add "-arch ppc" and/or "-arch ppc64", resp. This will create single libraries that can be used with multiple architectures.
+
+Build and check by
+
+make
+make check > log.txt 2>&1
+
+
+Install
+sudo make install
+
+gsl is now in /usr/local (or a different place if you have set an individual --prefix flag). ./gsl-config shows that path.
+
+Alternatively, you might want to use a system like FINK or MacPorts to install gsl, but we can not give any details due to missing experience wit that.
+
+We built static libraries, so that libamtrack will be statically link to the gsl routines and not depend on an external dynamic library, making it
+package portable, i.e. the user DOES NOT NEED TO HAVE GSL installed!
+
+
+6c. WINDOWS
+###########
 
 We assume you have Rtools installed in C:\Rtools. Then the MSYS environment is installed C:\Rtools\MinGW\msys\1.0. You can start MSYS (a Linux-like environment under Windows) by executing msys.bat. You can create a link on the desktop etc. when you start MSYS often. 
 
@@ -186,17 +273,126 @@ Then build, test and install the 32bit version of gsl (again static):
 
 Since we built static libraries, the dlls in libamtrack will contain the gsl routines and not depend on an external dynamic library, making the package portable. I.e. the user DOES NOT NEED TO HAVE GSL installed!
 
-Now start Windows command shell (with administrative priviledges, i.e. Start button > Search programs and files > Enter "cmd" > Press "Ctrl+Shift+Enter"
+
+############################################################################################################################
+7.  Make a release (including R package for CRAN)
+############################################################################################################################
+
+
+Release (any OS):
+#################
+- Augment "/trunk/ChangeLog", e.g. from svn logs
+- Make new folder in /tags, correspoding to version to release, e.g. "0.5.4"
+- Adjust "/tags/VERSION/configure.ac": AC_DEFINE(CODE_STATUS, ["Development"], [Status of the code]) --> AC_DEFINE(CODE_STATUS, ["Release"], [Status of the code])
+- Adjust "/trunk/configure.ac":  
+		New development number: AC_INIT([libamtrack], [0.5.5], [s.greilich@dkfz.de], [libamtrack])
+		New development name:	AC_DEFINE(CODE_NAME, ["Violet Wombat"], [Cryptonym to faciliate versioning for users])
+- Commit changes to SVN (this will be the release's revision number)
+
+These steps can be skipped in case you want to make an intermediate (development) version.
+
+
+Source distribution
+###################
+Execute make dist
+If release, upload to sourceforge with corresponding folder
+
+
+Precompiled binaries
+####################
+
+For Mac/Win (maybe Linux?): How to make sure that gsl is STATICALLY linked to libamtrack, so users do not have to have GSL?
+
+Linux
+-----
+
+Mac OS X
+--------
+
+Windows
+-------
+
+
+Binary packages
+###############
+
+Linux
+-----
+RPM / DEB?
+
+Mac OS X
+--------
+Use PackageMaker (XCode Auxilirary Developer Tools)
+
+Windows
+-------
+Installer?
+
+
+R package
+#########
+
+You need Linux or Mac OS X for this step with the preconditions given in section 1.
+
+- Check out "/tags/VERSION" form SVN to new local folder ("pathTo")
+- Compile libamtrack according to section 1. steps (i)-(iii). This is mainly to update autoconf files, but also to check integrity.
+- In most cases you have to the change permissions for "pathTo/wrapper/R/R_package/package/cleanup" to be executable for the owner "chmod 775 cleanup" (in the given directory)
+- If successful, navigate to /wrapper/R/R_package and execute "./create.package.sh" (you might have to make it executable by "chmod 755 create.package.sh")
+- Run tests on tarball:
+	R CMD check --as-cran libamtrack.VERSION.tar.gz, both as current as alternative user and both with latest stable and development R release (4 tests)
+	Make sure to switch on "-Wall -pedantic" in ~/.R/Makevars (NOT in the package Makevars) - or similar if you are not using gcc
+- If successful, upload package tarball to ftp://CRAN.R-project.org/incoming/ using ‘anonymous’ as log-in name and your e-mail address as password (use ‘ftp’)
+- Send mail to CRAN@R-project.org about it with your package name and version in the subject line of the form "CRAN submission ‘package’ ‘version’"
+	
+
+		
+R package binaries
+##################
+
+This process is only needed for intermediate packages. Release packages will be uploaded to CRAN, the R repository, where Windows and Mac
+binaries are automatically provided.
+
+
+Linux:
+------
+
+Under Linux tarball source packages (package_x.y.z.tar.gz) can be installed directly by
+
+R CMD INSTALL package_x.y.z.tar.gz
+
+so binary packages should not be necessary. But if you use the --build option during this process you will get a binary package, with "--no-inst" R
+will not install the package but only produce the binary.
+
+
+Mac OS X:
+---------
+
+Build 32 bit or 64 bit version (skip "--no-inst" to install, too) portable binary
+
+R CMD INSTALL --build --no-inst package_x.y.z.tar.gz
+R64 CMD INSTALL  --build --no-inst package_x.y.z.tar.gz
+
+or both in a single package
+R CMD INSTALL --merge-multiarch --build --no-inst package.tar.gz
+
+This will result in a portable .tgz file.
+
+
+Windows:
+--------
+
+Start Windows command shell (with administrative priviledges, i.e. Start button > Search programs and files > Enter "cmd" > Press "Ctrl+Shift+Enter"
 
 Navigate to directory where the package's source tarball (created using ./create.package.sh under Linux) is located.
 
-R has integrated support for GSL, so all we need to do is to set R's environmental variable LIB_GSL to point first to top folder of the GSL installation (assuming the directories used above with correspding subdirectories for the two architectures. NB: Linux-style slashes!):
+R has integrated support for GSL, so all we need to do is to set R's environmental variable LIB_GSL to point first to top folder of the GSL installation (assuming you
+followed the instructions for GSL installation given in section 6. with correspding subdirectories for the two architectures. NB: Linux-style slashes!):
 
 	set LIB_GSL=C:/Rtools/MinGW/msys/1.0/local/
 
 Now build binary package (NB: Windows environmental variable PATH has to include the R version you are using):
 
-	R CMD INSTALL --no-inst --build package.tar.gz
+	R CMD INSTALL --no-inst --build package_x.y.z.tar.gz
   
 The resulting zip-file can be distributed to all Windows users. They do not need to have gsl installed. 
 
@@ -207,35 +403,7 @@ or appropriate menu short-cuts in R GUIs.
 
 If you want to install the package yourself, just skip "--no-inst" during compilation.
 
-############################################################################################################################
-7.  Make a release (including R package for CRAN)
-############################################################################################################################
 
-Release (any OS):
-- Augment "/trunk/ChangeLog", e.g. from svn logs
-- Make new folder in /tags, correspoding to version to release, e.g. "0.5.4"
-- Adjust "/tags/VERSION/configure.ac": AC_DEFINE(CODE_STATUS, ["Development"], [Status of the code]) --> AC_DEFINE(CODE_STATUS, ["Release"], [Status of the code])
-- Adjust "/trunk/configure.ac":  
-		New development number: AC_INIT([libamtrack], [0.5.5], [s.greilich@dkfz.de], [libamtrack])
-		New development name:	AC_DEFINE(CODE_NAME, ["Violet Wombat"], [Cryptonym to faciliate versioning for users])
-- Commit changes to SVN (this will be the release's revision number)
-
-Code on sourceforge:
-- Execute make dist
-
-R package (Linux):
-- Check out "/tags/VERSION" form SVN to new local folder ("pathTo")
-- Compile library according to (1) Basic Workflow, as given above (mainly to update autoconf files, but also to check integrity).
-- In most cases you have to the change permissions for "pathTo/wrapper/R/R_package/package/cleanup" to be executable for the owner "chmod 775 cleanup" (in the given directory)
-- If successful, navigate to /wrapper/R/R_package and execute "./create.package.sh" (you might have to make it executable by "chmod 755 create.package.sh")
-- Run tests on tarball:
-	R CMD check --as-cran libamtrack.VERSION.tar.gz, both as current as alternative user and both with latest stable and development R release (4 tests)
-	Make sure to switch on "-Wall -pedantic" in ~/.R/Makevars (NOT in the package Makevars) - or similar if you are not using gcc
-- If successful, upload package tarball to ftp://CRAN.R-project.org/incoming/ using ‘anonymous’ as log-in name and your e-mail address as password (use ‘ftp’)
-- Send mail to CRAN@R-project.org about it with your package name and version in the subject line of the form "CRAN submission ‘package’ ‘version’"
-	
-		
-		
 ############################################################################################################################
 Contact and feedback
 ############################################################################################################################
