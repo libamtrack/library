@@ -22,17 +22,22 @@ The GNU Scientific Library (GSL) is required for all OSs (see section 6.).
 Linux
 -----
 
-- autotools
+- GNU build system (autotools, i.e. automake, autoconf, libtool + gcc) which you will most likely get from the repository of
+your distribution.
 
 Mac OS X
 --------
 
-- autotools from XCode and XCode Command Line Tools
+- autotools from XCode and XCode Command Line Tools (we tested with Mac OS X 10.8 Mountain Lion and XCode 4.5.2)
 
 Windows
 -------
 
-- autotools from MinGW, the best way to install for libamtrack is to use Rtools
+- autotools from MinGW. We believe the best way to install the compilation tools necessary for libamtrack is to use Rtools for Windows 
+by Prof. Brian Riplay (http://cran.r-project.org/bin/windows/Rtools/, for R package compilation you will need them anyway). It comes
+as a single file that will install everything you need for compilation of libamtrack and other stuff (gsl for example). And it can 
+be very nasty work to get all Linux-like tools tweaked for Windows in the right way to work. So maybe you do not mind having one or 
+two tools from the Rtools collection more than you need on your machine in exchange for your peace of mind.
 
 
 ############################################################################################################################
