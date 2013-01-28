@@ -27,7 +27,7 @@ Linux
 Mac OS X
 --------
 
-- autotools from XCode
+- autotools from XCode and XCode Command Line Tools
 
 Windows
 -------
@@ -86,8 +86,9 @@ ii.  After (i.) OR
      When using Mac OS X you might consider using multiarchtecture compilation by adding appropriate "-arch" flags (will create a single library that can be used with
      multiple architectures)
    
-     ./configure CC="gcc -arch i386 -arch x86_64" 	32 AND 64 bit on Intel-based Mac, for PowerPC: add "-arch ppc" (32 bit) and/or "-arch ppc64"
-
+     ./configure CC="gcc -arch i386 -arch x86_64" CPP="gcc -E"		
+	 
+	 which will give 32 AND 64 bit versions on Intel-based Mac, for PowerPC add "-arch ppc" (32 bit) and/or "-arch ppc64"
      When using Windows and the MinGW toolset, select 32 or 64 bit by "--host=i686-w64-mingw32" or "--host=x86_64-w64-mingw32", resp.
    
      You can change the default path for installation by "--prefix=/my/installation/path"
@@ -227,7 +228,7 @@ Download the latest gsl from the GNU homepage, untar (tar zxvf) and navigate int
 
 As we want to have both 32 and 64 bit versions (Intel-based Mac) run
 
-./configure CC="gcc -arch i386 -arch x86_64" --enable-shared=NO 
+./configure CC="gcc -arch i386 -arch x86_64" CPP="gcc -E" --enable-shared=NO 
 
 For PowerPC add "-arch ppc" and/or "-arch ppc64", resp. This will create single libraries that can be used with multiple architectures.
 
