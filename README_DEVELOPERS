@@ -8,8 +8,9 @@ LIBAMTRACK INFORMATION FOR CODE DEVELOPERS --- PLEASE READ CAREFULLY
 3.  Doxygen comments
 4.  R package compilation
 5.  Python wrappers
-6.  Install GSL under Windows
-7.  Make a release (including R package)
+6.  Install MinGW toolchain (Windows)
+7.  Install GSL
+8.  Make a release (including R package)
 
 Contact and feedback
 
@@ -18,7 +19,7 @@ Contact and feedback
 ############################################################################################################################
 
 An installation of the GNU Scientific Library (GSL, headers + libraries/binaries) is required for all OSs if you want to 
-compile from source (see section 6.).
+compile from source (see sections 1 and 8).
 
 Linux
 -----
@@ -34,17 +35,11 @@ GNU build system from XCode and XCode Command Line Tools (we tested with Mac OS 
 Windows
 -------
 
-GNU build system from MinGW. 
+GNU build system from MinGW (from http://sourceforge.net/projects/mingw/files/, website: http://www.mingw.org/), plus
+MSYS and - in case you have a 64 bit system - MinGW64 (from website: http://mingw-w64.sourceforge.net/. See section 7
+for installation instructions.
 
-We believe the best way to install the compilation tools necessary for libamtrack is to use Rtools for Windows 
-by Prof. Brian Riplay (http://cran.r-project.org/bin/windows/Rtools/, for R package compilation you will need them anyway). It comes
-as a single file that will install everything you need for compilation of libamtrack and other stuff (gsl for example). And it can 
-be very nasty work to get all Linux-like tools tweaked for Windows in the right way to work. So maybe you do not mind having one or 
-two tools from the Rtools collection more than you need on your machine in exchange for your peace of mind.
-
-Please note that MinGW provides some Linux-like commands / programs (ls, grep, make, gcc, ...) through the Windows Command 
-Line Interface (Start > type "CMD" in search field, Win7) but the actual way to run Linux-like scripts etc. is using the MSYS
-shell. You can start it by executing path\to\Rtools\MinGw\msys\1.0\msys.bat.
+To build R packages under Windows you need to install Rtools for Windows (http://cran.r-project.org/bin/windows/Rtools/). 
 
 
 ############################################################################################################################
@@ -221,16 +216,57 @@ iv.  run "python pyamtrack_example.py" to check sample file.
 
 
 ############################################################################################################################
-6. Install GSL
+6. Install MinGW toolchain (Windows)
 ############################################################################################################################
 
-6a. Linux
+Many ways, this turned out to be useful:
+
+6a. MinGW
+---------
+
+For 32 bit systems you could in principle install the original MinGW program, which has nice documentation and package
+installation system. We however recommend installing the 64 bit fork mingw-w64, no matter if you are running 32 or 64 bit
+Windows. Download the files here:
+
+http://sourceforge.net/projects/mingw-w64/files/ >  Toolchains targetting Win64 > Automated Builds
+
+or even better here
+
+http://sourceforge.net/projects/mingw-w64/files/ >  Toolchains targetting Win64 > Personal Builds 
+
+e.g. in the rubenvb subdirectory.
+
+Look for appropriate files, "x86_64-w64-mingw32-gcc-4.7.2-release-win64_rubenvb.7z" is for 64bit systems and has gcc4.7.2,
+"mingw-w64-bin_i686-mingw_20111220.zip" is for 32 bit systems.
+
+Unzip in appropriate directory, e.g. C:\mingw64.
+
+
+6b. MSYS
+--------
+Get the all-in-one-MSYS-package from the MinGW-w64 site: 
+
+http://sourceforge.net/projects/mingw-w64/files/ > External binary packages (Win64 hosted) > MSYS (32-bit)
+
+Unzip to suitable location, such as C:\msys, start MSYS (C:\msys\msys.bat) and run post-install commands:
+
+	sh /postinstall/pi.sh
+
+After answering the question where you MinGW installation is located (e.g. C:\mingw64 in you case), MSYS is all set up.
+
+
+
+############################################################################################################################
+7. Install GSL
+############################################################################################################################
+
+7a. Linux
 #########
 Most popular distribution offer GSL (libgsl) in their repositories. Please make sure that you install the development version 
 including headers.
 
 
-6b. Mac OS X
+7b. Mac OS X
 ############
 
 Please make sure you have XCode and the XCode Command Line Tools installed (tested on Mac OS X 10.8 Mountain Lion, Xcode tools 4.5.2, 
@@ -261,7 +297,7 @@ We built static libraries, so that libamtrack will be statically link to the gsl
 package portable, i.e. the user DOES NOT NEED TO HAVE GSL installed!
 
 
-6c. WINDOWS
+7c. WINDOWS
 ###########
 
 We assume you have Rtools installed in C:\Rtools. Then the MSYS environment is installed C:\Rtools\MinGW\msys\1.0. You can start MSYS (a Linux-like environment under Windows) by executing msys.bat. You can create a link on the desktop etc. when you start MSYS often. 
@@ -288,7 +324,7 @@ Since we built static libraries, the dlls in libamtrack will contain the gsl rou
 
 
 ############################################################################################################################
-7.  Make a release (including R package for CRAN)
+8.  Make a release (including R package for CRAN)
 ############################################################################################################################
 
 
@@ -399,7 +435,7 @@ Start Windows command shell (with administrative priviledges, i.e. Start button 
 Navigate to directory where the package's source tarball (created using ./create.package.sh under Linux) is located.
 
 R has integrated support for GSL, so all we need to do is to set R's environmental variable LIB_GSL to point first to top folder of the GSL installation (assuming you
-followed the instructions for GSL installation given in section 6. with correspding subdirectories for the two architectures. NB: Linux-style slashes!):
+followed the instructions for GSL installation given in section 7. with correspding subdirectories for the two architectures. NB: Linux-style slashes!):
 
 	set LIB_GSL=C:/Rtools/MinGW/msys/1.0/local/
 
