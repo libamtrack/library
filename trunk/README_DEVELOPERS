@@ -6,7 +6,7 @@ LIBAMTRACK INFORMATION FOR CODE DEVELOPERS --- PLEASE READ CAREFULLY
 1.  Basic workflow for compilation of libamtrack from full source - using autotools
 2.  Using the eclipse IDE
 3.  Doxygen comments
-4.  R package compilation
+4.  Build an R source package tarball
 5.  Python wrappers
 6.  Install MinGW toolchain (Windows)
 7.  Install GSL
@@ -19,37 +19,68 @@ Contact and feedback
 ############################################################################################################################
 
 An installation of the GNU Scientific Library (GSL, headers + libraries/binaries) is required for all OSs if you want to 
-compile from source (see sections 1 and 8).
+compile from source (see sections 1 and 8). See section 7 for installation instructions.
+
+To compile the DISTRIBUTED SOURCES:       you need the GNU compiler collection gcc (section 1a).
+To compile the FULL DEVELOPMENT SOURCES,
+  make releases/distributions:            you need in addition other parts of the GNU toolchain, i.e. the GNU build 
+                                          system (autotools, i.e. automake, autoconf, and libtool, and m4) (section 1b and 8). 
+										  
+To check out the FULL DEVELOPMENT SOURCE,  you also need subversion installed.
+
+We do not encourage you to compile the FULL DEVELOPMENT SOURCES under Windows, as the GNU build system (autotools) is very
+problematic here (see section 6c).
+
+
+You will find those tools depending on your OS here:
 
 Linux
 -----
 
-GNU build system (autotools, i.e. automake, autoconf, libtool + gcc). Most likely you will get those from the repository of
-your distribution.
+Most likely the repository of your distribution.
+
 
 Mac OS X
 --------
 
-GNU build system from XCode and XCode Command Line Tools (we tested with Mac OS X 10.8 Mountain Lion and XCode 4.5.2).
+XCode and XCode Command Line Tools (we tested with Mac OS X 10.8 Mountain Lion and XCode 4.5.2).
+
 
 Windows
 -------
 
-GNU build system from MinGW (from http://sourceforge.net/projects/mingw/files/, website: http://www.mingw.org/), plus
-MSYS and - in case you have a 64 bit system - MinGW64 (from website: http://mingw-w64.sourceforge.net/. See section 7
+MinGW (http://www.mingw.org/) or MinGW64 (http://mingw-w64.sourceforge.net/) and the corresponding MSYS. i.e. from
+http://www.mingw.org/wiki/MSYS or http://sourceforge.net/apps/trac/mingw-w64/wiki/MSYS, respectively. See section 6
 for installation instructions.
 
-To build R packages under Windows you need to install Rtools for Windows (http://cran.r-project.org/bin/windows/Rtools/). 
+To compile R tarball source packages under Windows you need to install Rtools for Windows 
+(http://cran.r-project.org/bin/windows/Rtools/). 
 
 
 ############################################################################################################################
-1. Basic workflow for compilation of libamtrack from full source - using autotools
+1a. Basic workflow for compilation from distributed source
+############################################################################################################################
+
+Download source distribution, navigate to download directory and untar by
+
+    tar zxvf libamtrack-x.y.tar.gz
+
+Navigate to new directory (cd libamtrack-x.y) and execute
+
+    ./configure
+	make
+	make install
+	
+# TODO: How to compile multilib and multiple architectures?
+
+############################################################################################################################
+1b. Basic workflow for compilation of libamtrack from full source - using autotools
 ############################################################################################################################
 
 From revision r1037 on, libamtrack follows the GNU autotool conventions to improve portability and facilitate distribution.
 
-This required files (such as configure.ac, Makefile.am, ChangeLog, NEWS, etc.) and folders (m4) 
-to be placed in the subversion repository.
+This required files (such as configure.ac, Makefile.am, ChangeLog, NEWS, etc.) and folders (m4) to be placed in the 
+subversion repository.
 
 In addition, file and folders will be created during the autoconf/automake process (such as aclocal.m4, 
 config.guess, configure, install.sh, Makefile, etc.). Those files *SHOULD NOT* be committed to the repository. 
@@ -162,18 +193,15 @@ int AT_Z_from_element_acronym( const long n,
 
 
 ############################################################################################################################
-4. R package compilation
+4. Build an R source package tarball
 ############################################################################################################################
-
-This step requires working under Linux or Mac OS X with XCode installed (for simplicity, in principle it would work with 
-Windows and appropriate Rtools as well).
 
 The necessary files for producing an R package from libamtrack are found in:
   /wrapper/R/R_package                     package folder structure and input files, script for compilation, hardcoded wrappers
                                            and documentation
   /tools/automatic_wrapper_generation      R scripts for automatic creation of R/C wrappers
 
-To compile a package, follow first the instructions given in section 1. (if you want to have the correct svn revision number,
+To compile a package, follow first the instructions given in section 1b (if you want to have the correct svn revision number,
 make sure you start at step (i)!), then navigate to /wrapper/R/R_package:
 
 Functions that should go to R package are referenced in the text file NAMESPACE. The suffix "_multi" will automatically be
@@ -191,14 +219,15 @@ for functions that fails (most likely due to faulty doxygen formatting).
 The resulting package is an source tarball (libamtrack-version.tar.gz). It can either be distributed by yourself (most likely in
 the case of intermediate development versions) or uploaded to CRAN (in case of an official release).
 
-Under Linux and Mac OS, the source package can be simply installed by typing
+See section 8. How to make a release on how to produce binary packages.
+
+
+Under Linux and Mac OS, the source package can be simply installed for use in R by typing
 
 (sudo) R CMD INSTALL <package_name>
 
-Windows specific: Under standard Windows, source tarballs cannot be installed. To compile a package, you have to prepare your system and 
-the best way to do so, is to use the RTools by Murdoch and Sutherland: http://www.murdoch-sutherland.com/Rtools/
-
-See section 7. How to make a release on how to produce binary packages
+Under standard Windows, source tarballs cannot be installed. To compile a package, you have to prepare your system and the 
+best way to do so, is to use the RTools by Murdoch and Sutherland: http://www.murdoch-sutherland.com/Rtools/.
 
 
 ############################################################################################################################
@@ -219,27 +248,30 @@ iv.  run "python pyamtrack_example.py" to check sample file.
 6. Install MinGW toolchain (Windows)
 ############################################################################################################################
 
-Many ways, this turned out to be useful:
+Installing MinGW/MinGW can be confusing and cumbersome - there are many, many ways, here is one that turned out to be useful:
 
 6a. MinGW
 ---------
-
 For 32 bit systems you could in principle install the original MinGW program, which has nice documentation and package
 installation system. We however recommend installing the 64 bit fork mingw-w64, no matter if you are running 32 or 64 bit
-Windows. Download the files here:
+Windows. Download the files from http://sourceforge.net/projects/mingw-w64/files/. In
 
-http://sourceforge.net/projects/mingw-w64/files/ >  Toolchains targetting Win64 > Automated Builds
+Files >  Toolchains targetting Win64 > Automated Builds
 
-or even better here
+you find 32 bit installation files (like mingw-w32-1.0-bin_i686-mingw_...) and 64 bit (like mingw-w64-1.0-bin_i686-mingw_...).
+We feel it is beneficial to use one of the personal builds, such as the "rubenvb":
 
-http://sourceforge.net/projects/mingw-w64/files/ >  Toolchains targetting Win64 > Personal Builds 
+Files >  Toolchains targetting Win64 > Personal Builds > rubenvb
 
-e.g. in the rubenvb subdirectory.
+where the same naming conventions apply or (the easiest) the "MinGWbuild":
 
-Look for appropriate files, "x86_64-w64-mingw32-gcc-4.7.2-release-win64_rubenvb.7z" is for 64bit systems and has gcc4.7.2,
-"mingw-w64-bin_i686-mingw_20111220.zip" is for 32 bit systems.
+http://sourceforge.net/projects/mingwbuilds/
 
-Unzip in appropriate directory, e.g. C:\mingw64.
+where everything is set up for both 32 & 64 bit compilation.
+
+Download and unzip in appropriate directory, e.g. C:\mingw. Add C:\mingw\bin to Windows' environmental variable PATH, either
+by temporary SET PATH=C:\mingw64\bin;%PATH% or permanently using system settings. (AFTER Rtools, in case you have them 
+installed).
 
 
 6b. MSYS
@@ -252,8 +284,37 @@ Unzip to suitable location, such as C:\msys, start MSYS (C:\msys\msys.bat) and r
 
 	sh /postinstall/pi.sh
 
-After answering the question where you MinGW installation is located (e.g. C:\mingw64 in you case), MSYS is all set up.
+Answer the question where you MinGW installation is located (e.g. C:\mingw64 in you case).
 
+
+6c. AUTOTOOLS
+-------------
+## WARNING: The following instruction do not work flawlessly. We discourage you to use GNU autotools under MinGW and Windows
+to do development for libamtrack (see section 0). To compile the distributed sources or an R package, autotools are NOT
+necessary!
+
+The easiest is to download the correspoding mingw-w64 binary package from http://sourceforge.net/projects/mingw-w64/files/
+
+> 3rd party development tools
+
+and download latest version, such as autotools-20120807.tar.xz into your MSYS home directory (e.g. C:\msys\home\yourname).
+Start MSYS and untar using
+
+tar xJf autotools-XXX.tar.xz
+
+Also possible, but not recommended ist a manual installation of autotools. To do so, download the latest version from
+
+wget http://ftp.gnu.org/gnu/XXX/XXX-latest.tar.gz
+
+where XXX has to be replaced by "m4", "automake", "autoconf" or "libtool".
+
+Then unzip, build and install
+
+tar xzvf XXX-latest.tar.gz
+cd XXX-latest-x.y
+./configure --host=x86_64-w64-mingw32 --prefix=/mingw
+make && make install
+XXX --version
 
 
 ############################################################################################################################
@@ -268,7 +329,6 @@ including headers.
 
 7b. Mac OS X
 ############
-
 Please make sure you have XCode and the XCode Command Line Tools installed (tested on Mac OS X 10.8 Mountain Lion, Xcode tools 4.5.2, 
 gcc version 4.2.1 (Based on Apple Inc. build 5658)).
 
@@ -299,12 +359,15 @@ package portable, i.e. the user DOES NOT NEED TO HAVE GSL installed!
 
 7c. WINDOWS
 ###########
+The easiest is to download the pre-build libraries from the libamtrack sourceforge site:
 
-We assume you have Rtools installed in C:\Rtools. Then the MSYS environment is installed C:\Rtools\MinGW\msys\1.0. You can start MSYS (a Linux-like environment under Windows) by executing msys.bat. You can create a link on the desktop etc. when you start MSYS often. 
 
-Download the tarball for the latest GSL version, e.g. gsl-1.15.tar.gz and unzip in you home directory, i.e. C:\Rtools\MinGW\msys\1.0\home\yourname.
+and locate them in your appropriate MSYS directory (e.g. C:\MinGW\msys\local). You can also compile them yourself. In every case, make sure (by
+setting PATH [for source compilation] or LIB_GSL [for R package compilation] such that the compiler/linker can find it.
 
-Start MSYS shell (C:\Rtools\MinGW\msys\1.0\msys.bat)
+
+Start MSYS by executing msys.bat. Download the tarball for the latest GSL version, e.g. gsl-1.15.tar.gz and unzip in you home directory, e.g. 
+C:\msys\home\yourname.
 
 Navigate into the gsl directory (cd ~/gsl-x.y), build, test and install the 64bit version of gsl (static). Some people might prefer a using a different install directory (here: /local), such as /opt/gsl/gsl-x.y/x64. The important thing is that the last folder name corresponds to $R_ARCH_BIN (needed only on Windows and being either "x64" or "i386"):
 
@@ -328,8 +391,8 @@ Since we built static libraries, the dlls in libamtrack will contain the gsl rou
 ############################################################################################################################
 
 
-Release (any OS):
-#################
+Release
+#######
 - Augment "/trunk/ChangeLog", e.g. from svn logs
 - Make new folder in /tags, correspoding to version to release, e.g. "0.5.4"
 - Adjust "/tags/VERSION/configure.ac": AC_DEFINE(CODE_STATUS, ["Development"], [Status of the code]) --> AC_DEFINE(CODE_STATUS, ["Release"], [Status of the code])
@@ -350,7 +413,7 @@ If release, upload to sourceforge with corresponding folder
 Precompiled binaries
 ####################
 
-For Mac/Win (maybe Linux?): How to make sure that gsl is STATICALLY linked to libamtrack, so users do not have to have GSL?
+For Win (maybe Mac, Linux?): How to make sure that gsl is STATICALLY linked to libamtrack, so users do not have to have GSL?
 
 Linux
 -----
@@ -381,25 +444,20 @@ Installer?
 R package
 #########
 
-You need Linux or Mac OS X for this step with the preconditions given in section 1.
-
-- Check out "/tags/VERSION" form SVN to new local folder ("pathTo")
-- Compile libamtrack according to section 1. steps (i)-(iii). This is mainly to update autoconf files, but also to check integrity.
-- In most cases you have to the change permissions for "pathTo/wrapper/R/R_package/package/cleanup" to be executable for the owner "chmod 775 cleanup" (in the given directory)
-- If successful, navigate to /wrapper/R/R_package and execute "./create.package.sh" (you might have to make it executable by "chmod 755 create.package.sh")
-- Run tests on tarball:
+Follow instructions given in section 4. Then run tests on tarball:
 	R CMD check --as-cran libamtrack.VERSION.tar.gz, both as current as alternative user and both with latest stable and development R release (4 tests)
 	Make sure to switch on "-Wall -pedantic" in ~/.R/Makevars (NOT in the package Makevars) - or similar if you are not using gcc
-- If successful, upload package tarball to ftp://CRAN.R-project.org/incoming/ using ‘anonymous’ as log-in name and your e-mail address as password (use ‘ftp’)
-- Send mail to CRAN@R-project.org about it with your package name and version in the subject line of the form "CRAN submission ‘package’ ‘version’"
 	
-
+If successful, upload package tarball to ftp://CRAN.R-project.org/incoming/ using ‘anonymous’ as log-in name and your e-mail address as password (use ‘ftp’).
+Then send mail to CRAN@R-project.org about it with your package name and version in the subject line of the form "CRAN submission ‘package’ ‘version’"
+	
 		
 R package binaries
 ##################
 
-This process is only needed for intermediate packages. Release packages will be uploaded to CRAN, the R repository, where Windows and Mac
-binaries are automatically provided.
+This process is only needed for intermediate packages and mostly Windows users how do not have their system upgraded to be able to compile tarball
+source packages. Release packages will be uploaded to CRAN, the R repository, where Windows and Mac binaries are automatically provided. 
+Mac and Linux are furthermore able to compile source tarballs.
 
 
 Linux:
