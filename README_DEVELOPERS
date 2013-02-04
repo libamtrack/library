@@ -55,6 +55,9 @@ case you might have to use other procedures or flags (i.e. --host=i686-w64-mingw
 than the ones given in this file. We cannot of course not give any support for those alternatives - but are interested
 in your experiences (s.greilich@dkfz.de).
 
+Please make sure - for all Windows installations MSYS, GSL, R packages, ... - NOT TO USE pathnames with spaces 
+(i.e. C:\Program Files\MinGW) - that will most likely give you lots of strange errors.
+
 
 ############################################################################################################################
 1a. Basic workflow for compilation from distributed source
@@ -73,14 +76,17 @@ Navigate to new directory (cd libamtrack-x.y) and execute
 
 For tweaking (target, installation directory) please see section 1b. 
 
-Under Windows you should use the MSYS shell. Also, you have to set the environmental variable LIB_GSL to point to your 
+Under Windows you should use the MSYS shell. Also, you have to set the environmental variable GSL_LIB to point to your 
 GSL library, e.g.
 
-export LIB_GSL=C:/Path/To/GSL (in MSYS)
+export GSL_LIB=C:/Path/To/GSL (in MSYS)
 
 or
 
-set LIB_GSL=C:/Path/To/GSL  (in Windows shell or permanently using system settings).
+set GSL_LIB=C:/Path/To/GSL  (in Windows shell or permanently using system settings).
+
+Make sure that GSL_LIB points to the correct architecture of GSL. More details on environmental variables pointing to GSL
+are given in section 7.
 
 
 ############################################################################################################################
@@ -144,7 +150,7 @@ ii.  After (i.) OR
 	 
 	 ./configure CFLAGS="-m32" or CFLAGS="-m64"
    
-     Also, set LIB_GSL (see section 1a) to point to your GSL installation.
+     Also, set GSL_LIB (see section 1a) to point to your GSL installation.
 	 
 	 
      You can change the default path for installation by "--prefix=/my/installation/path". The flags given in this section
@@ -350,11 +356,6 @@ package portable, i.e. the user DOES NOT NEED TO HAVE GSL installed!
 The easiest is to download the pre-build libraries from the Rtools page ("localxxx.zip", http://www.stats.ox.ac.uk/pub/Rtools/R215x.html) and locate 
 them in your corresponding MSYS directory (e.g. C:\Path\to\MinGW\msys\1.0\local). 
 
-You can also compile them yourself (see below). In every case, make sure (by setting PATH [for source compilation] or LIB_GSL 
-[for R package compilation] such that the compiler/linker can find it.
-
-### TODO: There is a subtle difference in LIB_GSL for libamtrack compilation and R package compilation that has to be solved.
-
 For compiling GSL yourself, start MSYS. Download the tarball for the latest GSL version, e.g. gsl-1.15.tar.gz and unzip in your home directory, e.g. 
 C:\Path\to\MinGW\msys\1.0\home\yourname.
 
@@ -366,8 +367,33 @@ Navigate into the gsl directory (cd ~/gsl-x.y), build, test and install. To swit
 	make install
 
 You can change the installation directory by the "--prefix" flag for configure (default: /usr/local). You should do so for example if you want to 
-keep both 32 bit and 64 bit versions. Amongst others, this is necessary for R package compilation under Windows where always multilibs are created.
-Here, the standard structure of libraries is according to the R source structure (see also precompiled gsl from Rtools)
+keep both 32 bit and 64 bit versions. 
+
+### IMPORTANT ###
+There are subtle differences how regular libamtrack compilation and R package compilation handle GSL and GSL pointers:
+
+i. Regular compilation (as in section 1a, 1b, 8)
+------------------------------------------------
+The toolchain requires the corresponding GSL installation (i.e. 32/64 bit). If you want to compile both, you should best keep both GSL in separate 
+directorie, e.g. /local/gsl/i386 and /local/gsl/x64 (=C:\Path\To\MinGW\msys\1.0\local\gsl\...). Depending on your target (32/64 bit) set then the
+environmental variable
+
+GSL_LIB
+
+*not* LIB_GSL to the proper path (or enter CFLAGS and LFLAGS directly). Within the i386/x64 folder, a regular structure is expected, i.e.
+
+bin		       - directory keeping binaries, i.e. executables and dlls
+include        - include / header files
+lib            - pre-/static libraries for linking
+share          - other stuff
+
+For example you can use a path like "C:\Path\to\MinGW\msys\1.0\local\gsl\gsl-1.15\i386". 
+
+
+ii. R package compilation (as for section 4, 8)
+-----------------------------------------------
+R assumes a canonical structure of libraries for Windows to deal with multiple architecture. You will find this in the precompiled libraries 
+local215.zip and other places of R:
 
 include       - include files (headers), common to all systems
 libs/i386     - static libraries for 32 bit
@@ -375,8 +401,15 @@ libs/x64      - static libraries for 64 bit
 bin/i386      - binaries for 32 bit
 bin/x64       - binaries for 64 bit
 
-During compilation $R_ARCH_BIN={"i386","x64"} points to the current architecture.
+During R (package) compilation $R_ARCH_BIN={"i386","x64"} points to the current architecture, but not for include. To point to the directory
+use the variable 
 
+LIB_GSL
+
+*not* GSL_LIB, e.g. "C:\Path\to\MinGW\msys\local\Rcompile\local215\". To avoid confusion we introduced LIB_GSL *and* GSL_LIB and recommend
+to keep to installations of GSL for both purposes (i) and (ii) in two locations. Ideally, you take for (i) the precompiled file from the Rtools 
+page, and compile the library with your toolchain for (ii) twice (32/64 bit) yourself. If you want to convert one installation into the other,
+you have to copy files in the corresponding new folder structure. No magic behind it.
 
 Since we built static libraries, the dlls in libamtrack will contain the gsl routines and not depend on an external dynamic library, making the package portable. I.e. the user DOES NOT NEED TO HAVE GSL installed!
 

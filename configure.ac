@@ -66,9 +66,9 @@ AC_SUBST(OPENMP_CFLAGS)
 AC_SUBST(OPENMP_LDFLAGS)
 
 # Checks for libraries, add user-set path to gsl if necessary (e.g. on Windows)
-if test "${LIB_GSL}" != ""; then
-    GSL_CFLAGS="-I${LIB_GSL}/include"
-	GSL_LIBS="-L${LIB_GSL}/lib -lgsl"
+if test "${GSL_LIB}" != ""; then
+    GSL_CFLAGS="-I${GSL_LIB}/include"
+	GSL_LIBS="-L${GSL_LIB}/lib -lgsl"
 else
         AX_PATH_GSL(1.8, AC_DEFINE(HAVE_GSL_1_8, 1, [gsl>=1.8 found]), AC_MSG_ERROR([No gsl>=1.8 found!]))
 fi
