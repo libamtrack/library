@@ -389,6 +389,9 @@ share          - other stuff
 
 For example you can use a path like "C:\Path\to\MinGW\msys\1.0\local\gsl\gsl-1.15\i386". 
 
+In principle, you could alternatively add C:\Path\to\MinGW\msys\1.0\local\gsl\gsl-1.15\{i386,x64}\bin to PATH so that configure runs gsl-config 
+to get include and lib paths like under Linux and Mac OS X. However, due to some problems with AX_PATH_GSL under Windows.
+
 
 ii. R package compilation (as for section 4, 8)
 -----------------------------------------------
@@ -401,17 +404,18 @@ libs/x64      - static libraries for 64 bit
 bin/i386      - binaries for 32 bit
 bin/x64       - binaries for 64 bit
 
-During R (package) compilation $R_ARCH_BIN={"i386","x64"} points to the current architecture, but not for include. To point to the directory
-use the variable 
+During R (package) compilation $R_ARCH_BIN={"i386","x64"} points to the current architecture, but not for include. It will not use "gsl-config"
+like regular libamtrack compilation. To point to the directory use the variable 
 
 LIB_GSL
 
-*not* GSL_LIB, e.g. "C:\Path\to\MinGW\msys\local\Rcompile\local215\". To avoid confusion we introduced LIB_GSL *and* GSL_LIB and recommend
-to keep to installations of GSL for both purposes (i) and (ii) in two locations. Ideally, you take for (i) the precompiled file from the Rtools 
-page, and compile the library with your toolchain for (ii) twice (32/64 bit) yourself. If you want to convert one installation into the other,
-you have to copy files in the corresponding new folder structure. No magic behind it.
+*not* GSL_LIB, e.g. "C:/Path/to/MinGW/msys/local/Rcompile/local215" (forward slashes!). To avoid confusion we introduced LIB_GSL *and* GSL_LIB 
+and recommend to keep to installations of GSL for both purposes (i) and (ii) in two locations. Ideally, you take for (i) the precompiled file 
+from the Rtools page, and compile the library with your toolchain for (ii) twice (32/64 bit) yourself. If you want to convert one installation 
+into the other, you have to copy files in the corresponding new folder structure. No magic behind it.
 
-Since we built static libraries, the dlls in libamtrack will contain the gsl routines and not depend on an external dynamic library, making the package portable. I.e. the user DOES NOT NEED TO HAVE GSL installed!
+Since we built static libraries, the dlls in libamtrack will contain the gsl routines and not depend on an external dynamic library, making the 
+package portable. I.e. the user DOES NOT NEED TO HAVE GSL installed!
 
 
 ############################################################################################################################
