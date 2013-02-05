@@ -19,7 +19,7 @@ Contact and feedback
 ############################################################################################################################
 
 An installation of the GNU Scientific Library (GSL, headers + libraries/binaries) is required for all OSs if you want to 
-compile from source (sections 1 and 8). See section 7 for installation instructions.
+compile libamtrack from source (sections 1 and 8). See section 7 for installation instructions.
 
 
 To compile the DISTRIBUTED SOURCES of libamtrack:       you need the GNU compiler collection gcc (section 1a).
@@ -79,11 +79,13 @@ For tweaking (target, installation directory) please see section 1b.
 Under Windows you should use the MSYS shell. Also, you have to set the environmental variable GSL_LIB to point to your 
 GSL library, e.g.
 
-export GSL_LIB=C:/Path/To/GSL (in MSYS)
+export GSL_LIB=/c/Path/To/GSL (in MSYS)
 
 or
 
-set GSL_LIB=C:/Path/To/GSL  (in Windows shell or permanently using system settings).
+set GSL_LIB=C:\Path\To\GSL  (in Windows shell)
+
+or permanently using system settings.
 
 Make sure that GSL_LIB points to the correct architecture of GSL. More details on environmental variables pointing to GSL
 are given in section 7.
@@ -114,12 +116,15 @@ svn co https://libamtrack.svn.sourceforge.net/svnroot/libamtrack/branches/BRANCH
 
 To commit changes you did to the code you have to register as a developer at sourceforge and join the libamtrack project.
 
-In order to compile from sources you have to have the GNU Scientific library installed. Please see chapter below how this
-is to be done for your system.
+As for section 1a, please make sure that GSL_LIB points correctly to your GSL installation (section 7).
+
+### IMPORTANT NOT AS OF 2013-02-05:
+### Due to an expansion problem of the AX_GSL_PATH by autoconf under Windows, libamtrack compilation is not recommended
+### at the moment. We are looking for a fix.
 
 
 Steps for compilation:
-
+----------------------
 i.   After you check out libamtrack OR 
      you updated your local workspace (which could have changed configure.ac) OR
      you changed configure.ac yourself run:
@@ -257,7 +262,7 @@ Under Linux and Mac OS, the source package can be simply installed for use in R 
 
 Under standard Windows, source tarballs cannot be installed. To compile a source package (that - for libamtrack - can
 only be created using Linux or Mac OS X, you have to prepare your system and the best way to do so, is to use the 
-RTools (see section 0).
+RTools (see section 0). For setting up GSL properly for R package compilation, see section 7.
 
 
 ############################################################################################################################
@@ -375,22 +380,22 @@ There are subtle differences how regular libamtrack compilation and R package co
 i. Regular compilation (as in section 1a, 1b, 8)
 ------------------------------------------------
 The toolchain requires the corresponding GSL installation (i.e. 32/64 bit). If you want to compile both, you should best keep both GSL in separate 
-directorie, e.g. /local/gsl/i386 and /local/gsl/x64 (=C:\Path\To\MinGW\msys\1.0\local\gsl\...). Depending on your target (32/64 bit) set then the
+directories, e.g. /local/gsl/i386 and /local/gsl/x64 (=C:\Path\To\MinGW\msys\1.0\local\gsl\...). Depending on your target (32/64 bit) set then the
 environmental variable
 
 GSL_LIB
 
-*not* LIB_GSL to the proper path (or enter CFLAGS and LFLAGS directly). Within the i386/x64 folder, a regular structure is expected, i.e.
+to the proper path (or enter CFLAGS and LFLAGS directly). Within the i386/x64 folder, a regular structure is expected, i.e.
 
 bin		       - directory keeping binaries, i.e. executables and dlls
 include        - include / header files
 lib            - pre-/static libraries for linking
 share          - other stuff
 
-For example you can use a path like "C:\Path\to\MinGW\msys\1.0\local\gsl\gsl-1.15\i386". 
+For example you can use a path like "C:\Path\to\MinGW\msys\1.0\local\gsl-1.15\i386". 
 
-In principle, you could alternatively add C:\Path\to\MinGW\msys\1.0\local\gsl\gsl-1.15\{i386,x64}\bin to PATH so that configure runs gsl-config 
-to get include and lib paths like under Linux and Mac OS X. However, due to some problems with AX_PATH_GSL under Windows.
+In principle, you could alternatively add C:\Path\to\MinGW\msys\1.0\local\gsl-1.15\{i386,x64}\bin to PATH so that configure runs gsl-config 
+to get include and lib paths like under Linux and Mac OS X. However, the expansion of the AX_PATH_GSL seems faulty under Windows.
 
 
 ii. R package compilation (as for section 4, 8)
@@ -404,24 +409,26 @@ libs/x64      - static libraries for 64 bit
 bin/i386      - binaries for 32 bit
 bin/x64       - binaries for 64 bit
 
-During R (package) compilation $R_ARCH_BIN={"i386","x64"} points to the current architecture, but not for include. It will not use "gsl-config"
-like regular libamtrack compilation. To point to the directory use the variable 
+During R (package) compilation the make variable R_ARCH_BIN={"i386","x64"} points to the current architecture, but not for include. 
+It will not use "gsl-config" like regular libamtrack compilation. To point to the gsl root (!) directory use the make variable 
 
-LIB_GSL
+LOCAL_SOFT
 
-*not* GSL_LIB, e.g. "C:/Path/to/MinGW/msys/local/Rcompile/local215" (forward slashes!). To avoid confusion we introduced LIB_GSL *and* GSL_LIB 
-and recommend to keep to installations of GSL for both purposes (i) and (ii) in two locations. Ideally, you take for (i) the precompiled file 
-from the Rtools page, and compile the library with your toolchain for (ii) twice (32/64 bit) yourself. If you want to convert one installation 
-into the other, you have to copy files in the corresponding new folder structure. No magic behind it.
+*not* GSL_LIB, e.g. "C:/Path/to/MinGW/msys/local/Rcompile/local215" (forward slashes!). LOCAL_SOFT does not have to be set in the
+MSYS shell but in both C:\Path\to\R\etc\{i386,{x64}\Makeconf files (thanks to Uwe Ligges for his advice).
 
-Since we built static libraries, the dlls in libamtrack will contain the gsl routines and not depend on an external dynamic library, making the 
-package portable. I.e. the user DOES NOT NEED TO HAVE GSL installed!
+To avoid confusion we recommend to keep two installations of GSL for both purposes (i) and (ii) in two separate locations. 
+Ideally, you take for (i) the precompiled file from the Rtools page, and compile the library with your toolchain for (ii) 
+twice (32/64 bit) yourself. If you want to convert one installation into the other, you have to copy files in the corresponding 
+new folder structure. No more magic behind it.
+
+Since we built static libraries, the dlls in libamtrack will contain the gsl routines and not depend on an external dynamic library, 
+making the package portable. I.e. the user DOES NOT NEED TO HAVE GSL installed!
 
 
 ############################################################################################################################
 8.  Make a release (including R package for CRAN)
 ############################################################################################################################
-
 
 Release
 #######
