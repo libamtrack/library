@@ -1,4 +1,5 @@
 AC_PREREQ([2.67])
+m4_define(gsl_required_version, 1.8)
 AC_INIT([libamtrack], [0.5.5], [s.greilich@dkfz.de], [libamtrack])
 AC_PACKAGE_URL([libamtrack.dkfz.org])
 # Code names: 
@@ -70,7 +71,9 @@ if test "${GSL_LIB}" != ""; then
     GSL_CFLAGS="-I${GSL_LIB}/include"
 	GSL_LIBS="-L${GSL_LIB}/lib -lgsl"
 else
-        AX_PATH_GSL(1.8, AC_DEFINE(HAVE_GSL_1_8, 1, [gsl>=1.8 found]), AC_MSG_ERROR([No gsl>=1.8 found!]))
+    AX_PATH_GSL(gsl_required_version, :,
+         AC_MSG_ERROR(could not find gsl))
+#        AX_PATH_GSL(1.8, AC_DEFINE(HAVE_GSL_1_8, 1, [gsl>=1.8 found]), AC_MSG_ERROR([No gsl>=1.8 found!]))
 fi
 
 AC_SEARCH_LIBS(cos, m)
