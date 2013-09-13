@@ -106,11 +106,12 @@ Basic instruction on the use of GNU autotools are found in INSTALL.
 
 The libamtrack sources can be checkout from it svn repository at sourceforce.net by:
 
-svn co https://libamtrack.svn.sourceforge.net/svnroot/libamtrack/trunk libamtrack
+
+svn co https://svn.code.sf.net/p/libamtrack/code/trunk libamtrack
 
 Of course you can also check out previous tags or branches from:
-svn co https://libamtrack.svn.sourceforge.net/svnroot/libamtrack/tags/RELEASE_VERSION_NUMBER libamtrack
-svn co https://libamtrack.svn.sourceforge.net/svnroot/libamtrack/branches/BRANCH_ID libamtrack
+svn co https://svn.code.sf.net/p/libamtrack/code/tags/RELEASE_VERSION_NUMBER libamtrack
+svn co https://svn.code.sf.net/p/libamtrack/code/branches/BRANCH_ID libamtrack
 
 To commit changes you did to the code you have to register as a developer at sourceforge and join the libamtrack project.
 
@@ -483,8 +484,8 @@ Follow instructions given in section 4. Then run tests on tarball:
 	R CMD check --as-cran libamtrack.VERSION.tar.gz, both as current as alternative user and both with latest stable and development R release (4 tests)
 	Make sure to switch on "-Wall -pedantic" in ~/.R/Makevars (NOT in the package Makevars) - or similar if you are not using gcc
 	
-If successful, upload package tarball to ftp://CRAN.R-project.org/incoming/ using ‘anonymous’ as log-in name and your e-mail address as password (use ‘ftp’).
-Then send mail to CRAN@R-project.org about it with your package name and version in the subject line of the form "CRAN submission ‘package’ ‘version’"
+If successful, upload package tarball to ftp://CRAN.R-project.org/incoming/ using ï¿½anonymousï¿½ as log-in name and your e-mail address as password (use ï¿½ftpï¿½).
+Then send mail to CRAN@R-project.org about it with your package name and version in the subject line of the form "CRAN submission ï¿½packageï¿½ ï¿½versionï¿½"
 	
 		
 R package binaries
