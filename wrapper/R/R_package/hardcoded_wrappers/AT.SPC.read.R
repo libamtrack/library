@@ -145,9 +145,9 @@ AT.SPC.read <- function( file.name,
   			}
   		}
     	mm           <- mm[,-3]
-  		mm[,6]       <- mm[,6] * mm[,5]         # convert fluence / binwidth -> fluence
+  		mm[,7]       <- mm[,6] * mm[,5]         # convert fluence / binwidth -> fluence
   		df           <- as.data.frame(mm)
-  		names(df)    <- c("depth.step", "depth.g.cm2", "particle.no", "E.MeV.u", "DE.MeV.u", "fluence.cm2")
+  		names(df)    <- c("depth.step", "depth.g.cm2", "particle.no", "E.low.MeV.u", "E.mid.MeV.u", "E.high.MeV.u", "dE.MeV.u", "dN.dE.per.primary", "dN.E.MeV.u.per.primary")
   
   		cat(paste("Read ", n.depth.steps, " depth steps for projectile ", projectile, " on ", target.material, " with ", beam.energy.MeV.u, " MeV/u and peak at ", peak.position.g.cm2, " g/cm2.\n", sep = ""))
 		}else{

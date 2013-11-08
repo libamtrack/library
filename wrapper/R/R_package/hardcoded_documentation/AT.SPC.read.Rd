@@ -1,9 +1,13 @@
 \name{AT.SPC.read}
 \alias{AT.SPC.read}
 \title{AT.SPC.read}
-\description{Read a spc-formatted data file with energy-fluence in n depth steps. For original TRiP format definition by M. Kraemer, please see \url{http://bio.gsi.de/DOCS/TRiP98BEAM/DOCS/trip98fmtspc.html}. Please note that the user has to take care of picking the spc-file for the projectile and target material desired.
+\description{Read a spc-formatted data file with energy-fluence in n depth steps. For original TRiP format definition by M. Kraemer, please see \url{http://bio.gsi.de/DOCS/TRiP98BEAM/DOCS/trip98fmtspc.html} and Kraemer and Scholz, Treatment planning for heavy-ion radiotherapy: calculation and optimization of biologically effective dose, Phys. Med. Biol. 45 (2000) 3319–3330. Please note that the user has to take care of picking the spc-file for the projectile and target material desired.
 
 Presently, two versions of the reader exists: a slower but stable R version ('vanilla') and a faster but still buggy C version.
+
+IMPORTANT: SPC files report DIFFERENTIAL fluences dN/dE per primary particle, i.e. normalized by the energy bin. This reader converts them to ABSOLUTE fluences by multiplying dE. This facilitates e.g. summation to get the total fluence etc. but produces funny results when ABSOLUTE fluences are plotted. 
+
+Also, SPCs only contain the left limit of the energy bins. This reader also reports the energy bin midpoint which is more reasonable e.g. for the computation of mean dE/dx etc. 
 
 Please note that the "compress" statement has been depreciated due to preparation for C translation of spc handling.
 }
@@ -21,9 +25,12 @@ Please note that the "compress" statement has been depreciated due to preparatio
   \item{depth.step}{ Index number of depth step (one-based)}
   \item{depth.g.cm2}{ Depth in g/cm2}
   \item{particle.no}{ Particle index number (see also(\code{\link{particle.no}}).}
-  \item{E.MeV.u}{ Energy bin mid point in MeV/u (see also(\code{\link{E.MeV.u}}).}
-  \item{DE.MeV.u}{ Energy bin width in MeV/u}
-  \item{fluence.cm2}{ Fluence in 1/cm2 for each bin (NOT normalized per bin width).}
+  		names(df)    <- c("depth.step", "depth.g.cm2", "particle.no", "E.low.MeV.u", "E.mid.MeV.u", "E.high.MeV.u", "dE.MeV.u", "dN.dE.per.primary", "dN.E.MeV.u.per.primary")
+  \item{E.low.MeV.u}{ Energy bin lower limit in MeV/u (see also(\code{\link{E.MeV.u}}).}
+  \item{E.mid.MeV.u}{ Energy bin mid in MeV/u (see also(\code{\link{E.MeV.u}}).}
+  \item{E.high.MeV.u}{ Energy bin upper limit in MeV/u (see also(\code{\link{E.MeV.u}}).}
+  \item{dE.MeV.u}{ Energy bin width in MeV/u}
+  \item{dN.dE.per.primary}{ Fluence in 1/cm2 for each bin (NOT normalized per bin width).}
   and (2) variables containing information as beam energy, peak position, projectile and target material.
 }
 \examples{
