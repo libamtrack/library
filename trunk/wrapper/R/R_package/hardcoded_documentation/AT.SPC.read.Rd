@@ -25,12 +25,12 @@ Please note that the "compress" statement has been depreciated due to preparatio
   \item{depth.step}{ Index number of depth step (one-based)}
   \item{depth.g.cm2}{ Depth in g/cm2}
   \item{particle.no}{ Particle index number (see also(\code{\link{particle.no}}).}
-  		names(df)    <- c("depth.step", "depth.g.cm2", "particle.no", "E.low.MeV.u", "E.mid.MeV.u", "E.high.MeV.u", "dE.MeV.u", "dN.dE.per.primary", "dN.E.MeV.u.per.primary")
   \item{E.low.MeV.u}{ Energy bin lower limit in MeV/u (see also(\code{\link{E.MeV.u}}).}
   \item{E.mid.MeV.u}{ Energy bin mid in MeV/u (see also(\code{\link{E.MeV.u}}).}
   \item{E.high.MeV.u}{ Energy bin upper limit in MeV/u (see also(\code{\link{E.MeV.u}}).}
   \item{dE.MeV.u}{ Energy bin width in MeV/u}
-  \item{dN.dE.per.primary}{ Fluence in 1/cm2 for each bin (NOT normalized per bin width).}
+  \item{dN.dE.per.MeV.u.per.primary}{ Fluence differential in energy (bin width) per primary.}
+  \item{N.per.primary}{ Fluence per primary.}
   and (2) variables containing information as beam energy, peak position, projectile and target material.
 }
 \examples{
@@ -42,7 +42,7 @@ rm(list = ls())
 require(libamtrack)
 require(lattice)
 
-filename <- system.file("extdata", "libamtrack.12C.H2O.active3.MeV27000.spc", package = "libamtrack")
+file.name <- system.file("extdata", "libamtrack.12C.H2O.active3.MeV27000.spc", package = "libamtrack")
 endian                 <- c("big", "little")[2]
 
 # Read in spc data, we use old style R reader, so endianess has to be given
