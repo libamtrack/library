@@ -23,7 +23,7 @@ AT.SPC.tapply <- function( spc,
     # Get argument list for FUN
     args.FUN         <- names(formals(FUN))
     args.list        <- "("
-    mixed.field.args <- c("E.MeV.u", "fluence.cm2", "particle.no")
+    mixed.field.args <- c("E.mid.MeV.u", "N.per.primary", "particle.no")
     for(i in 1:length(args.FUN)){
          # i <- 1
          if(args.FUN[i] %in% mixed.field.args){
