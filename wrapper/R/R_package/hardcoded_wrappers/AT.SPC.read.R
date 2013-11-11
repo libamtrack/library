@@ -59,7 +59,7 @@ AT.SPC.read <- function( file.name,
 		   }
 		   mtag[tags, 3]  <- readBin(to.read, integer(), endian = endian)
 		   if( mtag[tags, 2] %in% c(9,12,16,18)){
-			   mtag[tags, 4]  <- readBin(    to.read, integer(), size = 8, signed = FALSE, n = 1, endian = endian)
+			   mtag[tags, 4]  <- readBin(    to.read, integer(), size = 8, n = 1, endian = endian)
 		   }else if(mtag[tags, 2] == 10){
 			   mtag[tags, 4]  <- readBin(    to.read, double(), size = 8, n = 1, endian = endian)
 		   }else if(mtag[tags, 2] == 13){
@@ -97,7 +97,7 @@ AT.SPC.read <- function( file.name,
 		peak.position.g.cm2<- readBin( to.read, double(), size = 8, n = floor(mtag[mtag[,2] == 7,3]/8), endian = endian)
 		
     if(header.only == FALSE){
-  		mm                 <- matrix(data = 0, ncol = 7, nrow = sum(bins))
+  		mm                 <- matrix(data = 0, ncol = 10, nrow = sum(bins))
   		mm[,1]             <- rep.int(rep.int(1:n.depth.steps, n.particle.species), bins)
   		mm[,2]             <- rep.int(rep.int(depth.g.cm2, n.particle.species), bins)
   		mm[,3]             <- rep.int(sequence(n.particle.species), bins)
@@ -109,7 +109,7 @@ AT.SPC.read <- function( file.name,
   			# i <- 1
   			seek(to.read, where = fluence.tags[i,1] + 8, origin = 'start')
   			size                   <- floor(fluence.tags[i,3]/8)
-  			mm[idx:(idx+size-1),7] <- readBin( to.read, double(), size = 8, n = size, endian = endian)
+  			mm[idx:(idx+size-1),9] <- readBin( to.read, double(), size = 8, n = size, endian = endian)
   			idx                    <- idx + size
   		}
   
@@ -127,12 +127,14 @@ AT.SPC.read <- function( file.name,
   				E.bins.MeV.u           <- readBin( to.read, double(), size = 8, n = size, endian = endian)
   				E.low.MeV.u            <- E.bins.MeV.u[-length(E.bins.MeV.u)]
   				E.high.MeV.u           <- E.bins.MeV.u[-1]
-  				mm[idx:(idx+size-2),6] <- E.high.MeV.u - E.low.MeV.u
+  				mm[idx:(idx+size-2),5] <- E.low.MeV.u
   				if(mean == "geometric"){  
-  					mm[idx:(idx+size-2),5]  <- sqrt(E.low.MeV.u * E.high.MeV.u)
+  					mm[idx:(idx+size-2),6]  <- sqrt(E.low.MeV.u * E.high.MeV.u)
   				}else{
-  					mm[idx:(idx+size-2),5]  <- (E.low.MeV.u + E.high.MeV.u)/2
+  					mm[idx:(idx+size-2),6]  <- (E.low.MeV.u + E.high.MeV.u)/2
   				}            
+  				mm[idx:(idx+size-2),7] <- E.high.MeV.u
+  				mm[idx:(idx+size-2),8] <- E.high.MeV.u - E.low.MeV.u
   				idx                    <- idx + size - 1
   			}else{
   				ii                      <- E.grid.tags[,5] == E.grid.tags[i,5]
@@ -141,13 +143,15 @@ AT.SPC.read <- function( file.name,
   				from                    <- E.grid.tags[ii,7][ref.idx]
   				mm[idx:(idx+size-1),5]  <- mm[from:(from+size-1),5]
   				mm[idx:(idx+size-1),6]  <- mm[from:(from+size-1),6]
+  				mm[idx:(idx+size-1),7]  <- mm[from:(from+size-1),7]
+  				mm[idx:(idx+size-1),8]  <- mm[from:(from+size-1),8]
   				idx                     <- idx + size
   			}
   		}
-    	mm           <- mm[,-3]
-  		mm[,7]       <- mm[,6] * mm[,5]         # convert fluence / binwidth -> fluence
+   		mm[,10]      <- mm[,9] * mm[,8]         # convert fluence / binwidth -> fluence
+		mm           <- mm[,-3]
   		df           <- as.data.frame(mm)
-  		names(df)    <- c("depth.step", "depth.g.cm2", "particle.no", "E.low.MeV.u", "E.mid.MeV.u", "E.high.MeV.u", "dE.MeV.u", "dN.dE.per.primary", "dN.E.MeV.u.per.primary")
+  		names(df)    <- c("depth.step", "depth.g.cm2", "particle.no", "E.low.MeV.u", "E.mid.MeV.u", "E.high.MeV.u", "dE.MeV.u", "dN.dE.per.MeV.u.per.primary", "N.per.primary")
   
   		cat(paste("Read ", n.depth.steps, " depth steps for projectile ", projectile, " on ", target.material, " with ", beam.energy.MeV.u, " MeV/u and peak at ", peak.position.g.cm2, " g/cm2.\n", sep = ""))
 		}else{
