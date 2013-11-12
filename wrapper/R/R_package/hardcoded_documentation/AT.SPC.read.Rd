@@ -39,11 +39,14 @@ Please note that the "compress" statement has been depreciated due to preparatio
 }
 
 \examples{
-rm(list = ls())
 
-# Load required libraries, libamtrack > r900
+# Load required libraries
 require(libamtrack)
 require(lattice)
+
+# Use example data set
+file.name 			   <- system.file("extdata", "libamtrack.12C.H2O.active3.MeV27000.spc", package = "libamtrack")
+endian                 <- c("big", "little")[2]
 
 file.name <- system.file("extdata", "libamtrack.12C.H2O.active3.MeV27000.spc", package = "libamtrack")
 endian                 <- c("big", "little")[2]
@@ -80,24 +83,24 @@ xyplot( log10(dN.dE.per.MeV.u.per.primary) ~ E.mid.MeV.u|sprintf("%4d", depth.st
 df.total                <- AT.SPC.tapply( spc                  = spc, 
                                           INDEX                = "depth.g.cm2", 
                                           FUN                  = AT.total.D.Gy, 
-                                          additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", F),
-                                                                      c("stopping.power.source.no", "0", F)),
+                                          additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", FALSE),
+                                                                      c("stopping.power.source.no", "0", FALSE)),
                                           names.results        = "D.Gy")
 df.total$LET.MeV.cm2.g  <- AT.SPC.tapply( spc                  = spc, 
                                           INDEX                = "depth.g.cm2", 
                                           FUN                  = AT.dose.weighted.LET.MeV.cm2.g,
-                                          additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", F),
-                                                                      c("stopping.power.source.no", "0", F)))$returnValue
+                                          additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", FALSE),
+                                                                      c("stopping.power.source.no", "0", FALSE)))$returnValue
 df.total$fLET.MeV.cm2.g <- AT.SPC.tapply( spc                  = spc, 
                                           INDEX                = "depth.g.cm2", 
                                           FUN                  = AT.fluence.weighted.LET.MeV.cm2.g,
-                                          additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", F),
-                                                                      c("stopping.power.source.no", "0", F)))$returnValue
+                                          additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", FALSE),
+                                                                      c("stopping.power.source.no", "0", FALSE)))$returnValue
 df.total$Mean.E.C.MeV.u <- AT.SPC.tapply( spc                  = spc, #spc[spc$particle.no == 6012,], 
                                           INDEX                = "depth.g.cm2", 
                                           FUN                  = AT.dose.weighted.E.MeV.u,
-                                          additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", F),
-                                                                      c("stopping.power.source.no", "0", F)))$returnValue
+                                          additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", FALSE),
+                                                                      c("stopping.power.source.no", "0", FALSE)))$returnValue
 
 xyplot( D.Gy ~ depth.g.cm2,
         df.total,
