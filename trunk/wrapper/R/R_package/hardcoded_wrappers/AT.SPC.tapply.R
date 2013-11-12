@@ -1,7 +1,8 @@
 AT.SPC.tapply <- function( spc, 
                            INDEX, 
                            FUN, 
-                           additional.arguments = NULL, 
+                           mixed.field.arguments = list(E.MeV.u = "E.mid.MeV.u", fluence.cm = "N.per.primary", particle.no = "particle.no"),
+						   additional.arguments = NULL, 
                            names.results = NULL)
 {    
     ##############################
@@ -21,20 +22,19 @@ AT.SPC.tapply <- function( spc,
 
     ###########################
     # Get argument list for FUN
+	# Match with mixed field args
     args.FUN         <- names(formals(FUN))
     args.list        <- "("
-    mixed.field.args <- c("E.mid.MeV.u", "N.per.primary", "particle.no")
-    for(i in 1:length(args.FUN)){
-         # i <- 1
-         if(args.FUN[i] %in% mixed.field.args){
-             args.list    <- paste( args.list, 
-                                    args.FUN[i], 
-                                    " = spc$",
-                                    args.FUN[i],
-                                    "[ii],",
-                                    sep = "")
-         }
-    }
+	for (i in 1:length(args.FUN)) {
+		mixed.field.arguments.idx <- match(args.FUN[i], names(mixed.field.arguments))
+		if (!is.na(mixed.field.arguments.idx)) {
+			args.list <- paste(	args.list, 
+								args.FUN[i], " = spc$", 
+								mixed.field.arguments[[mixed.field.arguments.idx]], "[ii],", 
+								sep = "")
+		}
+	}
+	
     if(!is.null(additional.arguments)){
         for(j in 1:length(additional.arguments)){
              if(additional.arguments[[j]][3] == TRUE){
