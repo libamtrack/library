@@ -34,42 +34,66 @@ endian                 <- c("big", "little")[2]
 spc                    <- AT.SPC.read ( file.name = file.name,
                                         endian    = endian,
                                         flavour   = "vanilla")$spc
+
+# Translate particle numbers in particle names (looks better)
+spc$particle.name      <- AT.particle.name.from.particle.no(particle.no = spc$particle.no)
+spc$particle.name      <- factor(spc$particle.name)
 										
-# Compute and plot dose with depth from spc data 
-df  <- AT.SPC.tapply( spc           = spc, 
-                      INDEX         = "depth.g.cm2", 
-                      FUN           = AT.total.D.Gy, 
-                      names.results = "D.Gy")
+# Compute and plot dose per primary with depth from spc data 
+df1 <- AT.SPC.tapply( spc                   = spc, 
+                      INDEX                 = "depth.g.cm2", 
+                      FUN                   = AT.total.D.Gy, 
+                      additional.arguments  = list( c("material.no", "1", F),                   # Water
+                                                    c("stopping.power.source.no", "0", F)),     # PSTAR
+                      names.results         = "D.Gy")
 
 xyplot( D.Gy ~ depth.g.cm2,
-        df,
-		type = "o",
-		ylab = "dose per primary / Gy"
-		xlab = depth / (g/cm2)")
+        df1,
+        type = "o",
+		grid = TRUE,
+        ylab = "dose per primary / Gy",
+        xlab = "depth / (g/cm2)")
 
-# Compute the dose with depth, but differentiate contribution
-# from individual particle species 
-AT.SPC.tapply( spc           = spc, 
-               INDEX         = c("depth.g.cm2", "particle.no"), 
-               FUN           = AT.total.D.Gy, 
-               names.results = "D.Gy")
+# Compute and plot dose (1 Gy entrance) with depth from spc data 
+# To do so, first the fluence per primary has to be scaled and then
+# AT.SPC.tapply has to be referred to the new non-standard column (default: fluence.cm2 = "N.per.primary")
 
-# Compute the fluence with depth, but differentiate contribution
-# from individual particle species 
-# As 'mean' does not take any arguments obeying the mixed field naming
-# convention in libamtrack, but a vector "x",
-# one must specify this as additional argument
-# Also, for the fluence data, it is referred to a non-standard column (not fluence.cm2 = "N.per.primary"),
-# which contains the fluence scaled to 
+fluence.factor  <- 1.0 / df1$D.Gy[1]					# factor between dose per primary (from above) and 2 Gy
+spc$fluence.cm2 <- spc$N.per.primary * fluence.factor
 
+df2 <- AT.SPC.tapply( spc                   = spc, 
+                      INDEX                 = "depth.g.cm2", 
+                      FUN                   = AT.total.D.Gy,
+					  mixed.field.arguments = list( fluence.cm2 = "fluence.cm2", E.MeV.u = "E.mid.MeV.u", particle.no = "particle.no"),
+                      additional.arguments  = list( c("material.no", "1", F),                   # Water
+                                                    c("stopping.power.source.no", "0", F)),     # PSTAR
+                      names.results         = "D.Gy")
 
-spc$fluence.cm2 <- spc$N.per.primary
+xyplot( D.Gy ~ depth.g.cm2,
+        df2,
+        type = "o",
+		col  = "red",
+        grid = TRUE,
+		ylab = "dose / Gy",
+        xlab = "depth / (g/cm2)")
+			   
+			   
+# Compute and plot the dose with depth, but differentiate contribution
+# from individual particle species
+# Also: use nicer (human-readable) code for material
+df3  <- AT.SPC.tapply( spc                  = spc, 
+                       INDEX                = c("depth.g.cm2", "particle.name"),  
+                       FUN                  = AT.total.D.Gy, 
+                       additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", F),
+                                                   c("stopping.power.source.no", "0", F)),
+                       names.results        = "D.Gy")
 
-AT.SPC.tapply( spc                   = spc, 
-               INDEX                 = c("depth.g.cm2", "particle.no"), 
-               FUN                   = mean,
-			   mixed.field.arguments = list(E.MeV.u = "E.mid.MeV.u", fluence.cm2 = "fluence.cm2", particle.no = "particle.no"),
-               additional.arguments  = list(c("x", "fluence.cm2")),
-               names.results         = "fluence.cm2")
-}
+xyplot( log10(D.Gy) ~ depth.g.cm2,
+        df3,
+        groups      = particle.name,
+        type     	= 'o',
+        grid        = TRUE,
+        auto.key    = list(space = 'right'),
+        ylab        = "log10( dose per primary / Gy )",
+        xlab        = 'depth / (g/cm2)')
 }

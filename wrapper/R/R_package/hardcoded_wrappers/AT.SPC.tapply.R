@@ -1,7 +1,7 @@
 AT.SPC.tapply <- function( spc, 
                            INDEX, 
                            FUN, 
-                           mixed.field.arguments = list(E.MeV.u = "E.mid.MeV.u", fluence.cm = "N.per.primary", particle.no = "particle.no"),
+                           mixed.field.arguments = list(E.MeV.u = "E.mid.MeV.u", fluence.cm2 = "N.per.primary", particle.no = "particle.no"),
 						   additional.arguments = NULL, 
                            names.results = NULL)
 {    
