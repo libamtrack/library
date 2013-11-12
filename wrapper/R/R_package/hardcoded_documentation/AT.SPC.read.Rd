@@ -1,7 +1,7 @@
 \name{AT.SPC.read}
 \alias{AT.SPC.read}
 \title{AT.SPC.read}
-\description{Read a spc-formatted data file with energy-fluence in n depth steps. For original TRiP format definition by M. Kraemer, please see \url{http://bio.gsi.de/DOCS/TRiP98BEAM/DOCS/trip98fmtspc.html} and Kraemer and Scholz, Treatment planning for heavy-ion radiotherapy: calculation and optimization of biologically effective dose, Phys. Med. Biol. 45 (2000) 3319–3330. Please note that the user has to take care of picking the spc-file for the projectile and target material desired.
+\description{Read a spc-formatted data file with energy-fluence in n depth steps. For original TRiP format definition by M. Kraemer, please see \url{http://bio.gsi.de/DOCS/TRiP98BEAM/DOCS/trip98fmtspc.html} and Kraemer and Scholz, Treatment planning for heavy-ion radiotherapy: calculation and optimization of biologically effective dose, Phys. Med. Biol. 45 (2000) 3319-3330. Please note that the user has to take care of picking the spc-file for the projectile and target material desired.
 
 Presently, two versions of the reader exists: a slower but stable R version ('vanilla') and a faster but still buggy C version.
 
@@ -66,16 +66,16 @@ spc$Z                  <- AT.Z.from.particle.no(particle.no = spc$particle.no)$Z
 # Plot parts of spectra
 ii      <- spc$depth.step%in%c(1,10,30,40,60,70)
 
-xyplot( log10(dN.dE.per.MeV.u.per.primary) ~ E.mid.MeV.u|sprintf('%4d', depth.step),
-        spc[ii,],
-        type        = 's',
-        subset      = log10(dN.dE.per.MeV.u.per.primary) >= -4,
-        groups      = particle.name,
-        as.table    = TRUE,
-        ylab        = 'log (fluence per primary per bin width / (1/MeV.u)',
-        xlab        = 'kinetic energy / MeV.u',
-        auto.key    = list(space = 'right', lines = TRUE, points = FALSE),
-        main        = 'Energy spectra at selected depth steps')
+#xyplot( log10(dN.dE.per.MeV.u.per.primary) ~ E.mid.MeV.u|sprintf("%4d", depth.step),
+#        spc[ii,],
+#        type        = 's',
+#        subset      = log10(dN.dE.per.MeV.u.per.primary) >= -4,
+#        groups      = particle.name,
+#        as.table    = TRUE,
+#        ylab        = 'log (fluence per primary per bin width / (1/MeV.u)',
+#        xlab        = 'kinetic energy / MeV.u',
+#        auto.key    = list(space = 'right', lines = TRUE, points = FALSE),
+#        main        = 'Energy spectra at selected depth steps')
 
 
 #####################################################################
@@ -96,7 +96,7 @@ df.total$fLET.MeV.cm2.g <- AT.SPC.tapply( spc                  = spc,
                                           FUN                  = AT.fluence.weighted.LET.MeV.cm2.g,
                                           additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", FALSE),
                                                                       c("stopping.power.source.no", "0", FALSE)))$returnValue
-df.total$Mean.E.C.MeV.u <- AT.SPC.tapply( spc                  = spc, #spc[spc$particle.no == 6012,], 
+df.total$Mean.E.C.MeV.u <- AT.SPC.tapply( spc                  = spc[spc$particle.no == 6012,], 
                                           INDEX                = "depth.g.cm2", 
                                           FUN                  = AT.dose.weighted.E.MeV.u,
                                           additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", FALSE),
@@ -123,7 +123,7 @@ xyplot( Mean.E.C.MeV.u ~ depth.g.cm2,
         type        = 'o',
         grid        = TRUE,
         main        = file.name,
-        ylab        = 'Average kinetic energy / (MeV/u)',
+        ylab        = 'Average kinetic energy of C / (MeV/u)',
         xlab        = 'depth / (g/cm2)')
 
 }
