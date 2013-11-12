@@ -33,9 +33,12 @@ Please note that the "compress" statement has been depreciated due to preparatio
   \item{N.per.primary}{ Fluence per primary.}
   and (2) variables containing information as beam energy, peak position, projectile and target material.
 }
-\examples{
-\dontrun{
 
+\seealso{
+\code{\link{AT.SPC.tapply}} for more example to derive quantaties from spc-data.
+}
+
+\examples{
 rm(list = ls())
 
 # Load required libraries, libamtrack > r900
@@ -52,76 +55,27 @@ spc                    <- AT.SPC.read ( file.name = file.name,
 
 # Get name and Z of particles in spectrum
 spc$particle.name      <- AT.particle.name.from.particle.no(particle.no = spc$particle.no)
+spc$particle.name      <- factor(spc$particle.name, levels = unique(spc$particle.name))
 spc$Z                  <- AT.Z.from.particle.no(particle.no = spc$particle.no)$Z
 
+                                   
+#####################################################################
 # Plot parts of spectra
+ii      <- spc$depth.step%in%c(1,10,30,40,60,70)
 
-spc <- spc[,-4]
-
-ii      <- spc$depth.step%%10 == 0 & spc$depth.step != 70
-
-xyplot( DN.DE.MeV.u ~ E.MeV.u|sprintf("%4d", depth.step),
+xyplot( log10(dN.dE.per.MeV.u.per.primary) ~ E.mid.MeV.u|sprintf("%4d", depth.step),
         spc[ii,],
         type        = 's',
-        groups      = particle.no,
-        as.table    = TRUE,
-        auto.key    = list( space = 'right'),
-        main        = "Energy-Fluence Correlation in various Depths" )
-
-xyplot( log10(DN.DE.MeV.u) ~ E.MeV.u|sprintf("%4d", depth.step),
-        spc[ii,],
-        type        = 's',
-		    subset      = log10(fluence.cm2) >= -6,
+        subset      = log10(dN.dE.per.MeV.u.per.primary) >= -4,
         groups      = particle.name,
         as.table    = TRUE,
-        auto.key    = list(space = 'right', c("blue", "darkgreen", "red", "orange", "purple", "cyan")),
-        main        = "Energy-Fluence Correlation in various Depths" )
-
-xyplot( DN.DE.MeV.u ~ E.MeV.u,
-        aggregate(DN.DE.MeV.u ~ E.MeV.u, subset(spc, particle.no==1002), sum),
-        type        = 'o',
-        col         = "darkgreen",
-        xlim        = c(0,300),
-        main        = "2H Energy Spectrum \n (cut-off at 294.68 MeV/u)" )
-
-xyplot( DN.DE.MeV.u ~ E.MeV.u,
-        aggregate(DN.DE.MeV.u ~ E.MeV.u, subset(spc, particle.no==2004), sum),
-        type        = 'o',
-        col         = "red",
-        xlim        = c(0,300),
-        main        = "4He Energy Spectrum \n (cut-off at 294.68 MeV/u)" )
-
-xyplot( DN.DE.MeV.u ~ E.MeV.u,
-        aggregate(DN.DE.MeV.u ~ E.MeV.u, subset(spc, particle.no==3006), sum),
-        type        = 'o',
-        col         = "orange",
-        xlim        = c(0,300),
-        main        = "6Li Energy Spectrum \n (cut-off at 294.68 MeV/u)" )
+        ylab        = "log (fluence per primary per bin width / (1/MeV.u)",
+        xlab        = "kinetic energy / MeV.u",
+        auto.key    = list(space = 'right', lines = TRUE, points = FALSE),
+        main        = "Energy spectra at selected depth steps" )
 
 
-xyplot( DN.DE.MeV.u ~ E.MeV.u,
-        aggregate(DN.DE.MeV.u ~ E.MeV.u, subset(spc, particle.no==4008), sum),
-        type        = 'o',
-        col         = "green",
-        xlim        = c(0,300),
-        main        = "8Be Energy Spectrum \n (cut-off at 294.68 MeV/u)" )
-
-xyplot( DN.DE.MeV.u ~ E.MeV.u,
-        aggregate(DN.DE.MeV.u ~ E.MeV.u, subset(spc, particle.no==5010), sum),
-        type        = 'o',
-        col         = "blue",
-        xlim        = c(0,300),
-        main        = "10B Energy Spectrum \n (cut-off at 294.68 MeV/u)" )
-
-xyplot( DN.DE.MeV.u ~ E.MeV.u,
-        aggregate(DN.DE.MeV.u ~ E.MeV.u, subset(spc, particle.no==6012), sum),
-        type        = 'o',
-        col         = "purple",
-        xlim        = c(0,300),
-        main        = "12C Energy Spectrum \n (cut-off at 296.71 MeV/u)" )
-
-
-#########
+#####################################################################
 # Process data, compute total dose and dose-weighted LET with depth
 df.total                <- AT.SPC.tapply( spc                  = spc, 
                                           INDEX                = "depth.g.cm2", 
@@ -147,112 +101,27 @@ df.total$Mean.E.C.MeV.u <- AT.SPC.tapply( spc                  = spc, #spc[spc$p
 
 xyplot( D.Gy ~ depth.g.cm2,
         df.total,
-        type   = 'o',
+        grid        = TRUE,
+        type        = 'o',
         ylab        = 'total dose / Gy',
         xlab        = 'depth / (g/cm2)')
-        
+
 xyplot( LET.MeV.cm2.g + fLET.MeV.cm2.g ~ depth.g.cm2,
         df.total,
-        type   = 'o',
-        main        = file.name,
+        type        = 'o',
+        main        = "Fluence (fLET...) and dose (LET...) weighted LET",
         grid        = TRUE,
-        auto.key    = list(space = 'right'),
+        auto.key    = list(space = 'right', lines = TRUE, points = FALSE),
         ylab        = 'LET / (MeV*cm2/g)',
         xlab        = 'depth / (g/cm2)')
 
 xyplot( Mean.E.C.MeV.u ~ depth.g.cm2,
         df.total,
-        type   = 'o',
+        type        = 'o',
+        grid        = TRUE,
         main        = file.name,
-        ylab        = 'Mean energy / (MeV/u)',
+        ylab        = 'Average kinetic energy / (MeV/u)',
         xlab        = 'depth / (g/cm2)')
 
-#########
-# Process data, differential in particle type
-
-df.T                  <- AT.SPC.tapply( spc                  = spc, 
-                                        INDEX                = c("depth.g.cm2", "particle.no"), 
-                                        FUN                  = AT.total.D.Gy, 
-                                        additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", FALSE),
-																	      c("stopping.power.source.no", "2", FALSE)),
-                                        names.results        = "D.Gy")
-df.T$fluence.cm2      <- AT.SPC.tapply( spc                  = spc, 
-                                        INDEX                = c("depth.g.cm2", "particle.no"), 
-                                        FUN                  = mean,
-                                        additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", FALSE),
-                                                                    c("x", "fluence.cm2", TRUE)))$res
-df.T$LET.MeV.cm2.g    <- AT.SPC.tapply( spc                  = spc, 
-                                        INDEX                = c("depth.g.cm2", "particle.no"), 
-                                        FUN                  = AT.dose.weighted.LET.MeV.cm2.g,
-                                        additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", FALSE),
-																	                                  c("stopping.power.source.no", "2", FALSE)))$returnValue
-
-spc$cv                <- paste(spc$depth.g.cm2, spc$particle.no)
-df.T$depth.step       <- tapply( X                    = spc$depth.step,
-                                 INDEX                = spc$cv,
-                                 FUN                  = head,
-                                 n                    = 1)
-df.T$particle.name    <- tapply( X                    = spc$particle.name,
-                                 INDEX                = spc$cv,
-                                 FUN                  = head,
-                                 n                    = 1)
-df.T$Z                <- tapply( X                    = spc$Z,
-                                 INDEX                = spc$cv,
-                                 FUN                  = head,
-                                 n                    = 1)
-                                 
-# normalize dose to maximum / normalize fluence to C-12 entrace channel
-norm.dose.Gy          <- max(df.total$D.Gy)
-#norm.dose.Gy          <- df.T$D.Gy[df.T$particle.no == 6012 & df.T$depth.step == 2]
-norm.fluence.cm2      <- df.T$fluence.cm2[df.T$particle.no == 6012 & df.T$depth.step == 2]
-
-df.T$D.Gy             <- df.T$D.Gy / norm.dose.Gy
-df.T$fluence.cm2      <- df.T$fluence.cm2 / norm.fluence.cm2
-
-
-# Plots
-xyplot( log10(D.Gy) ~ depth.g.cm2,
-        df.T,
-        type       = 'o',
-        groups     = particle.name,
-		    subset     = log10(D.Gy) >= -6,
-        auto.key   = list(space = 'right'),
-        panel      = function(...){
-                         panel.grid(-1, -1)
-                         panel.xyplot(...)},
-        xlab       = 'depth / (g/cm2)',
-        ylab       = 'log dose relative to C-12 entrance channel')
-
-xyplot( log10(fluence.cm2) ~ depth.g.cm2,
-        df.T,
-        type       = 'o',
-		    subset     = log10(fluence.cm2) >= -6,
-        groups     = particle.name,
-        auto.key   = list(space = 'right'),
-        panel      = function(...){
-                         panel.grid(-1, -1)
-                         panel.xyplot(...)},
-        xlab       = 'depth / (g/cm2)',
-        ylab       = 'log fluence relative to C-12 entrance channel')
-
-xyplot( log10(LET.MeV.cm2.g) ~ depth.g.cm2,
-        df.T,
-        type       = 'o',
-        groups     = particle.name,
-        auto.key   = list(space = 'right'),
-        panel      = function(...){
-                         panel.grid(-1, -1)
-                         panel.xyplot(...)},
-        xlab       = 'depth / (g/cm2)',
-        ylab       = 'log dose-weighted LET / (MeV*cm2/g)')
-
-
-
-df.total$Z             <- tapply(        X                    = spc$Z, 
-                                         INDEX                = spc$depth.g.cm2, 
-                                         FUN                  = head,
-                                         n                    = 1)
-
-}
 }
 
