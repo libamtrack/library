@@ -68,7 +68,7 @@ spc$fluence.cm2 <- spc$N.per.primary
 AT.SPC.tapply( spc                   = spc, 
                INDEX                 = c("depth.g.cm2", "particle.no"), 
                FUN                   = mean,
-			   mixed.field.arguments = list(E.MeV.u = "E.mid.MeV.u", fluence.cm2 = "fluence.cm2", particle.no = "particle.no")
+			   mixed.field.arguments = list(E.MeV.u = "E.mid.MeV.u", fluence.cm2 = "fluence.cm2", particle.no = "particle.no"),
                additional.arguments  = list(c("x", "fluence.cm2")),
                names.results         = "fluence.cm2")
 }
