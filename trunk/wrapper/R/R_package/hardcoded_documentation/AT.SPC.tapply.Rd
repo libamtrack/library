@@ -2,7 +2,7 @@
 \alias{AT.SPC.tapply}
 \title{AT.SPC.tapply}
 \description{Similar to R's \code{tapply} this applies a function to cells defined by indices in a spc data object}
-\usage{AT.SPC.tapply( spc, INDEX, FUN, additional.arguments = NULL, names.results = NULL)
+\usage{AT.SPC.tapply( spc, INDEX, FUN, mixed.field.arguments = list(E.MeV.u = "E.mid.MeV.u", fluence.cm2 = "N.per.primary", particle.no = "particle.no"), additional.arguments = NULL, names.results = NULL)
 }
 \arguments{
   \item{spc}{ spc data as returned by \code{\link{AT.SPC.read}}}
@@ -43,8 +43,8 @@ spc$particle.name      <- factor(spc$particle.name)
 df1 <- AT.SPC.tapply( spc                   = spc, 
                       INDEX                 = "depth.g.cm2", 
                       FUN                   = AT.total.D.Gy, 
-                      additional.arguments  = list( c("material.no", "1", F),                   # Water
-                                                    c("stopping.power.source.no", "0", F)),     # PSTAR
+                      additional.arguments  = list( c("material.no", "1", FALSE),                   # Water
+                                                    c("stopping.power.source.no", "0", FALSE)),     # PSTAR
                       names.results         = "D.Gy")
 
 xyplot( D.Gy ~ depth.g.cm2,
@@ -65,8 +65,8 @@ df2 <- AT.SPC.tapply( spc                   = spc,
                       INDEX                 = "depth.g.cm2", 
                       FUN                   = AT.total.D.Gy,
 					  mixed.field.arguments = list( fluence.cm2 = "fluence.cm2", E.MeV.u = "E.mid.MeV.u", particle.no = "particle.no"),
-                      additional.arguments  = list( c("material.no", "1", F),                   # Water
-                                                    c("stopping.power.source.no", "0", F)),     # PSTAR
+                      additional.arguments  = list( c("material.no", "1", FALSE),                   # Water
+                                                    c("stopping.power.source.no", "0", FALSE)),     # PSTAR
                       names.results         = "D.Gy")
 
 xyplot( D.Gy ~ depth.g.cm2,
@@ -84,8 +84,8 @@ xyplot( D.Gy ~ depth.g.cm2,
 df3  <- AT.SPC.tapply( spc                  = spc, 
                        INDEX                = c("depth.g.cm2", "particle.name"),  
                        FUN                  = AT.total.D.Gy, 
-                       additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", F),
-                                                   c("stopping.power.source.no", "0", F)),
+                       additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", FALSE),
+                                                   c("stopping.power.source.no", "0", FALSE)),
                        names.results        = "D.Gy")
 
 xyplot( log10(D.Gy) ~ depth.g.cm2,
