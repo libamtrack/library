@@ -66,16 +66,16 @@ spc$Z                  <- AT.Z.from.particle.no(particle.no = spc$particle.no)$Z
 # Plot parts of spectra
 ii      <- spc$depth.step%in%c(1,10,30,40,60,70)
 
-xyplot( log10(dN.dE.per.MeV.u.per.primary) ~ E.mid.MeV.u|sprintf("%4d", depth.step),
+xyplot( log10(dN.dE.per.MeV.u.per.primary) ~ E.mid.MeV.u|sprintf('%4d', depth.step),
         spc[ii,],
         type        = 's',
         subset      = log10(dN.dE.per.MeV.u.per.primary) >= -4,
         groups      = particle.name,
         as.table    = TRUE,
-        ylab        = "log (fluence per primary per bin width / (1/MeV.u)",
-        xlab        = "kinetic energy / MeV.u",
+        ylab        = 'log (fluence per primary per bin width / (1/MeV.u)',
+        xlab        = 'kinetic energy / MeV.u',
         auto.key    = list(space = 'right', lines = TRUE, points = FALSE),
-        main        = "Energy spectra at selected depth steps" )
+        main        = 'Energy spectra at selected depth steps')
 
 
 #####################################################################
