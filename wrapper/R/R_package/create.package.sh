@@ -21,7 +21,7 @@ do
 
     if [ "$var" == "--fast" ] ; then
        FAST_ARG="TRUE"
-       echo "Fast execution chosen."
+       echo "Fast execution chosen. Will not update svn information nor run R examples."
     fi
 
     if [ "$var" == "--install" ] ; then
@@ -38,7 +38,7 @@ done
 if [ $HELP_ARG == "TRUE" ] ; then
    echo "This script compiles libamtrack to an R package source tarball"
    echo
-   echo "Use --fast to skip svn information update (really slow)."
+   echo "Use --fast to skip svn information update and R examples."
    echo "Use --install to install package after compilation."
    echo "Use --noclean to leave transient files after compilation for debugging."
    echo
@@ -57,6 +57,10 @@ echo "Copying libamtrack sources..."
 cp ../../../include/*.h libamtrack/src/
 cp ../../../src/*.c libamtrack/src/
 
+# *** Clean temporary files (e.g. from gedit that will confuse the collect.doxygen.information.R script
+rm ../../../include/*.h~
+rm ../../../src/*.c~
+ 
 # *** Copy hardcoded documentation ***
 echo "Copying hardcoded documentation..."
 cp hardcoded_documentation/*.Rd libamtrack/man/
