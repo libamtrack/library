@@ -1,7 +1,0 @@
-
-#! /bin/sh
-for f in ./config.*; do
-rm -f $f
-done
-exit 0
- 
