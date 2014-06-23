@@ -1,4 +1,4 @@
-AC_PREREQ([2.67])
+AC_PREREQ([2.68])
 m4_define(gsl_required_version, 1.8)
 AC_INIT([libamtrack], [0.5.5], [s.greilich@dkfz.de], [libamtrack])
 AC_PACKAGE_URL([libamtrack.dkfz.org])
@@ -7,9 +7,7 @@ AC_PACKAGE_URL([libamtrack.dkfz.org])
 # micro - 0: Black, 1: Blue, 2: Red, 3: Green, 4: Yellow, 5: Violet
 AC_DEFINE(CODE_NAME, ["Violet Wombat"], [Cryptonym to faciliate versioning for users])
 # Status: "Development" or "Release" (will trigger some different actions, e.g. with R package)
-AC_DEFINE(CODE_STATUS, ["Release"], [Status of the code])
-
-
+AC_DEFINE(CODE_STATUS, ["Development"], [Status of the code])
 
 LT_INIT
 AM_INIT_AUTOMAKE
@@ -24,6 +22,7 @@ AM_PROG_CC_C_O
 AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
 
+
 ## HOW TO GET revision in here? But not trying to get it during a configure
 ## process on a tarball distribution??
 ##
@@ -34,7 +33,7 @@ AC_PROG_LIBTOOL
 ## order to update
 ##
 ## Solution 2 (use svnversion):
-AC_PATH_PROG(svnversioncommand, svnversion)
+AC_PATH_PROG(svnversioncommand, svnversion, [AC_MSG_ERROR([unable to find svnversion])])
 if test "X$svnversioncommand" = "X" || test `$svnversioncommand -n '.'` = "exported"; then
 AC_DEFINE_UNQUOTED(SVN_VERSION, ["`cat saved_svn_version.txt`"], [repository svn version])
 else
@@ -68,15 +67,38 @@ AC_SUBST(OPENMP_LDFLAGS)
 
 # Checks for libraries, add user-set path to gsl if necessary (e.g. on Windows)
 if test "${GSL_LIB}" != ""; then
-    GSL_CFLAGS="-I${GSL_LIB}/include"
-	GSL_LIBS="-L${GSL_LIB}/lib -lgsl -lgslcblas"
+    	GSL_CFLAGS = "-I${GSL_LIB}/include"
+	GSL_LIBS = "-L${GSL_LIB}/lib -lgsl -lgslcblas"
 else
-    AX_PATH_GSL(gsl_required_version, :,
-         AC_MSG_ERROR(could not find gsl))
-#        AX_PATH_GSL(1.8, AC_DEFINE(HAVE_GSL_1_8, 1, [gsl>=1.8 found]), AC_MSG_ERROR([No gsl>=1.8 found!]))
+    AX_PATH_GSL(1.8, 
+    		AC_DEFINE(HAVE_GSL_1_8, 1, [gsl>=1.8 found]), 
+    		AC_MSG_ERROR([No gsl>=1.8 found!]))
 fi
 
-AC_SEARCH_LIBS(cos, m)
+# Look for libm
+AC_SEARCH_LIBS([cos], [m], [], [AC_MSG_ERROR([unable to find the cos() function])])
+
+
+# Checks for essential header files
+AC_CHECK_HEADER([malloc.h])
+AC_CHECK_HEADER([stdint.h])
+AC_CHECK_HEADER([stdlib.h])
+AC_CHECK_HEADER([string.h])
+
+
+# Check if libmath (CERNLIB) and appropriate header are available
+AC_CHECK_HEADER([cfortran.h], [], AC_DEFINE(HAVE_NO_CERNLIB, 1, [No cfortran.h found.]))
+AC_CHECK_HEADER([gen.h], [], AC_DEFINE(HAVE_NO_CERNLIB, 1, [No cfortran.h found.]))
+AC_CHECK_LIB(mathlib, vavden_, [], AC_DEFINE(HAVE_NO_CERNLIB, 1, [No cfortran.h found.]))
+	
+if test "x${HAVE_NO_CERNLIB}" != ""; then
+	AC_SUBST([CERNLIB_CFLAGS], ["-DHAVE_CERNLIB"])
+	AC_SUBST([CERNLIB_LIBS], ["-lmathlib"])
+else
+	AC_MSG_RESULT([No mathlib CERNLIB or headers found, some energy loss distribution functions will not be available.])
+	AC_SUBST([CERNLIB_CFLAGS])
+	AC_SUBST([CERNLIB_LIBS])
+fi
 
 # Checks for header files.
 AC_CHECK_HEADERS([malloc.h stdint.h stdlib.h string.h])
