@@ -43,7 +43,6 @@
 #endif
 
 #include "AT_RDD.h"
-#include "AT_DataLET.h"
 #include "AT_DataStoppingPower.h"
 #include "AT_PhysicsRoutines.h"
 
