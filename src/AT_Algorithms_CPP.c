@@ -61,6 +61,29 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
 {
   long i;
 
+  /* Open output file if request, exit on error */
+  FILE*    output_file = NULL;
+  if( write_output ){
+    output_file    =  fopen("CPPSC.log","a");
+    if (output_file == NULL) return;                      // File error
+
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+
+    fprintf(output_file, "###############\nCPPSC log\n");
+    fprintf(output_file, "Date/time: %d-%d-%d %d:%d:%d\n",
+    		tm.tm_year + 1900,
+    		tm.tm_mon + 1,
+    		tm.tm_mday,
+    		tm.tm_hour,
+    		tm.tm_min,
+    		tm.tm_sec);
+	fprintf(output_file, "Radiation field, %ld component(s)\nE.MeV.u; particle.no; fluence/dose\n", number_of_field_components);
+    for(int i = 0; i < number_of_field_components; i++){
+    	fprintf(output_file, "%3.2e, %ld; %3.2e\n", E_MeV_u[i], particle_no[i], fluence_cm2_or_dose_Gy[i]);
+    }
+  }
+
   /* Clear results */
   *relative_efficiency             = 0.0;
   *d_check                         = 0.0;
@@ -83,6 +106,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       er_model,
       N2,
       stopping_power_source_no);
+  if( write_output) fprintf(output_file, "n_bins_f1: %ld\n", n_bins_f1);
 
   /* Get f1 parameters - containing the most
    * relevant information on the tracks of
@@ -99,8 +123,18 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       stopping_power_source_no,
       f1_parameters
   );
+  if( write_output){
+	  fprintf(output_file, "f1 parameters\n\tLET_MeV_cm2_g: %3.2e\n", f1_parameters[0]);
+	  fprintf(output_file, "\tr_min_m: %3.2e\n", f1_parameters[1]);
+	  fprintf(output_file, "\tmax_electron_range_m: %3.2e\n", f1_parameters[2]);
+	  fprintf(output_file, "\td_min_Gy: %3.2e\n", f1_parameters[3]);
+	  fprintf(output_file, "\td_max_Gy: %3.2e\n", f1_parameters[4]);
+	  fprintf(output_file, "\tnorm_constant_Gy: %3.2e\n", f1_parameters[5]);
+	  fprintf(output_file, "\tsingle_impact_fluence_cm2: %3.2e\n", f1_parameters[6]);
+	  fprintf(output_file, "\tsingle_impact_dose_Gy: %3.2e\n", f1_parameters[7]);
+  }
 
-  /* Get local dose dictribution for the
+  /* Get local dose distribution for the
    * impact of a single particle */
   double*  f1_d_Gy       =  (double*)calloc(n_bins_f1, sizeof(double));
   double*  f1_dd_Gy      =  (double*)calloc(n_bins_f1, sizeof(double));
@@ -120,6 +154,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       f1_d_Gy,
       f1_dd_Gy,
       f1);
+
 
   /* Depending on user's input, convert
    * dose to fluence or vice versa */
@@ -155,6 +190,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       stopping_power_source_no);
 
   free( fluence_cm2 );
+  if( write_output) fprintf(output_file, "mean no of track contributing: %3.2e\n", *mean_number_of_tracks_contrib);
 
   /* Get array size for low fluence local dose
    * distribution for later memory allocation */
@@ -169,6 +205,11 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
       &n_bins_f,
       start_number_of_tracks_contrib,
       n_convolutions);
+
+  if( write_output){
+	  fprintf(output_file, "start no of track contributing: %3.2e\n", *start_number_of_tracks_contrib);
+	  fprintf(output_file, "no of convolutions: %ld\n", *n_convolutions);
+  }
 
   /* Get low fluence local dose distribution */
   double*  f_d_Gy       =  (double*)calloc(n_bins_f, sizeof(double));
@@ -286,6 +327,8 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
   free(fdd);
   free(dfdd);
   free(S);
+
+  if( write_output) fclose(output_file);
 }
 
 void AT_run_CPPSS_method(  const long  number_of_field_components,
