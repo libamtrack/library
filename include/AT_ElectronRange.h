@@ -40,6 +40,7 @@
 #include "AT_DataParticle.h"
 #include "AT_PhysicsRoutines.h"
 #include "AT_Error.h"
+#include "AT_RDD_Tabulated.h"
 
 /**
  * Electron range models code numbers
@@ -51,10 +52,12 @@ enum AT_ERModels{
       ER_Geiss             = 4,     /**< Geiss(?) electron range model, R = k * E ^ alpha, valid for ?? < w < ? TODO ref needed [Geiss, 1997]*/
       ER_Scholz            = 5,     /**< Scholz(?) electron range model, R = k * E ^ alpha, valid for ?? < w < ? TODO ref needed [Scholz, 2001]*/
       ER_Edmund            = 6,     /**< Edmund(?) electron range model, R = k * w ^ alpha, valid for ?? < w < ? TODO ref needed*/
-      ER_Tabata            = 7      /**< Tabata electron range model, valid for 0.3keV < w < 30MeV TODO ref needed [Tabata, 1972]*/
+      ER_Tabata            = 7,     /**< Tabata electron range model, valid for 0.3keV < w < 30MeV TODO ref needed [Tabata, 1972]*/
+      ER_Scholz_new        = 8,     /**< New Scholz electron range model, R = k * E ^ alpha, valid for ?? < w < ? TODO ref needed [Scholz, 2008?]*/
+      ER_AM_RadDiff		   = 9      /**< Electron range model by A. Mairani considering radical diffusion*/
 };
 
-#define ER_DATA_N    7
+#define ER_DATA_N    9
 
 
 /**
@@ -72,8 +75,8 @@ typedef struct {
  */
 static const AT_ER_data_struct AT_ER_Data = {
     ER_DATA_N,
-    {  ER_Test,                 ER_ButtsKatz,                       ER_Waligorski,                             ER_Geiss,                         ER_Scholz,                       ER_Edmund,                          ER_Tabata },
-    {  "simple test ER model",  "Butts & Katz' ER model (linear)",  "Waligorski's ER model (power-law wmax)",  "Geiss' ER model (power-law E)", "Scholz' ER model (power-law E)", "Edmund' ER model (power-law wmax)","Tabata  ER model"}
+    {  ER_Test,                 ER_ButtsKatz,                       ER_Waligorski,                             ER_Geiss,                         ER_Scholz,                       ER_Edmund,                          ER_Tabata, 				ER_Scholz_new, ER_AM_RadDiff },
+    {  "simple test ER model",  "Butts & Katz' ER model (linear)",  "Waligorski's ER model (power-law wmax)",  "Geiss' ER model (power-law E)", "Scholz' ER model (power-law E)", "Edmund' ER model (power-law wmax)","Tabata  ER model", "Scholz' ER model (power-law E), new params", "ER model for Andrea Mairani's radical diffusion RDD"}
 };
 
 
@@ -176,6 +179,20 @@ void AT_ER_Tabata_constants( const double average_A,
     double* a3,
     double* a4,
     double* a5);
+
+/**
+ * 6.2e-5 * pow(E_MeV_u, 1.7)
+ * @param[in] E_MeV_u
+ * @return
+ */
+double AT_ER_Scholz_new_range_g_cm2( double E_MeV_u );
+
+/**
+ * 6.2e-5 * pow(E_MeV_u, 1.7)
+ * @param[in] E_MeV_u
+ * @return
+ */
+double AT_ER_AM_RadDiff_range_g_cm2( double E_MeV_u );
 
 
 /**
