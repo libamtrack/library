@@ -47,7 +47,7 @@ double AT_range_straggling_convolution(  const double z,
     F  *=  exp(-1.0 * u * u / (4.0 * sigma * sigma)) * pow(sigma, ni);
 
     double  tmp;
-    gamma_(&ni, &tmp);
+    AT_gamma_(&ni, &tmp);
     F  *=  tmp;
 
     tmp = AT_Dyx(-1.0 * ni, -1.0 * zeta);
@@ -257,22 +257,22 @@ int dvsa_(double *va,
       if (va0 <= 0.f && va0 == (double) ((int) va0)) {
         *pd = 0.;
       } else {
-        gamma_(&va0, &ga0);
+        AT_gamma_(&va0, &ga0);
         d__1 = *va * -.5;
         *pd = sqrt(pi) / (pow(c_b40, d__1) * ga0);
       }
     } else {
       d__1 = -(*va);
-      gamma_(&d__1, &g1);
+      AT_gamma_(&d__1, &g1);
       d__1 = *va * -.5 - 1.;
       a0 = pow(c_b40, d__1) * ep / g1;
       vt = *va * -.5;
-      gamma_(&vt, &g0);
+      AT_gamma_(&vt, &g0);
       *pd = g0;
       r__ = 1.;
       for (m = 1; m <= 250; ++m) {
         vm = (m - *va) * .5;
-        gamma_(&vm, &gm);
+        AT_gamma_(&vm, &gm);
         r__ = -r__ * sq2 * *x / m;
         r1 = gm * r__;
         *pd += r1;
@@ -321,7 +321,7 @@ int dvla_(double *va, double *x, double *pd)
     x1 = -(*x);
     vvla_(va, &x1, &vl);
     d__1 = -(*va);
-    gamma_(&d__1, &gl);
+    AT_gamma_(&d__1, &gl);
     *pd = pi * vl / gl + cos(pi * *va) * *pd;
   }
   return 0;
@@ -360,7 +360,7 @@ int vvla_(double *va, double *x, double *pv)
     x1 = -(*x);
     dvla_(va, &x1, &pdl);
     d__1 = -(*va);
-    gamma_(&d__1, &gl);
+    AT_gamma_(&d__1, &gl);
     dsl = sin(pi * *va) * sin(pi * *va);
     *pv = dsl * gl / pi * pdl - cos(pi * *va) * *pv;
   }
@@ -368,7 +368,7 @@ int vvla_(double *va, double *x, double *pv)
 } /* vvla_ */
 
 
-int gamma_(const double *x, double *ga)
+int AT_gamma_(const double *x, double *ga)
 {
   /* TODO why those variables are static ???? */
   /* Initialized data */
@@ -702,9 +702,17 @@ double AT_get_interpolated_x_from_input_2d_table(const double input_data_xy[][2]
 double AT_get_interpolated_y_from_interval(const double left_x, const double left_y, const double right_x, const double right_y, const double intermediate_x){
 	// (x - left_x) / (right_x - left_x ) = (y - left_y) / (right_y - left_y)
 
-	assert( right_x > left_x);
-	assert( intermediate_x >= left_x);
-	assert( intermediate_x <= right_x);
-
-	return  left_y + (right_y - left_y)*((intermediate_x - left_x) / (right_x - left_x));
+//	assert( right_x > left_x); // Does that make sense? Is it necessary?
+	if(right_x > left_x){
+		assert( intermediate_x >= left_x);
+		assert( intermediate_x <= right_x);
+	}else{
+		assert( intermediate_x <= left_x);
+		assert( intermediate_x >= right_x);
+	}
+	if(right_x == left_x){
+		return left_y;
+	}else{
+		return  left_y + (right_y - left_y)*((intermediate_x - left_x) / (right_x - left_x));
+	}
 }
