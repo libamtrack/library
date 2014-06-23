@@ -65,6 +65,8 @@ fi
 # *** Create new temporary folder from template package structure ***
 echo "Copy package template..."
 cp -r package libamtrack
+# Remove .svn subdirs
+find libamtrack/ -iname .svn -print | xargs rm -rf
 
 # *** Copy sources of libamtrack ***
 echo "Copying libamtrack sources..."
