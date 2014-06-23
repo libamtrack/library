@@ -177,7 +177,7 @@ int vvla_(  double* va,
  * @param[in]  x argument (x is not equal to 0,-1,-2,...)
  * @param[out] ga output
  */
-int gamma_( const double* x,
+int AT_gamma_( const double* x,
 		double* ga);
 
 
