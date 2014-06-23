@@ -32,7 +32,11 @@ cur.dir           <- getwd()
 # Read in namespace header.file.name
 namespace         <- scan(file = "NAMESPACE", what = "character", sep = "\n")
 
-# find those function marked with "noR: " for which no R wrapper,
+# Remove functions commented out
+remove.idx        <- grepl("#", namespace)
+namespace         <- namespace[!remove.idx]
+
+# Find those functions marked with "noR: " for which no R wrapper,
 # only C wrapper will be created
 noR               <- grepl("noR: ", namespace)
 namespace         <- gsub("^noR: ", "", namespace)
@@ -97,8 +101,8 @@ for(header.file.name in header.file.names){
 
      # Find the start of doxygen comments ("/**") and the end of a declaration (");")
      # They should embrase a function declaration (but also others, like enumerators etc.)
-     pos.start.doxygen.comment        <- grep("/**", header.file.text, fixed = T)
-     pos.end.function.declaration     <- grep (");", header.file.text, fixed = T)
+     pos.start.doxygen.comment        <- grep("/**", header.file.text, fixed = TRUE)
+     pos.end.function.declaration     <- grep (");", header.file.text, fixed = TRUE)
      raw.pos.start.doxygen.comment    <- grep("/**", raw.header.file.text, fixed = TRUE)
      raw.pos.end.function.declaration <- grep(");", raw.header.file.text, fixed = TRUE)
 
@@ -202,7 +206,7 @@ for(header.file.name in header.file.names){
 
           # Check if name is in namespace otherwise skip
           if(name %in% namespace){
-
+		name
                # Extract comment and declaration text
                current.function$raw.comment.text        <- raw.reduced.header.file.text[raw.idx.comment]
                current.function$raw.declaration.text    <- raw.reduced.header.file.text[raw.idx.declaration]
