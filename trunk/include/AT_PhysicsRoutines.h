@@ -42,60 +42,6 @@
 #include "AT_NumericalRoutines.h"
 
 /**
- * Structure to carry essential single, monoenergetic particle field information
- */
-typedef struct {
-  double   E_MeV_u;                /** energy of the particles in MeV/u */
-  double   particle_no;            /** particle index */
-  double   fluence_cm2;            /** fluence_cm2 */
-} AT_single_field_data;
-
-
-/**
- * Structure to carry essential detector information
- */
-typedef struct {
-  double   material_no;            /** material index */
-} AT_detector_data;
-
-
-/**
- * Structure to carry derived single, monoenergetic particle field information, e.g. needed for array building
- * in AT_GSM, AT_CPPSC, ...
- *
- * This structure replaces the f1_parameter array
- */
-typedef struct {
-  double   LET_MeV_cm2_g;                /** LET (in MeV*cm2/g) of the particle field */
-  double   dEdx_MeV_cm2_g;               /** Energy loss dE/dx (in MeV*cm2/g) of the particle field, depending on the chosen RDD, this does not have to meet the LET (!) */
-  double   d_min_Gy;                     /** lowest local dose found in the field (in Gy) */
-  double   d_max_Gy;                     /** highest local dose found in the field (not considering track overlap which can cause core overlap and thus even higher doses, in Gy) */
-  double   r_min_m;                      /** radius closest to the track center in the field (in m) */
-  double   r_max_m;                      /** widest radius from track center in the field (in m) */
-  double   single_impact_fluence_cm2;    /** fluences at which every point of the detector lies within the area ONE track only */
-  double   single_impact_dose_Gy;        /** corresponding dose */
-  double   normalization;                /** normalization constant for RDD (e.g. to meet LET) */
-} AT_single_field_information;
-
-
-/**
- * Structure to carry derived mixed particle field information, e.g. needed for array building
- * in AT_GSM, AT_CPPSC, ...
- *
- * This structure replaces the f_parameter array
- */
-typedef struct {
-  double   total_fluence_cm2;                /** total fluence of all particles the field */
-  double   total_dose_Gy;                    /** total dose delivered by the field */
-  double   fluenceweighted_E_MeV_u;          /** fluence-weighted average energy (in MeV/u) */
-  double   doseweighted_E_MeV_u;             /** dose-weighted average energy (in MeV/u) */
-  double   fluenceweighted_LET_MeV_cm2_g;    /** fluence-weighted average LET (in MeV*cm2/g) */
-  double   doseweighted_LET_MeV_cm2_g;       /** dose-weighted average LET (in MeV*cm2/g) */
-  double   u;                                /** average number of track contributing to a detector voxel, needed by AT_CPPSC, AT_SPISS */
-} AT_mixed_field_information;
-
-
-/**
  *  Returns relativistic speed for single value of energy
  *
  * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
