@@ -273,6 +273,34 @@ void AT_gamma_response( const long  number_of_doses,
 		  }
 	  }
   }
+  
+    /*
+   *  (7) DSB enhancement factor
+   **/
+  if(gamma_model == GR_AM_DSBEnhancement){
+/** PROPRIETARY DATA --- NOT TO BE COMMITTED INTO PUBLIC SVN
+	BEGIN */
+	  double p1	= 0;
+	  double p2	= 0;
+	  double p3	= 0;
+	  double p4	= 0;
+/** PROPRIETARY DATA --- NOT TO BE COMMITTED INTO PUBLIC SVN
+	END */
+
+	  for (i = 0; i < number_of_doses; i++){
+		 if(d_Gy[i] < 100){
+			S[i]    = 1.0;
+		 }else{
+		   if(d_Gy[i] > 1e6){
+			  S[i] = -1.0e99; // Most inelegant way of interrupting...
+		   }else{
+			  S[i] = 1.0 + p1*d_Gy[i] + p2*d_Gy[i]*d_Gy[i] + p3*d_Gy[i]*d_Gy[i]*d_Gy[i] + p4*d_Gy[i]*d_Gy[i]*d_Gy[i]*d_Gy[i];
+		   }
+	  	}
+	}
+
+	
+  }
 
 }
 

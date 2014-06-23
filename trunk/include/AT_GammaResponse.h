@@ -52,11 +52,12 @@ enum AT_GammaResponseModels{
       GR_Radioluminescence = 3,      /**< 0 - Smax, 1 - D0, 2 - dyn */
       GR_ExpSaturation     = 4,      /**< 0 - Smax, 1 - D0 */
       GR_LinQuad           = 5,      /**< 0 - alpha, 1 - beta, 2 - D0 */
-      GR_Geiss			   = 6       /**< TODO */
+      GR_Geiss			   = 6,      /**< TODO */
+	  GR_AM_DSBEnhancement = 7       /**< DSB enhancement factor (A. Mairani) */
 };
 
 
-#define GR_DATA_N    6
+#define GR_DATA_N    7
 
 #define GR_MAX_NUMBER_OF_PARAMETERS  9
 //TODO Find better solution for array size of parameters
@@ -84,34 +85,39 @@ static const AT_GR_data_struct AT_GR_Data = {
        GR_Radioluminescence,
        GR_ExpSaturation,
        GR_LinQuad,
-       GR_Geiss
+       GR_Geiss,
+       GR_AM_DSBEnhancement
     },
     {  2,
 	   5,
 	   3,
 	   2,
 	   3,
-	   5},
+	   5,
+	   0},
     {  {"",      "",      "",      "",   ""},
        {"S_max", "D0_Gy", "c",     "m",  ""},
        {"S_max", "D0_Gy", "dyn",   "",   ""},
        {"S_max", "D0_Gy", "",      "",   ""},
        {"alpha", "beta",  "D0_Gy", "",   ""},
-       {"const", "k1",    "a1",    "k2", "a2"}
+       {"const", "k1",    "a1",    "k2", "a2"},
+	   {"",      "",      "",      "",   ""}
     },
     {  {0.,  0.,  0.,   0.,  0.},
        {1.,  10., 1.,   1.,  0.},
        {1.,  10., 5.,   0.,  0.},
        {1.,  10., 0.,   0.,  0.},
        {0.2, 0.02, 10.,  0.,  0.},
-       {6e3, 0.8, 3e-4, 0.2, 1e-6}
+       {6e3, 0.8, 3e-4, 0.2, 1e-6},
+       {0.,  0.,  0.,   0.,  0.}
 	  },
     {  "simple test gamma response",
        "generalized multi-target/multi-hit gamma response",
        "radioluminescence gamma response",
        "exp.-sat. gamma response (obsolete, use gen. target/hit instead)",
        "linear-quadratic gamma response",
-       "Geiss model (1997)"
+       "Geiss model (1997)",
+       "DSB enhancement factor (A. Mairani)"
     }
 };
 
@@ -154,7 +160,7 @@ long AT_Gamma_number_of_parameters( const long Gamma_no );
  * @param[in]  gamma_model      gamma response model index
  * @param[in]  gamma_parameter  vector holding necessary parameters for the chose gamma response model (array of size 9)
  * @param[in]  lethal_event_mode  if true computation is done in lethal event mode
- * @param[out] S                gamma responses (array of size number_of_doses)
+ * @param[out] response         gamma responses (array of size number_of_doses)
  */
 void AT_gamma_response( const long  number_of_doses,
     const double   d_Gy[],
