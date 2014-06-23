@@ -305,6 +305,7 @@ double AT_kappa( const double 	E_MeV_u,
 			AT_max_E_transfer_MeV_single(E_MeV_u));
 }
 
+#ifdef HAVE_CERNLIB
 void AT_lambda_from_energy_loss( const long n,
 		const double energy_loss_keV[],
 		const double E_MeV_u,
@@ -704,3 +705,5 @@ double AT_energy_loss_FWHM(const double E_MeV_u,
 //			slab_thickness_um);
 	return 0.0;
 }
+
+#endif /* HAVE_CERNLIB */
