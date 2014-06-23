@@ -34,10 +34,11 @@
 double AT_Bethe_wrapper(const double 	E_MeV_u,
 		const long 	    particle_no,
 		const long 		material_no){
-	return AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_single(	E_MeV_u,
-															particle_no,
-															material_no,
-															-1.0);
+	return AT_Bethe_energy_loss_MeV_cm2_g_single(	E_MeV_u,
+													particle_no,
+													material_no,
+													-1.0,
+													true);
 }
 
 double AT_ShieldHit_wrapper(const double 	E_MeV_u,
@@ -96,6 +97,59 @@ double AT_ICRU_wrapper(const double 	E_MeV_u,
 			E_MeV_u);
 	return StoppingPower_MeV_cm2_mg * 1000;		// ICRU (73) gives stopping power in MeV*cm2/mg !
 }
+
+double AT_FLUKA_wrapper(const double 	E_MeV_u,
+		const long 	    particle_no,
+		const long 		material_no){
+	if(material_no != 1){		/* Water data only */
+		return 0.0;
+	}
+
+	long Z		= AT_Z_from_particle_no_single(particle_no);
+	if( Z > 8){				/* Data for H ... O */
+		return 0.0;
+	}
+
+	if (E_MeV_u < 0.0126 || E_MeV_u > 1000){
+		return 0.0;
+	}
+
+	double	StoppingPower_MeV_cm2_g = 0.0;
+	StoppingPower_MeV_cm2_g = AT_get_interpolated_y_from_input_table(
+			AT_stopping_power_FLUKA_table.E_MeV_u_and_stopping_power_total_MeV_cm2_g[0],
+			AT_stopping_power_FLUKA_table.E_MeV_u_and_stopping_power_total_MeV_cm2_g[Z],
+			AT_stopping_power_FLUKA_table.number_of_data_points,
+			E_MeV_u);
+
+	return StoppingPower_MeV_cm2_g;	
+}
+
+double AT_ATIMA_wrapper(const double 	E_MeV_u,
+		const long 	    particle_no,
+		const long 		material_no){
+	
+	if(material_no != 6){		/* LiF data only */
+		return 0.0;
+	}
+
+	long Z		= AT_Z_from_particle_no_single(particle_no);
+	if( Z > 92){				/* Data for H ... U */
+		return 0.0;
+	}
+
+	if (E_MeV_u < 0.01 || E_MeV_u > 10000){
+		return 0.0;
+	}
+
+	double	StoppingPower_MeV_cm2_g = 0.0;
+	StoppingPower_MeV_cm2_g = AT_get_interpolated_y_from_input_table(
+			AT_stopping_power_ATIMA_table.E_MeV_u_and_stopping_power_total_MeV_cm2_g[0],
+			AT_stopping_power_ATIMA_table.E_MeV_u_and_stopping_power_total_MeV_cm2_g[Z],
+			AT_stopping_power_ATIMA_table.number_of_data_points,
+			E_MeV_u);
+	return StoppingPower_MeV_cm2_g;	
+}
+
 
 double _AT_Stopping_Power_get_data(const long stopping_power_source_no,
 		const long 	    particle_no,
@@ -309,214 +363,133 @@ long AT_stopping_power_source_model_number_from_name( const char* source_name ){
 }
 
 
-double AT_Stopping_Power_Bethe_Number(	const double 	E_MeV_u,
-										const long 		particle_no,
-										const long 		material_no,
-										const double	E_restricted_keV)
+
+
+
+void get_table_value(
+    const long    n,
+    const double  x[],
+    const long    subset_no,
+    const double  x_table[],
+    const double  y_table[],
+    double        y[])
 {
-	  const double beta2 	= gsl_pow_2(AT_beta_from_E_single(E_MeV_u));
-	  const double I_eV		= AT_I_eV_from_material_no(material_no);
-	  const double I_MeV	= I_eV * 1e-6;
-	  double Wm_MeV			= AT_max_relativistic_E_transfer_MeV_single(E_MeV_u);
+  // first: find those PSTAR entries that match the material number
+  bool*    matches    =  (bool*)calloc(AT_PSTAR_Data.n, sizeof(bool));
+  is_element_int(    subset_no,
+      AT_PSTAR_Data.material_no,
+      AT_PSTAR_Data.n,
+      matches);
 
-	  /* Restricted stopping number requested? */
-	  bool restricted = false;
-	  if(	(E_restricted_keV > 0.0) && (E_restricted_keV / 1000.0 < Wm_MeV))
-		  restricted = true;
+  long    n_matches  = 0;
+  long    i;
+  for (i = 0; i < AT_PSTAR_Data.n; i++){
+    if (matches[i]){
+      n_matches++;
+    }
+  }
 
-	  /* First part of stopping number */
-	  double SN11			=  2.0 * electron_mass_MeV_c2 * beta2 / (1.0 - beta2);
-	  assert( I_MeV > 0. );
-	  SN11					/= I_MeV;
+  // allocate vectors for extracted LET entries
+  double*  x_c  =  (double*)calloc(n_matches, sizeof(double));
+  double*  y_c  =  (double*)calloc(n_matches, sizeof(double));
 
-	  if(	restricted){
-		  Wm_MeV				= E_restricted_keV * 1e-3;
-	  }
-	  double SN12			= Wm_MeV / I_MeV;
+  // and get the values
+  long     j  = 0;
+  for (i = 0; i < AT_PSTAR_Data.n; i++){
+    if (matches[i]){
+      x_c[j]  = x_table[i];
+      y_c[j]  = y_table[i];
+      j++;
+    }
+  }
+  for (i = 0; i < n; i++){
+    // Get proton-LET for scaled energy from table E, L using linear interpolation (to be done on logscale TODO)
+    y[i] = AT_get_interpolated_y_from_input_table(x_c, y_c, n_matches, x[i]);
+  }
 
-	  /* Second part of stopping number */
-	  double SN2			= beta2;
-	  if(	restricted){
-		  SN2					/= 2;
-		  SN2					+= (1.0 - beta2) * Wm_MeV / (4.0 * electron_mass_MeV_c2);
-	  }
-
-	  /* Third part of stopping number (density correction following Sternheimer, 1971) */
-	  double delta				= 0.0;
-	  long   phase              = AT_phase_from_material_no(material_no);
-	  if( (phase =! phase_undefined) ){
-		  double kinetic_variable	= AT_kinetic_variable_single(E_MeV_u);
-		  double plasma_energy_J 	= AT_plasma_energy_J_from_material_no(material_no);
-		  double I_J				= I_MeV * MeV_to_J;
-
-		  double C					= 1.0 + 2.0 * log(I_J / plasma_energy_J);
-
-		  // Find x_0 and x_1 dependent on phase, I-value and C
-		  double x_0 = 0.0;
-		  double x_1 = 0.0;
-		  if( phase == phase_condensed){
-			  if(I_eV < 100){
-				  x_1	= 2.0;
-				  if(C <= 3.681){
-					  x_0 	= 0.2;
-				  }else{
-					  x_0	= 0.326 * C - 1.0;
-				  }
-			  }else{ // I_eV >= 100
-				  x_1	= 3.0;
-				  if(C <= 5.215){
-					  x_0	= 0.2;
-				  }else{
-					  x_0	= 0.326 * C - 1.5;
-				  }
-			  }
-		  }else{ // gaseous material
-			  x_0	= 0.326 * C - 2.5;
-			  x_1	= 5.0;
-			  if(C < 10.0){
-				  x_0	= 1.6;
-				  x_1	= 4.0;
-			  }
-			  if(C >= 10.0 && C < 10.5){
-				  x_0	= 1.7;
-				  x_1	= 4.0;
-			  }
-			  if(C >= 10.5 && C < 11.0){
-				  x_0	= 1.8;
-				  x_1	= 4.0;
-			  }
-			  if(C >= 11.0 && C < 11.5){
-				  x_0	= 1.9;
-				  x_1	= 4.0;
-			  }
-			  if(C >= 11.5 && C < 12.25){
-				  x_0	= 2.0;
-				  x_1	= 4.0;
-			  }
-			  if(C >= 12.25 && C < 13.804){
-				  x_0	= 2.0;
-				  x_1	= 5.0;
-			  }
-		  }
-
-		  double x_a				= C / 4.606;
-		  double m					= 3.0;
-		  double a					= 4.606 * (x_a - x_0) / pow(x_1 - x_0, m);
-
-		  if( kinetic_variable >= x_0 && kinetic_variable <= x_1){
-			  delta						= 4.606 * kinetic_variable - C + a * pow(x_1 - kinetic_variable, m);
-		  }
-		  if( kinetic_variable > x_1){
-			  delta						= 4.606 * kinetic_variable - C;
-		  }
-	  }
-	  double SN3		= delta;
-
-	  /* Forth part of stopping number (shell correction) TODO: implement */
-
-
-	  assert( SN11 > 0. );
-	  assert( SN12 > 0. );
-
-	  return (0.5 * log(SN11 * SN12) - SN2 - SN3);
+  free(x_c);
+  free(y_c);
+  free(matches);
 }
 
-
-double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_single(	const double E_MeV_u,
-														const long particle_no,
-														const long material_no,
-														const double E_restricted_keV)
+double AT_CSDA_range_g_cm2_single(   const double  E_MeV_u,
+    const long    particle_no,
+    const long    material_no)
 {
-	double result = 0;
-	/* Compute only above 1.0 MeV, otherwise theory is too wrong
-	 * below return zero */
-	// TODO: Find smarter criterion because this may cause problems in the code (as it did
-	// TODO: with the inappropriatly set lower limit for CSDA range integration (was 0, now 1.0 MeV)
-	if(E_MeV_u >= BETHE_LOWER_LIMIT_E_MEV_U){
-		const double beta2 		= gsl_pow_2(AT_beta_from_E_single(E_MeV_u));
-		assert( beta2 > 0);
-		const double Z			= AT_average_Z_from_material_no(material_no);
-		const double A			= AT_average_A_from_material_no(material_no);
-		assert( A > 0 );
-		const double z_eff		= AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
-		const double k_MeV_cm2_g	= 0.307075;												// ICRU49, p.6, after Cohen and Taylor (1986)
-		const double SN			= AT_Stopping_Power_Bethe_Number(	E_MeV_u,
-				particle_no,
-				material_no,
-				E_restricted_keV);
-		result = k_MeV_cm2_g * (Z / A) * gsl_pow_2(z_eff) * SN / (beta2);
-	}
-    return result;
+  double CSDA_range_g_cm2;
+  const long number_of_particles  =  1;
+  get_table_value(number_of_particles, &E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.range_cdsa_g_cm2, &CSDA_range_g_cm2);
 
+  // Conversion CSDA_proton => CSDA_ion
+  long Z = AT_Z_from_particle_no_single(particle_no);
+  long A = AT_A_from_particle_no_single(particle_no);
+
+  return CSDA_range_g_cm2  * (double)(A)/(double)(Z*Z);
 }
 
 
-void AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_multi(	const long n,
-		const double E_MeV_u[],
-		const long particle_no[],
-		const long material_no,
-		const double E_restricted_keV,
-		double Mass_Stopping_Power_MeV_cm2_g[])
+
+void AT_CSDA_range_g_cm2(  const long  number_of_particles,
+    const double  E_MeV_u[],
+    const long    particle_no[],
+    const long    material_no,
+    double        CSDA_range_g_cm2[])
 {
-	long i;
-	for (i = 0; i < n; i++){
-		Mass_Stopping_Power_MeV_cm2_g[i]	=	AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_single(	E_MeV_u[i],
-																								particle_no[i],
-																								material_no,
-																								E_restricted_keV);
-	}
+  get_table_value(number_of_particles, E_MeV_u, material_no, AT_PSTAR_Data.kin_E_MeV, AT_PSTAR_Data.range_cdsa_g_cm2, CSDA_range_g_cm2);
+
+  // Conversion CSDA_proton => CSDA_ion
+  long*  Z  =  (long*)calloc(number_of_particles, sizeof(long));
+  long*  A  =  (long*)calloc(number_of_particles, sizeof(long));
+  AT_Z_from_particle_no(        number_of_particles,
+                                particle_no,
+                                Z);
+  AT_A_from_particle_no(        number_of_particles,
+                                particle_no,
+                                A);
+  long i = 0;
+  for (i = 0; i < number_of_particles; i++){
+    if (particle_no[i] != 1){
+      CSDA_range_g_cm2[i]  *=   (double)(A[i])/(double)((Z[i])*(Z[i]));
+    }
+  }
+
+  free(Z);
+  free(A);
 }
 
-int AT_Rutherford_SDCS(const double E_MeV_u,
-		const long particle_no,
-		const long material_no,
-		const long n,
-		const double T_MeV[],
-		double dsdT_m2_MeV[]){
 
-	// Get particle data
-	long I 			= AT_nuclear_spin_from_particle_no_single(particle_no);
-	double Z_eff  	= AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
-	long Z			= AT_Z_from_particle_no_single(particle_no);
-	long A			= AT_A_from_particle_no_single(particle_no);
+double AT_CSDA_range_m_single(  const double  E_MeV_u,
+		const long    particle_no,
+		const long    material_no){
 
-	// Get material Z
-	double Z_material = AT_average_Z_from_material_no(material_no);
+	double material_density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
+	double CSDA_range_g_cm2 = AT_CSDA_range_g_cm2_single(E_MeV_u, particle_no, material_no);
 
-	// We follow the formulation of Sawakuchi, 2007
-	double particle_mass_MeV_c2	= Z * proton_mass_MeV_c2 + (A-Z) * neutron_mass_MeV_c2;
-	double total_E_MeV_u		= particle_mass_MeV_c2 / A + E_MeV_u;
-	double Q_c_MeV_c2			= particle_mass_MeV_c2 * particle_mass_MeV_c2 / electron_mass_MeV_c2;
-	double K_MeV_m2  			= 2 * M_PI * pow(classical_electron_radius_m, 2) * electron_mass_MeV_c2;
-
-	double beta				= AT_beta_from_E_single(E_MeV_u);
-	double beta2			= beta * beta;
-	double T_max_MeV		= AT_max_E_transfer_MeV_single(E_MeV_u);
-
-	double term_0, term_1, term_2;
-
-	long i;
-	for (i = 0; i < n; i++){
-		if(T_MeV[i] > T_max_MeV){
-			dsdT_m2_MeV[i]		= 0.0;
-		}else{
-			term_0				= K_MeV_m2 * Z_material * Z_eff * Z_eff / (beta2 * T_MeV[i] * T_MeV[i]);
-			term_1				= 1.0 - beta2 * T_MeV[i] / T_max_MeV;
-			if(I == 0.0){
-				dsdT_m2_MeV[i]			= term_0 * term_1;
-			}
-			if(I == 0.5){
-				term_2				= T_MeV[i] * T_MeV[i] / (2.0 * total_E_MeV_u * total_E_MeV_u);
-				dsdT_m2_MeV[i]			= term_0 * (term_1 + term_2);
-			}
-			if(I == 1.0){
-				term_2				=  (1.0 + T_MeV[i] / (2.0 * Q_c_MeV_c2));
-				term_2				*= T_MeV[i] * T_MeV[i] / (3.0 * total_E_MeV_u * total_E_MeV_u);
-				term_2				+= term_1 * (1.0 + T_MeV[i] / (3.0 * Q_c_MeV_c2));
-				dsdT_m2_MeV[i]			= term_0 * term_2;
-			}
-		}
-	}
-
-	return EXIT_SUCCESS;
+	return CSDA_range_g_cm2 / (material_density_g_cm3 * 100.0);
 }
+
+
+void AT_CSDA_range_m(  const long  number_of_particles,
+    const double  E_MeV_u[],
+    const long   particle_no[],
+    const long   material_no,
+    double        CSDA_range_m[])
+{
+  // Get material density
+  double material_density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
+
+  // Get mass-norm. CSDA range
+  AT_CSDA_range_g_cm2(  number_of_particles,
+      E_MeV_u,
+      particle_no,
+      material_no,
+      CSDA_range_m);
+
+  long  i;
+  for (i = 0; i < number_of_particles; i++){
+    CSDA_range_m[i]  /=  material_density_g_cm3 * 100.0;
+  }
+
+}
+
+

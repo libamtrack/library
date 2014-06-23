@@ -38,10 +38,11 @@ double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_int( double  E_MeV_u,
 	assert( params != NULL );
 	AT_CSDA_range_Bethe_parameters* int_params = (AT_CSDA_range_Bethe_parameters*)params;
 	const double E_restricted_keV = 0.0;
-	double  StPow = AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_single(	E_MeV_u,
+	double  StPow = AT_Bethe_energy_loss_MeV_cm2_g_single(	E_MeV_u,
 			int_params->particle_no,
 			int_params->material_no,
-			E_restricted_keV);
+			E_restricted_keV,
+			true);
 	return (1.0 / (StPow));
 }
 
