@@ -48,6 +48,20 @@ fi
 echo "Use --help for information"
 echo
 
+# Clean up residues from earlier runs if applicable
+if [ -d "./libamtrack" ]; then
+  rm ./libamtrack -rf
+fi
+if [ -d "./libamtrack.Rcheck" ]; then
+  rm ./libamtrack.Rcheck -rf
+fi
+if [ ls ./*.Rout &> /dev/null ]; then
+    rm *.Rout
+fi
+if [ ls ./*.sdd &> /dev/null ]; then
+    rm *.sdd
+fi
+
 # *** Create new temporary folder from template package structure ***
 echo "Copy package template..."
 cp -r package libamtrack
@@ -57,9 +71,15 @@ echo "Copying libamtrack sources..."
 cp ../../../include/*.h libamtrack/src/
 cp ../../../src/*.c libamtrack/src/
 
-# *** Clean temporary files (e.g. from gedit that will confuse the collect.doxygen.information.R script
-rm ../../../include/*.h~
-rm ../../../src/*.c~
+# *** Clean temporary files (e.g. from gedit that will confuse the collect.doxygen.information.R script)
+# *** and from svn
+if [ ls ../../../include/*.h~ &> /dev/null ]; then
+    rm ../../../include/*.h~
+fi
+if [ ls ../../../src/*.c~ &> /dev/null ]; then
+    rm ../../../src/*.c~
+fi
+#find . -name "libamtrack/.svn" -exec rm -rf {} \;
  
 # *** Copy hardcoded documentation ***
 echo "Copying hardcoded documentation..."
@@ -72,7 +92,7 @@ cp hardcoded_wrappers/hardcoded_wrapper.c libamtrack/src/
 cp hardcoded_wrappers/hardcoded_wrapper.h libamtrack/src/
 
 # *** Run autoconfigure (to update svn version) ***
-if [ -d $FAST_ARG ] ; then
+if [ ! -d $FAST_ARG ] ; then
 	echo "Running autoreconf and configure in main folder (to update svnversion information)..."
 	cd ../../..
 	autoreconf --force --install
@@ -137,16 +157,29 @@ fi
 # *** Run autoconf
 echo
 echo "Running autoconf to create configure script..."
-autoconf libamtrack/configure.ac >libamtrack/configure
-chmod 755 libamtrack/configure
+cd libamtrack
+autoconf
+chmod 755 configure
+cd ..
+
+#autoconf libamtrack/configure.ac >libamtrack/configure
+#chmod 755 libamtrack/configure
 
 # *** Build test package ***
 echo
 echo "Running package check..."
-R CMD check ./libamtrack --no-manual
-if [ "$?" -ne "0" ]; then
-  echo "Problem with executing R CMD check ./package --no-manual"
-  exit 1
+if [ ! -d $FAST_ARG ] ; then
+   R CMD check ./libamtrack --no-manual 
+   if [ "$?" -ne "0" ]; then
+     echo "Problem with executing R CMD check ./package --no-manual"
+   exit 1
+   fi
+else
+   R CMD check ./libamtrack --no-manual --no-examples
+   if [ "$?" -ne "0" ]; then
+     echo "Problem with executing R CMD check ./package --no-manual --no-examples"
+   exit 1
+   fi
 fi
 
 # *** Build binary distribution ***
