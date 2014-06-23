@@ -278,7 +278,8 @@ void  AT_single_impact_local_dose_distrib(
 				F1_comp[0]					= 1.0;
 				F1_comp[n_bins_f1_comp]		= 0.0;
 
-				FILE* output = fopen("F_output.csv", "w");
+				// Write out F1 for debugging
+				FILE* output = fopen("F1_output.csv", "w");
 				fprintf(output, "bin.no;r.m;d.Gy;F1\n");
 				for (j = 0; j < n_bins_f1_comp + 1; j++){
 					fprintf(output,
@@ -317,6 +318,15 @@ void  AT_single_impact_local_dose_distrib(
 		}
 	} // if(f1_d_Gy != NULL)
 
+	// Write out f1 for debugging
+	FILE* output = fopen("f1_output.csv", "w");
+	fprintf(output, "bin.no;d.Gy;dd.Gy;f1\n");
+	for (int j = 0; j < n_bins_f1; j++){
+		fprintf(output,
+				"%d;%7.6e;%7.6e;%7.6e\n",
+				j, f1_d_Gy[j], f1_dd_Gy[j], frequency_1_Gy_f1[j]);
+	}
+	fclose(output);
 	free( norm_fluence );
 }
 
@@ -796,7 +806,15 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 		const double  shrink_tails_under,
 		const bool    adjust_dose_spacing)
 {
-	long	i;
+	long	i,j;
+
+	/* Open output file if request, exit on error */
+	FILE*    output_file = NULL;
+	if( write_output ){
+	   output_file    =  fopen("CPPSC_detailed.log","w");
+	   if (output_file == NULL) return;                      // File error
+	   fprintf(output_file, "n.convolution; d.Gy; dd.Gy; f\n");
+	}
 
 	/* Get number of convolutions */
 	long n_convolutions    = 0;
@@ -854,6 +872,21 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 		tmp			      =  -1.0 * log(1.0 - 0.5 * exp(-tmp)) / (log(2.0) / (double)(*bins_per_factor_2));
 		delta_i[i-1]      =  tmp - (double)(*bins_per_factor_2);
 	}
+
+	/* Write out start distribution, if chosen */
+	if( write_output ){
+		fprintf(output_file, "%d; %e; %e; %e\n", 0,
+				0.0,
+				0.0,
+				frequency_zero_bin);
+		for(j = 0; j < frequency_n_bins; j++){
+			fprintf(output_file, "%d; %e; %e; %e\n", 0,
+					local_dose_midpoints[j],
+					local_dose_bin_widths[j],
+					frequency[j]);
+		}
+	}
+
 
 	/* Actual convolution loop */
 	double* frequency_last        			= (double*)calloc(n_bins, sizeof(double));
@@ -927,6 +960,22 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 				frequency_zero_bin,
 				frequency_first_bin,
 				frequency);
+
+		/* Write out distribution, if chosen */
+		if( write_output ){
+			fprintf(output_file, "%ld; %e; %e; %e\n", i+1,
+					0.0,
+					1.0,
+					frequency_zero_bin);
+			for(j = 0; j < frequency_n_bins; j++){
+				long  N        = frequency_first_bin - local_dose_first_bin;
+				fprintf(output_file, "%ld; %e; %e; %e\n", i+1,
+						local_dose_midpoints[j + N],
+						local_dose_bin_widths[j + N],
+						frequency[j]);
+			}
+		}
+
 	}
 
 	//////////////////////////////////////////
@@ -965,5 +1014,159 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	free(local_dose_midpoints);
 	free(local_dose_bin_widths);
 	free(delta_i);
+
+	// Close output file, if chosen
+	if( write_output ){
+		fclose(output_file);
+	}
+
+}
+
+long AT_n_bins_for_DSB_distribution(const long n_bins_f,
+		const double f_d_Gy[],
+		const double f_dd_Gy[],
+		const double f[],
+		const double enhancement_factor[],
+		const double DSB_per_Gy_per_domain){
+
+
+	  //double* avg_DSB = (double*)calloc(n_bins_f, sizeof(double));
+
+	  double max_number_of_DSB = 0.0;
+
+	  for(long i = 0; i < n_bins_f; i++){
+		  max_number_of_DSB = GSL_MAX(max_number_of_DSB, f_d_Gy[i] * enhancement_factor[i] * DSB_per_Gy_per_domain);
+	  }
+
+	  if(isnan(max_number_of_DSB)){
+	    return(0);
+	  }
+
+	  // Use max + 5 * st.dev as safety margin
+	  max_number_of_DSB = floor(max_number_of_DSB) + 1.0;
+	  max_number_of_DSB += floor(5 * sqrt(max_number_of_DSB)) + 1;
+
+	  // Add one for zero bin
+	  return((long)max_number_of_DSB + 1);
+}
+
+
+void AT_get_DSB_distribution(const long     n_bins_f,
+		const double         f_d_Gy[],
+		const double         f_dd_Gy[],
+		const double         f[],
+		const double         enhancement_factor[],
+		const double         DSB_per_Gy_per_domain,
+		const long           domains_per_nucleus,
+		const long			 max_number_of_DSBs,
+		double				 p_DSB[],
+		double*				 total_pDSBs,
+		double*              total_nDSBs,
+		double*				 number_of_iDSBs,
+		double*              number_of_cDSBs,
+		double*              avg_number_of_DSBs_in_cDSBs){
+
+
+	  // Compute average number of DSBs per domain for each dose bin
+	  double* avg_DSB = (double*)calloc(n_bins_f, sizeof(double));
+
+	  for(long i = 0; i < n_bins_f; i++){
+		  avg_DSB[i] = f_d_Gy[i] * enhancement_factor[i] * DSB_per_Gy_per_domain;
+	  }
+
+	  // Reset variables
+	  *total_pDSBs = 0.0;
+	  *total_nDSBs = 0.0;
+	  *number_of_iDSBs = 0.0;
+	  *number_of_cDSBs = 0.0;
+	  *avg_number_of_DSBs_in_cDSBs = 0.0;
+
+	  // For all possible number of DSBs (incl. 0)
+	  for(long i = 0; i < max_number_of_DSBs; i++){
+		  p_DSB[i] = 0.0;								// Set DSB prob to zero
+		  // For all dose bins
+		  for(long j = 0; j < n_bins_f; j++){
+			 if(isnan(enhancement_factor[j])){			// Set DSB prob to NAN if no enhancement factor is defined
+				p_DSB[i] = NAN;
+				break;
+			 }
+			 // Add p of i DSBs in case of dose j (i.e. average no of DSBs j)
+			 // weighted by the probability (f * dd)
+			 if(avg_DSB[j] > 0.0){
+				 p_DSB[i] += gsl_ran_poisson_pdf(i, avg_DSB[j]) * f[j] * f_dd_Gy[j];
+			 }else{
+				 if(i == 0){
+					 p_DSB[i] += f[j] * f_dd_Gy[j]; // gsl_ran_poisson_pdf cannot compute P(i, 0.0) = 0 (i > 0) or 1 (i = 0)
+				 }
+			 }
+		  }
+		  if(!isnan(p_DSB[i])){
+			  *total_pDSBs += p_DSB[i];
+			  *total_nDSBs += i*p_DSB[i];
+			  if(i == 1){
+				  *number_of_iDSBs += p_DSB[i];
+			  }
+			  if(i > 1){
+				  *number_of_cDSBs += p_DSB[i];
+				  *avg_number_of_DSBs_in_cDSBs += p_DSB[i] * i;
+			  }
+		  }
+
+	  }
+
+	  *total_nDSBs     *= domains_per_nucleus;
+	  *number_of_iDSBs *= domains_per_nucleus;
+	  *number_of_cDSBs *= domains_per_nucleus;
+	  *avg_number_of_DSBs_in_cDSBs *= domains_per_nucleus / *number_of_cDSBs;
+}
+
+void AT_translate_dose_into_DSB_distribution( const long     n_bins_f,
+		const double         f_d_Gy[],
+		const double         f_dd_Gy[],
+		const double         f[],
+		const double         enhancement_factor[],
+		const double         DSB_per_Gy_per_domain,
+		const long           domains_per_nucleus,
+		const bool			 write_output,
+		double*				 total_pDSBs,
+		double*              total_nDSBs,
+		double*				 number_of_iDSBs,
+		double*              number_of_cDSBs,
+		double*              avg_number_of_DSBs_in_cDSBs){
+
+	long n_bins_DSB = AT_n_bins_for_DSB_distribution( n_bins_f,
+			f_d_Gy,
+			f_dd_Gy,
+			f,
+			enhancement_factor,
+			DSB_per_Gy_per_domain);
+
+	double* p_DSB = (double*)calloc(n_bins_DSB, sizeof(double));
+
+	AT_get_DSB_distribution( n_bins_f,
+			f_d_Gy,
+			f_dd_Gy,
+			f,
+			enhancement_factor,
+			DSB_per_Gy_per_domain,
+			domains_per_nucleus,
+			n_bins_DSB,
+			p_DSB,
+			total_pDSBs,
+			total_nDSBs,
+			number_of_iDSBs,
+			number_of_cDSBs,
+			avg_number_of_DSBs_in_cDSBs);
+
+	FILE*    output_file = NULL;
+	if( write_output ){
+	   output_file    =  fopen("dose_to_DSBs.log","w");
+	   if (output_file == NULL) return;                      // File error
+	   fprintf(output_file, "n.DSBs; p.DSB\n");
+	   for(long i = 0; i < n_bins_DSB; i++){
+		   fprintf(output_file, "%ld, %e\n", i, p_DSB[i]);
+	   }
+	   fclose(output_file);
+	}
 }
 

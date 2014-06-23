@@ -45,6 +45,8 @@
 	#include <malloc.h>
 #endif
 
+#include <gsl/gsl_randist.h>
+
 /**
  * Computes the size of the array to hold the f1 (single impact) local dose distribution for a given field, rdd, er
  * @param[in]  n                   number of particle types in the mixed particle field
@@ -337,5 +339,58 @@ void AT_Kellerer_folding( const long n_bins,
 		double* frequency_zero_bin,
 		double frequency[]);
 
+long AT_n_bins_for_DSB_distribution(const long n_bins_f,
+		const double f_d_Gy[],
+		const double f_dd_Gy[],
+		const double f[],
+		const double enhancement_factor[],
+		const double DSB_per_Gy_per_domain);
+
+void AT_get_DSB_distribution(const long     n_bins_f,
+		const double         f_d_Gy[],
+		const double         f_dd_Gy[],
+		const double         f[],
+		const double         enhancement_factor[],
+		const double         DSB_per_Gy_per_domain,
+		const long           domains_per_nucleus,
+		const long			 max_number_of_DSBs,
+		double				 p_DSB[],
+		double*				 total_pDSBs,
+		double*              total_nDSBs,
+		double*				 number_of_iDSBs,
+		double*              number_of_cDSBs,
+		double*              avg_number_of_DSBs_in_cDSBs);
+
+/**
+ * Converts a local dose into a DSB distribution assuming
+ * Poissonian rule for creation.
+ *
+ * @param[in]      n_bins_f                   		number of bins for local dose distribution
+ * @param[in]      f_d_Gy              				bin midpoints for f (array of size n_bins_f)
+ * @param[in]      f_dd_Gy                  		bin widths for f (array of size n_bins_f)
+ * @param[in]      f       							dose frequency (array of size n_bins_f)
+ * @param[in]      enhancement_factor              	dose enhancement factor (array of size n_bins_f)
+ * @param[in]      DSB_per_Gy_per_domain            number of DSBs per domain per Gy
+ * @param[in]      domains_per_nucleus              number of domains in nucleus
+ * @param[in]      write_output                  	if true, a log file will be written ("dose_to_DSBs.log") containing the DBS distribution
+ * @param[out]     total_pDSBs                 		probability sum of DSB probability (quality check, has to be ~1)
+ * @param[out]     total_nDSBs                		number of DSBs in nucleus
+ * @param[out]     number_of_iDSBs                  number of isolated DSBs in nucleus
+ * @param[out]     number_of_cDSBs        			number of complex DSBs in nucleus
+ * @param[out]     avg_number_of_DSBs_in_cDSBs		average number of DSBs in complex DSBs
+ */
+void AT_translate_dose_into_DSB_distribution( const long     n_bins_f,
+		const double         f_d_Gy[],
+		const double         f_dd_Gy[],
+		const double         f[],
+		const double         enhancement_factor[],
+		const double         DSB_per_Gy_per_domain,
+		const long           domains_per_nucleus,
+		const bool			 write_output,
+		double*				 total_pDSBs,
+		double*              total_nDSBs,
+		double*				 number_of_iDSBs,
+		double*              number_of_cDSBs,
+		double*              avg_number_of_DSBs_in_cDSBs);
 
 #endif // AT_SUCCESSIVECONVOLUTIONS_H_
