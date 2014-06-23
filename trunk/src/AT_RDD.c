@@ -227,6 +227,9 @@ double AT_RDD_precalculated_constant_Gy(
     precalculated_constant_Gy      =  AT_RDD_Cucinotta_Cnorm( r_min_m, max_electron_range_m, beta, density_kg_m3, LET_J_m, Katz_point_coeff_Gy);
   }// end RDD_CucinottaExtTarget
 
+  if( rdd_model == RDD_RadicalDiffusion){
+    precalculated_constant_Gy      =  0.0;
+  }// end RDD_CucinottaExtTarget
 
   return precalculated_constant_Gy;
 }
@@ -263,6 +266,12 @@ double AT_RDD_d_min_Gy(
 
   if( rdd_model == RDD_KatzExtTarget || rdd_model == RDD_CucinottaExtTarget){
     d_min_Gy              =  rdd_parameter[2];
+  }
+
+  if( rdd_model == RDD_RadicalDiffusion){
+    d_min_Gy              =  AT_d_min_RadicalDiffusion_Gy(E_MeV_u,
+    		particle_no,
+    		material_no);
   }
 
   return d_min_Gy;
@@ -358,6 +367,12 @@ double AT_RDD_d_max_Gy(
     d_max_Gy   =  AT_RDD_ExtendedTarget_CucinottaPoint_Gy( 0.0, a0_m, Katz_point_r_min_m, max_electron_range_m, beta, Katz_point_coeff_Gy, C_norm, Cucinotta_plateau_Gy);
   }// end RDD_CucinottaExtTarget
 
+  if( rdd_model == RDD_RadicalDiffusion){
+    d_max_Gy              =  AT_d_max_RadicalDiffusion_Gy(E_MeV_u,
+    		particle_no,
+    		material_no);
+  }
+
   return d_max_Gy;
 }
 
@@ -381,17 +396,22 @@ void AT_RDD_f1_parameters_single_field(
   double d_min_Gy                   =  0.0;
   double d_max_Gy                   =  0.0;
 
+
   ///////////////////////////////////////////////////////////////////////////////
-  // PARAMETER 0: Get the LET (same for all models)
+  // PARAMETER 0: Get the LET
   LET_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u, particle_no, material_no);
 
-  ////////////////////////////////////////////////////////////////////////////////
-  // PARAMETER 2: Get the maximum electron range (same for all RDD models)
+  //////////////////////////////////////////////////////////////////////////////////////
+  // PARAMETER 2: Get the maximum electron range (same for all RDD models but tabulated)
   max_electron_range_m = AT_max_electron_range_m( E_MeV_u, (int)material_no, (int)er_model);
 
   ////////////////////////////////////////////////////////////////////////////////
   // PARAMETER 1: Get the r_min
-  r_min_m   = AT_RDD_r_min_m(max_electron_range_m, rdd_model, rdd_parameter);
+  if(RDD_RadicalDiffusion){
+	  r_min_m   = AT_r_min_RadicalDiffusion_m(E_MeV_u);
+  }else{
+	  r_min_m   = AT_RDD_r_min_m(max_electron_range_m, rdd_model, rdd_parameter);
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // PARAMETER 6: Get the single impact fluence (same for all RDD models)
@@ -462,6 +482,19 @@ int AT_D_RDD_Gy( const long  n,
     const long    stopping_power_source_no,
     double        D_RDD_Gy[])
 {
+  long     i;
+
+  if( rdd_model == RDD_RadicalDiffusion){
+  // Loop over all r_m given
+	for (int i = 0; i < n; i++){
+		  D_RDD_Gy[i]         =  AT_RDD_RadicalDiffusion_Gy(r_m[i],
+				  E_MeV_u,
+				  particle_no,
+				  material_no);
+	}
+	return 1;
+  }// end RDD_RadicalDiffusion
+
   /********************************************************
    ********* CALCULATION BEFORE PARTICLE LOOP *************
    *******************************************************/
@@ -482,8 +515,6 @@ int AT_D_RDD_Gy( const long  n,
   if( (rdd_model == RDD_KatzSite) || (rdd_model == RDD_CucinottaPoint) || (rdd_model == RDD_KatzExtTarget) || (rdd_model == RDD_CucinottaExtTarget)){
     Katz_point_coeff_Gy     =  AT_RDD_Katz_coeff_Gy_general( E_MeV_u, particle_no, material_no, er_model);
   }
-
-  long     i;
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // RDD_Test
@@ -623,6 +654,17 @@ int AT_r_RDD_m  ( const long  n,
     double        r_RDD_m[])
 {
   long     i;
+
+  if( rdd_model == RDD_RadicalDiffusion){
+ 	// Loop over all r_m given
+ 	for (i = 0; i < n; i++){
+		r_RDD_m[i]         =  AT_inverse_RadicalDiffusion_m(D_RDD_Gy[i],
+				E_MeV_u,
+				particle_no,
+				material_no);
+ 	}
+ 	return 0;
+   }// end RDD_RadicalDiffusion
 
   const double LET_MeV_cm2_g              =  AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u, particle_no, material_no);
 
