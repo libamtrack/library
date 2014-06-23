@@ -48,7 +48,6 @@
 #include <gsl/gsl_sf_hyperg.h>
 
 #include "AT_Constants.h"
-#include "AT_DataLET.h"
 #include "AT_PhysicsRoutines.h"
 
 /* --------------------------------------------------- TEST RDD ---------------------------------------------------*/

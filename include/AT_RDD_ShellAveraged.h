@@ -51,7 +51,6 @@
 #include <gsl/gsl_sf_hyperg.h>
 
 #include "AT_Constants.h"
-#include "AT_DataLET.h"
 #include "AT_PhysicsRoutines.h"
 #include "AT_RDD_Simple.h"
 
