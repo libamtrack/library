@@ -194,6 +194,8 @@ double AT_kappa( const double 	E_MeV_u,
 		const long 		material_no,
 		const double    slab_thickness_um);
 
+
+#ifdef HAVE_CERNLIB
 /**
  * Computes the lambda parameter for the
  * Vavilov distribution acc. to Seltzer & Berger
@@ -345,7 +347,7 @@ double AT_energy_loss_keV_Landau_Mode(const double E_MeV_u,
 		const long particle_no,
 		const long material_no,
 		const double slab_thickness_um);
-
+#endif /* HAVE_CERNLIB */
 
 double AT_Gauss_Mode();
 double AT_Gauss_Mean();
