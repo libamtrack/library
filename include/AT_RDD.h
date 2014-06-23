@@ -47,6 +47,7 @@
 #include "AT_RDD_ExtendedTarget.h"
 #include "AT_RDD_Simple.h"
 #include "AT_RDD_ShellAveraged.h"
+#include "AT_RDD_Tabulated.h"
 
 //////////////////////////////////////////////////////// DATA STRUCTURES ////////////////////////////////////////////////////////
 
@@ -61,13 +62,14 @@ enum RDDModels {
       RDD_CucinottaPoint     = 5,      /**< parameters: 0 - r_min [m] (lower integration limit),1 - d_min_Gy (lower dose cut-off)   */
       RDD_KatzExtTarget      = 6,      /**< parameters: 0 - KatzPoint_r_min [m] (lower integration limit in KatzPoint RDD), 1 - a0 [m] (core diameter/target size), 2 - d_min_Gy (lower dose cut-off) */
       RDD_CucinottaExtTarget = 7,      /**< parameters: 0 - CucinottaPoint_r_min [m] (lower integration limit in CucinottaPoint RDD), 1 - a0 [m] (core diameter/target size), 2 - d_min_Gy (lower dose cut-off) */
+      RDD_RadicalDiffusion   = 8       /**< no parameters */
 };
 
 
 /**
  * Total number of RDD models
  */
-#define RDD_DATA_N    7
+#define RDD_DATA_N    8
 
 
 /**
@@ -102,11 +104,11 @@ typedef struct {
  */
 static const AT_rdd_data_struct AT_RDD_Data = {
     RDD_DATA_N,
-    {  RDD_Test,                     RDD_KatzPoint,                                      RDD_Geiss,                         RDD_KatzSite,                                    RDD_CucinottaPoint,                                 RDD_KatzExtTarget,                        RDD_CucinottaExtTarget},
-    {  0,                            2,                                                  1,                                 2,                                               2,                                                  3,                                        3},
-    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                         {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"r_min_m","d_min_Gy",""},                          {"KatzPoint_r_min_m","a0_m","d_min_Gy"},  {"CucinottaPoint_r_min_m","a0_m","d_min_Gy"}},
-    {  {0,0,0},                      {1e-10, 1e-10,0},                                   {5e-8,0,0},                        {5e-8,1e-10,0},                                  {5e-11,1e-10,0},                                    {1e-10,1e-8,1e-10},                       {5e-11,1e-8,1e-10}},
-    {  "Simple step test function",  "Katz' point target RDD",                           "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Cucinotta, as defined in [Cucinotta et al. 1997]",  "Katz Extended Target",                   "Cucinotta Extended Target"}
+    {  RDD_Test,                     RDD_KatzPoint,                                      RDD_Geiss,                         RDD_KatzSite,                                    RDD_CucinottaPoint,                                 RDD_KatzExtTarget,                        RDD_CucinottaExtTarget,				 RDD_RadicalDiffusion},
+    {  0,                            2,                                                  1,                                 2,                                               2,                                                  3,                                        3,			1},
+    {  {"","",""},                   {"r_min_m", "d_min_Gy",""},                         {"a0_m","",""},                    {"a0_m","d_min_Gy",""},                          {"r_min_m","d_min_Gy",""},                          {"KatzPoint_r_min_m","a0_m","d_min_Gy"},  {"CucinottaPoint_r_min_m","a0_m","d_min_Gy"}, 		{"E_idx"}},
+    {  {0,0,0},                      {1e-10, 1e-10,0},                                   {5e-8,0,0},                        {5e-8,1e-10,0},                                  {5e-11,1e-10,0},                                    {1e-10,1e-8,1e-10},                       {5e-11,1e-8,1e-10},				{1}},
+    {  "Simple step test function",  "Katz' point target RDD",                           "Geiss' RDD [Geiss et al., 1998]", "Site RDD, as defined in [Edmund et al., 2007]", "Cucinotta, as defined in [Cucinotta et al. 1997]",  "Katz Extended Target",                   "Cucinotta Extended Target",				"Radical Diffusion [Andrea Mairani]"}
 };
 
 
