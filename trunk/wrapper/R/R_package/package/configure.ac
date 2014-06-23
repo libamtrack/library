@@ -38,10 +38,23 @@ if test "${gsl_version_ok}" = no; then
   AC_MSG_ERROR([Need GSL version >= 1.8])
 else
   AC_MSG_RESULT([yes])
+  AC_SUBST([GSL_CFLAGS])
+  AC_SUBST([GSL_LIBS])
 fi
 
-# Now substitute these variables in src/Makevars.in to create src/Makevars
-AC_SUBST(GSL_CFLAGS) 
-AC_SUBST(GSL_LIBS)
+# Check if libmath (CERNLIB) and appropriate header are available
+AC_CHECK_HEADER([cfortran.h], [], AC_DEFINE(HAVE_NO_CERNLIB, 1, [No cfortran.h found.]))
+AC_CHECK_HEADER([gen.h], [], AC_DEFINE(HAVE_NO_CERNLIB, 1, [No cfortran.h found.]))
+AC_CHECK_LIB(mathlib, vavden_, [], AC_DEFINE(HAVE_NO_CERNLIB, 1, [No cfortran.h found.]))
+	
+if test "x${HAVE_NO_CERNLIB}" != ""; then
+	AC_SUBST([CERNLIB_CFLAGS], ["-DHAVE_CERNLIB"])
+	AC_SUBST([CERNLIB_LIBS], ["-lmathlib"])
+else
+	AC_MSG_RESULT([No mathlib CERNLIB or headers found, some energy loss distribution functions will not be available.])
+	AC_SUBST([CERNLIB_CFLAGS])
+	AC_SUBST([CERNLIB_LIBS])
+fi
+
 AC_OUTPUT(src/Makevars)
 
