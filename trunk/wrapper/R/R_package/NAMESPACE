@@ -1,3 +1,23 @@
+# In this file, all libamtrack functions have to be listed
+# for which an R wrapper should be generated
+#
+#
+# 1. One function per line, C name
+#
+# 2. Functions can be commented out by "#" in the beginning of the line
+#
+# 3. If "noR: " is used in front of the name, the function will be part
+#    of the R libamtrack package, but no wrapper will be generated. 
+#
+# 4. If a function has a dependency that is optional, the corresponding
+#    flag has to be given after the function name in square brackets.
+#    E.g. code that depends on cernlib will not be compiled (by preprocessor
+#    statement) when configure does not find this library and does not
+#    set HAVE_CERNLIB. N.B. as GSL is a mandatory dependency, it has
+#    not to be declared here.
+#
+# S. Greilich, 2014-06-24
+#
 AT_run_CPPSC_method
 AT_run_IGK_method
 AT_run_GSM_method
@@ -64,20 +84,20 @@ AT_Moliere_function_f1
 AT_Moliere_function_f2
 AT_scattering_angle_distribution
 AT_Highland_angle
-AT_Vavilov_PDF
-AT_Landau_PDF
+AT_Vavilov_PDF [HAVE_CERNLIB]
+AT_Landau_PDF [HAVE_CERNLIB]
 #AT_Bethe_Stopping_Number
 #AT_Bethe_energy_loss_MeV_cm2_g
 #AT_el_energy_loss_leading_term_MeV_cm2_g
 AT_Bethe_mean_energy_loss_MeV
 AT_kappa
-AT_Vavilov_lambda_from_energy_loss
-AT_Vavilov_energy_loss_from_lambda
-AT_Vavilov_energy_loss_distribution
-AT_energy_loss_distribution
-AT_energy_loss_mode
-AT_energy_loss_FWHM
-AT_lambda_from_energy_loss
+AT_Vavilov_lambda_from_energy_loss [HAVE_CERNLIB]
+AT_Vavilov_energy_loss_from_lambda [HAVE_CERNLIB]
+AT_Vavilov_energy_loss_distribution [HAVE_CERNLIB]
+AT_energy_loss_distribution [HAVE_CERNLIB]
+AT_energy_loss_mode [HAVE_CERNLIB]
+AT_energy_loss_FWHM [HAVE_CERNLIB]
+AT_lambda_from_energy_loss [HAVE_CERNLIB]
 AT_translate_dose_into_DSB_distribution
 noR: AT_SPC_read_data_from_filename_fast
 noR: AT_SPC_read_header_from_filename_fast

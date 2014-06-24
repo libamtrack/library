@@ -109,6 +109,12 @@ for(i in 1:length(functions)){
   
   header[length(header)] <- ");"      # end of function declaration
     
+  if(curFun$dependency != ""){
+    header <- c(paste("#ifdef ", curFun$dependency, sep = ""),
+                header, 
+                "#endif")  
+  }
+  
 	write( c(header, "\n"), 
          file   = "AT_R_Wrapper.h", 
          append = TRUE)
@@ -121,6 +127,9 @@ for(i in 1:length(functions)){
 	##############################################
   # copy function declaration, replace semicolon
 	body               <- header
+  if(curFun$dependency != ""){  # if dependency is present, header is one line longer than expected
+    body <- body[-length(body)] 
+  }
   body[length(body)] <- "){"
 
 	# get input parameters and which of them are arrays, which chars
@@ -460,9 +469,15 @@ for(i in 1:length(functions)){
 	}
 
 	# write body to source file
-	body <- c( body, 
-             "}\n\n")
-	write( body, 
+  body <- c( body, 
+             "}\n")
+  
+  if(curFun$dependency != ""){
+    body <- c(body, 
+              "#endif")
+  }
+  
+  write( c(body, "\n"), 
          file   = "AT_R_Wrapper.c", 
          append = TRUE)
 
