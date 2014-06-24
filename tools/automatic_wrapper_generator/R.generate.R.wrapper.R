@@ -183,8 +183,8 @@ for(i in 1:length(functions)){
 	}
 	header <- c(header, "")
 
-	# function call
-	header <- c(header, paste("\tres <- .C(\"", tmp$name, "_R\", ", sep = ""))
+	# function call 
+  header <- c(header, paste("\tres <- .C(\"", tmp$name, "_R\", ", sep = ""))
 
 	if(nrow(para) > 1)
 	for(j in 1:(nrow(para) - 1)){

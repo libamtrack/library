@@ -41,6 +41,11 @@ namespace         <- namespace[!remove.idx]
 noR               <- grepl("noR: ", namespace)
 namespace         <- gsub("^noR: ", "", namespace)
 
+# Find those functions marked with a dependency flag, e.g. "[HAVE_CERNLIB]"
+dependency.loc        <- regexpr("\\[.*\\]", namespace)
+dependency            <- substring(namespace, dependency.loc + 1, dependency.loc + attr(dependency.loc, "match.length")-2)
+namespace             <- gsub(" \\[.*\\]", "", namespace)
+
 # Navigate to include path, has to be given as argument 1
 setwd(commandArgs(trailingOnly = TRUE)[1])
 
@@ -180,7 +185,7 @@ for(header.file.name in header.file.names){
 
      # Loop through all functions found
      for (i in 1:length(pos.start.doxygen.comment)){
-          # DEBUG: i <- 12
+          # DEBUG: i <- 1
        
           current.function    <- NULL
           
@@ -216,6 +221,8 @@ for(header.file.name in header.file.names){
                # Function name
                current.function$name                    <- name     
 
+               # Dependency
+               current.function$dependency              <- dependency[match(name, namespace)]
                # Store line in header file (for links to code in documentation)
                # TODO: To take the first appearance of the function name as the actual
                # source code and not a call to the function (grep will find both)
