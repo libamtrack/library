@@ -20,7 +20,7 @@ Version: \tab ##VERSION## (##NAME##)\cr
 Date: \tab ##DATE##\cr
 Depends: \tab R (>= 2.12.0)\cr
 Suggests: \tab lattice\cr
-SystemRequirements: \tab gsl\cr
+SystemRequirements: \tab gsl (optinally: cernlib to enable energy loss distributions)\cr
 License: \tab GPL (version 3 or later)
 }
 
@@ -82,12 +82,13 @@ Stopping-power routines:
 \code{\link{AT.Stopping.Power.MeV.cm2.g}} \tab Unrestricted LET per mass / mass stopping power\cr
 \code{\link{AT.stopping.power.ratio}} \tab Computes stopping power ratios, also for mixed fields\cr
 
-\code{\link{AT.CSDA.range.m}} \tab CSDA range in m\cr
-\code{\link{AT.CSDA.range.g.cm2}} \tab CSDA range in mass thickness\cr
+TODO: \tab Re-enable CSDA functions \cr
+%\code{\link{AT.CSDA.range.m}} \tab CSDA range in m\cr
+%\code{\link{AT.CSDA.range.g.cm2}} \tab CSDA range in mass thickness\cr
 
-\code{\link{AT.Stopping.Power.Mass.Bethe.MeV.cm2.g}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formula\cr
-\code{\link{AT.CSDA.range.Bethe.g.cm2}} \tab CSDA range from Bethe formula\cr
-\code{\link{AT.CSDA.energy.after.slab.E.MeV.u}} \tab Ion energy after slab of material according Bethe formula\cr
+%\code{\link{AT.Stopping.Power.Mass.Bethe.MeV.cm2.g}} \tab Restricted (!) LET / mass stopping power from the classical Bethe formula\cr
+%\code{\link{AT.CSDA.range.Bethe.g.cm2}} \tab CSDA range from Bethe formula\cr
+%\code{\link{AT.CSDA.energy.after.slab.E.MeV.u}} \tab Ion energy after slab of material according Bethe formula\cr
 \code{\link{AT.WEPL.Bethe}} \tab Water equivalent path length from Bethe range
 }
 
