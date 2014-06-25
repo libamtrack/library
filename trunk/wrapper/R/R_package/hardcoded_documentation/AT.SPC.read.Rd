@@ -39,17 +39,15 @@ Please note that the "compress" statement has been depreciated due to preparatio
 }
 
 \examples{
-
+\dontrun{
 # Load required libraries
 require(libamtrack)
 require(lattice)
 
 # Use example data set
-file.name 			   <- system.file("extdata", "libamtrack.12C.H2O.active3.MeV27000.spc", package = "libamtrack")
-endian                 <- c("big", "little")[2]
+file.name <- system.file("extdata", "libamtrack.12C.H2O.active3.MeV27000.zip", package = "libamtrack")
+endian    <- c("big", "little")[2]
 
-file.name <- system.file("extdata", "libamtrack.12C.H2O.active3.MeV27000.spc", package = "libamtrack")
-endian                 <- c("big", "little")[2]
 
 # Read in spc data, we use old style R reader, so endianess has to be given
 spc                    <- AT.SPC.read ( file.name = file.name,
@@ -126,5 +124,6 @@ xyplot( Mean.E.C.MeV.u ~ depth.g.cm2,
         ylab        = 'Average kinetic energy of C / (MeV/u)',
         xlab        = 'depth / (g/cm2)')
 
+}
 }
 

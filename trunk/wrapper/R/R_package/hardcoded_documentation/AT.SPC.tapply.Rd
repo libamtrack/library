@@ -21,13 +21,13 @@
 }
 
 \examples{
-
+\dontrun{
 # Load required libraries
 require(libamtrack)
 require(lattice)
 
 # Use example data set
-file.name 			   <- system.file("extdata", "libamtrack.12C.H2O.active3.MeV27000.spc", package = "libamtrack")
+file.name 	       <- system.file("extdata", "libamtrack.12C.H2O.active3.MeV27000.zip", package = "libamtrack")
 endian                 <- c("big", "little")[2]
 
 # Read in spc data, we use old style R reader, so endianess has to be given
@@ -96,4 +96,5 @@ xyplot( log10(D.Gy) ~ depth.g.cm2,
         auto.key    = list(space = 'right'),
         ylab        = "log10( dose per primary / Gy )",
         xlab        = 'depth / (g/cm2)')
+}
 }

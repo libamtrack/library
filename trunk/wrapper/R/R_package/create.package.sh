@@ -74,14 +74,13 @@ cp ../../../include/*.h libamtrack/src/
 cp ../../../src/*.c libamtrack/src/
 
 # *** Clean temporary files (e.g. from gedit that will confuse the collect.doxygen.information.R script)
-# *** and from svn
 if [ ls ../../../include/*.h~ &> /dev/null ]; then
     rm ../../../include/*.h~
 fi
 if [ ls ../../../src/*.c~ &> /dev/null ]; then
     rm ../../../src/*.c~
 fi
-#find . -name "libamtrack/.svn" -exec rm -rf {} \;
+
  
 # *** Copy hardcoded documentation ***
 echo "Copying hardcoded documentation..."
@@ -147,6 +146,17 @@ echo "Moving results from R scripts into package structure..."
 mv AT_R_Wrapper.* libamtrack/src
 mv libamtrack.R libamtrack/R
 mv *.Rd libamtrack/man
+
+# *** Truncate Rd files (esp. the automatically generated ones to 80 characters line width)
+#cd ./libamtrack/man
+#for f in *.Rd
+#do
+# fold -w 80 -s $f > $f.output
+#done
+#rm *.Rd
+#rename 's/\.output$//' *.output
+#rm *.output
+#cd ../..
 
 # *** Create namespace for package
 echo "Create NAMESPACE file for package..."

@@ -38,7 +38,18 @@ AT.SPC.read <- function( file.name,
                          mean           = c("geometric", "arithmetic")[2],
                          header.only    = FALSE)
 {
-	if(flavour == "vanilla"){
+  # Unzip file, if applicable
+  file.name.org <- file.name
+  file.name     <- sub("\\.[[:alnum:]]+$", "", basename(as.character(file.name)))
+  file.ext      <- substring(file.name.org, nchar(file.name)+2)
+  if(file.ext == "zip"){
+    unzip(file.name.org)
+    file.name   <- paste(file.name, ".spc", sep = "")
+  }else{
+    file.name   <- file.name.org
+  }
+    
+  if(flavour == "vanilla"){
     # R version
 		to.read                 <- file(file.name, "rb")
 
