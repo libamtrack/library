@@ -98,7 +98,7 @@ SEXP AT_material_name_from_material_no_R( SEXP material_no){
   R_len_t i, n = length(material_no);
 
   long    cur_material_no;
-  char    material_name_str[MATERIAL_NAME_LENGTH];
+  char*   material_name_str = (char*)calloc(MATERIAL_NAME_LENGTH, sizeof(char));
   SEXP    ans, int_material_no;
   PROTECT(ans = allocVector(STRSXP, n));
   PROTECT(int_material_no = coerceVector(material_no, INTSXP));
@@ -106,9 +106,11 @@ SEXP AT_material_name_from_material_no_R( SEXP material_no){
   for(i = 0; i < n; i++){
     cur_material_no  = INTEGER(int_material_no)[i];
     AT_material_name_from_number( cur_material_no,
-                                  &material_name_str);
+                                  material_name_str);
     SET_STRING_ELT(ans, i, mkChar(material_name_str));
   }
+
+  free( material_name_str);
 
   UNPROTECT(2);
   return(ans);
