@@ -43,17 +43,18 @@ else
 fi
 
 # Check if libmath (CERNLIB) and appropriate header are available
-AC_CHECK_HEADER([cfortran.h], [], AC_DEFINE(HAVE_NO_CERNLIB, 1, [No cfortran.h found.]))
-AC_CHECK_HEADER([gen.h], [], AC_DEFINE(HAVE_NO_CERNLIB, 1, [No cfortran.h found.]))
-AC_CHECK_LIB(mathlib, vavden_, [], AC_DEFINE(HAVE_NO_CERNLIB, 1, [No cfortran.h found.]))
-	
-if test "x${HAVE_NO_CERNLIB}" != ""; then
-	AC_SUBST([CERNLIB_CFLAGS], ["-DHAVE_CERNLIB"])
-	AC_SUBST([CERNLIB_LIBS], ["-lmathlib"])
-else
+FOUND_CERNLIB=1
+AC_CHECK_HEADER([cfortran.h], [], [FOUND_CERNLIB=0])
+AC_CHECK_HEADER([gen.h], [], [FOUND_CERNLIB=0])
+AC_CHECK_LIB(mathlib, vavden_, [], [FOUND_CERNLIB=0])
+
+if test $FOUND_CERNLIB == 0; then
 	AC_MSG_RESULT([No mathlib CERNLIB or headers found, some energy loss distribution functions will not be available.])
 	AC_SUBST([CERNLIB_CFLAGS])
 	AC_SUBST([CERNLIB_LIBS])
+else
+	AC_SUBST([CERNLIB_CFLAGS], ["-DHAVE_CERNLIB -DgFortran -Df2cFortran"]) # D flags for cfortran.h are save for Linux/Apple/Win
+	AC_SUBST([CERNLIB_LIBS], ["-lmathlib"])
 fi
 
 AC_OUTPUT(src/Makevars)
