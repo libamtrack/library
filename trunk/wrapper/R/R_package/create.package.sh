@@ -9,6 +9,8 @@ HELP_ARG="FALSE"
 FAST_ARG="FALSE"
 INSTALL_ARG="FALSE"
 NOCLEAN_ARG="FALSE"
+NOCOMPILE_ARG="FALSE"
+SYNCWITH_ARG=""
 
 # set bound checking environmental variable
 export R_C_BOUNDS_CHECK=yes
@@ -32,6 +34,15 @@ do
     if [ "$var" == "--noclean" ] ; then
        NOCLEAN_ARG="TRUE"
        echo "Will not remove transient files and folders."
+    fi
+
+    if [ "$var" == "--nocompile" ] ; then
+       NOCLEAN_ARG="TRUE"
+       echo "Will not remove transient files and folders."
+    fi
+
+    if [ "$var" == "--sync-with" ] ; then
+       echo "Will sync with remote package dir." 
     fi
 done
 

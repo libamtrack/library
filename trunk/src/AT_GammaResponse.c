@@ -278,30 +278,40 @@ void AT_gamma_response( const long  number_of_doses,
    *  (7) DSB enhancement factor
    **/
   if(gamma_model == GR_AM_DSBEnhancement){
-/** PROPRIETARY DATA --- NOT TO BE COMMITTED INTO PUBLIC SVN
-	BEGIN */
-	  double p1	= 0;
-	  double p2	= 0;
-	  double p3	= 0;
-	  double p4	= 0;
-/** PROPRIETARY DATA --- NOT TO BE COMMITTED INTO PUBLIC SVN
-	END */
-
+# define N_DATA 40
+	  /** PROPRIETARY DATA --- NOT TO BE COMMITTED INTO PUBLIC SVN
+	  	BEGIN */
+	  double dose_Gy[N_DATA] = { 100, 200, 300, 500, 700,
+			  	  	  	  	 1000, 2000, 3000, 5000, 7000,
+			  	  	  	     10000, 20000, 30000, 40000, 50000,
+			  	  	  	     60000, 70000, 80000, 90000, 100000,
+			  	  	  	     150000, 200000, 250000, 300000, 350000,
+			  	  	  	     400000, 450000, 500000, 550000, 600000,
+			  	  	  	     650000, 700000, 750000, 800000, 850000,
+			  	  	  	     900000, 950000, 1000000, 1500000, 2000000};
+	  double factor[N_DATA]  = { 1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+			                 1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+			                 1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+			                 1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+			                 1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+			                 1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+			                 1.000000, 1.000000, 1.000000, 1.000000, 1.000000,
+			                 1.000000, 1.000000, 1.000000, 1.000000, 1.000000};
+	  /** PROPRIETARY DATA --- NOT TO BE COMMITTED INTO PUBLIC SVN
+	  	END */
 	  for (i = 0; i < number_of_doses; i++){
 		 if(d_Gy[i] < 100){
 			S[i]    = 1.0;
 		 }else{
-		   if(d_Gy[i] > 1e6){
+		   if(d_Gy[i] > 2e6){
 			  S[i] = -1.0e99; // Most inelegant way of interrupting...
 		   }else{
-			  S[i] = 1.0 + p1*d_Gy[i] + p2*d_Gy[i]*d_Gy[i] + p3*d_Gy[i]*d_Gy[i]*d_Gy[i] + p4*d_Gy[i]*d_Gy[i]*d_Gy[i]*d_Gy[i];
+			  S[i] = AT_get_interpolated_y_from_input_table(dose_Gy, factor, N_DATA, d_Gy[i]);
 		   }
 	  	}
 	}
-
-	
   }
-
+# undef N_DATA
 }
 
 
