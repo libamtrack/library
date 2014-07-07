@@ -159,15 +159,14 @@ mv libamtrack.R libamtrack/R
 mv *.Rd libamtrack/man
 
 # *** Truncate Rd files (esp. the automatically generated ones to 80 characters line width)
-#cd ./libamtrack/man
-#for f in *.Rd
-#do
-# fold -w 80 -s $f > $f.output
-#done
-#rm *.Rd
-#rename 's/\.output$//' *.output
-#rm *.output
-#cd ../..
+cd libamtrack/man
+echo "Running R script to truncate Rd files to 80 characters line width..."
+Rscript --no-save ../../../../../tools/automatic_wrapper_generator/R.truncate.Rd.files.R >../../R.truncate.Rd.files.Rout 2>&1
+if [ "$?" -ne "0" ]; then
+  echo "Problem with executing R.truncate.Rd.files.R"
+  exit 1
+fi
+cd ../..
 
 # *** Create namespace for package
 echo "Create NAMESPACE file for package..."

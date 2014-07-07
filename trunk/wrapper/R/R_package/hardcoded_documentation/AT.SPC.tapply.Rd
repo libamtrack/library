@@ -58,23 +58,28 @@ xyplot( D.Gy ~ depth.g.cm2,
 # To do so, first the fluence per primary has to be scaled and then
 # AT.SPC.tapply has to be referred to the new non-standard column (default: fluence.cm2 = "N.per.primary")
 
-fluence.factor  <- 1.0 / df1$D.Gy[1]					# factor between dose per primary (from above) and 2 Gy
+fluence.factor  <- 1.0 / df1$D.Gy[1]                  # factor between dose per primary (from above) and 2 Gy
 spc$fluence.cm2 <- spc$N.per.primary * fluence.factor
 
 df2 <- AT.SPC.tapply( spc                   = spc, 
-                      INDEX                 = "depth.g.cm2", 
-                      FUN                   = AT.total.D.Gy,
-					  mixed.field.arguments = list( fluence.cm2 = "fluence.cm2", E.MeV.u = "E.mid.MeV.u", particle.no = "particle.no"),
-                      additional.arguments  = list( c("material.no", "1", FALSE),                   # Water
-                                                    c("stopping.power.source.no", "0", FALSE)),     # PSTAR
-                      names.results         = "D.Gy")
+  INDEX                 = "depth.g.cm2", 
+  FUN                   = AT.total.D.Gy,
+  mixed.field.arguments = list( fluence.cm2 = "fluence.cm2", 
+                                E.MeV.u     = "E.mid.MeV.u", 
+                                particle.no = "particle.no"),
+  additional.arguments  = list( c("material.no", 
+                                  "1", 
+                                  FALSE), # Water
+                                c("stopping.power.source.no",
+                                  "0", FALSE)), # PSTAR
+  names.results         = "D.Gy")
 
 xyplot( D.Gy ~ depth.g.cm2,
         df2,
         type = "o",
-		col  = "red",
+	col  = "red",
         grid = TRUE,
-		ylab = "dose / Gy",
+	ylab = "dose / Gy",
         xlab = "depth / (g/cm2)")
 			   
 			   
@@ -82,10 +87,14 @@ xyplot( D.Gy ~ depth.g.cm2,
 # from individual particle species
 # Also: use nicer (human-readable) code for material
 df3  <- AT.SPC.tapply( spc                  = spc, 
-                       INDEX                = c("depth.g.cm2", "particle.name"),  
-                       FUN                  = AT.total.D.Gy, 
-                       additional.arguments = list(c("material.no", "AT.material.no.from.material.name('Water, Liquid')", FALSE),
-                                                   c("stopping.power.source.no", "0", FALSE)),
+  INDEX                = c("depth.g.cm2", "particle.name"),  
+  FUN                  = AT.total.D.Gy, 
+  additional.arguments = list(c("material.no", 
+                                "AT.material.no.from.material.name('Water, Liquid')", 
+                                FALSE),
+                              c("stopping.power.source.no", 
+                                "0", 
+                                FALSE)),
                        names.results        = "D.Gy")
 
 xyplot( log10(D.Gy) ~ depth.g.cm2,
