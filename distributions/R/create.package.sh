@@ -5,6 +5,10 @@ echo "This script creates the R package for libamtrack"
 echo "################################################"
 echo 
 
+ROOT_DIR=../..
+THIS_DIR_FROM_ROOT=distributions/R
+SCRIPT_DIR=scripts
+
 HELP_ARG="FALSE"
 FAST_ARG="FALSE"
 INSTALL_ARG="FALSE"
@@ -81,15 +85,15 @@ find libamtrack/ -iname .svn -print | xargs rm -rf
 
 # *** Copy sources of libamtrack ***
 echo "Copying libamtrack sources..."
-cp ../../../include/*.h libamtrack/src/
-cp ../../../src/*.c libamtrack/src/
+cp $ROOT_DIR/include/*.h libamtrack/src/
+cp $ROOT_DIR/src/*.c libamtrack/src/
 
 # *** Clean temporary files (e.g. from gedit that will confuse the collect.doxygen.information.R script)
-if [ ls ../../../include/*.h~ &> /dev/null ]; then
-    rm ../../../include/*.h~
+if [ ls libamtrack/src/*.h~ &> /dev/null ]; then
+    rm $ROOT_DIR/include/*.h~
 fi
-if [ ls ../../../src/*.c~ &> /dev/null ]; then
-    rm ../../../src/*.c~
+if [ ls libamtrack/src/*.c~ &> /dev/null ]; then
+    rm libamtrack/src/*.c~
 fi
 
  
@@ -106,47 +110,47 @@ cp hardcoded_wrappers/hardcoded_wrapper.h libamtrack/src/
 # *** Run autoconfigure (to update svn version) ***
 if [ ! -d $FAST_ARG ] ; then
 	echo "Running autoreconf and configure in main folder (to update svnversion information)..."
-	cd ../../..
+	cd $ROOT_DIR
 	autoreconf --force --install
 	chmod 755 configure
 	./configure
-	cd wrapper/R/R_package
+	cd $THIS_DIR_FROM_ROOT
 fi
 
 # *** Copy generated file ***
-cp ../../../config.h libamtrack/src/
+cp $ROOT_DIR/config.h libamtrack/src/
 
 echo
 echo "Running R script to parse doxygen information from sources..."
-Rscript --no-save ../../../tools/automatic_wrapper_generator/collect.doxygen.information.R ../../../include libamtrack >collect.doxygen.information.Rout 2>&1
+Rscript --no-save ../../scripts/collect.doxygen.information.R ../../include libamtrack >collect.doxygen.information.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing collect.doxygen.information.R"
   exit 1
 fi
 
 echo "Running R script to create C headers from parsed doxygen information..."
-Rscript --no-save ../../../tools/automatic_wrapper_generator/R.generate.C.wrapper.R ../../../tools/automatic_wrapper_generator libamtrack >R.generate.C.wrapper.Rout 2>&1
+Rscript --no-save scripts/R.generate.C.wrapper.R scripts libamtrack >R.generate.C.wrapper.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.generate.C.wrapper.R"
   exit 1
 fi
 
 echo "Running R script to create R headers from parsed doxygen information..."
-Rscript --no-save ../../../tools/automatic_wrapper_generator/R.generate.R.wrapper.R ../../../tools/automatic_wrapper_generator/R.type.conversion.R libamtrack >R.generate.R.wrapper.Rout 2>&1
+Rscript --no-save scripts/R.generate.R.wrapper.R scripts/R.type.conversion.R libamtrack >R.generate.R.wrapper.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.generate.R.wrapper.R"
   exit 1
 fi
 
 echo "Running R script to add metainformation (date, version, etc.) to R package description..."
-Rscript --no-save ../../../tools/automatic_wrapper_generator/R.add.metainfo.R ../../../ libamtrack >R.add.metainfo.Rout 2>&1
+Rscript --no-save scripts/automatic_wrapper_generator/R.add.metainfo.R ../../../ libamtrack >R.add.metainfo.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.add.metainfo.R"
   exit 1
 fi
 
 echo "Running R script to create Rd documentation from parsed doxygen information..."
-Rscript --no-save ../../../tools/automatic_wrapper_generator/R.generate.Rd.documentation.R ./hardcoded_documentation/ libamtrack >R.generate.Rd.documentation.Rout 2>&1
+Rscript --no-save scripts/R.generate.Rd.documentation.R ./hardcoded_documentation/ libamtrack >R.generate.Rd.documentation.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.generate.Rd.documentation.R"
   exit 1
@@ -161,7 +165,7 @@ mv *.Rd libamtrack/man
 # *** Truncate Rd files (esp. the automatically generated ones to 80 characters line width)
 cd libamtrack/man
 echo "Running R script to truncate Rd files to 80 characters line width..."
-Rscript --no-save ../../../../../tools/automatic_wrapper_generator/R.truncate.Rd.files.R >../../R.truncate.Rd.files.Rout 2>&1
+Rscript --no-save scripts/R.truncate.Rd.files.R >../../R.truncate.Rd.files.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.truncate.Rd.files.R"
   exit 1
@@ -170,7 +174,7 @@ cd ../..
 
 # *** Create namespace for package
 echo "Create NAMESPACE file for package..."
-Rscript --no-save ../../../tools/automatic_wrapper_generator/R.create.package.namespace.R libamtrack AT >R.create.package.namespace.Rout 2>&1
+Rscript --no-save scripts/R.create.package.namespace.R libamtrack AT >R.create.package.namespace.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.create.package.namespace.R"
   exit 1
