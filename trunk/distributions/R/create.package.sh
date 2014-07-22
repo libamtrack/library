@@ -122,7 +122,7 @@ cp $ROOT_DIR/config.h libamtrack/src/
 
 echo
 echo "Running R script to parse doxygen information from sources..."
-Rscript --no-save ../../scripts/collect.doxygen.information.R ../../include libamtrack >collect.doxygen.information.Rout 2>&1
+Rscript --no-save $ROOT_DIR/scripts/collect.doxygen.information.R $ROOT_DIR/include libamtrack >collect.doxygen.information.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing collect.doxygen.information.R"
   exit 1
@@ -143,7 +143,7 @@ if [ "$?" -ne "0" ]; then
 fi
 
 echo "Running R script to add metainformation (date, version, etc.) to R package description..."
-Rscript --no-save scripts/automatic_wrapper_generator/R.add.metainfo.R ../../../ libamtrack >R.add.metainfo.Rout 2>&1
+Rscript --no-save scripts/R.add.metainfo.R $ROOT_DIR libamtrack >R.add.metainfo.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.add.metainfo.R"
   exit 1
@@ -165,7 +165,7 @@ mv *.Rd libamtrack/man
 # *** Truncate Rd files (esp. the automatically generated ones to 80 characters line width)
 cd libamtrack/man
 echo "Running R script to truncate Rd files to 80 characters line width..."
-Rscript --no-save scripts/R.truncate.Rd.files.R >../../R.truncate.Rd.files.Rout 2>&1
+Rscript --no-save ../../scripts/R.truncate.Rd.files.R >../../R.truncate.Rd.files.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.truncate.Rd.files.R"
   exit 1
