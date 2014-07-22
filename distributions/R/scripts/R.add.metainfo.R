@@ -9,7 +9,7 @@ rm(list = ls())
 #pass the name of the library from shell
 args <- commandArgs(TRUE)
 
-try(configure.ac.file <-scan(paste(args[1], "configure.ac", sep = ""), what = character(), sep = "\n"))
+try(configure.ac.file <-scan(paste(args[1], "configure.ac", sep = "/"), what = character(), sep = "\n"))
 
 date.long   <- Sys.time() # format(Sys.time(), "%a %b %d %H:%M:%S %Y")
 date.short  <- Sys.Date()
@@ -30,7 +30,7 @@ code.name   <- get.argument(configure.ac.file[ii&jj])
 code.status <- get.argument(configure.ac.file[ii&kk]) 
 
 # Get svn revision from saved file (which works whether svnversion runs or not)
-code.rev    <- scan(paste(args[1],"saved_svn_version.txt", sep = ""), what = character())
+code.rev    <- scan(paste(args[1],"saved_svn_version.txt", sep = "/"), what = character())
 
 # Write to transient file to use in other scripts
 meta.information <- list( code.version = code.version, 
