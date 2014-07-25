@@ -24,14 +24,21 @@
 # If not, see <http://www.gnu.org/licenses/>
 ################################################################################################
 
+# Working dir (including NAMESPACE file) has to be given as argument 1
+# Path to include files has to be given as argument 2
+
+
 # Clean workspace
 rm(list = ls())
 
 # Save current working directory
 cur.dir           <- getwd()
 
+# Get command line arguments
+args 		  <- commandArgs(trailingOnly = TRUE)
+
 # Read in namespace header.file.name
-namespace         <- scan(file = "NAMESPACE", what = "character", sep = "\n")
+namespace         <- scan(file = paste(args[1], "NAMESPACE", sep = "/"), what = "character", sep = "\n")
 
 # Remove functions commented out
 remove.idx        <- grepl("#", namespace)
@@ -47,8 +54,8 @@ dependency.loc        <- regexpr("\\[.*\\]", namespace)
 dependency            <- substring(namespace, dependency.loc + 1, dependency.loc + attr(dependency.loc, "match.length")-2)
 namespace             <- gsub(" \\[.*\\]", "", namespace)
 
-# Navigate to include path, has to be given as argument 1
-setwd(commandArgs(trailingOnly = TRUE)[1])
+# Navigate to include files
+setwd(args[2])
 
 # stop("I do not see from current folder /include. Please move to other place !")
 

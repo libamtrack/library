@@ -4,6 +4,9 @@
 # Created: S. Greilich, 2011-09-04
 ##rev##
 
+# Arg 1: Root source dir with version information in configure.ac / saved_svn_version.txt
+# Arg 2: package name
+# Arg 3: work dir
 rm(list = ls())
 
 #pass the name of the library from shell
@@ -42,12 +45,12 @@ save( meta.information,
       file = "meta.information.sdd")
 
 # Insert information
-desc.file   <- scan(paste("./", args[2], "/DESCRIPTION", sep = ""), what = character(), sep = "\n")
+desc.file   <- scan(paste(args[3], args[2], "DESCRIPTION", sep = "/"), what = character(), sep = "\n")
 desc.file   <- gsub("##VERSION##", code.version, desc.file)
 desc.file   <- gsub("##DATE##", date.short, desc.file)
-write(desc.file, file = paste("./", args[2], "/DESCRIPTION", sep = ""))
+write(desc.file, file = paste(args[3], args[2], "DESCRIPTION", sep = "/"))
 
-init.file   <- scan(paste("./", args[2], "/R/initial.R", sep = ""), what = character(), sep = "\n")
+init.file   <- scan(paste(args[3], args[2], "R/initial.R", sep = "/"), what = character(), sep = "\n")
 init.file   <- gsub("##VERSION##", code.version, init.file)
 init.file   <- gsub("##NAME##", code.name, init.file)
 if (code.status == "Release"){
@@ -57,10 +60,10 @@ if (code.status == "Release"){
    init.file   <- gsub("##REVISION##", code.rev, init.file)
    init.file   <- gsub("##DATE##", date.long, init.file)
 }
-write(init.file, file = paste("./", args[2], "/R/initial.R", sep = ""))
+write(init.file, file = paste(args[3], args[2], "R/initial.R", sep = "/"))
 
-docu.file   <- scan(paste("./", args[2],"/man/", args[2], "-package.Rd", sep = ""), what = character(), sep = "\n")
+docu.file   <- scan(paste(args[3], "/", args[2], "/man/", args[2], "-package.Rd", sep = ""), what = character(), sep = "\n")
 docu.file   <- gsub("##VERSION##", code.version, docu.file)
 docu.file   <- gsub("##DATE##", date.short, docu.file)
 docu.file   <- gsub("##NAME##", code.name, docu.file)
-write(docu.file, file = paste("./", args[2], "/man/", args[2], "-package.Rd", sep = ""))
+write(docu.file, file = paste(args[3], "/", args[2], "/man/", args[2], "-package.Rd", sep = ""))
