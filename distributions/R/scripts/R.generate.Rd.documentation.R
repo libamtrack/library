@@ -23,6 +23,10 @@
 # If not, see <http://www.gnu.org/licenses/>
 ################################################################################################
 
+# Arguments:
+# 1: work dir
+# 2: name of package
+# 3: path of hardcoded doc relative to work dir
 
 # Clean workspace
 rm(list = ls())
@@ -49,7 +53,7 @@ hardcoded.variable.descriptions    <- c("E.MeV.u", "particle.no", "material.no",
 
 if(args[2] == "libmaterials"){ hardcoded.examples <- scan("../../../libmaterials/wrapper/R/hardcoded_documentation/examples.txt", 
                                             what  = "character",
-                                            sep   = "\n")}else {hardcoded.examples <- scan( paste(args[1], "examples.txt", sep = ""), 
+                                            sep   = "\n")}else {hardcoded.examples <- scan( paste(args[1], "/", args[3], "/examples.txt", sep = ""), 
                                             what  = "character",
                                             sep   = "\n")}
 
@@ -60,7 +64,7 @@ names.examples                     <- substring( hardcoded.examples[pos.start.ex
                                                  nchar(hardcoded.examples[pos.start.examples]) - 2)
 
 # Read in type conversion table for C to R
-source(args[1])
+source(paste(args[1], args[3], sep = "/"))
 
 # exclude function with "C only" flag
 noR       <- sapply(functions, check.type <- function(x){x$wrapper.type == "C only"})
@@ -103,7 +107,7 @@ for(i in 1:length(functions)){
 		parameter.list <- paste(parameter.list, cur.function$parameter.comment$name[ii[length(ii)]], sep = "") 
 	}
 
-	write("% Automatically created Rd file\n", file = paste("./package/man/", cur.function$name, ".Rd", sep = ""))
+	write("% Automatically created Rd file\n", file = paste(args[1], "/",  args[2], "/man/", cur.function$name, ".Rd", sep = ""))
 
 	# Create Rd description
       cur.description   <- character(0)

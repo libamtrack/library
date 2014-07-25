@@ -3,10 +3,7 @@ DIST_SUBDIRS=src test example
 ACLOCAL_AMFLAGS =-I m4
 
 R-package:
-	cd distributions/R
-	./create.package.sh
-	cp *.tar.gz ../..
-	cd ../..
+	$(srcdir)/distributions/R/create.package.sh
 
 deb-package:
 	echo $(VERSION)
