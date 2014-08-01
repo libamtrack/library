@@ -193,7 +193,7 @@ if [ $SYNC_ARG == "TRUE" ] ; then
   echo "Syncing..."
   cp -rp $WORK_DIR/libamtrack $ROOT_DIR/libamtrack.pkg
   rm -rf $ROOT_DIR/libamtrack.pkg/autom4te.cache
-  rsync -avh $ROOT_DIR/libamtrack.pkg/* $SYNC_DIR
+  rsync -vhu $ROOT_DIR/libamtrack.pkg/* $SYNC_DIR
   rm -rf $ROOT_DIR/libamtrack.pkg
 fi
 
