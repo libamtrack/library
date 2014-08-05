@@ -10,12 +10,12 @@ echo
 ROOT_DIR=$(pwd)
 WORK_DIR=$ROOT_DIR/distributions/R
 SCRIPT_DIR=$WORK_DIR/scripts
+SANDBOX_DIR=$ROOT_DIR/../sandbox
 
 HELP_ARG="FALSE"
 FAST_ARG="FALSE"
-INSTALL_ARG="FALSE"
 NOCLEAN_ARG="FALSE"
-NOCOMPILE_ARG="FALSE"
+SANDBOX_ARG="FALSE"
 SYNC_ARG="FALSE"
 
 
@@ -38,7 +38,17 @@ while test $# -gt 0; do
        			echo "Fast execution chosen. Will not update svn information nor run R examples."
 			shift
                         ;;
-                --sync)
+                --noclean)
+                   	NOCLEAN_ARG="TRUE"
+       			echo "Will leave transient files after compilation - it is strongly recommended to remove them manually."
+			shift
+                        ;;
+                --sandbox)
+                   	SANDBOX_ARG="TRUE"
+       			echo "Will use sandbox files instead of main development trunk."
+			shift
+                        ;;
+		--sync)
                         shift
                         if test $# -gt 0; then
                                 SYNC_ARG="TRUE"
@@ -53,6 +63,15 @@ while test $# -gt 0; do
         esac
 done
 echo
+
+
+# Check for bad combinations
+if [ $SANDBOX_ARG == "TRUE" ] ; then
+	if [ $FAST_ARG == "TRUE" ] ; then
+		echo "--sandbox and --fast must not be combined. Exiting"
+                exit 1
+	fi
+fi
 
 
 # Clean up residues from earlier runs if applicable
@@ -85,6 +104,14 @@ cp $ROOT_DIR/include/*.h $WORK_DIR/libamtrack/src/
 cp $ROOT_DIR/src/*.c $WORK_DIR/libamtrack/src/
 
 
+# *** Copy sandbox files if chosen ***
+if [ $SANDBOX_ARG == "TRUE" ] ; then
+	echo "Copying sandbox sources..."
+	cp $SANDBOX_DIR/include/*.h $WORK_DIR/libamtrack/src/
+	cp $SANDBOX_DIR/src/*.c $WORK_DIR/libamtrack/src/
+fi
+
+
 # *** Clean temporary files (e.g. from gedit that will confuse the collect.doxygen.information.R script)
 if [ ls $WORK_DIR/libamtrack/src/*.h~ &> /dev/null ]; then
     rm $ROOT_DIR/include/*.h~
@@ -104,6 +131,14 @@ echo "Copying hardcoded wrappers..."
 cp $WORK_DIR/hardcoded_wrappers/*.R $WORK_DIR/libamtrack/R/
 cp $WORK_DIR/hardcoded_wrappers/hardcoded_wrapper.c $WORK_DIR/libamtrack/src/
 cp $WORK_DIR/hardcoded_wrappers/hardcoded_wrapper.h $WORK_DIR/libamtrack/src/
+
+
+# *** Copy sandbox configure.ac ***
+if [ $SANDBOX_ARG == "TRUE" ] ; then
+	echo "Copy sandbox configure.ac"	
+	cp $ROOT_DIR/configure.ac $ROOT_DIR/configure.ac.org
+	cp $SANDBOX_DIR/configure.ac $ROOT_DIR
+fi
 
 
 # *** Run autoconfigure (to update svn version) ***
@@ -146,6 +181,13 @@ if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.add.metainfo.R"
   exit 1
 fi
+
+
+if [ $SANDBOX_ARG == "TRUE" ] ; then
+	echo "Roll back copy of sandbox configure.ac"	
+	mv $ROOT_DIR/configure.ac.org $ROOT_DIR/configure.ac
+fi
+
 
 echo "Running R script to create Rd documentation from parsed doxygen information..."
 Rscript --no-save $SCRIPT_DIR/R.generate.Rd.documentation.R $WORK_DIR libamtrack hardcoded_documentation >$WORK_DIR/R.generate.Rd.documentation.Rout 2>&1
