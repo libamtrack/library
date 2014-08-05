@@ -3,7 +3,7 @@ LIBAMTRACK INFORMATION FOR CODE DEVELOPERS --- PLEASE READ CAREFULLY
 ############################################################################################################################
 
 0.	Requirements
-1.  Basic workflow for compilation of libamtrack from full source - using autotools
+1.  Basic workflow for compilation of libamtrack from full source - using autotools, list of targets
 2.  Using the eclipse IDE
 3.  Doxygen comments
 4.  Build an R source package tarball
@@ -178,6 +178,27 @@ iv.  ### TODO: Describe (and enable)
 	 make distclean
 	 
 	 
+############################################################################################################################
+1c. Non-standard make targets
+############################################################################################################################
+
+i.    R-package
+
+Compiles an R package tarball from current libamtrack source
+
+ii.   R-forge
+
+Syncs R package source with given directory (which is preferrably a working copy of the libamtrack R-forge repository at 
+svn://r-forge.r-project.org/svnroot/libamtrack/).
+
+iii.  R-package-sandbox
+
+Compiles an R package tarball from current libamtrack source PLUS another directory containings files to overwrite public
+files (i.e. proprietary stopping power data etc.).
+
+
+ii. and iii. still contain hardcoded paths.
+
 ############################################################################################################################
 2. Using the eclipse IDE
 ############################################################################################################################
