@@ -2,11 +2,12 @@
 \alias{AT.SPC.spectrum.at.depth.g.cm2}
 \title{AT.SPC.spectrum.at.depth.g.cm2}
 \description{Returns spectrum from spc data in given depth step.}
-\usage{AT.SPC.spectrum.at.depth.g.cm2( spc, depth.g.cm2)
+\usage{AT.SPC.spectrum.at.depth.g.cm2( spc, depth.g.cm2, interpolate = TRUE)
 }
 \arguments{
   \item{spc}{ spc data}
   \item{depth.g.cm2}{ depth the spectrum should be taken at (up to now, the data from the closest depth step will be taken)}
+  \item{interpolate}{ if true, the spectra between the closest depth steps will be linearly interpolated, if false, the depth step just in front of the chosen depth will be taken directly}
 }
 \value{
   A data frame with the following columns (ready to use in most libamtrack functions):
