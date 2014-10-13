@@ -79,7 +79,7 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
     		tm.tm_min,
     		tm.tm_sec);
 	fprintf(output_file, "Radiation field, %ld component(s)\nE.MeV.u; particle.no; fluence/dose\n", number_of_field_components);
-    for(int i = 0; i < number_of_field_components; i++){
+    for(i = 0; i < number_of_field_components; i++){
     	fprintf(output_file, "%3.2e, %ld; %3.2e\n", E_MeV_u[i], particle_no[i], fluence_cm2_or_dose_Gy[i]);
     }
   }

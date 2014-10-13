@@ -252,7 +252,7 @@ int AT_Z_from_element_acronym( const long n,
 This applies to Linux and Mac OS X only.
 
 The necessary files for producing an R package from libamtrack are found in:
-  /wrapper/R/R_package                     package folder structure and input files, script for compilation, hardcoded wrappers
+  /distributions/R/package                     package folder structure and input files, script for compilation, hardcoded wrappers
                                            and documentation
   /tools/automatic_wrapper_generation      R scripts for automatic creation of R/C wrappers
 

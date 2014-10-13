@@ -17,8 +17,6 @@ Windows users can download it from project webpage (visit http://www.swig.org/do
 also -dev version of packages). Windows users can download it from here: http://gnuwin32.sourceforge.net/packages/gsl.htm
 
 
-
-
 ==================================================================================================================================
 = Compilation
 
@@ -47,7 +45,7 @@ containing make_jar.bat file (using cd command) and run it (typing make_jar.bat)
 ==========================================
 == Linux systems
 
-Locate file wrapper\Java\make_jar.sh and setup following variables:
+Locate file distributions\Java\make_jar.sh and setup following variables:
 
 SWIGEXE=swig
 JARSIGNEREXE=jarsigner

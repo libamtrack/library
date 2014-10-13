@@ -486,7 +486,7 @@ int AT_D_RDD_Gy( const long  n,
 
   if( rdd_model == RDD_RadicalDiffusion){
   // Loop over all r_m given
-	for (int i = 0; i < n; i++){
+	for (i = 0; i < n; i++){
 		  D_RDD_Gy[i]         =  AT_RDD_RadicalDiffusion_Gy(r_m[i],
 				  E_MeV_u,
 				  particle_no,

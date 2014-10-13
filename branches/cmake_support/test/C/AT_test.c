@@ -42,7 +42,6 @@
 	#include <malloc.h>
 #endif
 
-#include "config.h"
 
 // CAVE: Remove this by appropriate include file when using other functions from libamtrack
 // As it can trigger very strange behaviour such as faulty return values etc.

@@ -321,9 +321,9 @@ void  AT_single_impact_local_dose_distrib(
 	// Write out f1 for debugging
 	FILE* output = fopen("f1_output.csv", "w");
 	fprintf(output, "bin.no;d.Gy;dd.Gy;f1\n");
-	for (int j = 0; j < n_bins_f1; j++){
+	for (j = 0; j < n_bins_f1; j++){
 		fprintf(output,
-				"%d;%7.6e;%7.6e;%7.6e\n",
+				"%ld;%7.6e;%7.6e;%7.6e\n",
 				j, f1_d_Gy[j], f1_dd_Gy[j], frequency_1_Gy_f1[j]);
 	}
 	fclose(output);
@@ -1033,8 +1033,8 @@ long AT_n_bins_for_DSB_distribution(const long n_bins_f,
 	  //double* avg_DSB = (double*)calloc(n_bins_f, sizeof(double));
 
 	  double max_number_of_DSB = 0.0;
-
-	  for(long i = 0; i < n_bins_f; i++){
+	  long i = 0;
+	  for(i = 0; i < n_bins_f; i++){
 		  max_number_of_DSB = GSL_MAX(max_number_of_DSB, f_d_Gy[i] * enhancement_factor[i] * DSB_per_Gy_per_domain);
 	  }
 
@@ -1069,8 +1069,8 @@ void AT_get_DSB_distribution(const long     n_bins_f,
 
 	  // Compute average number of DSBs per domain for each dose bin
 	  double* avg_DSB = (double*)calloc(n_bins_f, sizeof(double));
-
-	  for(long i = 0; i < n_bins_f; i++){
+      long i,j = 0;
+	  for(i = 0; i < n_bins_f; i++){
 		  avg_DSB[i] = f_d_Gy[i] * enhancement_factor[i] * DSB_per_Gy_per_domain;
 	  }
 
@@ -1082,10 +1082,10 @@ void AT_get_DSB_distribution(const long     n_bins_f,
 	  *avg_number_of_DSBs_in_cDSBs = 0.0;
 
 	  // For all possible number of DSBs (incl. 0)
-	  for(long i = 0; i < max_number_of_DSBs; i++){
+	  for(i = 0; i < max_number_of_DSBs; i++){
 		  p_DSB[i] = 0.0;								// Set DSB prob to zero
 		  // For all dose bins
-		  for(long j = 0; j < n_bins_f; j++){
+		  for(j = 0; j < n_bins_f; j++){
 			 if(isnan(enhancement_factor[j])){			// Set DSB prob to NAN if no enhancement factor is defined
 				p_DSB[i] = NAN;
 				break;
@@ -1159,11 +1159,12 @@ void AT_translate_dose_into_DSB_distribution( const long     n_bins_f,
 			avg_number_of_DSBs_in_cDSBs);
 
 	FILE*    output_file = NULL;
+    long i = 0;
 	if( write_output ){
 	   output_file    =  fopen("dose_to_DSBs.log","w");
 	   if (output_file == NULL) return;                      // File error
 	   fprintf(output_file, "n.DSBs; p.DSB\n");
-	   for(long i = 0; i < n_bins_DSB; i++){
+	   for(i = 0; i < n_bins_DSB; i++){
 		   fprintf(output_file, "%ld, %e\n", i, p_DSB[i]);
 	   }
 	   fclose(output_file);
