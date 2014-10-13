@@ -43,7 +43,6 @@
 #include <malloc.h>
 #endif
 
-#include "config.h"
 
 #include "AT_StoppingPower.h"
 #include "AT_CernlibFuns.h"
