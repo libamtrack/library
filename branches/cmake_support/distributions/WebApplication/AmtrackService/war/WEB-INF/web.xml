@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+    <context-param>
+    <param-name>dbname</param-name>
+    <param-value>test.db</param-value>
+ 	</context-param>
+ 	
+ 	<context-param>
+    <param-name>dbuser</param-name>
+    <param-value>database username</param-value>
+ 	</context-param>
+ 	
+ 	<context-param>
+    <param-name>dbpass</param-name>
+    <param-value>database password</param-value>
+ 	</context-param>
+  
+  <!-- Servlets -->
+  <servlet>
+    <servlet-name>calcServlet</servlet-name>
+    <servlet-class>amtrackservice.server.CalculationServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>calcServlet</servlet-name>
+    <url-pattern>/amtrackservice/CalculationService</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>AmtrackService.html</welcome-file>
+  </welcome-file-list>
+
+</web-app>
