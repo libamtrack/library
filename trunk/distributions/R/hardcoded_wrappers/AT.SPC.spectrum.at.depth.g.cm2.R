@@ -16,8 +16,8 @@ AT.SPC.spectrum.at.depth.g.cm2 <- function(spc, depth.g.cm2, interpolate = TRUE)
 	 spc.interp             <- spc.before
 	 spc.interp$depth.step  <- depth.step.interp
 	 spc.interp$depth.g.cm2 <- depth.g.cm2
-	 spc.interp$fluence.cm2 <- (1 - depth.step.frac) * spc.before$dN.dE.per.MeV.u.per.primary + depth.step.frac * spc.after$dN.dE.per.MeV.u.per.primary
-      
+	 spc.interp$fluence.cm2 <- (1 - depth.step.frac) * spc.before$dN.dE.per.MeV.u.per.primary * spc.before$DE.MeV.u+ depth.step.frac * spc.after$dN.dE.per.MeV.u.per.primary * spc.after$DE.MeV.u
+
 	 return(spc.interp)
     }else{
 	 return(spc.before)
