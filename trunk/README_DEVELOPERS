@@ -2,7 +2,7 @@
 LIBAMTRACK INFORMATION FOR CODE DEVELOPERS --- PLEASE READ CAREFULLY
 ############################################################################################################################
 
-0.	Requirements
+0.  Requirements
 1.  Basic workflow for compilation of libamtrack from full source - using autotools, list of targets
 2.  Using the eclipse IDE
 3.  Doxygen comments
