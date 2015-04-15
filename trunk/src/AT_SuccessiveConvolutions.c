@@ -868,9 +868,9 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 	double*	delta_i		= (double*)calloc(n_bins, sizeof(double));
 	double  tmp;
 	for  (i = *bins_per_factor_2; i <= n_bins; i++){
-		tmp		          =  (double)(i - *bins_per_factor_2) * log(2.0) / (double)(*bins_per_factor_2);
-		tmp			      =  -1.0 * log(1.0 - 0.5 * exp(-tmp)) / (log(2.0) / (double)(*bins_per_factor_2));
-		delta_i[i-1]      =  tmp - (double)(*bins_per_factor_2);
+		tmp			=  (double)(i - *bins_per_factor_2) * log(2.0) / (double)(*bins_per_factor_2);
+		tmp			=  -1.0 * log(1.0 - 0.5 * exp(-tmp)) / (log(2.0) / (double)(*bins_per_factor_2));
+		delta_i[i-1]      	=  tmp - (double)(*bins_per_factor_2);
 	}
 
 	/* Write out start distribution, if chosen */
@@ -905,15 +905,15 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 
 		if((current_mean_number_of_tracks_contrib >= 10.0) && (adjust_dose_spacing == true)){
 			AT_Kellerer_reset(	bins_per_factor_2,
-					n_bins,
-					&frequency_n_bins_last,
-					&local_dose_first_bin,
-					&frequency_first_bin_last,
-					local_dose_lowest_left_limit,
-					local_dose_midpoints,
-					local_dose_bin_widths,
-					frequency_last,
-					delta_i);
+						n_bins,
+						&frequency_n_bins_last,
+						&local_dose_first_bin,
+						&frequency_first_bin_last,
+						local_dose_lowest_left_limit,
+						local_dose_midpoints,
+						local_dose_bin_widths,
+						frequency_last,
+						delta_i);
 		}
 
 		AT_Kellerer_folding(	n_bins,
@@ -932,34 +932,34 @@ void   AT_SuccessiveConvolutions( const double  final_mean_number_of_tracks_cont
 
 		if (frequency_zero_bin_last >= 1e-10){
 			AT_Kellerer_zero(	frequency_first_bin_last,
-					n_bins,
-					local_dose_first_bin,
-					frequency_n_bins_last,
-					frequency_zero_bin_last,
-					frequency_last,
-					local_dose_bin_widths,
-					&frequency_first_bin,
-					&frequency_n_bins,
-					frequency);
+						n_bins,
+						local_dose_first_bin,
+						frequency_n_bins_last,
+						frequency_zero_bin_last,
+						frequency_last,
+						local_dose_bin_widths,
+						&frequency_first_bin,
+						&frequency_n_bins,
+						frequency);
 		}
 
 		if(shrink_tails){
 			AT_Kellerer_shrink(	n_bins,
-					local_dose_first_bin,
-					shrink_tails_under,
-					local_dose_bin_widths,
-					&frequency_first_bin,
-					&frequency_n_bins,
-					frequency);
+						local_dose_first_bin,
+						shrink_tails_under,
+						local_dose_bin_widths,
+						&frequency_first_bin,
+						&frequency_n_bins,
+						frequency);
 		}
 
 		AT_Kellerer_normalize(	local_dose_first_bin,
-				local_dose_midpoints,
-				local_dose_bin_widths,
-				frequency_n_bins,
-				frequency_zero_bin,
-				frequency_first_bin,
-				frequency);
+					local_dose_midpoints,
+					local_dose_bin_widths,
+					frequency_n_bins,
+					frequency_zero_bin,
+					frequency_first_bin,
+					frequency);
 
 		/* Write out distribution, if chosen */
 		if( write_output ){
@@ -1119,6 +1119,7 @@ void AT_get_DSB_distribution(const long     n_bins_f,
 	  *number_of_cDSBs *= domains_per_nucleus;
 	  *avg_number_of_DSBs_in_cDSBs *= domains_per_nucleus / *number_of_cDSBs;
 }
+
 
 void AT_translate_dose_into_DSB_distribution( const long     n_bins_f,
 		const double         f_d_Gy[],
