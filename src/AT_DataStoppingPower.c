@@ -72,7 +72,7 @@ double AT_ICRU_wrapper(const double 	E_MeV_u,
 		const long 	    particle_no,
 		const long 		material_no){
 	// TODO: Later - read-in data from table here
-	if((material_no != Water_Liquid) || (material_no != Aluminum_Oxide)){		/* Water and Alox data only */
+	if((material_no != Water_Liquid) && (material_no != Aluminum_Oxide)){		/* Water and Alox data only */
 		return 0.0;
 	}
 
@@ -95,7 +95,11 @@ double AT_ICRU_wrapper(const double 	E_MeV_u,
 			AT_stopping_power_ICRU_table[material_no-1].E_MeV_u_and_stopping_power_total_MeV_cm2_g[Z],
 			AT_stopping_power_ICRU_table[material_no-1].number_of_data_points,
 			E_MeV_u);
-	return StoppingPower_MeV_cm2_mg * 1000;		// ICRU (73) gives stopping power in MeV*cm2/mg !
+	if(material_no == Water_Liquid){
+		return StoppingPower_MeV_cm2_mg * 1000;		// ICRU (73) gives stopping power in MeV*cm2/mg !
+	}else{
+		return StoppingPower_MeV_cm2_mg;
+	}
 }
 
 double AT_FLUKA_wrapper(const double 	E_MeV_u,
