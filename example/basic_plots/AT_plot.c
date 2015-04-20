@@ -344,7 +344,7 @@ int main( int argc, char* argv[]){
 		printf("#particle: %s (code: %ld)\n", particle_name, particle_no);
 		printf("#E[MeV] CSDArange[m]\n");
 		for( i = 0 ; i < number_of_points_on_x_axis ; i++){
-			y[i] = AT_CSDA_range_m_single(x[i],particle_no,material_no);
+//			y[i] = AT_CSDA_range_m_single(x[i],particle_no,material_no);
 		}
 	}  else {
 		printf("Plottype %s not supported\n", plottype);
