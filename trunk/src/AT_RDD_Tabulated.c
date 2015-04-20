@@ -59,7 +59,7 @@
 		 return (0.0);
 	 }
 
-	 double LET_keV_um = AT_Stopping_Power_keV_um_single( FLUKA,
+	 double LET_keV_um = AT_Stopping_Power_keV_um_single( PSTAR,
 				E_MeV_u,
 				particle_no,
 				material_no);
@@ -90,7 +90,7 @@
 		 return (0.0);
 	 }
 
-	 double LET_keV_um = AT_Stopping_Power_keV_um_single( FLUKA,
+	 double LET_keV_um = AT_Stopping_Power_keV_um_single( PSTAR,
 				E_MeV_u,
 				particle_no,
 				material_no);
@@ -142,7 +142,7 @@
 	 assert(E_idx >= 1);
 	 assert(E_idx <= 40);
 
-	 double LET_keV_um = AT_Stopping_Power_keV_um_single( FLUKA,
+	 double LET_keV_um = AT_Stopping_Power_keV_um_single( PSTAR,
 				E_MeV_u,
 				particle_no,
 				material_no);
@@ -158,7 +158,7 @@
 	 assert(E_idx >= 1);
 	 assert(E_idx <= 40);
 
-	 double LET_keV_um = AT_Stopping_Power_keV_um_single( FLUKA,
+	 double LET_keV_um = AT_Stopping_Power_keV_um_single( PSTAR,
 				E_MeV_u,
 				particle_no,
 				material_no);
