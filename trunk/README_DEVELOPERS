@@ -11,6 +11,7 @@ LIBAMTRACK INFORMATION FOR CODE DEVELOPERS --- PLEASE READ CAREFULLY
 6.  Install MinGW toolchain (Windows)
 7.  Install GSL
 8.  Make a release (including R package)
+9.  A note on stopping powers
 
 Contact and feedback
 
@@ -568,6 +569,12 @@ or appropriate menu short-cuts in R GUIs.
 
 If you want to install the package yourself, just skip "--no-inst" during compilation.
 
+############################################################################################################################
+9.  A note on stopping powers
+############################################################################################################################
+
+Stopping power data in libamtrack are primarily for convenient use and not for high-accuracy application. There is no
+distinguished between total and electronic stopping power and specific energy per nucleon and per amu!
 
 ############################################################################################################################
 Contact and feedback
