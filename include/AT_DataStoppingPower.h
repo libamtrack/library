@@ -44,9 +44,9 @@ enum stoppingPowerSource_no {
 	PSTAR 		= 0, /**< PSTAR */
 	Bethe 		= 1, /**< Bethe */
 	ShieldHit 	= 2, /**< ShieldHit code: extended Bethe formula */
-	ICRU 		= 3, /**< ICRU 49 and 73: for liquid water */
+	ICRU 		= 3, /**< ICRU 49 and 73: for liquid water and alumina */
 	FLUKA 		= 4, /**< DEDX FLUKA WATER I=77.3eV */
-	ATIMA 		= 5 /**< Data from ATIMA for TLD sim Daria Bascolo (GSI) */
+	ATIMA 		= 5  /**< Data from ATIMA for TLD sim Daria Bascolo (GSI) */
 };
 
 /**
