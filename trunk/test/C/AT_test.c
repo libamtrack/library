@@ -48,43 +48,44 @@
 #include "AT_StoppingPower.h"
 
 int main(){
-	const double E_MeV_u   = 270.55;
-	const long particle_no = 6012;
-	const long material_no = 1;
 
-	double test;
+	const double E_MeV_u[3]   = {270.55, 430, 10};
+	const long particle_no[3] = {6012, 6012, 1001};
+	const long material_no = 2;
 
-	AT_Mass_Stopping_Power("Hallo!",
-			1,
-			&E_MeV_u,
-			&particle_no,
+	double test[3];
+
+	AT_Mass_Stopping_Power("FLUKA_DEDX_WATER_76.8eV.txt",
+			3,
+			E_MeV_u,
+			particle_no,
 			material_no,
-			&test);
-	printf("Ergebnis FromFile: %e\n", test);
+			test);
+	printf("Ergebnis FromFile: %e, %e, %e\n", test[0], test[1], test[2]);
 
 	AT_Mass_Stopping_Power("Bethe",
-			1,
-			&E_MeV_u,
-			&particle_no,
+			3,
+			E_MeV_u,
+			particle_no,
 			material_no,
-			&test);
-	printf("Ergebnis Bethe: %e\n", test);
+			test);
+	printf("Ergebnis Bethe: %e, %e, %e\n", test[0], test[1], test[2]);
 
 	AT_Mass_Stopping_Power("PSTAR",
-			1,
-			&E_MeV_u,
-			&particle_no,
+			3,
+			E_MeV_u,
+			particle_no,
 			material_no,
-			&test);
-	printf("Ergebnis PSTAR: %e\n", test);
+			test);
+	printf("Ergebnis PSTAR: %e, %e, %e\n", test[0], test[1], test[2]);
 
 	AT_Mass_Stopping_Power("ICRU",
-			1,
-			&E_MeV_u,
-			&particle_no,
+			3,
+			E_MeV_u,
+			particle_no,
 			material_no,
-			&test);
-	printf("Ergebnis ICRU: %e\n", test);
+			test);
+	printf("Ergebnis ICRU: %e, %e, %e\n", test[0], test[1], test[2]);
 
 	return EXIT_SUCCESS;
 };

@@ -286,7 +286,7 @@ void is_element_char(const char element[],
  * @param[in] n_set
  * @param[out] matches
  */
-void is_element_int(const long element,
+int is_element_int(const long element,
 		const long set[],
 		const long n_set,
 		bool matches[]);

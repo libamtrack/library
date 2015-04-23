@@ -34,6 +34,10 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "AT_NumericalRoutines.h"
+#include "AT_DataParticle.h"
+
+
 int AT_FromFile_wrapper( const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
