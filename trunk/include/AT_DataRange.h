@@ -35,7 +35,7 @@
 #include "AT_Error.h"
 #include "AT_NumericalRoutines.h"
 #include "AT_PhysicsRoutines.h"
-#include "AT_DataStoppingPower.h"
+#include "AT_StoppingPower.h"
 
 
 

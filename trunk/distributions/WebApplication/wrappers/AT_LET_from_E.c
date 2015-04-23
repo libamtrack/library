@@ -31,7 +31,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "AT_DataStoppingPower.h"
+
+#include "../../../include/AT_StoppingPower.h"
 
 int main(int argc, char *argv[]) {
 	if (argc != 2) {
