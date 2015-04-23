@@ -128,37 +128,52 @@ AT_stopping_power_ICRU_table_struct AT_stopping_power_ICRU_table[2] = {
 
 
 
-double AT_ICRU_wrapper(const double 	E_MeV_u,
-		const long 	    particle_no,
-		const long 		material_no){
-	// TODO: Later - read-in data from table here
+int AT_ICRU_wrapper( const long n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		double mass_stopping_power_MeV_cm2_g[]){
+
+	long i;
 	if((material_no != Water_Liquid) && (material_no != Aluminum_Oxide)){		/* Water and Alox data only */
-		return 0.0;
+		for(i = 0; i < n; i++){
+			mass_stopping_power_MeV_cm2_g[i] = -1.0;
+		}
+		return AT_No_ICRU_Data;
 	}
 
-	long Z		= AT_Z_from_particle_no_single(particle_no);
-	if( Z > 18){				/* Data for H ... Ar */
-		return 0.0;
+	long Z[n];
+	AT_Z_from_particle_no(n, particle_no, Z);
+
+	for(i = 0; i < n; i++){
+
+		if( Z[i] > 18){				/* Data for H ... Ar */
+			mass_stopping_power_MeV_cm2_g[i]	= -1.0;
+			continue;
+		}
+
+		if (E_MeV_u[i] < 0.025 || E_MeV_u[i] > 1000){
+			mass_stopping_power_MeV_cm2_g[i]	= -1.0;
+			continue;
+		}
+
+		if (Z[i] == 2 && E_MeV_u[i] > 250){   // Data for He only until 250 MeV/u = 1000 MeV !
+			mass_stopping_power_MeV_cm2_g[i]	= -1.0;
+			continue;
+		}
+
+		mass_stopping_power_MeV_cm2_g[i] = AT_get_interpolated_y_from_input_table(
+				AT_stopping_power_ICRU_table[material_no-1].energy_and_stopping_power[0],
+				AT_stopping_power_ICRU_table[material_no-1].energy_and_stopping_power[Z[i]],
+				AT_stopping_power_ICRU_table[material_no-1].number_of_data_points,
+				E_MeV_u[i]);
+
+		// TODO: remove after proper scaling of data
+		if(material_no == Water_Liquid){
+			mass_stopping_power_MeV_cm2_g[i] *= 1000;
+		}
 	}
 
-	if (E_MeV_u < 0.025 || E_MeV_u > 1000){
-		return 0.0;
-	}
-
-	if (Z == 2 && E_MeV_u > 250){   // Data for He only until 250 MeV/u = 1000 MeV !
-		return 0.0;
-	}
-
-	double	StoppingPower_MeV_cm2_mg = 0.0;
-	StoppingPower_MeV_cm2_mg = AT_get_interpolated_y_from_input_table(
-			AT_stopping_power_ICRU_table[material_no-1].energy_and_stopping_power[0],
-			AT_stopping_power_ICRU_table[material_no-1].energy_and_stopping_power[Z],
-			AT_stopping_power_ICRU_table[material_no-1].number_of_data_points,
-			E_MeV_u);
-	if(material_no == Water_Liquid){
-		return StoppingPower_MeV_cm2_mg * 1000;		// ICRU (73) gives stopping power in MeV*cm2/mg !
-	}else{
-		return StoppingPower_MeV_cm2_mg;
-	}
+	return AT_Success;
 }
 

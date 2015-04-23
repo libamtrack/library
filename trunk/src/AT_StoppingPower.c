@@ -36,47 +36,49 @@
  * Main function to retrieve stopping powers
  *
  */
-double AT_Stopping_Power_MeV_cm2_g_single( const long stopping_power_source_no, const double E_MeV_u, const long particle_no, const long material_no){
-
-	double Stopping_Power_MeV_cm2_g = 0.0;
+int AT_Mass_Stopping_Power( const long stopping_power_source_no,
+		const long n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		double stopping_power_MeV_cm2_g[]){
 
 	assert( stopping_power_source_no < STOPPING_POWER_SOURCE_N);
 	assert( stopping_power_source_no >= 0 );
 
-	Stopping_Power_MeV_cm2_g = AT_stopping_power_functions.function[stopping_power_source_no](E_MeV_u, particle_no, material_no);
+	int result = AT_stopping_power_functions.function[stopping_power_source_no](n,
+			E_MeV_u,
+			particle_no,
+			material_no,
+			stopping_power_MeV_cm2_g);
 
-	return Stopping_Power_MeV_cm2_g;
+	return result;
 }
 
 
-void AT_Stopping_Power_MeV_cm2_g_multi( const long stopping_power_source_no, const long number_of_particles, const double E_MeV_u[], const long particle_no[], const long material_no, double Stopping_Power_MeV_cm2_g[]){
+
+int AT_Stopping_Power( const long stopping_power_source_no,
+		const long n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		double stopping_power_keV_um[]){
+
+	int result = AT_Mass_Stopping_Power(stopping_power_source_no,
+			n,
+			E_MeV_u,
+			particle_no,
+			material_no,
+			stopping_power_keV_um);
+
 	long i;
-	for( i = 0 ; i < number_of_particles; i++){
-		Stopping_Power_MeV_cm2_g[i] = AT_Stopping_Power_MeV_cm2_g_single(stopping_power_source_no, E_MeV_u[i], particle_no[i], material_no);
+	double material_density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
+	for(i = 0; i < n; i++){
+		stopping_power_keV_um[i] *= material_density_g_cm3;
 	}
+
+	return (result);
 }
-
-
-double AT_Stopping_Power_keV_um_single( const long stopping_power_source_no, const double E_MeV_u, const long particle_no, const long material_no){
-
-	double Stopping_Power_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u, particle_no, material_no);
-
-    double material_density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
-
-	return Stopping_Power_MeV_cm2_g * material_density_g_cm3 * 0.1;
-}
-
-
-void AT_Stopping_Power_keV_um_multi( const long stopping_power_source_no, const long number_of_particles, const double E_MeV_u[], const long particle_no[], const long material_no, double Stopping_Power_keV_um[]){
-	long i;
-	for( i = 0 ; i < number_of_particles; i++){
-		Stopping_Power_keV_um[i] = AT_Stopping_Power_keV_um_single(stopping_power_source_no, E_MeV_u[i], particle_no[i], material_no);
-	}
-}
-
-
-
-
 
 
 double AT_Energy_MeV_u_from_Stopping_Power_single( const long stopping_power_source_no,

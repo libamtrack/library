@@ -58,7 +58,13 @@ long  AT_n_bins_for_single_impact_local_dose_distrib(
 	for (i = 0; i < n; i++){
 
 		double max_electron_range_m = AT_max_electron_range_m( E_MeV_u[i], (int)material_no, (int)er_model);
-		double LET_MeV_cm2_g        = AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u[i], particle_no[i], material_no);
+		double LET_MeV_cm2_g;
+			  AT_Mass_Stopping_Power( stopping_power_source_no,
+					  1,
+					  &E_MeV_u[i],
+					  &particle_no[i],
+					  material_no,
+					  &LET_MeV_cm2_g);
 		double norm_constant_Gy     = AT_RDD_precalculated_constant_Gy(max_electron_range_m, LET_MeV_cm2_g, E_MeV_u[i], particle_no[i], material_no, rdd_model, rdd_parameter, er_model);
 		double current_d_min_Gy     = AT_RDD_d_min_Gy( E_MeV_u[i], particle_no[i], material_no, rdd_model, rdd_parameter, er_model, norm_constant_Gy);
 		double current_d_max_Gy     = AT_RDD_d_max_Gy( E_MeV_u[i], particle_no[i], material_no, rdd_model, rdd_parameter, er_model, stopping_power_source_no);

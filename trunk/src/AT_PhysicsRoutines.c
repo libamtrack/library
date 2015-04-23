@@ -300,7 +300,13 @@ double AT_dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
     const long    material_no,
     const long    stopping_power_source_no){
 
-	double LET_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no , E_MeV_u, particle_no, material_no );
+	  double LET_MeV_cm2_g;
+	  AT_Mass_Stopping_Power( stopping_power_source_no,
+			  1,
+			  &E_MeV_u,
+			  &particle_no,
+			  material_no,
+			  &LET_MeV_cm2_g);
 
 	// Multiply by fluence, convert from MeV/g to Gy
 	return LET_MeV_cm2_g * fluence_cm2 * MeV_g_to_J_kg;
@@ -330,7 +336,13 @@ double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
     const long    material_no,
     const long    stopping_power_source_no)
 {
-  double LET_MeV_cm2_g = AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u, particle_no, material_no );
+	double LET_MeV_cm2_g;
+		  AT_Mass_Stopping_Power( stopping_power_source_no,
+				  1,
+				  &E_MeV_u,
+				  &particle_no,
+				  material_no,
+				  &LET_MeV_cm2_g);
 
   return (D_Gy / MeV_g_to_J_kg) / LET_MeV_cm2_g;
 }
@@ -444,11 +456,16 @@ void AT_single_impact_dose_Gy( const long n,
     double        single_impact_dose_Gy[])
 {
   long i;
-  for( i = 0 ; i < n ; i++ ){
-    single_impact_dose_Gy[i] = AT_single_impact_dose_Gy_single(       AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u[i],
-                                                                                                particle_no[i],
-                                                                                                material_no),
-                                                                      AT_single_impact_fluence_cm2_single(      E_MeV_u[i],
+  double stopping_power_MeV_cm2_g[n];
+  AT_Mass_Stopping_Power( stopping_power_source_no,
+		  n,
+		  E_MeV_u,
+		  particle_no,
+		  material_no,
+		  stopping_power_MeV_cm2_g);
+                                                                        for( i = 0 ; i < n ; i++ ){
+    single_impact_dose_Gy[i] = AT_single_impact_dose_Gy_single(    stopping_power_MeV_cm2_g[i],
+    		AT_single_impact_fluence_cm2_single(      E_MeV_u[i],
                                                                                                                 material_no,
                                                                                                                 er_model));
   }
@@ -587,7 +604,7 @@ double AT_fluence_weighted_LET_MeV_cm2_g( const long     number_of_field_compone
     total_fluence_cm2 += fluence_cm2[i];
   }
 
-  AT_Stopping_Power_MeV_cm2_g_multi( stopping_power_source_no,
+  AT_Mass_Stopping_Power( stopping_power_source_no,
 	  number_of_field_components,
       E_MeV_u,
       particle_no,
@@ -619,7 +636,7 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
   double*  single_LETs_MeV_cm2_g  =  (double*)calloc(number_of_field_components, sizeof(double));
   double*  single_doses_Gy        =  (double*)calloc(number_of_field_components, sizeof(double));
 
-  AT_Stopping_Power_MeV_cm2_g_multi( stopping_power_source_no,
+  AT_Mass_Stopping_Power( stopping_power_source_no,
       number_of_field_components,
       E_MeV_u,
       particle_no,
@@ -665,14 +682,14 @@ double AT_stopping_power_ratio( const long     number_of_field_components,
 	double* LET_MeV_cm2_g			= (double*)calloc(number_of_field_components, sizeof(double));
 	double* reference_LET_MeV_cm2_g	= (double*)calloc(number_of_field_components, sizeof(double));
 
-	AT_Stopping_Power_MeV_cm2_g_multi( stopping_power_source_no,
+	AT_Mass_Stopping_Power( stopping_power_source_no,
 	    number_of_field_components,
 	    E_MeV_u,
 	    particle_no,
 	    material_no,
 	    LET_MeV_cm2_g);
 
-	AT_Stopping_Power_MeV_cm2_g_multi( stopping_power_source_no,
+	AT_Mass_Stopping_Power( stopping_power_source_no,
 	    number_of_field_components,
 	    E_MeV_u,
 	    particle_no,
@@ -714,7 +731,13 @@ double AT_mean_number_of_tracks_contrib(    const long number_of_field_component
   long i;
   for (i = 0; i < number_of_field_components; i++){
     double single_impact_fluence_cm2 =  AT_single_impact_fluence_cm2_single(  E_MeV_u[i], material_no, er_model);
-    double LET_MeV_cm2_g             = AT_Stopping_Power_MeV_cm2_g_single( stopping_power_source_no, E_MeV_u[i], particle_no[i], material_no);
+    double LET_MeV_cm2_g;
+    	  AT_Mass_Stopping_Power( stopping_power_source_no,
+    			  1,
+    			  &E_MeV_u[i],
+    			  &particle_no[i],
+    			  material_no,
+    			  &LET_MeV_cm2_g);
     u += norm_fluence[i] * AT_single_impact_dose_Gy_single(  LET_MeV_cm2_g, single_impact_fluence_cm2 );
   }
 

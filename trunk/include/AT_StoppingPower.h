@@ -39,61 +39,43 @@
 
 #include "AT_StoppingPowerData.h"
 
-
 /**
- * Main access method to stopping power data
+ * Retrieves the mass stopping power in MeV*cm2/g for
+ * the requested energies and particles for a specified
+ * material and data source
  * @param[in] stopping_power_source_no
+ * @param[in] n
  * @param[in] E_MeV_u
  * @param[in] particle_no
  * @param[in] material_no
- * @return stopping power
+ * @param[out] stopping_power_MeV_cm2_g
+ * @return
  */
-double AT_Stopping_Power_MeV_cm2_g_single( const long stopping_power_source_no,
-		const double E_MeV_u, const long particle_no, const long material_no);
-
+int AT_Mass_Stopping_Power( const long stopping_power_source_no,
+		const long n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		double stopping_power_MeV_cm2_g[]);
 
 /**
- * Main access method to stopping power data - multiple field
+ * Retrieves the stopping power in keV/um for
+ * the requested energies and particles for a specified
+ * material and data source
  * @param[in] stopping_power_source_no
- * @param[in] number_of_particles
- * @param[in] E_MeV_u (array of size number_of_particles)
- * @param[in] particle_no (array of size number_of_particles)
- * @param[in] material_no
- * @param[out] Stopping_Power_MeV_cm2_g (array of size number_of_particles)
- */
-void AT_Stopping_Power_MeV_cm2_g_multi( const long stopping_power_source_no,
-		const long number_of_particles, const double E_MeV_u[],
-		const long particle_no[], const long material_no,
-		double Stopping_Power_MeV_cm2_g[]);
-
-
-/**
- * Main access method to stopping power data
- * @param[in] stopping_power_source_no
+ * @param[in] n
  * @param[in] E_MeV_u
  * @param[in] particle_no
  * @param[in] material_no
- * @return stopping power
+ * @param[out] stopping_power_keV_um
+ * @return
  */
-double AT_Stopping_Power_keV_um_single( const long stopping_power_source_no,
-		const double E_MeV_u, const long particle_no, const long material_no);
-
-
-/**
- * Main access method to stopping power data - multiple field
- * @param[in] stopping_power_source_no
- * @param[in] number_of_particles
- * @param[in] E_MeV_u (array of size number_of_particles)
- * @param[in] particle_no (array of size number_of_particles)
- * @param[in] material_no
- * @param[out] Stopping_Power_keV_um (array of size number_of_particles)
- */
-void AT_Stopping_Power_keV_um_multi( const long stopping_power_source_no,
-		const long number_of_particles, const double E_MeV_u[],
-		const long particle_no[], const long material_no,
-		double Stopping_Power_keV_um[]);
-
-
+int AT_Stopping_Power( const long stopping_power_source_no,
+		const long n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		double stopping_power_keV_um[]);
 /**
  * TODO
  * @param[in] stopping_power_source_no
