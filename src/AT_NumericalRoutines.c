@@ -576,16 +576,18 @@ void is_element_char(const char element[], const char* const * set, const long n
 }
 
 
-void is_element_int(const long element, const long set[], const long n_set, bool matches[]){
+int is_element_int(const long element, const long set[], const long n_set, bool matches[]){
 
-  long  i;
+  long  i, n = 0;
   for (i = 0; i < n_set; i++){
     if(element == set[i]){
       matches[i]  = true;
+      n++;
     } else{
       matches[i]  = false;
     }
   }
+  return n;
 }
 
 
