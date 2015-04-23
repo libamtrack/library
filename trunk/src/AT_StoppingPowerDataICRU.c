@@ -128,6 +128,16 @@ AT_stopping_power_ICRU_table_struct AT_stopping_power_ICRU_table[2] = {
 
 
 
+<<<<<<< .mine
+int AT_ICRU_wrapper( const long n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		const char info[],
+		double mass_stopping_power_MeV_cm2_g[]){
+
+	long i;
+=======
 int AT_ICRU_wrapper( const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
@@ -135,6 +145,7 @@ int AT_ICRU_wrapper( const long n,
 		double mass_stopping_power_MeV_cm2_g[]){
 
 	long i;
+>>>>>>> .r1331
 	if((material_no != Water_Liquid) && (material_no != Aluminum_Oxide)){		/* Water and Alox data only */
 		for(i = 0; i < n; i++){
 			mass_stopping_power_MeV_cm2_g[i] = -1.0;

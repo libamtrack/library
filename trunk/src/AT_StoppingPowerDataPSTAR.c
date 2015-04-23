@@ -1293,11 +1293,20 @@ PSTAR_data_struct PSTAR_data =
 						&PSTAR_Copper } };
 
 
+<<<<<<< .mine
+int AT_PSTAR_wrapper( const long n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		const char info[],
+		double mass_stopping_power_MeV_cm2_g[]){
+=======
 int AT_PSTAR_wrapper( const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
 		const long material_no,
 		double mass_stopping_power_MeV_cm2_g[]){
+>>>>>>> .r1331
 
 	const PSTAR_data_for_material_struct * source_for_given_material = PSTAR_data.stopping_power_source_data[material_no];
 

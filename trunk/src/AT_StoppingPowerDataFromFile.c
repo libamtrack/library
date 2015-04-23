@@ -1,11 +1,20 @@
 #include "AT_StoppingPowerDataFromFile.h"
 
 
+<<<<<<< .mine
+int AT_FromFile_wrapper( const long n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		const char info[],
+		double mass_stopping_power_MeV_cm2_g[]){
+=======
 int AT_FromFile_wrapper( const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
 		const long material_no,
 		double mass_stopping_power_MeV_cm2_g[]){
+>>>>>>> .r1331
 
 	FILE *CSV;
   	CSV = fopen("FLUKA_DEDX_WATER_76.8eV.txt", "r");
