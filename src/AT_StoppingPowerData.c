@@ -3,7 +3,7 @@
 AT_stopping_power_functions_struct AT_stopping_power_functions =
 		{
 //				{ FromFile, Bethe, PSTAR, ICRU},
-				{ "FromFile", "Bethe formula", "PSTAR data", "ICRU 49&73"},    /**< source_name */
+				{ "FromFile", "Bethe", "PSTAR", "ICRU"},    /**< source_name */
 				{ &AT_FromFile_wrapper, &AT_Bethe_wrapper, &AT_PSTAR_wrapper, &AT_ICRU_wrapper}
 		};
 

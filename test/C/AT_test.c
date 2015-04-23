@@ -54,6 +54,15 @@ int main(){
 
 	double test;
 
+<<<<<<< .mine
+	AT_Mass_Stopping_Power("Hallo!",
+			1,
+			&E_MeV_u,
+			&particle_no,
+			material_no,
+			&test);
+	printf("Ergebnis FromFile: %e\n", test);
+=======
 	AT_Mass_Stopping_Power(FromFile,
 			1,
 			&E_MeV_u,
@@ -61,29 +70,57 @@ int main(){
 			material_no,
 			&test);
 	printf("Ergebnis FromFile: %e\n", test);
+>>>>>>> .r1331
 
+<<<<<<< .mine
+	AT_Mass_Stopping_Power("Bethe",
+			1,
+			&E_MeV_u,
+			&particle_no,
+			material_no,
+			&test);
+=======
 	AT_Mass_Stopping_Power(Bethe,
 			1,
 			&E_MeV_u,
 			&particle_no,
 			material_no,
 			&test);
+>>>>>>> .r1331
 	printf("Ergebnis Bethe: %e\n", test);
 
+<<<<<<< .mine
+	AT_Mass_Stopping_Power("PSTAR",
+			1,
+			&E_MeV_u,
+			&particle_no,
+			material_no,
+			&test);
+=======
 	AT_Mass_Stopping_Power(PSTAR,
 			1,
 			&E_MeV_u,
 			&particle_no,
 			material_no,
 			&test);
+>>>>>>> .r1331
 	printf("Ergebnis PSTAR: %e\n", test);
 
+<<<<<<< .mine
+	AT_Mass_Stopping_Power("ICRU",
+			1,
+			&E_MeV_u,
+			&particle_no,
+			material_no,
+			&test);
+=======
 	AT_Mass_Stopping_Power(ICRU,
 			1,
 			&E_MeV_u,
 			&particle_no,
 			material_no,
 			&test);
+>>>>>>> .r1331
 	printf("Ergebnis ICRU: %e\n", test);
 
 	return EXIT_SUCCESS;

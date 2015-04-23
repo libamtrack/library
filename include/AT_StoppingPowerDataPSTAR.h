@@ -37,6 +37,7 @@ int AT_PSTAR_wrapper( const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
 		const long material_no,
+		const char info[],
 		double mass_stopping_power_MeV_cm2_g[]);
 
 /** PSTAR data downloaded from NIST database: http://www.nist.gov/pml/data/star/index.cfm

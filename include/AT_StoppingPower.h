@@ -39,6 +39,13 @@
 
 #include "AT_StoppingPowerData.h"
 
+int AT_Mass_Stopping_Power( const char stopping_power_source[],
+		const long n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		double stopping_power_MeV_cm2_g[]);
+
 /**
  * Retrieves the mass stopping power in MeV*cm2/g for
  * the requested energies and particles for a specified
@@ -51,7 +58,7 @@
  * @param[out] stopping_power_MeV_cm2_g
  * @return
  */
-int AT_Mass_Stopping_Power( const long stopping_power_source_no,
+int AT_Mass_Stopping_Power_with_no( const long stopping_power_source_no,
 		const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
@@ -70,7 +77,7 @@ int AT_Mass_Stopping_Power( const long stopping_power_source_no,
  * @param[out] stopping_power_keV_um
  * @return
  */
-int AT_Stopping_Power( const long stopping_power_source_no,
+int AT_Stopping_Power_with_no( const long stopping_power_source_no,
 		const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
