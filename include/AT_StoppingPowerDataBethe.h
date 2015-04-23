@@ -1,21 +1,13 @@
-#ifndef AT_H_
-#define AT_H_
+#ifndef AT_STOPPINGPOWERDATABETHE_H_
+#define AT_STOPPINGPOWERDATABETHE_H_
 
 /**
- * @brief Routines concerning general topis of libamtrack
+ * @brief Stopping power
  */
 
 /*
- *    AT.h
- *    ===============
- *
- *    Created on: 14.08.2011
- *    Creator: greilich
- *
- *    File name: $HeadURL$
- *    Revision:  $Revision$
- *    Last modified: $Date$
- *    Last modified by: $Author$
+ *    AT_DataStoppingPower.h
+ *    ==================
  *
  *    Copyright 2006, 2010 The libamtrack team
  *
@@ -36,20 +28,21 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
-#include <stdio.h>
+#include <stdbool.h>
 
-
+#include "AT_EnergyLoss.h"
 
 /**
- * Simple test function (sum) to check for availability and functionality of
- * libamtrack during configure-process
- *
- * @param[in]      a     			first number to add
- * @param[in]      b                second number to add
- * @return                          sum of a and b
+ * Wrapper for Bethe analytical function
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] material_no
+ * @return
  */
- double AT_test_fun( double a, double b);
+double AT_Bethe_wrapper( const double E_MeV_u,
+		const long particle_no,
+		const long material_no);
 
- // Just a test
- 
-#endif /* AT_ALGORITHMS_CPP_H_ */
+
+
+#endif /* AT_STOPPINGPOWERDATABETHE_H_ */

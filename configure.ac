@@ -10,7 +10,7 @@ AC_DEFINE(CODE_NAME, ["Black Armadillo"], [Cryptonym to faciliate versioning for
 AC_DEFINE(CODE_STATUS, ["Development"], [Status of the code])
 
 LT_INIT
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/AT_Algorithms_CPP.c])
 AC_CONFIG_SRCDIR([test/C/AT_test.c])

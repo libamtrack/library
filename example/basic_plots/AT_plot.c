@@ -43,7 +43,7 @@
 #endif
 
 #include "AT_RDD.h"
-#include "AT_DataStoppingPower.h"
+#include "AT_StoppingPower.h"
 #include "AT_PhysicsRoutines.h"
 
 char * plottypes[] = {"ER","RDD","LET","CSDArange"};
@@ -223,15 +223,15 @@ int main( int argc, char* argv[]){
 			exit(EXIT_FAILURE);
 		}
 	} else if( strcmp( plottype , "LET") == 0 ){
-		char test[STOPPING_POWER_SOURCE_NAME_LENGTH];
 		int status_code = -1;
 		if( modeltype >= 0 )
-			status_code = AT_stopping_power_source_model_name_from_number( modeltype, test);
+			//status_code = AT_stopping_power_source_model_name_from_number( modeltype, test);
+			status_code = 0;
 		if( status_code != AT_Success){
 			fprintf(stderr,"Specify LET source data type using --modeltype (-s) option\n");
 			int i;
-			for( i = 0 ; i < AT_stopping_power_sources.n ; i++ ){
-				fprintf(stderr,"%ld - %s\n", AT_stopping_power_sources.stopping_power_source_no[i], AT_stopping_power_sources.stopping_power_source_name[i]);
+			for( i = 0 ; i < STOPPING_POWER_SOURCE_N ; i++ ){
+//				fprintf(stderr,"%ld - %s\n", AT_stopping_power_sources.stopping_power_source_no[i], AT_stopping_power_sources.stopping_power_source_name[i]);
 			}
 			exit(EXIT_FAILURE);
 		}
@@ -316,8 +316,8 @@ int main( int argc, char* argv[]){
 			printf("# RDD parameter %d : %s = %g\n", i , AT_RDD_Data.parameter_name[index][i], rdd_parameter[i]);
 		printf("#particle: %s (code: %ld)\n", particle_name, particle_no);
 		long source_no = PSTAR;
-		char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH];
-		AT_stopping_power_source_model_name_from_number( source_no, source_name);
+		char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH] = "JAJA!";
+//		AT_stopping_power_source_model_name_from_number( source_no, source_name);
 		printf("#data source: %s (code: %ld)\n", source_name, source_no);
 		printf("#E: %g [MeV/u]\n", E_MeV_u);
 		printf("#r[m] D[Gy]\n");
@@ -332,9 +332,9 @@ int main( int argc, char* argv[]){
 		printf("#LET vs primary ion energy\n");
 		printf("#particle: %s (code: %ld)\n", particle_name, particle_no);
 		long source_no = modeltype;
-		char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH];
-		AT_stopping_power_source_model_name_from_number( source_no, source_name);
-		printf("#data source: %s (code: %ld)\n", source_name, source_no);
+		char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH] = "JAJA!";
+		//AT_stopping_power_source_model_name_from_number( source_no, source_name);
+	    printf("#data source: %s (code: %ld)\n", source_name, source_no);
 		printf("#E[MeV] LET[MeV/cm2g]\n");
 		for( i = 0 ; i < number_of_points_on_x_axis ; i++){
 			y[i] = AT_Stopping_Power_MeV_cm2_g_single( source_no, x[i],particle_no, material_no);

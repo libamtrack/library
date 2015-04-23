@@ -45,60 +45,43 @@
 
 #include "config.h"
 
-// CAVE: Remove this by appropriate include file when using other functions from libamtrack
-// As it can trigger very strange behaviour such as faulty return values etc.
-// #include "AT.h"
+#include "AT_StoppingPower.h"
 
 int main(){
-	 FILE *CSV;
-  	 CSV = fopen("FLUKA_DEDX_WATER_76.8eV.txt", "r");
+	const double E_MeV_u   = 270.55;
+	const long particle_no = 6012;
+	const long material_no = 1;
 
-	 if(NULL == CSV) {
-		 fprintf(stderr, "Error opening stopping power data file ...\n");
-		 return EXIT_FAILURE;
-	 }
+	double test;
 
+	test = AT_Stopping_Power_keV_um_single(FromFile,
+			E_MeV_u,
+			particle_no,
+			material_no);
 
-	 char 	line[1000], test[1000];
+	printf("Ergebnis Bethe: %e\n", test);
 
-	 int  	i = 0, ZZ;
-	 float	EE, SS;
+	test = AT_Stopping_Power_keV_um_single(Bethe,
+			E_MeV_u,
+			particle_no,
+			material_no);
 
-	 int	Z[10000];
-	 float	E[10000];
-	 float  S[10000];
+	printf("Ergebnis Bethe: %e\n", test);
 
-	 while (fgets(line, sizeof line, CSV)) {
-	     if (*line == EOF) break;
-	     if (isalpha(*line)) continue; /* ignore comment line */
-	     	 sscanf(line, "%s", test);
-	     	 if ((sscanf(line, "%d %e %e", &ZZ, &EE, &SS) != 3)&&(strlen(test) != 0)&&(strlen(test) != 1)) {
-	         /* handle error */
-				 printf("Error reading stopping power data (format correct?)...");
-				 return EXIT_FAILURE;
-			 } else {
-			 /* handle variables */
-				 Z[i] = ZZ;
-				 E[i] = EE;
-				 S[i++] = SS;
-			 }
-	 	 }
+	test = AT_Stopping_Power_keV_um_single(PSTAR,
+			E_MeV_u,
+			particle_no,
+			material_no);
 
-	 printf("Read %d lines.\n", i--);
+	printf("Ergebnis PSTAR: %e\n", test);
 
+	test = AT_Stopping_Power_keV_um_single(ICRU,
+			E_MeV_u,
+			particle_no,
+			material_no);
 
-	 int* Z_array = (int*)malloc(i*sizeof(int));
-	 float* E_array = (float*)malloc(i*sizeof(float));
-	 float* S_array = (float*)malloc(i*sizeof(float));
+	printf("Ergebnis ICRU: %e\n", test);
 
-	 memcpy(Z_array, Z, i*sizeof(int));
-	 memcpy(E_array, E, i*sizeof(float));
-	 memcpy(S_array, S, i*sizeof(float));
-
-	 for(int j = 0; j < i; j++){
-		 printf("line %d: %d %e %e\n", j, Z_array[j], E_array[j], S_array[j]);
-	 }
-
-	 return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 };
 

@@ -1,21 +1,13 @@
-#ifndef AT_H_
-#define AT_H_
+#ifndef AT_STOPPINGPOWERDATAICRU_H_
+#define AT_STOPPINGPOWERDATAICRU_H_
 
 /**
- * @brief Routines concerning general topis of libamtrack
+ * @brief Stopping power
  */
 
 /*
- *    AT.h
- *    ===============
- *
- *    Created on: 14.08.2011
- *    Creator: greilich
- *
- *    File name: $HeadURL$
- *    Revision:  $Revision$
- *    Last modified: $Date$
- *    Last modified by: $Author$
+ *    AT_DataStoppingPower.h
+ *    ==================
  *
  *    Copyright 2006, 2010 The libamtrack team
  *
@@ -36,20 +28,32 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
-#include <stdio.h>
+#include "AT_DataMaterial.h"
 
+/** This array contains the data
+ * as given by ICRU49 (H+He) and ICRU 73 (> He)
+ */
+
+/**
+ * Wrapper for ICRU stopping powers
+ * momentarily read from hardwired struct for water
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] material_no
+ * @return stopping power (MeV cm2 per g)
+ */
+double AT_ICRU_wrapper( const double E_MeV_u, const long particle_no,
+		const long material_no);
 
 
 /**
- * Simple test function (sum) to check for availability and functionality of
- * libamtrack during configure-process
- *
- * @param[in]      a     			first number to add
- * @param[in]      b                second number to add
- * @return                          sum of a and b
+ * @struct AT_stopping_power_ICRU_table
+ * TODO
  */
- double AT_test_fun( double a, double b);
+typedef struct {
+	const long material_no;
+	const long number_of_data_points;
+	const double energy_and_stopping_power[19][53];
+} AT_stopping_power_ICRU_table_struct;
 
- // Just a test
- 
-#endif /* AT_ALGORITHMS_CPP_H_ */
+#endif /* AT_STOPPINGPOWERDATAICRU_H_ */
