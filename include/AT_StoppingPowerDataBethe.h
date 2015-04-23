@@ -32,16 +32,12 @@
 
 #include "AT_EnergyLoss.h"
 
-/**
- * Wrapper for Bethe analytical function
- * @param[in] E_MeV_u
- * @param[in] particle_no
- * @param[in] material_no
- * @return
- */
-double AT_Bethe_wrapper( const double E_MeV_u,
-		const long particle_no,
-		const long material_no);
+
+int AT_Bethe_wrapper( const int n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		double mass_stopping_power_MeV_cm2_g[]);
 
 
 

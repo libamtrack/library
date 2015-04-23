@@ -47,7 +47,7 @@ enum stoppingPowerSource_no{
 	ICRU                 = 3, /**< ICRU 49 and 73: for liquid water */
 };
 
-typedef double (*stopping_power_function)(const double, const long, const long);
+typedef int (*stopping_power_function)(const long, const double[], const long[], const long, double[]);
 
 /**
  * Structure to connect stopping power number and corresponding function
@@ -56,7 +56,7 @@ typedef double (*stopping_power_function)(const double, const long, const long);
  */
 typedef struct {
 	const char stopping_power_source_name[STOPPING_POWER_SOURCE_N][STOPPING_POWER_SOURCE_NAME_LENGTH];
-	double (*function[STOPPING_POWER_SOURCE_N])(const double, const long, const long) ;
+	stopping_power_function function[STOPPING_POWER_SOURCE_N];
 } AT_stopping_power_functions_struct;
 
 

@@ -59,10 +59,13 @@
 		 return (0.0);
 	 }
 
-	 double LET_keV_um = AT_Stopping_Power_keV_um_single( PSTAR,
-				E_MeV_u,
-				particle_no,
-				material_no);
+	 double LET_keV_um;
+	 AT_Stopping_Power( PSTAR,
+				1,
+				&E_MeV_u,
+				&particle_no,
+				material_no,
+				&LET_keV_um);
 
 	 return( 0.160219 *
 			 LET_keV_um *
@@ -90,10 +93,13 @@
 		 return (0.0);
 	 }
 
-	 double LET_keV_um = AT_Stopping_Power_keV_um_single( PSTAR,
-				E_MeV_u,
-				particle_no,
-				material_no);
+	 double LET_keV_um;
+	 AT_Stopping_Power( PSTAR,
+	 				1,
+	 				&E_MeV_u,
+	 				&particle_no,
+	 				material_no,
+	 				&LET_keV_um);
 
 	 if(LET_keV_um == 0){
 		 return 0.0;
@@ -142,10 +148,13 @@
 	 assert(E_idx >= 1);
 	 assert(E_idx <= 40);
 
-	 double LET_keV_um = AT_Stopping_Power_keV_um_single( PSTAR,
-				E_MeV_u,
-				particle_no,
-				material_no);
+	 double LET_keV_um;
+	 AT_Stopping_Power( PSTAR,
+	 				1,
+	 				&E_MeV_u,
+	 				&particle_no,
+	 				material_no,
+	 				&LET_keV_um);
 
 	 return 0.160219 * LET_keV_um * AT_RadDiff_RDD.d_min_Gy[E_idx - 1];
  }
@@ -158,10 +167,13 @@
 	 assert(E_idx >= 1);
 	 assert(E_idx <= 40);
 
-	 double LET_keV_um = AT_Stopping_Power_keV_um_single( PSTAR,
-				E_MeV_u,
-				particle_no,
-				material_no);
+	 double LET_keV_um;
+	 AT_Stopping_Power( PSTAR,
+	 	 				1,
+	 	 				&E_MeV_u,
+	 	 				&particle_no,
+	 	 				material_no,
+	 	 				&LET_keV_um);
 
 	 return 0.160219 * LET_keV_um * AT_RadDiff_RDD.d_max_Gy[E_idx - 1];
  }

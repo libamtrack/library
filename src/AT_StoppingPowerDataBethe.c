@@ -30,12 +30,17 @@
 
 #include "AT_StoppingPowerDataBethe.h"
 
-double AT_Bethe_wrapper(const double 	E_MeV_u,
-		const long 	    particle_no,
-		const long 		material_no){
-	return AT_Bethe_energy_loss_MeV_cm2_g_single(	E_MeV_u,
-													particle_no,
-													material_no,
-													-1.0,
-													true);
+int AT_Bethe_wrapper( const int n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		double mass_stopping_power_MeV_cm2_g[]){
+	AT_Bethe_energy_loss_MeV_cm2_g(n,
+			E_MeV_u,
+			particle_no,
+			material_no,
+			-1.0,
+			true,
+			mass_stopping_power_MeV_cm2_g);
+	return AT_Success;
 }

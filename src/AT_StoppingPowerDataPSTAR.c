@@ -1293,9 +1293,11 @@ PSTAR_data_struct PSTAR_data =
 						&PSTAR_Copper } };
 
 
-double AT_PSTAR_wrapper(const double 	E_MeV_u,
-		const long 	    particle_no,
-		const long 		material_no){
+int AT_PSTAR_wrapper( const long n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		double mass_stopping_power_MeV_cm2_g[]){
 
 	const PSTAR_data_for_material_struct * source_for_given_material = PSTAR_data.stopping_power_source_data[material_no];
 
@@ -1305,33 +1307,35 @@ double AT_PSTAR_wrapper(const double 	E_MeV_u,
 #ifndef NDEBUG
 		printf("Missing data for material [%s] in PSTAR data.\n", material_name);
 #endif
-		return -1;
+		return AT_No_PSTAR_Data;
 	}
 
 	assert( source_for_given_material != NULL );
 
-	const long n = source_for_given_material->number_of_data_points;
+	const long n_data = source_for_given_material->number_of_data_points;
 
+	long i;
 	if( source_for_given_material->energy_and_stopping_power != NULL){
-		double result = AT_get_interpolated_y_from_input_2d_table(
-				source_for_given_material->energy_and_stopping_power,
-				n,
-				E_MeV_u);
-		if( particle_no != PARTICLE_PROTON_NUMBER){
-			double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
-			double Zeff_proton =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u, PARTICLE_PROTON_NUMBER);
-			result *= gsl_pow_2(Zeff_ion / Zeff_proton);
+		for(i = 0; i < n; i++){
+			mass_stopping_power_MeV_cm2_g[i] = AT_get_interpolated_y_from_input_2d_table(
+					source_for_given_material->energy_and_stopping_power,
+					n_data,
+					E_MeV_u[i]);
+			if( particle_no[i] != PARTICLE_PROTON_NUMBER){
+				double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u[i], particle_no[i]);
+				double Zeff_proton =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u[i], PARTICLE_PROTON_NUMBER);
+				mass_stopping_power_MeV_cm2_g[i] *= gsl_pow_2(Zeff_ion / Zeff_proton);
+			}
 		}
-
-
-		return result;
 	} else {
-		char material_name[MATERIAL_NAME_LENGTH];
-		AT_material_name_from_number(material_no,material_name);
-#ifndef NDEBUG
-		printf("Missing data points for material [%s] in PSTAR data.\n", material_name);
-#endif
-		}
-	return -1;
+			char material_name[MATERIAL_NAME_LENGTH];
+			AT_material_name_from_number(material_no,material_name);
+	#ifndef NDEBUG
+			printf("Missing data points for material [%s] in PSTAR data.\n", material_name);
+	#endif
+			return AT_No_PSTAR_Data;
+	}
+
+	return AT_Success;
 }
 

@@ -337,7 +337,12 @@ int main( int argc, char* argv[]){
 	    printf("#data source: %s (code: %ld)\n", source_name, source_no);
 		printf("#E[MeV] LET[MeV/cm2g]\n");
 		for( i = 0 ; i < number_of_points_on_x_axis ; i++){
-			y[i] = AT_Stopping_Power_MeV_cm2_g_single( source_no, x[i],particle_no, material_no);
+			AT_Mass_Stopping_Power( source_no,
+					1,
+					&x[i],
+					&particle_no,
+					material_no,
+					&y[i]);
 		}
 	}  else if( strcmp( plottype , "CSDArange") == 0){
 		printf("#CSDArange vs primary ion energy\n");

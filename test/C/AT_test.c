@@ -48,38 +48,42 @@
 #include "AT_StoppingPower.h"
 
 int main(){
-	const double E_MeV_u   = 270.55;
-	const long particle_no = 6012;
-	const long material_no = 1;
+	const double E_MeV_u   = 1000.00;
+	const long particle_no = 2004;
+	const long material_no = 5;
 
 	double test;
 
-	test = AT_Stopping_Power_keV_um_single(FromFile,
-			E_MeV_u,
-			particle_no,
-			material_no);
+	AT_Mass_Stopping_Power(FromFile,
+			1,
+			&E_MeV_u,
+			&particle_no,
+			material_no,
+			&test);
+	printf("Ergebnis FromFile: %e\n", test);
 
+	AT_Mass_Stopping_Power(Bethe,
+			1,
+			&E_MeV_u,
+			&particle_no,
+			material_no,
+			&test);
 	printf("Ergebnis Bethe: %e\n", test);
 
-	test = AT_Stopping_Power_keV_um_single(Bethe,
-			E_MeV_u,
-			particle_no,
-			material_no);
-
-	printf("Ergebnis Bethe: %e\n", test);
-
-	test = AT_Stopping_Power_keV_um_single(PSTAR,
-			E_MeV_u,
-			particle_no,
-			material_no);
-
+	AT_Mass_Stopping_Power(PSTAR,
+			1,
+			&E_MeV_u,
+			&particle_no,
+			material_no,
+			&test);
 	printf("Ergebnis PSTAR: %e\n", test);
 
-	test = AT_Stopping_Power_keV_um_single(ICRU,
-			E_MeV_u,
-			particle_no,
-			material_no);
-
+	AT_Mass_Stopping_Power(ICRU,
+			1,
+			&E_MeV_u,
+			&particle_no,
+			material_no,
+			&test);
 	printf("Ergebnis ICRU: %e\n", test);
 
 	return EXIT_SUCCESS;

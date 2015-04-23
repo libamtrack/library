@@ -44,7 +44,8 @@ enum AT_error_no{
   AT_Energy_Outside_Range,
   AT_Particle_Not_Defined,
   AT_No_PSTAR_Data,
-  AT_Unknown_LET_Data_Source
+  AT_No_ICRU_Data,
+  AT_Unknown_Stopping_Power_Data_Source
 };
 
 
@@ -71,13 +72,14 @@ typedef struct {
 /**
  * TODO
  */
-static const AT_error_msg error_messages[6] = {
+static const AT_error_msg error_messages[7] = {
     {AT_Success,                        "Success"},
     {AT_Material_Already_Established,   "The material has already been established."},
     {AT_Energy_Outside_Range,           "The energies are outside the range of the selected purpose."},
     {AT_Particle_Not_Defined,           "The particle definition is not correct."},
     {AT_No_PSTAR_Data,                  "No PSTAR data for this material (yet)."},
-    {AT_Unknown_LET_Data_Source,        "The data source for LET data is not available."}
+    {AT_No_ICRU_Data,                   "No ICRU data for this material (yet)."},
+    {AT_Unknown_Stopping_Power_Data_Source,        "The data source for stopping power data is not available."}
 };
 
 

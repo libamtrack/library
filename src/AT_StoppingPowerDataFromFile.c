@@ -1,8 +1,11 @@
 #include "AT_StoppingPowerDataFromFile.h"
 
 
-double AT_FromFile_wrapper( const double E_MeV_u, const long particle_no,
-		const long material_no){
+int AT_FromFile_wrapper( const long n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		double mass_stopping_power_MeV_cm2_g[]){
 
 	FILE *CSV;
   	CSV = fopen("FLUKA_DEDX_WATER_76.8eV.txt", "r");
@@ -46,6 +49,8 @@ double AT_FromFile_wrapper( const double E_MeV_u, const long particle_no,
 	 memcpy(Z_array, Z, i*sizeof(int));
 	 memcpy(E_array, E, i*sizeof(float));
 	 memcpy(S_array, S, i*sizeof(float));
+
+	 mass_stopping_power_MeV_cm2_g[0] = 666.6;
 
 	 return -1;
 }
