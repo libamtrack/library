@@ -36,23 +36,13 @@
  * Main function to retrieve stopping powers
  *
  */
-<<<<<<< .mine
 int AT_Mass_Stopping_Power( const char stopping_power_source[],
 		const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
 		const long material_no,
 		double stopping_power_MeV_cm2_g[]){
-=======
-int AT_Mass_Stopping_Power( const long stopping_power_source_no,
-		const long n,
-		const double E_MeV_u[],
-		const long particle_no[],
-		const long material_no,
-		double stopping_power_MeV_cm2_g[]){
->>>>>>> .r1331
 
-<<<<<<< .mine
 	if (strcmp(stopping_power_source, "Bethe") == 0){
 		AT_Mass_Stopping_Power_with_no( Bethe,
 				n,
@@ -63,8 +53,6 @@ int AT_Mass_Stopping_Power( const long stopping_power_source_no,
 		return AT_Success;
 	}
 
-=======
->>>>>>> .r1331
 	if (strcmp(stopping_power_source, "PSTAR") == 0){
 		AT_Mass_Stopping_Power_with_no( PSTAR,
 				n,
@@ -75,7 +63,6 @@ int AT_Mass_Stopping_Power( const long stopping_power_source_no,
 		return AT_Success;
 	}
 
-<<<<<<< .mine
 	if (strcmp(stopping_power_source, "ICRU") == 0){
 		AT_Mass_Stopping_Power_with_no( ICRU,
 				n,
@@ -85,15 +72,7 @@ int AT_Mass_Stopping_Power( const long stopping_power_source_no,
 				stopping_power_MeV_cm2_g);
 		return AT_Success;
 	}
-=======
-	int result = AT_stopping_power_functions.function[stopping_power_source_no](n,
-			E_MeV_u,
-			particle_no,
-			material_no,
-			stopping_power_MeV_cm2_g);
->>>>>>> .r1331
 
-<<<<<<< .mine
 	int result = AT_stopping_power_functions.function[FromFile](n,
 			E_MeV_u,
 			particle_no,
@@ -102,9 +81,6 @@ int AT_Mass_Stopping_Power( const long stopping_power_source_no,
 			stopping_power_MeV_cm2_g);
 
 	return result;
-=======
-	return result;
->>>>>>> .r1331
 }
 
 int AT_Stopping_Power( const char stopping_power_source[],
@@ -120,7 +96,6 @@ int AT_Stopping_Power( const char stopping_power_source[],
 			material_no,
 			stopping_power_keV_um);
 
-<<<<<<< .mine
 	long i;
 	double material_density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
 	for(i = 0; i < n; i++){
@@ -129,38 +104,17 @@ int AT_Stopping_Power( const char stopping_power_source[],
 
 	return (result);
 }
-=======
->>>>>>> .r1331
 
-<<<<<<< .mine
 int AT_Mass_Stopping_Power_with_no( const long stopping_power_source_no,
 		const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
 		const long material_no,
 		double stopping_power_MeV_cm2_g[]){
-=======
-int AT_Stopping_Power( const long stopping_power_source_no,
-		const long n,
-		const double E_MeV_u[],
-		const long particle_no[],
-		const long material_no,
-		double stopping_power_keV_um[]){
->>>>>>> .r1331
 
-<<<<<<< .mine
 	assert( stopping_power_source_no < STOPPING_POWER_SOURCE_N);
 	assert( stopping_power_source_no >= 0 );
-=======
-	int result = AT_Mass_Stopping_Power(stopping_power_source_no,
-			n,
-			E_MeV_u,
-			particle_no,
-			material_no,
-			stopping_power_keV_um);
->>>>>>> .r1331
 
-<<<<<<< .mine
 	int result = AT_stopping_power_functions.function[stopping_power_source_no](n,
 			E_MeV_u,
 			particle_no,
@@ -185,8 +139,6 @@ int AT_Stopping_Power_with_no( const long stopping_power_source_no,
 			material_no,
 			stopping_power_keV_um);
 
-=======
->>>>>>> .r1331
 	long i;
 	double material_density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
 	for(i = 0; i < n; i++){
@@ -197,10 +149,7 @@ int AT_Stopping_Power_with_no( const long stopping_power_source_no,
 }
 
 
-<<<<<<< .mine
 
-=======
->>>>>>> .r1331
 double AT_Energy_MeV_u_from_Stopping_Power_single( const long stopping_power_source_no,
 		const double Stopping_Power_MeV_cm2_g,
 		const long particle_no,
