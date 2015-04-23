@@ -291,7 +291,6 @@ double AT_RDD_d_max_Gy(
 
   double d_max_Gy  = 0.0;
 
-<<<<<<< .mine
   double LET_MeV_cm2_g;
   AT_Mass_Stopping_Power_with_no( stopping_power_source_no,
 		  1,
@@ -299,15 +298,6 @@ double AT_RDD_d_max_Gy(
 		  &particle_no,
 		  material_no,
 		  &LET_MeV_cm2_g);
-=======
-  double LET_MeV_cm2_g;
-  AT_Mass_Stopping_Power( stopping_power_source_no,
-		  1,
-		  &E_MeV_u,
-		  &particle_no,
-		  material_no,
-		  &LET_MeV_cm2_g);
->>>>>>> .r1331
   const double max_electron_range_m      =  AT_max_electron_range_m( E_MeV_u, (int)material_no, (int)er_model);
   const double precalculated_constant_Gy =  AT_RDD_precalculated_constant_Gy(max_electron_range_m, LET_MeV_cm2_g, E_MeV_u, particle_no, material_no, rdd_model, rdd_parameter, er_model);
 
@@ -415,21 +405,12 @@ void AT_RDD_f1_parameters_single_field(
 
   ///////////////////////////////////////////////////////////////////////////////
   // PARAMETER 0: Get the LET
-<<<<<<< .mine
   AT_Mass_Stopping_Power_with_no( stopping_power_source_no,
   			  1,
   			  &E_MeV_u,
   			  &particle_no,
   			  material_no,
   			  &LET_MeV_cm2_g);
-=======
-  AT_Mass_Stopping_Power( stopping_power_source_no,
-  			  1,
-  			  &E_MeV_u,
-  			  &particle_no,
-  			  material_no,
-  			  &LET_MeV_cm2_g);
->>>>>>> .r1331
 
   //////////////////////////////////////////////////////////////////////////////////////
   // PARAMETER 2: Get the maximum electron range (same for all RDD models but tabulated)
@@ -529,7 +510,6 @@ int AT_D_RDD_Gy( const long  n,
    ********* CALCULATION BEFORE PARTICLE LOOP *************
    *******************************************************/
 
-<<<<<<< .mine
   double LET_MeV_cm2_g;
   AT_Mass_Stopping_Power_with_no( stopping_power_source_no,
   			  1,
@@ -537,15 +517,6 @@ int AT_D_RDD_Gy( const long  n,
   			  &particle_no,
   			  material_no,
   			  &LET_MeV_cm2_g);
-=======
-  double LET_MeV_cm2_g;
-  AT_Mass_Stopping_Power( stopping_power_source_no,
-  			  1,
-  			  &E_MeV_u,
-  			  &particle_no,
-  			  material_no,
-  			  &LET_MeV_cm2_g);
->>>>>>> .r1331
 
   const double max_electron_range_m   =  AT_max_electron_range_m( E_MeV_u, (int)material_no, (int)er_model);
 
@@ -712,7 +683,6 @@ int AT_r_RDD_m  ( const long  n,
  	return 0;
    }// end RDD_RadicalDiffusion
 
-<<<<<<< .mine
   double LET_MeV_cm2_g;
   	  AT_Mass_Stopping_Power_with_no( stopping_power_source_no,
   			  1,
@@ -720,15 +690,6 @@ int AT_r_RDD_m  ( const long  n,
   			  &particle_no,
   			  material_no,
   			  &LET_MeV_cm2_g);
-=======
-  double LET_MeV_cm2_g;
-  	  AT_Mass_Stopping_Power( stopping_power_source_no,
-  			  1,
-  			  &E_MeV_u,
-  			  &particle_no,
-  			  material_no,
-  			  &LET_MeV_cm2_g);
->>>>>>> .r1331
 
   const double max_electron_range_m       =  AT_max_electron_range_m(E_MeV_u, (int)material_no, (int)er_model);
 
