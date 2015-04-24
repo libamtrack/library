@@ -38,13 +38,13 @@
 #define STOPPING_POWER_SOURCE_NAME_LENGTH    	255
 
 /**
- * @enum stoppingPowerSource_no Stopping Power source code numbers
+ * @enum stoppingPowerSource_no 	Stopping-power data-source ids
  */
 enum stoppingPowerSource_no{
 	FromFile             = 0, /**< Data read from file */
-	Bethe                = 1, /**< Bethe */
-	PSTAR                = 2, /**< PSTAR */
-	ICRU                 = 3, /**< ICRU 49 and 73: for liquid water */
+	Bethe                = 1, /**< Analytical Bethe fomula */
+	PSTAR                = 2, /**< PSTAR data from NIST */
+	ICRU                 = 3, /**< ICRU 49 and 73 data*/
 };
 
 typedef int (*stopping_power_function)(const long,

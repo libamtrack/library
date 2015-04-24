@@ -30,11 +30,19 @@
 
 #include "AT_DataMaterial.h"
 
-/** This array contains the data
- * as given by ICRU49 (H+He) and ICRU 73 (> He)
+/**
+ * Returns the electronic mass stopping power in MeV*cm2/g
+ * as given by ICRU49 (H+He) and ICRU 73 (Li...Ar). The data
+ * have be transformed to fit the units (E/u and MeV*cm2/g).
+ *
+ * @param[in]   n							    number of energies / particles
+ * @param[in]   E_MeV_u					    	kinetic energies in MeV per amu (array of size n)
+ * @param[in]   particle_no                     particle numbers (array of size n)
+ * @param[in]   material_no                 	material number
+ * @param[in]   info							not used
+ * @param[out]  mass_stopping_power_MeV_cm2_g   array to return stopping powers (array of size n)
+ * @return
  */
-
-
 int AT_ICRU_wrapper( const long n,
 		const double E_MeV_u[],
 		const long particle_no[],

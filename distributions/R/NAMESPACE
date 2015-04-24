@@ -16,7 +16,7 @@
 #    set HAVE_CERNLIB. N.B. as GSL is a mandatory dependency, it has
 #    not to be declared here.
 #
-# S. Greilich, 2014-06-24
+# S. Greilich, 2015-04-23
 #
 AT_run_CPPSC_method
 AT_run_IGK_method
@@ -24,9 +24,8 @@ AT_run_GSM_method
 AT_D_RDD_Gy
 AT_r_RDD_m
 AT_max_electron_ranges_m
-AT_Stopping_Power_keV_um_multi
-AT_Stopping_Power_MeV_cm2_g_multi
-AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_multi
+#AT_Mass_Stopping_Power
+#AT_Stopping_Power
 AT_stopping_power_ratio
 AT_fluence_weighted_E_MeV_u
 AT_dose_weighted_E_MeV_u

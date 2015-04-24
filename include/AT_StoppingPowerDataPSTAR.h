@@ -33,6 +33,32 @@
 #include "AT_DataMaterial.h"
 #include "AT_PhysicsRoutines.h"
 
+/**
+ * Returns the electronic mass stopping power in MeV*cm2/g
+ * as given by the NIST PSTAR tables for a number of materials.
+ * The data are scaled by the effective charge if projectiles
+ * other than protons are requested.
+ *
+ * Data were downloaded from the NIST website:
+ * http://www.nist.gov/pml/data/star/index.cfm
+ *
+ * See: Stopping-Power and Range Tables
+ * for Electrons, Protons, and Helium Ions
+ *
+ * M.J. Berger,1) J.S. Coursey,2) M.A. Zucker2) and J. Chang2)
+ *
+ * 1) NIST, Physics Laboratory, Ionizing Radiation Division
+ * 2) NIST, Physics Laboratory, ECSED
+ *
+ *
+ * @param[in]   n							    number of energies / particles
+ * @param[in]   E_MeV_u					    	kinetic energies in MeV per amu (array of size n)
+ * @param[in]   particle_no                     particle numbers (array of size n)
+ * @param[in]   material_no                 	material number
+ * @param[in]   info							not used
+ * @param[out]  mass_stopping_power_MeV_cm2_g   array to return stopping powers (array of size n)
+ * @return
+ */
 int AT_PSTAR_wrapper( const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
