@@ -78,8 +78,8 @@ These functions handle the physics of proton and ion beams needed in libamtrack.
 Stopping-power routines:
 
 \tabular{ll}{
-\code{\link{AT.Stopping.Power.keV.um}} \tab Unrestricted LET / Stopping power\cr
-\code{\link{AT.Stopping.Power.MeV.cm2.g}} \tab Unrestricted LET per mass / mass stopping power\cr
+\code{\link{AT.Stopping.Power.keV.um}} \tab Electronic stopping power\cr
+\code{\link{AT.Mass.Stopping.Power.MeV.cm2.g}} \tab Electronic mass stopping power\cr
 \code{\link{AT.stopping.power.ratio}} \tab Computes stopping power ratios, also for mixed fields\cr
 
 TODO: \tab Re-enable CSDA functions \cr
@@ -186,7 +186,7 @@ Package maintainer: Steffen Greilich \email{s.greilich@dkfz.de}
 }
 
 \examples{
-
+\dontrun{
 ##############################################################################
 ############################ 1. LET ##########################################
 cat("Compute the LET (in MeV*cm2/g) of a 270 MeV/u carbon ion in Aluminum\n")
@@ -256,4 +256,5 @@ AT.run.IGK.method( particle.no                          = 1001,                 
                    saturation.cross.section.factor      = 1.4,                         # factor to take 'brush' around track into account
                    write.output                         = TRUE,                        # write a log file
                    stopping.power.source.no             = 0)                           # use PSTAR data
+}
 }

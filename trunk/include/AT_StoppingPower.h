@@ -2,14 +2,14 @@
 #define AT_STOPPINGPOWER_H_
 
 /**
- * @brief Stopping power
+ * @brief Main routines for stopping power data
  */
 
 /*
- *    AT_DataStoppingPower.h
+ *    AT_StoppingPower.h
  *    ==================
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2015 The libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -39,6 +39,26 @@
 
 #include "AT_StoppingPowerData.h"
 
+/**
+ * Retrieves the electronic mass stopping power in MeV*cm2/g
+ * for the requested energies and particles for a specified
+ * material and data source. The data source is thereby
+ * given via its name (s. AT_StoppingPowerData.h from
+ * details), except for data that should be read for
+ * a file, in this case the (path and) filename has to be
+ * provided. In this case, the user has to make sure that
+ * energy and stopping power units are correct and that
+ * the data match the given material (use material.no = 0
+ * for custom-defined material).
+ *
+ * @param[in]   stopping_power_source		name of the data source
+ * @param[in]   n							number of energies / particles
+ * @param[in]   E_MeV_u						kinetic energies in MeV per amu (array of size n)
+ * @param[in]   particle_no                 particle numbers (array of size n)
+ * @param[in]   material_no                 material number
+ * @param[out]  stopping_power_MeV_cm2_g    array to return stopping powers (array of size n)
+ * @return		status
+ */
 int AT_Mass_Stopping_Power( const char stopping_power_source[],
 		const long n,
 		const double E_MeV_u[],
@@ -46,17 +66,50 @@ int AT_Mass_Stopping_Power( const char stopping_power_source[],
 		const long material_no,
 		double stopping_power_MeV_cm2_g[]);
 
+
 /**
- * Retrieves the mass stopping power in MeV*cm2/g for
+ * Retrieves the electronic stopping power in keV/um for
  * the requested energies and particles for a specified
- * material and data source
- * @param[in] stopping_power_source_no
- * @param[in] n
- * @param[in] E_MeV_u
- * @param[in] particle_no
- * @param[in] material_no
- * @param[out] stopping_power_MeV_cm2_g
- * @return
+ * material and data source. The data source is thereby
+ * given via its name (s. AT_StoppingPowerData.h for
+ * details), except for data that should be read from
+ * a file, in this case the (path and) filename has to be
+ * provided. In this case, the user has to make sure that
+ * energy and stopping power units are correct and that
+ * the data match the given material (use material.no = 0
+ * for custom-defined material) for density scaling.
+ *
+ * @param[in]   stopping_power_source		name of the data source
+ * @param[in]   n							number of energies / particles
+ * @param[in]   E_MeV_u						kinetic energies in MeV per amu (array of size n)
+ * @param[in]   particle_no                 particle numbers (array of size n)
+ * @param[in]   material_no                 material number
+ * @param[out]  stopping_power_keV_um       array to return stopping powers (array of size n)
+ * @return		status
+ */
+int AT_Stopping_Power( const char stopping_power_source[],
+		const long n,
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		double stopping_power_keV_um[]);
+
+
+/**
+ * Retrieves the electronic mass stopping power in MeV*cm2/g
+ * for the requested energies and particles for a specified
+ * material and data source. The data source is thereby
+ * given via its integer id (s. AT_StoppingPowerData.h for
+ * details). Data that should be read from a file
+ * cannot be used with this method.
+ *
+ * @param[in]   stopping_power_source_no	id of the data source
+ * @param[in]   n							number of energies / particles
+ * @param[in]   E_MeV_u						kinetic energies in MeV per amu (array of size n)
+ * @param[in]   particle_no                 particle numbers (array of size n)
+ * @param[in]   material_no                 material number
+ * @param[out]  stopping_power_MeV_cm2_g    array to return stopping powers (array of size n)
+ * @return		status
  */
 int AT_Mass_Stopping_Power_with_no( const long stopping_power_source_no,
 		const long n,
@@ -66,16 +119,20 @@ int AT_Mass_Stopping_Power_with_no( const long stopping_power_source_no,
 		double stopping_power_MeV_cm2_g[]);
 
 /**
- * Retrieves the stopping power in keV/um for
+ * Retrieves the electronic stopping power in keV/um for
  * the requested energies and particles for a specified
- * material and data source
- * @param[in] stopping_power_source_no
- * @param[in] n
- * @param[in] E_MeV_u
- * @param[in] particle_no
- * @param[in] material_no
- * @param[out] stopping_power_keV_um
- * @return
+ * material and data source. The data source is thereby
+ * given via its integer id (s. AT_StoppingPowerData.h for
+ * details). Data that should be read from a file
+ * cannot be used with this method.
+ *
+ * @param[in]   stopping_power_source_no	id of the data source
+ * @param[in]   n							number of energies / particles
+ * @param[in]   E_MeV_u						kinetic energies in MeV per amu (array of size n)
+ * @param[in]   particle_no                 particle numbers (array of size n)
+ * @param[in]   material_no                 material number
+ * @param[out]  stopping_power_keV_um       array to return stopping powers (array of size n)
+ * @return		status
  */
 int AT_Stopping_Power_with_no( const long stopping_power_source_no,
 		const long n,

@@ -32,7 +32,18 @@
 
 #include "AT_EnergyLoss.h"
 
-
+/**
+ * Returns the electronic mass stopping power in MeV*cm2/g
+ * calculated by the Bethe formula, including density correction.
+ *
+ * @param[in]   n							    number of energies / particles
+ * @param[in]   E_MeV_u					    	kinetic energies in MeV per amu (array of size n)
+ * @param[in]   particle_no                     particle numbers (array of size n)
+ * @param[in]   material_no                 	material number
+ * @param[in]   info							not used
+ * @param[out]  mass_stopping_power_MeV_cm2_g   array to return stopping powers (array of size n)
+ * @return
+ */
 int AT_Bethe_wrapper( const int n,
 		const double E_MeV_u[],
 		const long particle_no[],

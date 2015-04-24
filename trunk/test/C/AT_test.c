@@ -49,8 +49,8 @@
 
 int main(){
 
-	const double E_MeV_u[3]   = {270.55, 430, 10};
-	const long particle_no[3] = {6012, 6012, 1001};
+	const double E_MeV_u[3]   = {1, 10, 100};
+	const long particle_no[3] = {6012, 6012, 6012};
 	const long material_no = 2;
 
 	double test[3];

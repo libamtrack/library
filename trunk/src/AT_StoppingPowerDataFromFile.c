@@ -17,7 +17,9 @@ int AT_FromFile_wrapper( const long n,
   	CSV = fopen(info, "r");
 
 	 if(NULL == CSV) {
-		 fprintf(stderr, "Error opening stopping power data file ...\n");
+#ifndef NDEBUG
+		 printf("Error opening stopping power data file ...\n");
+#endif
 		 return EXIT_FAILURE;
 	 }
 
