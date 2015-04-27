@@ -34,18 +34,21 @@ int AT_FromFile_wrapper( const long n,
 
 	 while (fgets(line, sizeof line, CSV)) {
 	     if (*line == EOF) break;
-	     if (isalpha(*line)) continue; /* ignore comment line */
-		 sscanf(line, "%s", test);
-		 if ((sscanf(line, "%ld %le %le", &ZZ, &EE, &SS) != 3)&&(strlen(test) != 0)&&(strlen(test) != 1)) {
-		 /* handle error */
-			 printf("Error reading stopping power data (format correct?)...");
-			 return EXIT_FAILURE;
-		 } else {
-		 /* handle variables */
-			 Z[i] = ZZ;
-			 E[i] = EE;
-			 S[i++] = SS;
-		 }
+	     if (!isdigit(*line)){
+	    	 continue; /* ignore comment line */
+	     }else{
+			 sscanf(line, "%s", test);
+			 if ((sscanf(line, "%ld %le %le", &ZZ, &EE, &SS) != 3)&&(strlen(test) != 0)&&(strlen(test) != 1)) {
+			 /* handle error */
+				 printf("Error reading stopping power data (format correct?)...");
+				 return EXIT_FAILURE;
+			 } else {
+			 /* handle variables */
+				 Z[i] = ZZ;
+				 E[i] = EE;
+				 S[i++] = SS;
+			 }
+	     }
 	 }
 	 i--;
 

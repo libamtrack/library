@@ -31,8 +31,7 @@ AT.SPC.convert.to.DDD <- function(file.name.spc, file.name.ddd = NULL, endian = 
 	DDD$D.Gy          <- DDD$D.Gy * conversion.factor
 
 	if(plot == TRUE){
-		require(lattice)
-		xyplot( D.Gy ~ depth.g.cm2,
+		lattice::xyplot( D.Gy ~ depth.g.cm2,
 				DDD,
 				type = 'o',
 				main = file.name.ddd)

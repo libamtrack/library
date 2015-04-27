@@ -14,6 +14,11 @@ args <- commandArgs(TRUE)
 
 namespace.file          <- paste("# Namespace for package ", args[2], "\n#Created by R.create.package.namespace.R script\n\n", sep = "")
 
+# Add imports
+#namespace.file          <- paste( namespace.file,
+#                                  "import(lattice)\n\n",
+#                                  sep = "")
+
 # Add loading hook for library
 namespace.file          <- paste( namespace.file,
                                   "useDynLib(\"",args[2], "\", .registration = TRUE)\n\n",

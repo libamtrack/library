@@ -40,7 +40,7 @@ AT.SPC.export.DEDX <- function(stopping.power.source.no, file.name.DEDX = NULL, 
 					   stopping.power.MeV.cm2.g = 0)
 
 	df$particle.no   <- particle.nos[match(df$particle.name, particle.names)]
-  df$stopping.power.MeV.cm2.g <- AT.Stopping.Power.MeV.cm2.g( stopping.power.source.no = stopping.power.source.no,
+  df$stopping.power.MeV.cm2.g <- AT.Mass.Stopping.Power.with.no( stopping.power.source.no = stopping.power.source.no,
                                                               E.MeV.u     = df$energy.MeV.u,
                                                               particle.no = df$particle.no,
                                                               material.no = AT.material.no.from.material.name(material.name = "Water, Liquid"))$Stopping.Power.MeV.cm2.g
@@ -82,12 +82,11 @@ AT.SPC.export.DEDX <- function(stopping.power.source.no, file.name.DEDX = NULL, 
 	}
  
   if(plot == TRUE){
-    require(lattice)
-    xyplot( log10(stopping.power.MeV.cm2.g) ~ log10(energy.MeV.u)|sprintf("data source no. %d", stopping.power.source.no),
-            df,
-            groups   = df$particle.name,
-            type     = 'o',
-            auto.key = list(space = 'right'))
+    lattice::xyplot( log10(stopping.power.MeV.cm2.g) ~ log10(energy.MeV.u)|sprintf("data source no. %d", stopping.power.source.no),
+                     df,
+                     groups   = df$particle.name,
+                     type     = 'o',
+                     auto.key = list(space = 'right'))
   }
 
   if(sum(is.na(df$stopping.power.MeV.cm2.g))>0){

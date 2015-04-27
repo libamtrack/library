@@ -26,15 +26,11 @@
 # Clean workspace
 rm(list = ls())
 
-# Read type conversion functions (R <-> C types)
-
-
-
 #Arguments passed by shell (arg1: path and arg2: library name)
 args <- commandArgs(TRUE)
 
+# Read type conversion functions (R <-> C types)
 source(paste(args[1], "/R.type.conversion.R", sep = ""))
-
 
 # Read function information from parsed doxygen comments
 load("functions.sdd")
@@ -47,13 +43,16 @@ write("#ifndef AT_R_WRAPPER_H_\n#define AT_R_WRAPPER_H_\n// Automatically create
 # Add include statements for the functions used
 used.header.files <- unique( sapply( functions, 
                                      function(x){x$header.file.name}))
+
 for (header.file in used.header.files){
    write(paste("#include \"",
                header.file,
                "\"", 
                sep = ""),
-         file = "AT_R_Wrapper.h", append = TRUE)  
+         file = "AT_R_Wrapper.h", 
+         append = TRUE)  
 }
+
 write("\n", file = "AT_R_Wrapper.h", append = TRUE)  
 
 
@@ -61,13 +60,14 @@ write("\n", file = "AT_R_Wrapper.h", append = TRUE)
 write("// Automatically created header and body file\n\n#include \"AT_R_Wrapper.h\"\n", 
       file = "AT_R_Wrapper.c")
 
+##############################################
 # Loop over all functions from doxygen parsing
 for(i in 1:length(functions)){
-	# i <- 1
+  # i <- 1
 	
   # Extract current function, parameters and number of parameters
   curFun    <- functions[[i]]
-	para      <- functions[[i]]$parameter
+  para      <- functions[[i]]$parameter
   n.para    <- nrow(para)          
 
   cat( "Processing function no. ",
@@ -77,37 +77,46 @@ for(i in 1:length(functions)){
        ")\n",
        sep = "")
   
-  ##############################
-	# create function declaration
-	##############################
-	header    <- character(n.para + 1)
-	header[1] <- paste( "void ",         # function name
+  ################################
+  # A. create function declaration
+  ################################
+  header    <- character(n.para + 1)
+  # function name
+  header[1] <- paste( "void ",         
                       curFun$name, 
                       "_R( ", 
-	                    sep = "")
+	              sep = "")
   
-  if(n.para>0){            # function parameters
+  # function parameters
+  if(n.para>0){            
     for(j in 1:n.para){
-      # j <- 1
+    # j <- 1
+      
+      # first line
       start.line <- "\t\t"
       if(j == 1){
         start.line <- ""
       }  
+
+      # last line
       end.line    <- ""
       if(j != n.para){
         end.line    <- ","
       }
+
+      # add j-th argument
       header[j] <- paste(   header[j],
                             start.line,
                             convert.c( curFun$parameter$type[j] ), 
                             "\t",
-  				                  curFun$parameter$name[j], 
+  			    curFun$parameter$name[j], 
                             end.line, 
                             sep = "") 
     }
   }
   
-  header[length(header)] <- ");"      # end of function declaration
+  # end of function declaration
+  header[length(header)] <- ");"      
     
   if(curFun$dependency != ""){
     header <- c(paste("#ifdef ", curFun$dependency, sep = ""),
@@ -115,51 +124,51 @@ for(i in 1:length(functions)){
                 "#endif")  
   }
   
-	write( c(header, "\n"), 
+  write( c(header, "\n"), 
          file   = "AT_R_Wrapper.h", 
          append = TRUE)
 
     
-	###########################
-	# create function body
-	###########################
+  ###########################
+  # B. create function body
+  ###########################
 
-	##############################################
+  ##############################################
   # copy function declaration, replace semicolon
-	body               <- header
-  if(curFun$dependency != ""){  # if dependency is present, header is one line longer than expected
-    body <- body[-length(body)] 
+  body               <- header
+  if(curFun$dependency != ""){                                      # if dependency is present, header is 
+    body <- body[-length(body)]                                     # one line longer than expected
   }
   body[length(body)] <- "){"
 
-	# get input parameters and which of them are arrays, which chars
-  input.para.idx         <- grepl(pattern = "in", 
+  # get nature of parameters (in / out, array / no array, char)
+  input.para.idx         <- grepl(pattern = "in",                   # parameter is input argument
                                   x       = para$in.out)
-  output.para.idx        <- grepl(pattern = "out", 
+  output.para.idx        <- grepl(pattern = "out",                  # parameter is output argument
                                   x       = para$in.out)
-  inoutput.para.idx      <- grepl(pattern = "in.out", 
+  inoutput.para.idx      <- grepl(pattern = "in.out",               # parameter is both
                                   x       = para$in.out)
 
-  array.idx              <- para$length != 1
-  pointer.idx            <- grepl("*", para$type, fixed = TRUE)
-  char.idx               <- grepl("char", para$type)
-  char.pointer.idx       <- grepl("char*", para$type, fixed = TRUE)
-  length.by.variable.idx <- para$length%in%para$name
+  array.idx              <- para$length != 1                        # parameter is array (i.e. length > 1)
+  pointer.idx            <- grepl("*", para$type, fixed = TRUE)     # parameter is pointer
+  char.idx               <- grepl("char", para$type)                # parameter is char
+  length.by.variable.idx <- para$length%in%para$name                # array length for parameter is given by other parameter (e.g. "n")
 
   
-	# add a count variable i, if arrays are present
-	if(sum(array.idx) > 0){
-		body  <- c( body, 
+  # add a count variable "i", if arrays are present
+  if(sum(array.idx) > 0){
+    body  <- c( body, 
                 "  long i;")
-	}
+  }
 
   ###########################################################
-	# add type convert statements for non-array input variables
-	idx           <- which(input.para.idx & !array.idx)
-	if(length(idx) > 0){
-		for(j in idx){
-			# j <- idx[1]
-      
+  # add type convert statements for non-array input variables
+  # except chars
+  idx <- which(input.para.idx & !array.idx & !char.idx)
+  if(length(idx) > 0){
+    for(j in idx){
+    # j <- idx[1]
+      	
       body <- c( body, 
                  paste( "  ", 
                         type.no.pointer( para$type[j] ), 
@@ -170,43 +179,67 @@ for(i in 1:length(functions)){
                         type.no.pointer.no.const ( para$type[j] ),
                         ")(*",  
                         para$name[j], 
-					              ");", 
+			");", 
                         sep = ""))
-		}
-	}
-	
-  body         <- c(body, "")
+    }
+  }
 
-  ######################################
+  ###########################################################
+  # add type convert statements for char variables
+  #
+  # chars can never be arrays in the C-wrapper
+  # this has to be intercepted by loop on the R side
+  idx <- which(input.para.idx & char.idx)
+  if(length(idx) > 0){
+    for(j in idx){
+    # j <- idx[1]
+      	
+      body <- c( body, 
+                 paste( "  ", 
+                        type.no.pointer( para$type[j] ), 
+                        "* ", 
+                        para$name[j], 
+                        get.extension( para$type[j]), 
+                        " = (",
+                        type.no.pointer.no.const ( para$type[j] ),
+                        "*)(*",  
+                        para$name[j], 
+			");", 
+                        sep = ""))
+    }
+  }
+	
+  ###########################################################
   # add conversion statements for arrays
   
-	# also input parameters that are used to
+  # also input parameters that are used to
   # give the size of input array, thus
   # change the parameter names for those
   # ! assumed that they are all int/long
-	para$length[length.by.variable.idx]  <- paste( para$length[length.by.variable.idx], 
+  para$length[length.by.variable.idx]  <- paste( para$length[length.by.variable.idx], 
                                                  "_long", 
                                                  sep = "")
 
   # loop through all array lengths
   # this way, we can group arrays of same length in
   # one type casting loop
-	array.lengths <- unique(para$length)[unique(para$length) != 1]
-	for(array.length in array.lengths){
-		# array.length <- array.lengths[1]
+  array.lengths <- unique(para$length)[unique(para$length) != 1]
+  for(array.length in array.lengths){
+  # array.length <- array.lengths[1]
 		
-    ##############
-    # INPUT ARRAYS
-    # find those non-char input arrays that match in length
+    #################
+    # i. INPUT ARRAYS
+
+    # find those input arrays that match in length
     cur.array.idxs <- which( input.para.idx & 
                              array.idx &
-                             !char.idx &
                              para$length == array.length)
-		if(length(cur.array.idxs) > 0){
-  	  # Allocate array space
+    if(length(cur.array.idxs) > 0){
+  	  
+      # Allocate array space
       body <- c(body, "\n//Allocate space for the input parameter.")
       for(k in cur.array.idxs){
-				# k <- cur.array.idxs[1]
+      # k <- cur.array.idxs[1]
         body <- c(body,
                   paste("  ", 
                         type.no.const( para$type[k] ), 
@@ -249,11 +282,10 @@ for(i in 1:length(functions)){
 		  
 		}
 
-    ###############
-    # OUTPUT ARRAYS
+    ###################
+    # ii. OUTPUT ARRAYS
     cur.array.idxs <- which( !input.para.idx & 
                              array.idx &
-                             !char.idx &
                              para$length == array.length)
 		if(length(cur.array.idxs) > 0){
 			body <- c(body, "\n//Allocate space for the results.")
@@ -276,7 +308,9 @@ for(i in 1:length(functions)){
 		}
 	}
       
-  # Casting of non-array, non-char pointers that are used as output-only variables
+  ###########################################################
+  # add conversion statements for non-array pointers 
+  # that are used as output-only variables
   idx.output.pointers     <- output.para.idx &
                              pointer.idx &
                              !char.idx &
@@ -297,11 +331,12 @@ for(i in 1:length(functions)){
     }
   }
 
-	########################
-  # Generate function call
-	########################
 
-  # Has function a return value
+  ###########################
+  # C. Generate function call
+  ###########################
+
+  # In case function a return value
   if(curFun$type == "void"){
   	return.var.txt	<-	""
   	para.max	      <-	nrow(para)
@@ -313,15 +348,16 @@ for(i in 1:length(functions)){
 
   # Parameter characteristics (char will be treated differently)
   char.but.no.pointer    <- input.para.idx &
-                            char.idx &
-                            !char.pointer.idx
+                            char.idx
+  
   array.or.char.pointer  <- array.idx |
                             !pointer.idx |
-                            (char.idx & char.pointer.idx)
+                            char.idx
     
-	for(j in 1:para.max){
-		# j <- 1
+  for(j in 1:para.max){
+  # j <- 1
     
+    # Write first line
     start.line <- "\t"
     if(j == 1){
       start.line <- paste( "\n  ", 
@@ -331,44 +367,36 @@ for(i in 1:length(functions)){
                            sep = "")
     }  
     
+    # Write last line
     end.line <- ","
     if(j == para.max){
       end.line <- ");"
     }
      
-    if(array.or.char.pointer[j] | char.but.no.pointer[j]){
-				if(char.but.no.pointer[j]){        # "char*" but not "char**"
-				    body <- c( body, 
-                       paste( start.line,
-                              para$name[j], 
-                              get.extension(para$type[j]), 
-                              "[0]", 
-                              end.line,
-                              sep = ""))
-				}else{
-				    body <- c( body,              # "char**", array or casted single variable
-                       paste( start.line,
-                              para$name[j], 
-                              get.extension(para$type[j]), 
-                              end.line,
-                              sep = ""))
-				}
-			}
-		else
-			body <- c( body,                    # no array
-                 paste( start.line,
-                        "&", 
-                        para$name[j], 
-                        get.extension( para$type[j] ), 
-                        end.line,
-                        sep = ""))
-	} 			
-	
-	############################
+    # Write arguments
+    if(array.or.char.pointer[j]){                             # array
+	body <- c( body,             
+        paste( start.line,
+               para$name[j], 
+               get.extension(para$type[j]), 
+               end.line,
+               sep = ""))
+    }else{						       # no array
+	body <- c( body,                    
+        paste( start.line,
+               "&", 
+               para$name[j], 
+               get.extension( para$type[j] ), 
+               end.line,
+               sep = ""))
+    } 			
+  }
+  
+  ############################
   # Cast and copy back results
-	############################
+  ############################
 
-	body <- c( body, 
+  body <- c( body, 
              paste("\n//Results:"))
 	
   # Cast return value, if any
@@ -465,10 +493,10 @@ for(i in 1:length(functions)){
                           get.extension(para$type[j]), 
                           ");", 
                           sep = ""))
-		}
-	}
+    }
+  }
 
-	# write body to source file
+  # write body to source file
   body <- c( body, 
              "}\n")
   
@@ -487,3 +515,4 @@ for(i in 1:length(functions)){
 write( "#endif\n", 
        file    = "AT_R_Wrapper.h", 
        append  = TRUE)
+

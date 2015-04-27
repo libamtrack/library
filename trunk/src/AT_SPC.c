@@ -44,7 +44,7 @@ int AT_SPC_get_number_of_bytes_in_file(const char* filename){
 }
 
 
-int AT_SPC_fast_read_buffer(const char* filename,
+int AT_SPC_fast_read_buffer( const char filename[],
 		int content_size,
 		int32_t* content){
 
@@ -401,7 +401,7 @@ int AT_SPC_decompose_data( const int content_size,
 }
 
 
-long AT_SPC_get_number_of_bins_from_filename_fast( const char filename[FILE_NAME_NCHAR] )
+long AT_SPC_get_number_of_bins_from_filename_fast( const char filename[] )
 {
 
 	int nb = AT_SPC_get_number_of_bytes_in_file( filename );
@@ -427,7 +427,7 @@ long AT_SPC_get_number_of_bins_from_filename_fast( const char filename[FILE_NAME
 }
 
 
-int AT_SPC_read_header_from_filename_fast( const char filename[FILE_NAME_NCHAR],
+int AT_SPC_read_header_from_filename_fast( const char filename[],
 		double*   E_MeV_u,
 		double*   peak_position_g_cm2,
 		long*     particle_no,
@@ -465,7 +465,7 @@ int AT_SPC_read_header_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 }
 
 
-int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
+int AT_SPC_read_data_from_filename_fast( const char filename[],
 		int n,
 		int    depth_step[],
 		double depth_g_cm2[],
@@ -504,7 +504,7 @@ int AT_SPC_read_data_from_filename_fast( const char filename[FILE_NAME_NCHAR],
 }
 
 
-int AT_SPC_read_from_filename_fast( const char filename[FILE_NAME_NCHAR],
+int AT_SPC_read_from_filename_fast( const char filename[],
 		int 	  n,
 		double*   E_MeV_u_initial,
 		double*   peak_position_g_cm2,

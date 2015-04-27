@@ -51,13 +51,20 @@
  * the data match the given material (use material.no = 0
  * for custom-defined material).
  *
- * @param[in]   stopping_power_source		name of the data source
- * @param[in]   n							number of energies / particles
- * @param[in]   E_MeV_u						kinetic energies in MeV per amu (array of size n)
- * @param[in]   particle_no                 particle numbers (array of size n)
- * @param[in]   material_no                 material number
- * @param[out]  stopping_power_MeV_cm2_g    array to return stopping powers (array of size n)
- * @return		status
+ * The file has to be plain
+ * ASCII with three columns (separated by space)
+ *    charge, energy, and stopping power
+ * and sorted in ascending order by first charge than energy
+ * any alphanumeric comment can be inserted (in separate
+ * lines)
+ *
+ * @param[in]      stopping_power_source       name of the data source
+ * @param[in]      n		               number of energies / particles
+ * @param[in]      E_MeV_u                     kinetic energies in MeV per amu (array of size n)
+ * @param[in]      particle_no                 particle numbers (array of size n)
+ * @param[in]      material_no                 material number
+ * @param[out]     stopping_power_MeV_cm2_g    array to return stopping powers (array of size n)
+ * @return         status
  */
 int AT_Mass_Stopping_Power( const char stopping_power_source[],
 		const long n,
@@ -78,6 +85,13 @@ int AT_Mass_Stopping_Power( const char stopping_power_source[],
  * energy and stopping power units are correct and that
  * the data match the given material (use material.no = 0
  * for custom-defined material) for density scaling.
+ * 
+ * The file has to be plain
+ * ASCII with three columns (separated by space)
+ *    charge, energy, and stopping power
+ * and sorted in ascending order by first charge than energy
+ * any alphanumeric comment can be inserted (in separate
+ * lines)
  *
  * @param[in]   stopping_power_source		name of the data source
  * @param[in]   n							number of energies / particles
