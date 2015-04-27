@@ -99,7 +99,7 @@ int AT_Stopping_Power( const char stopping_power_source[],
 	long i;
 	double material_density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
 	for(i = 0; i < n; i++){
-		stopping_power_keV_um[i] *= material_density_g_cm3;
+		stopping_power_keV_um[i] *= material_density_g_cm3 / 10.0;
 	}
 
 	return (result);
@@ -142,7 +142,7 @@ int AT_Stopping_Power_with_no( const long stopping_power_source_no,
 	long i;
 	double material_density_g_cm3 = AT_density_g_cm3_from_material_no(material_no);
 	for(i = 0; i < n; i++){
-		stopping_power_keV_um[i] *= material_density_g_cm3;
+		stopping_power_keV_um[i] *= material_density_g_cm3 / 10.0;
 	}
 
 	return (result);
