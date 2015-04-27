@@ -47,7 +47,7 @@ grep.bool	<-	function(pattern, x, ...){
 
 
 # List of hard-coded Rd files for variable descriptions
-hardcoded.variable.descriptions    <- c("E.MeV.u", "particle.no", "material.no", "er.model", "rdd.model", "fluence.cm2.or.dose.Gy", "number.of.field.components", "stopping.power.source.no")
+hardcoded.variable.descriptions    <- c("E.MeV.u", "particle.no", "material.no", "er.model", "rdd.model", "fluence.cm2.or.dose.Gy", "number.of.field.components", "stopping.power.source.no", "stopping.power.source")
 
 # Read in hard-coded examples
 

@@ -185,9 +185,9 @@ for(header.file.name in header.file.names){
      raw.pos.end.doxygen.comment         <- grep("*/", raw.reduced.header.file.text, fixed = TRUE)
      raw.pos.end.function.declaration    <- grep(");", raw.reduced.header.file.text, fixed = TRUE)
 
-     # If length are different comments are corrupted, skip file and process next
+     # If length are different, comments are corrupted, so skip file and process next
      if((length(pos.start.doxygen.comment) != length(pos.end.doxygen.comment))|(length(pos.start.doxygen.comment) != length(pos.end.function.declaration))){
-          print("Comments corrupted, skipping file.")
+          cat("Comments corrupted, skipping file.\n")
           next
      }
 
@@ -203,8 +203,18 @@ for(header.file.name in header.file.names){
           raw.idx.comment     <- raw.pos.start.doxygen.comment[i]:raw.pos.end.doxygen.comment[i] 
           raw.idx.declaration <- (raw.pos.end.doxygen.comment[i]+1):raw.pos.end.function.declaration[i]
 
+	  # DEBUG
+          cat("\nRaw header lines for comment:\n")
+          print(raw.reduced.header.file.text[raw.idx.comment])
+
+          cat("\nRaw header lines for declaration:\n")
+          print(raw.reduced.header.file.text[raw.idx.declaration])
+
+          cat("\nHeader lines for declaration:\n")
+          print(reduced.header.file.text[idx.declaration])
+
           # Extract the function name (which is on second position of the declaration, opening bracket has to be removed
-          name                <- gsub("(", "", reduced.header.file.text[idx.declaration[2]], fixed = T)
+          name                <- gsub("(", "", reduced.header.file.text[idx.declaration[2]], fixed = TRUE)
           cat("Processing function no. ",
               i,
               " (",
@@ -219,7 +229,8 @@ for(header.file.name in header.file.names){
 
           # Check if name is in namespace otherwise skip
           if(name %in% namespace){
-		name
+	       cat(name, "\n")
+
                # Extract comment and declaration text
                current.function$raw.comment.text        <- raw.reduced.header.file.text[raw.idx.comment]
                current.function$raw.declaration.text    <- raw.reduced.header.file.text[raw.idx.declaration]
@@ -294,14 +305,18 @@ for(header.file.name in header.file.names){
                          # Loop through all @param comments, leave out @return (last one)
                          for(j in 1:(length(pos.parameter.comment.lines)-1)){
                               # DEBUG: j <- 1
-                              
+                              cat("Processing parameter no", j, "...\n")
+
                               # Vector with all indices in raw.comment.text that belong to current @param comment
                               idx.param.comment <- (pos.parameter.comment.lines[j] + 1):(pos.parameter.comment.lines[j+1] - 1)
                               # Comment type (@param etc.) is first entry
                               parameter$type[j] <- raw.comment.text[idx.param.comment[1]]
-                              # Parameter name is second entry
+                              cat("Type:",parameter$type[j],"\n")
+                              
+			      # Parameter name is second entry
                               # TODO: MAYBE SECOND ENTRY...
                               parameter$name[j] <- raw.comment.text[idx.param.comment[2]]     
+                              cat("Name:",parameter$name[j],"\n")
 
                               # Extract the actual comment (third to last position), paste together from text chunks
                               # Enter loop only if comment exists
@@ -312,16 +327,18 @@ for(header.file.name in header.file.names){
                                    }
                                    # Store comment
                                    parameter$comment[j] <- parameter.comment
+                                   cat("Comment:",parameter$comment[j],"\n")
                               }
 
-                              # If key-word array appears in parameter comment
+                              # If key-word "array of size" appears in parameter comment
                               # try to find size information
-                              if(("array" %in% raw.comment.text[idx.param.comment])|("(array" %in% raw.comment.text[idx.param.comment])){
-                                   array.size.pos1       <- grep("array", raw.comment.text[idx.param.comment])
-                                   array.size.pos2       <- grep("size", raw.comment.text[idx.param.comment])
-                                   if((array.size.pos1 + 2) %in% array.size.pos2){
-                                        parameter$array.size[j] <- gsub(")", "", raw.comment.text[idx.param.comment][array.size.pos2 + 1])
-                                   }
+                              # TODO: only first appearance is use, might be instable
+                              array.size.pos1       <- grep("array", raw.comment.text[idx.param.comment], fixed = TRUE)[1]
+                              array.size.pos2       <- grep("of",    raw.comment.text[idx.param.comment], fixed = TRUE)[1]
+                              array.size.pos3       <- grep("size",  raw.comment.text[idx.param.comment], fixed = TRUE)[1]
+                              if(!is.na(array.size.pos1)&!is.na(array.size.pos2)&!is.na(array.size.pos3)){
+                                   parameter$array.size[j] <- gsub(")", "", raw.comment.text[idx.param.comment][array.size.pos3 + 1])
+                                   cat("Array, size:", parameter$array.size[j], "\n")
                               }
                          } # @param loop
                          current.function$parameter.comment <- parameter
@@ -423,6 +440,8 @@ for(header.file.name in header.file.names){
 
                # add parameters to list
                current.function$parameter  <- parameter
+
+	       cat(current.function$parameter.comment$type, "\n")
 
                # add input output information from doxygen header.file.name 
                pos.in                      <- grep.bool(pattern = "in", x = current.function$parameter.comment$type) 

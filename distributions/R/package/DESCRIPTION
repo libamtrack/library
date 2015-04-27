@@ -5,8 +5,8 @@ Title: Computational routines for proton and ion radiotherapy
 Author: Steffen Greilich and the libamtrack team
 Maintainer: Steffen Greilich <s.greilich@dkfz.de> 
 Depends: R (>= 2.11.0)
-SystemRequirements: Gnu Scientific Library version >= 1.8
 Suggests: lattice
+SystemRequirements: Gnu Scientific Library version >= 1.8
 Description:  R interface to the open-source, ANSI C library libamtrack (http://libamtrack.dkfz.org). libamtrack provides computational routines for the prediction of detector response and radiobiological efficiency in heavy charged particle beams. It is designed for research in proton and ion dosimetry and radiotherapy. libamtrack also provides many auxiliary physics routines for proton and ion beams. Original package and C-to-R conversion routines developed by Felix A. Klein.
 URL: libamtrack.dkfz.org
 License: GPL (>=3)

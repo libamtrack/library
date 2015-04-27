@@ -78,7 +78,7 @@ enum {
 
 /**
  * TODO
- * @param[in]	filename  	    	path and name for spc file, incl. extension (array of size FILE_NAME_NCHAR)
+ * @param[in]	filename  	    	path and name for spc file, incl. extension
  * @return	    number of bytes in file
  */
 int AT_SPC_get_number_of_bytes_in_file( const char filename[] );
@@ -86,7 +86,7 @@ int AT_SPC_get_number_of_bytes_in_file( const char filename[] );
 
 /**
  * TODO
- * @param[in]	filename  	    	path and name for spc file, incl. extension (array of size FILE_NAME_NCHAR)
+ * @param[in]	filename  	    	path and name for spc file, incl. extension
  * @param[in]	    content_size 	number of elements in content arrays
  * @param[out]      content  	    binary content of SPC file (array of size content_size)
  * @return			status code
@@ -208,7 +208,7 @@ int AT_SPC_decompose_data(		const int content_size,
 
 /**
  * TODO
- * @param[in]	filename  	    	path and name for spc file, incl. extension (array of size FILE_NAME_NCHAR)
+ * @param[in]	filename  	    	path and name for spc file, incl. extension
  * @return               number of bins
  */
 long AT_SPC_get_number_of_bins_from_filename_fast( const char filename[] );
@@ -222,8 +222,8 @@ long AT_SPC_get_number_of_bins_from_filename_fast( const char filename[] );
  * particle number to another routine such as total dose). Please note that
  * the fluence IS NOT normalized to bin width but given in absolute fluence!
  *
- * @param[in]	filename  	    	path and name for spc file, incl. extension (array of size FILE_NAME_NCHAR)
- * @param[out]	E_MeV_u				primary beam energy in MeV/u
+ * @param[in]	filename  	    	path and name for spc file, incl. extension
+ * @param[out]	E_MeV_u			primary beam energy in MeV/u
  * @param[out]	peak_position_g_cm2	position of peak in g/cm2
  * @param[out]	particle_no         projectile - particle no
  * @param[out]	material_no         target - material no
@@ -248,7 +248,7 @@ int AT_SPC_read_header_from_filename_fast( const char filename[],
  * particle number to another routine such as total dose). Please note that
  * the fluence IS NOT normalized to bin width but given in absolute fluence!
  *
- * @param[in]	    filename  	    path and name for spc file, incl. extension (array of size FILE_NAME_NCHAR)
+ * @param[in]	    filename  	    path and name for spc file, incl. extension
  * @param[in]       n               array size, total number of bins expected
  * @see AT_SPC_get_size
  * @param[out]		depth_step		depth step index, zero-based (array of size n)
@@ -277,7 +277,7 @@ int AT_SPC_read_data_from_filename_fast( const char filename[],
  * particle number to another routine such as total dose). Please note that
  * the fluence IS NOT normalized to bin width but given in absolute fluence!
  *
- * @param[in]	filename  	    	path and name for spc file, incl. extension (array of size FILE_NAME_NCHAR)
+ * @param[in]	filename  	    	path and name for spc file, incl. extension
  * @param[in]   n                   array size, total number of bins expected
  * @see AT_SPC_get_size
  * @param[out]	E_MeV_u_initial		primary beam energy in MeV/u
