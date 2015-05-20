@@ -40,7 +40,9 @@ int AT_FromFile_wrapper( const long n,
 			 sscanf(line, "%s", test);
 			 if ((sscanf(line, "%ld %le %le", &ZZ, &EE, &SS) != 3)&&(strlen(test) != 0)&&(strlen(test) != 1)) {
 			 /* handle error */
+#ifndef NDEBUG
 				 printf("Error reading stopping power data (format correct?)...");
+#endif
 				 return EXIT_FAILURE;
 			 } else {
 			 /* handle variables */
