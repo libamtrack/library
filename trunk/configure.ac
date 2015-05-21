@@ -21,7 +21,7 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
-AC_PROG_FC([f2cFortran])
+AC_PROG_FC([gfortran g77])
 
 
 ## HOW TO GET revision in here? But not trying to get it during a configure
@@ -93,12 +93,12 @@ AC_CHECK_HEADER([cfortran.h], [], [FOUND_CERNLIB=0])
 AC_CHECK_HEADER([gen.h], [], [FOUND_CERNLIB=0])
 AC_CHECK_LIB(mathlib, vavden_, [], [FOUND_CERNLIB=0])
 
-FOUND_GFORTRAN=1
+FOUND_GNUFORTRAN=1
 if test [-z $FC] ; then
-        FOUND_GFORTRAN=0
+        FOUND_GNUFORTRAN=0
 fi
 
-if test [$FOUND_CERNLIB == 0 -a $FOUND_GFORTRAN == 0] ; then
+if test [$FOUND_CERNLIB == 0 -a $FOUND_GNUFORTRAN == 0] ; then
 	AC_MSG_RESULT([No mathlib CERNLIB, headers or compatible fortran compiler found, some energy loss distribution functions will not be available.])
 	AC_SUBST([CERNLIB_CFLAGS])
 	AC_SUBST([CERNLIB_LIBS])
