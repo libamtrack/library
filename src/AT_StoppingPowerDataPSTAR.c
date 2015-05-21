@@ -1,7 +1,6 @@
 #include "AT_StoppingPowerDataPSTAR.h"
 
 PSTAR_data_for_material_struct PSTAR_Water = {
-  132,
   Water_Liquid,
   PARTICLE_PROTON_NUMBER,
   {
@@ -142,7 +141,6 @@ PSTAR_data_for_material_struct PSTAR_Water = {
 
 
 PSTAR_data_for_material_struct PSTAR_Aluminum_Oxide = {
-  132,
   Aluminum_Oxide,
   PARTICLE_PROTON_NUMBER,
   {
@@ -283,7 +281,6 @@ PSTAR_data_for_material_struct PSTAR_Aluminum_Oxide = {
 
 
 PSTAR_data_for_material_struct PSTAR_Aluminum = {
-  132,
   Aluminum,
   PARTICLE_PROTON_NUMBER,
   {
@@ -424,7 +421,6 @@ PSTAR_data_for_material_struct PSTAR_Aluminum = {
 
 
 PSTAR_data_for_material_struct PSTAR_PMMA = {
-  132,
   PMMA,
   PARTICLE_PROTON_NUMBER,
     {
@@ -565,7 +561,6 @@ PSTAR_data_for_material_struct PSTAR_PMMA = {
 
 
 PSTAR_data_for_material_struct PSTAR_Alanine = {
-  132,
   Alanine,
   PARTICLE_PROTON_NUMBER,
     {
@@ -706,7 +701,6 @@ PSTAR_data_for_material_struct PSTAR_Alanine = {
 
 
 PSTAR_data_for_material_struct PSTAR_LiF = {
-  132,
   LiF,
   PARTICLE_PROTON_NUMBER,
     {
@@ -847,7 +841,6 @@ PSTAR_data_for_material_struct PSTAR_LiF = {
 
 
 PSTAR_data_for_material_struct PSTAR_Air = {
-  132,
   Air,
   PARTICLE_PROTON_NUMBER,
     {
@@ -987,7 +980,6 @@ PSTAR_data_for_material_struct PSTAR_Air = {
 };
 
 PSTAR_data_for_material_struct PSTAR_Silicon = {
-  132,
   Silicon,
   PARTICLE_PROTON_NUMBER,
     {
@@ -1128,7 +1120,6 @@ PSTAR_data_for_material_struct PSTAR_Silicon = {
 
 PSTAR_data_for_material_struct
 PSTAR_Copper = {
-  132,
   Copper,
   PARTICLE_PROTON_NUMBER,
     {
@@ -1270,7 +1261,6 @@ PSTAR_Copper = {
 
 PSTAR_data_struct PSTAR_data =
 		{
-				MATERIAL_DATA_N,
 				{ 		User_Defined_Material,
 						Water_Liquid,
 						Aluminum_Oxide,
@@ -1313,11 +1303,10 @@ int AT_PSTAR_wrapper( const long n,
 
 	assert( source_for_given_material != NULL );
 
-	const long n_data = source_for_given_material->number_of_data_points;
+	const long n_data = N_PSTAR_DATAPOINTS;
 
 	long i;
-	if( source_for_given_material->energy_and_stopping_power != NULL){
-		for(i = 0; i < n; i++){
+	for(i = 0; i < n; i++){
 			mass_stopping_power_MeV_cm2_g[i] = AT_get_interpolated_y_from_input_2d_table(
 					source_for_given_material->energy_and_stopping_power,
 					n_data,
@@ -1328,15 +1317,6 @@ int AT_PSTAR_wrapper( const long n,
 				mass_stopping_power_MeV_cm2_g[i] *= gsl_pow_2(Zeff_ion / Zeff_proton);
 			}
 		}
-	} else {
-			char material_name[MATERIAL_NAME_LENGTH];
-			AT_material_name_from_number(material_no,material_name);
-	#ifndef NDEBUG
-			printf("Missing data points for material [%s] in PSTAR data.\n", material_name);
-	#endif
-			return AT_No_PSTAR_Data;
-	}
-
 	return AT_Success;
 }
 

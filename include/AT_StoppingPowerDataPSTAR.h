@@ -76,6 +76,9 @@ int AT_PSTAR_wrapper( const long n,
  * 2) NIST, Physics Laboratory, ECSED
 */
 
+#define N_PSTAR_DATAPOINTS   132
+#define N_PSTAR_MATERIALS    10
+
 /**
  * Basic structure to hold stopping power data for
  * a specified data source, material, and particle
@@ -86,9 +89,8 @@ int AT_PSTAR_wrapper( const long n,
  */
 typedef struct {
 	const long   number_of_data_points; /**< number of data points for given material and source */
-	const long   material_no;
 	const long   particle_no;
-	const double energy_and_stopping_power[][2];
+	const double energy_and_stopping_power[N_PSTAR_DATAPOINTS][2];
 } PSTAR_data_for_material_struct;
 
 /**
@@ -98,9 +100,8 @@ typedef struct {
  * @see 	AT_stopping_power_tabulated_source
  */
 typedef struct {
-	const long number_of_materials; /**< number of data points for given source */
-	const long material_no[MATERIAL_DATA_N];
-	const PSTAR_data_for_material_struct * stopping_power_source_data[];
+	const long material_no[N_PSTAR_MATERIALS];
+	const PSTAR_data_for_material_struct * stopping_power_source_data[N_PSTAR_MATERIALS];
 } PSTAR_data_struct;
 
 #endif /* AT_STOPPINGPOWERDATAPSTAR_H_ */
