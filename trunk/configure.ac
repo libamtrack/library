@@ -21,7 +21,7 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
-AC_PROG_FC([gfortran])
+AC_PROG_FC([f2cFortran])
 
 
 ## HOW TO GET revision in here? But not trying to get it during a configure
@@ -103,7 +103,7 @@ if test [$FOUND_CERNLIB == 0 -a $FOUND_GFORTRAN == 0] ; then
 	AC_SUBST([CERNLIB_CFLAGS])
 	AC_SUBST([CERNLIB_LIBS])
 else
-	AC_SUBST([CERNLIB_CFLAGS], ["-DHAVE_CERNLIB"])
+	AC_SUBST([CERNLIB_CFLAGS], ["-DHAVE_CERNLIB -Df2cFortran"])
 	AC_SUBST([CERNLIB_LIBS], ["-lmathlib"])
 fi
 
