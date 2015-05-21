@@ -1,13 +1,13 @@
 AC_PREREQ([2.68])
 m4_define(gsl_required_version, 1.8)
-AC_INIT([libamtrack], [0.6.0], [s.greilich@dkfz.de], [libamtrack])
+AC_INIT([libamtrack], [0.6.1], [s.greilich@dkfz.de], [libamtrack])
 AC_PACKAGE_URL([libamtrack.dkfz.org])
 # Code names: 
 # minor - 4: Ocelot, 5: Wombat, 6: Armadillo
 # micro - 0: Black, 1: Blue, 2: Red, 3: Green, 4: Yellow, 5: Violet
-AC_DEFINE(CODE_NAME, ["Black Armadillo"], [Cryptonym to faciliate versioning for users])
+AC_DEFINE(CODE_NAME, ["Blue Armadillo"], [Cryptonym to faciliate versioning for users])
 # Status: "Development" or "Release" (will trigger some different actions, e.g. with R package)
-AC_DEFINE(CODE_STATUS, ["Release"], [Status of the code])
+AC_DEFINE(CODE_STATUS, ["Development"], [Status of the code])
 
 LT_INIT
 AM_INIT_AUTOMAKE([subdir-objects])
