@@ -1,4 +1,8 @@
+# Clean workspace
 rm(list = ls())
+
+#Arguments passed by shell (arg1: path)
+args <- commandArgs(TRUE)
 
 split.Rd.line <- function(x, n.char.max){
   # x <- "This is a line that describes a, function, that might be too long. Or not, I really do not know if this is working"
@@ -61,16 +65,16 @@ split.Rd.line <- function(x, n.char.max){
   return(c(res, x))
 }
 
-rd.files <- list.files(".", pattern = "*.Rd")
+rd.files <- list.files(args[1], pattern = "*.Rd")
 
 for( file in rd.files){
   # file <- rd.files[1]
   # file <- rd.files[95]
-  in.file <- scan(file, what = character(), sep = "\n")
+  in.file <- scan(paste0(args[1], "/", file), what = character(), sep = "\n")
   out.file <- NULL
   for( i in 1:length(in.file)){
     # i <- 9
-    out.file <- c(out.file, split.Rd.line(in.file[i], 79))
+    out.file <- c(paste0(args[1], "/", out.file), split.Rd.line(in.file[i], 79))
     cat(".")
   }
   write(out.file, file, sep = "\n")
