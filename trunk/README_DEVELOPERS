@@ -60,6 +60,14 @@ Please make sure - for all Windows installations of MSYS, GSL, R packages, ... -
 (i.e. C:\Program Files\MinGW) - that will most likely give you lots of strange errors.
 
 
+Using clang instead of gcc
+--------------------------
+If clang is installed (e.g. at /usr/bin/clang), it can be used as an alternative by exporting:
+CC=/usr/bin/clang
+CXX=/usr/bin/clang++
+before ./configure (see 1a).
+
+
 ############################################################################################################################
 1a. Basic workflow for compilation from distributed source
 ############################################################################################################################
