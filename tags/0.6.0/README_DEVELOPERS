@@ -1,0 +1,586 @@
+############################################################################################################################
+LIBAMTRACK INFORMATION FOR CODE DEVELOPERS --- PLEASE READ CAREFULLY
+############################################################################################################################
+
+0.  Requirements
+1.  Basic workflow for compilation of libamtrack from full source - using autotools, list of targets
+2.  Using the eclipse IDE
+3.  Doxygen comments
+4.  Build an R source package tarball
+5.  Python wrappers
+6.  Install MinGW toolchain (Windows)
+7.  Install GSL
+8.  Make a release (including R package)
+9.  A note on stopping powers
+
+Contact and feedback
+
+############################################################################################################################
+0. Requirements
+############################################################################################################################
+
+The GNU Scientific Library (GSL, headers + libraries/binaries) is required for all OSs if you want to compile libamtrack 
+from source (sections 1 and 8). See section 7 for installation instructions.
+
+
+To compile the DISTRIBUTED SOURCES of libamtrack:       you need the GNU compiler collection gcc (section 1a).
+To compile the FULL DEVELOPMENT SOURCES of libamtrack,
+  make releases/distributions:                          you need in addition other parts of the GNU toolchain, i.e. the GNU build 
+                                                        system (autotools, i.e. automake, autoconf, and libtool, and m4),
+                                                        (see sections 1b and 8). 
+										  
+To check out the FULL DEVELOPMENT SOURCE,  you also need subversion (svn) installed.
+
+
+You will find required tools depending on your OS here:
+
+Linux
+-----
+Most likely the repository of your distribution.
+
+
+Mac OS X
+--------
+XCode and XCode Command Line Tools (we tested with Mac OS X 10.8 Mountain Lion and XCode 4.5.2).
+
+
+Windows
+-------
+MSYS from MinGW (basic POSIX shell). The MinGW DTK (developer toolkit) if you want to use autotools. The MinGW-based 
+toolchain for both 32 bit and 64 bit comes with installation of Rtools (http://cran.r-project.org/bin/windows/Rtools/)
+that is also needed when compiling R tarball source packages under Windows. Switching between 32 bit and 64 bit 
+compilation is done by appropriate compiler flags ("-m32" (default) or "-m64"). See section 6 for installation instructions.
+Alternatively, you can download the toolchain (http://www.stats.ox.ac.uk/pub/Rtools/multilib/multi.zip) and install
+manually independently from Rtools. Also, you can use other configurations of MinGW or the 64bit fork mingw-w64. In this
+case you might have to use other procedures or flags (e.g. --host=i686-w64-mingw32 or x86_64-w64-mingw32 for 32/64 bit)
+than the ones given in this file. We cannot of course not give any support for those alternatives - but are interested
+in your experiences (s.greilich@dkfz.de).
+
+Please make sure - for all Windows installations of MSYS, GSL, R packages, ... - NOT TO USE pathnames with spaces 
+(i.e. C:\Program Files\MinGW) - that will most likely give you lots of strange errors.
+
+
+############################################################################################################################
+1a. Basic workflow for compilation from distributed source
+############################################################################################################################
+
+Download source distribution (e.g. from sourceforge), navigate to download directory and untar by
+
+    tar zxvf libamtrack-x.y.tar.gz
+
+Navigate to new directory (cd libamtrack-x.y) and execute
+
+    ./configure
+	make
+	make install
+	
+
+For tweaking (target, installation directory) please see section 1b. 
+
+Under Windows you should use the MSYS shell. Also, you have to set the environmental variable GSL_LIB to point to your 
+GSL library, e.g.
+
+export GSL_LIB=/c/Path/To/GSL (in MSYS)
+
+or
+
+set GSL_LIB=C:\Path\To\GSL  (in Windows shell)
+
+or permanently using system settings.
+
+
+
+############################################################################################################################
+1b. Basic workflow for compilation of libamtrack from full source - using autotools
+############################################################################################################################
+
+From revision r1037 on, libamtrack follows the GNU autotool conventions to improve portability and facilitate distribution.
+
+This requires additional files (such as configure.ac, Makefile.am, ChangeLog, NEWS, etc.) and folders (m4) to be placed 
+in the subversion repository.
+
+In addition, file and folders will be created during the autoconf/automake process (such as aclocal.m4, 
+config.guess, configure, install.sh, Makefile, etc.). Those files *SHOULD NOT* be committed to the repository. 
+Please refrain from doing so. 
+
+Basic instruction on the use of GNU autotools are found in INSTALL.
+
+The libamtrack sources can be checkout from it svn repository at sourceforce.net by:
+
+
+svn co https://svn.code.sf.net/p/libamtrack/code/trunk libamtrack
+
+Of course you can also check out previous tags or branches from:
+svn co https://svn.code.sf.net/p/libamtrack/code/tags/RELEASE_VERSION_NUMBER libamtrack
+svn co https://svn.code.sf.net/p/libamtrack/code/branches/BRANCH_ID libamtrack
+
+To commit changes you did to the code you have to register as a developer at sourceforge and join the libamtrack project.
+
+As for section 1a, please make sure that GSL_LIB points correctly to your GSL installation (section 7) if you are working
+with Windows.
+
+### IMPORTANT NOT AS OF 2013-02-05:
+### Due to an expansion problem of the AX_GSL_PATH by autoconf under Windows, libamtrack compilation is not recommended
+### at the moment. We are looking for a fix.
+
+
+Steps for compilation:
+----------------------
+i.   After you check out libamtrack OR 
+     you updated your local workspace (which could have changed configure.ac) OR
+     you changed configure.ac yourself run:
+   
+     autoreconf --force --install
+
+     This will create a configure script plus all necessary other files.
+
+	 
+ii.  After (i.) OR
+     you changed a makefile.am OR
+     you want to switch between RELEASE / DEBUG (or any other) configuration
+   
+     ./configure                                (for an optimized, 'release' code)
+     ./configure CFLAGS="-O0 -g -DDEBUG"        (for a 'debug' version of the code, e.g. to use with gdb)
+     ./configure --enable-shared=no             (if you want to produce static libraries, e.g. for portable applications)
+
+     If you use eclipse, you can simplify this step by using a separate build configurations.
+   
+     When using Mac OS X you might consider using multiarchtecture compilation by adding appropriate "-arch" flags (will 
+	 create a single library that can be used with multiple architectures)
+   
+     ./configure CC="gcc -arch i386 -arch x86_64" CPP="gcc -E"		
+	 
+	 which will give 32 AND 64 bit versions on Intel-based Mac, for PowerPC add "-arch ppc" (32 bit) and/or "-arch ppc64"
+     
+	 When using Windows and the Rtools toolchain, use the MSYS shell and select 32 or 64 bit by 
+	 
+	 ./configure CFLAGS="-m32" or CFLAGS="-m64"
+   
+     Also, set GSL_LIB (see section 1a) to point to your GSL installation.
+	 
+	 
+     You can change the default path for installation by "--prefix=/my/installation/path". The flags given in this section
+	 can be used together where applicable.
+   
+   
+iii. After (i.) OR
+     (ii.) OR
+     any local change in the code:
+   
+     make all
+
+	 
+iv.  ### TODO: Describe (and enable)
+
+     make check >log.txt 2>&1
+	 make install
+	 
+     make uninstall
+	 make distclean
+	 
+	 
+############################################################################################################################
+1c. Non-standard make targets
+############################################################################################################################
+
+i.    R-package
+
+Compiles an R package tarball from current libamtrack source
+
+ii.   R-forge
+
+Syncs R package source with given directory (which is preferrably a working copy of the libamtrack R-forge repository at 
+svn://r-forge.r-project.org/svnroot/libamtrack/).
+
+iii.  R-package-sandbox
+
+Compiles an R package tarball from current libamtrack source PLUS another directory containings files to overwrite public
+files (i.e. proprietary stopping power data etc.).
+
+
+ii. and iii. still contain hardcoded paths.
+
+############################################################################################################################
+2. Using the eclipse IDE
+############################################################################################################################
+
+Eclipse 3.6+ supports the autotool toolchain. There are, however, some peculiarities to be considered:
+
+You have to manually set include path:
+   Right click libamtrack project > Properties > C/C++ general > Path and Symbols
+   
+When using a second build configuration with debug flags (see above), eclipse gets confused and you have (TODO: fix)
+to prepare debugged code to use with gbd in eclipse using the command line.
+
+    
+############################################################################################################################
+3. Doxygen comments
+############################################################################################################################
+
+Doxygen comments are not only used to document libamtrack's C code but they are also used during the scripted generation of
+R and Python wrappers. It is essential for them to have it very carefully formatted.
+
+- After @param[??] parameter name should go and then description.
+- @param[in] defines an input, @param[out] an return parameter.
+- The size of array HAS to be provided in brackets with key word "array of size". It should not be provided in function 
+  declaration in the header file. Both other parameters passed to the function (see example, "n"), numbers and macro
+  expansions can be used as size, also in mixed or multiple form. 
+- A whitespace is needed after the first and before last bracket in the function declaration (TODO: Really? When last
+  variable is an array "[]", the example below fails until the whitespace is removed for the closing bracket).
+- In the function declaration there is one parameter per line, with the first parameter in the same line as function name.
+- Please refrain from using "/", ";" in the description
+
+
+Example:
+
+/**
+  * Returns Z for given elemental symbols
+  * @param[in]   n         number of elements in arrays
+  * @param[in]   acronym   elemental symbols (array of size n)
+  * @param[out]  Z         corresponding Z (array of size n)
+  * @return                status
+  */
+
+int AT_Z_from_element_acronym( const long n,
+		char* acronym[],
+		long Z[] );
+
+
+############################################################################################################################
+4. Build an R source package tarball
+############################################################################################################################
+
+This applies to Linux and Mac OS X only.
+
+The necessary files for producing an R package from libamtrack are found in:
+  /wrapper/R/R_package                     package folder structure and input files, script for compilation, hardcoded wrappers
+                                           and documentation
+  /tools/automatic_wrapper_generation      R scripts for automatic creation of R/C wrappers
+
+To compile a package, follow first the instructions given in section 1b (if you want to have the correct svn revision number,
+make sure you start at step (i)!), then navigate to /wrapper/R/R_package:
+
+Functions that should go to R package are referenced in the text file NAMESPACE. The suffix "_multi" will automatically be
+skipped, as R functions are supposed to be able to work on vectors as you should always prefer the "<function_name>_multi"
+version of the function over the "<function_name>_single", if possible. If "noR: " is placed in front of the function name
+in NAMESPACE a C wrapper will be generated but no corresponding R wrapper. This can be useful if you want to have access 
+to a function within an R function via ".C" but not a full R function on its own. 
+
+Run ./create.package.sh 
+Use --help to see options
+
+If your function is not in resulting package, use --noclean option and check output file "collect.doxygen.information.Rout"
+for functions that fails (most likely due to faulty doxygen formatting).
+
+The resulting package is an source tarball (libamtrack-version.tar.gz). It can either be distributed by yourself (most likely in
+the case of intermediate development versions) or uploaded to CRAN (in case of an official release).
+
+See section 8. How to make a release on how to produce binary packages.
+
+
+Under Linux and Mac OS, the source package can be simply installed for use in R by typing
+
+(sudo) R CMD INSTALL <package_name>
+
+Under standard Windows, source tarballs cannot be installed. To compile a source package (that - for libamtrack - can
+only be created using Linux or Mac OS X, you have to prepare your system and the best way to do so, is to use the 
+RTools (see section 0). For setting up GSL properly for R package compilation, see section 7.
+
+
+############################################################################################################################
+5. Python wrappers
+############################################################################################################################
+
+i.   make "wrapper/Python/pyamtrack/NAMESPACE" file completely empty this will cause wrappers will be created for (almost) all functions
+
+ii.  run "python generate_Py_wrapper.py" to generate file "pyamtrack.py". The script will complain, but ignore it - some functions are
+impossible to translate yet.
+
+iii. copy compiled library to the same directory as "pyamtrack.py": cp ../../../src/.libs/libamtrack.so.0.0.0 libamtrack.so
+
+iv.  run "python pyamtrack_example.py" to check sample file.
+
+
+############################################################################################################################
+6. Install MinGW toolchain (Windows)
+############################################################################################################################
+
+6a. Rtools
+----------
+Install the latest version of Rtools from http://cran.r-project.org/bin/windows/Rtools/ with administrator priviledges. This
+includes a complete multilib (32/64 bit) toolchain based on MinGW. To our knowledge this is the easiest way, even when you
+intend not to compile R source packages but libamtrack only - everything is setup correctly. Since some releases, the 
+toolchain directory (in "C:\Path\to\Rtools") is named "gcc-x.y.z" instead of usual "MinGW" which might be confusing first.
+
+Make sure Windows environmental variable PATH contains:
+
+C:\Path\to\Rtools\bin + C:\Path\to\Rtools\gcc-x.y.z\bin 
+
+This should be autoset by Rtools installer. It is essential that the directory containing the command line tools comes 
+first or second in the path: there are typically like-named tools46 in other directories, and they will not work. 
+
+
+6b. MSYS (& MinGW-DTK)
+----------------------
+Download and run the latest version of the MinGW installer mingw-get-inst from 
+
+https://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/
+
+Select MSYS only (!) or "MinGW Developer Toolkit" only (the latter if you want GNU autotools).
+
+Make sure that C:\Path\to\MinGW\msys\1.0\etc\fstab contains only a single line (with forward slahes!)
+
+C:/Path/to/MinGW /mingw
+
+Start MSYS from C:\Path\to\MinGW\msys\1.0\msys.bat (make a shortcut to Desktop etc. for convenience). You will have a home
+directory at C:\Path\to\MinGW\msys\1.0\home\yourname which you can use as workspace for compilation etc. Also, you should
+create a /local directory at C:\Path\to\MinGW\msys\1.0\local where you can install compiled libraries etc. such as GSL.
+
+
+############################################################################################################################
+7. Install GSL
+############################################################################################################################
+
+7a. Linux
+---------
+Most popular distribution offer GSL (libgsl) in their repositories. Please make sure that you install the development version 
+including headers.
+
+
+7b. Mac OS X
+------------
+Please make sure you have XCode and the XCode Command Line Tools installed (tested on Mac OS X 10.8 Mountain Lion, Xcode tools 4.5.2, 
+gcc version 4.2.1 (Based on Apple Inc. build 5658)).
+
+Download the latest gsl from the GNU homepage, untar (tar zxvf) and navigate into top directory of the sources.
+
+As we want to have both 32 and 64 bit versions (Intel-based Mac) run
+
+	./configure CC="gcc -arch i386 -arch x86_64" CPP="gcc -E" --enable-shared=NO 
+
+For PowerPC add "-arch ppc" and/or "-arch ppc64", resp. This will create single libraries that can be used with multiple architectures.
+
+Build and check by
+
+	make
+	make check > log.txt 2>&1
+
+
+then install
+	
+	sudo make install
+
+gsl is now in /usr/local (or a different place if you have set an individual --prefix flag). ./gsl-config shows that path.
+
+Alternatively, you might want to use a system like FINK or MacPorts to install gsl, but we can not give any details due to missing experience wit that.
+
+We built static libraries, so that libamtrack will be statically link to the gsl routines and not depend on an external dynamic library, making it
+package portable, i.e. the user DOES NOT NEED TO HAVE GSL installed!
+
+
+7c. WINDOWS
+-----------
+
+i. For regular compilation (as in section 1a, 1b, 8)
+====================================================
+To compiling GSL for source compilation of libamtrack, start MSYS. Download the tarball for the latest GSL version, e.g. gsl-1.15.tar.gz and 
+unzip in your home directory, e.g. C:\Path\to\MinGW\msys\1.0\home\yourname.
+
+In MSYS, navigate into the gsl directory (cd ~/gsl-x.y), build, test and install. To switch between 32 and 64 bit, add CFLAGS="-m32" (default) 
+or "-m64" according to your system (or maybe the host you intend to run GSL on):
+
+	./configure
+	make
+	make check >log 2>&1
+	make install
+
+You can change the installation directory by the "--prefix" flag for configure (default: /usr/local). We recommend to keep the default but you
+could do so for example if you want to keep / distribute binaries for both 32 bit and 64 bit versions. 
+
+Remember to use the environmental variable GSL_LIB to point to the installation directory during compilation of libamtrack (sections 1a, 1b).
+
+In principle, you could alternatively use any directory and add the \bin subdirectory of it to PATH and leave GSL_LIB empty so that configure 
+runs gsl-config to get include and lib paths like under Linux and Mac OS X. However, the expansion of the AX_PATH_GSL seems faulty under Windows.
+
+
+ii. R package compilation (as for section 4, 8)
+-----------------------------------------------
+There are subtle differences how regular libamtrack compilation and R package compilation handle GSL and GSL pointers:
+
+Standard Windows compilation only requires a single architecture (e.g. 32 bit if you want to be sure that your programs
+run on all, including 64 bit, platforms) that goes (usually) into a standard folder structure (in /usr oder /usr/local):
+
+bin		       - directory keeping binaries, i.e. executables and dlls
+include        - include / header files
+lib            - pre-/static libraries for linking
+share          - other stuff
+
+R in contrast has developed a solution to deal with multiarchitectures under Windows and thereore assumes a canonical structure of libraries 
+to deal with multilibs. During R (package) compilation and also executing of R and related subprograms, the make variable R_ARCH_BIN={"i386","x64"} 
+points to the current architecture, whereever necessary, i.e. using binaries and libraries but not for include: 
+
+include       - include files (headers), common to all systems
+libs/i386     - static libraries for 32 bit
+libs/x64      - static libraries for 64 bit
+bin/i386      - binaries for 32 bit
+bin/x64       - binaries for 64 bit
+
+It will not use "gsl-config" like regular libamtrack compilation. Since R fully supports the use of GSL, the easiest approach is therefore to 
+download the dedicated pre-build libraries from the Rtools page ("localxxx.zip", http://www.stats.ox.ac.uk/pub/Rtools/R215x.html) and locate 
+them in a designated location in your MSYS directory (e.g. C:\Path\to\MinGW\msys\1.0\local\Rcompile\local215). 
+
+To point to this GSL directory use the make variable 
+
+LOCAL_SOFT
+
+*not* GSL_LIB to point to the GSL root directory e.g. "C:/Path/to/MinGW/msys/local/Rcompile/local215" (forward slashes!). LOCAL_SOFT does not 
+have to be set in the MSYS shell but in both C:\Path\to\R\etc\{i386,{x64}\Makeconf files (thanks to Uwe Ligges for his advice).
+
+Since local215.zip contains static libraries only, the dlls in libamtrack will contain the code of gsl routines and do not depend on an external 
+dynamic library, making the package portable. I.e. the user DOES NOT NEED TO HAVE GSL installed which is in accordance to R requirements.
+
+
+Again, to avoid confusion and trouble we recommend to keep two installations of GSL for both purposes (i) and (ii) in two separate locations. 
+Ideally, you take for (i) the precompiled file from the Rtools page, and compile the library with your toolchain for (ii) for your intended
+architecture (32/64 bit) yourself.
+
+
+############################################################################################################################
+8.  Make a release (including R package for CRAN)
+############################################################################################################################
+
+Release
+#######
+- Augment "/trunk/ChangeLog", e.g. from svn logs
+- Make new folder in /tags, correspoding to version to release, e.g. "0.5.4"
+- Adjust "/tags/VERSION/configure.ac": AC_DEFINE(CODE_STATUS, ["Development"], [Status of the code]) --> AC_DEFINE(CODE_STATUS, ["Release"], [Status of the code])
+- Adjust "/trunk/configure.ac":  
+		New development number: AC_INIT([libamtrack], [0.5.5], [s.greilich@dkfz.de], [libamtrack])
+		New development name:	AC_DEFINE(CODE_NAME, ["Violet Wombat"], [Cryptonym to faciliate versioning for users])
+- Commit changes to SVN (this will be the release's revision number)
+
+These steps can be skipped in case you want to make an intermediate (development) version.
+
+
+Source distribution
+###################
+Execute make dist
+If release, upload to sourceforge with corresponding folder
+
+
+Precompiled binaries
+####################
+
+For Win (maybe Mac, Linux?): How to make sure that gsl is STATICALLY linked to libamtrack, so users do not have to have GSL?
+
+Linux
+-----
+
+Mac OS X
+--------
+
+Windows
+-------
+
+
+Binary packages
+###############
+
+Linux
+-----
+RPM / DEB?
+
+Mac OS X
+--------
+Use PackageMaker (XCode Auxilirary Developer Tools)
+
+Windows
+-------
+Installer?
+
+
+R package
+#########
+
+Follow instructions given in section 4. Then run tests on tarball:
+	R CMD check --as-cran libamtrack.VERSION.tar.gz, both as current as alternative user and both with latest stable and development R release (4 tests)
+	Make sure to switch on "-Wall -pedantic" in ~/.R/Makevars (NOT in the package Makevars) - or similar if you are not using gcc
+	
+If successful, upload package tarball to ftp://CRAN.R-project.org/incoming/ using �anonymous� as log-in name and your e-mail address as password (use �ftp�).
+Then send mail to CRAN@R-project.org about it with your package name and version in the subject line of the form "CRAN submission �package� �version�"
+	
+		
+R package binaries
+##################
+
+This process is only needed for intermediate packages and mostly Windows users how do not have their system upgraded to be able to compile tarball
+source packages. Release packages will be uploaded to CRAN, the R repository, where Windows and Mac binaries are automatically provided. 
+Mac and Linux are furthermore able to compile source tarballs.
+
+
+Linux:
+------
+
+Under Linux tarball source packages (package_x.y.z.tar.gz) can be installed directly by
+
+R CMD INSTALL package_x.y.z.tar.gz
+
+so binary packages should not be necessary. But if you use the --build option during this process you will get a binary package, with "--no-inst" R
+will not install the package but only produce the binary.
+
+
+Mac OS X:
+---------
+
+Build 32 bit or 64 bit version (skip "--no-inst" to install, too) portable binary
+
+R CMD INSTALL --build --no-inst package_x.y.z.tar.gz
+R64 CMD INSTALL  --build --no-inst package_x.y.z.tar.gz
+
+or both in a single package
+R CMD INSTALL --merge-multiarch --build --no-inst package.tar.gz
+
+This will result in a portable .tgz file.
+
+
+Windows:
+--------
+
+Start Windows command shell (with administrative priviledges, i.e. Start button > Search programs and files > Enter "cmd" > Press "Ctrl+Shift+Enter"
+
+Navigate to directory where the package's source tarball (created using ./create.package.sh under Linux) is located.
+
+R has integrated support for GSL, so all we need to do is to set R's environmental variable LIB_GSL to point first to top folder of the GSL installation 
+(assuming you followed the instructions for GSL installation given in section 7. with correspding subdirectories for the two architectures. 
+NB: Linux-style slashes!):
+
+	set LIB_GSL=C:/Rtools/MinGW/msys/1.0/local/
+
+Now build binary package (NB: Windows environmental variable PATH has to include the R version you are using):
+
+	R CMD INSTALL --no-inst --build package_x.y.z.tar.gz
+  
+The resulting zip-file can be distributed to all Windows users. They do not need to have gsl installed. 
+
+Users can install the binary package within R by
+	install.packages("C:/PATH/TO/libamtrack_x.y.zip", repos = NULL)
+	
+or appropriate menu short-cuts in R GUIs.
+
+If you want to install the package yourself, just skip "--no-inst" during compilation.
+
+############################################################################################################################
+9.  A note on stopping powers
+############################################################################################################################
+
+Stopping power data in libamtrack are primarily for convenient use and not for high-accuracy application. There is no
+distinguished between total and electronic stopping power and specific energy per nucleon and per amu!
+
+############################################################################################################################
+Contact and feedback
+############################################################################################################################
+
+Please send mails considering code development to:
+
+steffen.greilich@dkfz.de or
+leszek.grzanka@ifj.edu.pl

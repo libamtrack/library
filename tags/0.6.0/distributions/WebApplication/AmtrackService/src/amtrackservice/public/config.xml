@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<config path="/home/grzanka/tmp/system/"> <!-- please specify the path where the wrapper folder is located -->
+	<template name="Stopping Power vs. Particle Energy" file="AT_LET_from_E.xml" group="2. Stopping Power"/>
+	<template name="CSDA range vs. Particle Energy" file="AT_CSDA_range.xml" group="2. Stopping Power"/>
+	<template name="Radial Dose vs. Distance From Track" file="AT_D_RDD_GY.xml" group="3. Track Structure"/>
+	<template name="Particle Energy vs. Beta" file="AT_E_from_beta.xml" group="1. Basic Kinematics"/>
+	<template name="Particle Energy vs. Gamma" file="AT_E_from_gamma.xml" group="1. Basic Kinematics"/>
+	<template name="Particle Momentum vs. Energy" file="AT_momentum_from_E.xml" group="1. Basic Kinematics"/>
+	<template name="Effective particle charge" file="AT_effective_charge.xml" group="1. Basic Kinematics"/>
+	<template name="CPP-SC Detector Response Model" file="AT_CPPSC.xml" group="4. Response Models"/>
+    <template name="Photon Dose-Response" file="AT_Gamma_Response.xml" group="3. Track Structure"/>
+    <template name="Energy maximally transferred to secondary electrons" file="AT_Max_E_transfer_to_electron.xml" group="1. Basic Kinematics"/>
+</config>

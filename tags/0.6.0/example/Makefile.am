@@ -1,0 +1,2 @@
+SUBDIRS=basic_plots demo
+DIST_SUBDIRS=basic_plots demo
