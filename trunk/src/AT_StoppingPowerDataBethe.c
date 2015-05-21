@@ -30,7 +30,7 @@
 
 #include "AT_StoppingPowerDataBethe.h"
 
-int AT_Bethe_wrapper( const int n,
+int AT_Bethe_wrapper( const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
 		const long material_no,

@@ -44,7 +44,7 @@
  * @param[out]  mass_stopping_power_MeV_cm2_g   array to return stopping powers (array of size n)
  * @return
  */
-int AT_Bethe_wrapper( const int n,
+int AT_Bethe_wrapper( const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
 		const long material_no,
