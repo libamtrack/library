@@ -21,7 +21,7 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
-AC_PROG_FC
+AC_PROG_FC([gfortran])
 
 
 ## HOW TO GET revision in here? But not trying to get it during a configure
@@ -87,14 +87,19 @@ AC_CHECK_HEADER([stdlib.h])
 AC_CHECK_HEADER([string.h])
 
 
-# Check if libmath (CERNLIB) and appropriate header are available
+# Check if libmath (CERNLIB), gfortran and appropriate header are available
 FOUND_CERNLIB=1
 AC_CHECK_HEADER([cfortran.h], [], [FOUND_CERNLIB=0])
 AC_CHECK_HEADER([gen.h], [], [FOUND_CERNLIB=0])
 AC_CHECK_LIB(mathlib, vavden_, [], [FOUND_CERNLIB=0])
 
-if test $FOUND_CERNLIB == 0; then
-	AC_MSG_RESULT([No mathlib CERNLIB or headers found, some energy loss distribution functions will not be available.])
+FOUND_GFORTRAN=1
+if test [-z $FC] ; then
+        FOUND_GFORTRAN=0
+fi
+
+if test [$FOUND_CERNLIB == 0 -a $FOUND_GFORTRAN == 0] ; then
+	AC_MSG_RESULT([No mathlib CERNLIB, headers or compatible fortran compiler found, some energy loss distribution functions will not be available.])
 	AC_SUBST([CERNLIB_CFLAGS])
 	AC_SUBST([CERNLIB_LIBS])
 else
