@@ -1,7 +1,7 @@
 Package: libamtrack
 Version: ##VERSION##
 Date: ##DATE##
-Title: Computational routines for proton and ion radiotherapy
+Title: Computational Routines for Proton and Ion Radiotherapy
 Author: Steffen Greilich and the libamtrack team
 Maintainer: Steffen Greilich <s.greilich@dkfz.de> 
 Depends: R (>= 2.11.0)
