@@ -65,6 +65,7 @@ split.Rd.line <- function(x, n.char.max){
   return(c(res, x))
 }
 
+cat("Read and write file to ", args[1], "\n")
 rd.files <- list.files(args[1], pattern = "*.Rd")
 
 for( file in rd.files){
@@ -77,7 +78,7 @@ for( file in rd.files){
     out.file <- c(out.file, split.Rd.line(in.file[i], 79))
     cat(".")
   }
-  write(paste0(args[1], "/", out.file), file, sep = "\n")
+  write(out.file, paste0(args[1], "/", file), sep = "\n")
   cat("\n", match(file, rd.files), "\n")
 }
 
