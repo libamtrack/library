@@ -18,6 +18,15 @@ NOCLEAN_ARG="FALSE"
 SANDBOX_ARG="FALSE"
 SYNC_ARG="FALSE"
 
+OUTPUT="ROOT_DIR is $ROOT_DIR"
+echo $OUTPUT
+OUTPUT="WORK_DIR is $WORK_DIR"
+echo $OUTPUT
+OUTPUT="SCRIPT_DIR is $SCRIPT_DIR"
+echo $OUTPUT
+OUTPUT="SANDBOX_DIR is $SANDBOX_DIR"
+echo $OUTPUT
+echo
 
 # set bound checking environmental variable
 export R_C_BOUNDS_CHECK=yes
