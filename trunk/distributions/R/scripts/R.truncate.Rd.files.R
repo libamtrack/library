@@ -74,10 +74,10 @@ for( file in rd.files){
   out.file <- NULL
   for( i in 1:length(in.file)){
     # i <- 9
-    out.file <- c(paste0(args[1], "/", out.file), split.Rd.line(in.file[i], 79))
+    out.file <- c(out.file, split.Rd.line(in.file[i], 79))
     cat(".")
   }
-  write(out.file, file, sep = "\n")
+  write(paste0(args[1], "/", out.file), file, sep = "\n")
   cat("\n", match(file, rd.files), "\n")
 }
 
