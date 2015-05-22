@@ -78,17 +78,16 @@ int AT_SPC_fast_read_buffer( const char filename[],
 	}
 	close(fd);
 
+#ifndef NDEBUG
 	/* read whole file into addr pointer */
 	const char * mode = "r";
 	FILE * fs = fopen( filename , mode);
 	size_t no_items_read = fread(content , sizeof(int32_t), content_size, fs);
 
-#ifndef NDEBUG
 	if (no_items_read != content_size)
 		printf("error, expected to be at the end of file %s, read %lu items (out of %d)\n", filename, (unsigned long)no_items_read, content_size);
-#endif
-
 	fclose(fs);
+#endif
 
 	return EXIT_SUCCESS;
 }
