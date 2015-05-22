@@ -1,0 +1,56 @@
+Changes in 0.6.1 (2015-05-22)
+=============================
+
+- Fixed issues of GNU extension, now compatible with clang / C99
+- No warnings in pedantic mode
+
+
+Changes in 0.6.0 (2015-05-21)
+=============================
+
+- Major rework on stopping power data: import of tablulated external data possible, cleaned out data implemented
+
+
+Changes in 0.5.5 (2014-07-07)
+=============================
+
+- Added functions on energy loss straggling, depending on CERN's cernlib functions
+- Added ability to work with tabulated RDD (in addition to analytical RDDs)
+- Improved CRAN compability
+
+
+Changes in 0.5.4 (2013-01-21)
+=============================
+
+- Added help pn GSL compilation, installation and use under Windows.
+- ICRU reports added in bibliography
+- Minor bug fixes (e.g. obsolete use of .LastLib in R package)
+
+Changes in 0.5.3 (2012-04-27)
+=============================
+
+- Bug fixes to Python and R bindings
+- Esp., R calls to functions that return character vectors (such as AT.particle.name.from.particle.no) reworked using ".Call" in order to avoid array over-runs which now can be checked by R_C_BOUNDS_CHECK in R)
+- Improved scripts for automatic generation of R wrapper, ensuring better portability - they should be applicable for projects similar to libamtrack now (e.g. libmaterials).
+- Added Multicoulomb-Scattering (MCS) physics
+- Started parallelization of code using OpenMP
+
+Changes in 0.5.2 (2011-12-20)
+=============================
+
+- R wrappers: introduced namespace mandatory as from R 2.14, automated passing of char arguments (input and output), NDEBUG switch for printf, assert, exit and similar unwanted statements in C code, improved package compilation.
+- Updated Python wrappers.
+- Updated Java wrappers.
+- Transport data: prototyped workflow for particle fluence data - differential in energy, type and depth - as a function of the primary particle energy. Data sets (for C-12 on water) are provided in TRiP98's spc format for separate download on the libamtrack website. To read an SPC file use AT.SPC.read, to get data for an arbitrary energy covered by the energy range of the data set AT.SPC.get (which uses AT.SPC.interpolate). To get the fluence spectrum at any depth, use AT.SPC.spectrum.at.depth.g.cm2. 
+- New routines and bug fixed in material routines, esp. concerning electron density and effective atomic number.
+- Added lead and tungsten as materials.
+- Improved autotools
+- Added deb-package compilation.
+
+Changes in 0.5.1 (2011-08-11)
+=============================
+
+- Ability to use multiple stopping power data sources (was hard-coded PSTAR data only), in new AT_DataStoppingPower.*, both tabulated or analytical.
+- Stopping power data shipped with libamtrack: PSTAR (for all predefined materials), Bethe formula (for arbitrary material), SHIELD-HIT (advanced Bethe, v10, for water only), ICRU49&73 (for water only). Further development will allow external data tables and libraries, such as libdEdx (http://sourceforge.net/projects/libdedx/).
+- Reworked webGUI to cover basic ion physics for educational purposes, new categories, improved functionality
+- Reworked R package compilation (including autoconf ability), now canonical source package tarball can be produced and uploaded to CRAN. Will replace providing binary distributions of R package on sf.net.

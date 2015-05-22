@@ -1,0 +1,38 @@
+*** INSTALLATION FROM CRAN ***
+
+Start R (as root, if you want) and type
+
+'install.packages("libamtrack")'
+
+
+*** INSTALLATION FROM SOURCE PACKAGE ***
+
+To compile the libamtrack package from sources, cd to the folder where the tarball is located and type
+
+'R CMD INSTALL <package_name>' or
+'sudo R CMD INSTALL <package_name>' if you want to install using root priviledges
+
+where <package_name> refers to the source package filename (for example 'libamtrack_0.5-1.tar.gz').
+
+
+*** INSTALLATION FROM SOURCE PACKAGE ON NON-LINUX SYSTEMS ***
+
+For Mac, please make sure to use the same architecture your GSL is built on, e.g. by
+
+'R --arch=i386 CMD INSTALL <package_name>'
+
+For Windows, you will have to install the Rtools (http://www.murdoch-sutherland.com/Rtools/) to compile source packages. Before compilation please use
+
+'set LIB_GSL=<path/to/gsl>'
+
+to set the environmental variable necessary. <path/to/gsl> should point to your installation directory of GSL (using forward slahes!), e.g. "c:/program files/GnuWin32" or "c:/GnuWin32"
+
+
+*** REMOVING INSTALLED PACKAGE ***
+
+To remove an installed package either use the 'remove.packages(<package_name>)' command within R or
+'R CMD REMOVE <package_name>' (sudo if you used administrator right for installation)
+from command-line where <package_name> refers to the package name (for example 'libamtrack').
+
+
+
