@@ -91,7 +91,9 @@ AT_Landau_PDF [HAVE_CERNLIB]
 #AT_Bethe_energy_loss_MeV_cm2_g
 #AT_el_energy_loss_leading_term_MeV_cm2_g
 AT_Bethe_mean_energy_loss_MeV
-AT_kappa
+AT_kappa_multi
+AT_lambda_max_multi
+AT_lambda_mean_multi
 AT_Vavilov_lambda_from_energy_loss [HAVE_CERNLIB]
 AT_Vavilov_energy_loss_from_lambda [HAVE_CERNLIB]
 AT_Vavilov_energy_loss_distribution [HAVE_CERNLIB]
@@ -99,6 +101,7 @@ AT_energy_loss_distribution [HAVE_CERNLIB]
 AT_energy_loss_mode [HAVE_CERNLIB]
 AT_energy_loss_FWHM [HAVE_CERNLIB]
 AT_lambda_from_energy_loss [HAVE_CERNLIB]
+AT_energy_loss_from_lambda_multi [HAVE_CERNLIB]
 AT_translate_dose_into_DSB_distribution
 noR: AT_SPC_read_data_from_filename_fast
 noR: AT_SPC_read_header_from_filename_fast

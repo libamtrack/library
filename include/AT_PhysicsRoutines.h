@@ -726,6 +726,25 @@ double AT_mean_number_of_tracks_contrib(    const long number_of_field_component
 double AT_kinetic_variable_single( double E_MeV_u );
 
 /**
+ * Computes the Rutherford single differential cross section
+ * for the energy spectrum of secondary electrons produced by
+ * an HCP
+ * @param[in]  	   E_MeV_u      energy of particle per nucleon
+ * @param[in]  	   particle_no  particle index
+ * @param[in]      material_no  material index
+ * @param[in]  	   n      		number of secondary electron energies
+ * @param[in]      T_MeV 	    electron energies (array of size n)
+ * @param[out]     dsdT_m2_MeV  Rutherford SDCS for given electron energies (array of size n)
+ * @return         status code
+ */
+int AT_Rutherford_SDCS( const double E_MeV_u,
+		const long particle_no,
+		const long material_no,
+		const long n,
+		const double T_MeV[],
+		double dsdT_m2_MeV[]);
+
+/**
  * Computes the cross section (in 1/m2) the a particle is scattered
  * in the solid angle O = 2 * pi * theta * d_theta given the
  * scatter angle theta
