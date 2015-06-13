@@ -754,6 +754,62 @@ double AT_kinetic_variable_single(double E_MeV_u){
 	return(log10(beta*gamma));
 }
 
+
+int AT_Rutherford_SDCS(const double E_MeV_u,
+		const long particle_no,
+		const long material_no,
+		const long n,
+		const double T_MeV[],
+		double dsdT_m2_MeV[]){
+
+	// Get particle data
+	long I 			= AT_nuclear_spin_from_particle_no_single(particle_no);
+	double Z_eff  	= AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
+	long Z			= AT_Z_from_particle_no_single(particle_no);
+	long A			= AT_A_from_particle_no_single(particle_no);
+
+	// Get material Z
+	double Z_material = AT_average_Z_from_material_no(material_no);
+
+	// We follow the formulation of Sawakuchi, 2007
+	double particle_mass_MeV_c2	= Z * proton_mass_MeV_c2 + (A-Z) * neutron_mass_MeV_c2;
+	double total_E_MeV_u		= particle_mass_MeV_c2 / A + E_MeV_u;
+	double Q_c_MeV_c2			= particle_mass_MeV_c2 * particle_mass_MeV_c2 / electron_mass_MeV_c2;
+	double K_MeV_m2  			= 2 * M_PI * pow(classical_electron_radius_m, 2) * electron_mass_MeV_c2;
+
+	double beta				= AT_beta_from_E_single(E_MeV_u);
+	double beta2			= beta * beta;
+	double T_max_MeV		= AT_max_E_transfer_MeV_single(E_MeV_u);
+
+	double term_0, term_1, term_2;
+
+	long i;
+	for (i = 0; i < n; i++){
+		if(T_MeV[i] > T_max_MeV){
+			dsdT_m2_MeV[i]		= 0.0;
+		}else{
+			term_0				= K_MeV_m2 * Z_material * Z_eff * Z_eff / (beta2 * T_MeV[i] * T_MeV[i]);
+			term_1				= 1.0 - beta2 * T_MeV[i] / T_max_MeV;
+			if(I == 0.0){
+				dsdT_m2_MeV[i]			= term_0 * term_1;
+			}
+			if(I == 0.5){
+				term_2				= T_MeV[i] * T_MeV[i] / (2.0 * total_E_MeV_u * total_E_MeV_u);
+				dsdT_m2_MeV[i]			= term_0 * (term_1 + term_2);
+			}
+			if(I == 1.0){
+				term_2				=  (1.0 + T_MeV[i] / (2.0 * Q_c_MeV_c2));
+				term_2				*= T_MeV[i] * T_MeV[i] / (3.0 * total_E_MeV_u * total_E_MeV_u);
+				term_2				+= term_1 * (1.0 + T_MeV[i] / (3.0 * Q_c_MeV_c2));
+				dsdT_m2_MeV[i]			= term_0 * term_2;
+			}
+		}
+	}
+
+	return EXIT_SUCCESS;
+}
+
+
 long AT_Rutherford_scatter_cross_section(const double E_MeV_u,
 		const long particle_no,
 		const long material_no,
