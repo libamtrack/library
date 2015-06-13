@@ -32,6 +32,8 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include <gsl/gsl_randist.h>
+
 #include "AT_Error.h"
 #include "AT_DataMaterial.h"
 #include "AT_PhysicsRoutines.h"
@@ -132,11 +134,11 @@ double AT_kappa_single( const double 	E_MeV_u,
 /**
  * Compute Landau distribution using CERNLIB (G115)
  *
- * @param[in]  n             array size
- * @param[in]  lambda        lambda (array of size n)
- * @param[out] density       resulting density (array of size n)
+ * @param[in]  n                    array size
+ * @param[in]  lambda_landau        Landau lambda (array of size n)
+ * @param[out] density              resulting density (array of size n)
  */
-void AT_Landau_PDF( const long n, const double lambda[], double density[]);
+void AT_Landau_PDF( const long n, const double lambda_landau[], double density[]);
 
 /**
  * Computes the lambda parameter for the
@@ -220,10 +222,26 @@ void AT_lambda_max_multi( const long n,
 
 double AT_lambda_max_single( double lambda_mean );
 
+double AT_lambda_Landau_Mode();
+double AT_lambda_Landau_Mean(const double kappa, const double beta );
+double AT_lambda_Landau_FWHM_left();
+double AT_lambda_Landau_FWHM_right();
+double AT_lambda_Landau_FWHM();
+
+
+double AT_energy_loss_keV_Landau_FWHM(const double E_MeV_u,
+		const long particle_no,
+		const long material_no,
+		const double slab_thickness_um);
+double AT_energy_loss_keV_Landau_Mode(const double E_MeV_u,
+		const long particle_no,
+		const long material_no,
+		const double slab_thickness_um);
+
 
 /**
- * Computes the energy loss from the lambda parameter of the
- * Landau distribution acc. to CERN W5013
+ * Computes the energy loss from the lambda parameter
+ * of the Landau distribution acc. to CERN W5013
  *
  * No effective projectile charge is considered!
  * @param[in]  	   n      				number of energy loss data
@@ -244,20 +262,36 @@ void AT_energy_loss_from_lambda_landau_multi( const long n,
 		const double slab_thickness_um[],
 		double energy_loss_keV[]);
 
+double AT_energy_loss_from_lambda_landau_single( const double lambda_landau,
+		const double E_MeV_u,
+		const long particle_no,
+		const long material_no,
+		const double slab_thickness_um);
 
-double AT_lambda_Landau_Mode();
-double AT_lambda_Landau_Mean(const double kappa, const double beta );
-double AT_lambda_Landau_FWHM_left();
-double AT_lambda_Landau_FWHM_right();
-double AT_lambda_Landau_FWHM();
-double AT_energy_loss_keV_Landau_FWHM(const double E_MeV_u,
+/**
+ * Computes the energy loss
+ * Landau distribution acc. to CERN W5013
+ *
+ * No effective projectile charge is considered!
+ * @param[in]  	   n      				number of energy loss data
+ * @param[in]  	   energy_loss_keV      energy loss (array of size n)
+ * @param[in]  	   E_MeV_u      		energy of particle per nucleon
+ * @param[in]  	   particle_no  		particle index
+ * @see          AT_DataParticle.h for definition
+ * @param[in]      material_no  		material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]      slab_thickness_um	slab thickness in um
+ * @param[out]     fDdD (array of size n)
+ */
+void AT_Landau_energy_loss_distribution( const long n,
+		const double energy_loss_keV[],
+		const double E_MeV_u,
 		const long particle_no,
 		const long material_no,
-		const double slab_thickness_um);
-double AT_energy_loss_keV_Landau_Mode(const double E_MeV_u,
-		const long particle_no,
-		const long material_no,
-		const double slab_thickness_um);
+		const double slab_thickness_um,
+		double fDdD[]);
+
+
 /////////////////////////////////////////////////////////////////////////////
 // ENERGY LOSS STRAGGLING: VAVILOV THEORY
 /////////////////////////////////////////////////////////////////////////////
@@ -265,13 +299,13 @@ double AT_energy_loss_keV_Landau_Mode(const double E_MeV_u,
 /**
  * Compute Vavilov distribution using CERNLIB (G116)
  *
- * @param[in]  n             array size
- * @param[in]  lambda_V      lambda (array of size n)
- * @param[in]  kappa         straggling parameter
- * @param[in]  beta          relativistic speed, between 0 and 1
- * @param[out] density       resulting density (array of size n)
+ * @param[in]  n                   array size
+ * @param[in]  lambda_vavilov      Vavilov lambda (array of size n)
+ * @param[in]  kappa               straggling parameter
+ * @param[in]  beta                relativistic speed, between 0 and 1
+ * @param[out] density             resulting density (array of size n)
  */
-void AT_Vavilov_PDF( const long n, const double lambda_V[], const double kappa, const double beta,
+void AT_Vavilov_PDF( const long n, const double lambda_vavilov[], const double kappa, const double beta,
 		double density[]);
 
 /**
@@ -308,6 +342,40 @@ double AT_lambda_vavilov_from_energy_loss_single( const double energy_loss_keV,
 		const double slab_thickness_um);
 
 
+double AT_lambda_Vavilov_Mode(const double kappa, const double beta );
+double AT_lambda_Vavilov_Mean(const double kappa, const double beta );
+double AT_lambda_Vavilov_Variance(const double kappa, const double beta );
+double AT_lambda_Vavilov_Skewness(const double kappa, const double beta );
+double AT_lambda_Vavilov_FWHM_left(const double kappa, const double beta );
+double AT_lambda_Vavilov_FWHM_right(const double kappa, const double beta );
+double AT_lambda_Vavilov_FWHM(const double kappa, const double beta );
+double AT_energy_loss_keV_Vavilov_FWHM(const double E_MeV_u,
+		const long particle_no,
+		const long material_no,
+		const double slab_thickness_um);
+
+/**
+ * Computes the energy loss from the lambda parameter of the
+ * Vavilov distribution acc. to CERN W5013
+ *
+ * No effective projectile charge is considered!
+ * @param[in]  	   n      				number of energy loss data
+ * @param[in]  	   lambda_vavilov      Vavilov lambda (array of size n)
+ * @param[in]  	   E_MeV_u      		energy of particle per nucleon (array of size n)
+ * @param[in]  	   particle_no  		particle index (array of size n)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]      material_no  		material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]      slab_thickness_um	slab thickness in um (array of size n)
+ * @param[out]     energy_loss_keV (array of size n)
+ */
+void AT_energy_loss_from_lambda_vavilov_multi( const long n,
+		const double lambda_vavilov[],
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		const double slab_thickness_um[],
+		double energy_loss_keV[]);
 
 /**
  * Computes the energy loss
@@ -333,22 +401,46 @@ void AT_Vavilov_energy_loss_distribution( const long n,
 		double fDdD[]);
 
 
-double AT_lambda_Vavilov_Mode(const double kappa, const double beta );
-double AT_lambda_Vavilov_Mean(const double kappa, const double beta );
-double AT_lambda_Vavilov_Variance(const double kappa, const double beta );
-double AT_lambda_Vavilov_Skewness(const double kappa, const double beta );
-double AT_lambda_Vavilov_FWHM_left(const double kappa, const double beta );
-double AT_lambda_Vavilov_FWHM_right(const double kappa, const double beta );
-double AT_lambda_Vavilov_FWHM(const double kappa, const double beta );
-double AT_energy_loss_keV_Vavilov_FWHM(const double E_MeV_u,
-		const long particle_no,
-		const long material_no,
-		const double slab_thickness_um);
 
 
 /////////////////////////////////////////////////////////////////////////////
 // ENERGY LOSS STRAGGLING: GAUSS THEORY
 /////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Compute Gauss distribution (for compatibility)
+ *
+ * @param[in]  n             array size
+ * @param[in]  lambda_gauss  Gauss lambda (array of size n)
+ * @param[out] density       resulting density (array of size n)
+ */
+void AT_Gauss_PDF( const long n,
+		const double lambda_gauss[],
+		double density[]);
+
+/**
+ * Computes the energy loss from the lambda parameter of the
+ * Gauss distribution for compatibility with CERN W5013
+ *
+ * No effective projectile charge is considered!
+ * @param[in]  	   n      				number of energy loss data
+ * @param[in]  	   lambda_gauss      Gauss lambda (array of size n)
+ * @param[in]  	   E_MeV_u      		energy of particle per nucleon (array of size n)
+ * @param[in]  	   particle_no  		particle index (array of size n)
+ * @see          AT_DataParticle.h for definition
+ * @param[in]      material_no  		material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]      slab_thickness_um	slab thickness in um (array of size n)
+ * @param[out]     energy_loss_keV (array of size n)
+ */
+void AT_energy_loss_from_lambda_gauss_multi( const long n,
+		const double lambda_gauss[],
+		const double E_MeV_u[],
+		const long particle_no[],
+		const long material_no,
+		const double slab_thickness_um[],
+		double energy_loss_keV[]);
+
 
 double AT_Gauss_Mode();
 double AT_Gauss_Mean();
