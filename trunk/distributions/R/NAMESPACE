@@ -85,18 +85,18 @@ AT_atomic_weight_from_Z
 #AT_Moliere_function_f2
 #AT_scattering_angle_distribution
 #AT_Highland_angle
-AT_Bethe_mean_energy_loss_MeV [HAVE_CERNLIB]
-AT_kappa_multi [HAVE_CERNLIB]
-AT_Landau_PDF [HAVE_CERNLIB]
-AT_lambda_landau_from_energy_loss_multi [HAVE_CERNLIB]
-AT_energy_loss_from_lambda_landau_multi [HAVE_CERNLIB]
-AT_lambda_max_multi [HAVE_CERNLIB]
-AT_lambda_mean_multi [HAVE_CERNLIB]
-AT_Vavilov_PDF [HAVE_CERNLIB]
-AT_lambda_vavilov_from_energy_loss_multi [HAVE_CERNLIB]
-AT_energy_loss_from_lambda_vavilov_multi [HAVE_CERNLIB]
-AT_Gauss_PDF [HAVE_CERNLIB]
-AT_energy_loss_from_lambda_gauss_multi [HAVE_CERNLIB]
+AT_Bethe_mean_energy_loss_MeV
+AT_kappa_multi
+AT_Landau_PDF
+AT_lambda_landau_from_energy_loss_multi
+AT_energy_loss_from_lambda_landau_multi
+AT_lambda_max_multi
+AT_lambda_mean_multi
+AT_Vavilov_PDF
+AT_lambda_vavilov_from_energy_loss_multi
+AT_energy_loss_from_lambda_vavilov_multi
+AT_Gauss_PDF
+AT_energy_loss_from_lambda_gauss_multi
 AT_translate_dose_into_DSB_distribution
 noR: AT_SPC_read_data_from_filename_fast
 noR: AT_SPC_read_header_from_filename_fast

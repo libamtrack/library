@@ -251,9 +251,9 @@ int AT_SPC_decompose_data( const int content_size,
 
 	char * filetype = NULL;
 	decomposeStructIntoString(content, filetype, &length);
-	bool switchEndian=false;
-	if (strcmp(filetype,"SPCM")==0)
-		switchEndian=true;
+//	bool switchEndian=false;
+//	if (strcmp(filetype,"SPCM")==0)
+//		switchEndian=true;
 	free(filetype);
 	skipStruct(&content);
 

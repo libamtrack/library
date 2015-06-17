@@ -22,8 +22,5 @@ include_HEADERS= ../include/AT.h ../include/AT_Algorithms_CPP.h ../include/AT_Al
  ../include/AT_StoppingPowerData.h \
  ../include/AT_StoppingPower.h
 
-CERNLIB_CFLAGS = @CERNLIB_CFLAGS@
-CERNLIB_LIBS   = @CERNLIB_LIBS@
- 
-libamtrack_la_CFLAGS =-I../include -Wall -pedantic -std=c99 -fPIC $(GSL_CFLAGS) $(OPENMP_CFLAGS) $(CERNLIB_CFLAGS)
-libamtrack_la_LDFLAGS = -version-info 0:0:0 $(GSL_LIBS) $(CERNLIB_LIBS)
+libamtrack_la_CFLAGS =-I../include -I../thirdparty/cernlib -Wall -pedantic -std=c99 -fPIC $(GSL_CFLAGS) $(OPENMP_CFLAGS)
+libamtrack_la_LDFLAGS = -version-info 0:0:0 $(GSL_LIBS) ../thirdparty/cernlib/libcernlibfuns.la

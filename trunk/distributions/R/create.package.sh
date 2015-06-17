@@ -111,6 +111,9 @@ find $WORK_DIR/libamtrack/ -iname .svn -print | xargs rm -rf
 echo "Copying libamtrack sources..."
 cp $ROOT_DIR/include/*.h $WORK_DIR/libamtrack/src/
 cp $ROOT_DIR/src/*.c $WORK_DIR/libamtrack/src/
+cp $ROOT_DIR/thirdparty/cernlib/*.h $WORK_DIR/libamtrack/src/
+cp $ROOT_DIR/thirdparty/cernlib/*.c $WORK_DIR/libamtrack/src/
+cp $ROOT_DIR/thirdparty/cernlib/*.f $WORK_DIR/libamtrack/src/
 
 
 # *** Copy sandbox files if chosen ***
