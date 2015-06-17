@@ -1,4 +1,23 @@
-AC_INIT([src/AT_Algorithms_CPP.c])
+AC_INIT([libamtrack], 0.6)
+
+# Ensure that the same C compiler and compiler flags are used in 
+# the configure tests as when compiling R or your package
+: ${R_HOME=`R RHOME`}
+if test -z "${R_HOME}"; then
+  echo "could not determine R_HOME"
+  exit 1
+fi
+CC=`"${R_HOME}/bin/R" CMD config CC`
+CPP=`"${R_HOME}/bin/R" CMD config CPP`
+CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+AC_PROG_CC
+AC_PROG_CPP
+
+# Fortran check
+F77=`"${R_HOME}/bin/R" CMD config F77`
+AC_PROG_F77
+FLIBS=`"${R_HOME}/bin/R" CMD config FLIBS`
 
 # Following lines kindly supplied by Dirk Eddelbuettel
 ## Use gsl-config to find arguments for compiler and linker flags
@@ -40,21 +59,6 @@ else
   AC_MSG_RESULT([yes])
   AC_SUBST([GSL_CFLAGS])
   AC_SUBST([GSL_LIBS])
-fi
-
-# Check if libmath (CERNLIB) and appropriate header are available
-FOUND_CERNLIB=1
-AC_CHECK_HEADER([cfortran.h], [], [FOUND_CERNLIB=0])
-AC_CHECK_HEADER([gen.h], [], [FOUND_CERNLIB=0])
-AC_CHECK_LIB(mathlib, vavden_, [], [FOUND_CERNLIB=0])
-
-if test $FOUND_CERNLIB == 0; then
-	AC_MSG_RESULT([No mathlib CERNLIB or headers found, some energy loss distribution functions will not be available.])
-	AC_SUBST([CERNLIB_CFLAGS])
-	AC_SUBST([CERNLIB_LIBS])
-else
-	AC_SUBST([CERNLIB_CFLAGS], ["-DHAVE_CERNLIB -DgFortran -Df2cFortran"]) # D flags for cfortran.h are save for Linux/Apple/Win
-	AC_SUBST([CERNLIB_LIBS], ["-lmathlib"])
 fi
 
 AC_OUTPUT(src/Makevars)

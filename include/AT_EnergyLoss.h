@@ -34,6 +34,8 @@
 
 #include <gsl/gsl_randist.h>
 
+#include "AT_CernlibFuns.h"
+
 #include "AT_Error.h"
 #include "AT_DataMaterial.h"
 #include "AT_PhysicsRoutines.h"
@@ -44,7 +46,7 @@
 // CERN Program Library Long Writeup W5013, GEANT, 1994.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef HAVE_CERNLIB
+
 /////////////////////////////////////////////////////////////////////////////
 // MEAN ENERGY LOSS
 /////////////////////////////////////////////////////////////////////////////
@@ -511,8 +513,5 @@ double AT_energy_loss_FWHM( const double E_MeV_u,
 		const double slab_thickness_um);
 
 
-
-
-#endif /* HAVE_CERNLIB */
 
 #endif /* AT_ENERGYLOSSSTRAGGLING_H_ */
