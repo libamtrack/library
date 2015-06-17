@@ -1,5 +1,5 @@
-SUBDIRS=src test example
-DIST_SUBDIRS=src test example
+SUBDIRS=thirdparty/cernlib src test example
+DIST_SUBDIRS=thirdparty/cernlib src test example
 ACLOCAL_AMFLAGS =-I m4
 
 R-package:
