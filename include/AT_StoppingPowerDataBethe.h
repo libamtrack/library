@@ -54,6 +54,22 @@ int AT_Bethe_wrapper( const long n,
 		const char info[],
 		double mass_stopping_power_MeV_cm2_g[]);
 
+/**
+ * Computes leading term of the Bethe formula
+ * for many particles according to ICRU49, p.6,
+ * after Cohen and Taylor (1986)
+ * @param[in]  	    E_MeV_u      energies of particle per nucleon
+ * @param[in]  	    particle_no  particle indices
+ * @see             AT_DataParticle.h for definition
+ * @param[in]       material_no  material index
+ * @see             AT_DataMaterial.h for definition
+ * @param[in]       use_effective_charge 	if true the effective projectile charge (using the Barkas parametrization) will be used instead of the atomic number
+ * @return			result
+ */
+double AT_el_energy_loss_leading_term_MeV_cm2_g(	const double 	E_MeV_u,
+						const long 		particle_no,
+						const long 		material_no,
+						const bool		use_effective_charge);
 
 /**
  * Computes the stopping number to be used with the Bethe formula

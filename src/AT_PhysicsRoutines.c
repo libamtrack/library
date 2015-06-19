@@ -186,21 +186,68 @@ int AT_mean_excitation_energy_eV_from_Z( const long n,
 }
 
 
- double AT_mass_correction_terms( const double E_MeV_u ){
+ double AT_mass_correction_terms_new( const double E_MeV_u , const long A){
   double	gamma = AT_gamma_from_E_single( E_MeV_u );
-  double	m_MeV_c2 = 1.0079 * proton_mass_MeV_c2;   // TODO what does it mean MeV_c2, are units correct ?
-  return	1.0 + (2.0 * (electron_mass_MeV_c2 / m_MeV_c2) / gamma) + gsl_pow_2(electron_mass_MeV_c2 / m_MeV_c2);
+  double	m_MeV_c2 =  A * atomic_mass_unit_MeV_c2;   // TODO what to do with mass defect
+  return	1.0 + (2.0 * (electron_mass_MeV_c2 / m_MeV_c2) * gamma) + gsl_pow_2(electron_mass_MeV_c2 / m_MeV_c2);
  }
 
 
- double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u ){
+ double AT_max_relativistic_E_transfer_MeV_new_single( const double E_MeV_u , const long A){
+   const double	beta = AT_beta_from_E_single(E_MeV_u);
+   const double	mass_correction_terms = AT_mass_correction_terms_new(E_MeV_u, A);
+   return (2.0 * electron_mass_MeV_c2 * gsl_pow_2(beta) / (1.0 - gsl_pow_2(beta))) / mass_correction_terms;
+  }
+
+
+  double AT_max_classic_E_transfer_MeV_new_single( const double E_MeV_u , const long A){
+   assert( E_MeV_u > 0);
+   return 4.0 * electron_mass_MeV_c2 / atomic_mass_unit_MeV_c2 * E_MeV_u;
+ }
+
+
+  double AT_max_E_transfer_MeV_new_single( const double E_MeV_u, const long A){
+   /**
+    * if E_MeV_u < 0:    use non-relativistic formula
+    * if E_MeV_u > 0:    use relativistic formula
+    */
+   // TODO instead of using negative values of the energy switch parameter "relativistic" should be added to argument list
+   if(E_MeV_u >= 0){
+     return AT_max_relativistic_E_transfer_MeV_new_single(E_MeV_u, A);
+   }else{
+     return AT_max_classic_E_transfer_MeV_new_single( -1.0 * E_MeV_u, A);
+   }
+ }
+
+
+  int AT_max_E_transfer_MeV_new(  const long  n,
+      const double  E_MeV_u[],
+	  const long    A[],
+      double        max_E_transfer_MeV[])
+  {
+    // TODO instead of using negative values of the energy switch parameter "relativistic" should be added to argument list
+    long  i;
+    for (i = 0; i < n; i++){
+      max_E_transfer_MeV[i]  =  AT_max_E_transfer_MeV_new_single(E_MeV_u[i], A[i]);
+    }
+    return 0;
+  }
+
+  double AT_mass_correction_terms( const double E_MeV_u){
+   double	gamma = AT_gamma_from_E_single( E_MeV_u );
+   double	m_MeV_c2 =  1.0079 * proton_mass_MeV_c2;   // TODO correct??? Or "_new" routines
+   return	1.0 + (2.0 * (electron_mass_MeV_c2 / m_MeV_c2) / gamma) + gsl_pow_2(electron_mass_MeV_c2 / m_MeV_c2);
+  }
+
+
+  double AT_max_relativistic_E_transfer_MeV_single( const double E_MeV_u){
   const double	beta = AT_beta_from_E_single(E_MeV_u);
   const double	mass_correction_terms = AT_mass_correction_terms(E_MeV_u);
   return (2.0 * electron_mass_MeV_c2 * gsl_pow_2(beta) / (1.0 - gsl_pow_2(beta))) / mass_correction_terms;
  }
 
 
- double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u ){
+ double AT_max_classic_E_transfer_MeV_single( const double E_MeV_u){
   assert( E_MeV_u > 0);
   return 4.0 * electron_mass_MeV_c2 / proton_mass_MeV_c2 * E_MeV_u;
 }

@@ -51,23 +51,6 @@
 // MEAN ENERGY LOSS
 /////////////////////////////////////////////////////////////////////////////
 
-/**
- * Computes leading term of the Bethe formula
- * for many particles according to ICRU49, p.6,
- * after Cohen and Taylor (1986)
- * @param[in]  	    E_MeV_u      energies of particle per nucleon
- * @param[in]  	    particle_no  particle indices
- * @see             AT_DataParticle.h for definition
- * @param[in]       material_no  material index
- * @see             AT_DataMaterial.h for definition
- * @param[in]       use_effective_charge 	if true the effective projectile charge (using the Barkas parametrization) will be used instead of the atomic number
- * @return			result
- */
-double AT_el_energy_loss_leading_term_MeV_cm2_g(	const double 	E_MeV_u,
-						const long 		particle_no,
-						const long 		material_no,
-						const bool		use_effective_charge);
-
 
 /**
  * Computes the mean energy loss in a slab of
@@ -83,11 +66,26 @@ double AT_el_energy_loss_leading_term_MeV_cm2_g(	const double 	E_MeV_u,
  * @param[in]      slab_thickness_um	slab thickness in um
  * @return     result
  */
-double AT_Bethe_mean_energy_loss_MeV( const double E_MeV_u,
+double AT_mean_energy_loss_keV( const double E_MeV_u,
 		const long particle_no,
 		const long material_no,
 		const double slab_thickness_um);
 
+
+/**
+ * Parameter xi - reduced mean energy loss
+ * @param[in]  	   E_MeV_u      energies of particle per nucleon
+ * @param[in]  	   particle_no  particle indices
+ * @see          AT_DataParticle.h for definition
+ * @param[in]      material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]      slab_thickness_um	slab thickness in um
+ * @return			xi
+ */
+double AT_xi_keV(	const double 	E_MeV_u,
+				    const long 		particle_no,
+				    const long 		material_no,
+				    const double    slab_thickness_um);
 
 /////////////////////////////////////////////////////////////////////////////
 // KAPPA PARAMETER

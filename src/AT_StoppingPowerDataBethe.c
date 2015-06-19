@@ -46,6 +46,29 @@ int AT_Bethe_wrapper( const long n,
 	return AT_Success;
 }
 
+double AT_el_energy_loss_leading_term_MeV_cm2_g(	const double 	E_MeV_u,
+						const long 		particle_no,
+						const long 		material_no,
+						const bool		use_effective_charge){
+
+	const double Z			= AT_average_Z_from_material_no(material_no);
+	const double A			= AT_average_A_from_material_no(material_no);
+	assert( A > 0 );
+
+	const double beta2 		= gsl_pow_2(AT_beta_from_E_single(E_MeV_u));
+	assert( beta2 > 0);
+
+	double z;
+	if(use_effective_charge){
+		z = AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
+	}else{
+		z = AT_Z_from_particle_no_single(particle_no);
+	}
+
+	// ICRU49, p.6, after Cohen and Taylor (1986), k_MeV_cm2_g	= 0.307075
+	return(0.307075 * (Z / A) * (z*z) / (beta2));
+
+}
 
 double AT_Bethe_Stopping_Number(	const double 	E_MeV_u,
 									const long 		particle_no,
