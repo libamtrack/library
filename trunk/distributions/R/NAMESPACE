@@ -43,6 +43,7 @@ AT_momentum_MeV_c_u_from_E_MeV_u
 AT_E_MeV_u_from_momentum_MeV_c_u
 AT_effective_charge_from_E_MeV_u
 AT_max_E_transfer_MeV
+AT_max_E_transfer_MeV_new
 AT_mean_number_of_tracks_contrib
 AT_beta_from_E
 AT_E_from_beta
@@ -85,8 +86,9 @@ AT_atomic_weight_from_Z
 #AT_Moliere_function_f2
 #AT_scattering_angle_distribution
 #AT_Highland_angle
-AT_Bethe_mean_energy_loss_MeV
+AT_mean_energy_loss_keV
 AT_kappa_multi
+AT_xi_keV
 AT_Landau_PDF
 AT_lambda_landau_from_energy_loss_multi
 AT_energy_loss_from_lambda_landau_multi
