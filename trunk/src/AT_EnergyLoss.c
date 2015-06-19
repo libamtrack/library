@@ -194,9 +194,9 @@ double AT_energy_loss_from_lambda_vavilov_single(const double lambda_vavilov,
         const long material_no,
         const double slab_thickness_um) {
 
-    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
-    double beta = AT_beta_from_E_single(E_MeV_u);
-    double xi_keV = AT_xi_keV(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    double kappa         = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    double beta          = AT_beta_from_E_single(E_MeV_u);
+    double xi_keV        = AT_xi_keV(E_MeV_u, particle_no, material_no, slab_thickness_um);
     double mean_loss_keV = AT_mean_energy_loss_keV(E_MeV_u,
             particle_no,
             material_no,
@@ -570,13 +570,13 @@ double AT_energy_loss_from_lambda_gauss_single(const double lambda_gauss,
 
     double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
     double beta = AT_beta_from_E_single(E_MeV_u);
-    double xi = AT_xi_keV(E_MeV_u, particle_no, material_no, slab_thickness_um);
-    double mean_loss_MeV = AT_mean_energy_loss_keV(E_MeV_u,
+    double xi_keV = AT_xi_keV(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    double mean_loss_keV = AT_mean_energy_loss_keV(E_MeV_u,
             particle_no,
             material_no,
             slab_thickness_um);
 
-    return (1000.0 * (lambda_gauss * sqrt(xi * xi / kappa * (1 - beta * beta / 2)) + mean_loss_MeV));
+    return (lambda_gauss * sqrt(xi_keV * xi_keV / kappa * (1 - beta * beta / 2)) + mean_loss_keV);
 }
 
 void AT_energy_loss_from_lambda_gauss_multi(const long n,
