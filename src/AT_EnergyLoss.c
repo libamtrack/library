@@ -74,9 +74,19 @@ void AT_kappa_multi(const long n,
     }
 }
 
-void AT_Landau_PDF(const long n, const double lambda_landau[], double density[]) {
+void AT_Landau_PDF( const long n, 
+        const double lambda_landau[], 
+        double density[] ) {
     for (int i = 0; i < n; i++) {
         density[i] = CL_denlan(lambda_landau[i]);
+    }
+}
+
+void AT_Landau_IDF( const long n, 
+        const double rnd[], 
+        double lambda_landau[] ) {
+    for (int i = 0; i < n; i++) {
+        lambda_landau[i] = CL_ranlan(rnd[i]);
     }
 }
 
@@ -258,10 +268,19 @@ void AT_Landau_energy_loss_distribution(const long n,
 
 void AT_Vavilov_PDF(const long n, const double lambda_vavilov[], const double kappa, const double beta,
         double density[]) {
-    CL_vavset(kappa, beta * beta);
+    double beta2 = beta * beta;
+    CL_vavset(kappa, beta2);
 
     for (int i = 0; i < n; i++) {
         density[i] = CL_vavden(lambda_vavilov[i]);
+    }
+}
+
+void AT_Vavilov_IDF(const long n, const double rnd[], const double kappa[], const double beta[],
+        double lambda_vavilov[]) {
+
+    for (int i = 0; i < n; i++) {
+        lambda_vavilov[i] = CL_vavran(kappa[i], beta[i]*beta[i], rnd[i]);
     }
 }
 
@@ -558,7 +577,13 @@ double AT_lambda_Landau_Mean(const double kappa, const double beta) {
 
 void AT_Gauss_PDF(const long n, const double lambda_gauss[], double density[]) {
     for (int i = 0; i < n; i++) {
-        density[i] = gsl_ran_gaussian_pdf(lambda_gauss[i], 1.0);
+        density[i] = gsl_ran_ugaussian_pdf(lambda_gauss[i]);
+    }
+}
+
+void AT_Gauss_IDF(const long n, const double rnd[], double lambda_gauss[]) {
+    for (int i = 0; i < n; i++) {
+        lambda_gauss[i] = gsl_cdf_ugaussian_Pinv(rnd[i]);
     }
 }
 

@@ -33,6 +33,7 @@
 #include <assert.h>
 
 #include <gsl/gsl_randist.h>
+#include <gsl/gsl_cdf.h>
 
 #include "AT_CernlibFuns.h"
 
@@ -132,13 +133,26 @@ double AT_kappa_single( const double 	E_MeV_u,
 /////////////////////////////////////////////////////////////////////////////
 
 /**
- * Compute Landau distribution using CERNLIB (G115)
+ * Computes the Landau probability density function using CERNLIB (G115)
  *
  * @param[in]  n                    array size
  * @param[in]  lambda_landau        Landau lambda (array of size n)
  * @param[out] density              resulting density (array of size n)
  */
-void AT_Landau_PDF( const long n, const double lambda_landau[], double density[]);
+void AT_Landau_PDF( const long n, 
+        const double lambda_landau[], 
+        double density[]);
+
+/**
+ * Computes the Landau inverse distribution function using CERNLIB (G115)
+ *
+ * @param[in]  n                    array size
+ * @param[in]  rnd                  random number from uniform distribution between 0 and 1 (array of size n)
+ * @param[out] lambda_landau        resulting Landau lambda (array of size n)
+ */
+void AT_Landau_IDF( const long n, 
+        const double rnd[], 
+        double lambda_landau[]);
 
 /**
  * Computes the lambda parameter for the
@@ -297,7 +311,7 @@ void AT_Landau_energy_loss_distribution( const long n,
 /////////////////////////////////////////////////////////////////////////////
 
 /**
- * Compute Vavilov distribution using CERNLIB (G116)
+ * Computes the Vavilov probability density function using CERNLIB (G116)
  *
  * @param[in]  n                   array size
  * @param[in]  lambda_vavilov      Vavilov lambda (array of size n)
@@ -307,6 +321,18 @@ void AT_Landau_energy_loss_distribution( const long n,
  */
 void AT_Vavilov_PDF( const long n, const double lambda_vavilov[], const double kappa, const double beta,
 		double density[]);
+
+/**
+ * Computes the Vavilov probability density function using CERNLIB (G116)
+ *
+ * @param[in]  n                   array size
+ * @param[in]  rnd                 random number from uniform distribution between 0 and 1 (array of size n)
+ * @param[in]  kappa               straggling parameter  (array of size n)
+ * @param[in]  beta                relativistic speed, between 0 and 1 (array of size n)
+ * @param[out] lambda_vavilov      resulting Vavilov lambda (array of size n)
+ */
+void AT_Vavilov_IDF( const long n, const double rnd[], const double kappa[], const double beta[],
+		double lambda_vavilov[]);
 
 /**
  * Computes the lambda parameter for the
@@ -408,7 +434,7 @@ void AT_Vavilov_energy_loss_distribution( const long n,
 /////////////////////////////////////////////////////////////////////////////
 
 /**
- * Compute Gauss distribution (for compatibility)
+ * Computes Gauss probability density function (for compatibility)
  *
  * @param[in]  n             array size
  * @param[in]  lambda_gauss  Gauss lambda (array of size n)
@@ -417,6 +443,18 @@ void AT_Vavilov_energy_loss_distribution( const long n,
 void AT_Gauss_PDF( const long n,
 		const double lambda_gauss[],
 		double density[]);
+
+/**
+ * Compute Gauss inverse distribution function (for compatibility)
+ *
+ * @param[in]  n             array size
+ * @param[in]  rnd           random number from uniform distribution between 0 and 1 (array of size n)
+ * @param[out] lambda_gauss  resulting Gauss lambda (array of size n)
+ */
+void AT_Gauss_IDF( const long n,
+		const double rnd[],
+		double lambda_gauss[]);
+
 
 /**
  * Computes the energy loss from the lambda parameter of the
