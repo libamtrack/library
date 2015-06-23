@@ -57,7 +57,7 @@ int AT_FromFile_wrapper( const long n,
 	 /**
 	  * Get stopping power values
 	  */
-	 long j, k, m, n_matches;
+	 long j, k, m, n_matches = 0;
 	 long curZ = 0, lastZ = -1;
 
 	 double* curE = (double*)calloc(1, sizeof(double));
