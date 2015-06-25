@@ -68,18 +68,15 @@ AC_SUBST(OPENMP_CFLAGS)
 AC_SUBST(OPENMP_LDFLAGS)
 
 # Checks for libraries, add user-set path to gsl if necessary (e.g. on Windows)
+AC_CHECK_LIB([m],[cos])
+
 if test "${GSL_LIB}" != ""; then
     	GSL_CFLAGS = "-I${GSL_LIB}/include"
 	GSL_LIBS = "-L${GSL_LIB}/lib -lgsl -lgslcblas"
 else
-    AX_PATH_GSL(1.8, 
-    		AC_DEFINE(HAVE_GSL_1_8, 1, [gsl>=1.8 found]), 
-    		AC_MSG_ERROR([No gsl>=1.8 found!]))
+	AC_CHECK_LIB([gslcblas],[cblas_dgemm])
+	AC_CHECK_LIB([gsl],[gsl_blas_dgemm])
 fi
-
-# Look for libm
-AC_SEARCH_LIBS([cos], [m], [], [AC_MSG_ERROR([unable to find the cos() function])])
-
 
 # Checks for essential header files
 AC_CHECK_HEADER([malloc.h])
