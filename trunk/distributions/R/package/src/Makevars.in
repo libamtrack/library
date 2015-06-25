@@ -5,7 +5,7 @@ GSL_LIBS   = @GSL_LIBS@
 # Combine to standard arguments for R
 PKG_CPPFLAGS =  $(GSL_CFLAGS) -I. -DNDEBUG
 PKG_CFLAGS =  $(GSL_CFLAGS) -I. -DNDEBUG
-PKG_LIBS = $(GSL_LIBS) $(FLIBS)
+PKG_LIBS = $(GSL_LIBS)
 
 
 
