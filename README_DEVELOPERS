@@ -29,7 +29,7 @@ To compile the FULL DEVELOPMENT SOURCES of libamtrack,
                                                         system (autotools, i.e. automake, autoconf, and libtool, and m4),
                                                         (see sections 1b and 8). 
 										  
-To check out the FULL DEVELOPMENT SOURCE,  you also need subversion (svn) installed.
+To check out the FULL DEVELOPMENT SOURCE, you also need subversion (svn) installed.
 
 
 You will find required tools depending on your OS here:
@@ -41,7 +41,13 @@ Most likely the repository of your distribution.
 
 Mac OS X
 --------
-XCode and XCode Command Line Tools (we tested with Mac OS X 10.8 Mountain Lion and XCode 4.5.2).
+XCode and XCode Command Line Tools (we tested with Mac OS X 10.10 Mountain Lion and XCode 6.3.2). Additional autotools
+needed can be obtained by an additional package system for Mac OS X (e.g. Homebrew, Fink, MacPorts). On Fink, for example,
+use the list / install command to get:
+ automake(1.15), autoconf, libtool2, pkgconfig
+
+Do not install gcc. Do also not install gfortran if you also want to compile the R package. In this case, use the gfortran
+distribution from the "CRAN tools for R compilation on Mac OS X" website (s. below)
 
 
 Windows
@@ -59,7 +65,20 @@ in your experiences (s.greilich@dkfz.de).
 Please make sure - for all Windows installations of MSYS, GSL, R packages, ... - NOT TO USE pathnames with spaces 
 (i.e. C:\Program Files\MinGW) - that will most likely give you lots of strange errors.
 
-
+Alternatively, you can use the mingw-w64 fork of MinGW. To do so, install MSYS2 as a POSIX-like console for windows:
+	- Goto http://msys2.github.io/, download installer for 64bit (e.g. msys2-x86_64-YYYYMMDD.exe)
+	- Execute installer (not as admin but regular user), install into c:\msys64
+	- Exit and restart MSYS by calling C:\msys64\mingw64_shell.bat (it is convenient for later use to make a shortcut)
+	- Do "pacman -Sy" (synchronize local package database with repos)
+	- Install software needed (gcc, gdb, etc.):
+		pacman -S mingw-w64-x86_64-gcc
+		pacman -S mingw-w64-x86_64-gdb
+		pacman -S autoconf automake libtool
+		pacman -S mingw-w64-x86_64-gsl
+		pacman -S make
+		pacman -S bash
+		
+		
 Using clang instead of gcc
 --------------------------
 If clang is installed (e.g. at /usr/bin/clang), it can be used as an alternative by exporting:
@@ -126,10 +145,6 @@ To commit changes you did to the code you have to register as a developer at sou
 
 As for section 1a, please make sure that GSL_LIB points correctly to your GSL installation (section 7) if you are working
 with Windows.
-
-### IMPORTANT NOT AS OF 2013-02-05:
-### Due to an expansion problem of the AX_GSL_PATH by autoconf under Windows, libamtrack compilation is not recommended
-### at the moment. We are looking for a fix.
 
 
 Steps for compilation:
@@ -208,8 +223,9 @@ files (i.e. proprietary stopping power data etc.).
 
 ii. and iii. still contain hardcoded paths.
 
+
 ############################################################################################################################
-2. Using the eclipse IDE
+2. Using an IDE
 ############################################################################################################################
 
 Eclipse 3.6+ supports the autotool toolchain. There are, however, some peculiarities to be considered:
@@ -220,7 +236,9 @@ You have to manually set include path:
 When using a second build configuration with debug flags (see above), eclipse gets confused and you have (TODO: fix)
 to prepare debugged code to use with gbd in eclipse using the command line.
 
+Also, Netbeans can be used.
     
+	
 ############################################################################################################################
 3. Doxygen comments
 ############################################################################################################################
@@ -258,7 +276,15 @@ int AT_Z_from_element_acronym( const long n,
 4. Build an R source package tarball
 ############################################################################################################################
 
-This applies to Linux and Mac OS X only.
+From Jun 2014, development versions of the libamtrack R-packages are provided by R-forge: 
+
+http://r-forge.r-project.org/R/?group_id=1918
+
+They are synchronized with the latest libamtrack sources through a night build system (Jenkins).
+
+
+This section applies to Linux and Mac OS X only. On Windows (MSYS) there are unsolved issues yet. This workflow is partly
+replaced by the make target "R-package" (see section 1), but left here for details on the procedure behind that target.
 
 The necessary files for producing an R package from libamtrack are found in:
   /wrapper/R/R_package                     package folder structure and input files, script for compilation, hardcoded wrappers
@@ -290,19 +316,33 @@ Under Linux and Mac OS, the source package can be simply installed for use in R 
 
 (sudo) R CMD INSTALL <package_name>
 
-Under standard Windows, source tarballs cannot be installed. To compile a source package (that - for libamtrack - can
-only be created using Linux or Mac OS X, you have to prepare your system and the best way to do so, is to use the 
-RTools (see section 0). For setting up GSL properly for R package compilation, see section 7.
+Under standard Windows, source tarballs cannot be installed with a common R installation.  To compile a source package 
+(that - for libamtrack - can only be created using Linux or Mac OS X, you have to prepare your system and the best way to do 
+so, is to use the RTools (see section 0). For setting up GSL properly for R package compilation, see section 7.
+
+Under Mac OS X, the dedicated gfortran distribution should be used (http://cran.r-project.org/bin/macosx/tools/). Also,
+adapt the corresponding lines in the configuration file $R_HOME/etc/makeconf, e.g.:
+
+CC = clang -arch x86_64
+CXX = clang++ -arch x86_64
+CXXCPP = $(CXX) -arch x86_64 -E
+FC = gfortran -arch x86_64
+F77 = gfortran -arch x86_64
+FLIBS =  -L/usr/local/lib/gcc/i686-apple-darwin8/4.2.3 -L/usr/local/lib/gcc/i686-apple-darwin8/4.2.3/x86_64 -lm
+OBJC = clang -arch x86_64
+OBJCXX = clang++ -arch x86_64
+
 
 
 ############################################################################################################################
 5. Python wrappers
 ############################################################################################################################
 
-i.   make "wrapper/Python/pyamtrack/NAMESPACE" file completely empty this will cause wrappers will be created for (almost) all functions
+i.   make "wrapper/Python/pyamtrack/NAMESPACE" file completely empty this will cause wrappers will be created for (almost) 
+     all functions
 
-ii.  run "python generate_Py_wrapper.py" to generate file "pyamtrack.py". The script will complain, but ignore it - some functions are
-impossible to translate yet.
+ii.  run "python generate_Py_wrapper.py" to generate file "pyamtrack.py". The script will complain, but ignore it - some 
+     functions are impossible to translate yet.
 
 iii. copy compiled library to the same directory as "pyamtrack.py": cp ../../../src/.libs/libamtrack.so.0.0.0 libamtrack.so
 
