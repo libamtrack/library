@@ -1,3 +1,10 @@
+Changes in 0.6.2 (2015-06-26)
+=============================
+
+- Fixed (many) bugs in energy deposition loss routines
+- Cut dependency from mathlib (cernlib) by using the Fortran code directly. Now, routines work in any OS.
+
+
 Changes in 0.6.1 (2015-05-22)
 =============================
 
