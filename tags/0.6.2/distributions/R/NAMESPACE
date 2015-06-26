@@ -1,0 +1,109 @@
+# In this file, all libamtrack functions have to be listed
+# for which an R wrapper should be generated
+#
+#
+# 1. One function per line, C name
+#
+# 2. Functions can be commented out by "#" in the beginning of the line
+#
+# 3. If "noR: " is used in front of the name, the function will be part
+#    of the R libamtrack package, but no wrapper will be generated. 
+#
+# 4. If a function has a dependency that is optional, the corresponding
+#    flag has to be given after the function name in square brackets.
+#    E.g. code that depends on cernlib will not be compiled (by preprocessor
+#    statement) when configure does not find this library and does not
+#    set HAVE_CERNLIB. N.B. as GSL is a mandatory dependency, it has
+#    not to be declared here.
+#
+# S. Greilich, 2015-04-23
+#
+AT_run_CPPSC_method
+AT_run_IGK_method
+AT_run_GSM_method
+AT_D_RDD_Gy
+AT_r_RDD_m
+AT_max_electron_ranges_m
+AT_Mass_Stopping_Power
+AT_Stopping_Power
+AT_Mass_Stopping_Power_with_no
+AT_Stopping_Power_with_no
+AT_stopping_power_ratio
+AT_fluence_weighted_E_MeV_u
+AT_dose_weighted_E_MeV_u
+AT_fluence_weighted_LET_MeV_cm2_g
+AT_dose_weighted_LET_MeV_cm2_g
+AT_dose_Gy_from_fluence_cm2
+AT_fluence_cm2_from_dose_Gy
+AT_total_D_Gy
+AT_total_fluence_cm2
+AT_beam_par_technical_to_physical
+AT_beam_par_physical_to_technical
+AT_momentum_MeV_c_u_from_E_MeV_u
+AT_E_MeV_u_from_momentum_MeV_c_u
+AT_effective_charge_from_E_MeV_u
+AT_max_E_transfer_MeV
+AT_max_E_transfer_MeV_new
+AT_mean_number_of_tracks_contrib
+AT_beta_from_E
+AT_E_from_beta
+AT_gamma_from_E
+AT_get_materials_data
+AT_electron_density_m3_from_material_no_multi
+AT_particle_no_from_Z_and_A
+AT_A_from_particle_no
+AT_Z_from_particle_no
+AT_CSDA_range_g_cm2
+AT_CSDA_range_m
+AT_CSDA_range_Bethe_g_cm2_multi
+AT_CSDA_energy_after_slab_E_MeV_u_multi
+AT_WEPL_Bethe_multi
+AT_electron_density_m3_multi
+AT_set_user_material
+AT_set_user_material_from_composition
+AT_electron_density_m3_from_composition
+AT_average_A_from_composition
+AT_average_Z_from_composition
+AT_effective_Z_from_composition
+AT_I_eV_from_composition
+AT_nuclear_spin_from_particle_no_multi
+AT_Rutherford_SDCS
+AT_energy_straggling_MeV2_cm2_g
+AT_energy_straggling_after_slab_E_MeV_u
+AT_atomic_weight_from_Z
+#AT_Z_from_element_acronym
+#AT_atomic_weight_from_element_acronym
+#AT_density_g_cm3_from_element_acronym
+#AT_I_eV_from_element_acronym
+#AT_element_acronym_from_Z
+#AT_characteristic_single_scattering_angle
+#AT_screening_angle
+#AT_effective_collision_number
+#AT_reduced_target_thickness
+#AT_characteristic_multiple_scattering_angle
+#AT_Moliere_function_f0
+#AT_Moliere_function_f1
+#AT_Moliere_function_f2
+#AT_scattering_angle_distribution
+#AT_Highland_angle
+AT_mean_energy_loss_keV
+AT_kappa_multi
+AT_xi_keV
+AT_Landau_PDF
+AT_Landau_IDF
+AT_lambda_landau_from_energy_loss_multi
+AT_energy_loss_from_lambda_landau_multi
+AT_lambda_max_multi
+AT_lambda_mean_multi
+AT_Vavilov_PDF
+AT_Vavilov_IDF
+AT_lambda_vavilov_from_energy_loss_multi
+AT_energy_loss_from_lambda_vavilov_multi
+AT_Gauss_PDF
+AT_Gauss_IDF
+AT_energy_loss_from_lambda_gauss_multi
+AT_translate_dose_into_DSB_distribution
+noR: AT_SPC_read_data_from_filename_fast
+noR: AT_SPC_read_header_from_filename_fast
+noR: AT_SPC_get_number_of_bins_from_filename_fast
+
