@@ -23,4 +23,4 @@ include_HEADERS= ../include/AT.h ../include/AT_Algorithms_CPP.h ../include/AT_Al
  ../include/AT_StoppingPower.h
 
 libamtrack_la_CFLAGS =-I../include -I../thirdparty/cernlib -Wall -pedantic -std=c99 -fPIC $(GSL_CFLAGS) $(OPENMP_CFLAGS)
-libamtrack_la_LDFLAGS = -version-info 0:0:0 $(GSL_LIBS) ../thirdparty/cernlib/libcernlibfuns.la
+libamtrack_la_LDFLAGS = -version-info 0:0:0 $(GSL_LIBS) ../thirdparty/cernlib/libcernlibfuns.la -no-undefined
