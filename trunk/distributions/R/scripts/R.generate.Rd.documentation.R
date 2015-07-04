@@ -50,6 +50,7 @@ grep.bool	<-	function(pattern, x, ...){
 hardcoded.variable.descriptions    <- c("E.MeV.u", "particle.no", "material.no", "er.model", "rdd.model", "fluence.cm2.or.dose.Gy", "number.of.field.components", "stopping.power.source.no", "stopping.power.source")
 
 # Read in hard-coded examples
+cat("Scanning: ", paste(args[1], "/", args[3], "/examples.txt", sep = ""), "\n")
 
 if(args[2] == "libmaterials"){ hardcoded.examples <- scan("../../../libmaterials/wrapper/R/hardcoded_documentation/examples.txt", 
                                             what  = "character",
@@ -64,7 +65,8 @@ names.examples                     <- substring( hardcoded.examples[pos.start.ex
                                                  nchar(hardcoded.examples[pos.start.examples]) - 2)
 
 # Read in type conversion table for C to R
-source(paste(args[1], args[3], sep = "/"))
+cat("Sourcing conversion table: ", paste(args[1], "scripts/R.type.conversion.R", sep = "/"), "\n")
+source(paste(args[1], "scripts/R.type.conversion.R", sep = "/"))
 
 # exclude function with "C only" flag
 noR       <- sapply(functions, check.type <- function(x){x$wrapper.type == "C only"})
@@ -107,6 +109,7 @@ for(i in 1:length(functions)){
 		parameter.list <- paste(parameter.list, cur.function$parameter.comment$name[ii[length(ii)]], sep = "") 
 	}
 
+	cat("Writing automatically created Rd file for", cur.function$name, "\n")
 	write("% Automatically created Rd file\n", file = paste(args[1], "/",  args[2], "/man/", cur.function$name, ".Rd", sep = ""))
 
 	# Create Rd description
@@ -215,6 +218,7 @@ for(i in 1:length(functions)){
       }
      
     # Write current description to file
+	cat("Writing...", cur.function$name, "\n")
 	write(c(cur.description, "\n"), file = paste("./", cur.function$name, ".Rd", sep = ""), append = T)
 }
 
