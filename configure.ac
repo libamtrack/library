@@ -100,5 +100,16 @@ AC_FUNC_REALLOC
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([floor pow sqrt strstr strtol])
 
+# Check for system and set flag for not doing R-package test in mingw
+AC_CANONICAL_HOST
+RTEST_FLAG=""
+AS_CASE([$host_os],
+        [mingw*],
+        [
+           RTEST_FLAG="--no-test"
+		   AC_MSG_NOTICE([Running on MinGW, will suppress check of R package])
+        ])
+AC_SUBST([RTEST_FLAG])
+
 AC_CONFIG_FILES(Makefile src/Makefile test/Makefile test/C/Makefile example/Makefile example/basic_plots/Makefile example/demo/Makefile thirdparty/cernlib/Makefile)
 AC_OUTPUT

@@ -35,12 +35,19 @@ To check out the FULL DEVELOPMENT SOURCE, you also need subversion (svn) install
 You will find required tools depending on your OS here:
 
 Linux
------
+=====
 Most likely the repository of your distribution.
+
+Using clang instead of gcc
+--------------------------
+If clang is installed (e.g. at /usr/bin/clang), it can be used as an alternative by exporting:
+CC=/usr/bin/clang
+CXX=/usr/bin/clang++
+before ./configure (see 1a).
 
 
 Mac OS X
---------
+========
 XCode and XCode Command Line Tools (we tested with Mac OS X 10.10 Mountain Lion and XCode 6.3.2). Additional autotools
 needed can be obtained by an additional package system for Mac OS X (e.g. Homebrew, Fink, MacPorts). On Fink, for example,
 use the list / install command to get:
@@ -51,7 +58,10 @@ distribution from the "CRAN tools for R compilation on Mac OS X" website (s. bel
 
 
 Windows
--------
+=======
+
+MinGW/MYS
+---------
 MSYS from MinGW (basic POSIX shell). The MinGW DTK (developer toolkit) if you want to use autotools. The MinGW-based 
 toolchain for both 32 bit and 64 bit comes with installation of Rtools (http://cran.r-project.org/bin/windows/Rtools/)
 that is also needed when compiling R tarball source packages under Windows. Switching between 32 bit and 64 bit 
@@ -65,26 +75,29 @@ in your experiences (s.greilich@dkfz.de).
 Please make sure - for all Windows installations of MSYS, GSL, R packages, ... - NOT TO USE pathnames with spaces 
 (i.e. C:\Program Files\MinGW) - that will most likely give you lots of strange errors.
 
-Alternatively, you can use the mingw-w64 fork of MinGW. To do so, install MSYS2 as a POSIX-like console for windows:
+mingw-w64 / MSYS2
+-----------------
+Alternatively, you can use the mingw-w64 fork of MinGW. From July 2015, all check of libamtrack with Windows will
+use this system. It can by installed in parallel with Rtools (s. below).
+
+Install MSYS2 as a POSIX-like console for windows:
 	- Goto http://msys2.github.io/, download installer for 64bit (e.g. msys2-x86_64-YYYYMMDD.exe)
 	- Execute installer (not as admin but regular user), install into c:\msys64
 	- Exit and restart MSYS by calling C:\msys64\mingw64_shell.bat (it is convenient for later use to make a shortcut)
 	- Do "pacman -Sy" (synchronize local package database with repos)
 	- Install software needed (gcc, gdb, etc.):
-		pacman -S mingw-w64-x86_64-gcc
+		pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-gcc-libs
+		pacman -S mingw-w64-x86_64-gcc-fortran mingw-w64-x86_64-gcc-libgfortran
 		pacman -S mingw-w64-x86_64-gdb
 		pacman -S autoconf automake libtool
+		pacman -S mingw-w64-x86_64-binutils
+		pacman -S mingw-w64-x86_64-make
 		pacman -S mingw-w64-x86_64-gsl
 		pacman -S make
 		pacman -S bash
+	- An overview of all tools in the toolchain can be seen by: pacman -S mingw-w64-x86_64-toolchain
+    - Optionally, you can install the same tools for 32 bit (not required): pacman -S mingw-w64-i686-toolchain	
 		
-		
-Using clang instead of gcc
---------------------------
-If clang is installed (e.g. at /usr/bin/clang), it can be used as an alternative by exporting:
-CC=/usr/bin/clang
-CXX=/usr/bin/clang++
-before ./configure (see 1a).
 
 
 ############################################################################################################################
@@ -103,18 +116,6 @@ Navigate to new directory (cd libamtrack-x.y) and execute
 	
 
 For tweaking (target, installation directory) please see section 1b. 
-
-Under Windows you should use the MSYS shell. Also, you have to set the environmental variable GSL_LIB to point to your 
-GSL library, e.g.
-
-export GSL_LIB=/c/Path/To/GSL (in MSYS)
-
-or
-
-set GSL_LIB=C:\Path\To\GSL  (in Windows shell)
-
-or permanently using system settings.
-
 
 
 ############################################################################################################################
@@ -174,14 +175,7 @@ ii.  After (i.) OR
      ./configure CC="gcc -arch i386 -arch x86_64" CPP="gcc -E"		
 	 
 	 which will give 32 AND 64 bit versions on Intel-based Mac, for PowerPC add "-arch ppc" (32 bit) and/or "-arch ppc64"
-     
-	 When using Windows and the Rtools toolchain, use the MSYS shell and select 32 or 64 bit by 
-	 
-	 ./configure CFLAGS="-m32" or CFLAGS="-m64"
-   
-     Also, set GSL_LIB (see section 1a) to point to your GSL installation.
-	 
-	 
+     	 
      You can change the default path for installation by "--prefix=/my/installation/path". The flags given in this section
 	 can be used together where applicable.
    
@@ -206,22 +200,11 @@ iv.  ### TODO: Describe (and enable)
 1c. Non-standard make targets
 ############################################################################################################################
 
-i.    R-package
-
-Compiles an R package tarball from current libamtrack source
-
-ii.   R-forge
-
-Syncs R package source with given directory (which is preferrably a working copy of the libamtrack R-forge repository at 
-svn://r-forge.r-project.org/svnroot/libamtrack/).
-
-iii.  R-package-sandbox
-
-Compiles an R package tarball from current libamtrack source PLUS another directory containings files to overwrite public
-files (i.e. proprietary stopping power data etc.).
-
-
-ii. and iii. still contain hardcoded paths.
+R-package
+===============
+Compiles an R package tarball from current libamtrack source. Works also under Windows but will skip test of package (as
+multiarchtecture compilation is not (yet) set up correctly). Instead, you should use Rtools and the Windows CMD shell for 
+testing and building of a binary package after running this target in MSYS2 (see below).
 
 
 ############################################################################################################################
@@ -283,8 +266,8 @@ http://r-forge.r-project.org/R/?group_id=1918
 They are synchronized with the latest libamtrack sources through a night build system (Jenkins).
 
 
-This section applies to Linux and Mac OS X only. On Windows (MSYS) there are unsolved issues yet. This workflow is partly
-replaced by the make target "R-package" (see section 1), but left here for details on the procedure behind that target.
+This workflow is replaced by the make target "R-package" (see section 1), but left here for details on the procedure 
+behind that target.
 
 The necessary files for producing an R package from libamtrack are found in:
   /wrapper/R/R_package                     package folder structure and input files, script for compilation, hardcoded wrappers
@@ -303,7 +286,7 @@ to a function within an R function via ".C" but not a full R function on its own
 Run ./create.package.sh 
 Use --help to see options
 
-If your function is not in resulting package, use --noclean option and check output file "collect.doxygen.information.Rout"
+If your function is not in resulting package, use --no-clean option and check output file "collect.doxygen.information.Rout"
 for functions that fails (most likely due to faulty doxygen formatting).
 
 The resulting package is an source tarball (libamtrack-version.tar.gz). It can either be distributed by yourself (most likely in
@@ -317,8 +300,7 @@ Under Linux and Mac OS, the source package can be simply installed for use in R 
 (sudo) R CMD INSTALL <package_name>
 
 Under standard Windows, source tarballs cannot be installed with a common R installation.  To compile a source package 
-(that - for libamtrack - can only be created using Linux or Mac OS X, you have to prepare your system and the best way to do 
-so, is to use the RTools (see section 0). For setting up GSL properly for R package compilation, see section 7.
+the best way is to use the RTools (see section 0). 
 
 Under Mac OS X, the dedicated gfortran distribution should be used (http://cran.r-project.org/bin/macosx/tools/). Also,
 adapt the corresponding lines in the configuration file $R_HOME/etc/makeconf, e.g.:
@@ -350,11 +332,9 @@ iv.  run "python pyamtrack_example.py" to check sample file.
 
 
 ############################################################################################################################
-6. Install MinGW toolchain (Windows)
+6. Install Rtools (Windows)
 ############################################################################################################################
 
-6a. Rtools
-----------
 Install the latest version of Rtools from http://cran.r-project.org/bin/windows/Rtools/ with administrator priviledges. This
 includes a complete multilib (32/64 bit) toolchain based on MinGW. To our knowledge this is the easiest way, even when you
 intend not to compile R source packages but libamtrack only - everything is setup correctly. Since some releases, the 
@@ -368,35 +348,18 @@ This should be autoset by Rtools installer. It is essential that the directory c
 first or second in the path: there are typically like-named tools46 in other directories, and they will not work. 
 
 
-6b. MSYS (& MinGW-DTK)
-----------------------
-Download and run the latest version of the MinGW installer mingw-get-inst from 
-
-https://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/
-
-Select MSYS only (!) or "MinGW Developer Toolkit" only (the latter if you want GNU autotools).
-
-Make sure that C:\Path\to\MinGW\msys\1.0\etc\fstab contains only a single line (with forward slahes!)
-
-C:/Path/to/MinGW /mingw
-
-Start MSYS from C:\Path\to\MinGW\msys\1.0\msys.bat (make a shortcut to Desktop etc. for convenience). You will have a home
-directory at C:\Path\to\MinGW\msys\1.0\home\yourname which you can use as workspace for compilation etc. Also, you should
-create a /local directory at C:\Path\to\MinGW\msys\1.0\local where you can install compiled libraries etc. such as GSL.
-
-
 ############################################################################################################################
 7. Install GSL
 ############################################################################################################################
 
 7a. Linux
----------
+=========
 Most popular distribution offer GSL (libgsl) in their repositories. Please make sure that you install the development version 
-including headers.
+including headers (e.g. libgsl0-dev).
 
 
 7b. Mac OS X
-------------
+============
 Please make sure you have XCode and the XCode Command Line Tools installed (tested on Mac OS X 10.8 Mountain Lion, Xcode tools 4.5.2, 
 gcc version 4.2.1 (Based on Apple Inc. build 5658)).
 
@@ -427,28 +390,11 @@ package portable, i.e. the user DOES NOT NEED TO HAVE GSL installed!
 
 
 7c. WINDOWS
------------
+===========
 
 i. For regular compilation (as in section 1a, 1b, 8)
-====================================================
-To compiling GSL for source compilation of libamtrack, start MSYS. Download the tarball for the latest GSL version, e.g. gsl-1.15.tar.gz and 
-unzip in your home directory, e.g. C:\Path\to\MinGW\msys\1.0\home\yourname.
-
-In MSYS, navigate into the gsl directory (cd ~/gsl-x.y), build, test and install. To switch between 32 and 64 bit, add CFLAGS="-m32" (default) 
-or "-m64" according to your system (or maybe the host you intend to run GSL on):
-
-	./configure
-	make
-	make check >log 2>&1
-	make install
-
-You can change the installation directory by the "--prefix" flag for configure (default: /usr/local). We recommend to keep the default but you
-could do so for example if you want to keep / distribute binaries for both 32 bit and 64 bit versions. 
-
-Remember to use the environmental variable GSL_LIB to point to the installation directory during compilation of libamtrack (sections 1a, 1b).
-
-In principle, you could alternatively use any directory and add the \bin subdirectory of it to PATH and leave GSL_LIB empty so that configure 
-runs gsl-config to get include and lib paths like under Linux and Mac OS X. However, the expansion of the AX_PATH_GSL seems faulty under Windows.
+----------------------------------------------------
+Install the binary package from MSYS2 (see 0)
 
 
 ii. R package compilation (as for section 4, 8)
@@ -594,15 +540,10 @@ This will result in a portable .tgz file.
 Windows:
 --------
 
-Start Windows command shell (with administrative priviledges, i.e. Start button > Search programs and files > Enter "cmd" > Press "Ctrl+Shift+Enter"
+With Rtools installed, start Windows command shell (with administrative priviledges, i.e. 
+Start button > Search programs and files > Enter "cmd" > Press "Ctrl+Shift+Enter"
 
 Navigate to directory where the package's source tarball (created using ./create.package.sh under Linux) is located.
-
-R has integrated support for GSL, so all we need to do is to set R's environmental variable LIB_GSL to point first to top folder of the GSL installation 
-(assuming you followed the instructions for GSL installation given in section 7. with correspding subdirectories for the two architectures. 
-NB: Linux-style slashes!):
-
-	set LIB_GSL=C:/Rtools/MinGW/msys/1.0/local/
 
 Now build binary package (NB: Windows environmental variable PATH has to include the R version you are using):
 
@@ -616,6 +557,7 @@ Users can install the binary package within R by
 or appropriate menu short-cuts in R GUIs.
 
 If you want to install the package yourself, just skip "--no-inst" during compilation.
+
 
 ############################################################################################################################
 9.  A note on stopping powers
