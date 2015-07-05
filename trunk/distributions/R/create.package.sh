@@ -10,21 +10,17 @@ echo
 ROOT_DIR=$(pwd)
 WORK_DIR=$ROOT_DIR/distributions/R
 SCRIPT_DIR=$WORK_DIR/scripts
-SANDBOX_DIR=$ROOT_DIR/../sandbox
 
 HELP_ARG="FALSE"
 FAST_ARG="FALSE"
 NOCLEAN_ARG="FALSE"
-SANDBOX_ARG="FALSE"
-SYNC_ARG="FALSE"
+NOTEST_ARG="FALSE"
 
 OUTPUT="ROOT_DIR is $ROOT_DIR"
 echo $OUTPUT
 OUTPUT="WORK_DIR is $WORK_DIR"
 echo $OUTPUT
 OUTPUT="SCRIPT_DIR is $SCRIPT_DIR"
-echo $OUTPUT
-OUTPUT="SANDBOX_DIR is $SANDBOX_DIR"
 echo $OUTPUT
 echo
 
@@ -37,8 +33,8 @@ while test $# -gt 0; do
 			echo "This script compiles libamtrack to an R package source tarball"
 			echo
 			echo "Use '--fast' to skip svn information update and R examples."
-			echo "Use '--noclean' to leave transient files after compilation for debugging."
-			echo "Use '--sync syncdir' to sync source package with directory syncdir."
+			echo "Use '--no-clean' to leave transient files after compilation for debugging."
+			echo "Use '--no-test' to skip 'R CMD check', e.g. under MSYS."
 			echo
 			exit 0
                         ;;
@@ -47,40 +43,20 @@ while test $# -gt 0; do
        			echo "Fast execution chosen. Will not update svn information nor run R examples."
 			shift
                         ;;
-                --noclean)
+                --no-clean)
                    	NOCLEAN_ARG="TRUE"
        			echo "Will leave transient files after compilation - it is strongly recommended to remove them manually."
 			shift
                         ;;
-                --sandbox)
-                   	SANDBOX_ARG="TRUE"
-       			echo "Will use sandbox files instead of main development trunk."
+                --no-test)
+                   	NOTEST_ARG="TRUE"
+       			echo "Will skip test of resulting R source package."
 			shift
                         ;;
-		--sync)
-                        shift
-                        if test $# -gt 0; then
-                                SYNC_ARG="TRUE"
-				SYNC_DIR=$1
-                                echo "Sync chosen with" $SYNC_DIR
-                        else
-                                echo "Error: no sync dir specified"
-                                exit 1
-                        fi
-                        shift
-			;;
         esac
 done
 echo
 
-
-# Check for bad combinations
-if [ $SANDBOX_ARG == "TRUE" ] ; then
-	if [ $FAST_ARG == "TRUE" ] ; then
-		echo "--sandbox and --fast must not be combined. Exiting"
-                exit 1
-	fi
-fi
 
 
 # Clean up residues from earlier runs if applicable
@@ -116,20 +92,15 @@ cp $ROOT_DIR/thirdparty/cernlib/*.c $WORK_DIR/libamtrack/src/
 cp $ROOT_DIR/thirdparty/cernlib/*.f $WORK_DIR/libamtrack/src/
 
 
-# *** Copy sandbox files if chosen ***
-if [ $SANDBOX_ARG == "TRUE" ] ; then
-	echo "Copying sandbox sources..."
-	cp $SANDBOX_DIR/include/*.h $WORK_DIR/libamtrack/src/
-	cp $SANDBOX_DIR/src/*.c $WORK_DIR/libamtrack/src/
-fi
-
-
 # *** Clean temporary files (e.g. from gedit that will confuse the collect.doxygen.information.R script)
-if [ ls $WORK_DIR/libamtrack/src/*.h~ &> /dev/null ]; then
-    rm $ROOT_DIR/include/*.h~
+if [ ls $WORK_DIR/libamtrack/include/*.h~ &> /dev/null ]; then
+    rm $WORK_DIR/libamtrack/include/*.h~
 fi
 if [ ls $WORK_DIR/libamtrack/src/*.c~ &> /dev/null ]; then
     rm $WORK_DIR/libamtrack/src/*.c~
+fi
+if [ ls $WORK_DIR/libamtrack/cernlib/*.f~ &> /dev/null ]; then
+    rm $WORK_DIR/libamtrack/cernlib/*.f
 fi
 
  
@@ -145,14 +116,6 @@ cp $WORK_DIR/hardcoded_wrappers/hardcoded_wrapper.c $WORK_DIR/libamtrack/src/
 cp $WORK_DIR/hardcoded_wrappers/hardcoded_wrapper.h $WORK_DIR/libamtrack/src/
 
 
-# *** Copy sandbox configure.ac ***
-if [ $SANDBOX_ARG == "TRUE" ] ; then
-	echo "Copy sandbox configure.ac"	
-	cp $ROOT_DIR/configure.ac $ROOT_DIR/configure.ac.org
-	cp $SANDBOX_DIR/configure.ac $ROOT_DIR
-fi
-
-
 # *** Run autoconfigure (to update svn version) ***
 if [ $FAST_ARG == "FALSE" ] ; then
 	echo "Running autoreconf and configure in main folder (to update svnversion information)..."
@@ -162,9 +125,11 @@ if [ $FAST_ARG == "FALSE" ] ; then
 fi
 
 
-# *** Copy generated file ***
+# *** Copy generated files ***
 cp $ROOT_DIR/config.h $WORK_DIR/libamtrack/src/
 
+
+# *** Run R scripts for automated C to R ***
 echo
 echo "Running R script to parse doxygen information from sources..."
 Rscript --no-save $ROOT_DIR/scripts/collect.doxygen.information.R $WORK_DIR $ROOT_DIR/include >$WORK_DIR/collect.doxygen.information.Rout 2>&1
@@ -194,19 +159,13 @@ if [ "$?" -ne "0" ]; then
   exit 1
 fi
 
-
-if [ $SANDBOX_ARG == "TRUE" ] ; then
-	echo "Roll back copy of sandbox configure.ac"	
-	mv $ROOT_DIR/configure.ac.org $ROOT_DIR/configure.ac
-fi
-
-
 echo "Running R script to create Rd documentation from parsed doxygen information..."
 Rscript --no-save $SCRIPT_DIR/R.generate.Rd.documentation.R $WORK_DIR libamtrack hardcoded_documentation >$WORK_DIR/R.generate.Rd.documentation.Rout 2>&1
 if [ "$?" -ne "0" ]; then
   echo "Problem with executing R.generate.Rd.documentation.R"
   exit 1
 fi
+
 
 # *** Move resulting file (wrapper C and R), dynamically coded documentation to temporary folder
 echo "Moving results from R scripts into package structure..."
@@ -242,38 +201,25 @@ chmod 755 configure
 cd $ROOT_DIR
 
 
-# *** Copy package directory for sync ***
-if [ $SYNC_ARG == "TRUE" ] ; then
-  echo "Syncing..."
-  cp -rp $WORK_DIR/libamtrack $ROOT_DIR/libamtrack.pkg
-  rm -rf $ROOT_DIR/libamtrack.pkg/autom4te.cache
-  rsync -vhau --delete-before $ROOT_DIR/libamtrack.pkg/* $SYNC_DIR
-  rm -rf $ROOT_DIR/libamtrack.pkg
+# *** Test package ***
+if [ $NOTEST_ARG == "FALSE" ] ; then
+	echo
+	echo "Running package check..."
+	if [ $FAST_ARG == "FALSE" ] ; then
+	   R CMD check $WORK_DIR/libamtrack --no-manual 
+	   if [ "$?" -ne "0" ]; then
+		 echo "Problem with executing R CMD check ./package --no-manual"
+	   exit 1
+	   fi
+	else
+	   R CMD check $WORK_DIR/libamtrack --no-manual --no-examples
+	   if [ "$?" -ne "0" ]; then
+		 echo "Problem with executing R CMD check ./package --no-manual --no-examples"
+	   exit 1
+	   fi
+	fi
 fi
 
-
-# *** Build test package ***
-echo
-echo "Running package check..."
-if [ $FAST_ARG == "FALSE" ] ; then
-   R CMD check $WORK_DIR/libamtrack --no-manual 
-   if [ "$?" -ne "0" ]; then
-     echo "Problem with executing R CMD check ./package --no-manual"
-   exit 1
-   fi
-else
-   R CMD check $WORK_DIR/libamtrack --no-manual --no-examples
-   if [ "$?" -ne "0" ]; then
-     echo "Problem with executing R CMD check ./package --no-manual --no-examples"
-   exit 1
-   fi
-fi
-
-
-# *** Build binary distribution ***
-#echo
-#echo "Building binary distribution package..."
-#sudo R CMD INSTALL --build libamtrack
 
 # *** Build tarball source package ***
 echo
