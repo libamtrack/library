@@ -23,7 +23,7 @@ The GNU Scientific Library (GSL, headers + libraries/binaries) is required for a
 from source (sections 1 and 8). See section 7 for installation instructions.
 
 
-To compile the DISTRIBUTED SOURCES of libamtrack:       you need the GNU compiler collection gcc (section 1a).
+To compile the DISTRIBUTED SOURCES of libamtrack:       you need the GNU compiler collection gcc and other software(section 1a).
 To compile the FULL DEVELOPMENT SOURCES of libamtrack,
   make releases/distributions:                          you need in addition other parts of the GNU toolchain, i.e. the GNU build 
                                                         system (autotools, i.e. automake, autoconf, and libtool, and m4),
@@ -36,7 +36,19 @@ You will find required tools depending on your OS here:
 
 Linux
 =====
-Most likely the repository of your distribution.
+The names might change depending on your distribution. For Ubuntu 14.04 LTS you need:
+
+automake
+autoconf
+libtool
+gcc
+gfortran
+libgsl0-dev
+
+Plus for development using the Netbeans IDE
+openjdk7
+netbeans (which is prefereably installed in the user's home directory from the Netbeans homepage)
+
 
 Using clang instead of gcc
 --------------------------
