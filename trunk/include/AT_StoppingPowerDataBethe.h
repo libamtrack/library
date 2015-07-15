@@ -33,7 +33,7 @@
 #include "AT_EnergyLoss.h"
 
 
-#define BETHE_LOWER_LIMIT_E_MEV_U 1.0
+#define BETHE_LOWER_LIMIT_E_MEV_U 0.49
 
 /**
  * Returns the electronic mass stopping power in MeV*cm2/g

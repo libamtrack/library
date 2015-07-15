@@ -47,10 +47,18 @@
 
 #include "AT_StoppingPower.h"
 #include "AT_CernlibFuns.h"
+#include "AT_DataRange.h"
 
 int main(){
 
-	const double E_MeV_u[3]   = {1, 10, 100};
+	double Test = AT_CSDA_range_g_cm2_single( 270.55,
+		0.1,
+		6012,
+		1);
+        
+        printf("Range of 270.55 C-12 in water: %3.2f cm\n\n", Test);
+        
+        const double E_MeV_u[3]   = {1, 10, 100};
 	const long particle_no[3] = {6012, 6012, 6012};
 	const long material_no = 2;
 
