@@ -43,12 +43,12 @@
 
 /**
  * Structure to hold parameters other then parameter to integrate over
- * for GSL integration routine used in AT_CSDA_range_Bethe_g_cm2_single
+ * for GSL integration routine used in AT_CSDA_range_g_cm2_single
  */
 typedef struct {
   long    particle_no;
   long    material_no;
-} AT_CSDA_range_Bethe_parameters;
+} AT_CSDA_range_parameters;
 
 /**
  * Integrand function for CSDA computation:
@@ -57,7 +57,7 @@ typedef struct {
  * @param[in] params
  * @return TODO
  */
-double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_int( double  E_MeV_u,
+double AT_Stopping_Power_Mass_MeV_cm2_g_int( double  E_MeV_u,
     void*   params);
 
 /**
@@ -82,9 +82,7 @@ double AT_CSDA_range_g_cm_int( double  E_MeV_u,
     void*   params);
 
 /**
- * Computes the CSDA range using the Bethe formula (AT_Stopping_Power_Bethe_Number)
- * according to ICRU49, p.6, Eq. 2.1
- * BUT WITHOUT shell or density, Bloch or Barkas correction!
+ * Computes the CSDA range using the PSTAR data
  * @param[in]  	   n                    number of particles
  * @param[in]  	   E_initial_MeV_u      initial energy of particle per nucleon (array of size n)
  * @param[in]  	   E_final_MeV_u        final energy of particle per nucleon (array of size n)
@@ -94,17 +92,15 @@ double AT_CSDA_range_g_cm_int( double  E_MeV_u,
  * @see          AT_DataMaterial.h for definition
  * @param[out]    CSDA_range_cm2_g resulting range (array of size n)
  */
-void AT_CSDA_range_Bethe_g_cm2_multi(	const long    n,
+void AT_CSDA_range_g_cm2_multi(	const long    n,
 		const double 	E_initial_MeV_u[],
 		const double 	E_final_MeV_u[],
-		const long 		particle_no[],
-		const long 		material_no,
+		const long 	particle_no[],
+		const long 	material_no,
 		double          CSDA_range_cm2_g[]);
 
 /**
- * Computes the CSDA range using the Bethe formula (AT_Stopping_Power_Bethe_Number)
- * according to ICRU49, p.6, Eq. 2.1
- * BUT WITHOUT shell or density, Bloch or Barkas correction!
+ * Computes the CSDA range using the PSTAR data
  * @param[in]  	   E_initial_MeV_u      initial energy of particle per nucleon
  * @param[in]  	   E_final_MeV_u       final energy of particle per nucleon
  * @param[in]  	   particle_no  particle index
@@ -113,10 +109,10 @@ void AT_CSDA_range_Bethe_g_cm2_multi(	const long    n,
  * @see          AT_DataMaterial.h for definition
  * @return     result
  */
-double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_initial_MeV_u,
+double AT_CSDA_range_g_cm2_single(	const double 	E_initial_MeV_u,
 		const double 	E_final_MeV_u,
-		const long 		particle_no,
-		const long 		material_no);
+		const long 	particle_no,
+		const long 	material_no);
 
 /**
  * Solver function for CSDA energy after slab
@@ -128,8 +124,8 @@ double AT_CSDA_range_difference_solver( double  E_final_MeV_u,
 	    void*   params);
 
 /**
- * Computes the ion energy after transversing a slab of material using Bethe stopping power
- * and CSDA approach
+ * Computes the ion energy after transversing a slab of material using 
+ * the PSTAR data
  * @param[in]  	   E_initial_MeV_u      initial energy of particle per nucleon (array of size n)
  * @param[in]  	   particle_no          particle index (array of size n)
  * @see          AT_DataParticle.h for definition
@@ -173,7 +169,7 @@ void AT_CSDA_energy_after_slab_E_MeV_u_multi( const long n,
  * @param[in]      slab_thickness_m  thickness of slab of material different than water, in meter
  * @param[out]    WEPL resulting water equivalent path length (array of size n)
  */
-void AT_WEPL_Bethe_multi(	const long    n,
+void AT_WEPL_multi(	const long    n,
 		const double    E_MeV_u[],
 		const long 		particle_no[],
 		const long 		material_no,
@@ -190,7 +186,7 @@ void AT_WEPL_Bethe_multi(	const long    n,
  * @param[in]      slab_thickness_m  thickness of slab of material different than water, in meter
  * @return     result
  */
-double AT_WEPL_Bethe_single(	const double 	E_MeV_u,
+double AT_WEPL_single(	const double 	E_MeV_u,
 		const long 		particle_no,
 		const long 		material_no,
 		const double    slab_thickness_m);

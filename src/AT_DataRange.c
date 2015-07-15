@@ -33,26 +33,27 @@
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_randist.h>
 
-double AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_int( double  E_MeV_u,
+double AT_Stopping_Power_Mass_MeV_cm2_g_int( double  E_MeV_u,
 		void*   params){
 	assert( params != NULL );
-	AT_CSDA_range_Bethe_parameters* int_params = (AT_CSDA_range_Bethe_parameters*)params;
-	const double E_restricted_keV = 0.0;
-	double  StPow = AT_Bethe_energy_loss_MeV_cm2_g_single(	E_MeV_u,
-			int_params->particle_no,
-			int_params->material_no,
-			E_restricted_keV,
-			true);
-	return (1.0 / (StPow));
+	AT_CSDA_range_parameters* int_params = (AT_CSDA_range_parameters*)params;
+	double StPow = 0.00001;
+        AT_Mass_Stopping_Power_with_no( PSTAR,
+		1,
+		&E_MeV_u,
+		&(int_params->particle_no),
+		int_params->material_no,
+		&StPow);
+ 	return (1.0 / (StPow));
 }
 
-double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_initial_MeV_u,
+double AT_CSDA_range_g_cm2_single(	const double 	E_initial_MeV_u,
 		const double 	E_final_MeV_u,
 		const long 		particle_no,
 		const long 		material_no){
 
 	double range_cm2_g              = 0.0;
-	AT_CSDA_range_Bethe_parameters  params;
+	AT_CSDA_range_parameters  params;
 	params.material_no             = material_no;
 	params.particle_no			   = 1001;          // Compute CSDA range for protons, then scale (see below)
 
@@ -60,7 +61,7 @@ double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_initial_MeV_u,
 	gsl_set_error_handler_off();
 	gsl_integration_workspace *w1   = gsl_integration_workspace_alloc (10000);
 	gsl_function F;
-	F.function                      = &AT_Stopping_Power_Mass_Bethe_MeV_cm2_g_int;
+	F.function                      = &AT_Stopping_Power_Mass_MeV_cm2_g_int;
 	F.params                        = (void*)&params;
 
 	/* Set integration limits */
@@ -97,16 +98,16 @@ double AT_CSDA_range_Bethe_g_cm2_single(	const double 	E_initial_MeV_u,
 	return(range_cm2_g * A / (Z * Z));
 }
 
-void AT_CSDA_range_Bethe_g_cm2_multi(	const long    n,
+void AT_CSDA_range_g_cm2_multi(	const long    n,
 		const double 	E_initial_MeV_u[],
 		const double 	E_final_MeV_u[],
-		const long 		particle_no[],
-		const long 		material_no,
+		const long 	particle_no[],
+		const long 	material_no,
 		double          CSDA_range_cm2_g[])
 {
 	long i;
 	for (i = 0; i < n; i++){
-		CSDA_range_cm2_g[i] = AT_CSDA_range_Bethe_g_cm2_single(	E_initial_MeV_u[i],
+		CSDA_range_cm2_g[i] = AT_CSDA_range_g_cm2_single(	E_initial_MeV_u[i],
 				E_final_MeV_u[i],
 				particle_no[i],
 				material_no);
@@ -120,7 +121,7 @@ double AT_CSDA_range_difference_solver( double  E_final_MeV_u,
 	assert( params != NULL );
 	AT_CSDA_range_difference_parameters* solver_params = (AT_CSDA_range_difference_parameters*)params;
 
-	double material_range_g_cm2 = AT_CSDA_range_Bethe_g_cm2_single(	solver_params->E_initial_MeV_u,
+	double material_range_g_cm2 = AT_CSDA_range_g_cm2_single(	solver_params->E_initial_MeV_u,
 			E_final_MeV_u,
 			solver_params->particle_no,
 			solver_params->material_no);
@@ -173,7 +174,7 @@ void AT_CSDA_energy_after_slab_E_MeV_u_multi( const long n,
 	}
 }
 
-double AT_WEPL_Bethe_single(	const double 	E_MeV_u,
+double AT_WEPL_single(	const double 	E_MeV_u,
 		const long 		particle_no,
 		const long 		material_no,
 		const double    slab_thickness_m){
@@ -184,14 +185,14 @@ double AT_WEPL_Bethe_single(	const double 	E_MeV_u,
 			material_no,
 			slab_thickness_m);
 
-	double residual_range_g_cm2   = AT_CSDA_range_Bethe_g_cm2_single( E_final_MeV_u,
+	double residual_range_g_cm2   = AT_CSDA_range_g_cm2_single( E_final_MeV_u,
 			BETHE_LOWER_LIMIT_E_MEV_U,
 			particle_no,
 			Water_Liquid);
 
 	double residual_range_m       = residual_range_g_cm2 / AT_density_g_cm3_from_material_no(Water_Liquid) / m_to_cm;
 
-	double range_water_m          = AT_CSDA_range_Bethe_g_cm2_single(E_MeV_u,
+	double range_water_m          = AT_CSDA_range_g_cm2_single(E_MeV_u,
 			BETHE_LOWER_LIMIT_E_MEV_U,
 			particle_no,
 			Water_Liquid) / m_to_cm;
@@ -199,7 +200,7 @@ double AT_WEPL_Bethe_single(	const double 	E_MeV_u,
 	return (range_water_m - residual_range_m) / slab_thickness_m;
 }
 
-void AT_WEPL_Bethe_multi(	const long    n,
+void AT_WEPL_multi(	const long    n,
 		const double 	E_MeV_u[],
 		const long 		particle_no[],
 		const long 		material_no,
@@ -208,7 +209,7 @@ void AT_WEPL_Bethe_multi(	const long    n,
 {
 	long i;
 	for (i = 0; i < n; i++){
-		WEPL[i] = AT_WEPL_Bethe_single(	E_MeV_u[i],
+		WEPL[i] = AT_WEPL_single(	E_MeV_u[i],
 				particle_no[i],
 				material_no,
 				slab_thickness_m);

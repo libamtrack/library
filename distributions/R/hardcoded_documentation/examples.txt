@@ -442,9 +442,9 @@ lattice::xyplot( log10(CSDA.range.m) ~ log10(particle.energy.MeV.u)|"CSDA ranges
               )
 ::AT.CSDA.range.g.cm2::
 # Range of 270 MeV/u carbon ions and 142 MeV/u protons in water
-AT.CSDA.range.g.cm2(    E.MeV.u               = c(270, 142),
-                        particle.no           = AT.particle.no.from.particle.name(c("12C", "1H")),
-                        material.no           = AT.material.no.from.material.name("Water, Liquid"))
+#AT.CSDA.range.g.cm2(    E.MeV.u               = c(270, 142),
+#                        particle.no           = AT.particle.no.from.particle.name(c("12C", "1H")),
+#                        material.no           = AT.material.no.from.material.name("Water, Liquid"))
 ::AT.E.MeV.from.CDSA.range::
 # At which kinetic energy do these ions stop
 # in 15 cm of water
