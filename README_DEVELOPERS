@@ -148,8 +148,7 @@ Basic instruction on the use of GNU autotools are found in INSTALL.
 
 The libamtrack sources can be fetched from GIT repository at github.com by:
 
-
-git clone https://github.com/libamtrack/library.git
+	git clone https://github.com/libamtrack/library.git
 
 In this way you will obtain repository with full history, all previous tags and branches.
 
