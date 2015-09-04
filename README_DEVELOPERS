@@ -146,16 +146,13 @@ Please refrain from doing so.
 
 Basic instruction on the use of GNU autotools are found in INSTALL.
 
-The libamtrack sources can be checkout from it svn repository at sourceforce.net by:
+The libamtrack sources can be fetched from GIT repository at github.com by:
 
+	git clone https://github.com/libamtrack/library.git
 
-svn co https://svn.code.sf.net/p/libamtrack/code/trunk libamtrack
+In this way you will obtain repository with full history, all previous tags and branches.
 
-Of course you can also check out previous tags or branches from:
-svn co https://svn.code.sf.net/p/libamtrack/code/tags/RELEASE_VERSION_NUMBER libamtrack
-svn co https://svn.code.sf.net/p/libamtrack/code/branches/BRANCH_ID libamtrack
-
-To commit changes you did to the code you have to register as a developer at sourceforge and join the libamtrack project.
+To commit changes you did to the code please fork the repository and make a pull request.
 
 As for section 1a, please make sure that GSL_LIB points correctly to your GSL installation (section 7) if you are working
 with Windows.
