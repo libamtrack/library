@@ -1,4 +1,7 @@
 #!/bin/bash
+#echo "Press CTRL+C to proceed."
+#trap "pkill -f 'sleep 1h'" INT
+#trap "set +x ; sleep 1h ; set -x" DEBUG
 
 echo "################################################"
 echo "This script creates the R package for libamtrack"

@@ -89,8 +89,8 @@ TODO: \tab Re-enable CSDA functions \cr
 %\code{\link{AT.CSDA.range.g.cm2}} \tab CSDA range in mass thickness\cr
 
 %\code{\link{AT.Stopping.Power.Mass.Bethe.MeV.cm2.g}} \tab Restricted LET / mass stopping power using the Bethe formula\cr
-\code{\link{AT.CSDA.range.g.cm2}} \tab CSDA range using PSTAR data\cr
-%\code{\link{AT.CSDA.energy.after.slab.E.MeV.u}} \tab Ion energy after slab of material according Bethe formula\cr
+\code{\link{AT.CSDA.range.g.cm2}} \tab CSDA range using PSTAR data
+%\code{\link{AT.CSDA.energy.after.slab.E.MeV.u}} \tab Ion energy after slab of material according Bethe formula
 }
 
 Mean LET / energy in mixed fields routines:
