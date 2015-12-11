@@ -12,17 +12,25 @@ rm(list = ls())
 
 args <- commandArgs(TRUE)
 
-namespace.file          <- paste("# Namespace for package ", args[2], "\n#Created by R.create.package.namespace.R script\n\n", sep = "")
+namespace.file          <- paste("# Namespace for package ", args[2], "\n# Created by R.create.package.namespace.R script\n\n", sep = "")
 
-# Add imports
-#namespace.file          <- paste( namespace.file,
-#                                  "import(lattice)\n\n",
-#                                  sep = "")
 
 # Add loading hook for library
 namespace.file          <- paste( namespace.file,
                                   "useDynLib(\"",args[2], "\", .registration = TRUE)\n\n",
                                   sep = "")
+# Add imports
+import.file.name        <- paste0(args[1], "/", "IMPORTS")
+if(file.exists(import.file.name)){
+	import.file        <- scan(import.file.name,
+                                   what = character(),
+				   sep  = "\n")
+        for(i in 1:length(import.file)){
+            namespace.file     <- paste0(namespace.file,
+                                         import.file[i],
+                                         "\n")
+        }
+}
 
 # Read functions from documentation directory. This is easiest as all functions have their corresponding
 # Rd file (alternatively one could browse C code NAMESPACE and hardcoded wrappers).

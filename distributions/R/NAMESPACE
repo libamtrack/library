@@ -16,7 +16,7 @@
 #    set HAVE_CERNLIB. N.B. as GSL is a mandatory dependency, it has
 #    not to be declared here.
 #
-# S. Greilich, 2015-04-23
+# S. Greilich, 2015-12-11
 #
 AT_run_CPPSC_method
 AT_run_IGK_method
