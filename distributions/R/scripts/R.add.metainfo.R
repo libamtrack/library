@@ -32,9 +32,6 @@ kk          <- grepl("CODE_STATUS", configure.ac.file)
 code.name   <- get.argument(configure.ac.file[ii&jj]) 
 code.status <- get.argument(configure.ac.file[ii&kk]) 
 
-# Get svn revision from saved file (which works whether svnversion runs or not)
-code.rev    <- scan(paste(args[1],"saved_svn_version.txt", sep = "/"), what = character())
-
 # Write to transient file to use in other scripts
 meta.information <- list( code.version = code.version, 
             code.name    = code.name, 
@@ -53,13 +50,7 @@ write(desc.file, file = paste(args[3], args[2], "DESCRIPTION", sep = "/"))
 init.file   <- scan(paste(args[3], args[2], "R/initial.R", sep = "/"), what = character(), sep = "\n")
 init.file   <- gsub("##VERSION##", code.version, init.file)
 init.file   <- gsub("##NAME##", code.name, init.file)
-if (code.status == "Release"){
-   init.file   <- gsub("##STATUS##, ##REVISION##, ##DATE##", date.short, init.file)
-}else{
-   init.file   <- gsub("##STATUS##", code.status, init.file)
-   init.file   <- gsub("##REVISION##", code.rev, init.file)
-   init.file   <- gsub("##DATE##", date.long, init.file)
-}
+init.file   <- gsub("##STATUS##, ##REVISION##, ##DATE##", date.short, init.file)
 write(init.file, file = paste(args[3], args[2], "R/initial.R", sep = "/"))
 
 docu.file   <- scan(paste(args[3], "/", args[2], "/man/", args[2], "-package.Rd", sep = ""), what = character(), sep = "\n")

@@ -25,34 +25,6 @@ AC_PROG_LIBTOOL
 AC_PROG_F77([gfortran g77])
 
 
-## HOW TO GET revision in here? But not trying to get it during a configure
-## process on a tarball distribution??
-##
-## Solution 1 (use svn:keywords):
-# Set revision automatically by svn:keywords
-# AC_DEFINE(SVN_REVISION, $Rev$, [SVN Revision])
-## Not optimal, as resulting string is not very handy and autoconf.ac has to be commited in
-## order to update
-##
-## Solution 2 (use svnversion):
-AC_PATH_PROG(svnversioncommand, svnversion, [AC_MSG_ERROR([unable to find svnversion])])
-if test "X$svnversioncommand" = "X" || test `$svnversioncommand -n '.'` = "exported"; then
-AC_DEFINE_UNQUOTED(SVN_VERSION, ["`cat saved_svn_version.txt`"], [repository svn version])
-else
-AC_DEFINE_UNQUOTED(SVN_VERSION, ["`svnversion -n`"], [repository svn version])
-`svnversion -n > saved_svn_version.txt`
-fi 
-## Also not optimal as it will be used during the configure-process on a user machine, too.
-## Additional critics (from Brian Tanner's Research Homepage):
-## The SVN_VERSION will only get updated when you run configure.  
-## If you are like me and "make distclean" before committing your latest revisions, 
-## then this is fine, because next time you want to build your code you'll have 
-## to ./configure and the values will be updated.  I guess the downside is that if you 
-## test some changes, make distclean, then commit, it won't show that the version has 
-## changed.  You'll have to ./configure and then make distclean one more time before committing.  
-## I can live with that.  Someone more savvy might point out that there probably a hook you 
-## could write somewhere to update saved_svn_version.txt at some point in the process.
-
 # check for OpenMP flags
 AC_ARG_ENABLE(openmp,
           [AS_HELP_STRING([--enable-openmp],[use OpenMP directives for parallelism])],

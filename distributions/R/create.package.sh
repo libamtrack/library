@@ -121,7 +121,7 @@ cp $WORK_DIR/hardcoded_wrappers/hardcoded_wrapper.h $WORK_DIR/libamtrack/src/
 
 # *** Run autoconfigure (to update svn version) ***
 if [ $FAST_ARG == "FALSE" ] ; then
-	echo "Running autoreconf and configure in main folder (to update svnversion information)..."
+	echo "Running autoreconf and configure in main folder..."
 	autoreconf --force --install
 	chmod 755 configure
 	./configure
