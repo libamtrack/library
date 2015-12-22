@@ -38,6 +38,7 @@ while test $# -gt 0; do
 			echo "Use '--fast' to skip svn information update and R examples."
 			echo "Use '--no-clean' to leave transient files after compilation for debugging."
 			echo "Use '--no-test' to skip 'R CMD check', e.g. under MSYS."
+			echo "Use '--sync syncdir' to sync source package with directory syncdir, e.g. with another repository working copy."
 			echo
 			exit 0
                         ;;
@@ -56,6 +57,18 @@ while test $# -gt 0; do
        			echo "Will skip test of resulting R source package."
 			shift
                         ;;
+		--sync)
+                        shift
+                        if test $# -gt 0; then
+                                SYNC_ARG="TRUE"
+				SYNC_DIR=$1
+                                echo "Sync chosen with" $SYNC_DIR
+                        else
+                                echo "Error: no sync dir specified"
+                                exit 1
+                        fi
+                        shift
+			;;
         esac
 done
 echo
@@ -82,8 +95,9 @@ echo "Copy package template..."
 cp -r $WORK_DIR/package $WORK_DIR/libamtrack
 
 
-# Remove .svn subdirs
+# Remove svn subdirs or git files
 find $WORK_DIR/libamtrack/ -iname .svn -print | xargs rm -rf
+find $WORK_DIR/libamtrack/ -iname .gitignore -print | xargs rm
 
 
 # *** Copy sources of libamtrack ***
@@ -125,6 +139,16 @@ if [ $FAST_ARG == "FALSE" ] ; then
 	autoreconf --force --install
 	chmod 755 configure
 	./configure
+fi
+
+
+# *** Copy package directory for sync ***
+if [ $SYNC_ARG == "TRUE" ] ; then
+  echo "Syncing..."
+  cp -rp $WORK_DIR/libamtrack $ROOT_DIR/libamtrack.pkg
+  rm -rf $ROOT_DIR/libamtrack.pkg/autom4te.cache
+  rsync -vhau --delete-before $ROOT_DIR/libamtrack.pkg/* $SYNC_DIR
+  rm -rf $ROOT_DIR/libamtrack.pkg
 fi
 
 
