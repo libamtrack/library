@@ -142,16 +142,6 @@ if [ $FAST_ARG == "FALSE" ] ; then
 fi
 
 
-# *** Copy package directory for sync ***
-if [ $SYNC_ARG == "TRUE" ] ; then
-  echo "Syncing..."
-  cp -rp $WORK_DIR/libamtrack $ROOT_DIR/libamtrack.pkg
-  rm -rf $ROOT_DIR/libamtrack.pkg/autom4te.cache
-  rsync -vhau --delete-before $ROOT_DIR/libamtrack.pkg/* $SYNC_DIR
-  rm -rf $ROOT_DIR/libamtrack.pkg
-fi
-
-
 # *** Copy generated files ***
 cp $ROOT_DIR/config.h $WORK_DIR/libamtrack/src/
 
@@ -245,6 +235,16 @@ if [ $NOTEST_ARG == "FALSE" ] ; then
 	   exit 1
 	   fi
 	fi
+fi
+
+
+# *** Copy package directory for sync ***
+if [ $SYNC_ARG == "TRUE" ] ; then
+  echo "Syncing..."
+  cp -rp $WORK_DIR/libamtrack $ROOT_DIR/libamtrack.pkg
+  rm -rf $ROOT_DIR/libamtrack.pkg/autom4te.cache
+  rsync -vhau --delete-before $ROOT_DIR/libamtrack.pkg/* $SYNC_DIR
+  rm -rf $ROOT_DIR/libamtrack.pkg
 fi
 
 
