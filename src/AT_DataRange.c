@@ -52,7 +52,7 @@ double AT_CSDA_range_g_cm2_single(	const double 	E_initial_MeV_u,
 		const long 		particle_no,
 		const long 		material_no){
 
-	double range_cm2_g              = 0.0;
+	double range_g_cm2              = 0.0;
 	AT_CSDA_range_parameters  params;
 	params.material_no             = material_no;
 	params.particle_no			   = 1001;          // Compute CSDA range for protons, then scale (see below)
@@ -77,7 +77,7 @@ double AT_CSDA_range_g_cm2_single(	const double 	E_initial_MeV_u,
 			1.0e-3,
 			10000,
 			w1,
-			&range_cm2_g,
+			&range_g_cm2,
 			&error);
 	if (status == GSL_EROUND){
 #ifndef NDEBUG
@@ -95,7 +95,7 @@ double AT_CSDA_range_g_cm2_single(	const double 	E_initial_MeV_u,
 	/* Scale range for ions Z,A >1 and return value */
 	long     Z                      = AT_Z_from_particle_no_single(particle_no);
 	long     A                      = AT_A_from_particle_no_single(particle_no);
-	return(range_cm2_g * A / (Z * Z));
+	return(range_g_cm2 * A / (Z * Z));
 }
 
 void AT_CSDA_range_g_cm2_multi(	const long    n,
@@ -103,11 +103,11 @@ void AT_CSDA_range_g_cm2_multi(	const long    n,
 		const double 	E_final_MeV_u[],
 		const long 	particle_no[],
 		const long 	material_no,
-		double          CSDA_range_cm2_g[])
+		double          CSDA_range_g_cm2[])
 {
 	long i;
 	for (i = 0; i < n; i++){
-		CSDA_range_cm2_g[i] = AT_CSDA_range_g_cm2_single(	E_initial_MeV_u[i],
+		CSDA_range_g_cm2[i] = AT_CSDA_range_g_cm2_single(	E_initial_MeV_u[i],
 				E_final_MeV_u[i],
 				particle_no[i],
 				material_no);

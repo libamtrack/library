@@ -90,14 +90,14 @@ double AT_CSDA_range_g_cm_int( double  E_MeV_u,
  * @see          AT_DataParticle.h for definition
  * @param[in]      material_no  material index
  * @see          AT_DataMaterial.h for definition
- * @param[out]    CSDA_range_cm2_g resulting range (array of size n)
+ * @param[out]    CSDA_range_g_cm2 resulting range (array of size n)
  */
 void AT_CSDA_range_g_cm2_multi(	const long    n,
 		const double 	E_initial_MeV_u[],
 		const double 	E_final_MeV_u[],
 		const long 	particle_no[],
 		const long 	material_no,
-		double          CSDA_range_cm2_g[]);
+		double          CSDA_range_g_cm2[]);
 
 /**
  * Computes the CSDA range using the PSTAR data
