@@ -30,7 +30,7 @@ To compile the FULL DEVELOPMENT SOURCES of libamtrack,
                                                         system (autotools, i.e. automake, autoconf, and libtool, and m4),
                                                         (see sections 1b and 8). 
 										  
-To check out the FULL DEVELOPMENT SOURCE, you also need subversion (svn) installed.
+To check out the FULL DEVELOPMENT SOURCE, you also need GIT installed.
 
 
 You will find required tools depending on your OS here:
@@ -163,7 +163,8 @@ Steps for compilation:
 i.   After you check out libamtrack OR 
      you updated your local workspace (which could have changed configure.ac) OR
      you changed configure.ac yourself run:
-   
+
+     mkdir m4
      autoreconf --force --install
 
      This will create a configure script plus all necessary other files.
@@ -284,8 +285,7 @@ The necessary files for producing an R package from libamtrack are found in:
                                            and documentation
   /tools/automatic_wrapper_generation      R scripts for automatic creation of R/C wrappers
 
-To compile a package, follow first the instructions given in section 1b (if you want to have the correct svn revision number,
-make sure you start at step (i)!), then navigate to /wrapper/R/R_package:
+To compile a package, follow first the instructions given in section 1b, then navigate to /wrapper/R/R_package:
 
 Functions that should go to R package are referenced in the text file NAMESPACE. The suffix "_multi" will automatically be
 skipped, as R functions are supposed to be able to work on vectors as you should always prefer the "<function_name>_multi"

@@ -27,6 +27,7 @@ install:
   - ./configure --prefix=$HOME/usr
 
 before_script:
+  - make README
   - make
   - make install
 
