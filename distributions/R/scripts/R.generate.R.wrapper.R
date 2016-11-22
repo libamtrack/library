@@ -127,7 +127,7 @@ for(i in 1:length(functions)){
                                                             para$name[j],
                                                             "\'!\\n",
                                                             sep = ""),
-                                                    "\")\n\t\treturn}\n",
+                                                    "\")\n\t\treturn(NULL)}\n",
                                                     sep = ""))
                           }
                      }
