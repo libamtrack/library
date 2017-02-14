@@ -105,8 +105,7 @@ int AT_E_from_gamma( const long  n,
 
 
  double AT_E_MeV_u_from_momentum_single( 	const double momentum_MeV_c_u){
-	double total_E_MeV_u = sqrt(momentum_MeV_c_u * momentum_MeV_c_u + 1.0079 * 1.0079 * proton_mass_MeV_c2 * proton_mass_MeV_c2);
-	return (total_E_MeV_u - 1.0079 * proton_mass_MeV_c2);
+	return (sqrt(momentum_MeV_c_u * momentum_MeV_c_u + atomic_mass_unit_MeV_c2 * atomic_mass_unit_MeV_c2) - atomic_mass_unit_MeV_c2);
 }
 
 int AT_E_MeV_u_from_momentum_MeV_c_u(  const long  n,
@@ -280,10 +279,7 @@ int AT_max_E_transfer_MeV(  const long  n,
 }
 
  double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u){
-	double	beta		=	AT_beta_from_E_single(E_MeV_u);
-	double	gamma		=	AT_gamma_from_E_single(E_MeV_u);
-	double	m_MeV_c2	=	1.0079 * proton_mass_MeV_c2;
-	return 	gamma * m_MeV_c2 * beta * 1.0;			// Here: c = 1
+	return (sqrt(E_MeV_u * (E_MeV_u + 2.0 * atomic_mass_unit_MeV_c2)));			// Here: c = 1
 }
 
 int AT_momentum_MeV_c_u_from_E_MeV_u( const long  n,

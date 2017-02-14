@@ -33,7 +33,7 @@
 #include <stdio.h>
 
 static const double  proton_mass_MeV_c2      =  938.272013;             /* proton mass CODATA http://physics.nist.gov/constants */
-static const double  atomic_mass_unit_MeV_c2 = 	931.494028;     		/*P.J. Mohr and D.B. Newell, “Resource Letter FC-1: The Physics of Fundamental Constants,” Am. J. Phys, 78 (2010) 338 */
+static const double  atomic_mass_unit_MeV_c2 = 	931.494028;     		/* P.J. Mohr and D.B. Newell, “Resource Letter FC-1: The Physics of Fundamental Constants,” Am. J. Phys, 78 (2010) 338 */
 static const double  neutron_mass_MeV_c2     =  939.565346;         	/* proton mass */
 static const double  electron_mass_MeV_c2    =  0.510998918;           	/* electron mass */
 static const double  e_C                     =  1.60217653e-19;       	/* elementary charge */
