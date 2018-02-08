@@ -142,11 +142,18 @@ void  AT_single_impact_local_dose_distrib(
 			fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
 		}
 	}
-	double*  norm_fluence                                 =  (double*)calloc(n, sizeof(double));
-	AT_normalize(    n,
-			fluence_cm2,
-			norm_fluence);
+
+
+	double*  nb_tracks_contrib                              =  (double*)calloc(n, sizeof(double));
+	for (i = 0; i < n; i++){
+    nb_tracks_contrib[i] = AT_mean_number_of_tracks_contrib(1,&E_MeV_u[i],&particle_no[i],&fluence_cm2[i],material_no,er_model,stopping_power_source_no);
+  }
 	free( fluence_cm2 );
+
+	double*  norm_nb_tracks_contrib                         =  (double*)calloc(n, sizeof(double));
+	AT_normalize(    n,
+			nb_tracks_contrib,
+			norm_nb_tracks_contrib);
 
 	/*
 	 * Prepare single impact local dose distribution histogram
@@ -298,7 +305,7 @@ void  AT_single_impact_local_dose_distrib(
 				double f1_comp;
 				for (j = 0; j < n_bins_f1_comp; j++){
 					f1_comp				  						=  (F1_comp[j] - F1_comp[j + 1]) / (dose_left_limits_Gy_F1_comp[j + 1] - dose_left_limits_Gy_F1_comp[j]);
-					frequency_1_Gy_f1[lowest_bin_no_comp + j]   += norm_fluence[i] * f1_comp;
+					frequency_1_Gy_f1[lowest_bin_no_comp + j]   += norm_nb_tracks_contrib[i] * f1_comp;
 				}
 
 				// adjust the density in first and last bin, because upper limit is not d.max.Gy and lower not d.min.Gy
@@ -307,7 +314,7 @@ void  AT_single_impact_local_dose_distrib(
 				free(F1_comp);
 			}
 			else{ // in case of n_bins_df == 1 (all doses fall into single bin, just add a value of 1.0
-				frequency_1_Gy_f1[lowest_bin_no_comp ]        +=  norm_fluence[i] * 1.0 / f1_dd_Gy[lowest_bin_no_comp];
+				frequency_1_Gy_f1[lowest_bin_no_comp ]        +=  norm_nb_tracks_contrib[i] * 1.0 / f1_dd_Gy[lowest_bin_no_comp];
 			}
 
 			// remember highest bin used
@@ -333,7 +340,7 @@ void  AT_single_impact_local_dose_distrib(
 				j, f1_d_Gy[j], f1_dd_Gy[j], frequency_1_Gy_f1[j]);
 	}
 	fclose(output);
-	free( norm_fluence );
+	free( norm_nb_tracks_contrib );
 }
 
 

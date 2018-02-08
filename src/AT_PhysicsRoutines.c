@@ -765,27 +765,15 @@ double AT_mean_number_of_tracks_contrib(    const long number_of_field_component
                 const long er_model,
                 const long stopping_power_source_no)
 {
-  double* norm_fluence    =  (double*)calloc(number_of_field_components, sizeof(double));
-  double total_D_Gy       =  AT_total_D_Gy( number_of_field_components, E_MeV_u, particle_no, fluence_cm2, material_no, stopping_power_source_no);
-
-  AT_normalize( number_of_field_components, fluence_cm2, norm_fluence);
-
-  double u                =  0.0;
+  double mu                =  0.0;
   long i;
   for (i = 0; i < number_of_field_components; i++){
-    double single_impact_fluence_cm2 =  AT_single_impact_fluence_cm2_single(  E_MeV_u[i], material_no, er_model);
-    double LET_MeV_cm2_g;
-    	  AT_Mass_Stopping_Power_with_no( stopping_power_source_no,
-    			  1,
-    			  &E_MeV_u[i],
-    			  &particle_no[i],
-    			  material_no,
-    			  &LET_MeV_cm2_g);
-    u += norm_fluence[i] * AT_single_impact_dose_Gy_single(  LET_MeV_cm2_g, single_impact_fluence_cm2 );
+    double max_electron_range_m = AT_max_electron_range_m(E_MeV_u[i], (int)material_no, (int)er_model);
+    mu += fluence_cm2[i] * M_PI * gsl_pow_2( max_electron_range_m * m_to_cm );
   }
 
-  free(norm_fluence);
-  return(total_D_Gy / u);
+  return(mu);
+
 }
 
 double AT_kinetic_variable_single(double E_MeV_u){
