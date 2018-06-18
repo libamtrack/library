@@ -54,6 +54,11 @@ double AT_mean_energy_loss_keV( const double E_MeV_u,
     return ( stopping_power_keV_um * slab_thickness_um);
 }
 
+
+/////////////////////////////////////////////////////////////////////////////
+// KAPPA PARAMETER
+/////////////////////////////////////////////////////////////////////////////
+
 double AT_kappa_single(const double E_MeV_u,
         const long particle_no,
         const long material_no,
@@ -74,6 +79,11 @@ void AT_kappa_multi(const long n,
     }
 }
 
+
+/////////////////////////////////////////////////////////////////////////////
+// ENERGY LOSS STRAGGLING: LANDAU THEORY
+/////////////////////////////////////////////////////////////////////////////
+
 void AT_Landau_PDF( const long n, 
         const double lambda_landau[], 
         double density[] ) {
@@ -90,46 +100,7 @@ void AT_Landau_IDF( const long n,
     }
 }
 
-void AT_lambda_mean_multi(const long n,
-        const double E_MeV_u[],
-        const long particle_no[],
-        const long material_no,
-        const double slab_thickness_um[],
-        double lambda_mean[]) {
-    long i;
-    for (i = 0; i < n; i++) {
-        lambda_mean[i] = AT_lambda_mean_single(E_MeV_u[i], particle_no[i], material_no, slab_thickness_um[i]);
-    }
-
-}
-
-double AT_lambda_mean_single(const double E_MeV_u,
-        const long particle_no,
-        const long material_no,
-        const double slab_thickness_um) {
-    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
-    double beta = AT_beta_from_E_single(E_MeV_u);
-    return (-0.42278433509 - beta * beta - log(kappa));
-}
-
-void AT_lambda_max_multi(const long n,
-        const double E_MeV_u[],
-        const long particle_no[],
-        const long material_no,
-        const double slab_thickness_um[],
-        double lambda_max[]) {
-    long i;
-    for (i = 0; i < n; i++) {
-        double lambda_mean = AT_lambda_mean_single(E_MeV_u[i], particle_no[i], material_no, slab_thickness_um[i]);
-        lambda_max[i] = AT_lambda_max_single(lambda_mean);
-    }
-}
-
-double AT_lambda_max_single(double lambda_mean) {
-    return (0.60715 + 1.1934 * lambda_mean + (0.67794 + 0.052382 * lambda_mean) * exp(0.94753 + 0.74442 * lambda_mean));
-}
-
-double AT_lambda_landau_from_energy_loss_single(const double energy_loss_keV,
+double AT_lambda_Landau_from_energy_loss_single(const double energy_loss_keV,
         const double E_MeV_u,
         const long particle_no,
         const long material_no,
@@ -146,7 +117,7 @@ double AT_lambda_landau_from_energy_loss_single(const double energy_loss_keV,
     return ( (energy_loss_keV - mean_loss_keV) / xi_keV - 0.42278433509 - beta * beta - log(kappa));
 }
 
-void AT_lambda_landau_from_energy_loss_multi(const long n,
+void AT_lambda_Landau_from_energy_loss_multi(const long n,
         const double energy_loss_keV[],
         const double E_MeV_u,
         const long particle_no,
@@ -155,13 +126,13 @@ void AT_lambda_landau_from_energy_loss_multi(const long n,
         double lambda_landau[]) {
 
     for (long i = 0; i < n; i++) {
-        lambda_landau[i] = AT_lambda_landau_from_energy_loss_single(energy_loss_keV[i], E_MeV_u, particle_no, material_no, slab_thickness_um);
+        lambda_landau[i] = AT_lambda_Landau_from_energy_loss_single(energy_loss_keV[i], E_MeV_u, particle_no, material_no, slab_thickness_um);
     }
 
     return;
 }
 
-double AT_energy_loss_from_lambda_landau_single(const double lambda_landau,
+double AT_energy_loss_from_lambda_Landau_single(const double lambda_landau,
         const double E_MeV_u,
         const long particle_no,
         const long material_no,
@@ -178,7 +149,7 @@ double AT_energy_loss_from_lambda_landau_single(const double lambda_landau,
     return (xi_keV * (lambda_landau + 0.42278433509 + beta * beta + log(kappa)) + mean_loss_keV);
 }
 
-void AT_energy_loss_from_lambda_landau_multi(const long n,
+void AT_energy_loss_from_lambda_Landau_multi(const long n,
         const double lambda_landau[],
         const double E_MeV_u[],
         const long particle_no[],
@@ -188,7 +159,7 @@ void AT_energy_loss_from_lambda_landau_multi(const long n,
 
 
     for (long i = 0; i < n; i++) {
-        energy_loss_keV[i] = AT_energy_loss_from_lambda_landau_single(lambda_landau[i],
+        energy_loss_keV[i] = AT_energy_loss_from_lambda_Landau_single(lambda_landau[i],
                 E_MeV_u[i],
                 particle_no[i],
                 material_no,
@@ -198,7 +169,69 @@ void AT_energy_loss_from_lambda_landau_multi(const long n,
     return;
 }
 
-double AT_energy_loss_from_lambda_vavilov_single(const double lambda_vavilov,
+void AT_lambda_Landau_mean_multi(const long n,
+        const double E_MeV_u[],
+        const long particle_no[],
+        const long material_no,
+        const double slab_thickness_um[],
+        double lambda_landau_mean[]) {
+    long i;
+    for (i = 0; i < n; i++) {
+        lambda_landau_mean[i] = AT_lambda_Landau_mean_single(E_MeV_u[i], particle_no[i], material_no, slab_thickness_um[i]);
+    }
+
+}
+
+double AT_lambda_Landau_mean_single(const double E_MeV_u,
+        const long particle_no,
+        const long material_no,
+        const double slab_thickness_um) {
+    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    double beta = AT_beta_from_E_single(E_MeV_u);
+    return (-0.42278433509 - beta * beta - log(kappa));
+}
+
+void AT_lambda_Landau_max_multi(const long n,
+        const double E_MeV_u[],
+        const long particle_no[],
+        const long material_no,
+        const double slab_thickness_um[],
+        double lambda_landau_max[]) {
+    long i;
+    for (i = 0; i < n; i++) {
+        double lambda_landau_mean = AT_lambda_Landau_mean_single(E_MeV_u[i], particle_no[i], material_no, slab_thickness_um[i]);
+        lambda_landau_max[i] = AT_lambda_Landau_max_single(lambda_landau_mean);
+    }
+}
+
+double AT_lambda_Landau_max_single(double lambda_Landau_mean) {
+    return (0.60715 + 1.1934 * lambda_Landau_mean + (0.67794 + 0.052382 * lambda_Landau_mean) * exp(0.94753 + 0.74442 * lambda_Landau_mean));
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+// ENERGY LOSS STRAGGLING: VAVILOV THEORY
+/////////////////////////////////////////////////////////////////////////////
+
+void AT_Vavilov_PDF(const long n, const double lambda_landau[], const double kappa, const double beta,
+        double density[]) {
+    double beta2 = beta * beta;
+    CL_vavset(kappa, beta2);
+
+    for (int i = 0; i < n; i++) {
+        density[i] = CL_vavden(lambda_landau[i]);
+    }
+}
+
+void AT_Vavilov_IDF(const long n, const double rnd[], const double kappa[], const double beta[],
+        double lambda_landau[]) {
+
+    for (int i = 0; i < n; i++) {
+        lambda_landau[i] = CL_vavran(kappa[i], beta[i]*beta[i], rnd[i]);
+    }
+}
+
+double AT_energy_loss_from_lambda_Vavilov_single(const double lambda_vavilov,
         const double E_MeV_u,
         const long particle_no,
         const long material_no,
@@ -215,7 +248,7 @@ double AT_energy_loss_from_lambda_vavilov_single(const double lambda_vavilov,
     return (xi_keV * (lambda_vavilov / kappa + 0.42278433509 + beta * beta) + mean_loss_keV);
 }
 
-void AT_energy_loss_from_lambda_vavilov_multi(const long n,
+void AT_energy_loss_from_lambda_Vavilov_multi(const long n,
         const double lambda_vavilov[],
         const double E_MeV_u[],
         const long particle_no[],
@@ -225,7 +258,7 @@ void AT_energy_loss_from_lambda_vavilov_multi(const long n,
 
 
     for (long i = 0; i < n; i++) {
-        energy_loss_keV[i] = AT_energy_loss_from_lambda_vavilov_single(lambda_vavilov[i],
+        energy_loss_keV[i] = AT_energy_loss_from_lambda_Vavilov_single(lambda_vavilov[i],
                 E_MeV_u[i],
                 particle_no[i],
                 material_no,
@@ -235,6 +268,164 @@ void AT_energy_loss_from_lambda_vavilov_multi(const long n,
     return;
 }
 
+double AT_lambda_Vavilov_from_energy_loss_single(const double energy_loss_keV,
+        const double E_MeV_u,
+        const long particle_no,
+        const long material_no,
+        const double slab_thickness_um) {
+
+    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    double beta = AT_beta_from_E_single(E_MeV_u);
+    double xi_keV = AT_xi_keV(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    double mean_loss_keV = AT_mean_energy_loss_keV(E_MeV_u,
+            particle_no,
+            material_no,
+            slab_thickness_um);
+
+    return ( kappa * ((energy_loss_keV - mean_loss_keV) / xi_keV - 0.42278433509 - beta * beta));
+}
+
+void AT_lambda_Vavilov_from_energy_loss_multi(const long n,
+        const double energy_loss_keV[],
+        const double E_MeV_u,
+        const long particle_no,
+        const long material_no,
+        const double slab_thickness_um,
+        double lambda_vavilov[]) {
+
+    for (long i = 0; i < n; i++) {
+        lambda_vavilov[i] = AT_lambda_Vavilov_from_energy_loss_single(energy_loss_keV[i],
+                E_MeV_u,
+                particle_no,
+                material_no,
+                slab_thickness_um);
+    }
+
+    return;
+}
+
+double AT_lambda_Landau_from_lambda_Vavilov_single(const double lambda_vavilov, const double kappa) {
+    return (lambda_vavilov / kappa - log(kappa));
+}
+
+void AT_lambda_Landau_from_lambda_Vavilov_multi(const long n,
+        const double lambda_vavilov[],
+        const double kappa[],
+        double lambda_landau[]) {
+
+   for (long i = 0; i < n; i++) {
+        lambda_landau[i] = AT_lambda_Landau_from_lambda_Vavilov_single(lambda_vavilov[i],
+                kappa[i]);
+    }
+
+    return;
+}
+
+double AT_lambda_Vavilov_from_lambda_Landau_single(const double lambda_landau, const double kappa) {
+    return (kappa * (lambda_landau + log(kappa)));
+}
+
+void AT_lambda_Vavilov_from_lambda_Landau_multi(const long n,
+        const double lambda_landau[],
+        const double kappa[],
+        double lambda_vavilov[]) {
+
+   for (long i = 0; i < n; i++) {
+        lambda_vavilov[i] = AT_lambda_Vavilov_from_lambda_Landau_single(lambda_landau[i],
+                kappa[i]);
+    }
+
+    return;
+}
+
+//////////////////////////////
+// GAUSS
+//////////////////////////////
+
+void AT_Gauss_PDF(const long n, const double lambda_gauss[], double density[]) {
+    for (int i = 0; i < n; i++) {
+        density[i] = gsl_ran_ugaussian_pdf(lambda_gauss[i]);
+    }
+}
+
+void AT_Gauss_IDF(const long n, const double rnd[], double lambda_gauss[]) {
+    for (int i = 0; i < n; i++) {
+        lambda_gauss[i] = gsl_cdf_ugaussian_Pinv(rnd[i]);
+    }
+}
+
+double AT_energy_loss_from_lambda_Gauss_single(const double lambda_gauss,
+        const double E_MeV_u,
+        const long particle_no,
+        const long material_no,
+        const double slab_thickness_um) {
+
+    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    double beta = AT_beta_from_E_single(E_MeV_u);
+    double xi_keV = AT_xi_keV(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    double mean_loss_keV = AT_mean_energy_loss_keV(E_MeV_u,
+            particle_no,
+            material_no,
+            slab_thickness_um);
+
+    return (lambda_gauss * sqrt(xi_keV * xi_keV / kappa * (1 - beta * beta / 2)) + mean_loss_keV);
+}
+
+void AT_energy_loss_from_lambda_Gauss_multi(const long n,
+        const double lambda_gauss[],
+        const double E_MeV_u[],
+        const long particle_no[],
+        const long material_no,
+        const double slab_thickness_um[],
+        double energy_loss_keV[]) {
+
+
+    for (long i = 0; i < n; i++) {
+        energy_loss_keV[i] = AT_energy_loss_from_lambda_Gauss_single(lambda_gauss[i],
+                E_MeV_u[i],
+                particle_no[i],
+                material_no,
+                slab_thickness_um[i]);
+    }
+
+    return;
+}
+
+double AT_lambda_Gauss_from_energy_loss_single(const double energy_loss_keV,
+        const double E_MeV_u,
+        const long particle_no,
+        const long material_no,
+        const double slab_thickness_um) {
+
+     return (0.0);
+}
+
+void AT_lambda_Gauss_from_energy_loss_multi(const long n,
+        const double energy_loss_keV[],
+        const double E_MeV_u[],
+        const long particle_no[],
+        const long material_no,
+        const double slab_thickness_um[],
+        double lambda_gauss[]) {
+
+
+    for (long i = 0; i < n; i++) {
+        lambda_gauss[i] = AT_lambda_Gauss_from_energy_loss_single(energy_loss_keV[i],
+                E_MeV_u[i],
+                particle_no[i],
+                material_no,
+                slab_thickness_um[i]);
+    }
+
+    return;
+}
+
+
+/////////////////////////////////////////
+//// POTENTIAL FUTURE FUNCTIONS
+/////////////////////////////////////////
+
+/*
 void AT_Landau_energy_loss_distribution(const long n,
         const double energy_loss_keV[],
         const double E_MeV_u,
@@ -242,7 +433,7 @@ void AT_Landau_energy_loss_distribution(const long n,
         const long material_no,
         const double slab_thickness_um,
         double fDdD[]) {
-    /*
+
             double 	kappa	      = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
             double  xi            = kappa * AT_max_E_transfer_MeV_single(E_MeV_u);
             double* lambda        = (double*)calloc(n, sizeof(double));
@@ -262,63 +453,65 @@ void AT_Landau_energy_loss_distribution(const long n,
             for(int i = 0; i < n; i++){
                     fDdD[i] /= xi;
             }
-     */
     return;
 }
 
-void AT_Vavilov_PDF(const long n, const double lambda_vavilov[], const double kappa, const double beta,
-        double density[]) {
-    double beta2 = beta * beta;
-    CL_vavset(kappa, beta2);
 
-    for (int i = 0; i < n; i++) {
-        density[i] = CL_vavden(lambda_vavilov[i]);
-    }
-}
+//////////////////////////////
+// GENERAL
+//////////////////////////////
 
-void AT_Vavilov_IDF(const long n, const double rnd[], const double kappa[], const double beta[],
-        double lambda_vavilov[]) {
-
-    for (int i = 0; i < n; i++) {
-        lambda_vavilov[i] = CL_vavran(kappa[i], beta[i]*beta[i], rnd[i]);
-    }
-}
-
-double AT_lambda_vavilov_from_energy_loss_single(const double energy_loss_keV,
-        const double E_MeV_u,
+double AT_energy_loss_mode(const double E_MeV_u,
         const long particle_no,
         const long material_no,
         const double slab_thickness_um) {
 
     double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
-    double beta = AT_beta_from_E_single(E_MeV_u);
-    double xi_keV = AT_xi_keV(E_MeV_u, particle_no, material_no, slab_thickness_um);
-    double mean_loss_keV = AT_mean_energy_loss_keV(E_MeV_u,
-            particle_no,
-            material_no,
-            slab_thickness_um);
-
-    return ( kappa * ((energy_loss_keV - mean_loss_keV) / xi_keV - 0.42278433509 - beta * beta));
-}
-
-void AT_lambda_vavilov_from_energy_loss_multi(const long n,
-        const double energy_loss_keV[],
-        const double E_MeV_u,
-        const long particle_no,
-        const long material_no,
-        const double slab_thickness_um,
-        double lambda_vavilov[]) {
-
-    for (long i = 0; i < n; i++) {
-        lambda_vavilov[i] = AT_lambda_vavilov_from_energy_loss_single(energy_loss_keV[i],
-                E_MeV_u,
+    if (kappa <= 0.01) {
+        return AT_energy_loss_keV_Landau_Mode(E_MeV_u,
                 particle_no,
                 material_no,
                 slab_thickness_um);
     }
-
-    return;
+    if (kappa < 10) {
+        return AT_energy_loss_keV_Vavilov_Mode(E_MeV_u,
+                particle_no,
+                material_no,
+                slab_thickness_um);
+    }
+    // kappa >= 10
+    return AT_mean_energy_loss_keV(E_MeV_u,
+            particle_no,
+            material_no,
+            slab_thickness_um);
 }
+
+double AT_energy_loss_FWHM(const double E_MeV_u,
+        const long particle_no,
+        const long material_no,
+        const double slab_thickness_um) {
+
+    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    if (kappa <= 0.01) {
+        return AT_energy_loss_keV_Landau_FWHM(E_MeV_u,
+                particle_no,
+                material_no,
+                slab_thickness_um);
+    }
+    if (kappa < 10) {
+        return AT_energy_loss_keV_Vavilov_FWHM(E_MeV_u,
+                particle_no,
+                material_no,
+                slab_thickness_um);
+    }
+    //	// kappa >= 10
+    //	return 	AT_Bethe_mean_energy_loss_MeV( E_MeV_u,
+    //			particle_no,
+    //			material_no,
+    //			slab_thickness_um);
+    return 0.0;
+}
+
 
 void AT_Vavilov_energy_loss_distribution(const long n,
         const double energy_loss_keV[],
@@ -327,7 +520,7 @@ void AT_Vavilov_energy_loss_distribution(const long n,
         const long material_no,
         const double slab_thickness_um,
         double fDdD[]) {
-    /*
+   
             double 	kappa	      = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
             double 	beta          = AT_beta_from_E_single(E_MeV_u);
             double  xi            = kappa * AT_max_E_transfer_MeV_single(E_MeV_u);
@@ -350,8 +543,7 @@ void AT_Vavilov_energy_loss_distribution(const long n,
             for(int i = 0; i < n; i++){
                     fDdD[i] /= xi;
             }
-     */
-    return;
+     return;
 }
 
 void AT_energy_loss_distribution(const long n,
@@ -384,10 +576,11 @@ void AT_energy_loss_distribution(const long n,
         return;
     }
 }
-
+*/
 /**
  * This is code from ROOT (CERN) 5.3.1
  */
+/*
 double AT_lambda_Vavilov_Mode(const double kappa, const double beta) {
 
     CL_vavset(kappa, beta);
@@ -475,7 +668,7 @@ double AT_energy_loss_keV_Vavilov_FWHM(const double E_MeV_u,
         const long particle_no,
         const long material_no,
         const double slab_thickness_um) {
-    /*
+    
             double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
             double beta  = AT_beta_from_E_single(E_MeV_u);
 
@@ -489,7 +682,6 @@ double AT_energy_loss_keV_Vavilov_FWHM(const double E_MeV_u,
                                                     particle_no,
                                                     material_no,
                                                     slab_thickness_um);
-     */
     return 0.0;
 }
 
@@ -497,7 +689,6 @@ double AT_energy_loss_keV_Vavilov_Mode(const double E_MeV_u,
         const long particle_no,
         const long material_no,
         const double slab_thickness_um) {
-    /*
             double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
             double beta  = AT_beta_from_E_single(E_MeV_u);
 
@@ -506,7 +697,6 @@ double AT_energy_loss_keV_Vavilov_Mode(const double E_MeV_u,
                             particle_no,
                             material_no,
                             slab_thickness_um);
-     */
     return 0.0;
 }
 
@@ -534,14 +724,12 @@ double AT_energy_loss_keV_Landau_Mode(const double E_MeV_u,
         const long particle_no,
         const long material_no,
         const double slab_thickness_um) {
-    /*
             return AT_energy_loss_from_lambda_single(AT_lambda_Landau_Mode(),
                             E_MeV_u,
                             particle_no,
                             material_no,
                             slab_thickness_um);
-     */
-    return 0.0;
+     return 0.0;
 }
 
 double AT_lambda_Landau_FWHM_left() {
@@ -560,136 +748,17 @@ double AT_energy_loss_keV_Landau_FWHM(const double E_MeV_u,
         const long particle_no,
         const long material_no,
         const double slab_thickness_um) {
-    /*	double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    	double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
             double  xi            = kappa * AT_max_E_transfer_MeV_single(E_MeV_u);
             return(4.02 * xi * 1000);
-     */
     return 0.0;
 }
 
 double AT_lambda_Landau_Mean(const double kappa, const double beta) {
     return -0.42278433509 - log(kappa) - beta*beta;
 }
-
-//////////////////////////////
-// GAUSS
-//////////////////////////////
-
-void AT_Gauss_PDF(const long n, const double lambda_gauss[], double density[]) {
-    for (int i = 0; i < n; i++) {
-        density[i] = gsl_ran_ugaussian_pdf(lambda_gauss[i]);
-    }
-}
-
-void AT_Gauss_IDF(const long n, const double rnd[], double lambda_gauss[]) {
-    for (int i = 0; i < n; i++) {
-        lambda_gauss[i] = gsl_cdf_ugaussian_Pinv(rnd[i]);
-    }
-}
-
-double AT_energy_loss_from_lambda_gauss_single(const double lambda_gauss,
-        const double E_MeV_u,
-        const long particle_no,
-        const long material_no,
-        const double slab_thickness_um) {
-
-    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
-    double beta = AT_beta_from_E_single(E_MeV_u);
-    double xi_keV = AT_xi_keV(E_MeV_u, particle_no, material_no, slab_thickness_um);
-    double mean_loss_keV = AT_mean_energy_loss_keV(E_MeV_u,
-            particle_no,
-            material_no,
-            slab_thickness_um);
-
-    return (lambda_gauss * sqrt(xi_keV * xi_keV / kappa * (1 - beta * beta / 2)) + mean_loss_keV);
-}
-
-void AT_energy_loss_from_lambda_gauss_multi(const long n,
-        const double lambda_gauss[],
-        const double E_MeV_u[],
-        const long particle_no[],
-        const long material_no,
-        const double slab_thickness_um[],
-        double energy_loss_keV[]) {
-
-
-    for (long i = 0; i < n; i++) {
-        energy_loss_keV[i] = AT_energy_loss_from_lambda_gauss_single(lambda_gauss[i],
-                E_MeV_u[i],
-                particle_no[i],
-                material_no,
-                slab_thickness_um[i]);
-    }
-
-    return;
-}
-
-double AT_Gauss_Mode() {
-    return 0;
-}
-
-double AT_Gauss_Mean() {
-    return 0;
-}
-
-double AT_Gauss_FWHM() {
-    return 0;
-}
-
-
-//////////////////////////////
-// GENERAL
-//////////////////////////////
-
-double AT_energy_loss_mode(const double E_MeV_u,
-        const long particle_no,
-        const long material_no,
-        const double slab_thickness_um) {
-
-    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
-    if (kappa <= 0.01) {
-        return AT_energy_loss_keV_Landau_Mode(E_MeV_u,
-                particle_no,
-                material_no,
-                slab_thickness_um);
-    }
-    if (kappa < 10) {
-        return AT_energy_loss_keV_Vavilov_Mode(E_MeV_u,
-                particle_no,
-                material_no,
-                slab_thickness_um);
-    }
-    // kappa >= 10
-    return AT_mean_energy_loss_keV(E_MeV_u,
-            particle_no,
-            material_no,
-            slab_thickness_um);
-}
-
-double AT_energy_loss_FWHM(const double E_MeV_u,
-        const long particle_no,
-        const long material_no,
-        const double slab_thickness_um) {
-
-    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
-    if (kappa <= 0.01) {
-        return AT_energy_loss_keV_Landau_FWHM(E_MeV_u,
-                particle_no,
-                material_no,
-                slab_thickness_um);
-    }
-    if (kappa < 10) {
-        return AT_energy_loss_keV_Vavilov_FWHM(E_MeV_u,
-                particle_no,
-                material_no,
-                slab_thickness_um);
-    }
-    //	// kappa >= 10
-    //	return 	AT_Bethe_mean_energy_loss_MeV( E_MeV_u,
-    //			particle_no,
-    //			material_no,
-    //			slab_thickness_um);
-    return 0.0;
-}
-
+*/
+/**
+ * This is code from ROOT (CERN) 5.3.1 [END]
+ */
 
