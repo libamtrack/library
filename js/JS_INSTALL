@@ -1,0 +1,20 @@
+1. Download Emescripten and install according to the steps from:
+http://kripken.github.io/emscripten-site/docs/getting_started/downloads.html
+
+2. (Optional) If you want regenerate list of functions use python3 parse_headers.py
+Cut everything and put to compile_to_js.sh
+
+3. Set path to GSL in CMakeLists.txt
+
+2. Modify compile_to_js.sh
+Path to your bash you can get using command: which bash
+Change paths for ./emcmake ./emmake ./emcc to your onw paths
+
+3. Permission
+chmod +x compile_to_js.sh
+
+4. Run
+./compile_to_js.sh
+
+4. To clean use:
+sudo rm -r _build
