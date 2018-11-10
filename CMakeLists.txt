@@ -3,7 +3,7 @@ project(library C)
 
 set(CMAKE_C_STANDARD 99)
 include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(/home/osboxes/gsl-latest/gsl-2.5/)
+include_directories(/gsl-latest/gsl/)
 add_library(at STATIC
         src/AT.c
         src/AT_Algorithms_CPP.c
