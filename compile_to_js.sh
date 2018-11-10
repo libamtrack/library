@@ -1,17 +1,16 @@
 #!/usr/bin/bash
 
-emcc="/home/osboxes/emsdk/emscripten/1.37.36/./emcc"
-emmake="/home/osboxes/emsdk/emscripten/1.37.36/./emmake"
-emconf="/home/osboxes/emsdk/emscripten/1.37.36/./emconfigure"
-emcmake="/home/osboxes/emsdk/emscripten/1.37.36/./emcmake"
-emrun="/home/osboxes/emsdk/emscripten/1.37.36/./emrun"
+#emcc="/home/osboxes/emsdk/emscripten/1.37.36/./emcc"
+#emmake="/home/osboxes/emsdk/emscripten/1.37.36/./emmake"
+#emconf="/home/osboxes/emsdk/emscripten/1.37.36/./emconfigure"
+#emcmake="/home/osboxes/emsdk/emscripten/1.37.36/./emcmake"
+#emrun="/home/osboxes/emsdk/emscripten/1.37.36/./emrun"
 
 mkdir _build
 cd _build
-cp ../js/libgsl.so .
 cp ../js/libgsl.a .
-"$emcmake" cmake ..
-"$emmake" make
+emcmake cmake ..
+emmake make
 
 funs='['
 
@@ -462,7 +461,7 @@ funs+='"_AT_inverse_RDD_KatzSite_m"'
 
 funs+=']'
 
-"$emcc" libat.a libgsl.a -o libat.html -s WASM=1 -s EXPORTED_FUNCTIONS="$funs" \
+emcc libat.a libgsl.a -o libat.html -s WASM=1 -s EXPORTED_FUNCTIONS="$funs" \
 -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
 
 rm ../libat.html
