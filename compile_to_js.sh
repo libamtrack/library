@@ -462,7 +462,7 @@ funs+='"_AT_inverse_RDD_KatzSite_m"'
 
 funs+=']'
 
-emcc libat.a libgsl.a -o libat.html -s WASM=1 -s EXPORTED_FUNCTIONS="$funs" \
+emcc libat.a libgsl.so -o libat.html -s WASM=1 -s EXPORTED_FUNCTIONS="$funs" \
 -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
 
 rm ../libat.html
