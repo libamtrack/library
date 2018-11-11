@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 #emcc="/home/osboxes/emsdk/emscripten/1.37.36/./emcc"
 #emmake="/home/osboxes/emsdk/emscripten/1.37.36/./emmake"
