@@ -9,7 +9,6 @@
 mkdir _build
 cd _build
 cp ../js/libgsl.a .
-cp ../js/libgsl.so .
 emcmake cmake ..
 emmake make
 
