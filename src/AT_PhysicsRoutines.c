@@ -32,7 +32,7 @@
 
 
  double AT_beta_from_E_single( const double E_MeV_u ){ //TODO is energy per nucleon really defined like that ?
-  assert( E_MeV_u > 0.);
+  assert( E_MeV_u >= 0.);
   return sqrt(1.0 - 1.0/gsl_pow_2(1.0 + E_MeV_u/(atomic_mass_unit_MeV_c2)));
 }
 
