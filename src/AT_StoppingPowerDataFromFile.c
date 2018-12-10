@@ -9,6 +9,20 @@ int AT_FromFile_wrapper( const long n,
 		double mass_stopping_power_MeV_cm2_g[]){
 
 #define MAX_NUMBER_OF_LINES 10000
+/*
+ * stopping_power_source not defined
+ * trying to assign value from environment variable
+ */
+	if(NULL == info) {
+		info = getenv("AT_stopping_power_source");
+	}
+
+	if(NULL == info) {
+#ifndef NDEBUG
+		printf("stopping power data file is not defined ...\nThe file name can be defined through the environment variable AT_stopping_power_source\n");
+#endif
+		return EXIT_FAILURE;
+	}
 
 	/**
 	 * Read data from file
@@ -53,6 +67,8 @@ int AT_FromFile_wrapper( const long n,
 	     }
 	 }
 	 i--;
+         fclose(CSV);
+         CSV = NULL;
 
 	 /**
 	  * Get stopping power values
