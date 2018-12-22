@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.7.2)
+cmake_minimum_required(VERSION 3.9)
 project(library C)
 
 set(CMAKE_C_STANDARD 99)
 include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(/gsl-latest/gsl/)
+include_directories($ENV{HOME}/gsl-latest/gsl)
 add_library(at STATIC
         src/AT.c
         src/AT_Algorithms_CPP.c
