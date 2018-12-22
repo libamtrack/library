@@ -25,6 +25,7 @@ emmake make
 emcc libat.a libgsl.a -o libat.html -s WASM=$WASM -s EXPORT_ALL=1 \
 -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
 
+mkdir -p ../distributions/JavaScript/output/
 rm ../distributions/JavaScript/output/*
 cp libat.a ../distributions/JavaScript/output/
 cp libat.html ../distributions/JavaScript/output/
