@@ -718,3 +718,11 @@ double AT_get_interpolated_y_from_interval(const double left_x, const double lef
 		return  left_y + (right_y - left_y)*((intermediate_x - left_x) / (right_x - left_x));
 	}
 }
+
+double CL_denlan_gsl(double lambda_landau){
+  printf("CL_denlan_gsl input %e\n", lambda_landau);
+
+  double result = gsl_ran_landau_pdf(lambda_landau);
+  printf("CL_denlan_gsl output %e\n", result);
+  return result;
+}

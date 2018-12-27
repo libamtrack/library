@@ -48,6 +48,7 @@
 #include "AT_StoppingPower.h"
 #include "AT_CernlibFuns.h"
 #include "AT_DataRange.h"
+#include "AT_NumericalRoutines.h"
 
 int main(){
 
@@ -107,7 +108,9 @@ int main(){
 	if( fabs(  CL_vavden(l) - 2.837311e-01) > 1e-4)
 		return EXIT_FAILURE;
 
-
+	printf("Ergebnis GSL Landau: %e\n", CL_denlan(l));
+	if( fabs(  CL_denlan_gsl(l) - 1.788542e-01) > 1e-4)
+		return EXIT_FAILURE;
 
 	return EXIT_SUCCESS;
 };

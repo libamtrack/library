@@ -47,6 +47,7 @@
 #endif
 
 #include "gsl/gsl_math.h"
+#include "gsl/gsl_randist.h"
 
 
 /**
@@ -400,7 +401,9 @@ double AT_get_interpolated_y_from_interval( const double left_x,
 		const double intermediate_x);
 
 
+
 // TODO implement linear interpolation on logarithmic scale
 
+double CL_denlan_gsl(double lambda_landau);
 
 #endif /* AT_NUMERICALROUTINES_H_ */
