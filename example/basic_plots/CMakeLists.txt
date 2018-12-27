@@ -10,6 +10,6 @@ include_directories( "../../include")
 
 add_executable (${PROJECT_NAME} ${SOURCE_FILES} )
 
-target_link_libraries( ${PROJECT_NAME} LINK_PUBLIC ${GSL_LIBRARIES} amtrack )
+target_link_libraries( ${PROJECT_NAME} LINK_PUBLIC -lm ${GSL_LIBRARIES} amtrack )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
