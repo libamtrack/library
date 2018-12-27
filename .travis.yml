@@ -25,8 +25,8 @@ install:
 
 before_script:
   - cd build
-  - cmake  -DCMAKE_BUILD_TYPE=Release ../
-  - cmake --build . -- -j2
+  - cmake  -DCMAKE_BUILD_TYPE=Release ../ -DCMAKE_INSTALL_PREFIX=$HOME/usr
+  - cmake --build . --target install -- -j2
 
 script:
   - export LD_LIBRARY_PATH=$HOME/usr/lib
