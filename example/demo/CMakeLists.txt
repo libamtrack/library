@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(libamtrack-demo)
+project(amtrack_demo)
 
 file(GLOB SOURCE_FILES "*.c")
 

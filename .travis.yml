@@ -31,4 +31,4 @@ before_script:
 script:
   - LD_LIBRARY_PATH=$HOME/usr/lib $HOME/usr/bin/amtrack_test
   - LD_LIBRARY_PATH=$HOME/usr/lib $HOME/usr/bin/amtrack_demo
-  - cd distributions/Python/pyamtrack && LD_LIBRARY_PATH=$HOME/usr/lib python generate_Py_wrapper.py
+  - cd ../distributions/Python/pyamtrack && LD_LIBRARY_PATH=$HOME/usr/lib python generate_Py_wrapper.py

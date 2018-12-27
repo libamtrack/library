@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.2)
 
-project(libamtrack-test)
+project(amtrack_test)
 
 set(CMAKE_C_FLAGS "-std=c99")
 
