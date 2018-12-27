@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.2)
 
 project(amtrack)
 
@@ -25,7 +25,7 @@ if (GSL_FOUND)
     file(GLOB HEADER_FILES "include/*.h")
 
     # specify include directories
-    include_directories( "include" ${GSL_INCLUDE_DIRS})
+    include_directories( "include" ${GSL_INCLUDE_DIRS} "thirdparty/cernlib")
 
     # specify target type
     add_library (${PROJECT_NAME} SHARED ${SOURCE_FILES} )
