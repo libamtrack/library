@@ -24,7 +24,7 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update     ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gsl; fi
   - ./configure --prefix=$HOME/usr
-  - gfortran -c thirdparty/cernlib/CERNLIBFUNS.f -o thirdparty/cernlib/CERNLIBFUNS.o
+#  - gfortran -c thirdparty/cernlib/CERNLIBFUNS.f -o thirdparty/cernlib/CERNLIBFUNS.o
 
 before_script:
   - make README
