@@ -78,7 +78,7 @@ void AT_Landau_PDF( const long n,
         const double lambda_landau[], 
         double density[] ) {
     for (int i = 0; i < n; i++) {
-        density[i] = CL_denlan(lambda_landau[i]);
+        density[i] = gsl_ran_landau_pdf(lambda_landau[i]);
     }
 }
 
@@ -86,7 +86,7 @@ void AT_Landau_IDF( const long n,
         const double rnd[], 
         double lambda_landau[] ) {
     for (int i = 0; i < n; i++) {
-        lambda_landau[i] = CL_ranlan(rnd[i]);
+        lambda_landau[i] = CL_ranlan_idf(rnd[i]);
     }
 }
 
