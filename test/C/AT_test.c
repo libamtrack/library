@@ -51,8 +51,34 @@
 #include "AT_NumericalRoutines.h"
 
 int test_cernlib(){
+	double lambda;
+    double cernlib_density, gsl_density;
 
-  return EXIT_SUCCESS;
+    // compare two methods of calculating Landau PDF over wide range of lambda parameter :
+    // fortran-based from CERNLIB and C-based from GSL
+	for(lambda = -30.5; lambda < 1000.0 ; lambda += 0.1 ){
+	  cernlib_density = CL_denlan(lambda);
+      gsl_density = gsl_ran_landau_pdf(lambda);
+
+      // for large numbers compare ratio and difference
+      if( cernlib_density > 1e-6 &&  gsl_density > 1e-6){
+        if( fabs(cernlib_density - gsl_density) > 1e-6 ){
+          printf("%g %g %g (difference CERNLIB vs GSL too big)\n", lambda, cernlib_density, gsl_density);
+          return EXIT_FAILURE;
+        }
+        if( fabs(cernlib_density / gsl_density - 1.0) > 2e-6 ){
+          printf("%g %g %g (ratio %g CERNLIB vs GSL too far from 1.0)\n", lambda, cernlib_density, gsl_density, cernlib_density / gsl_density -1.0);
+          return EXIT_FAILURE;
+        }
+      } else { // for small numbers compare only difference
+        if( fabs(cernlib_density - gsl_density) > 1e-6 ){
+          printf("%g %g %g (difference CERNLIB vs GSL too big)\n", lambda, cernlib_density, gsl_density);
+          return EXIT_FAILURE;
+        }
+      }
+	}
+
+    return EXIT_SUCCESS;
 }
 
 int main(){
@@ -108,7 +134,8 @@ int main(){
 
 	printf("Ergebnis Landau / Vavilov: %e, %e\n", CL_denlan(l), CL_vavden(l));
 
-
+	if(test_cernlib() == EXIT_FAILURE)
+		return EXIT_FAILURE;
 
 	return EXIT_SUCCESS;
 };
