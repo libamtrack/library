@@ -35,3 +35,5 @@ script:
   - $HOME/usr/bin/amtrack_demo
   - cd distributions/Python/pyamtrack && python generate_Py_wrapper.py
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then LD_LIBRARY_PATH=$HOME/usr/lib python pyamtrack.py; fi  # FIX IT TO WORK WITH OSX
+  # Tigger rebuild image in docker hub libamtrack/libamtrackforjs
+  - curl -X POST https://cloud.docker.com/api/build/v1/source/f382631a-cc27-4630-9c15-79598e025ea0/trigger/65027d52-ffaf-46f4-8006-96614edda072/call/
