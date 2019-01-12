@@ -403,13 +403,6 @@ double AT_get_interpolated_y_from_interval( const double left_x,
 
 // TODO implement linear interpolation on logarithmic scale
 
-/**
- * IDF of Landau distribution
- * Adapted from gsl_ran_landau by explicitly specifying X variable (from uniform distribution [0,1])
- * The code is based on CERNLIB G110 method (see http://hep.fi.infn.it/cernlib.pdf)
- * @param[in] X - random number from uniform distribution [0,1]
- * @return Landau random number
- */
-double CL_ranlan_idf(const double X);
+
 
 #endif /* AT_NUMERICALROUTINES_H_ */

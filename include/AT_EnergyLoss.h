@@ -40,6 +40,7 @@
 #include "AT_Error.h"
 #include "AT_DataMaterial.h"
 #include "AT_PhysicsRoutines.h"
+#include "AT_ProbabilityDistributions.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
