@@ -5,7 +5,7 @@ AC_PACKAGE_URL([libamtrack.dkfz.org])
 # Code names: 
 # minor - 4: Ocelot, 5: Wombat, 6: Armadillo
 # micro - 0: Black, 1: Blue, 2: Red, 3: Green, 4: Yellow, 5: Violet
-AC_DEFINE(CODE_NAME, ["Green Armadillo"], [Cryptonym to faciliate versioning for users])
+AC_DEFINE(CODE_NAME, ["Green Armadillo"], [Cryptonym to facilitate versioning for users])
 # Status: "Development" or "Release" (will trigger some different actions, e.g. with R package)
 AC_DEFINE(CODE_STATUS, ["Release"], [Status of the code])
 
