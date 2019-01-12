@@ -49,6 +49,7 @@
 #include "AT_CernlibFuns.h"
 #include "AT_DataRange.h"
 #include "AT_NumericalRoutines.h"
+#include "AT_ProbabilityDistributions.h"
 
 int test_cernlib(){
 	double lambda;
