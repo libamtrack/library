@@ -28,8 +28,7 @@
 
 #include "AT_ProbabilityDistributions.h"
 
-double CL_ranlan_idf(const double X)
-{
+double CL_ranlan_idf(const double X) {
   static double F[983] =
       {
           0.0000000,   /* Add empty element [0] to account for difference
@@ -239,35 +238,25 @@ double CL_ranlan_idf(const double X)
   I = U;
   U = U - I;
 
-  if (I >= 70 && I <= 800)
-  {
+  if (I >= 70 && I <= 800) {
     RANLAN = F[I] + U * (F[I + 1] - F[I]);
-  }
-  else if (I >= 7 && I <= 980)
-  {
+  } else if (I >= 7 && I <= 980) {
     RANLAN = F[I]
         + U * (F[I + 1] - F[I]
             - 0.25 * (1 - U) * (F[I + 2] - F[I + 1] - F[I] + F[I - 1]));
-  }
-  else if (I < 7)
-  {
+  } else if (I < 7) {
     V = log(X);
     U = 1 / V;
     RANLAN = ((0.99858950 + (3.45213058E1 + 1.70854528E1 * U) * U) /
         (1 + (3.41760202E1 + 4.01244582 * U) * U)) *
-        ( -log( -0.91893853 - V) - 1);
-  }
-  else
-  {
+        (-log(-0.91893853 - V) - 1);
+  } else {
     U = 1 - X;
     V = U * U;
-    if (X <= 0.999)
-    {
+    if (X <= 0.999) {
       RANLAN = (1.00060006 + 2.63991156E2 * U + 4.37320068E3 * V) /
           ((1 + 2.57368075E2 * U + 3.41448018E3 * V) * U);
-    }
-    else
-    {
+    } else {
       RANLAN = (1.00001538 + 6.07514119E3 * U + 7.34266409E5 * V) /
           ((1 + 6.06511919E3 * U + 6.94021044E5 * V) * U);
     }
@@ -276,10 +265,8 @@ double CL_ranlan_idf(const double X)
   return RANLAN;
 }
 
-
 double
-CL_ranlan_cdf(const double x)
-{
+CL_ranlan_cdf(const double x) {
   static double P1[5] =
       {
           0.2514091491E0, -0.6250580444E-1,
@@ -367,49 +354,34 @@ CL_ranlan_cdf(const double x)
   double U, V, DISLAN;
 
   V = x;
-  if (V < -5.5)
-  {
+  if (V < -5.5) {
     U = exp(V + 1);
-    DISLAN = 0.3989422803 * exp( -1 / U) * sqrt(U) *
+    DISLAN = 0.3989422803 * exp(-1 / U) * sqrt(U) *
         (1 + (A1[0] + (A1[1] + A1[2] * U) * U) * U);
-  }
-  else if (V < -1)
-  {
-    U = exp( -V - 1);
-    DISLAN = (exp( -U) / sqrt(U)) *
+  } else if (V < -1) {
+    U = exp(-V - 1);
+    DISLAN = (exp(-U) / sqrt(U)) *
         (P1[0] + (P1[1] + (P1[2] + (P1[3] + P1[4] * V) * V) * V) * V) /
         (Q1[0] + (Q1[1] + (Q1[2] + (Q1[3] + Q1[4] * V) * V) * V) * V);
-  }
-  else if (V < 1)
-  {
+  } else if (V < 1) {
     DISLAN = (P2[0] + (P2[1] + (P2[2] + P2[3] * V) * V) * V) /
         (Q2[0] + (Q2[1] + (Q2[2] + Q2[3] * V) * V) * V);
-  }
-  else if (V < 4)
-  {
+  } else if (V < 4) {
     DISLAN = (P3[0] + (P3[1] + (P3[2] + P3[3] * V) * V) * V) /
         (Q3[0] + (Q3[1] + (Q3[2] + Q3[3] * V) * V) * V);
-  }
-  else if (V < 12)
-  {
+  } else if (V < 12) {
     U = 1 / V;
     DISLAN = (P4[0] + (P4[1] + (P4[2] + P4[3] * U) * U) * U) /
         (Q4[0] + (Q4[1] + (Q4[2] + Q4[3] * U) * U) * U);
-  }
-  else if (V < 50)
-  {
+  } else if (V < 50) {
     U = 1 / V;
     DISLAN = (P5[0] + (P5[1] + (P5[2] + P5[3] * U) * U) * U) /
         (Q5[0] + (Q5[1] + (Q5[2] + Q5[3] * U) * U) * U);
-  }
-  else if (V < 300)
-  {
+  } else if (V < 300) {
     U = 1 / V;
     DISLAN = (P6[0] + (P6[1] + (P6[2] + P6[3] * U) * U) * U) /
         (Q6[0] + (Q6[1] + (Q6[2] + Q6[3] * U) * U) * U);
-  }
-  else
-  {
+  } else {
     U = 1 / (V - V * log(V) / (V + 1));
     DISLAN = 1 - (A2[0] + (A2[1] + A2[2] * U) * U) * U;
   }
@@ -417,7 +389,7 @@ CL_ranlan_cdf(const double x)
   return DISLAN;
 }
 
-ROOT_GXXXC1 ROOT_vavset(const double kappa, const double beta2){
+ROOT_GXXXC1 ROOT_vavset(const double kappa, const double beta2) {
 
   ROOT_GXXXC1 result;
 
@@ -426,133 +398,133 @@ ROOT_GXXXC1 ROOT_vavset(const double kappa, const double beta2){
   double fBeta2 = beta2;
 
   double BKMNX1 = 0.02, BKMNY1 = 0.05, BKMNX2 = 0.12, BKMNY2 = 0.05,
-      BKMNX3 = 0.22, BKMNY3 = 0.05, BKMXX1 = 0.1 , BKMXY1 = 1,
-      BKMXX2 = 0.2 , BKMXY2 = 1   , BKMXX3 = 0.3 , BKMXY3 = 1;
+      BKMNX3 = 0.22, BKMNY3 = 0.05, BKMXX1 = 0.1, BKMXY1 = 1,
+      BKMXX2 = 0.2, BKMXY2 = 1, BKMXX3 = 0.3, BKMXY3 = 1;
 
-  double FBKX1 = 2/(BKMXX1-BKMNX1), FBKX2 = 2/(BKMXX2-BKMNX2),
-      FBKX3 = 2/(BKMXX3-BKMNX3), FBKY1 = 2/(BKMXY1-BKMNY1),
-      FBKY2 = 2/(BKMXY2-BKMNY2), FBKY3 = 2/(BKMXY3-BKMNY3);
+  double FBKX1 = 2 / (BKMXX1 - BKMNX1), FBKX2 = 2 / (BKMXX2 - BKMNX2),
+      FBKX3 = 2 / (BKMXX3 - BKMNX3), FBKY1 = 2 / (BKMXY1 - BKMNY1),
+      FBKY2 = 2 / (BKMXY2 - BKMNY2), FBKY3 = 2 / (BKMXY3 - BKMNY3);
 
   double FNINV[] = {0, 1, 0.5, 0.33333333, 0.25, 0.2};
 
-  double EDGEC[]= {0, 0, 0.16666667e+0, 0.41666667e-1, 0.83333333e-2,
-                   0.13888889e-1, 0.69444444e-2, 0.77160493e-3};
+  double EDGEC[] = {0, 0, 0.16666667e+0, 0.41666667e-1, 0.83333333e-2,
+                    0.13888889e-1, 0.69444444e-2, 0.77160493e-3};
 
-  double U1[] = {0, 0.25850868e+0,  0.32477982e-1, -0.59020496e-2,
-                 0.            , 0.24880692e-1,  0.47404356e-2,
-                 -0.74445130e-3,  0.73225731e-2,  0.           ,
-                 0.11668284e-2,  0.           , -0.15727318e-2,-0.11210142e-2};
+  double U1[] = {0, 0.25850868e+0, 0.32477982e-1, -0.59020496e-2,
+                 0., 0.24880692e-1, 0.47404356e-2,
+                 -0.74445130e-3, 0.73225731e-2, 0.,
+                 0.11668284e-2, 0., -0.15727318e-2, -0.11210142e-2};
 
-  double U2[] = {0, 0.43142611e+0,  0.40797543e-1, -0.91490215e-2,
-                 0.           ,  0.42127077e-1,  0.73167928e-2,
-                 -0.14026047e-2,  0.16195241e-1,  0.24714789e-2,
-                 0.20751278e-2,  0.           , -0.25141668e-2,-0.14064022e-2};
+  double U2[] = {0, 0.43142611e+0, 0.40797543e-1, -0.91490215e-2,
+                 0., 0.42127077e-1, 0.73167928e-2,
+                 -0.14026047e-2, 0.16195241e-1, 0.24714789e-2,
+                 0.20751278e-2, 0., -0.25141668e-2, -0.14064022e-2};
 
-  double U3[] = {0,  0.25225955e+0,  0.64820468e-1, -0.23615759e-1,
-                 0.           ,  0.23834176e-1,  0.21624675e-2,
-                 -0.26865597e-2, -0.54891384e-2,  0.39800522e-2,
-                 0.48447456e-2, -0.89439554e-2, -0.62756944e-2,-0.24655436e-2};
+  double U3[] = {0, 0.25225955e+0, 0.64820468e-1, -0.23615759e-1,
+                 0., 0.23834176e-1, 0.21624675e-2,
+                 -0.26865597e-2, -0.54891384e-2, 0.39800522e-2,
+                 0.48447456e-2, -0.89439554e-2, -0.62756944e-2, -0.24655436e-2};
 
-  double U4[] = {0, 0.12593231e+1, -0.20374501e+0,  0.95055662e-1,
+  double U4[] = {0, 0.12593231e+1, -0.20374501e+0, 0.95055662e-1,
                  -0.20771531e-1, -0.46865180e-1, -0.77222986e-2,
-                 0.32241039e-2,  0.89882920e-2, -0.67167236e-2,
-                 -0.13049241e-1,  0.18786468e-1,  0.14484097e-1};
+                 0.32241039e-2, 0.89882920e-2, -0.67167236e-2,
+                 -0.13049241e-1, 0.18786468e-1, 0.14484097e-1};
 
-  double U5[] = {0, -0.24864376e-1, -0.10368495e-2,  0.14330117e-2,
-                 0.20052730e-3,  0.18751903e-2,  0.12668869e-2,
-                 0.48736023e-3,  0.34850854e-2,  0.           ,
-                 -0.36597173e-3,  0.19372124e-2,  0.70761825e-3, 0.46898375e-3};
+  double U5[] = {0, -0.24864376e-1, -0.10368495e-2, 0.14330117e-2,
+                 0.20052730e-3, 0.18751903e-2, 0.12668869e-2,
+                 0.48736023e-3, 0.34850854e-2, 0.,
+                 -0.36597173e-3, 0.19372124e-2, 0.70761825e-3, 0.46898375e-3};
 
-  double U6[] = {0,  0.35855696e-1, -0.27542114e-1,  0.12631023e-1,
-                 -0.30188807e-2, -0.84479939e-3,  0.           ,
-                 0.45675843e-3, -0.69836141e-2,  0.39876546e-2,
-                 -0.36055679e-2,  0.           ,  0.15298434e-2, 0.19247256e-2};
+  double U6[] = {0, 0.35855696e-1, -0.27542114e-1, 0.12631023e-1,
+                 -0.30188807e-2, -0.84479939e-3, 0.,
+                 0.45675843e-3, -0.69836141e-2, 0.39876546e-2,
+                 -0.36055679e-2, 0., 0.15298434e-2, 0.19247256e-2};
 
-  double U7[] = {0, 0.10234691e+2, -0.35619655e+1,  0.69387764e+0,
+  double U7[] = {0, 0.10234691e+2, -0.35619655e+1, 0.69387764e+0,
                  -0.14047599e+0, -0.19952390e+1, -0.45679694e+0,
-                 0.           ,  0.50505298e+0};
-  double U8[] = {0,  0.21487518e+2, -0.11825253e+2,  0.43133087e+1,
+                 0., 0.50505298e+0};
+  double U8[] = {0, 0.21487518e+2, -0.11825253e+2, 0.43133087e+1,
                  -0.14500543e+1, -0.34343169e+1, -0.11063164e+1,
-                 -0.21000819e+0,  0.17891643e+1, -0.89601916e+0,
-                 0.39120793e+0,  0.73410606e+0,  0.           ,-0.32454506e+0};
+                 -0.21000819e+0, 0.17891643e+1, -0.89601916e+0,
+                 0.39120793e+0, 0.73410606e+0, 0., -0.32454506e+0};
 
-  double V1[] = {0, 0.27827257e+0, -0.14227603e-2,  0.24848327e-2,
-                 0.           ,  0.45091424e-1,  0.80559636e-2,
-                 -0.38974523e-2,  0.           , -0.30634124e-2,
-                 0.75633702e-3,  0.54730726e-2,  0.19792507e-2};
+  double V1[] = {0, 0.27827257e+0, -0.14227603e-2, 0.24848327e-2,
+                 0., 0.45091424e-1, 0.80559636e-2,
+                 -0.38974523e-2, 0., -0.30634124e-2,
+                 0.75633702e-3, 0.54730726e-2, 0.19792507e-2};
 
-  double V2[] = {0, 0.41421789e+0, -0.30061649e-1,  0.52249697e-2,
-                 0.           ,  0.12693873e+0,  0.22999801e-1,
-                 -0.86792801e-2,  0.31875584e-1, -0.61757928e-2,
-                 0.           ,  0.19716857e-1,  0.32596742e-2};
+  double V2[] = {0, 0.41421789e+0, -0.30061649e-1, 0.52249697e-2,
+                 0., 0.12693873e+0, 0.22999801e-1,
+                 -0.86792801e-2, 0.31875584e-1, -0.61757928e-2,
+                 0., 0.19716857e-1, 0.32596742e-2};
 
-  double V3[] = {0, 0.20191056e+0, -0.46831422e-1,  0.96777473e-2,
-                 -0.17995317e-2,  0.53921588e-1,  0.35068740e-2,
+  double V3[] = {0, 0.20191056e+0, -0.46831422e-1, 0.96777473e-2,
+                 -0.17995317e-2, 0.53921588e-1, 0.35068740e-2,
                  -0.12621494e-1, -0.54996531e-2, -0.90029985e-2,
-                 0.34958743e-2,  0.18513506e-1,  0.68332334e-2,-0.12940502e-2};
+                 0.34958743e-2, 0.18513506e-1, 0.68332334e-2, -0.12940502e-2};
 
-  double V4[] = {0, 0.13206081e+1,  0.10036618e+0, -0.22015201e-1,
+  double V4[] = {0, 0.13206081e+1, 0.10036618e+0, -0.22015201e-1,
                  0.61667091e-2, -0.14986093e+0, -0.12720568e-1,
-                 0.24972042e-1, -0.97751962e-2,  0.26087455e-1,
+                 0.24972042e-1, -0.97751962e-2, 0.26087455e-1,
                  -0.11399062e-1, -0.48282515e-1, -0.98552378e-2};
 
-  double V5[] = {0, 0.16435243e-1,  0.36051400e-1,  0.23036520e-2,
-                 -0.61666343e-3, -0.10775802e-1,  0.51476061e-2,
-                 0.56856517e-2, -0.13438433e-1,  0.           ,
-                 0.           , -0.25421507e-2,  0.20169108e-2,-0.15144931e-2};
+  double V5[] = {0, 0.16435243e-1, 0.36051400e-1, 0.23036520e-2,
+                 -0.61666343e-3, -0.10775802e-1, 0.51476061e-2,
+                 0.56856517e-2, -0.13438433e-1, 0.,
+                 0., -0.25421507e-2, 0.20169108e-2, -0.15144931e-2};
 
-  double V6[] = {0, 0.33432405e-1,  0.60583916e-2, -0.23381379e-2,
+  double V6[] = {0, 0.33432405e-1, 0.60583916e-2, -0.23381379e-2,
                  0.83846081e-3, -0.13346861e-1, -0.17402116e-2,
-                 0.21052496e-2,  0.15528195e-2,  0.21900670e-2,
+                 0.21052496e-2, 0.15528195e-2, 0.21900670e-2,
                  -0.13202847e-2, -0.45124157e-2, -0.15629454e-2, 0.22499176e-3};
 
-  double V7[] = {0, 0.54529572e+1, -0.90906096e+0,  0.86122438e-1,
-                 0.           , -0.12218009e+1, -0.32324120e+0,
-                 -0.27373591e-1,  0.12173464e+0,  0.           ,
-                 0.           ,  0.40917471e-1};
+  double V7[] = {0, 0.54529572e+1, -0.90906096e+0, 0.86122438e-1,
+                 0., -0.12218009e+1, -0.32324120e+0,
+                 -0.27373591e-1, 0.12173464e+0, 0.,
+                 0., 0.40917471e-1};
 
-  double V8[] = {0, 0.93841352e+1, -0.16276904e+1,  0.16571423e+0,
-                 0.           , -0.18160479e+1, -0.50919193e+0,
-                 -0.51384654e-1,  0.21413992e+0,  0.           ,
-                 0.           ,  0.66596366e-1};
+  double V8[] = {0, 0.93841352e+1, -0.16276904e+1, 0.16571423e+0,
+                 0., -0.18160479e+1, -0.50919193e+0,
+                 -0.51384654e-1, 0.21413992e+0, 0.,
+                 0., 0.66596366e-1};
 
-  double W1[] = {0, 0.29712951e+0,  0.97572934e-2,  0.           ,
-                 -0.15291686e-2,  0.35707399e-1,  0.96221631e-2,
-                 -0.18402821e-2, -0.49821585e-2,  0.18831112e-2,
-                 0.43541673e-2,  0.20301312e-2, -0.18723311e-2,-0.73403108e-3};
+  double W1[] = {0, 0.29712951e+0, 0.97572934e-2, 0.,
+                 -0.15291686e-2, 0.35707399e-1, 0.96221631e-2,
+                 -0.18402821e-2, -0.49821585e-2, 0.18831112e-2,
+                 0.43541673e-2, 0.20301312e-2, -0.18723311e-2, -0.73403108e-3};
 
-  double W2[] = {0, 0.40882635e+0,  0.14474912e-1,  0.25023704e-2,
-                 -0.37707379e-2,  0.18719727e+0,  0.56954987e-1,
-                 0.           ,  0.23020158e-1,  0.50574313e-2,
-                 0.94550140e-2,  0.19300232e-1};
+  double W2[] = {0, 0.40882635e+0, 0.14474912e-1, 0.25023704e-2,
+                 -0.37707379e-2, 0.18719727e+0, 0.56954987e-1,
+                 0., 0.23020158e-1, 0.50574313e-2,
+                 0.94550140e-2, 0.19300232e-1};
 
-  double W3[] = {0, 0.16861629e+0,  0.           ,  0.36317285e-2,
-                 -0.43657818e-2,  0.30144338e-1,  0.13891826e-1,
-                 -0.58030495e-2, -0.38717547e-2,  0.85359607e-2,
-                 0.14507659e-1,  0.82387775e-2, -0.10116105e-1,-0.55135670e-2};
+  double W3[] = {0, 0.16861629e+0, 0., 0.36317285e-2,
+                 -0.43657818e-2, 0.30144338e-1, 0.13891826e-1,
+                 -0.58030495e-2, -0.38717547e-2, 0.85359607e-2,
+                 0.14507659e-1, 0.82387775e-2, -0.10116105e-1, -0.55135670e-2};
 
   double W4[] = {0, 0.13493891e+1, -0.26863185e-2, -0.35216040e-2,
                  0.24434909e-1, -0.83447911e-1, -0.48061360e-1,
-                 0.76473951e-2,  0.24494430e-1, -0.16209200e-1,
-                 -0.37768479e-1, -0.47890063e-1,  0.17778596e-1, 0.13179324e-1};
+                 0.76473951e-2, 0.24494430e-1, -0.16209200e-1,
+                 -0.37768479e-1, -0.47890063e-1, 0.17778596e-1, 0.13179324e-1};
 
-  double W5[] = {0,  0.10264945e+0,  0.32738857e-1,  0.           ,
+  double W5[] = {0, 0.10264945e+0, 0.32738857e-1, 0.,
                  0.43608779e-2, -0.43097757e-1, -0.22647176e-2,
                  0.94531290e-2, -0.12442571e-1, -0.32283517e-2,
-                 -0.75640352e-2, -0.88293329e-2,  0.52537299e-2, 0.13340546e-2};
+                 -0.75640352e-2, -0.88293329e-2, 0.52537299e-2, 0.13340546e-2};
 
   double W6[] = {0, 0.29568177e-1, -0.16300060e-2, -0.21119745e-3,
                  0.23599053e-2, -0.48515387e-2, -0.40797531e-2,
-                 0.40403265e-3,  0.18200105e-2, -0.14346306e-2,
-                 -0.39165276e-2, -0.37432073e-2,  0.19950380e-2, 0.12222675e-2};
+                 0.40403265e-3, 0.18200105e-2, -0.14346306e-2,
+                 -0.39165276e-2, -0.37432073e-2, 0.19950380e-2, 0.12222675e-2};
 
-  double W8[] = {0,  0.66184645e+1, -0.73866379e+0,  0.44693973e-1,
-                 0.           , -0.14540925e+1, -0.39529833e+0,
-                 -0.44293243e-1,  0.88741049e-1};
+  double W8[] = {0, 0.66184645e+1, -0.73866379e+0, 0.44693973e-1,
+                 0., -0.14540925e+1, -0.39529833e+0,
+                 -0.44293243e-1, 0.88741049e-1};
 
   result.fItype = 0;
-  if (fKappa <0.01 || fKappa >12) {
-    fprintf(stderr, "VavilovFast::set: illegal value of kappa= %g\n",kappa);
+  if (fKappa < (float) 0.01 || fKappa > (float) 12) {
+    fprintf(stderr, "VavilovFast::set: illegal value of kappa= %g\n", fKappa);
     if (fKappa < 0.01) fKappa = 0.01;
     else if (fKappa > 12) fKappa = 12;
   }
@@ -562,146 +534,151 @@ ROOT_GXXXC1 ROOT_vavset(const double kappa, const double beta2){
   double ALFA[8];
   int j;
   double x, y, xx, yy, x2, x3, y2, y3, xy, p2, p3, q2, q3, pq;
-  if (fKappa >= 0.29) {
+  // TODO in if switches below additional casts to float (single precision) type was added
+  // it was done to obtain consistency with original CERNLIB Fortran code, which was operating in single precision
+
+  if (fKappa >= (float) 0.29) {
     result.fItype = 1;
     result.fNpt = 100;
-    double wk = 1./sqrt(fKappa);
+    double wk = 1. / sqrt(fKappa);
 
-    result.fAC[0] = (-0.032227*fBeta2-0.074275)*fKappa + (0.24533*fBeta2+0.070152)*wk + (-0.55610*fBeta2-3.1579);
-    result.fAC[8] = (-0.013483*fBeta2-0.048801)*fKappa + (-1.6921*fBeta2+8.3656)*wk + (-0.73275*fBeta2-3.5226);
-    DRK[1] = wk*wk;
-    DSIGM[1] = sqrt(fKappa/(1-0.5*fBeta2));
-    for (j=1; j<=4; j++) {
-      DRK[j+1] = DRK[1]*DRK[j];
-      DSIGM[j+1] = DSIGM[1]*DSIGM[j];
-      ALFA[j+1] = (FNINV[j]-fBeta2*FNINV[j+1])*DRK[j];
+    result.fAC[0] =
+        (-0.032227 * fBeta2 - 0.074275) * fKappa + (0.24533 * fBeta2 + 0.070152) * wk + (-0.55610 * fBeta2 - 3.1579);
+    result.fAC[8] =
+        (-0.013483 * fBeta2 - 0.048801) * fKappa + (-1.6921 * fBeta2 + 8.3656) * wk + (-0.73275 * fBeta2 - 3.5226);
+    DRK[1] = wk * wk;
+    DSIGM[1] = sqrt(fKappa / (1 - 0.5 * fBeta2));
+    for (j = 1; j <= 4; j++) {
+      DRK[j + 1] = DRK[1] * DRK[j];
+      DSIGM[j + 1] = DSIGM[1] * DSIGM[j];
+      ALFA[j + 1] = (FNINV[j] - fBeta2 * FNINV[j + 1]) * DRK[j];
     }
-    result.fHC[0]=log(fKappa)+fBeta2+0.42278434;
-    result.fHC[1]=DSIGM[1];
-    result.fHC[2]=ALFA[3]*DSIGM[3];
-    result.fHC[3]=(3*ALFA[2]*ALFA[2] + ALFA[4])*DSIGM[4]-3;
-    result.fHC[4]=(10*ALFA[2]*ALFA[3]+ALFA[5])*DSIGM[5]-10*result.fHC[2];
-    result.fHC[5]=result.fHC[2]*result.fHC[2];
-    result.fHC[6]=result.fHC[2]*result.fHC[3];
-    result.fHC[7]=result.fHC[2]*result.fHC[5];
-    for (j=2; j<=7; j++)
-      result.fHC[j]*=EDGEC[j];
-    result.fHC[8]=0.39894228*result.fHC[1];
-  }
-  else if (fKappa >=0.22) {
+    result.fHC[0] = log(fKappa) + fBeta2 + 0.42278434;
+    result.fHC[1] = DSIGM[1];
+    result.fHC[2] = ALFA[3] * DSIGM[3];
+    result.fHC[3] = (3 * ALFA[2] * ALFA[2] + ALFA[4]) * DSIGM[4] - 3;
+    result.fHC[4] = (10 * ALFA[2] * ALFA[3] + ALFA[5]) * DSIGM[5] - 10 * result.fHC[2];
+    result.fHC[5] = result.fHC[2] * result.fHC[2];
+    result.fHC[6] = result.fHC[2] * result.fHC[3];
+    result.fHC[7] = result.fHC[2] * result.fHC[5];
+    for (j = 2; j <= 7; j++)
+      result.fHC[j] *= EDGEC[j];
+    result.fHC[8] = 0.39894228 * result.fHC[1];
+  } else if (fKappa >= (float) 0.22) {
     result.fItype = 2;
     result.fNpt = 150;
-    x = 1+(fKappa-BKMXX3)*FBKX3;
-    y = 1+(sqrt(fBeta2)-BKMXY3)*FBKY3;
-    xx = 2*x;
-    yy = 2*y;
-    x2 = xx*x-1;
-    x3 = xx*x2-x;
-    y2 = yy*y-1;
-    y3 = yy*y2-y;
-    xy = x*y;
-    p2 = x2*y;
-    p3 = x3*y;
-    q2 = y2*x;
-    q3 = y3*x;
-    pq = x2*y2;
-    result.fAC[1] = W1[1] + W1[2]*x + W1[4]*x3 + W1[5]*y + W1[6]*y2 + W1[7]*y3 +
-        W1[8]*xy + W1[9]*p2 + W1[10]*p3 + W1[11]*q2 + W1[12]*q3 + W1[13]*pq;
-    result.fAC[2] = W2[1] + W2[2]*x + W2[3]*x2 + W2[4]*x3 + W2[5]*y + W2[6]*y2 +
-        W2[8]*xy + W2[9]*p2 + W2[10]*p3 + W2[11]*q2;
-    result.fAC[3] = W3[1] + W3[3]*x2 + W3[4]*x3 + W3[5]*y + W3[6]*y2 + W3[7]*y3 +
-        W3[8]*xy + W3[9]*p2 + W3[10]*p3 + W3[11]*q2 + W3[12]*q3 + W3[13]*pq;
-    result.fAC[4] = W4[1] + W4[2]*x + W4[3]*x2 + W4[4]*x3 + W4[5]*y + W4[6]*y2 + W4[7]*y3 +
-        W4[8]*xy + W4[9]*p2 + W4[10]*p3 + W4[11]*q2 + W4[12]*q3 + W4[13]*pq;
-    result.fAC[5] = W5[1] + W5[2]*x + W5[4]*x3 + W5[5]*y + W5[6]*y2 + W5[7]*y3 +
-        W5[8]*xy + W5[9]*p2 + W5[10]*p3 + W5[11]*q2 + W5[12]*q3 + W5[13]*pq;
-    result.fAC[6] = W6[1] + W6[2]*x + W6[3]*x2 + W6[4]*x3 + W6[5]*y + W6[6]*y2 + W6[7]*y3 +
-        W6[8]*xy + W6[9]*p2 + W6[10]*p3 + W6[11]*q2 + W6[12]*q3 + W6[13]*pq;
-    result.fAC[8] = W8[1] + W8[2]*x + W8[3]*x2 + W8[5]*y + W8[6]*y2 + W8[7]*y3 + W8[8]*xy;
+    x = 1 + (fKappa - BKMXX3) * FBKX3;
+    y = 1 + (sqrt(fBeta2) - BKMXY3) * FBKY3;
+    xx = 2 * x;
+    yy = 2 * y;
+    x2 = xx * x - 1;
+    x3 = xx * x2 - x;
+    y2 = yy * y - 1;
+    y3 = yy * y2 - y;
+    xy = x * y;
+    p2 = x2 * y;
+    p3 = x3 * y;
+    q2 = y2 * x;
+    q3 = y3 * x;
+    pq = x2 * y2;
+    result.fAC[1] = W1[1] + W1[2] * x + W1[4] * x3 + W1[5] * y + W1[6] * y2 + W1[7] * y3 +
+        W1[8] * xy + W1[9] * p2 + W1[10] * p3 + W1[11] * q2 + W1[12] * q3 + W1[13] * pq;
+    result.fAC[2] = W2[1] + W2[2] * x + W2[3] * x2 + W2[4] * x3 + W2[5] * y + W2[6] * y2 +
+        W2[8] * xy + W2[9] * p2 + W2[10] * p3 + W2[11] * q2;
+    result.fAC[3] = W3[1] + W3[3] * x2 + W3[4] * x3 + W3[5] * y + W3[6] * y2 + W3[7] * y3 +
+        W3[8] * xy + W3[9] * p2 + W3[10] * p3 + W3[11] * q2 + W3[12] * q3 + W3[13] * pq;
+    result.fAC[4] = W4[1] + W4[2] * x + W4[3] * x2 + W4[4] * x3 + W4[5] * y + W4[6] * y2 + W4[7] * y3 +
+        W4[8] * xy + W4[9] * p2 + W4[10] * p3 + W4[11] * q2 + W4[12] * q3 + W4[13] * pq;
+    result.fAC[5] = W5[1] + W5[2] * x + W5[4] * x3 + W5[5] * y + W5[6] * y2 + W5[7] * y3 +
+        W5[8] * xy + W5[9] * p2 + W5[10] * p3 + W5[11] * q2 + W5[12] * q3 + W5[13] * pq;
+    result.fAC[6] = W6[1] + W6[2] * x + W6[3] * x2 + W6[4] * x3 + W6[5] * y + W6[6] * y2 + W6[7] * y3 +
+        W6[8] * xy + W6[9] * p2 + W6[10] * p3 + W6[11] * q2 + W6[12] * q3 + W6[13] * pq;
+    result.fAC[8] = W8[1] + W8[2] * x + W8[3] * x2 + W8[5] * y + W8[6] * y2 + W8[7] * y3 + W8[8] * xy;
     result.fAC[0] = -3.05;
-  } else if (fKappa >= 0.12) {
+  } else if (fKappa >= (float) 0.12) {
     result.fItype = 3;
     result.fNpt = 200;
-    x = 1 + (fKappa-BKMXX2)*FBKX2;
-    y = 1 + (sqrt(fBeta2)-BKMXY2)*FBKY2;
-    xx = 2*x;
-    yy = 2*y;
-    x2 = xx*x-1;
-    x3 = xx*x2-x;
-    y2 = yy*y-1;
-    y3 = yy*y2-y;
-    xy = x*y;
-    p2 = x2*y;
-    p3 = x3*y;
-    q2 = y2*x;
-    q3 = y3*x;
-    pq = x2*y2;
-    result.fAC[1] = V1[1] + V1[2]*x + V1[3]*x2 + V1[5]*y + V1[6]*y2 + V1[7]*y3 +
-        V1[9]*p2 + V1[10]*p3 + V1[11]*q2 + V1[12]*q3;
-    result.fAC[2] = V2[1] + V2[2]*x + V2[3]*x2 + V2[5]*y + V2[6]*y2 + V2[7]*y3 +
-        V2[8]*xy + V2[9]*p2 + V2[11]*q2 + V2[12]*q3;
-    result.fAC[3] = V3[1] + V3[2]*x + V3[3]*x2 + V3[4]*x3 + V3[5]*y + V3[6]*y2 + V3[7]*y3 +
-        V3[8]*xy + V3[9]*p2 + V3[10]*p3 + V3[11]*q2 + V3[12]*q3 + V3[13]*pq;
-    result.fAC[4] = V4[1] + V4[2]*x + V4[3]*x2 + V4[4]*x3 + V4[5]*y + V4[6]*y2 + V4[7]*y3 +
-        V4[8]*xy + V4[9]*p2 + V4[10]*p3 + V4[11]*q2 + V4[12]*q3;
-    result.fAC[5] = V5[1] + V5[2]*x + V5[3]*x2 + V5[4]*x3 + V5[5]*y + V5[6]*y2 + V5[7]*y3 +
-        V5[8]*xy + V5[11]*q2 + V5[12]*q3 + V5[13]*pq;
-    result.fAC[6] = V6[1] + V6[2]*x + V6[3]*x2 + V6[4]*x3 + V6[5]*y + V6[6]*y2 + V6[7]*y3 +
-        V6[8]*xy + V6[9]*p2 + V6[10]*p3 + V6[11]*q2 + V6[12]*q3 + V6[13]*pq;
-    result.fAC[7] = V7[1] + V7[2]*x + V7[3]*x2 + V7[5]*y + V7[6]*y2 + V7[7]*y3 +
-        V7[8]*xy + V7[11]*q2;
-    result.fAC[8] = V8[1] + V8[2]*x + V8[3]*x2 + V8[5]*y + V8[6]*y2 + V8[7]*y3 +
-        V8[8]*xy + V8[11]*q2;
+    x = 1 + (fKappa - BKMXX2) * FBKX2;
+    y = 1 + (sqrt(fBeta2) - BKMXY2) * FBKY2;
+    xx = 2 * x;
+    yy = 2 * y;
+    x2 = xx * x - 1;
+    x3 = xx * x2 - x;
+    y2 = yy * y - 1;
+    y3 = yy * y2 - y;
+    xy = x * y;
+    p2 = x2 * y;
+    p3 = x3 * y;
+    q2 = y2 * x;
+    q3 = y3 * x;
+    pq = x2 * y2;
+    result.fAC[1] = V1[1] + V1[2] * x + V1[3] * x2 + V1[5] * y + V1[6] * y2 + V1[7] * y3 +
+        V1[9] * p2 + V1[10] * p3 + V1[11] * q2 + V1[12] * q3;
+    result.fAC[2] = V2[1] + V2[2] * x + V2[3] * x2 + V2[5] * y + V2[6] * y2 + V2[7] * y3 +
+        V2[8] * xy + V2[9] * p2 + V2[11] * q2 + V2[12] * q3;
+    result.fAC[3] = V3[1] + V3[2] * x + V3[3] * x2 + V3[4] * x3 + V3[5] * y + V3[6] * y2 + V3[7] * y3 +
+        V3[8] * xy + V3[9] * p2 + V3[10] * p3 + V3[11] * q2 + V3[12] * q3 + V3[13] * pq;
+    result.fAC[4] = V4[1] + V4[2] * x + V4[3] * x2 + V4[4] * x3 + V4[5] * y + V4[6] * y2 + V4[7] * y3 +
+        V4[8] * xy + V4[9] * p2 + V4[10] * p3 + V4[11] * q2 + V4[12] * q3;
+    result.fAC[5] = V5[1] + V5[2] * x + V5[3] * x2 + V5[4] * x3 + V5[5] * y + V5[6] * y2 + V5[7] * y3 +
+        V5[8] * xy + V5[11] * q2 + V5[12] * q3 + V5[13] * pq;
+    result.fAC[6] = V6[1] + V6[2] * x + V6[3] * x2 + V6[4] * x3 + V6[5] * y + V6[6] * y2 + V6[7] * y3 +
+        V6[8] * xy + V6[9] * p2 + V6[10] * p3 + V6[11] * q2 + V6[12] * q3 + V6[13] * pq;
+    result.fAC[7] = V7[1] + V7[2] * x + V7[3] * x2 + V7[5] * y + V7[6] * y2 + V7[7] * y3 +
+        V7[8] * xy + V7[11] * q2;
+    result.fAC[8] = V8[1] + V8[2] * x + V8[3] * x2 + V8[5] * y + V8[6] * y2 + V8[7] * y3 +
+        V8[8] * xy + V8[11] * q2;
     result.fAC[0] = -3.04;
   } else {
     result.fItype = 4;
-    if (fKappa >=0.02) result.fItype = 3;
+    if (fKappa >= (float)0.02) result.fItype = 3;
     result.fNpt = 200;
-    x = 1+(fKappa-BKMXX1)*FBKX1;
-    y = 1+(sqrt(fBeta2)-BKMXY1)*FBKY1;
-    xx = 2*x;
-    yy = 2*y;
-    x2 = xx*x-1;
-    x3 = xx*x2-x;
-    y2 = yy*y-1;
-    y3 = yy*y2-y;
-    xy = x*y;
-    p2 = x2*y;
-    p3 = x3*y;
-    q2 = y2*x;
-    q3 = y3*x;
-    pq = x2*y2;
-    if (result.fItype==3){
-      result.fAC[1] = U1[1] + U1[2]*x + U1[3]*x2 + U1[5]*y + U1[6]*y2 + U1[7]*y3 +
-          U1[8]*xy + U1[10]*p3 + U1[12]*q3 + U1[13]*pq;
-      result.fAC[2] = U2[1] + U2[2]*x + U2[3]*x2 + U2[5]*y + U2[6]*y2 + U2[7]*y3 +
-          U2[8]*xy + U2[9]*p2 + U2[10]*p3 + U2[12]*q3 + U2[13]*pq;
-      result.fAC[3] = U3[1] + U3[2]*x + U3[3]*x2 + U3[5]*y + U3[6]*y2 + U3[7]*y3 +
-          U3[8]*xy + U3[9]*p2 + U3[10]*p3 + U3[11]*q2 + U3[12]*q3 + U3[13]*pq;
-      result.fAC[4] = U4[1] + U4[2]*x + U4[3]*x2 + U4[4]*x3 + U4[5]*y + U4[6]*y2 + U4[7]*y3 +
-          U4[8]*xy + U4[9]*p2 + U4[10]*p3 + U4[11]*q2 + U4[12]*q3;
-      result.fAC[5] = U5[1] + U5[2]*x + U5[3]*x2 + U5[4]*x3 + U5[5]*y + U5[6]*y2 + U5[7]*y3 +
-          U5[8]*xy + U5[10]*p3 + U5[11]*q2 + U5[12]*q3 + U5[13]*pq;
-      result.fAC[6] = U6[1] + U6[2]*x + U6[3]*x2 + U6[4]*x3 + U6[5]*y + U6[7]*y3 +
-          U6[8]*xy + U6[9]*p2 + U6[10]*p3 + U6[12]*q3 + U6[13]*pq;
-      result.fAC[7] = U7[1] + U7[2]*x + U7[3]*x2 + U7[4]*x3 + U7[5]*y + U7[6]*y2 + U7[8]*xy;
+    x = 1 + (fKappa - BKMXX1) * FBKX1;
+    y = 1 + (sqrt(fBeta2) - BKMXY1) * FBKY1;
+    xx = 2 * x;
+    yy = 2 * y;
+    x2 = xx * x - 1;
+    x3 = xx * x2 - x;
+    y2 = yy * y - 1;
+    y3 = yy * y2 - y;
+    xy = x * y;
+    p2 = x2 * y;
+    p3 = x3 * y;
+    q2 = y2 * x;
+    q3 = y3 * x;
+    pq = x2 * y2;
+    if (result.fItype == 3) {
+      result.fAC[1] = U1[1] + U1[2] * x + U1[3] * x2 + U1[5] * y + U1[6] * y2 + U1[7] * y3 +
+          U1[8] * xy + U1[10] * p3 + U1[12] * q3 + U1[13] * pq;
+      result.fAC[2] = U2[1] + U2[2] * x + U2[3] * x2 + U2[5] * y + U2[6] * y2 + U2[7] * y3 +
+          U2[8] * xy + U2[9] * p2 + U2[10] * p3 + U2[12] * q3 + U2[13] * pq;
+      result.fAC[3] = U3[1] + U3[2] * x + U3[3] * x2 + U3[5] * y + U3[6] * y2 + U3[7] * y3 +
+          U3[8] * xy + U3[9] * p2 + U3[10] * p3 + U3[11] * q2 + U3[12] * q3 + U3[13] * pq;
+      result.fAC[4] = U4[1] + U4[2] * x + U4[3] * x2 + U4[4] * x3 + U4[5] * y + U4[6] * y2 + U4[7] * y3 +
+          U4[8] * xy + U4[9] * p2 + U4[10] * p3 + U4[11] * q2 + U4[12] * q3;
+      result.fAC[5] = U5[1] + U5[2] * x + U5[3] * x2 + U5[4] * x3 + U5[5] * y + U5[6] * y2 + U5[7] * y3 +
+          U5[8] * xy + U5[10] * p3 + U5[11] * q2 + U5[12] * q3 + U5[13] * pq;
+      result.fAC[6] = U6[1] + U6[2] * x + U6[3] * x2 + U6[4] * x3 + U6[5] * y + U6[7] * y3 +
+          U6[8] * xy + U6[9] * p2 + U6[10] * p3 + U6[12] * q3 + U6[13] * pq;
+      result.fAC[7] = U7[1] + U7[2] * x + U7[3] * x2 + U7[4] * x3 + U7[5] * y + U7[6] * y2 + U7[8] * xy;
     }
-    result.fAC[8] = U8[1] + U8[2]*x + U8[3]*x2 + U8[4]*x3 + U8[5]*y + U8[6]*y2 + U8[7]*y3 +
-        U8[8]*xy + U8[9]*p2 + U8[10]*p3 + U8[11]*q2 + U8[13]*pq;
+    result.fAC[8] = U8[1] + U8[2] * x + U8[3] * x2 + U8[4] * x3 + U8[5] * y + U8[6] * y2 + U8[7] * y3 +
+        U8[8] * xy + U8[9] * p2 + U8[10] * p3 + U8[11] * q2 + U8[13] * pq;
     result.fAC[0] = -3.03;
   }
 
-  result.fAC[9] = (result.fAC[8] - result.fAC[0])/result.fNpt;
-  result.fAC[10] = 1./result.fAC[9];
+  result.fAC[9] = (result.fAC[8] - result.fAC[0]) / result.fNpt;
+  result.fAC[10] = 1. / result.fAC[9];
   if (result.fItype == 3) {
-    x = (result.fAC[7]-result.fAC[8])/(result.fAC[7]*result.fAC[8]);
-    y = 1./log (result.fAC[8]/result.fAC[7]);
-    p2 = result.fAC[7]*result.fAC[7];
-    result.fAC[11] = p2*(result.fAC[1]*exp(-result.fAC[2]*(result.fAC[7]+result.fAC[5]*p2)-
-        result.fAC[3]*exp(-result.fAC[4]*(result.fAC[7]+result.fAC[6]*p2)))-0.045*y/result.fAC[7])/(1+x*y*result.fAC[7]);
-    result.fAC[12] = (0.045+x*result.fAC[11])*y;
+    x = (result.fAC[7] - result.fAC[8]) / (result.fAC[7] * result.fAC[8]);
+    y = 1. / log(result.fAC[8] / result.fAC[7]);
+    p2 = result.fAC[7] * result.fAC[7];
+    result.fAC[11] = p2 * (result.fAC[1] * exp(-result.fAC[2] * (result.fAC[7] + result.fAC[5] * p2) -
+        result.fAC[3] * exp(-result.fAC[4] * (result.fAC[7] + result.fAC[6] * p2))) - 0.045 * y / result.fAC[7])
+        / (1 + x * y * result.fAC[7]);
+    result.fAC[12] = (0.045 + x * result.fAC[11]) * y;
   }
-  if (result.fItype == 4) result.fAC[13] = 0.995/CL_ranlan_cdf(result.fAC[8]);
+  if (result.fItype == 4) result.fAC[13] = 0.995 / CL_ranlan_cdf(result.fAC[8]);
 
   //
   x = result.fAC[0];
@@ -709,58 +686,59 @@ ROOT_GXXXC1 ROOT_vavset(const double kappa, const double beta2){
   double fl, fu;
   int k;
   fl = ROOT_vav_pdf(x, &result);
-  for (k=1; k<=result.fNpt; k++) {
+  for (k = 1; k <= result.fNpt; k++) {
     x += result.fAC[9];
     fu = ROOT_vav_pdf(x, &result);
-    result.fWCM[k] = result.fWCM[k-1] + fl + fu;
+    result.fWCM[k] = result.fWCM[k - 1] + fl + fu;
     fl = fu;
   }
-  x = 0.5*result.fAC[9];
-  for (k=1; k<=result.fNpt; k++)
-    result.fWCM[k]*=x;
+  x = 0.5 * result.fAC[9];
+  for (k = 1; k <= result.fNpt; k++)
+    result.fWCM[k] *= x;
 
   return result;
 }
 
-
-double ROOT_vav_pdf(const double x, const ROOT_GXXXC1 * init){
+double ROOT_vav_pdf(const double x, const ROOT_GXXXC1 *init) {
   // Modified version of TMath::double VavilovDenEval(Double_t rlam, Double_t *AC, Double_t *HC, Int_t itype);
   //Internal function, called by Vavilov and VavilovSet
 
   double v = 0;
-  if (x < init->fAC[0] || x > init->fAC[8])
+  if (x < (init->fAC[0]) || x > (init->fAC[8]))
     return 0;
   int k;
   double h[10];
-  if (init->fItype ==1 ) {
+  if (init->fItype == 1) {
     double fn = 1;
-    double xx = (x + init->fHC[0])*init->fHC[1];
+    double xx = (x + init->fHC[0]) * init->fHC[1];
     h[1] = xx;
-    h[2] = xx*xx -1;
-    for (k=2; k<=8; k++) {
+    h[2] = xx * xx - 1;
+    for (k = 2; k <= 8; k++) {
       fn++;
-      h[k+1] = xx*h[k]-fn*h[k-1];
+      h[k + 1] = xx * h[k] - fn * h[k - 1];
     }
-    double s = 1 + init->fHC[7]*h[9];
-    for (k=2; k<=6; k++)
-      s += init->fHC[k]*h[k+1];
-    if (s>0) v = init->fHC[8]*exp(-0.5*xx*xx);
-  }
-  else if (init->fItype == 2) {
-    double xx = x*x;
-    v = init->fAC[1]*exp(-(init->fAC[2])*(x+init->fAC[5]*xx) - (init->fAC[3])*exp(-(init->fAC[4])*(x+(init->fAC[6])*xx)));
-  }
-  else if (init->fItype == 3) {
+    double s = 1 + (init->fHC[7]) * h[9];
+    for (k = 2; k <= 6; k++)
+      s += (init->fHC[k]) * h[k + 1];
+    // TODO line below was modified wrt to original ROOT code (as of 2019.01.12, ROOT 6.14)
+    // additional multiplication by s was added which was present in CERNLIB, but missing in ROOT
+    // appropriate bug report was submitted to ROOT team: https://sft.its.cern.ch/jira/browse/ROOT-9899
+    if (s > 0) v = (init->fHC[8]) * exp(-0.5 * xx * xx) * s;
+  } else if (init->fItype == 2) {
+    double xx = x * x;
+    v = init->fAC[1] * exp(
+        -(init->fAC[2]) * (x + init->fAC[5] * xx) - (init->fAC[3]) * exp(-(init->fAC[4]) * (x + (init->fAC[6]) * xx)));
+  } else if (init->fItype == 3) {
     if (x < init->fAC[7]) {
-      double xx = x*x;
-      v = init->fAC[1]*exp(-(init->fAC[2])*(x+init->fAC[5]*xx)-(init->fAC[3])*exp(-(init->fAC[4])*(x+init->fAC[6]*xx)));
+      double xx = x * x;
+      v = (init->fAC[1]) * exp(
+          -(init->fAC[2]) * (x + init->fAC[5] * xx) - (init->fAC[3]) * exp(-(init->fAC[4]) * (x + init->fAC[6] * xx)));
     } else {
-      double xx = 1./x;
-      v = (init->fAC[11]*xx + init->fAC[12])*xx;
+      double xx = 1. / x;
+      v = (init->fAC[11] * xx + init->fAC[12]) * xx;
     }
-  }
-  else if (init->fItype == 4) {
-    v = init->fAC[13]*gsl_ran_landau_pdf(x);
+  } else if (init->fItype == 4) {
+    v = (init->fAC[13]) * gsl_ran_landau_pdf(x);
   }
   return v;
 }
