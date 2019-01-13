@@ -391,8 +391,7 @@ void AT_energy_loss_distribution(const long n,
  */
 double AT_lambda_Vavilov_Mode(const double kappa, const double beta) {
 
-    ROOT_GXXXC1 init = ROOT_vavset(kappa, beta2);
-    root_density = ROOT_vav_pdf(lambda, &init);
+    ROOT_GXXXC1 init = ROOT_vavset(kappa, beta*beta);
 
     double x = -4.22784335098467134e-01 - log(kappa) - beta*beta;
     if (x>-0.223172) x = -0.223172;
@@ -420,7 +419,7 @@ double AT_lambda_Vavilov_FWHM_left(const double kappa, const double beta) {
 
     double x = AT_lambda_Vavilov_Mode(kappa, beta);
 
-    ROOT_GXXXC1 init = ROOT_vavset(kappa, beta2);
+    ROOT_GXXXC1 init = ROOT_vavset(kappa, beta*beta);
     double p = ROOT_vav_pdf(x, &init) * 0.5;
 
     x -= 1.3637;
@@ -447,7 +446,7 @@ double AT_lambda_Vavilov_FWHM_left(const double kappa, const double beta) {
 double AT_lambda_Vavilov_FWHM_right(const double kappa, const double beta) {
 
     double x = AT_lambda_Vavilov_Mode(kappa, beta);
-    ROOT_GXXXC1 init = ROOT_vavset(kappa, beta2);
+    ROOT_GXXXC1 init = ROOT_vavset(kappa, beta*beta);
 
     double p = ROOT_vav_pdf(x, &init) * 0.5;
 
