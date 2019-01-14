@@ -268,20 +268,22 @@ void AT_Landau_energy_loss_distribution(const long n,
 
 void AT_Vavilov_PDF(const long n, const double lambda_vavilov[], const double kappa, const double beta,
         double density[]) {
-    double beta2 = beta * beta;
-    ROOT_GXXXC1 init = ROOT_vavset(kappa, beta2);
+    ROOT_GXXXC1 init = ROOT_vavset(kappa, beta * beta);
 
     for (int i = 0; i < n; i++) {
         density[i] = ROOT_vav_pdf(lambda_vavilov[i], &init);
     }
 }
 
-void AT_Vavilov_IDF(const long n, const double rnd[], const double kappa[], const double beta[],
-        double lambda_vavilov[]) {
+void AT_Vavilov_IDF(const long n,
+    const double rnd[],
+    const double kappa[],
+    const double beta[],
+    double lambda_vavilov[]) {
 
     for (int i = 0; i < n; i++) {
-        // TODO to be replaced by C function
-        lambda_vavilov[i] = CL_vavran(kappa[i], beta[i]*beta[i], rnd[i]);
+        ROOT_GXXXC1 init = ROOT_vavset(kappa[i], beta[i] * beta[i]);
+        lambda_vavilov[i] = ROOT_val_idf(rnd[i], &init);
     }
 }
 
