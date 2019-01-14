@@ -134,6 +134,56 @@ int test_cernlib() {
     }
   }
 
+  // compare two methods of calculating Vavilov IDF over some combination of kappa, beta2 parameters
+  // fortran-based from CERNLIB and C-based from ROOT
+  for (kappa = 0.01; kappa < 0.5; kappa += 0.01) {
+    for (beta2 = 0.1; beta2 < 0.9; beta2 += 0.1) {
+      for (double x = 0.0; x < 0.99; x += 0.01) {
+
+        double cernlib_idf = CL_vavran(kappa, beta2, x);
+
+        ROOT_GXXXC1 init = ROOT_vavset(kappa, beta2);
+        double root_idf = ROOT_val_idf(x, &init);
+
+        // for large numbers compare ratio and difference
+        if (cernlib_idf > 1e-4 && root_idf > 1e-3) {
+          if (fabs(cernlib_idf - root_idf) > 1e-3) {
+            printf("kappa=%g beta2=%g x=%g %g %g (difference CERNLIB vs ROOT too big)\n",
+                   kappa,
+                   beta2,
+                   x,
+                   cernlib_idf,
+                   root_idf);
+            return EXIT_FAILURE;
+          }
+          if (fabs(cernlib_idf / root_idf - 1.0) > 1e-3) {
+            printf("kappa=%g beta2=%g x=%g %g %g (ratio %g CERNLIB vs ROOT too far from 1.0)\n",
+                   kappa,
+                   beta2,
+                   x,
+                   cernlib_idf,
+                   root_idf,
+                   fabs(cernlib_idf / root_idf - 1.0));
+
+            return EXIT_FAILURE;
+          }
+        } else { // for small numbers compare only difference
+          if (fabs(cernlib_idf - root_idf) > 5e-3) {
+            printf("kappa=%g beta2=%g x=%g  %g %g (difference CERNLIB vs ROOT too big)\n",
+                   kappa,
+                   beta2,
+                   x,
+                   cernlib_idf,
+                   root_idf);
+            return EXIT_FAILURE;
+          }
+        }
+
+
+      }
+    }
+  }
+
   return EXIT_SUCCESS;
 }
 

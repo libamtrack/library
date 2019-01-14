@@ -71,7 +71,7 @@ typedef struct {
 
 /**
  * Initialisation of Vavilov distribution
- * The code is based on ROOT VavilovFast class
+ * The code is based on ROOT VavilovFast class (which in turn is translated from CERNLIB G115 VAVSET method)
  * @param[in] kappa - The parameter \f$\kappa\f$, which should be in the range \f$0.01 \le \kappa \le 10 \f$
  * @param[in] beta2 - The parameter \f$\beta^2\f$, which must be in the range \f$0 \le \beta^2 \le 1 \f$
  * @return structure representing common block with precalculated data
@@ -80,11 +80,21 @@ ROOT_GXXXC1 ROOT_vavset(const double kappa, const double beta2);
 
 /**
  * PDF of Vavilov distribution
- * The code is based on ROOT VavilovFast class
+ * The code is based on ROOT VavilovFast class (which in turn is translated from CERNLIB G115 VAVDEN method)
  * @param[in] x - The Landau parameter \f$x = \lambda_L\f$
  * @param[in] init - The precalculated data
  * @return PDF value
  */
 double ROOT_vav_pdf(const double x, const ROOT_GXXXC1 * init);
+
+
+/**
+ * IDF of Vavilov distribution
+ * The code is based on ROOT VavilovFast class (which in turn is translated from CERNLIB G115 VAVRAN method)
+ * @param[in] X - random number from uniform distribution [0,1]
+ * @return Vavilov random number
+ */
+double ROOT_val_idf(const double X, const ROOT_GXXXC1 *init);
+
 
 #endif //_AT_PROBABILITYDISTRIBUTIONS_H

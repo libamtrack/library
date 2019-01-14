@@ -631,7 +631,7 @@ ROOT_GXXXC1 ROOT_vavset(const double kappa, const double beta2) {
     result.fAC[0] = -3.04;
   } else {
     result.fItype = 4;
-    if (fKappa >= (float)0.02) result.fItype = 3;
+    if (fKappa >= (float) 0.02) result.fItype = 3;
     result.fNpt = 200;
     x = 1 + (fKappa - BKMXX1) * FBKX1;
     y = 1 + (sqrt(fBeta2) - BKMXY1) * FBKY1;
@@ -700,9 +700,6 @@ ROOT_GXXXC1 ROOT_vavset(const double kappa, const double beta2) {
 }
 
 double ROOT_vav_pdf(const double x, const ROOT_GXXXC1 *init) {
-  // Modified version of TMath::double VavilovDenEval(Double_t rlam, Double_t *AC, Double_t *HC, Int_t itype);
-  //Internal function, called by Vavilov and VavilovSet
-
   double v = 0;
   if (x < (init->fAC[0]) || x > (init->fAC[8]))
     return 0;
@@ -740,5 +737,65 @@ double ROOT_vav_pdf(const double x, const ROOT_GXXXC1 *init) {
   } else if (init->fItype == 4) {
     v = (init->fAC[13]) * gsl_ran_landau_pdf(x);
   }
+  return v;
+}
+
+double ROOT_val_idf(const double X, const ROOT_GXXXC1 *init) {
+  double t = 2.0 * X / init->fAC[9];
+  double rlam = init->fAC[0];
+  double fl = 0;
+  double fu = 0;
+  double s = 0;
+  double h[10];
+  for (int n = 1; n <= init->fNpt; ++n) {
+    rlam += init->fAC[9];
+    if (init->fItype == 1) {
+      double fn = 1;
+      double x = (rlam + init->fHC[0]) * init->fHC[1];
+      h[1] = x;
+      h[2] = x * x - 1;
+      for (int k = 2; k <= 8; ++k) {
+        ++fn;
+        h[k + 1] = x * h[k] - fn * h[k - 1];
+      }
+      double y = 1 + init->fHC[7] * h[9];
+      for (int k = 2; k <= 6; ++k) {
+        y += init->fHC[k] * h[k + 1];
+      }
+      if (y > 0) {
+        // line below was modified wrt to original ROOT code (as of 2019.01.12, ROOT 6.14)
+        // additional multiplication by y was added which was present in CERNLIB, but missing in ROOT
+        fu = init->fHC[8] * exp(-0.5 * x * x) * y;
+      }
+    } else if (init->fItype == 2) {
+      double x = rlam * rlam;
+      fu = init->fAC[1] * exp(-init->fAC[2] * (rlam + init->fAC[5] * x) -
+          init->fAC[3] * exp(-init->fAC[4] * (rlam + init->fAC[6] * x)));
+    } else if (init->fItype == 3) {
+      if (rlam < init->fAC[7]) {
+        double x = rlam * rlam;
+        fu = init->fAC[1] * exp(-init->fAC[2] * (rlam + init->fAC[5] * x) -
+            init->fAC[3] * exp(-init->fAC[4] * (rlam + init->fAC[6] * x)));
+      } else {
+        double x = 1 / rlam;
+        fu = (init->fAC[11] * x + init->fAC[12]) * x;
+      }
+    } else {
+      /**
+       * there is a difference in initialisation block of VAVRAN and VAVSET
+       * the factor AC in next line should be equal to 0.995/DISLAN(AC(8))
+       * in VAVSET AC(13) = 0.995/DISLAN(AC(8))
+       * while in VAVRAN AC(10) = 0.995/DISLAN(AC(8))
+       * here, to avoid code duplication we will use value from VAVSET, hence changing index from 10 to 13
+       */
+      fu = init->fAC[13] * gsl_ran_landau_pdf(rlam);  // in VAVRAN: AC(10) -> difference between VAVRAN and VAVSET
+    }
+    s += fl + fu;
+    if (s > t) break;
+    fl = fu;
+  }
+  double s0 = s - fl - fu;
+  double v = rlam - init->fAC[9];
+  if (s > s0) v += init->fAC[9] * (t - s0) / (s - s0);
   return v;
 }
