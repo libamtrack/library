@@ -36,4 +36,5 @@ script:
   - cd distributions/Python/pyamtrack && python generate_Py_wrapper.py
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then LD_LIBRARY_PATH=$HOME/usr/lib python pyamtrack.py; fi  # FIX IT TO WORK WITH OSX
   # Tigger rebuild image in docker hub libamtrack/libamtrackforjs
+  - body='{ "request": { "branch":"master", "message": "Build Travis after changes in libamtrack/library" }}'
 
