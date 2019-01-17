@@ -268,19 +268,22 @@ void AT_Landau_energy_loss_distribution(const long n,
 
 void AT_Vavilov_PDF(const long n, const double lambda_vavilov[], const double kappa, const double beta,
         double density[]) {
-    double beta2 = beta * beta;
-    CL_vavset(kappa, beta2);
+    ROOT_GXXXC1 init = ROOT_vavset(kappa, beta * beta);
 
     for (int i = 0; i < n; i++) {
-        density[i] = CL_vavden(lambda_vavilov[i]);
+        density[i] = ROOT_vav_pdf(lambda_vavilov[i], &init);
     }
 }
 
-void AT_Vavilov_IDF(const long n, const double rnd[], const double kappa[], const double beta[],
-        double lambda_vavilov[]) {
+void AT_Vavilov_IDF(const long n,
+    const double rnd[],
+    const double kappa[],
+    const double beta[],
+    double lambda_vavilov[]) {
 
     for (int i = 0; i < n; i++) {
-        lambda_vavilov[i] = CL_vavran(kappa[i], beta[i]*beta[i], rnd[i]);
+        ROOT_GXXXC1 init = ROOT_vavset(kappa[i], beta[i] * beta[i]);
+        lambda_vavilov[i] = ROOT_val_idf(rnd[i], &init);
     }
 }
 
@@ -390,16 +393,17 @@ void AT_energy_loss_distribution(const long n,
  */
 double AT_lambda_Vavilov_Mode(const double kappa, const double beta) {
 
-    CL_vavset(kappa, beta);
+    ROOT_GXXXC1 init = ROOT_vavset(kappa, beta*beta);
+
     double x = -4.22784335098467134e-01 - log(kappa) - beta*beta;
     if (x>-0.223172) x = -0.223172;
     double eps = 0.01;
     double dx;
 
     do {
-        double p0 = CL_vavden(x - eps);
-        double p1 = CL_vavden(x);
-        double p2 = CL_vavden(x + eps);
+        double p0 = ROOT_vav_pdf(x - eps, &init);
+        double p1 = ROOT_vav_pdf(x, &init);
+        double p2 = ROOT_vav_pdf(x + eps, &init);
         double y1 = 0.5 * (p2 - p0) / eps;
         double y2 = (p2 - 2 * p1 + p0) / (eps * eps);
         if (y2 != 0) {
@@ -416,17 +420,18 @@ double AT_lambda_Vavilov_Mode(const double kappa, const double beta) {
 double AT_lambda_Vavilov_FWHM_left(const double kappa, const double beta) {
 
     double x = AT_lambda_Vavilov_Mode(kappa, beta);
-    CL_vavset(kappa, beta);
-    double p = CL_vavden(x) * 0.5;
+
+    ROOT_GXXXC1 init = ROOT_vavset(kappa, beta*beta);
+    double p = ROOT_vav_pdf(x, &init) * 0.5;
 
     x -= 1.3637;
     double eps = 0.01;
     double dx;
 
     do {
-        double p0 = CL_vavden(x);
-        double p1 = CL_vavden(x - eps);
-        double p2 = CL_vavden(x + eps);
+        double p0 = ROOT_vav_pdf(x, &init);
+        double p1 = ROOT_vav_pdf(x - eps, &init);
+        double p2 = ROOT_vav_pdf(x + eps, &init);
         double y1 = p0 - p;
         double y2 = 0.5 * (p2 - p1) / eps;
         if (y2 != 0) {
@@ -443,17 +448,18 @@ double AT_lambda_Vavilov_FWHM_left(const double kappa, const double beta) {
 double AT_lambda_Vavilov_FWHM_right(const double kappa, const double beta) {
 
     double x = AT_lambda_Vavilov_Mode(kappa, beta);
-    CL_vavset(kappa, beta);
-    double p = CL_vavden(x) * 0.5;
+    ROOT_GXXXC1 init = ROOT_vavset(kappa, beta*beta);
+
+    double p = ROOT_vav_pdf(x, &init) * 0.5;
 
     x += 2.655;
     double eps = 0.01;
     double dx;
 
     do {
-        double p0 = CL_vavden(x);
-        double p1 = CL_vavden(x - eps);
-        double p2 = CL_vavden(x + eps);
+        double p0 = ROOT_vav_pdf(x, &init);
+        double p1 = ROOT_vav_pdf(x - eps, &init);
+        double p2 = ROOT_vav_pdf(x + eps, &init);
         double y1 = p0 - p;
         double y2 = 0.5 * (p2 - p1) / eps;
         if (y2 != 0) {
