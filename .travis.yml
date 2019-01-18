@@ -21,8 +21,6 @@ before_install:
   - autoreconf --force --install
 
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update     ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gsl; fi
   - ./configure --prefix=$HOME/usr
 
 before_script:
@@ -34,6 +32,6 @@ script:
   - $HOME/usr/bin/amtrack_test
   - $HOME/usr/bin/amtrack_demo
   - cd distributions/Python/pyamtrack && python generate_Py_wrapper.py
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then LD_LIBRARY_PATH=$HOME/usr/lib python pyamtrack.py; fi  # FIX IT TO WORK WITH OSX
+  - LD_LIBRARY_PATH=$HOME/usr/lib python pyamtrack.py
   # Tigger rebuild image in docker hub libamtrack/libamtrackforjs
-  - curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token $TRAVIS_TOKEN" -d '{ "request": { "branch":"master", "message": "Build Travis after changes in libamtrack/library" }}' https://api.travis-ci.com/repo/libamtrack%2FDockerFiles/requests
+  - $TRAVIS_BUILD_DIR/library/distributions/JavaScript/trigger_docker_rebuild.sh
