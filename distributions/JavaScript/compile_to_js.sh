@@ -18,7 +18,7 @@ cd _build
 cp ../libgsl.a .
 ls -al .
 
-emcmake cmake .. -DGSL_INCLUDE_DIRS=$GSL_INCLUDE_DIRS
+emcmake cmake .. -DGSL_INCLUDE_DIRS=$GSL_INCLUDE_DIRS -DGSL_LIBRARY=$GSL_LIBRARY -DGSL_CBLAS_LIBRARY=$GSL_CBLAS_LIBRARY
 emmake make -j4
 
 funs='['	
@@ -469,7 +469,7 @@ funs='['
   funs+=']'
 
 
-emcc libat.a libgsl.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' --cflags
+emcc libat.a libgsl.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
 
 mkdir -p ../output/
 rm ../output/*

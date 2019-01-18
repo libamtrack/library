@@ -44,4 +44,6 @@
 
 4. Run (exec from main_library_dir/distributions/JavaScript/)
    export GSL_INCLUDE_DIRS=$GSL_ROOT_DIR/include
+   export GSL_LIBRARY=$GSL_ROOT_DIR/lib/libgsl.a
+   export GSL_CBLAS_LIBRARY=$GSL_ROOT_DIR/lib/libgslcblas.a
    ./compile_to_js.sh

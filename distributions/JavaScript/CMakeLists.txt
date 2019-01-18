@@ -10,3 +10,5 @@ include_directories( ${GSL_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/../../include )
 
 add_library(at STATIC ${SOURCE_FILES})
 install(TARGETS at DESTINATION ../../lib)
+
+target_link_libraries(at ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
