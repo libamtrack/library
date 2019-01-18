@@ -13,13 +13,13 @@ fi
 #emmake="/home/osboxes/emsdk/emscripten/1.37.36/./emmake"
 #emcc="/home/osboxes/emsdk/emscripten/1.37.36/./emcc"
 
-cd ../../
+cd .
 mkdir _build
 cd _build
-cp ../distributions/JavaScript/libgsl.a .
-ls .
+cp ../libgsl.a .
+ls -al .
 emcmake cmake ..
-emmake make
+emmake make -j4
 
 funs='['	
  
@@ -469,15 +469,14 @@ funs='['
   funs+=']'
 
 
-emcc libat.a libgsl.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" \
--s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
+emcc libat.a libgsl.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' --cflags
 
-mkdir -p ../distributions/JavaScript/output/
-rm ../distributions/JavaScript/output/*
-cp libat.a ../distributions/JavaScript/output/
-cp libat.html ../distributions/JavaScript/output/
-cp libat.wasm ../distributions/JavaScript/output/ 2>/dev/null || : #ignore error when build with -s WASM=0
-cp libat.js ../distributions/JavaScript/output/
+mkdir -p ../output/
+rm ../output/*
+cp libat.a ../output/
+cp libat.html ../output/
+cp libat.wasm ../output/ 2>/dev/null || : #ignore error when build with -s WASM=0
+cp libat.js ../output/
 
 cd ..
 rm -r _build

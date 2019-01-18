@@ -2,39 +2,33 @@
     http://kripken.github.io/emscripten-site/docs/getting_started/downloads.html
     If your PATH do not contains commands "emcmake","emmake","emcc" (emcmake Commands not found)
     In file distributions/JavaScript/compile_to_js.sh
-    uncomment lines and change path to directory where your emscripten is:
+    uncomment lines and change path to directory where your emscripten is, i.e.:
 
-    #emcmake="/home/osboxes/emsdk/emscripten/1.37.36/./emcmake"
-    #emmake="/home/osboxes/emsdk/emscripten/1.37.36/./emmake"
-    #emcc="/home/osboxes/emsdk/emscripten/1.37.36/./emcc"
-
-    and add $ before this commnads in srcipt, like $emcc.
+    export PATH=$PATH:/home/osboxes/emsdk/emscripten/1.37.36
 
 2. Download gsl sources
-    (you can change path /tmp/gsl-latest/gsl to f.e. /home/YOUR_USER/gsl-latest/gsl
+    (you can change path GSL_PATH to f.e. `mktemp -d`
+    (you can change path GSL_PATH to f.e. `mktemp -d`
     or where you GSL sources are but do not forget change it in CMakeList.txt)
 
-    export GSL_PATH=$HOME/ \
-    && cd $GSL_PATH \
-    && wget "https://ftp.gnu.org/gnu/gsl/gsl-latest.tar.gz" \
-    && mkdir $GSL_PATH/gsl-latest \
-    && tar -xzvf gsl-latest.tar.gz -C $GSL_PATH/gsl-latest \
-    && mv $GSL_PATH/gsl-latest/** $GSL_PATH/gsl-latest/gsl \
-    && rm -r $GSL_PATH/gsl-latest.tar.gz
+    GSL_PATH=.
+    echo $GSL_PATH && cd $GSL_PATH && wget "https://ftp.gnu.org/gnu/gsl/gsl-latest.tar.gz"
+    mkdir $GSL_PATH/gsl-latest  && tar -xzf gsl-latest.tar.gz -C $GSL_PATH/gsl-latest
+    mv $GSL_PATH/gsl-latest/** $GSL_PATH/gsl-latest/gsl
+    rm -r $GSL_PATH/gsl-latest.tar.gz
 
-    2.1 And compile to LLVM bitcode (optional)
+    2.1 And compile to LLVM bytecode (optional, replace -j4 with settings specific to no of CPU cores)
 
-        cd $HOME/gsl-latest/gsl \
-        && emconfigure ./configure \
-        && emmake make
+        export GSL_ROOT_DIR=$GSL_PATH/gsl-latest/gsl/usr
+        cd $GSL_PATH/gsl-latest/gsl && emconfigure ./configure --prefix=$PWD/usr && emmake make -j4 && emmake make install
 
         Move generated files to distributions/JavaScript/ (exec from main library dir)
-        cp $HOME/gsl-latest/gsl/.libs/libgsl.a ./distributions/JavaScript/
+        cp $GSL_PATH/gsl-latest/gsl/.libs/libgsl.a .
 
     2.2 If you skipped 2.1 do
-        cd $HOME/gsl-latest/gsl/
-        .configure
-        make
+        cd $GSL_PATH/gsl-latest/gsl/
+        ./configure
+        make -j4
 
 3. (Optional) If you want export some of functions not all first,
     regenerate list of functions :
@@ -43,11 +37,11 @@
 
     Cut everything from funs.txt and put to compile_to_js.sh before line
 
-    emcc libat.a libgsl.a -o libat.html -s WASM=$WASM -s EXPORT_ALL=1 \
-    -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
+    emcc libat.a libgsl.a -o libat.html -s WASM=$WASM -s EXPORT_ALL=1 -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
 
     and change this line to
     emcc libat.a libgsl.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" \
 
 4. Run (exec from main_library_dir/distributions/JavaScript/)
+   export GSL_ROOT_DIR=$GSL_PATH/gsl-latest/usr
    ./compile_to_js.sh
