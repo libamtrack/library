@@ -16,6 +16,9 @@ addons:
     - libgsl0-dev
     - gfortran
 
+# run on Ubuntu 16.04
+dist: xenial
+
 before_install:
   - mkdir m4
   - autoreconf --force --install
@@ -23,11 +26,13 @@ before_install:
 install:
   - ./configure --prefix=$HOME/usr
 
+# If before_install, install or before_script returns a non-zero exit code, the build is errored and stops immediately.
 before_script:
   - make README
   - make
   - make install
 
+# If script returns a non-zero exit code, the build is failed, but continues to run before being marked as failed.
 script:
   - $HOME/usr/bin/amtrack_test
   - $HOME/usr/bin/amtrack_demo
