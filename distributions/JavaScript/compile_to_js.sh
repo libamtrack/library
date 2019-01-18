@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#!/bin/bash
 if [ "$1" != "" ]; then
     echo "WASM parameter set to $1"
     WASM=$1
@@ -18,7 +17,8 @@ mkdir _build
 cd _build
 cp ../libgsl.a .
 ls -al .
-emcmake cmake ..
+
+emcmake cmake .. -DGSL_INCLUDE_DIRS=$GSL_INCLUDE_DIRS
 emmake make -j4
 
 funs='['	

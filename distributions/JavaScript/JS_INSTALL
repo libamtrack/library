@@ -11,7 +11,7 @@
     (you can change path GSL_PATH to f.e. `mktemp -d`
     or where you GSL sources are but do not forget change it in CMakeList.txt)
 
-    GSL_PATH=.
+    GSL_PATH=$PWD
     echo $GSL_PATH && cd $GSL_PATH && wget "https://ftp.gnu.org/gnu/gsl/gsl-latest.tar.gz"
     mkdir $GSL_PATH/gsl-latest  && tar -xzf gsl-latest.tar.gz -C $GSL_PATH/gsl-latest
     mv $GSL_PATH/gsl-latest/** $GSL_PATH/gsl-latest/gsl
@@ -19,11 +19,11 @@
 
     2.1 And compile to LLVM bytecode (optional, replace -j4 with settings specific to no of CPU cores)
 
-        export GSL_ROOT_DIR=$GSL_PATH/gsl-latest/gsl/usr
-        cd $GSL_PATH/gsl-latest/gsl && emconfigure ./configure --prefix=$PWD/usr && emmake make -j4 && emmake make install
+        GSL_ROOT_DIR=$GSL_PATH/gsl-latest/gsl/usr
+        cd $GSL_PATH/gsl-latest/gsl && emconfigure ./configure --prefix=$PWD/usr && emmake make -j4 && emmake make install && cd ../../
 
         Move generated files to distributions/JavaScript/ (exec from main library dir)
-        cp $GSL_PATH/gsl-latest/gsl/.libs/libgsl.a .
+        cp $GSL_ROOT_DIR/lib/libgsl.a .
 
     2.2 If you skipped 2.1 do
         cd $GSL_PATH/gsl-latest/gsl/
@@ -43,5 +43,5 @@
     emcc libat.a libgsl.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" \
 
 4. Run (exec from main_library_dir/distributions/JavaScript/)
-   export GSL_ROOT_DIR=$GSL_PATH/gsl-latest/usr
+   export GSL_INCLUDE_DIRS=$GSL_ROOT_DIR/include
    ./compile_to_js.sh
