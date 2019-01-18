@@ -36,10 +36,8 @@ funs='['
  funs+='"_AT_Bethe_Stopping_Number",'	
  funs+='"_AT_Bethe_energy_loss_MeV_cm2_g_single",'	
  funs+='"_AT_Bethe_energy_loss_MeV_cm2_g",'	
- 
-  #----AT_CernlibFuns.h	
- 
-  #----AT_Histograms.h	
+
+  #----AT_Histograms.h
  funs+='"_AT_histo_linear_left_limit",'	
  funs+='"_AT_histo_logarithmic_left_limit",'	
  funs+='"_AT_histo_left_limit",'	
