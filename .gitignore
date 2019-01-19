@@ -1,0 +1,6 @@
+_build/
+cmake-build-debug/
+libat.*
+.idea/*
+*.xml
+/distributions/JavaScript/output/

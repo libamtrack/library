@@ -30,7 +30,7 @@
 
 #include "AT_RDD.h"
 #include "AT_GammaResponse.h"
-#include "config.h"
+//#include "config.h"
 
 #ifdef HAVE_OPENMP
 #include <omp.h>
