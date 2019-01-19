@@ -46,6 +46,7 @@
 #include "config.h"
 
 #include "AT_StoppingPower.h"
+#include "AT_CernlibFuns.h"
 #include "AT_DataRange.h"
 #include "AT_NumericalRoutines.h"
 #include "AT_ProbabilityDistributions.h"
