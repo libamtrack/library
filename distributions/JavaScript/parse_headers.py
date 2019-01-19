@@ -33,8 +33,7 @@ def create_script(script_name):
     i = 0
 
     with open(script_name, "w") as file:
-        write_intro(file)
-
+       
         file.write("\nfuns='['\n")
 
         for header in function_names:
@@ -46,7 +45,6 @@ def create_script(script_name):
             i += 1
 
         file.write("\nfuns+=']'\n")
-        write_outro(file)
 
 
 def print_missing_files(directory):
