@@ -236,33 +236,31 @@ void AT_energy_loss_from_lambda_vavilov_multi(const long n,
 }
 
 void AT_Landau_energy_loss_distribution(const long n,
-        const double energy_loss_keV[],
-        const double E_MeV_u,
-        const long particle_no,
-        const long material_no,
-        const double slab_thickness_um,
-        double fDdD[]) {
-    /*
-            double 	kappa	      = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
-            double  xi            = kappa * AT_max_E_transfer_MeV_single(E_MeV_u);
-            double* lambda        = (double*)calloc(n, sizeof(double));
+                                        const double energy_loss_keV[],
+                                        const double E_MeV_u,
+                                        const long particle_no,
+                                        const long material_no,
+                                        const double slab_thickness_um,
+                                        double fDdD[]) {
+    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    double xi = kappa * AT_max_E_transfer_MeV_single(E_MeV_u);
+    double *lambda = (double *) calloc(n, sizeof(double));
 
-            AT_lambda_from_energy_loss_multi( n,
-                            energy_loss_keV,
-                            E_MeV_u,
-                            particle_no,
-                            material_no,
-                            slab_thickness_um,
-                            lambda);
+    AT_lambda_from_energy_loss_multi(n,
+                                     energy_loss_keV,
+                                     E_MeV_u,
+                                     particle_no,
+                                     material_no,
+                                     slab_thickness_um,
+                                     lambda);
 
-            AT_Landau_PDF( n,
-                            lambda,
-                            fDdD);
+    AT_Landau_PDF(n,
+                  lambda,
+                  fDdD);
 
-            for(int i = 0; i < n; i++){
-                    fDdD[i] /= xi;
-            }
-     */
+    for (int i = 0; i < n; i++) {
+        fDdD[i] /= xi;
+    }
     return;
 }
 
@@ -324,36 +322,34 @@ void AT_lambda_vavilov_from_energy_loss_multi(const long n,
 }
 
 void AT_Vavilov_energy_loss_distribution(const long n,
-        const double energy_loss_keV[],
-        const double E_MeV_u,
-        const long particle_no,
-        const long material_no,
-        const double slab_thickness_um,
-        double fDdD[]) {
-    /*
-            double 	kappa	      = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
-            double 	beta          = AT_beta_from_E_single(E_MeV_u);
-            double  xi            = kappa * AT_max_E_transfer_MeV_single(E_MeV_u);
-            double* lambda        = (double*)calloc(n, sizeof(double));
+                                         const double energy_loss_keV[],
+                                         const double E_MeV_u,
+                                         const long particle_no,
+                                         const long material_no,
+                                         const double slab_thickness_um,
+                                         double fDdD[]) {
+    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    double beta = AT_beta_from_E_single(E_MeV_u);
+    double xi = kappa * AT_max_E_transfer_MeV_single(E_MeV_u);
+    double *lambda = (double *) calloc(n, sizeof(double));
 
-            AT_lambda_from_energy_loss( n,
-                            energy_loss_keV,
-                            E_MeV_u,
-                            particle_no,
-                            material_no,
-                            slab_thickness_um,
-                            lambda);
+    AT_lambda_from_energy_loss(n,
+                               energy_loss_keV,
+                               E_MeV_u,
+                               particle_no,
+                               material_no,
+                               slab_thickness_um,
+                               lambda);
 
-            AT_Vavilov_PDF( n,
-                            lambda,
-                        kappa,
-                        beta,
-                            fDdD);
+    AT_Vavilov_PDF(n,
+                   lambda,
+                   kappa,
+                   beta,
+                   fDdD);
 
-            for(int i = 0; i < n; i++){
-                    fDdD[i] /= xi;
-            }
-     */
+    for (int i = 0; i < n; i++) {
+        fDdD[i] /= xi;
+    }
     return;
 }
 
