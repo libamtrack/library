@@ -275,51 +275,51 @@ void AT_Vavilov_PDF(const long n, const double lambda_vavilov[], const double ka
 }
 
 void AT_Vavilov_IDF(const long n,
-    const double rnd[],
-    const double kappa[],
-    const double beta[],
-    double lambda_vavilov[]) {
+                    const double rnd[],
+                    const double kappa[],
+                    const double beta[],
+                    double lambda_vavilov[]) {
 
-    for (int i = 0; i < n; i++) {
-        ROOT_GXXXC1 init = ROOT_vavset(kappa[i], beta[i] * beta[i]);
-        lambda_vavilov[i] = ROOT_val_idf(rnd[i], &init);
-    }
+  for (int i = 0; i < n; i++) {
+    ROOT_GXXXC1 init = ROOT_vavset(kappa[i], beta[i] * beta[i]);
+    lambda_vavilov[i] = ROOT_val_idf(rnd[i], &init);
+  }
 }
 
 double AT_lambda_vavilov_from_energy_loss_single(const double energy_loss_keV,
-        const double E_MeV_u,
-        const long particle_no,
-        const long material_no,
-        const double slab_thickness_um) {
+                                                 const double E_MeV_u,
+                                                 const long particle_no,
+                                                 const long material_no,
+                                                 const double slab_thickness_um) {
 
-    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
-    double beta = AT_beta_from_E_single(E_MeV_u);
-    double xi_keV = AT_xi_keV(E_MeV_u, particle_no, material_no, slab_thickness_um);
-    double mean_loss_keV = AT_mean_energy_loss_keV(E_MeV_u,
-            particle_no,
-            material_no,
-            slab_thickness_um);
+  double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
+  double beta = AT_beta_from_E_single(E_MeV_u);
+  double xi_keV = AT_xi_keV(E_MeV_u, particle_no, material_no, slab_thickness_um);
+  double mean_loss_keV = AT_mean_energy_loss_keV(E_MeV_u,
+                                                 particle_no,
+                                                 material_no,
+                                                 slab_thickness_um);
 
-    return ( kappa * ((energy_loss_keV - mean_loss_keV) / xi_keV - 0.42278433509 - beta * beta));
+  return (kappa * ((energy_loss_keV - mean_loss_keV) / xi_keV - 0.42278433509 - beta * beta));
 }
 
 void AT_lambda_vavilov_from_energy_loss_multi(const long n,
-        const double energy_loss_keV[],
-        const double E_MeV_u,
-        const long particle_no,
-        const long material_no,
-        const double slab_thickness_um,
-        double lambda_vavilov[]) {
+                                              const double energy_loss_keV[],
+                                              const double E_MeV_u,
+                                              const long particle_no,
+                                              const long material_no,
+                                              const double slab_thickness_um,
+                                              double lambda_vavilov[]) {
 
-    for (long i = 0; i < n; i++) {
-        lambda_vavilov[i] = AT_lambda_vavilov_from_energy_loss_single(energy_loss_keV[i],
-                E_MeV_u,
-                particle_no,
-                material_no,
-                slab_thickness_um);
-    }
+  for (long i = 0; i < n; i++) {
+    lambda_vavilov[i] = AT_lambda_vavilov_from_energy_loss_single(energy_loss_keV[i],
+                                                                  E_MeV_u,
+                                                                  particle_no,
+                                                                  material_no,
+                                                                  slab_thickness_um);
+  }
 
-    return;
+  return;
 }
 
 void AT_Vavilov_energy_loss_distribution(const long n,
@@ -334,13 +334,18 @@ void AT_Vavilov_energy_loss_distribution(const long n,
   double xi = kappa * AT_max_E_transfer_MeV_single(E_MeV_u);
   double *lambda = (double *) calloc(n, sizeof(double));
 
-  AT_lambda_vavilov_from_energy_loss_multi(n,
-                                           energy_loss_keV,
-                                           E_MeV_u,
-                                           particle_no,
-                                           material_no,
-                                           slab_thickness_um,
-                                           lambda);
+
+  // It looks that ROOT Vavilov implementation uses lambda_Landau, not lambda_Vavilov:
+  // "For the class VavilovFast, Pdf returns the Vavilov distribution as function
+  // of Landau's parameter λL=λV/κ−lnκ, which is the convention used in the CERNLIB routines,
+  // and in the tables by S.M. Seltzer and M.J. Berger"
+  AT_lambda_landau_from_energy_loss_multi(n,
+                                          energy_loss_keV,
+                                          E_MeV_u,
+                                          particle_no,
+                                          material_no,
+                                          slab_thickness_um,
+                                          lambda);
 
   AT_Vavilov_PDF(n,
                  lambda,
