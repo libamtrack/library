@@ -334,7 +334,12 @@ void AT_Vavilov_energy_loss_distribution(const long n,
   double xi = kappa * AT_max_E_transfer_MeV_single(E_MeV_u);
   double *lambda = (double *) calloc(n, sizeof(double));
 
-  AT_lambda_vavilov_from_energy_loss_multi(n,
+
+  // It looks that ROOT Vavilov implementation uses lambda_Landau, not lambda_Vavilov:
+  // "For the class VavilovFast, Pdf returns the Vavilov distribution as function
+  // of Landau's parameter λL=λV/κ−lnκ, which is the convention used in the CERNLIB routines,
+  // and in the tables by S.M. Seltzer and M.J. Berger"
+  AT_lambda_landau_from_energy_loss_multi(n,
                                            energy_loss_keV,
                                            E_MeV_u,
                                            particle_no,
