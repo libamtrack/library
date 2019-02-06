@@ -359,6 +359,48 @@ void AT_Vavilov_energy_loss_distribution(const long n,
   return;
 }
 
+
+void AT_Gauss_energy_loss_distribution(const long n,
+    const double energy_loss_keV[],
+    const double E_MeV_u,
+    const long particle_no,
+    const long material_no,
+    const double slab_thickness_um,
+    double fDdD[]) {
+
+    double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
+    printf("kappa = %g\n", kappa);
+    double beta = AT_beta_from_E_single(E_MeV_u);
+    printf("beta = %g\n", beta);
+    double xi_keV = kappa * AT_max_E_transfer_MeV_single(E_MeV_u);
+    printf("xi_keV = %g\n", xi_keV);
+    double emax = AT_max_E_transfer_MeV_single(E_MeV_u);
+    printf("emax = %g\n", emax);
+    double sigma_keV = sqrt(xi_keV * xi_keV / kappa * (1 - beta * beta / 2.0));
+    printf("sigma_keV = %g\n", sigma_keV);
+    double mean_loss_keV = AT_mean_energy_loss_keV(E_MeV_u,
+                                                   particle_no,
+                                                   material_no,
+                                                   slab_thickness_um);
+
+    printf("mean_loss_keV = %g\n", mean_loss_keV);
+
+    double * lambda = (double *) calloc(n, sizeof(double));
+
+  for (int i = 0; i < n; i++) {
+      lambda[i] = (energy_loss_keV[i] - mean_loss_keV) / sigma_keV;
+    }
+
+    AT_Gauss_PDF(n, lambda, fDdD);
+
+    for (int i = 0; i < n; i++) {
+        fDdD[i] /= sigma_keV;
+    }
+
+    free(lambda);
+    return;
+}
+
 void AT_energy_loss_distribution(const long n,
         const double energy_loss_keV[],
         const double E_MeV_u,
@@ -377,8 +419,7 @@ void AT_energy_loss_distribution(const long n,
                 slab_thickness_um,
                 fDdD);
         return;
-    }
-    if (kappa < 10) {
+    } else  if (kappa < 10) {
         AT_Vavilov_energy_loss_distribution(n,
                 energy_loss_keV,
                 E_MeV_u,
@@ -387,6 +428,15 @@ void AT_energy_loss_distribution(const long n,
                 slab_thickness_um,
                 fDdD);
         return;
+    } else  if (kappa > 10) {
+      AT_Gauss_energy_loss_distribution(n,
+                                        energy_loss_keV,
+                                        E_MeV_u,
+                                        particle_no,
+                                        material_no,
+                                        slab_thickness_um,
+                                        fDdD);
+      return;
     }
 }
 
@@ -595,6 +645,23 @@ void AT_Gauss_IDF(const long n, const double rnd[], double lambda_gauss[]) {
     }
 }
 
+//double AT_lambda_gauss_from_energy_loss_single(const double energy_loss_keV,
+//                                                    const double E_MeV_u,
+//                                                    const long particle_no,
+//                                                    const long material_no,
+//                                                    const double slab_thickness_um) {
+//
+//        double kappa = AT_kappa_single(E_MeV_u, particle_no, material_no, slab_thickness_um);
+//        double beta = AT_beta_from_E_single(E_MeV_u);
+//        double xi_keV = AT_xi_keV(E_MeV_u, particle_no, material_no, slab_thickness_um);
+//        double mean_loss_keV = AT_mean_energy_loss_keV(E_MeV_u,
+//                                                       particle_no,
+//                                                       material_no,
+//                                                       slab_thickness_um);
+//
+//        return ( (energy_loss_keV - mean_loss_keV) / xi_keV - 0.42278433509 - beta * beta - log(kappa));
+//}
+
 double AT_energy_loss_from_lambda_gauss_single(const double lambda_gauss,
         const double E_MeV_u,
         const long particle_no,
@@ -685,8 +752,7 @@ double AT_energy_loss_FWHM(const double E_MeV_u,
                 particle_no,
                 material_no,
                 slab_thickness_um);
-    }
-    if (kappa < 10) {
+    } else if (kappa < 10) {
         return AT_energy_loss_keV_Vavilov_FWHM(E_MeV_u,
                 particle_no,
                 material_no,

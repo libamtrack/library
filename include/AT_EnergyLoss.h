@@ -479,6 +479,29 @@ void AT_energy_loss_from_lambda_gauss_multi( const long n,
 		double energy_loss_keV[]);
 
 
+/**
+ * Computes the energy loss
+ * Gauss distribution
+ *
+ * @param[in]  	   n      				number of energy loss data
+ * @param[in]  	   energy_loss_keV      energy loss (array of size n)
+ * @param[in]  	   E_MeV_u      		energy of particle per nucleon
+ * @param[in]  	   particle_no  		particle index
+ * @see          AT_DataParticle.h for definition
+ * @param[in]      material_no  		material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]      slab_thickness_um	slab thickness in um
+ * @param[out]     fDdD (array of size n)
+ */
+void AT_Gauss_energy_loss_distribution( const long n,
+										  const double energy_loss_keV[],
+										  const double E_MeV_u,
+										  const long particle_no,
+										  const long material_no,
+										  const double slab_thickness_um,
+										  double fDdD[]);
+
+
 double AT_Gauss_Mode();
 double AT_Gauss_Mean();
 double AT_Gauss_FWHM();
