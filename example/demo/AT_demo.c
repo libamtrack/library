@@ -44,35 +44,5 @@ int main( int argc, char* argv[]){
 	double beta = AT_beta_from_E_single( E_MeV_u );
 	printf("Relative speed of particle with energy %4.2f is equal %1.3f\n", E_MeV_u, beta);
 
-	void AT_Vavilov_energy_loss_distribution( const long n,
-											  const double energy_loss_keV[],
-											  const double E_MeV_u,
-											  const long particle_no,
-											  const long material_no,
-											  const double slab_thickness_um,
-											  double fDdD[]);
-
-	const long n = 100;
-	double eloss_keV[100];
-	double fDdD[100];
-
-	for( int i = 0 ; i < 100 ; i++){
-		eloss_keV[i] = (double)i*10;
-		fDdD[i] = 0.0;
-	}
-
-	AT_Vavilov_energy_loss_distribution( n,
-	eloss_keV,
-	150.0,
-	1001,
-	1,
-	1000.0,
-	fDdD);
-
-	for( int i = 0 ; i < n ; i++){
-		printf("%g %g\n", eloss_keV[i], fDdD[i]);
-	}
-
-
 	return EXIT_SUCCESS;
 }
