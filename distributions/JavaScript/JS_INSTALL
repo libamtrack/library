@@ -8,7 +8,6 @@
 
 2. Download gsl sources
     (you can change path GSL_PATH to f.e. `mktemp -d`
-    (you can change path GSL_PATH to f.e. `mktemp -d`
     or where you GSL sources are but do not forget change it in CMakeList.txt)
 
     GSL_PATH=$PWD

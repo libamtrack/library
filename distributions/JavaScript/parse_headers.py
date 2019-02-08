@@ -1,6 +1,6 @@
 import os
 
-include_directory = os.fsencode(".././include")
+include_directory = os.fsencode("../../include")
 function_types = ["int", "double", "long", "void"]
 function_names = []
 inc_file_names = []
@@ -11,7 +11,7 @@ def browse_files(directory):
     for file in os.listdir(directory):
         filename = os.fsdecode(file)
         inc_file_names.append(filename)
-        function_names.append(parse_file(".././include/" + filename))
+        function_names.append(parse_file("../../include/" + filename))
 
 
 def parse_file(filename):
