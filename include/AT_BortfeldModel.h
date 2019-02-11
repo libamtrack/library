@@ -2,7 +2,7 @@
 #define AT_BortfeldModel_H_
 
 /**
- * @brief Numerical Routines
+ * @brief Bortfeld model of Bragg curve
  */
 
 
@@ -29,27 +29,25 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "AT_NumericalRoutines.h"
+#include "AT_BortfeldModel.h"
 
 // Some headers are found in different places in Mac OS X
 #ifdef __APPLE__
 #include <sys/malloc.h>
 #else
-
 #include <malloc.h>
-
 #endif
 
 
 /**
  * TODO
- * @param[in] z_cm
- * @param[in] E_MeV_u
- * @param[in] fluence_cm2
- * @param[in] sigma_E_MeV_u
- * @param[in] material_no
- * @param[in] eps
- * @return
+ * @param[in] z_cm            depth in medium [cm]
+ * @param[in] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
+ * @param[in] fluence_cm2     proton fluence [1/cm2]
+ * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
+ * @param[in] material_no     material code number
+ * @param[in] eps             fraction of primary fluence contributing to the tail of energy spectrum
+ * @return                    dose at given depth [Gy]
  */
 double AT_dose_Bortfeld_Gy_single(const double z_cm,
                                   const double E_MeV_u,
@@ -60,14 +58,14 @@ double AT_dose_Bortfeld_Gy_single(const double z_cm,
 
 /**
  * TODO
- * @param[in] n
- * @param[in] z_cm TODO (array of size n)
- * @param[in] E_MeV_u
- * @param[in] fluence_cm2
- * @param[in] sigma_E_MeV_u
- * @param[in] material_no
- * @param[in] eps
- * @param[out] dose_Gy TODO (array of size n)
+ * @param[in]  n               number of depth steps
+ * @param[in]  z_cm            depths in medium [cm] (array of size n)
+ * @param[in]  E_MeV_u         initial kinetic energy of proton beam [MeV/u]
+ * @param[in]  fluence_cm2     proton fluence [1/cm2]
+ * @param[in]  sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
+ * @param[in]  material_no     material code number
+ * @param[in]  eps             fraction of primary fluence contributing to the tail of energy spectrum
+ * @param[out] dose_Gy         doses at given depth [Gy] (array of size n)
  */
 void AT_dose_Bortfeld_Gy_multi(const long n,
                                const double z_cm[],
