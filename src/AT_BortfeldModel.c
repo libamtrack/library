@@ -31,12 +31,12 @@
 #include "AT_BortfeldModel.h"
 #include "AT_DataMaterial.h"
 
-double AT_dose_Bortfeld_Gy( const double z_cm,
-                            const double E_MeV_u,
-                            const double fluence_cm2,
-                            const double sigma_E_MeV_u,
-                            const long material_no,
-                            const double eps){
+double AT_dose_Bortfeld_Gy_single(const double z_cm,
+                                  const double E_MeV_u,
+                                  const double fluence_cm2,
+                                  const double sigma_E_MeV_u,
+                                  const long material_no,
+                                  const double eps) {
 
     // [1] Bortfeld, 1997, An analytical approximation of the Bragg curve for therapeutic proton beams, Med. Phys. 24(12), 2024ff
 
@@ -51,23 +51,23 @@ double AT_dose_Bortfeld_Gy( const double z_cm,
     double ni2 = 1.0 + (1.0 / p);
 
     double sigma_mono_cm = 0.012 * pow(range_cm, 0.935);
-    double sigma_cm = sqrt( sigma_mono_cm * sigma_mono_cm + pow((sigma_E_MeV_u * alpha * p * pow(E_MeV_u, p - 1)),2) );
+    double sigma_cm = sqrt(sigma_mono_cm * sigma_mono_cm + pow((sigma_E_MeV_u * alpha * p * pow(E_MeV_u, p - 1)), 2));
 
     double dose_Gy = fluence_cm2; // returned value
 
-    double factor1 = AT_range_straggling_convolution( z_cm, range_cm, sigma_cm, ni1);
+    double factor1 = AT_range_straggling_convolution(z_cm, range_cm, sigma_cm, ni1);
 
-    double factor2 = AT_range_straggling_convolution( z_cm, range_cm, sigma_cm, ni2);
+    double factor2 = AT_range_straggling_convolution(z_cm, range_cm, sigma_cm, ni2);
     factor2 *= ((beta_cm / p) + (gamma * beta_cm) + (eps / range_cm));
     factor2 *= sigma_cm;
 
-    double  tmp1;
+    double tmp1;
     AT_gamma_(&ni1, &tmp1);
-    factor2  *=  tmp1;
+    factor2 *= tmp1;
 
-    double  tmp2;
+    double tmp2;
     AT_gamma_(&ni2, &tmp2);
-    factor2  /=  tmp2;
+    factor2 /= tmp2;
 
     dose_Gy /= AT_density_g_cm3_from_material_no(material_no);
     dose_Gy /= (p * pow(alpha, ni1));
@@ -78,4 +78,20 @@ double AT_dose_Bortfeld_Gy( const double z_cm,
     dose_Gy *= 1.6021766e-10;  // MeV/g into Gy or J/kg
 
     return dose_Gy;
+}
+
+
+void AT_dose_Bortfeld_Gy_multi(const long n,
+                               const double z_cm[],
+                               const double E_MeV_u,
+                               const double fluence_cm2,
+                               const double sigma_E_MeV_u,
+                               const long material_no,
+                               const double eps,
+                               double dose_Gy[]) {
+    long i;
+    for (i = 0; i < n; i++) {
+        dose_Gy[i] = AT_dose_Bortfeld_Gy_single(z_cm[i], E_MeV_u, fluence_cm2, sigma_E_MeV_u, material_no, eps);
+    }
+
 }

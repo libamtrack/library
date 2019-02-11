@@ -195,7 +195,11 @@ funs='['
  funs+='"_AT_Mass_Stopping_Power_with_no",'	
  funs+='"_AT_Stopping_Power_with_no",'	
  funs+='"_AT_Energy_MeV_u_from_Stopping_Power_single",'	
- 
+
+ #----AT_BortfeldModel.h
+ funs+='"_AT_dose_Bortfeld_Gy_single",'
+ funs+='"_AT_dose_Bortfeld_Gy_multi",'
+
   #----AT_SuccessiveConvolutions.h	
  funs+='"_AT_n_bins_for_single_impact_local_dose_distrib",'	
  funs+='"_AT_single_impact_local_dose_distrib",'	

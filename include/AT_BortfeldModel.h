@@ -35,19 +35,47 @@
 #ifdef __APPLE__
 #include <sys/malloc.h>
 #else
+
 #include <malloc.h>
+
 #endif
 
 
 /**
  * TODO
+ * @param[in] z_cm
+ * @param[in] E_MeV_u
+ * @param[in] fluence_cm2
+ * @param[in] sigma_E_MeV_u
+ * @param[in] material_no
+ * @param[in] eps
+ * @return
  */
-double AT_dose_Bortfeld_Gy( const double z_cm,
-        const double E_MeV_u,
-        const double fluence_cm2,
-        const double sigma_E_MeV_u,
-        const long material_no,
-        const double eps);
+double AT_dose_Bortfeld_Gy_single(const double z_cm,
+                                  const double E_MeV_u,
+                                  const double fluence_cm2,
+                                  const double sigma_E_MeV_u,
+                                  const long material_no,
+                                  const double eps);
 
+/**
+ * TODO
+ * @param[in] n
+ * @param[in] z_cm TODO (array of size n)
+ * @param[in] E_MeV_u
+ * @param[in] fluence_cm2
+ * @param[in] sigma_E_MeV_u
+ * @param[in] material_no
+ * @param[in] eps
+ * @param[out] dose_Gy TODO (array of size n)
+ */
+void AT_dose_Bortfeld_Gy_multi(const long n,
+                               const double z_cm[],
+                               const double E_MeV_u,
+                               const double fluence_cm2,
+                               const double sigma_E_MeV_u,
+                               const long material_no,
+                               const double eps,
+                               double dose_Gy[]);
 
 #endif /* AT_BortfeldModel_H_ */
