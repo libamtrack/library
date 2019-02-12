@@ -61,7 +61,6 @@ double AT_dose_Bortfeld_Gy_single(const double z_cm,
                                   const double E_MeV_u,
                                   const double sigma_E_MeV_u,
                                   const long material_no,
-                                  const double range_cm,
                                   const double eps);
 
 /**

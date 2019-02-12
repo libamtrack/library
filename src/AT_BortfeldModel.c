@@ -62,14 +62,14 @@ double AT_dose_Bortfeld_Gy_single(const double z_cm,
         tmp_eps = 0.03;
 
     double sigma_mono_cm = 0.012 * pow(range_cm, 0.935); // width of Gaussian range straggling
-    double sigma_cm = sqrt(sigma_mono_cm * sigma_mono_cm + pow((sigma_E_MeV_u * alpha * p * pow(E_MeV_u, p - 1)), 2));
+    double sigma_cm = sqrt(sigma_mono_cm * sigma_mono_cm + pow((tmp_sigma_E_MeV_u * alpha * p * pow(E_MeV_u, p - 1)), 2));
 
     double dose_Gy = fluence_cm2; // returned value
 
     double factor1 = AT_range_straggling_convolution(z_cm, range_cm, sigma_cm, ni1);
 
     double factor2 = AT_range_straggling_convolution(z_cm, range_cm, sigma_cm, ni2);
-    factor2 *= ((beta_cm / p) + (gamma * beta_cm) + (eps / range_cm));
+    factor2 *= ((beta_cm / p) + (gamma * beta_cm) + (tmp_eps / range_cm));
     factor2 *= sigma_cm;
 
     // calculate Gamma(1/p)
