@@ -35,42 +35,55 @@
 #ifdef __APPLE__
 #include <sys/malloc.h>
 #else
+
 #include <malloc.h>
+
 #endif
 
 
 /**
- * TODO
+ * Computes dose at given depth for proton beams according to analytical model of T. Bortfeld
+ * Bortfeld, 1997, An analytical approximation of the Bragg curve for therapeutic
+ * proton beams, Med. Phys. 24(12), 2024ff.
  * @param[in] z_cm            depth in medium [cm]
- * @param[in] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
  * @param[in] fluence_cm2     proton fluence [1/cm2]
+ * @param[in] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
  * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
+ * if negative a default value of 0.01 * E_MeV_u is assumed
  * @param[in] material_no     material code number
+ * @see          AT_DataMaterial.h for definition
  * @param[in] eps             fraction of primary fluence contributing to the tail of energy spectrum
+ * if negative a default value of 0.03 is assumed
  * @return                    dose at given depth [Gy]
  */
 double AT_dose_Bortfeld_Gy_single(const double z_cm,
-                                  const double E_MeV_u,
                                   const double fluence_cm2,
+                                  const double E_MeV_u,
                                   const double sigma_E_MeV_u,
                                   const long material_no,
+                                  const double range_cm,
                                   const double eps);
 
 /**
- * TODO
+ * Computes dose at given depth for proton beams according to analytical model of T. Bortfeld
+ * Bortfeld, 1997, An analytical approximation of the Bragg curve for therapeutic
+ * proton beams, Med. Phys. 24(12), 2024ff.
  * @param[in]  n               number of depth steps
  * @param[in]  z_cm            depths in medium [cm] (array of size n)
- * @param[in]  E_MeV_u         initial kinetic energy of proton beam [MeV/u]
  * @param[in]  fluence_cm2     proton fluence [1/cm2]
- * @param[in]  sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
- * @param[in]  material_no     material code number
- * @param[in]  eps             fraction of primary fluence contributing to the tail of energy spectrum
+ * @param[in]  E_MeV_u         initial kinetic energy of proton beam [MeV/u]
+ * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
+ * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in] material_no     material code number
+ * @see          AT_DataMaterial.h for definition
+ * @param[in] eps             fraction of primary fluence contributing to the tail of energy spectrum
+ * if negative a default value of 0.03 is assumed
  * @param[out] dose_Gy         doses at given depth [Gy] (array of size n)
  */
 void AT_dose_Bortfeld_Gy_multi(const long n,
                                const double z_cm[],
-                               const double E_MeV_u,
                                const double fluence_cm2,
+                               const double E_MeV_u,
                                const double sigma_E_MeV_u,
                                const long material_no,
                                const double eps,
