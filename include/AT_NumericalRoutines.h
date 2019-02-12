@@ -53,9 +53,9 @@
 /**
  * Computes the convolution of a term (R0 - z)^(ni - 1) with a Gaussian
  * in z with variance sigma^2, i.e.
- * F(z, R0) = 1/(2*pi*sigma) * int_{-inf}^{R0}[ (R0 - z)^(ni - 1) * exp(-(z - z')^2/(2*sigma^2)) * dz']
+ * F(z, R0) = 1/(sqrt(2*pi)*sigma) * int_{-inf}^{R0}[ (R0 - z)^(ni - 1) * exp(-(z - z')^2/(2*sigma^2)) * dz']
  * that can be solved using the gamma function and the parabolic cylinder function:
- * F(z, R0) = 1/(2*pi*sigma) * exp((R0 - z)/(4*sigma^2)) * sigma^ni * gamma(ni) * D[-ni](-(R0-z)/sigma)
+ * F(z, R0) = 1/(sqrt(2*pi)*sigma) * exp(-(R0 - z)^2/(4*sigma^2)) * sigma^ni * gamma(ni) * D[-ni](-(R0-z)/sigma)
  * where D[-ni] is the parabolic cylinder function of order -ni
  *
  * The procedure is elucidated in Bortfeld, 1997, An analytical approximation of the Bragg curve for therapeutic
@@ -63,7 +63,7 @@
  *
  * This function uses gamma_ and AT_Dyx.
  *
- * Cave: Be careful to give the correct ni (not ni - 1)!
+ * Caveat: Be careful to give the correct ni (not ni - 1)!
  *
  * @param[in]   z
  * @param[in]   R0
