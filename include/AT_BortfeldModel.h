@@ -100,9 +100,9 @@ void AT_dose_Bortfeld_Gy_multi(const long n,
  * @return                    track averaged LET at given depth [keV/um]
  */
 double AT_LET_t_Wilkens_keV_um_single(const double z_cm,
-        const double E_MeV_u,
-        const double sigma_E_MeV_u,
-        const long material_no);
+                                      const double E_MeV_u,
+                                      const double sigma_E_MeV_u,
+                                      const long material_no);
 
 
 /**
@@ -117,11 +117,11 @@ double AT_LET_t_Wilkens_keV_um_single(const double z_cm,
  * @param[out] LET_keV_um      track averaged LET at given depth [keV/um] (array of size n)
  */
 void AT_LET_t_Wilkens_keV_um_multi(const long n,
-                               const double z_cm[],
-                               const double E_MeV_u,
-                               const double sigma_E_MeV_u,
-                               const long material_no,
-                               double LET_keV_um[]);
+                                   const double z_cm[],
+                                   const double E_MeV_u,
+                                   const double sigma_E_MeV_u,
+                                   const long material_no,
+                                   double LET_keV_um[]);
 
 /**
  * Computes dose averaged LET according to Wilkens model
