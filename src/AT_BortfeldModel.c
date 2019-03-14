@@ -62,7 +62,8 @@ double AT_dose_Bortfeld_Gy_single(const double z_cm,
         tmp_eps = 0.03;
 
     double sigma_mono_cm = 0.012 * pow(range_cm, 0.935); // width of Gaussian range straggling
-    double sigma_cm = sqrt(sigma_mono_cm * sigma_mono_cm + pow((tmp_sigma_E_MeV_u * alpha * p * pow(E_MeV_u, p - 1)), 2));
+    double sigma_cm = sqrt(
+            sigma_mono_cm * sigma_mono_cm + pow((tmp_sigma_E_MeV_u * alpha * p * pow(E_MeV_u, p - 1)), 2));
 
     double dose_Gy = fluence_cm2; // returned value
 
@@ -105,5 +106,147 @@ void AT_dose_Bortfeld_Gy_multi(const long n,
     long i;
     for (i = 0; i < n; i++) {
         dose_Gy[i] = AT_dose_Bortfeld_Gy_single(z_cm[i], E_MeV_u, fluence_cm2, sigma_E_MeV_u, material_no, eps);
+    }
+}
+
+double AT_LET_t_Wilkens_keV_um_single(const double z_cm,
+                                      const double E_MeV_u,
+                                      const double sigma_E_MeV_u,
+                                      const long material_no) {
+
+    double p = AT_p_MeV_from_material_no(material_no); // exponent of range-energy relation
+    double alpha = AT_alpha_g_cm2_MeV_from_material_no(material_no); // proportionality factor (0.0022 cm/MeV^p in [1])
+
+    double range_cm = alpha * pow(E_MeV_u, p);  // range in [cm]
+
+    double regul_factor_cm = 2.0 * 1e-4; // regularization factor in [cm] ( 1cm = 1e4 um)
+
+    double ni1 = 1.0 + (1.0 / p);
+
+    // assign default value to sigma being 1% of kinetic energy
+    double tmp_sigma_E_MeV_u = sigma_E_MeV_u;
+    if (sigma_E_MeV_u < 0)
+        tmp_sigma_E_MeV_u = 0.01 * E_MeV_u;
+
+    double sigma_mono_cm = 0.012 * pow(range_cm, 0.935); // width of Gaussian range straggling
+    double sigma_cm = sqrt(
+            sigma_mono_cm * sigma_mono_cm + pow((tmp_sigma_E_MeV_u * alpha * p * pow(E_MeV_u, p - 1)), 2));
+
+    double xi = (z_cm - range_cm) / sigma_cm;
+    double zeta = (z_cm - range_cm - regul_factor_cm) / sigma_cm;
+
+
+    double LET_t_keV_um = 1.0; // returned value
+
+    LET_t_keV_um /= (sigma_cm * regul_factor_cm * pow(alpha, 1.0 / p));
+
+    double nominator = M_SQRTPI * M_SQRT2 * sigma_cm;
+
+    nominator *= (AT_range_straggling_convolution(z_cm, range_cm + regul_factor_cm, sigma_cm, ni1) -
+                  AT_range_straggling_convolution(z_cm, range_cm, sigma_cm, ni1));
+
+    nominator -= regul_factor_cm * pow(regul_factor_cm / 2.0, 1.0 / p) * exp(-(xi + zeta) * (xi + zeta) / 8.0);
+
+    if (nominator < 0)
+        nominator = 0.0;
+
+    double denominator = M_SQRTPI * M_SQRT2 * AT_range_straggling_convolution(z_cm, range_cm, sigma_cm, 1.0);
+
+    if (denominator < 0)
+        denominator = 0.0;
+
+    LET_t_keV_um *= nominator;
+    LET_t_keV_um /= denominator;
+
+    LET_t_keV_um *= 0.1; // from MeV/cm to keV/um
+
+    return LET_t_keV_um;
+
+}
+
+
+void AT_LET_t_Wilkens_keV_um_multi(const long n,
+                                   const double z_cm[],
+                                   const double E_MeV_u,
+                                   const double sigma_E_MeV_u,
+                                   const long material_no,
+                                   double LET_keV_um[]) {
+    long i;
+    for (i = 0; i < n; i++) {
+        LET_keV_um[i] = AT_LET_t_Wilkens_keV_um_single(z_cm[i], E_MeV_u, sigma_E_MeV_u, material_no);
+    }
+}
+
+double AT_LET_d_Wilkens_keV_um_single(const double z_cm,
+                                      const double E_MeV_u,
+                                      const double sigma_E_MeV_u,
+                                      const long material_no) {
+
+    double p = AT_p_MeV_from_material_no(material_no); // exponent of range-energy relation
+    double alpha = AT_alpha_g_cm2_MeV_from_material_no(material_no); // proportionality factor (0.0022 cm/MeV^p in [1])
+
+    double range_cm = alpha * pow(E_MeV_u, p);  // range in [cm]
+
+    double regul_factor_cm = 2.0 * 1e-4; // regularization factor in [cm] ( 1cm = 1e4 um)
+
+    double ni2 = 1.0 + (1.0 / p);
+    double ni3 = 2.0 / p;
+
+    // assign default value to sigma being 1% of kinetic energy
+    double tmp_sigma_E_MeV_u = sigma_E_MeV_u;
+    if (sigma_E_MeV_u < 0)
+        tmp_sigma_E_MeV_u = 0.01 * E_MeV_u;
+
+    double sigma_mono_cm = 0.012 * pow(range_cm, 0.935); // width of Gaussian range straggling
+    double sigma_cm = sqrt(
+            sigma_mono_cm * sigma_mono_cm + pow((tmp_sigma_E_MeV_u * alpha * p * pow(E_MeV_u, p - 1)), 2));
+
+    double xi = (z_cm - range_cm) / sigma_cm;
+    double zeta = (z_cm - range_cm - regul_factor_cm) / sigma_cm;
+
+
+    double LET_d_keV_um = 1.0; // returned value
+
+    LET_d_keV_um /= (pow(alpha, 1.0 / p) * p * (2.0 - p));
+
+    double nominator = M_SQRTPI * M_SQRT2 * sigma_cm;
+
+    nominator *= (AT_range_straggling_convolution(z_cm, range_cm + regul_factor_cm, sigma_cm, ni3) -
+                  AT_range_straggling_convolution(z_cm, range_cm, sigma_cm, ni3));
+
+    nominator -= 2.0 * regul_factor_cm * pow(regul_factor_cm / 2.0, ni3) * exp(-(xi + zeta) * (xi + zeta) / 8.0);
+
+    if (nominator < 0)
+        nominator = 0.0;
+
+    double denominator = M_SQRTPI * M_SQRT2 * sigma_cm;
+
+    denominator *= (AT_range_straggling_convolution(z_cm, range_cm + regul_factor_cm, sigma_cm, ni2) -
+                    AT_range_straggling_convolution(z_cm, range_cm, sigma_cm, ni2));
+
+    denominator -= regul_factor_cm * pow(regul_factor_cm / 2.0, 1.0 / p) * exp(-(xi + zeta) * (xi + zeta) / 8.0);
+
+    if (denominator < 0)
+        denominator = 0.0;
+
+    LET_d_keV_um *= nominator;
+    LET_d_keV_um /= denominator;
+
+    LET_d_keV_um *= 0.1; // from MeV/cm to keV/um
+
+    return LET_d_keV_um;
+
+}
+
+
+void AT_LET_d_Wilkens_keV_um_multi(const long n,
+                                   const double z_cm[],
+                                   const double E_MeV_u,
+                                   const double sigma_E_MeV_u,
+                                   const long material_no,
+                                   double LET_keV_um[]) {
+    long i;
+    for (i = 0; i < n; i++) {
+        LET_keV_um[i] = AT_LET_d_Wilkens_keV_um_single(z_cm[i], E_MeV_u, sigma_E_MeV_u, material_no);
     }
 }
