@@ -1,4 +1,4 @@
-1. Download Emescripten and install according to the steps from:
+1. Download Emscripten and install according to the steps from:
     http://kripken.github.io/emscripten-site/docs/getting_started/downloads.html
     If your PATH do not contains commands "emcmake","emmake","emcc" (emcmake Commands not found)
     In file distributions/JavaScript/compile_to_js.sh
