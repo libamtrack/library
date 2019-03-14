@@ -117,7 +117,8 @@ double AT_LET_t_Wilkens_keV_um_single(const double z_cm,
     double alpha = AT_alpha_g_cm2_MeV_from_material_no(material_no); // proportionality factor (0.0022 cm/MeV^p in [1])
 
     double range_cm = alpha * pow(E_MeV_u, p);  // range in [cm]
-    double regul_factor_cm = 2 * 1e-4; // regularization factor in [cm] ( 1cm = 1e4 um)
+
+    double regul_factor_cm = 2.0 * 1e-4; // regularization factor in [cm] ( 1cm = 1e4 um)
 
     double ni1 = 1.0 + (1.0 / p);
 
@@ -135,16 +136,16 @@ double AT_LET_t_Wilkens_keV_um_single(const double z_cm,
 
     double LET_t_keV_um = 1.0; // returned value
 
-    LET_t_keV_um /= (sigma_cm * range_cm * pow(alpha, 1.0 / p));
+    LET_t_keV_um /= (sigma_cm * regul_factor_cm * pow(alpha, 1.0 / p));
 
-    double nominator = 0.0;
+    double nominator = M_SQRTPI * M_SQRT2 * sigma_cm;
 
-    nominator += M_SQRTPI * sqrt(2.0) * (AT_range_straggling_convolution(z_cm, range_cm + regul_factor_cm, sigma_cm, ni1) -
+    nominator *=  (AT_range_straggling_convolution(z_cm, range_cm + regul_factor_cm, sigma_cm, ni1) -
             AT_range_straggling_convolution(z_cm, range_cm, sigma_cm, ni1));
 
-    nominator += range_cm * pow(range_cm / 2.0, 1.0 / p) * exp( -(xi +zeta)*(xi+zeta) / 8.0 );
+    nominator -= regul_factor_cm * pow(regul_factor_cm / 2.0, 1.0 / p) * exp( -(xi+zeta)*(xi+zeta) / 8.0 );
 
-    double denominator = M_SQRTPI * sqrt(2.0) * AT_range_straggling_convolution(z_cm, range_cm, sigma_cm, 1.0);
+    double denominator = M_SQRTPI * M_SQRT2 * AT_range_straggling_convolution(z_cm, range_cm, sigma_cm, 1.0);
 
     LET_t_keV_um *= nominator;
     LET_t_keV_um /= denominator;

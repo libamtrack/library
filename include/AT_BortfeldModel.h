@@ -29,7 +29,7 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "AT_BortfeldModel.h"
+#include <gsl/gsl_math.h>
 
 // Some headers are found in different places in Mac OS X
 #ifdef __APPLE__
