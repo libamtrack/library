@@ -201,6 +201,8 @@ funs='['
  funs+='"_AT_dose_Bortfeld_Gy_multi",'
  funs+='"_AT_LET_t_Wilkens_keV_um_single",'
  funs+='"_AT_LET_t_Wilkens_keV_um_multi",'
+ funs+='"_AT_LET_d_Wilkens_keV_um_single",'
+ funs+='"_AT_LET_d_Wilkens_keV_um_multi",'
 
   #----AT_SuccessiveConvolutions.h	
  funs+='"_AT_n_bins_for_single_impact_local_dose_distrib",'	

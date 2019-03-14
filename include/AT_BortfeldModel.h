@@ -123,4 +123,38 @@ void AT_LET_t_Wilkens_keV_um_multi(const long n,
                                const long material_no,
                                double LET_keV_um[]);
 
+/**
+ * Computes dose averaged LET according to Wilkens model
+ * @param[in] z_cm            depth in medium [cm]
+ * @param[in] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
+ * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
+ * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in] material_no     material code number
+ * @see          AT_DataMaterial.h for definition
+ * @return                    track averaged LET at given depth [keV/um]
+ */
+double AT_LET_d_Wilkens_keV_um_single(const double z_cm,
+                                      const double E_MeV_u,
+                                      const double sigma_E_MeV_u,
+                                      const long material_no);
+
+
+/**
+ * Computes dose averaged LET according to Wilkens model
+ * @param[in]  n               number of depth steps
+ * @param[in]  z_cm            depths in medium [cm] (array of size n)
+ * @param[in]  E_MeV_u         initial kinetic energy of proton beam [MeV/u]
+ * @param[in]  sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
+ * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in]  material_no     material code number
+ * @see          AT_DataMaterial.h for definition
+ * @param[out] LET_keV_um      track averaged LET at given depth [keV/um] (array of size n)
+ */
+void AT_LET_d_Wilkens_keV_um_multi(const long n,
+                                   const double z_cm[],
+                                   const double E_MeV_u,
+                                   const double sigma_E_MeV_u,
+                                   const long material_no,
+                                   double LET_keV_um[]);
+
 #endif /* AT_BortfeldModel_H_ */
