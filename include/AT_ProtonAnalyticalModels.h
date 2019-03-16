@@ -1,13 +1,13 @@
-#ifndef AT_BortfeldModel_H_
-#define AT_BortfeldModel_H_
+#ifndef AT_ProtonAnalyticalModels_H_
+#define AT_ProtonAnalyticalModels_H_
 
 /**
- * @brief Bortfeld model of Bragg curve
+ * @brief Proton analytical models of dose, LET and RBE
  */
 
 
 /*
- *    AT_BortfeldModel.h
+ *    AT_ProtonAnalyticalModels.h
  *    ==================
  *
  *    Copyright 2006, 2010 The libamtrack team
@@ -213,4 +213,4 @@ void AT_proton_RBE_multi(const long n,
                          const int rbe_model_no,
                          double rbe[]);
 
-#endif /* AT_BortfeldModel_H_ */
+#endif /* AT_ProtonAnalyticalModels_H_ */

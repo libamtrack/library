@@ -1,9 +1,9 @@
 /**
- * @brief Bortfeld Model
+ * @brief Proton analytical models of dose, LET and RBE
  */
 
 /*
- *    AT_NumericalRoutines.c
+ *    AT_ProtonAnalyticalModels.c
  *    ==============
  *
  *    Created on: 11.02.2019
@@ -28,7 +28,7 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "AT_BortfeldModel.h"
+#include "AT_ProtonAnalyticalModels.h"
 #include "AT_DataMaterial.h"
 
 double AT_dose_Bortfeld_Gy_single(const double z_cm,
@@ -299,7 +299,7 @@ double AT_proton_RBE_single(const double z_cm,
             rbe *= (sqrt(ref_alpha_beta_ratio * ref_alpha_beta_ratio + 4 * ref_alpha_beta_ratio * _apx * dose_Gy +
                          4.0 * _sbpx * _sbpx * dose_Gy * dose_Gy) - ref_alpha_beta_ratio);
         } else {
-            rbe = 0.0;
+            rbe = 1.0/0.0;
         }
     }
 

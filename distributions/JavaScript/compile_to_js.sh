@@ -196,13 +196,15 @@ funs='['
  funs+='"_AT_Stopping_Power_with_no",'	
  funs+='"_AT_Energy_MeV_u_from_Stopping_Power_single",'	
 
- #----AT_BortfeldModel.h
+ #----AT_ProtonAnalyticalModels.h
  funs+='"_AT_dose_Bortfeld_Gy_single",'
  funs+='"_AT_dose_Bortfeld_Gy_multi",'
  funs+='"_AT_LET_t_Wilkens_keV_um_single",'
  funs+='"_AT_LET_t_Wilkens_keV_um_multi",'
  funs+='"_AT_LET_d_Wilkens_keV_um_single",'
  funs+='"_AT_LET_d_Wilkens_keV_um_multi",'
+ funs+='"_AT_proton_RBE_single",'
+ funs+='"_AT_proton_RBE_multi",'
 
   #----AT_SuccessiveConvolutions.h	
  funs+='"_AT_n_bins_for_single_impact_local_dose_distrib",'	
