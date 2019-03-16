@@ -265,8 +265,8 @@ double AT_proton_RBE_single(const double z_cm,
     double dose_Gy = 0.0;
     double fluence_cm2 = 1.0;
 
-    double _apx = 0.0;
-    double _sbpx = 0.0;
+    double alpha_proton_to_alpha_ref = 0.0;
+    double sqrt_beta_prot_to_beta_ref = 0.0;
 
     if (rbe_model_no == RBE_One) {
         rbe = 1.0;
@@ -281,26 +281,24 @@ double AT_proton_RBE_single(const double z_cm,
 
         switch (rbe_model_no) {
             case RBE_Carabe :
-                _apx = 0.843 + 0.154 * 2.686 * let_keV_um / ref_alpha_beta_ratio;
-                _sbpx = 1.090 + 0.006 * 2.686 * let_keV_um / ref_alpha_beta_ratio;
+                alpha_proton_to_alpha_ref = 0.843 + 0.154 * 2.686 * let_keV_um / ref_alpha_beta_ratio;
+                sqrt_beta_prot_to_beta_ref = 1.090 + 0.006 * 2.686 * let_keV_um / ref_alpha_beta_ratio;
                 break;
             case RBE_Wedenberg :
-                _apx = 1.000 + 0.434 * let_keV_um / ref_alpha_beta_ratio;
-                _sbpx = 1.000;
+                alpha_proton_to_alpha_ref = 1.000 + 0.434 * let_keV_um / ref_alpha_beta_ratio;
+                sqrt_beta_prot_to_beta_ref = 1.000;
                 break;
             case RBE_McNamara :
-                _apx = 0.99064 + 0.35605 * let_keV_um / ref_alpha_beta_ratio;
-                _sbpx = 1.1012 - 0.0038703 * sqrt(ref_alpha_beta_ratio) * let_keV_um;
+                alpha_proton_to_alpha_ref = 0.99064 + 0.35605 * let_keV_um / ref_alpha_beta_ratio;
+                sqrt_beta_prot_to_beta_ref = 1.1012 - 0.0038703 * sqrt(ref_alpha_beta_ratio) * let_keV_um;
                 break;
         }
 
-        if (dose_Gy > 0) {
-            rbe = 1.0 / (2.0 * dose_Gy);
-            rbe *= (sqrt(ref_alpha_beta_ratio * ref_alpha_beta_ratio + 4 * ref_alpha_beta_ratio * _apx * dose_Gy +
-                         4.0 * _sbpx * _sbpx * dose_Gy * dose_Gy) - ref_alpha_beta_ratio);
-        } else {
-            rbe = 1.0/0.0;
-        }
+        rbe = 1.0 / (2.0 * dose_Gy);
+        rbe *= (sqrt(ref_alpha_beta_ratio * ref_alpha_beta_ratio +
+                     4.0 * ref_alpha_beta_ratio * alpha_proton_to_alpha_ref * dose_Gy +
+                     4.0 * sqrt_beta_prot_to_beta_ref * sqrt_beta_prot_to_beta_ref * dose_Gy * dose_Gy) -
+                ref_alpha_beta_ratio);
     }
 
     return rbe;
