@@ -1,13 +1,13 @@
-#ifndef AT_BortfeldModel_H_
-#define AT_BortfeldModel_H_
+#ifndef AT_ProtonAnalyticalModels_H_
+#define AT_ProtonAnalyticalModels_H_
 
 /**
- * @brief Bortfeld model of Bragg curve
+ * @brief Proton analytical models of dose, LET and RBE
  */
 
 
 /*
- *    AT_BortfeldModel.h
+ *    AT_ProtonAnalyticalModels.h
  *    ==================
  *
  *    Copyright 2006, 2010 The libamtrack team
@@ -157,4 +157,60 @@ void AT_LET_d_Wilkens_keV_um_multi(const long n,
                                    const long material_no,
                                    double LET_keV_um[]);
 
-#endif /* AT_BortfeldModel_H_ */
+/**
+ *Proton RBE models code numbers
+ */
+enum AT_RBEModels {
+    RBE_One = 1,     /**< RBE equals 1.0 */
+    RBE_OnePointOne = 2,     /**< RBE equals 1.1 */
+    RBE_Carabe = 3,     /**< Carabe model (Phys. Med. Biol. 57(5), 1159-1172 (2012)) */
+    RBE_Wedenberg = 4,     /**< Wedenberg model (Acta Oncol. 52(3), 580-588 (2013)) */
+    RBE_McNamara = 5,     /**< McNamara model (Phys. Med. Biol. 60(21), 8399-8416)*/
+};
+
+
+/**
+ * Computes proton RBE according to one of several analytical models
+ * @param[in] z_cm              depth in medium [cm]
+ * @param[in] entrance_dose_Gy  entrance dose [Gy]
+ * @param[in] E_MeV_u           initial kinetic energy of proton beam [MeV/u]
+ * @param[in] sigma_E_MeV_u     kinetic energy spread (standard deviation) [MeV/u]
+ * if negative a default value of 0.01 * E_MeV_u is assumed
+  * @param[in] eps              fraction of primary fluence contributing to the tail of energy spectrum
+ * if negative a default value of 0.03 is assumed
+* @param[in] ref_alpha_beta_ratio   ratio of alpha to beta (parameters in linear-quadratic model) for reference radiation
+ * @return                    proton RBE
+ */
+double AT_proton_RBE_single(const double z_cm,
+                            const double entrance_dose_Gy,
+                            const double E_MeV_u,
+                            const double sigma_E_MeV_u,
+                            const double eps,
+                            const double ref_alpha_beta_ratio,
+                            const int rbe_model_no);
+
+
+/**
+ * Computes proton RBE according to one of several analytical models
+ * @param[in]  n                 number of depth steps
+ * @param[in]  z_cm              depth in medium [cm] (array of size n)
+ * @param[in]  entrance_dose_Gy  entrance dose [Gy]
+ * @param[in]  E_MeV_u           initial kinetic energy of proton beam [MeV/u]
+ * @param[in]  sigma_E_MeV_u     kinetic energy spread (standard deviation) [MeV/u]
+ * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in] eps               fraction of primary fluence contributing to the tail of energy spectrum
+ * if negative a default value of 0.03 is assumed
+ * @param[in]  ref_alpha_beta_ratio   ratio of alpha to beta (parameters in linear-quadratic model) for reference radiation
+ * @param[out] rbe             proton RBE (array of size n)
+ */
+void AT_proton_RBE_multi(const long n,
+                         const double z_cm[],
+                         const double entrance_dose_Gy,
+                         const double E_MeV_u,
+                         const double sigma_E_MeV_u,
+                         const double eps,
+                         const double ref_alpha_beta_ratio,
+                         const int rbe_model_no,
+                         double rbe[]);
+
+#endif /* AT_ProtonAnalyticalModels_H_ */

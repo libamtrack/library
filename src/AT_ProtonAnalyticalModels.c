@@ -1,9 +1,9 @@
 /**
- * @brief Bortfeld Model
+ * @brief Proton analytical models of dose, LET and RBE
  */
 
 /*
- *    AT_NumericalRoutines.c
+ *    AT_ProtonAnalyticalModels.c
  *    ==============
  *
  *    Created on: 11.02.2019
@@ -28,7 +28,7 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "AT_BortfeldModel.h"
+#include "AT_ProtonAnalyticalModels.h"
 #include "AT_DataMaterial.h"
 
 double AT_dose_Bortfeld_Gy_single(const double z_cm,
@@ -248,5 +248,75 @@ void AT_LET_d_Wilkens_keV_um_multi(const long n,
     long i;
     for (i = 0; i < n; i++) {
         LET_keV_um[i] = AT_LET_d_Wilkens_keV_um_single(z_cm[i], E_MeV_u, sigma_E_MeV_u, material_no);
+    }
+}
+
+
+double AT_proton_RBE_single(const double z_cm,
+                            const double entrance_dose_Gy,
+                            const double E_MeV_u,
+                            const double sigma_E_MeV_u,
+                            const double eps,
+                            const double ref_alpha_beta_ratio,
+                            const int rbe_model_no) {
+
+    double rbe = 0.0;
+    double let_keV_um = 0.0;
+    double dose_Gy = 0.0;
+    double fluence_cm2 = 1.0;
+
+    double alpha_proton_to_alpha_ref = 0.0;
+    double sqrt_beta_prot_to_beta_ref = 0.0;
+
+    if (rbe_model_no == RBE_One) {
+        rbe = 1.0;
+    } else if (rbe_model_no == RBE_OnePointOne) {
+        rbe = 1.1;
+    } else {
+        fluence_cm2 = entrance_dose_Gy;
+        fluence_cm2 /= AT_dose_Bortfeld_Gy_single(z_cm, 1.0, E_MeV_u, sigma_E_MeV_u, Water_Liquid, eps);
+
+        dose_Gy = AT_dose_Bortfeld_Gy_single(z_cm, fluence_cm2, E_MeV_u, sigma_E_MeV_u, Water_Liquid, eps);
+        let_keV_um = AT_LET_d_Wilkens_keV_um_single(z_cm, E_MeV_u, sigma_E_MeV_u, Water_Liquid);
+
+        switch (rbe_model_no) {
+            case RBE_Carabe :
+                alpha_proton_to_alpha_ref = 0.843 + 0.154 * 2.686 * let_keV_um / ref_alpha_beta_ratio;
+                sqrt_beta_prot_to_beta_ref = 1.090 + 0.006 * 2.686 * let_keV_um / ref_alpha_beta_ratio;
+                break;
+            case RBE_Wedenberg :
+                alpha_proton_to_alpha_ref = 1.000 + 0.434 * let_keV_um / ref_alpha_beta_ratio;
+                sqrt_beta_prot_to_beta_ref = 1.000;
+                break;
+            case RBE_McNamara :
+                alpha_proton_to_alpha_ref = 0.99064 + 0.35605 * let_keV_um / ref_alpha_beta_ratio;
+                sqrt_beta_prot_to_beta_ref = 1.1012 - 0.0038703 * sqrt(ref_alpha_beta_ratio) * let_keV_um;
+                break;
+        }
+
+        rbe = 1.0 / (2.0 * dose_Gy);
+        rbe *= (sqrt(ref_alpha_beta_ratio * ref_alpha_beta_ratio +
+                     4.0 * ref_alpha_beta_ratio * alpha_proton_to_alpha_ref * dose_Gy +
+                     4.0 * sqrt_beta_prot_to_beta_ref * sqrt_beta_prot_to_beta_ref * dose_Gy * dose_Gy) -
+                ref_alpha_beta_ratio);
+    }
+
+    return rbe;
+}
+
+
+void AT_proton_RBE_multi(const long n,
+                         const double z_cm[],
+                         const double entrance_dose_Gy,
+                         const double E_MeV_u,
+                         const double sigma_E_MeV_u,
+                         const double eps,
+                         const double ref_alpha_beta_ratio,
+                         const int rbe_model_no,
+                         double rbe[]) {
+    long i;
+    for (i = 0; i < n; i++) {
+        rbe[i] = AT_proton_RBE_single(z_cm[i], entrance_dose_Gy, E_MeV_u, sigma_E_MeV_u, eps, ref_alpha_beta_ratio,
+                                      rbe_model_no);
     }
 }
