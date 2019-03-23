@@ -1,5 +1,5 @@
 /**
- * @brief Proton analytical models of dose, LET and RBE
+ * @brief Proton analytical beam parameters
  */
 
 /*
@@ -89,17 +89,6 @@ double AT_max_location_Bortfeld_cm(const double E_MeV_u,
     s = gsl_min_fminimizer_alloc(T);
     gsl_min_fminimizer_set(s, &F, x_minimum, x_lower, x_upper);
 
-//    printf("using %s method\n",
-//           gsl_min_fminimizer_name(s));
-//
-//    printf("%5s [%9s, %9s] %9s %10s %9s\n",
-//           "iter", "lower", "upper", "min",
-//           "err", "err(est)");
-//
-//    printf("%5d [%.7f, %.7f] %.7f %.7f\n",
-//           iter, x_lower, x_upper,
-//           x_minimum, x_upper - x_lower);
-
     do {
         iter++;
         status = gsl_min_fminimizer_iterate(s);
@@ -110,13 +99,6 @@ double AT_max_location_Bortfeld_cm(const double E_MeV_u,
 
         status = gsl_min_test_interval(x_lower, x_upper, 1e-6, 0.0);
 
-//        if (status == GSL_SUCCESS)
-//            printf("Converged:\n");
-//
-//        printf("%5d [%.7f, %.7f] "
-//               "%.7f %.7f\n",
-//               iter, x_lower, x_upper,
-//               x_minimum, x_upper - x_lower);
     } while (status == GSL_CONTINUE && iter < max_iter);
 
     gsl_min_fminimizer_free(s);
@@ -146,8 +128,6 @@ double _AT_dose_Bortfeld_Gy_root(double x, void *params) {
                                                current_params->eps);
 
     result -= current_params->dose_cut_Gy;
-
-//    printf("f(%g) = %g\n", x, result);
 
     return result;
 }
@@ -214,32 +194,13 @@ double AT_range_Bortfeld_cm(const double E_MeV_u,
     s = gsl_root_fsolver_alloc(T);
     gsl_root_fsolver_set(s, &F, x_lower, x_upper);
 
-//    printf ("using %s method\n",
-//            gsl_root_fsolver_name (s));
-//
-//    printf ("%5s [%9s, %9s] %9s %10s %9s\n",
-//            "iter", "lower", "upper", "root",
-//            "err", "err(est)");
-//
-//    printf ("%5d [%.7f, %.7f] %.7f %+.7f %.7f\n",
-//            iter, x_lower, x_upper,
-//            x_root, x_upper - x_lower);
-
     do {
         iter++;
         status = gsl_root_fsolver_iterate(s);
         x_root = gsl_root_fsolver_root(s);
         x_lower = gsl_root_fsolver_x_lower(s);
         x_upper = gsl_root_fsolver_x_upper(s);
-        status = gsl_root_test_interval(x_lower, x_upper,
-                                        0, 1e-6);
-
-//        if (status == GSL_SUCCESS)
-//            printf ("Converged:\n");
-//
-//        printf ("%5d [%.7f, %.7f] %.7f %+.7f %.7f\n",
-//                iter, x_lower, x_upper,
-//                x_root, x_upper - x_lower);
+        status = gsl_root_test_interval(x_lower, x_upper, 0, 1e-6);
     } while (status == GSL_CONTINUE && iter < max_iter);
 
     gsl_root_fsolver_free(s);
@@ -380,17 +341,6 @@ double AT_energy_Bortfeld_MeV_u(const double range_cm,
     s = gsl_root_fsolver_alloc(T);
     gsl_root_fsolver_set(s, &F, x_lower, x_upper);
 
-//    printf("using %s method\n",
-//           gsl_root_fsolver_name(s));
-//
-//    printf("%5s [%9s, %9s] %9s %10s %9s\n",
-//           "iter", "lower", "upper", "root",
-//           "err", "err(est)");
-//
-//    printf("%5d [%.7f, %.7f] %.7f %+.7f %.7f\n",
-//           iter, x_lower, x_upper,
-//           x_root, x_upper - x_lower);
-
     do {
         iter++;
         status = gsl_root_fsolver_iterate(s);
@@ -400,12 +350,6 @@ double AT_energy_Bortfeld_MeV_u(const double range_cm,
         status = gsl_root_test_interval(x_lower, x_upper,
                                         0, 1e-6);
 
-//        if (status == GSL_SUCCESS)
-//            printf("Converged:\n");
-//
-//        printf("%5d [%.7f, %.7f] %.7f %+.7f %.7f\n",
-//               iter, x_lower, x_upper,
-//               x_root, x_upper - x_lower);
     } while (status == GSL_CONTINUE && iter < max_iter);
 
     gsl_root_fsolver_free(s);
@@ -478,36 +422,27 @@ func_f(const gsl_vector *x, void *params, gsl_vector *f) {
 void
 callback(const size_t iter, void *params,
          const gsl_multifit_nlinear_workspace *w) {
-    gsl_vector *x = gsl_multifit_nlinear_position(w);
-
-    /* print out current location */
-//    printf("%f %f %f\t",
-//           gsl_vector_get(x, 0),
-//           gsl_vector_get(x, 1),
-//           constraint(gsl_vector_get(x, 2)));
-
-    _AT_func_params *current_params = (_AT_func_params *) (params);
-
-
-    double current_range_cm = AT_range_Bortfeld_cm(gsl_vector_get(x, 0),
-                                                   gsl_vector_get(x, 1),
-                                                   current_params->material_no,
-                                                   constraint(gsl_vector_get(x, 2)),
-                                                   current_params->dose_drop,
-                                                   1);
-
-    double current_fwhm_cm = AT_fwhm_Bortfeld_cm(gsl_vector_get(x, 0),
-                                                 gsl_vector_get(x, 1),
-                                                 current_params->material_no,
-                                                 constraint(gsl_vector_get(x, 2)));
-
-    double current_max_plateau = AT_max_plateau_Bortfeld(gsl_vector_get(x, 0),
-                                                         gsl_vector_get(x, 1),
-                                                         current_params->material_no,
-                                                         constraint(gsl_vector_get(x, 2)));
-
-    /* print out current location */
-//    printf("range = %g , fwhm = %g , max/plat = %g\n", current_range_cm, current_fwhm_cm, current_max_plateau);
+//    gsl_vector *x = gsl_multifit_nlinear_position(w);
+//
+//    _AT_func_params *current_params = (_AT_func_params *) (params);
+//
+//
+//    double current_range_cm = AT_range_Bortfeld_cm(gsl_vector_get(x, 0),
+//                                                   gsl_vector_get(x, 1),
+//                                                   current_params->material_no,
+//                                                   constraint(gsl_vector_get(x, 2)),
+//                                                   current_params->dose_drop,
+//                                                   1);
+//
+//    double current_fwhm_cm = AT_fwhm_Bortfeld_cm(gsl_vector_get(x, 0),
+//                                                 gsl_vector_get(x, 1),
+//                                                 current_params->material_no,
+//                                                 constraint(gsl_vector_get(x, 2)));
+//
+//    double current_max_plateau = AT_max_plateau_Bortfeld(gsl_vector_get(x, 0),
+//                                                         gsl_vector_get(x, 1),
+//                                                         current_params->material_no,
+//                                                         constraint(gsl_vector_get(x, 2)));
 
 }
 
@@ -516,17 +451,15 @@ void AT_fit_Bortfeld(const double range_cm,
                      const double max_to_plateau,
                      const long material_no,
                      const double dose_drop,
-                     double * E_MeV_u,
-                     double * sigma_E_MeV_u,
-                     double * eps) {
-
-//    printf("TARGER range = %g , fwhm = %g , max/plat = %g\n", range_cm, fwhm_cm, max_to_plateau);
+                     double *E_MeV_u,
+                     double *sigma_E_MeV_u,
+                     double *eps) {
 
     /* problem dimensions */
     const size_t n = 3;
     const size_t p = 3;
 
-    const size_t max_iter = 200;
+    const size_t max_iter = 500;
     const double xtol = 1.0e-8;
     const double gtol = 1.0e-8;
     const double ftol = 1.0e-8;
@@ -562,60 +495,17 @@ void AT_fit_Bortfeld(const double range_cm,
     params.trs = gsl_multifit_nlinear_trs_lmaccel;
 
     const gsl_multifit_nlinear_type *T = gsl_multifit_nlinear_trust;
-    gsl_multifit_nlinear_workspace *work =
-            gsl_multifit_nlinear_alloc(T, &params, n, p);
-
-    gsl_vector *f = gsl_multifit_nlinear_residual(work);
-//    gsl_vector * x = gsl_multifit_nlinear_position(work);
-    double chisq0, chisq, rcond;
+    gsl_multifit_nlinear_workspace *work = gsl_multifit_nlinear_alloc(T, &params, n, p);
 
     /* initialize solver */
     gsl_multifit_nlinear_init(x0, &fdf, work);
 
-    /* store initial cost */
-//    gsl_blas_ddot(f, f, &chisq0);
-
     /* iterate until convergence */
-    gsl_multifit_nlinear_driver(max_iter, xtol, gtol, ftol,
-                                callback, (void *) (&current_params), &info, work);
-
-    /* compute covariance of best fit parameters */
-//    gsl_matrix *J;
-//    gsl_matrix *covar = gsl_matrix_alloc(p, p);
-//    J = gsl_multifit_nlinear_jac(work);
-//    gsl_multifit_nlinear_covar(J, 0.0, covar);
-
-//    /* store final cost */
-//    gsl_blas_ddot(f, f, &chisq);
-//
-//    /* store cond(J(x)) */
-//    gsl_multifit_nlinear_rcond(&rcond, work);
-//
-//    /* print summary */
-
-    double dof = n - p;
-    double c = GSL_MAX_DBL(1, sqrt(chisq / dof));
-
-//    fprintf(stderr, "E       = %.5f +/- %.5f\n", gsl_vector_get(work->x, 0), c * sqrt(gsl_matrix_get(covar, 0, 0)));
-//    fprintf(stderr, "delta E = %.5f +/- %.5f\n", gsl_vector_get(work->x, 1), c * sqrt(gsl_matrix_get(covar, 1, 1)));
-//    fprintf(stderr, "eps     = %.5f +/- %.5f\n", constraint(gsl_vector_get(work->x, 2)),
-//            c * sqrt(gsl_matrix_get(covar, 2, 2)));
+    gsl_multifit_nlinear_driver(max_iter, xtol, gtol, ftol, callback, (void *) (&current_params), &info, work);
 
     *E_MeV_u = gsl_vector_get(work->x, 0);
     *sigma_E_MeV_u = gsl_vector_get(work->x, 1);
     *eps = constraint(gsl_vector_get(work->x, 2));
-
-//
-//    fprintf(stderr, "NITER         = %zu\n", gsl_multifit_nlinear_niter(work));
-//    fprintf(stderr, "NFEV          = %zu\n", fdf.nevalf);
-//    fprintf(stderr, "NJEV          = %zu\n", fdf.nevaldf);
-//    fprintf(stderr, "NAEV          = %zu\n", fdf.nevalfvv);
-//    fprintf(stderr, "initial cost  = %.12e\n", chisq0);
-//    fprintf(stderr, "final cost    = %.12e\n", chisq);
-//    fprintf(stderr, "final x       = (%.12e, %.12e)\n", gsl_vector_get(x, 0), gsl_vector_get(x, 1));
-//    fprintf(stderr, "final cond(J) = %.12e\n", 1.0 / rcond);
-//
-//    printf("\n\n");
 
     gsl_multifit_nlinear_free(work);
 
