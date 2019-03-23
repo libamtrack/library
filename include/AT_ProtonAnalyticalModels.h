@@ -30,6 +30,14 @@
  */
 
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_min.h>
+#include <gsl/gsl_roots.h>
+
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_blas.h>
+#include <gsl/gsl_multifit_nlinear.h>
 
 // Some headers are found in different places in Mac OS X
 #ifdef __APPLE__
@@ -39,6 +47,9 @@
 #include <malloc.h>
 
 #endif
+
+#include "AT_DataMaterial.h"
+
 
 
 /**
@@ -212,5 +223,7 @@ void AT_proton_RBE_multi(const long n,
                          const double ref_alpha_beta_ratio,
                          const int rbe_model_no,
                          double rbe[]);
+
+
 
 #endif /* AT_ProtonAnalyticalModels_H_ */

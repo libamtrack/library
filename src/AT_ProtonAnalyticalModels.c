@@ -29,7 +29,6 @@
  */
 
 #include "AT_ProtonAnalyticalModels.h"
-#include "AT_DataMaterial.h"
 
 double AT_dose_Bortfeld_Gy_single(const double z_cm,
                                   const double fluence_cm2,
@@ -320,3 +319,4 @@ void AT_proton_RBE_multi(const long n,
                                       rbe_model_no);
     }
 }
+

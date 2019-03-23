@@ -206,6 +206,13 @@ funs='['
  funs+='"_AT_proton_RBE_single",'
  funs+='"_AT_proton_RBE_multi",'
 
+ #----AT_ProtonAnalyticalBeamParameters.h
+ funs+='"_AT_range_Bortfeld_cm",'
+ funs+='"_AT_fwhm_Bortfeld_cm",'
+ funs+='"_AT_max_plateau_Bortfeld",'
+ funs+='"_AT_energy_Bortfeld_MeV_u",'
+
+
   #----AT_SuccessiveConvolutions.h	
  funs+='"_AT_n_bins_for_single_impact_local_dose_distrib",'	
  funs+='"_AT_single_impact_local_dose_distrib",'	
