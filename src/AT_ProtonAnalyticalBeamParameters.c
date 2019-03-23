@@ -277,13 +277,13 @@ typedef struct {
     long material_no;
     double dose_drop;
     double eps;
-} _AT_range_Bortfeld_Gy_root_params;
+} _AT_range_Bortfeld_Gy_params;
 
 
 double _AT_range_Bortfeld_Gy(double x, void *params) {
     assert(params != NULL);
 
-    _AT_range_Bortfeld_Gy_root_params *current_params = (_AT_range_Bortfeld_Gy_root_params *) params;
+    _AT_range_Bortfeld_Gy_params *current_params = (_AT_range_Bortfeld_Gy_params *) params;
 
 
     double result = AT_range_Bortfeld_cm(x,
@@ -318,7 +318,7 @@ double AT_energy_Bortfeld_MeV_u(const double range_cm,
     if (current_dose_drop < 0.0)
         current_dose_drop = 0.8;
 
-    _AT_range_Bortfeld_Gy_root_params current_params;
+    _AT_range_Bortfeld_Gy_params current_params;
     current_params.range_cm = range_cm;
     current_params.sigma_E_MeV_u = sigma_E_MeV_u;
     current_params.material_no = material_no;
@@ -369,11 +369,11 @@ typedef struct {
     long material_no;
     double eps;
     double dose_drop;
-} _AT_func_params;
+} _AT_chi2_range_fwhm_maxplat_params;
 
 
 // real -> [0, 0.2]
-double constraint(double x) {
+double _AT_real2interval(double x) {
     if (x > 10) {
         return 0.2 * (M_1_PI * atan(10.0) + 0.5);
     } else {
@@ -382,18 +382,18 @@ double constraint(double x) {
 }
 
 // [0, 0.2] -> real
-double deconstraint(double y) {
+double _AT_interval2real(double y) {
     return tan(M_PI * (y / 0.2 - 0.5));
 }
 
 
 int
-func_f(const gsl_vector *x, void *params, gsl_vector *f) {
+_AT_chi2_range_fwhm_maxplat(const gsl_vector *x, void *params, gsl_vector *f) {
     double E_MeV_u = gsl_vector_get(x, 0);
     double sigma_E_MeV_u = gsl_vector_get(x, 1);
-    double eps = constraint(gsl_vector_get(x, 2));
+    double eps = _AT_real2interval(gsl_vector_get(x, 2));
 
-    _AT_func_params *current_params = (_AT_func_params *) params;
+    _AT_chi2_range_fwhm_maxplat_params *current_params = (_AT_chi2_range_fwhm_maxplat_params *) params;
 
     double current_range_cm = AT_range_Bortfeld_cm(E_MeV_u,
                                                    sigma_E_MeV_u,
@@ -424,25 +424,25 @@ callback(const size_t iter, void *params,
          const gsl_multifit_nlinear_workspace *w) {
 //    gsl_vector *x = gsl_multifit_nlinear_position(w);
 //
-//    _AT_func_params *current_params = (_AT_func_params *) (params);
+//    _AT_chi2_range_fwhm_maxplat_params *current_params = (_AT_chi2_range_fwhm_maxplat_params *) (params);
 //
 //
 //    double current_range_cm = AT_range_Bortfeld_cm(gsl_vector_get(x, 0),
 //                                                   gsl_vector_get(x, 1),
 //                                                   current_params->material_no,
-//                                                   constraint(gsl_vector_get(x, 2)),
+//                                                   _AT_real2interval(gsl_vector_get(x, 2)),
 //                                                   current_params->dose_drop,
 //                                                   1);
 //
 //    double current_fwhm_cm = AT_fwhm_Bortfeld_cm(gsl_vector_get(x, 0),
 //                                                 gsl_vector_get(x, 1),
 //                                                 current_params->material_no,
-//                                                 constraint(gsl_vector_get(x, 2)));
+//                                                 _AT_real2interval(gsl_vector_get(x, 2)));
 //
 //    double current_max_plateau = AT_max_plateau_Bortfeld(gsl_vector_get(x, 0),
 //                                                         gsl_vector_get(x, 1),
 //                                                         current_params->material_no,
-//                                                         constraint(gsl_vector_get(x, 2)));
+//                                                         _AT_real2interval(gsl_vector_get(x, 2)));
 
 }
 
@@ -468,11 +468,11 @@ void AT_fit_Bortfeld(const double range_cm,
     gsl_vector *x0 = gsl_vector_alloc(p);
     gsl_vector_set(x0, 0, 100.0);
     gsl_vector_set(x0, 1, 1.5);
-    gsl_vector_set(x0, 2, deconstraint(0.02));
+    gsl_vector_set(x0, 2, _AT_interval2real(0.02));
 
 
     /* define function to be minimized */
-    _AT_func_params current_params;
+    _AT_chi2_range_fwhm_maxplat_params current_params;
     current_params.range_cm = range_cm;
     current_params.fwhm_cm = fwhm_cm;
     current_params.max_plateau = max_to_plateau;
@@ -481,7 +481,7 @@ void AT_fit_Bortfeld(const double range_cm,
     current_params.dose_drop = dose_drop;
 
     gsl_multifit_nlinear_fdf fdf;
-    fdf.f = func_f;
+    fdf.f = _AT_chi2_range_fwhm_maxplat;
     fdf.df = NULL;
     fdf.fvv = NULL;
     fdf.n = n;
@@ -505,7 +505,7 @@ void AT_fit_Bortfeld(const double range_cm,
 
     *E_MeV_u = gsl_vector_get(work->x, 0);
     *sigma_E_MeV_u = gsl_vector_get(work->x, 1);
-    *eps = constraint(gsl_vector_get(work->x, 2));
+    *eps = _AT_real2interval(gsl_vector_get(work->x, 2));
 
     gsl_multifit_nlinear_free(work);
 
