@@ -10,17 +10,28 @@ compiler:
 python:
   - "2.7"
 
+# needed to run dpkg -i
+sudo: true
+
 addons:
   apt:
     packages:
-    - libgsl0-dev
     - gfortran
 
 # run on Ubuntu 16.04
 dist: xenial
 
+
+# Ubuntu 16.04 has pretty old (2.1) version of GSL
+# libamtrack needs GSL version 2.5, hence we install it from deb packages of Ubuntu 18.04 repo
 before_install:
   - mkdir m4
+  - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/libgslcblas0_2.5+dfsg-5_amd64.deb  # newest GSL (2.5) from Ubuntu 18.04 repo
+  - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/libgsl23_2.5+dfsg-5_amd64.deb
+  - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/libgsl-dev_2.5+dfsg-5_amd64.deb
+  - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/gsl-bin_2.5+dfsg-5_amd64.deb
+  - sudo dpkg -i *.deb
+  - gsl-config --version # print the currently installed version of GSL
   - autoreconf --force --install
 
 install:
@@ -29,7 +40,7 @@ install:
 # If before_install, install or before_script returns a non-zero exit code, the build is errored and stops immediately.
 before_script:
   - make README
-  - make
+  - make -j2
   - make install
 
 # If script returns a non-zero exit code, the build is failed, but continues to run before being marked as failed.

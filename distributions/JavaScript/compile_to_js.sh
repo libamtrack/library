@@ -16,6 +16,7 @@ cd .
 mkdir _build
 cd _build
 cp ../libgsl.a .
+cp ../libgslcblas.a .
 ls -al .
 
 emcmake cmake .. -DGSL_INCLUDE_DIRS=$GSL_INCLUDE_DIRS -DGSL_LIBRARY=$GSL_LIBRARY -DGSL_CBLAS_LIBRARY=$GSL_CBLAS_LIBRARY
@@ -205,6 +206,14 @@ funs='['
  funs+='"_AT_LET_d_Wilkens_keV_um_multi",'
  funs+='"_AT_proton_RBE_single",'
  funs+='"_AT_proton_RBE_multi",'
+
+ #----AT_ProtonAnalyticalBeamParameters.h
+ funs+='"_AT_range_Bortfeld_cm",'
+ funs+='"_AT_fwhm_Bortfeld_cm",'
+ funs+='"_AT_max_plateau_Bortfeld",'
+ funs+='"_AT_energy_Bortfeld_MeV_u",'
+ funs+='"_AT_fit_Bortfeld",'
+
 
   #----AT_SuccessiveConvolutions.h	
  funs+='"_AT_n_bins_for_single_impact_local_dose_distrib",'	
@@ -480,7 +489,7 @@ funs='['
   funs+=']'
 
 
-emcc libat.a libgsl.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
+emcc libat.a libgsl.a libgslcblas.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
 
 mkdir -p ../output/
 rm ../output/*

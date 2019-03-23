@@ -32,17 +32,92 @@
 #include <stdlib.h>
 
 #include "AT_PhysicsRoutines.h"
+#include "AT_ProtonAnalyticalModels.h"
+#include "AT_ProtonAnalyticalBeamParameters.h"
 
-int main( int argc, char* argv[]){
+int main(int argc, char *argv[]) {
 
-	if( argc != 1){
-		printf("Usage: %s\n", argv[0]);
-		return EXIT_FAILURE;
-	}
+    if (argc != 1) {
+        printf("Usage: %s\n", argv[0]);
+        return EXIT_FAILURE;
+    }
 
-	double E_MeV_u = 60;
-	double beta = AT_beta_from_E_single( E_MeV_u );
-	printf("Relative speed of particle with energy %4.2f is equal %1.3f\n", E_MeV_u, beta);
+    const double E_MeV_u = 150.0;
+    double beta = AT_beta_from_E_single(E_MeV_u);
+    printf("Relative speed of particle with energy %4.2f is equal %1.3f\n", E_MeV_u, beta);
 
-	return EXIT_SUCCESS;
+    const double z_cm = 10;
+    const double fluence_cm2 = 1e9;
+    const double sigma_E_MeV_u = 1.0;
+    const long material_no = 1;
+    const double eps = 0.02;
+
+    double dose_Gy = AT_dose_Bortfeld_Gy_single(z_cm,
+                                                E_MeV_u,
+                                                fluence_cm2,
+                                                sigma_E_MeV_u,
+                                                material_no,
+                                                eps);
+
+    printf("Dose: %g Gy\n", dose_Gy);
+
+    double LETt_keV_um = AT_LET_t_Wilkens_keV_um_single(z_cm,
+                                                        E_MeV_u,
+                                                        sigma_E_MeV_u,
+                                                        material_no);
+
+    double LETd_keV_um = AT_LET_d_Wilkens_keV_um_single(z_cm,
+                                                        E_MeV_u,
+                                                        sigma_E_MeV_u,
+                                                        material_no);
+
+    printf("LETt: %g keV/um\n", LETt_keV_um);
+    printf("LETd: %g keV/um\n", LETd_keV_um);
+
+    double max_location_cm = AT_max_location_Bortfeld_cm(E_MeV_u,
+                                                         sigma_E_MeV_u,
+                                                         material_no,
+                                                         eps);
+
+    printf("max location: %g cm\n", max_location_cm);
+
+    double range_cm = AT_range_Bortfeld_cm(E_MeV_u,
+                                           sigma_E_MeV_u,
+                                           material_no,
+                                           eps,
+                                           0.8,
+                                           1);
+
+    printf("range: %g cm\n", range_cm);
+
+    double fwhm_cm = AT_fwhm_Bortfeld_cm(E_MeV_u,
+                                         sigma_E_MeV_u,
+                                         material_no,
+                                         eps);
+
+    printf("FWHM: %g cm\n", fwhm_cm);
+
+    double energy_MeV = AT_energy_Bortfeld_MeV_u(range_cm,
+                                                 sigma_E_MeV_u,
+                                                 material_no,
+                                                 eps,
+                                                 0.8);
+
+    printf("energy: %g MeV\n", energy_MeV);
+
+    double fit_E_MeV_u;
+    double fit_sigma_E_MeV_u;
+    double fit_eps;
+
+    AT_fit_Bortfeld(15.799712435,
+                    1.5986288328329863,
+                    5.198384978576822,
+                    material_no,
+                    0.9,
+                    &fit_E_MeV_u,
+                    &fit_sigma_E_MeV_u,
+                    &fit_eps);
+    printf("E = %g, deltaE = %g, eps = %g\n", fit_E_MeV_u, fit_sigma_E_MeV_u, fit_eps);
+
+    return EXIT_SUCCESS;
 }

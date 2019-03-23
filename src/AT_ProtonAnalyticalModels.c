@@ -29,7 +29,8 @@
  */
 
 #include "AT_ProtonAnalyticalModels.h"
-#include "AT_DataMaterial.h"
+
+/****************************************** Bortfeld dose model *******************************************************/
 
 double AT_dose_Bortfeld_Gy_single(const double z_cm,
                                   const double fluence_cm2,
@@ -108,6 +109,8 @@ void AT_dose_Bortfeld_Gy_multi(const long n,
         dose_Gy[i] = AT_dose_Bortfeld_Gy_single(z_cm[i], E_MeV_u, fluence_cm2, sigma_E_MeV_u, material_no, eps);
     }
 }
+
+/****************************************** Wilkens LET model *******************************************************/
 
 double AT_LET_t_Wilkens_keV_um_single(const double z_cm,
                                       const double E_MeV_u,
@@ -251,6 +254,7 @@ void AT_LET_d_Wilkens_keV_um_multi(const long n,
     }
 }
 
+/****************************************** RBE models *******************************************************/
 
 double AT_proton_RBE_single(const double z_cm,
                             const double entrance_dose_Gy,
