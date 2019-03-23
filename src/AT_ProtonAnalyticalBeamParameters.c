@@ -573,20 +573,20 @@ void AT_fit_Bortfeld(const double range_cm,
     gsl_multifit_nlinear_init(x0, &fdf, work);
 
     /* store initial cost */
-    gsl_blas_ddot(f, f, &chisq0);
+//    gsl_blas_ddot(f, f, &chisq0);
 
     /* iterate until convergence */
     gsl_multifit_nlinear_driver(max_iter, xtol, gtol, ftol,
                                 callback, (void *) (&current_params), &info, work);
 
     /* compute covariance of best fit parameters */
-    gsl_matrix *J;
-    gsl_matrix *covar = gsl_matrix_alloc(p, p);
-    J = gsl_multifit_nlinear_jac(work);
-    gsl_multifit_nlinear_covar(J, 0.0, covar);
+//    gsl_matrix *J;
+//    gsl_matrix *covar = gsl_matrix_alloc(p, p);
+//    J = gsl_multifit_nlinear_jac(work);
+//    gsl_multifit_nlinear_covar(J, 0.0, covar);
 
 //    /* store final cost */
-    gsl_blas_ddot(f, f, &chisq);
+//    gsl_blas_ddot(f, f, &chisq);
 //
 //    /* store cond(J(x)) */
 //    gsl_multifit_nlinear_rcond(&rcond, work);

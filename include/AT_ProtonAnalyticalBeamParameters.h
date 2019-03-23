@@ -36,7 +36,6 @@
 
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
-#include <gsl/gsl_blas.h>
 #include <gsl/gsl_multifit_nlinear.h>
 
 // Some headers are found in different places in Mac OS X
