@@ -7,7 +7,7 @@
 
 
 /*
- *    AT_ProtonAnalyticalModels.h
+ *    AT_ProtonAnalyticalBeamParameters.h
  *    ==================
  *
  *    Copyright 2006, 2010 The libamtrack team
@@ -43,25 +43,13 @@
 #ifdef __APPLE__
 #include <sys/malloc.h>
 #else
+
 #include <malloc.h>
+
 #endif
 
 
 #include "AT_ProtonAnalyticalModels.h"
-
-
-/**
- * TODO
- */
-typedef struct {
-    double E_MeV_u;
-    double sigma_E_MeV_u;
-    long material_no;
-    double eps;
-} _AT_dose_Bortfeld_Gy_negative_params;
-
-
-double _AT_dose_Bortfeld_Gy_negative(double x, void *params);
 
 
 /**
@@ -79,20 +67,6 @@ double AT_max_location_Bortfeld_cm(const double E_MeV_u,
                                    const double sigma_E_MeV_u,
                                    const long material_no,
                                    const double eps);
-
-
-/**
- * TODO
- */
-typedef struct {
-    double E_MeV_u;
-    double sigma_E_MeV_u;
-    long material_no;
-    double dose_cut_Gy;
-    double eps;
-} _AT_dose_Bortfeld_Gy_root_params;
-
-double _AT_dose_Bortfeld_Gy_root(double x, void *params);
 
 /**
  * TODO
@@ -150,18 +124,6 @@ double AT_max_plateau_Bortfeld(const double E_MeV_u,
                                const long material_no,
                                const double eps);
 
-/**
- * TODO
- */
-typedef struct {
-    double range_cm;
-    double sigma_E_MeV_u;
-    long material_no;
-    double dose_drop;
-    double eps;
-} _AT_range_Bortfeld_Gy_root_params;
-
-double _AT_range_Bortfeld_Gy(double x, void *params);
 
 /**
  * TODO
@@ -191,22 +153,6 @@ void AT_fit_Bortfeld(const double range_cm,
                      const double max_to_plateau,
                      const long material_no,
                      const double dose_drop);
-
-//
-//void AT_energy_from_range(
-//        const double range_cm,
-//        const double range_definition_cm,
-//        const double fwhm_cm,
-//        const double max_plateau_ratio);
-//
-//void AT_SOBP_coefficients(
-//        const double range_cm,
-//        const double modulation_cm,
-//        const double range_definition_cm,
-//        const double sigma_E_percent,
-//        const long material_no,
-//        const double eps
-//        );
 
 
 #endif /* AT_ProtonAnalyticalBeamParameters_H_ */

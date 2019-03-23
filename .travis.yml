@@ -21,6 +21,7 @@ dist: xenial
 
 before_install:
   - mkdir m4
+  - gsl-config --version # Print the currently installed version of GSL
   - autoreconf --force --install
 
 install:
@@ -29,7 +30,7 @@ install:
 # If before_install, install or before_script returns a non-zero exit code, the build is errored and stops immediately.
 before_script:
   - make README
-  - make
+  - make -j2
   - make install
 
 # If script returns a non-zero exit code, the build is failed, but continues to run before being marked as failed.

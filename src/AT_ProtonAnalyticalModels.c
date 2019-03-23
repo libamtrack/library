@@ -319,4 +319,3 @@ void AT_proton_RBE_multi(const long n,
                                       rbe_model_no);
     }
 }
-

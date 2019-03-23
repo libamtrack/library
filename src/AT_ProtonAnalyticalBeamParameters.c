@@ -3,7 +3,7 @@
  */
 
 /*
- *    AT_ProtonAnalyticalModels.c
+ *    AT_ProtonAnalyticalBeamParameters.c
  *    ==============
  *
  *    Created on: 11.02.2019
@@ -29,6 +29,13 @@
  */
 
 #include "AT_ProtonAnalyticalBeamParameters.h"
+
+typedef struct {
+    double E_MeV_u;
+    double sigma_E_MeV_u;
+    long material_no;
+    double eps;
+} _AT_dose_Bortfeld_Gy_negative_params;
 
 
 double _AT_dose_Bortfeld_Gy_negative(double x, void *params) {
@@ -118,6 +125,13 @@ double AT_max_location_Bortfeld_cm(const double E_MeV_u,
 
 }
 
+typedef struct {
+    double E_MeV_u;
+    double sigma_E_MeV_u;
+    long material_no;
+    double dose_cut_Gy;
+    double eps;
+} _AT_dose_Bortfeld_Gy_root_params;
 
 double _AT_dose_Bortfeld_Gy_root(double x, void *params) {
     assert(params != NULL);
@@ -293,6 +307,17 @@ double AT_max_plateau_Bortfeld(const double E_MeV_u,
 
 }
 
+/**
+ * TODO
+ */
+typedef struct {
+    double range_cm;
+    double sigma_E_MeV_u;
+    long material_no;
+    double dose_drop;
+    double eps;
+} _AT_range_Bortfeld_Gy_root_params;
+
 
 double _AT_range_Bortfeld_Gy(double x, void *params) {
     assert(params != NULL);
@@ -311,6 +336,7 @@ double _AT_range_Bortfeld_Gy(double x, void *params) {
 
     return result;
 }
+
 
 double AT_energy_Bortfeld_MeV_u(const double range_cm,
                                 const double sigma_E_MeV_u,
@@ -403,8 +429,8 @@ typedef struct {
 
 
 // real -> [0, 0.2]
-double constraint( double x ){
-    if( x > 10){
+double constraint(double x) {
+    if (x > 10) {
         return 0.2 * (M_1_PI * atan(10.0) + 0.5);
     } else {
         return 0.2 * (M_1_PI * atan(x) + 0.5);
@@ -412,7 +438,7 @@ double constraint( double x ){
 }
 
 // [0, 0.2] -> real
-double deconstraint( double y ){
+double deconstraint(double y) {
     return tan(M_PI * (y / 0.2 - 0.5));
 }
 
@@ -442,18 +468,17 @@ func_f(const gsl_vector *x, void *params, gsl_vector *f) {
                                                          current_params->material_no,
                                                          eps);
 
-    gsl_vector_set(f, 0, 10.0*(current_range_cm - (current_params->range_cm)) / (current_params->range_cm)) ;
-    gsl_vector_set(f, 1, 1.0*(current_fwhm_cm - (current_params->fwhm_cm)) / (current_params->fwhm_cm)) ;
-    gsl_vector_set(f, 2, 1.0*(current_max_plateau - (current_params->max_plateau))/ (current_params->max_plateau)) ;
+    gsl_vector_set(f, 0, 10.0 * (current_range_cm - (current_params->range_cm)) / (current_params->range_cm));
+    gsl_vector_set(f, 1, 1.0 * (current_fwhm_cm - (current_params->fwhm_cm)) / (current_params->fwhm_cm));
+    gsl_vector_set(f, 2, 1.0 * (current_max_plateau - (current_params->max_plateau)) / (current_params->max_plateau));
 
     return GSL_SUCCESS;
 }
 
 void
 callback(const size_t iter, void *params,
-         const gsl_multifit_nlinear_workspace *w)
-{
-    gsl_vector * x = gsl_multifit_nlinear_position(w);
+         const gsl_multifit_nlinear_workspace *w) {
+    gsl_vector *x = gsl_multifit_nlinear_position(w);
 
     /* print out current location */
     printf("%f %f %f\t",
@@ -461,7 +486,7 @@ callback(const size_t iter, void *params,
            gsl_vector_get(x, 1),
            constraint(gsl_vector_get(x, 2)));
 
-    _AT_func_params *current_params = (_AT_func_params *)(params);
+    _AT_func_params *current_params = (_AT_func_params *) (params);
 
 
     double current_range_cm = AT_range_Bortfeld_cm(gsl_vector_get(x, 0),
@@ -482,7 +507,7 @@ callback(const size_t iter, void *params,
                                                          constraint(gsl_vector_get(x, 2)));
 
     /* print out current location */
-    printf("range = %g , fwhm = %g , max/plat = %g\n", current_range_cm, current_fwhm_cm, current_max_plateau );
+    printf("range = %g , fwhm = %g , max/plat = %g\n", current_range_cm, current_fwhm_cm, current_max_plateau);
 
 }
 
@@ -492,7 +517,7 @@ void AT_fit_Bortfeld(const double range_cm,
                      const long material_no,
                      const double dose_drop) {
 
-    printf("TARGER range = %g , fwhm = %g , max/plat = %g\n", range_cm, fwhm_cm, max_to_plateau );
+    printf("TARGER range = %g , fwhm = %g , max/plat = %g\n", range_cm, fwhm_cm, max_to_plateau);
 
     /* problem dimensions */
     const size_t n = 3;
@@ -537,7 +562,7 @@ void AT_fit_Bortfeld(const double range_cm,
     gsl_multifit_nlinear_workspace *work =
             gsl_multifit_nlinear_alloc(T, &params, n, p);
 
-    gsl_vector * f = gsl_multifit_nlinear_residual(work);
+    gsl_vector *f = gsl_multifit_nlinear_residual(work);
 //    gsl_vector * x = gsl_multifit_nlinear_position(work);
     double chisq0, chisq, rcond;
 
@@ -553,9 +578,9 @@ void AT_fit_Bortfeld(const double range_cm,
 
     /* compute covariance of best fit parameters */
     gsl_matrix *J;
-    gsl_matrix *covar = gsl_matrix_alloc (p, p);
+    gsl_matrix *covar = gsl_matrix_alloc(p, p);
     J = gsl_multifit_nlinear_jac(work);
-    gsl_multifit_nlinear_covar (J, 0.0, covar);
+    gsl_multifit_nlinear_covar(J, 0.0, covar);
 
 //    /* store final cost */
     gsl_blas_ddot(f, f, &chisq);
@@ -568,9 +593,10 @@ void AT_fit_Bortfeld(const double range_cm,
     double dof = n - p;
     double c = GSL_MAX_DBL(1, sqrt(chisq / dof));
 
-    fprintf (stderr, "E       = %.5f +/- %.5f\n", gsl_vector_get(work->x, 0), c*sqrt(gsl_matrix_get(covar,0,0)));
-    fprintf (stderr, "delta E = %.5f +/- %.5f\n", gsl_vector_get(work->x, 1), c*sqrt(gsl_matrix_get(covar,1,1)));
-    fprintf (stderr, "eps     = %.5f +/- %.5f\n", constraint(gsl_vector_get(work->x, 2)), c*sqrt(gsl_matrix_get(covar,2,2)));
+    fprintf(stderr, "E       = %.5f +/- %.5f\n", gsl_vector_get(work->x, 0), c * sqrt(gsl_matrix_get(covar, 0, 0)));
+    fprintf(stderr, "delta E = %.5f +/- %.5f\n", gsl_vector_get(work->x, 1), c * sqrt(gsl_matrix_get(covar, 1, 1)));
+    fprintf(stderr, "eps     = %.5f +/- %.5f\n", constraint(gsl_vector_get(work->x, 2)),
+            c * sqrt(gsl_matrix_get(covar, 2, 2)));
 
 //
     fprintf(stderr, "NITER         = %zu\n", gsl_multifit_nlinear_niter(work));
