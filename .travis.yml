@@ -10,6 +10,8 @@ compiler:
 python:
   - "2.7"
 
+sudo: true
+
 addons:
   apt:
     packages:
@@ -25,7 +27,7 @@ before_install:
   - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/libgsl23_2.5+dfsg-5_amd64.deb
   - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/libgsl-dev_2.5+dfsg-5_amd64.deb
   - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/gsl-bin_2.5+dfsg-5_amd64.deb
-  - dpkg -i *.deb
+  - sudo dpkg -i *.deb
   - gsl-config --version # Print the currently installed version of GSL
   - autoreconf --force --install
 
