@@ -157,12 +157,18 @@ double AT_energy_Bortfeld_MeV_u(const double range_cm,
  * @see          AT_DataMaterial.h for definition
  * @param[in] dose_drop       fraction of max dose at which range is calculated
  * if negative a default value of 0.8 is assumed
+ * @param[out] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
+ * @param[out] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
+ * @param[out] eps             fraction of primary fluence contributing to the tail of energy spectrum
  */
 void AT_fit_Bortfeld(const double range_cm,
                      const double fwhm_cm,
                      const double max_to_plateau,
                      const long material_no,
-                     const double dose_drop);
+                     const double dose_drop,
+                     double * E_MeV_u,
+                     double * sigma_E_MeV_u,
+                     double * eps);
 
 
 #endif /* AT_ProtonAnalyticalBeamParameters_H_ */

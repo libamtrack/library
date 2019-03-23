@@ -481,10 +481,10 @@ callback(const size_t iter, void *params,
     gsl_vector *x = gsl_multifit_nlinear_position(w);
 
     /* print out current location */
-    printf("%f %f %f\t",
-           gsl_vector_get(x, 0),
-           gsl_vector_get(x, 1),
-           constraint(gsl_vector_get(x, 2)));
+//    printf("%f %f %f\t",
+//           gsl_vector_get(x, 0),
+//           gsl_vector_get(x, 1),
+//           constraint(gsl_vector_get(x, 2)));
 
     _AT_func_params *current_params = (_AT_func_params *) (params);
 
@@ -507,7 +507,7 @@ callback(const size_t iter, void *params,
                                                          constraint(gsl_vector_get(x, 2)));
 
     /* print out current location */
-    printf("range = %g , fwhm = %g , max/plat = %g\n", current_range_cm, current_fwhm_cm, current_max_plateau);
+//    printf("range = %g , fwhm = %g , max/plat = %g\n", current_range_cm, current_fwhm_cm, current_max_plateau);
 
 }
 
@@ -515,9 +515,12 @@ void AT_fit_Bortfeld(const double range_cm,
                      const double fwhm_cm,
                      const double max_to_plateau,
                      const long material_no,
-                     const double dose_drop) {
+                     const double dose_drop,
+                     double * E_MeV_u,
+                     double * sigma_E_MeV_u,
+                     double * eps) {
 
-    printf("TARGER range = %g , fwhm = %g , max/plat = %g\n", range_cm, fwhm_cm, max_to_plateau);
+//    printf("TARGER range = %g , fwhm = %g , max/plat = %g\n", range_cm, fwhm_cm, max_to_plateau);
 
     /* problem dimensions */
     const size_t n = 3;
@@ -593,18 +596,22 @@ void AT_fit_Bortfeld(const double range_cm,
     double dof = n - p;
     double c = GSL_MAX_DBL(1, sqrt(chisq / dof));
 
-    fprintf(stderr, "E       = %.5f +/- %.5f\n", gsl_vector_get(work->x, 0), c * sqrt(gsl_matrix_get(covar, 0, 0)));
-    fprintf(stderr, "delta E = %.5f +/- %.5f\n", gsl_vector_get(work->x, 1), c * sqrt(gsl_matrix_get(covar, 1, 1)));
-    fprintf(stderr, "eps     = %.5f +/- %.5f\n", constraint(gsl_vector_get(work->x, 2)),
-            c * sqrt(gsl_matrix_get(covar, 2, 2)));
+//    fprintf(stderr, "E       = %.5f +/- %.5f\n", gsl_vector_get(work->x, 0), c * sqrt(gsl_matrix_get(covar, 0, 0)));
+//    fprintf(stderr, "delta E = %.5f +/- %.5f\n", gsl_vector_get(work->x, 1), c * sqrt(gsl_matrix_get(covar, 1, 1)));
+//    fprintf(stderr, "eps     = %.5f +/- %.5f\n", constraint(gsl_vector_get(work->x, 2)),
+//            c * sqrt(gsl_matrix_get(covar, 2, 2)));
+
+    *E_MeV_u = gsl_vector_get(work->x, 0);
+    *sigma_E_MeV_u = gsl_vector_get(work->x, 1);
+    *eps = constraint(gsl_vector_get(work->x, 2));
 
 //
-    fprintf(stderr, "NITER         = %zu\n", gsl_multifit_nlinear_niter(work));
-    fprintf(stderr, "NFEV          = %zu\n", fdf.nevalf);
-    fprintf(stderr, "NJEV          = %zu\n", fdf.nevaldf);
-    fprintf(stderr, "NAEV          = %zu\n", fdf.nevalfvv);
-    fprintf(stderr, "initial cost  = %.12e\n", chisq0);
-    fprintf(stderr, "final cost    = %.12e\n", chisq);
+//    fprintf(stderr, "NITER         = %zu\n", gsl_multifit_nlinear_niter(work));
+//    fprintf(stderr, "NFEV          = %zu\n", fdf.nevalf);
+//    fprintf(stderr, "NJEV          = %zu\n", fdf.nevaldf);
+//    fprintf(stderr, "NAEV          = %zu\n", fdf.nevalfvv);
+//    fprintf(stderr, "initial cost  = %.12e\n", chisq0);
+//    fprintf(stderr, "final cost    = %.12e\n", chisq);
 //    fprintf(stderr, "final x       = (%.12e, %.12e)\n", gsl_vector_get(x, 0), gsl_vector_get(x, 1));
 //    fprintf(stderr, "final cond(J) = %.12e\n", 1.0 / rcond);
 //

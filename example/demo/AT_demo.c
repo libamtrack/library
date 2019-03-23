@@ -108,42 +108,71 @@ int main(int argc, char *argv[]) {
 
     double max_plateau = 4.0;
     double dose_drop = 0.8;
+
+    double fit_E_MeV_u;
+    double fit_sigma_E_MeV_u;
+    double fit_eps;
+
     AT_fit_Bortfeld(range_cm,
                     fwhm_cm,
                     max_plateau,
                     material_no,
-                    dose_drop);
+                    dose_drop,
+                    &fit_E_MeV_u,
+                    &fit_sigma_E_MeV_u,
+                    &fit_eps);
+
+    printf("E = %g, deltaE = %g, eps = %g\n", fit_E_MeV_u, fit_sigma_E_MeV_u, fit_eps);
 
     AT_fit_Bortfeld(2.9,
                     0.3,
                     4.8,
                     material_no,
-                    0.9);
+                    0.9,
+                    &fit_E_MeV_u,
+                    &fit_sigma_E_MeV_u,
+                    &fit_eps);
+    printf("E = %g, deltaE = %g, eps = %g\n", fit_E_MeV_u, fit_sigma_E_MeV_u, fit_eps);
 
     AT_fit_Bortfeld(3.25,
                     0.54,
                     3.7,
                     material_no,
-                    0.9);
+                    0.9,
+                    &fit_E_MeV_u,
+                    &fit_sigma_E_MeV_u,
+                    &fit_eps);
+    printf("E = %g, deltaE = %g, eps = %g\n", fit_E_MeV_u, fit_sigma_E_MeV_u, fit_eps);
 
     AT_fit_Bortfeld(32.0,
                     2.708,
                     3.76,
                     material_no,
-                    0.9);
+                    0.9,
+                    &fit_E_MeV_u,
+                    &fit_sigma_E_MeV_u,
+                    &fit_eps);
+    printf("E = %g, deltaE = %g, eps = %g\n", fit_E_MeV_u, fit_sigma_E_MeV_u, fit_eps);
 
     AT_fit_Bortfeld(3.2,
                     0.4,
                     4.48,
                     material_no,
-                    0.9);
-
+                    0.9,
+                    &fit_E_MeV_u,
+                    &fit_sigma_E_MeV_u,
+                    &fit_eps);
+    printf("E = %g, deltaE = %g, eps = %g\n", fit_E_MeV_u, fit_sigma_E_MeV_u, fit_eps);
 
     AT_fit_Bortfeld(15.799712435,
                     1.5986288328329863,
                     5.198384978576822,
                     material_no,
-                    0.9);
+                    0.9,
+                    &fit_E_MeV_u,
+                    &fit_sigma_E_MeV_u,
+                    &fit_eps);
+    printf("E = %g, deltaE = %g, eps = %g\n", fit_E_MeV_u, fit_sigma_E_MeV_u, fit_eps);
 
     return EXIT_SUCCESS;
 }
