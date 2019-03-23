@@ -165,11 +165,11 @@ void AT_LET_d_Wilkens_keV_um_multi(const long n,
  *Proton RBE models code numbers
  */
 enum AT_RBEModels {
-    RBE_One = 1,     /**< RBE equals 1.0 */
-    RBE_OnePointOne = 2,     /**< RBE equals 1.1 */
-    RBE_Carabe = 3,     /**< Carabe model (Phys. Med. Biol. 57(5), 1159-1172 (2012)) */
+    RBE_One = 1,           /**< RBE equals 1.0 */
+    RBE_OnePointOne = 2,   /**< RBE equals 1.1 */
+    RBE_Carabe = 3,        /**< Carabe model (Phys. Med. Biol. 57(5), 1159-1172 (2012)) */
     RBE_Wedenberg = 4,     /**< Wedenberg model (Acta Oncol. 52(3), 580-588 (2013)) */
-    RBE_McNamara = 5,     /**< McNamara model (Phys. Med. Biol. 60(21), 8399-8416)*/
+    RBE_McNamara = 5,      /**< McNamara model (Phys. Med. Biol. 60(21), 8399-8416)*/
 };
 
 
@@ -180,9 +180,9 @@ enum AT_RBEModels {
  * @param[in] E_MeV_u           initial kinetic energy of proton beam [MeV/u]
  * @param[in] sigma_E_MeV_u     kinetic energy spread (standard deviation) [MeV/u]
  * if negative a default value of 0.01 * E_MeV_u is assumed
-  * @param[in] eps              fraction of primary fluence contributing to the tail of energy spectrum
+ * @param[in] eps              fraction of primary fluence contributing to the tail of energy spectrum
  * if negative a default value of 0.03 is assumed
-* @param[in] ref_alpha_beta_ratio   ratio of alpha to beta (parameters in linear-quadratic model) for reference radiation
+ * @param[in] ref_alpha_beta_ratio   ratio of alpha to beta (parameters in linear-quadratic model) for reference radiation
  * @return                    proton RBE
  */
 double AT_proton_RBE_single(const double z_cm,

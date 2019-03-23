@@ -301,7 +301,7 @@ double AT_max_plateau_Bortfeld(const double E_MeV_u,
                                                     E_MeV_u,
                                                     sigma_E_MeV_u,
                                                     material_no,
-                                                    eps);;
+                                                    eps);
 
     return max_dose_Gy / entrance_dose_Gy;
 
