@@ -1,27 +1,40 @@
-1. Install Enscriptem
-    # Get the emsdk repo
-    git clone https://github.com/emscripten-core/emsdk.git
+0. Prerequisites
+    - Python (both 2 and 3)
+    - cmake
 
-    # Enter that directory
-    cd emsdk
+1. Set env variables using
+    source ./env_variables.sh
+    (you can change path GSL_PATH to f.e. `mktemp -d`
+    or where you GSL sources are but do not forget change it in CMakeList.txt)
 
-    # Fetch the latest version of the emsdk (not needed the first time you clone)
-    git pull
+2. Install Enscriptem using
+    . ./install_emsdk.sh
+    We need to source env variables for emsdk to work properly after 
+    installation so the script runs in current shell.
+    We can also add emscripten to PATH by hand
 
-    # Download and install the latest SDK tools.
-    ./emsdk install latest
+2. Download GSL using
+    ./prepare_gsl.sh
 
-    # Make the "latest" SDK "active" for the current user. (writes ~/.emscripten file)
-    ./emsdk activate latest
-
-    # Activate PATH and other environment variables in the current terminal
-    source ./emsdk_env.sh
-
-2. Download GSL and set env variables using
-    source prepare_gsl.sh
-
-3. Configure and prepare files using
+3. Configure, prepare and compile to LLVM bytecode using
     ./prepare.sh
+
+    You can also do:
+    cd $GSL_PATH/gsl-latest/gsl/
+    ./configure
+    make -j4
+
+3.1 (Optional) If you want export some of functions not all first,
+    regenerate list of functions:
+
+    python3 parse_headers.py.
+
+    Cut everything from funs.txt and put to compile_to_js.sh before line
+
+    emcc libat.a libgsl.a -o libat.html -s WASM=$WASM -s EXPORT_ALL=1 -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
+
+    and change this line to
+    emcc libat.a libgsl.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" \
 
 4. Compile to js using
     ./compile_to_js.sh
