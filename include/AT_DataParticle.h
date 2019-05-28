@@ -223,6 +223,12 @@ int AT_Z_from_particle_no(  const long  n,
     const long  particle_no[],
     long  Z[]);
 
+/**
+ * Calculates atomic weight for particle with given code number
+ * @param[in]  particle_no    particle index number
+ * @return     atomic_weight  atomic weight
+ */
+double AT_atomic_weight_from_particle_no_single(  const long  particle_no);
 
 /**
  * Calculates atomic weight for particle with given code number

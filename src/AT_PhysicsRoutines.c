@@ -31,9 +31,20 @@
 #include "AT_PhysicsRoutines.h"
 
 
- double AT_beta_from_E_single( const double E_MeV_u ){ //TODO is energy per nucleon really defined like that ?
-  assert( E_MeV_u >= 0.);
-  return sqrt(1.0 - 1.0/gsl_pow_2(1.0 + E_MeV_u/(atomic_mass_unit_MeV_c2)));
+double AT_E_MeV_u_from_E_MeV( const double E_MeV, const long particle_no){
+    return E_MeV / AT_atomic_weight_from_particle_no_single(particle_no);
+}
+
+double AT_E_MeV_from_E_MeV_u( const double E_MeV_u, const long particle_no){
+    return E_MeV_u * AT_atomic_weight_from_particle_no_single(particle_no);
+}
+
+
+ double AT_beta_from_E_single( const double E_MeV ){
+  assert( E_MeV >= 0.);
+  double gamma = AT_gamma_from_E_single(E_MeV);
+
+  return sqrt(1.0 - 1.0/gsl_pow_2(gamma));
 }
 
 
@@ -49,10 +60,30 @@ int AT_beta_from_E( const long  n,
   return 0;
 }
 
- double AT_gamma_from_E_single( const double E_MeV_u ){
-  double beta 	= AT_beta_from_E_single( E_MeV_u );
-  assert( beta < 1.0);
-  return (1.0 / sqrt(1.0 - beta * beta));
+double AT_gamma_from_E_single(const double E_MeV_u) {
+
+    /*
+     * Let us start with general definition of gamma factor
+     *
+     * gamma = E_total / E_rest = (E_rest + E_kin) / E_rest = 1.0 + E_kin / E_rest
+     *
+     * taking into account that E_rest = m_0 c^2
+     *
+     * gamma = 1.0 + (E_kin / m_0) * (1/c^2)
+     *
+     * Let's use `atomic_mass_unit_MeV_c2` ~= 931 MeV/c^2 - atomic mass unit (u) expressed in units of MeV/c^2
+     *
+     * E_MeV_u = E_kin * MeV / (m_0 * atomic_mass_unit_MeV) = E_kin_MeV / (m_0 c^2 * atomic_mass_unit_MeV_c2 )
+     *
+     * thus:
+     *
+     * gamma = 1.0 + E_MeV_u / atomic_mass_unit_MeV_c2
+     *
+     */
+
+    double gamma = 1.0 + E_MeV_u / atomic_mass_unit_MeV_c2;
+    assert(gamma >= 1.0);
+    return gamma;
 }
 
 int AT_gamma_from_E( const long  n,
@@ -70,26 +101,38 @@ int AT_gamma_from_E( const long  n,
 
  double AT_E_from_beta_single(  const double beta ){
   assert( beta < 1.0);
-  return atomic_mass_unit_MeV_c2 * (sqrt(1.0 / (1.0 - gsl_pow_2(beta))) - 1.0);
+  assert( beta >= 1.0);
+
+  double gamma = sqrt(1.0 - 1.0 / gsl_pow_2(beta));
+
+  return AT_E_from_gamma_single(gamma);
 }
 
 
 int AT_E_from_beta(  const long  n,
     const double  beta[],
-    double        E_MeV_u[])
+    double        E_MeV[])
 {
   // loop over n to find E for all betas
   long  i;
   for(i = 0; i < n; i++){
-    E_MeV_u[i]      =  AT_E_from_beta_single(beta[i]);
+    E_MeV[i]      =  AT_E_from_beta_single(beta[i]);
   }
   return 0;
 }
 
 
 double AT_E_from_gamma_single( const double gamma ){
-	double beta = sqrt(1.0-1.0/gsl_pow_2(gamma));
-	return AT_E_from_beta_single(beta);
+
+    /**
+     * gamma = 1.0 + E_MeV_u / atomic_mass_unit_MeV_c2
+     *
+     * gamma - 1.0 = E_MeV_u / atomic_mass_unit_MeV_c2
+     *
+     * atomic_mass_unit_MeV_c2 * (gamma - 1.0)  = E_MeV_u
+     */
+     */
+	return atomic_mass_unit_MeV_c2 * (gamma - 1.0);
 }
 
 int AT_E_from_gamma( const long  n,

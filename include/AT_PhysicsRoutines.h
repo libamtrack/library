@@ -42,70 +42,68 @@
 #include "AT_StoppingPower.h"
 
 /**
- *  Returns relativistic speed for single value of energy
+ *  Returns relativistic speed for single value of kinetic energy
  *
- * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
- * @return     beta                     relative particle speed beta = v/c
+ * @param[in]  E_MeV                  kinetic energy of particle [MeV]
+ * @return     beta                   relative particle speed beta = v/c
  */
- double AT_beta_from_E_single( const double  E_MeV_u );
+ double AT_beta_from_E_single( const double  E_MeV );
 
 
 /**
  *  Returns relativistic speed for many particles
  *
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[in]  E_MeV                    vector of kinetic energies of particle [MeV] (array of size n)
  * @param[out] beta                     vector of relative particle speed beta = v/c (array of size n)
  * @return     status code
  */
 int AT_beta_from_E( const long  n,
-    const double  E_MeV_u[],
+    const double  E_MeV[],
     double        beta[]);
 
 
 /**
- *  Returns energy per nucleon of particle with relative speed beta
+ *  Returns kinetic energy of particle with relative speed beta
  *
  * @param[in]  beta                     relative particle speed beta = v/c
- * @return                              energy of particle per nucleon [MeV]
+ * @return                              kinetic energy of particle [MeV]
  */
  double AT_E_from_beta_single(  const double beta );
 
 
 /**
- *  Returns energy per nucleon of particle with relativistic speed beta
+ *  Returns kinetic energy of particle with relativistic speed beta
  *
  * @param[in]  n                        number of particles
  * @param[in]  beta                     vector of relative particle speed beta = v/c (array of size n)
- * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[out] E_MeV                    vector of kinetic energies of particle [MeV] (array of size n)
  * @return     status code
  */
 int AT_E_from_beta(  const long  n,
     const double  beta[],
-    double        E_MeV_u[]);
+    double        E_MeV[]);
 
 
 /**
- *  Returns energy for single value of relativistic gamma
+ *  Returns kinetic energy for single value of relativistic gamma
  *
  * @param[in]  gamma
- * @return     E_MeV_u                  energy of particle per nucleon [MeV]
+ * @return     E_MeV                    kinetic energy of particle [MeV]
  */
  double AT_E_from_gamma_single( const double gamma );
 
 /**
- *  Returns energy from relativistic gamma
+ *  Returns kinetic energy from relativistic gamma
  *
  * @param[in]  n                        number of particles
  * @param[in]  gamma                    vector of results (array of size n)
- * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[out] E_MeV                    vector of kinetic energies of particle [MeV] (array of size n)
  * @return     status code
  */
 int AT_E_from_gamma( const long  n,
     const double  gamma[],
-    double        E_MeV_u[]);
-
-
+    double        E_MeV[]);
 
 /**
  *  Returns energy per nucleon of particle with given momentum per nucleon
