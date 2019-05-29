@@ -111,12 +111,12 @@ int AT_gamma_from_E( const long  n,
 
 int AT_E_from_beta(  const long  n,
     const double  beta[],
-    double        E_MeV[])
+    double        E_MeV_u[])
 {
   // loop over n to find E for all betas
   long  i;
   for(i = 0; i < n; i++){
-    E_MeV[i]      =  AT_E_from_beta_single(beta[i]);
+    E_MeV_u[i]      =  AT_E_from_beta_single(beta[i]);
   }
   return 0;
 }
@@ -130,7 +130,6 @@ double AT_E_from_gamma_single( const double gamma ){
      * gamma - 1.0 = E_MeV_u / atomic_mass_unit_MeV_c2
      *
      * atomic_mass_unit_MeV_c2 * (gamma - 1.0)  = E_MeV_u
-     */
      */
 	return atomic_mass_unit_MeV_c2 * (gamma - 1.0);
 }
