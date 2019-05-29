@@ -101,9 +101,9 @@ int AT_gamma_from_E( const long  n,
 
  double AT_E_from_beta_single(  const double beta ){
   assert( beta < 1.0);
-  assert( beta >= 1.0);
+  assert( beta >= 0.0);
 
-  double gamma = sqrt(1.0 - 1.0 / gsl_pow_2(beta));
+  double gamma = 1.0 / sqrt(1.0 - gsl_pow_2(beta));
 
   return AT_E_from_gamma_single(gamma);
 }
