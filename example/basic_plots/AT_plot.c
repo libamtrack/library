@@ -45,6 +45,7 @@
 #include "AT_RDD.h"
 #include "AT_StoppingPower.h"
 #include "AT_PhysicsRoutines.h"
+#include "AT_DataRange.h"
 
 char * plottypes[] = {"ER","RDD","LET","CSDArange"};
 int plottypes_nr = 4;
@@ -317,7 +318,7 @@ int main( int argc, char* argv[]){
 		printf("#particle: %s (code: %ld)\n", particle_name, particle_no);
 		long source_no = PSTAR;
 		char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH] = "JAJA!";
-//		AT_stopping_power_source_model_name_from_number( source_no, source_name);
+        AT_stopping_power_source_model_name_from_number( source_no, source_name);
 		printf("#data source: %s (code: %ld)\n", source_name, source_no);
 		printf("#E: %g [MeV/u]\n", E_MeV_u);
 		printf("#r[m] D[Gy]\n");
@@ -333,9 +334,9 @@ int main( int argc, char* argv[]){
 		printf("#particle: %s (code: %ld)\n", particle_name, particle_no);
 		long source_no = modeltype;
 		char source_name[STOPPING_POWER_SOURCE_NAME_LENGTH] = "JAJA!";
-		//AT_stopping_power_source_model_name_from_number( source_no, source_name);
+		AT_stopping_power_source_model_name_from_number( source_no, source_name);
 	    printf("#data source: %s (code: %ld)\n", source_name, source_no);
-		printf("#E[MeV] LET[MeV/cm2g]\n");
+		printf("#E[MeV/u] LET[MeV/cm2g]\n");
 		for( i = 0 ; i < number_of_points_on_x_axis ; i++){
 			AT_Mass_Stopping_Power_with_no( source_no,
 					1,
@@ -348,9 +349,10 @@ int main( int argc, char* argv[]){
 	}  else if( strcmp( plottype , "CSDArange") == 0){
 		printf("#CSDArange vs primary ion energy\n");
 		printf("#particle: %s (code: %ld)\n", particle_name, particle_no);
-		printf("#E[MeV] CSDArange[m]\n");
+		printf("#E[MeV/u] CSDArange[m]\n");
 		for( i = 0 ; i < number_of_points_on_x_axis ; i++){
-//			y[i] = AT_CSDA_range_m_single(x[i],particle_no,material_no);
+			y[i] = AT_CSDA_range_g_cm2_single( x[i], 0.0, particle_no,material_no);
+			y[i] *= AT_density_g_cm3_from_material_no(material_no);
 		}
 	}  else {
 		printf("Plottype %s not supported\n", plottype);

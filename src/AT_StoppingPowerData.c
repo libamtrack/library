@@ -9,15 +9,14 @@ AT_stopping_power_functions_struct AT_stopping_power_functions =
 
 
 int AT_stopping_power_source_model_name_from_number( const long source_no, char* source_name){
-//
-//	assert( source_no > 0);
-//	assert( source_no <= STOPPING_POWER_SOURCE_N);
-//	assert(AT_stopping_power_sources.stopping_power_source_no[source_no-1] == source_no);
-//	if( source_no <= 0)
-//		return -1;
-//	if( source_no > STOPPING_POWER_SOURCE_N)
-//		return -1;
-//    strcpy(source_name, AT_stopping_power_sources.stopping_power_source_name[source_no-1]);
+
+	assert( source_no >= 0);
+	assert( source_no <= STOPPING_POWER_SOURCE_N);
+	if( source_no < 0)
+		return -1;
+	if( source_no > STOPPING_POWER_SOURCE_N)
+		return -1;
+    strcpy(source_name, AT_stopping_power_functions.stopping_power_source_name[source_no]);
     return AT_Success;
 }
 

@@ -41,10 +41,28 @@
 #include "AT_NumericalRoutines.h"
 #include "AT_StoppingPower.h"
 
+
+/**
+ *  Returns energy per nucleon from kinetic energy of particle
+ * @param[in]  E_MeV                    kinetic energy of particle [MeV]
+ * @param[in]  particle_no              type of the particle
+ * @return     E_MeV_u                  energy of particle per nucleon [MeV/u]
+ */
+double AT_E_MeV_u_from_E_MeV( const double E_MeV, const long particle_no);
+
+/**
+ *  Returns energy per nucleon from kinetic energy of particle
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
+ * @param[in]  particle_no              type of the particle
+ * @return     E_MeV                    kinetic energy of particle [MeV]
+ */
+double AT_E_MeV_from_E_MeV_u( const double E_MeV_u, const long particle_no);
+
+
 /**
  *  Returns relativistic speed for single value of energy
  *
- * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
  * @return     beta                     relative particle speed beta = v/c
  */
  double AT_beta_from_E_single( const double  E_MeV_u );
@@ -54,7 +72,7 @@
  *  Returns relativistic speed for many particles
  *
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV/u] (array of size n)
  * @param[out] beta                     vector of relative particle speed beta = v/c (array of size n)
  * @return     status code
  */
@@ -67,7 +85,7 @@ int AT_beta_from_E( const long  n,
  *  Returns energy per nucleon of particle with relative speed beta
  *
  * @param[in]  beta                     relative particle speed beta = v/c
- * @return                              energy of particle per nucleon [MeV]
+ * @return                              energy of particle per nucleon [MeV/u]
  */
  double AT_E_from_beta_single(  const double beta );
 
@@ -77,7 +95,7 @@ int AT_beta_from_E( const long  n,
  *
  * @param[in]  n                        number of particles
  * @param[in]  beta                     vector of relative particle speed beta = v/c (array of size n)
- * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV/u] (array of size n)
  * @return     status code
  */
 int AT_E_from_beta(  const long  n,
@@ -89,7 +107,7 @@ int AT_E_from_beta(  const long  n,
  *  Returns energy for single value of relativistic gamma
  *
  * @param[in]  gamma
- * @return     E_MeV_u                  energy of particle per nucleon [MeV]
+ * @return     E_MeV_u                  energy of particle per nucleon [MeV/u]
  */
  double AT_E_from_gamma_single( const double gamma );
 
@@ -98,20 +116,18 @@ int AT_E_from_beta(  const long  n,
  *
  * @param[in]  n                        number of particles
  * @param[in]  gamma                    vector of results (array of size n)
- * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV/u] (array of size n)
  * @return     status code
  */
 int AT_E_from_gamma( const long  n,
     const double  gamma[],
     double        E_MeV_u[]);
 
-
-
 /**
  *  Returns energy per nucleon of particle with given momentum per nucleon
  *
  * @param[in]  momentum_MeV_c_u         momentum per particle [MeV/c]
- * @return                              energy of particle per nucleon [MeV]
+ * @return                              energy of particle per nucleon [MeV/u]
  */
  double AT_E_MeV_u_from_momentum_single( 	const double momentum_MeV_c_u );
 
@@ -120,7 +136,7 @@ int AT_E_from_gamma( const long  n,
  *
  * @param[in]  n                        number of particles
  * @param[in]  momentum_MeV_c_u         vector of particle momenta per nucleon [MeV/c], (array of size n)
- * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV], (array of size n)
+ * @param[out] E_MeV_u                  vector of energies of particle per nucleon [MeV/u], (array of size n)
  * @return     status code
  */
 int AT_E_MeV_u_from_momentum_MeV_c_u(  const long  n,
@@ -130,7 +146,7 @@ int AT_E_MeV_u_from_momentum_MeV_c_u(  const long  n,
 /**
  *  Returns relativistic gamma for single value of energy
  *
- * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
  * @return     gamma
  */
  double AT_gamma_from_E_single( const double E_MeV_u );
@@ -139,7 +155,7 @@ int AT_E_MeV_u_from_momentum_MeV_c_u(  const long  n,
  *  Returns relativistic gamma
  *
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV/u] (array of size n)
  * @param[out] gamma                    vector of results (array of size n)
  * @return     status code
  */
@@ -189,7 +205,7 @@ int AT_effective_charge_from_beta(  const long  n,
  * The equation is however limited to energies > 10 MeV/u and not too heavy ions
  * TODO: add William extension for relativistic effects (Williams, E.J. (1945), Revs. Mod. Phys. 17, 217ff)
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV/u] (array of size n)
  * @param[in]  particle_no              type of the particles in the mixed particle field (array of size n)
  * @param[in]  material_no              index number for slab material
  * @param[out] dsE2dz_MeV2_cm2_g        Increase of energy straggling variance sigma_E^2 per unit length of material (array of size n)
@@ -207,7 +223,7 @@ void AT_energy_straggling_MeV2_cm2_g(  const long  n,
  * Please note that the effective charge is assumed to be constant over the material slab
  * If this is not the case you should apply this routine multiple times to subslices
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV/u] (array of size n)
  * @param[in]  particle_no              type of the particles in the mixed particle field (array of size n)
  * @param[in]  material_no              index number for slab material
  * @param[in]  slab_thickness_m         thickness of slab in m
@@ -226,7 +242,7 @@ void AT_energy_straggling_after_slab_E_MeV_u( const long  n,
  * Effective charge according to Barkas-Bethe-approximation
  * for particle with given energy per nucleon
  *
- * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV]
+ * @param[in]  E_MeV_u                  energy of particle per nucleon [MeV/u]
  * @param[in]  particle_no              type of the particles in the mixed particle field
  * @return     effective_charge         Effective charge according to Barkas-Bethe-approximation
  */
@@ -238,7 +254,7 @@ double AT_effective_charge_from_E_MeV_u_single(  const double E_MeV_u,
  * for particles with given kinetic energy per nucleon
  *
  * @param[in]  n                        number of particles
- * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV] (array of size n)
+ * @param[in]  E_MeV_u                  vector of energies of particle per nucleon [MeV/u] (array of size n)
  * @param[in]  particle_no              type of the particles in the mixed particle field (array of size n)
  * @param[out] effective_charge         Effective charge according to Barkas-Bethe-approximation (array of size n)
  * @return     status code
@@ -368,7 +384,7 @@ int AT_max_E_transfer_MeV(  const long  n,
 /**
  *  Returns relativistic momentum (per nucleon) of particle
  *
- * @param[in]	  	E_MeV_u                 kinetic Energy per nucleon
+ * @param[in]	  	E_MeV_u             kinetic Energy per nucleon [MeV/u]
  * @return                              momentum [MeV/c]
  */
  double AT_momentum_from_E_MeV_c_u_single( const double E_MeV_u );
@@ -378,7 +394,7 @@ int AT_max_E_transfer_MeV(  const long  n,
  *  Returns relativistic momenta per nucleon for particles with given kinetic energy
  *
  * @param[in]	n						number of particles
- * @param[in]  	E_MeV_u                 kinetic energy per nucleon (array of size n)
+ * @param[in]  	E_MeV_u                 kinetic energy per nucleon [MeV/u] (array of size n)
  * @param[out]	momentum_MeV_c  		momentum per nucleon (array of size n)
  * @return                              return code
  */
@@ -389,7 +405,7 @@ int AT_momentum_MeV_c_u_from_E_MeV_u( const long  n,
 
 /**
  * Returns dose in Gy for particle with given fluence and energy
- * @param[in]  E_MeV_u      energy per unit mass
+ * @param[in]  E_MeV_u      energy per unit mass [MeV/u]
  * @param[in]  particle_no  type of the particle
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2  fluence in 1/cm2
@@ -408,7 +424,7 @@ double AT_dose_Gy_from_fluence_cm2_single(  const double  E_MeV_u,
 /**
  * Returns dose in Gy for each given particle
  * @param[in]  n            number of particle types in the mixed particle field
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field [MeV/u] (array of size n)
  * @param[in]  particle_no  type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2  fluence for each particle type (array of size n)
@@ -428,7 +444,7 @@ void AT_dose_Gy_from_fluence_cm2(  const long  n,
 
 /**
  * Returns fluence in 1/cm2 for particles with given dose and energy
- * @param[in]  E_MeV_u      energy of particle
+ * @param[in]  E_MeV_u      energy of particle per nucleon [MeV/u]
  * @param[in]  particle_no  type of the particles
  * @see          AT_DataParticle.h for definition
  * @param[in]  D_Gy         dose in Gy
@@ -447,7 +463,7 @@ double AT_fluence_cm2_from_dose_Gy_single( const double  E_MeV_u,
 /**
  * Returns fluence in 1/cm2 for each given particle
  * @param[in]  n            number of particle types in the mixed particle field
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  E_MeV_u      energy per nucleon of particles in the mixed particle field [MeV/u] (array of size n)
  * @param[in]  particle_no  type of the particles in the mixed particle field (array of size n)
  * @see          AT_DataParticle.h for definition
  * @param[in]  D_Gy         dose / Gy for each particle type (array of size n)
@@ -535,7 +551,7 @@ void AT_inv_interparticleDistance_Gy(  const long   n,
  *
  * Needed by SuccessiveConvolutions
  *
- * @param[in]  E_MeV_u      energy of particle
+ * @param[in]  E_MeV_u      energy of particle per nucleon [MeV/u]
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[in]  er_model     index of electron-range model
@@ -554,7 +570,7 @@ double AT_single_impact_fluence_cm2_single( const double E_MeV_u,
  * Needed by SuccessiveConvolutions
  *
  * @param[in]  n            length of vectors for parameters
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size n)
+ * @param[in]  E_MeV_u      energy per nucleon of particles in the mixed particle field [MeV/u] (array of size n)
  * @param[in]  material_no  material index
  * @see          AT_DataMaterial.h for definition
  * @param[in]  er_model     index of electron-range model
@@ -582,7 +598,7 @@ double AT_single_impact_dose_Gy_single( const double LET_MeV_cm2_g,
  * Doses for the fluences at a single impact
  *
  * @param[in]  n                          number of particles
- * @param[in]  E_MeV_u                    Energy (array of size n)
+ * @param[in]  E_MeV_u                    energy per nucleon [MeV/u] (array of size n)
  * @param[in]  particle_no                particle type (array of size n)
  * @param[in]  material_no                material
  * @param[in]  er_model                   electron-range model
@@ -601,7 +617,7 @@ void AT_single_impact_dose_Gy( const long n,
  * Computes the total dose of a mixed particle field
  *
  * @param[in]  number_of_field_components            number of components in the mixed field
- * @param[in]  E_MeV_u                               energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  E_MeV_u                               energy of particles in the mixed particle field [MeV/u] (array of size number_of_field_components)
  * @param[in]  particle_no                           particle index (array of size number_of_field_components)
  * @see AT_DataParticle.h for definition
  * @param[in]  fluence_cm2                           fluences of particles in the mixed particle field (array of size number_of_field_components)
@@ -622,7 +638,7 @@ double AT_total_D_Gy( const long  number_of_field_components,
  * Computes the total fluence of a mixed particle field
  *
  * @param[in]  number_of_field_components            number of components in the mixed field
- * @param[in]  E_MeV_u                               energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  E_MeV_u                               energy of particles in the mixed particle field [MeV/u] (array of size number_of_field_components)
  * @param[in]  particle_no                           particle index (array of size number_of_field_components)
  * @see AT_DataParticle.h for definition
  * @param[in]  D_Gy                                  doses of particles in the mixed particle field (array of size number_of_field_components)
@@ -645,7 +661,7 @@ double AT_total_fluence_cm2( const long number_of_field_components,
  * Needed by SuccessiveConvolutions
  *
  * @param[in]  number_of_field_components            number of components in mixed particle field
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field [MeV/u] (array of size number_of_field_components)
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
  * @return     average_E_MeV_u  fluence-weighted mean energy
  */
@@ -660,7 +676,7 @@ double AT_fluence_weighted_E_MeV_u( const long    number_of_field_components,
  * Needed by SuccessiveConvolutions
  *
  * @param[in]  number_of_field_components            number of components in mixed particle field
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field [MeV/u] (array of size number_of_field_components)
  * @param[in]  particle_no  particle index (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
@@ -681,7 +697,7 @@ double AT_dose_weighted_E_MeV_u( const long   number_of_field_components,
  * Computes the fluence-weighted average LET of a particle field
  *
  * @param[in]  number_of_field_components            number of components in mixed particle field
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field [MeV/u] (array of size number_of_field_components)
  * @param[in]  particle_no  particle index (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
@@ -702,7 +718,7 @@ double AT_fluence_weighted_LET_MeV_cm2_g( const long     number_of_field_compone
  * Computes the dose-weighted average LET of a particle field
  *
  * @param[in]  number_of_field_components            number of components in mixed particle field
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field [MeV/u] (array of size number_of_field_components)
  * @param[in]  particle_no  particle index (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
@@ -727,7 +743,7 @@ double AT_dose_weighted_LET_MeV_cm2_g( const long  number_of_field_components,
  * stopping powers, NOT of dose-weighted stopping powers.
  *
  * @param[in]  number_of_field_components            number of components in mixed field
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field [MeV/u] (array of size number_of_field_components)
  * @param[in]  particle_no  particle index (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
@@ -749,7 +765,7 @@ double AT_stopping_power_ratio( const long     number_of_field_components,
  * Computes the number of track contributing to a representative point in a mixed field
  *
  * @param[in]  number_of_field_components            number of components in mixed particle field
- * @param[in]  E_MeV_u      energy of particles in the mixed particle field (array of size number_of_field_components)
+ * @param[in]  E_MeV_u      energy of particles in the mixed particle field [MeV/u] (array of size number_of_field_components)
  * @param[in]  particle_no  particle index (array of size number_of_field_components)
  * @see          AT_DataParticle.h for definition
  * @param[in]  fluence_cm2  fluences of particles in the mixed particle field (array of size number_of_field_components)
@@ -772,7 +788,7 @@ double AT_mean_number_of_tracks_contrib(    const long number_of_field_component
  * density effect in Bethe formula for stopping power
  * following the Sternheimer (1971) approach
  *
- * @param[in]  E_MeV_u      energy of particle
+ * @param[in]  E_MeV_u      energy per nucleon of particle [MeV]
  * @return     				kinetic variable
  */
 double AT_kinetic_variable_single( double E_MeV_u );
@@ -781,7 +797,7 @@ double AT_kinetic_variable_single( double E_MeV_u );
  * Computes the Rutherford single differential cross section
  * for the energy spectrum of secondary electrons produced by
  * an HCP
- * @param[in]  	   E_MeV_u      energy of particle per nucleon
+ * @param[in]  	   E_MeV_u      energy of particle per nucleon [MeV/u]
  * @param[in]  	   particle_no  particle index
  * @param[in]      material_no  material index
  * @param[in]  	   n      		number of secondary electron energies
@@ -801,7 +817,7 @@ int AT_Rutherford_SDCS( const double E_MeV_u,
  * in the solid angle O = 2 * pi * theta * d_theta given the
  * scatter angle theta
  *
- * @param[in]  E_MeV_u      			energy of incoming particle
+ * @param[in]  E_MeV_u      			energy of incoming particle per nucleon [MeV/u]
  * @param[in]  particle_no  			particle index
  * @see          AT_DataParticle.h for definition
  * @param[in]  material_no  			material index
@@ -823,7 +839,7 @@ long AT_Rutherford_scatter_cross_section( const double E_MeV_u,
  * the effective charge of the particle (as a function of the kinetic energy)
  * is used.
  *
- * @param[in]  E_MeV_u      			energy of incoming particle
+ * @param[in]  E_MeV_u      			energy of incoming particle per nucleon [MeV/u]
  * @param[in]  particle_no  			particle index
  * @see          AT_DataParticle.h for definition
  * @param[in]  B_T						magnetic B-field strength in Tesla

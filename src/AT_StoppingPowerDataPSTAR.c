@@ -1,5 +1,11 @@
 #include "AT_StoppingPowerDataPSTAR.h"
 
+/*
+ * PSTAR contains experimental stopping power data for protons
+ * first column is energy in MeV (not to be confused with MeV/amu) !
+ * second column is total stopping power in MeV cm^2/g
+ **/
+
 PSTAR_data_for_material_struct PSTAR_Water = {
   Water_Liquid,
   PARTICLE_PROTON_NUMBER,
@@ -1307,10 +1313,16 @@ int AT_PSTAR_wrapper( const long n,
 
 	long i;
 	for(i = 0; i < n; i++){
+
+	        // PSTAR data is parametrized with kinetic energy in [MeV], not in [MeV/u],
+	        // hence we need to change units
 			mass_stopping_power_MeV_cm2_g[i] = AT_get_interpolated_y_from_input_2d_table(
 					source_for_given_material->energy_and_stopping_power,
 					n_data,
-					E_MeV_u[i]);
+                    AT_E_MeV_from_E_MeV_u(E_MeV_u[i], PARTICLE_PROTON_NUMBER));
+
+			// for particles other than protons we calculate approximate stopping power by
+			// scaling with Z_eff(ion)/Z_eff(proton) where Z_eff is effective charge
 			if( particle_no[i] != PARTICLE_PROTON_NUMBER){
 				double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u[i], particle_no[i]);
 				double Zeff_proton =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u[i], PARTICLE_PROTON_NUMBER);

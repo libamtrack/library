@@ -127,6 +127,25 @@ int AT_atomic_weight_from_Z( const long  n,
   return AT_Success;
 }
 
+
+double AT_atomic_weight_from_particle_no_single(  const long  particle_no)
+{
+    long  Z = AT_Z_from_particle_no_single(  particle_no );
+    long  match;
+
+    find_elements_int(  &Z,
+                        1,
+                        AT_Particle_Data.Z,
+                        AT_Particle_Data.n,
+                        &match);
+
+    if( match >= 0 ){
+        return AT_Particle_Data.atomic_weight[match];
+    }
+
+    return -1;
+}
+
 int AT_atomic_weight_from_particle_no( const long  n,
     const long  particle_no[],
     double  atomic_weight[])
