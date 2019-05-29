@@ -349,7 +349,7 @@ int main( int argc, char* argv[]){
 	}  else if( strcmp( plottype , "CSDArange") == 0){
 		printf("#CSDArange vs primary ion energy\n");
 		printf("#particle: %s (code: %ld)\n", particle_name, particle_no);
-		printf("#E[MeV/u] CSDArange[m]\n");
+		printf("#E[MeV/u] CSDArange[cm]\n");
 		for( i = 0 ; i < number_of_points_on_x_axis ; i++){
 			y[i] = AT_CSDA_range_g_cm2_single( x[i], 0.0, particle_no,material_no);
 			y[i] *= AT_density_g_cm3_from_material_no(material_no);
