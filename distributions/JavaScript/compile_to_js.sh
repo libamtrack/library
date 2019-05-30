@@ -261,6 +261,8 @@ funs='['
  funs+='"_AT_D_RDD_Gy_int",'	
  
   #----AT_PhysicsRoutines.h	
+ funs+='"_AT_E_MeV_u_from_E_MeV",'	
+ funs+='"_AT_E_MeV_from_E_MeV_u",'	
  funs+='"_AT_beta_from_E_single",'	
  funs+='"_AT_beta_from_E",'	
  funs+='"_AT_E_from_beta_single",'	
