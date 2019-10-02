@@ -23,6 +23,7 @@
 
         Move generated files to distributions/JavaScript/ (exec from main library dir)
         cp $GSL_ROOT_DIR/lib/libgsl.a .
+        cp $GSL_ROOT_DIR/lib/libgslcblas.a .
 
     2.2 If you skipped 2.1 do
         cd $GSL_PATH/gsl-latest/gsl/
