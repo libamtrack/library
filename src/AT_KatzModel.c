@@ -374,16 +374,15 @@ int AT_KatzModel_inactivation_cross_section_m2(
 
   if( rdd_model == RDD_KatzExtTarget ){
     long i;
+    const double a0_m                  =  rdd_parameters[1];
     for( i = 0 ; i < n ; i++){
-
       const double max_electron_range_m  =  AT_max_electron_range_m( E_MeV_u[i], (int)material_no, (int)er_model);
-      const double a0_m                  =  rdd_parameters[1];
       const double KatzPoint_r_min_m     =  AT_RDD_r_min_m( max_electron_range_m, rdd_model, rdd_parameters );
       const double Katz_point_coeff_Gy   =  AT_RDD_Katz_coeff_Gy_general( E_MeV_u[i], particle_no, material_no, er_model);
       const double r_max_m               =  GSL_MIN(a0_m, max_electron_range_m);
 
       double Katz_plateau_Gy  =  0.0;
-      double alpha                       =  0.0;
+      double alpha            =  0.0;
       if( (er_model == ER_Waligorski) || (er_model == ER_Edmund) ){ // "new" Katz RDD
         alpha            =  AT_ER_PowerLaw_alpha(E_MeV_u[i]);
         Katz_plateau_Gy  =  AT_RDD_Katz_PowerLawER_Daverage_Gy( KatzPoint_r_min_m, r_max_m, max_electron_range_m, alpha, Katz_point_coeff_Gy );
@@ -412,17 +411,17 @@ int AT_KatzModel_inactivation_cross_section_m2(
     const double  density_g_cm3        =  AT_density_g_cm3_from_material_no( material_no );
     const double  density_kg_m3        =  density_g_cm3 * 1000.0;
 
+    const double a0_m                  =  rdd_parameters[1]; // AT_RDD_a0_m( max_electron_range_m, rdd_model, rdd_parameters );
 
     for( i = 0 ; i < n ; i++){
 
       const double max_electron_range_m  =  AT_max_electron_range_m( E_MeV_u[i], (int)material_no, (int)er_model);
-      const double a0_m                  =  rdd_parameters[1]; // AT_RDD_a0_m( max_electron_range_m, rdd_model, rdd_parameters );
       const double KatzPoint_r_min_m     =  AT_RDD_r_min_m( max_electron_range_m, rdd_model, rdd_parameters );
       const double Katz_point_coeff_Gy   =  AT_RDD_Katz_coeff_Gy_general( E_MeV_u[i], particle_no, material_no, er_model);
       const double r_max_m               =  GSL_MIN(a0_m, max_electron_range_m);
       double  LET_MeV_cm2_g;
           AT_Mass_Stopping_Power_with_no( stop_power_source,
-          		n,
+          		1,
       			&E_MeV_u[i],
       			&particle_no,
       			material_no,
@@ -449,9 +448,9 @@ int AT_KatzModel_inactivation_cross_section_m2(
     return EXIT_SUCCESS;
   }
 
+#ifndef NDEBUG
   char rdd_name[200];
   AT_RDD_name_from_number(rdd_model, rdd_name);
-#ifndef NDEBUG
   fprintf(stderr, "RDD model %ld [%s] not supported\n", rdd_model, rdd_name);
 #endif
   return EXIT_FAILURE;
