@@ -177,7 +177,11 @@ void AT_lambda_landau_from_energy_loss_multi( const long n,
 		double lambda_landau[]);
 
 /**
- *
+ * @param[in]  	   energy_loss_keV          TODO
+ * @param[in]  	   E_MeV_u      		    TODO
+ * @param[in]  	   particle_no      		TODO
+ * @param[in]  	   material_no      		TODO
+ * @param[in]  	   slab_thickness_um     	TODO
  * @return
  */
 double AT_lambda_landau_from_energy_loss_single( const double energy_loss_keV,
@@ -357,7 +361,11 @@ void AT_lambda_vavilov_from_energy_loss_multi( const long n,
 		double lambda_vavilov[]);
 
 /**
- *
+ * @param[in]  	   energy_loss_keV          TODO
+ * @param[in]  	   E_MeV_u      		    TODO
+ * @param[in]  	   particle_no      		TODO
+ * @param[in]  	   material_no      		TODO
+ * @param[in]  	   slab_thickness_um     	TODO
  * @return
  */
 double AT_lambda_vavilov_from_energy_loss_single( const double energy_loss_keV,

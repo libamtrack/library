@@ -317,7 +317,7 @@ int AT_particle_name_from_particle_no( const long  n,
  * Returns particle names for given particle numbers
  * @param[in]  n              TODO
  * @param[in]  particle_name  particle names
- * @param[out] corresponding  particle numbers
+ * @param[out] particle_no    TODO
  * @return status
  */
 int AT_particle_no_from_particle_name( const long  n,
