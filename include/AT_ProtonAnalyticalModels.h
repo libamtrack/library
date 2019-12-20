@@ -183,6 +183,7 @@ enum AT_RBEModels {
  * @param[in] eps              fraction of primary fluence contributing to the tail of energy spectrum
  * if negative a default value of 0.03 is assumed
  * @param[in] ref_alpha_beta_ratio   ratio of alpha to beta (parameters in linear-quadratic model) for reference radiation
+ * @param[in] rbe_model_no   TODO
  * @return                    proton RBE
  */
 double AT_proton_RBE_single(const double z_cm,
@@ -205,6 +206,7 @@ double AT_proton_RBE_single(const double z_cm,
  * @param[in] eps               fraction of primary fluence contributing to the tail of energy spectrum
  * if negative a default value of 0.03 is assumed
  * @param[in]  ref_alpha_beta_ratio   ratio of alpha to beta (parameters in linear-quadratic model) for reference radiation
+ * @param[in]  rbe_model_no   TODO
  * @param[out] rbe             proton RBE (array of size n)
  */
 void AT_proton_RBE_multi(const long n,

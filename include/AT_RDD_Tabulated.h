@@ -105,6 +105,10 @@ double	 AT_r_max_RadicalDiffusion_m( const double E_MeV_u);
  * Returns minimal dose for the radical diffusion model
  *
  * @param[in]   E_MeV_u		energy in MeV/u
+ * @param[in]  particle_no  type of the particles
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
  * @return      minimal dose in Gy
  */
 double	 AT_d_min_RadicalDiffusion_Gy( const double E_MeV_u,
@@ -115,6 +119,9 @@ double	 AT_d_min_RadicalDiffusion_Gy( const double E_MeV_u,
  * Returns maximum dose for the radical diffusion model
  *
  * @param[in]   E_MeV_u		energy in MeV/u
+ * @param[in]  particle_no  type of the particles
+ * @see          AT_DataParticle.h for definition
+ * @param[in]   material_no		TODO
  * @return      maximum dose in Gy
  */
 double	 AT_d_max_RadicalDiffusion_Gy( const double E_MeV_u,

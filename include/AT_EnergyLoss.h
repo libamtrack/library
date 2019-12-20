@@ -177,7 +177,13 @@ void AT_lambda_landau_from_energy_loss_multi( const long n,
 		double lambda_landau[]);
 
 /**
- *
+ * @param[in]  	   energy_loss_keV          TODO
+ * @param[in]  E_MeV_u      energy of particle per nucleon [MeV/u]
+ * @param[in]  particle_no  type of the particles
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]  	   slab_thickness_um     	TODO
  * @return
  */
 double AT_lambda_landau_from_energy_loss_single( const double energy_loss_keV,
@@ -357,7 +363,13 @@ void AT_lambda_vavilov_from_energy_loss_multi( const long n,
 		double lambda_vavilov[]);
 
 /**
- *
+ * @param[in]  	   energy_loss_keV          TODO
+ * @param[in]  E_MeV_u      energy of particle per nucleon [MeV/u]
+ * @param[in]  particle_no  type of the particles
+ * @see          AT_DataParticle.h for definition
+ * @param[in]  material_no  material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]  	   slab_thickness_um     	TODO
  * @return
  */
 double AT_lambda_vavilov_from_energy_loss_single( const double energy_loss_keV,

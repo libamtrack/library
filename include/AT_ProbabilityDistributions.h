@@ -92,6 +92,7 @@ double ROOT_vav_pdf(const double x, const ROOT_GXXXC1 * init);
  * IDF of Vavilov distribution
  * The code is based on ROOT VavilovFast class (which in turn is translated from CERNLIB G115 VAVRAN method)
  * @param[in] X - random number from uniform distribution [0,1]
+ * @param[in] init   TODO
  * @return Vavilov random number
  */
 double ROOT_val_idf(const double X, const ROOT_GXXXC1 *init);
