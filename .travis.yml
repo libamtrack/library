@@ -1,3 +1,5 @@
+version: ~> 1.0
+
 language: c
 
 os:
@@ -13,18 +15,13 @@ python:
 services:
   - docker
 
-# needed to run dpkg -i
-sudo: true
-
 addons:
   apt:
     packages:
     - gfortran
 
 # run on Ubuntu 16.04
-dist:
-  - xenial
-  - bionic
+dist: xenial
 
 
 # Ubuntu 16.04 has pretty old (2.1) version of GSL
@@ -35,7 +32,7 @@ before_install:
   - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/libgsl23_2.5+dfsg-5_amd64.deb
   - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/libgsl-dev_2.5+dfsg-5_amd64.deb
   - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/gsl-bin_2.5+dfsg-5_amd64.deb
-  - sudo dpkg -i *.deb
+  - dpkg -i *.deb
   - gsl-config --version # print the currently installed version of GSL
   - autoreconf --force --install
 
