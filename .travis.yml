@@ -27,6 +27,8 @@ dist: xenial
 # Ubuntu 16.04 has pretty old (2.1) version of GSL
 # libamtrack needs GSL version 2.5, hence we install it from deb packages of Ubuntu 18.04 repo
 before_install:
+  - python3 -V
+  - python3 -m pip -V
   - mkdir m4
   - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/libgslcblas0_2.5+dfsg-5_amd64.deb  # newest GSL (2.5) from Ubuntu 18.04 repo
   - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/libgsl23_2.5+dfsg-5_amd64.deb
@@ -50,7 +52,7 @@ script:
   - $HOME/usr/bin/amtrack_test
   - $HOME/usr/bin/amtrack_demo
   - cd distributions/Python/pyamtrack && ./make_wheel_package.sh
-  - python -V
+
 
   # Tigger rebuild image in docker hub libamtrack/libamtrackforjs
   - $TRAVIS_BUILD_DIR/distributions/JavaScript/trigger_docker_rebuild.sh
