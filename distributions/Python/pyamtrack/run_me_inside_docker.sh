@@ -1,5 +1,12 @@
 #!/bin/bash
 
 pwd
+
+cd /io/gsl-2.6
+mkdir gsl
+./configure --prefix=/io/gsl
+make -j2
+make install
+
 /opt/python/cp36-cp36m/bin/python3 -m pip install /io/cBinder/
-CFLAGS=-std=c99 /opt/python/cp36-cp36m/bin/python3 -m cBinder -v pyamtrack -f ../library/src/ -f ../library/include/ -d generated -es ../cBinder/tests/libamtrack/libamtrack_export_symbols_full.txt  -mono libAT compile -i /io/gsl/include/ -i ../library/include/ -b /io/gsl/lib/ -l gsl -l gslcblas -l m -e 'std=c99'
+CFLAGS=-std=c99 /opt/python/cp36-cp36m/bin/python3 -m cBinder -v pyamtrack -f /io/libamtrack/src/ -f /io/libamtrack/include/ -d generated -es /io/symbols_to_export.txt  -mono libAT compile -i /io/gsl/include/ -i ../library/include/ -b /io/gsl/lib/ -l gsl -l gslcblas -l m
