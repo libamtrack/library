@@ -13,4 +13,4 @@ tar -zxvf gsl-latest.tar.gz
 
 docker run --rm -e PLAT=manylinux1_x86_64 -v `pwd`:/io quay.io/pypa/manylinux1_x86_64 /io/run_me_inside_docker.sh
 
-ls -alh workspace
+ls -alh generated/dist/
