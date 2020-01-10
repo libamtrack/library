@@ -10,7 +10,7 @@ compiler:
   - gcc
 
 python:
-  - "3.5"
+  - "3.6"
 
 services:
   - docker
@@ -19,7 +19,7 @@ addons:
   apt:
     packages:
     - gfortran
-    - python3-pip
+#    - python3-pip
 
 # run on Ubuntu 16.04
 dist: xenial
@@ -53,7 +53,7 @@ script:
   - $HOME/usr/bin/amtrack_test
   - $HOME/usr/bin/amtrack_demo
   - cd distributions/Python/pyamtrack && ./make_wheel_package.sh
-  - python3 -m pip install generated/dist/pyamtrack-1.0.0-py3-none-any.whl
+#  - python3 -m pip install generated/dist/pyamtrack-1.0.0-py3-none-any.whl
 
   # Tigger rebuild image in docker hub libamtrack/libamtrackforjs
   - $TRAVIS_BUILD_DIR/distributions/JavaScript/trigger_docker_rebuild.sh
