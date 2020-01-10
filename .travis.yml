@@ -8,7 +8,10 @@ compiler:
   - gcc
 
 python:
-  - "2.7"
+  - "3.5"
+
+services:
+  - docker
 
 # needed to run dpkg -i
 sudo: true
@@ -19,7 +22,9 @@ addons:
     - gfortran
 
 # run on Ubuntu 16.04
-dist: xenial
+dist:
+  - xenial
+  - bionic
 
 
 # Ubuntu 16.04 has pretty old (2.1) version of GSL
@@ -47,7 +52,7 @@ before_script:
 script:
   - $HOME/usr/bin/amtrack_test
   - $HOME/usr/bin/amtrack_demo
-  - cd distributions/Python/pyamtrack && python generate_Py_wrapper.py
-  - LD_LIBRARY_PATH=$HOME/usr/lib python pyamtrack.py
+  - cd distributions/Python/pyamtrack && ./make_wheel_package.sh
+#  - LD_LIBRARY_PATH=$HOME/usr/lib python pyamtrack.py
   # Tigger rebuild image in docker hub libamtrack/libamtrackforjs
   - $TRAVIS_BUILD_DIR/distributions/JavaScript/trigger_docker_rebuild.sh
