@@ -50,6 +50,7 @@ script:
   - $HOME/usr/bin/amtrack_test
   - $HOME/usr/bin/amtrack_demo
   - cd distributions/Python/pyamtrack && ./make_wheel_package.sh
-#  - LD_LIBRARY_PATH=$HOME/usr/lib python pyamtrack.py
+  - python -V
+
   # Tigger rebuild image in docker hub libamtrack/libamtrackforjs
   - $TRAVIS_BUILD_DIR/distributions/JavaScript/trigger_docker_rebuild.sh
