@@ -22,7 +22,7 @@ mkdir gsl
 # the C extensions using old enough libraries
 # in such way the will be as portable as possible
 rm -rf generated
-docker run --rm -e PLAT=manylinux1_x86_64 -v `pwd`:/io quay.io/pypa/manylinux1_x86_64 /io/run_me_inside_docker.sh
+docker run --rm -e PLAT=manylinux1_x86_64 -v `pwd`:/io quay.io/pypa/manylinux1_x86_64 /io/generate_inside_docker.sh
 
 # list the generated files
 ls -alh generated/dist/

@@ -47,8 +47,7 @@ before_script:
 script:
   - $HOME/usr/bin/amtrack_test
   - $HOME/usr/bin/amtrack_demo
-  - cd distributions/Python/pyamtrack && ./make_wheel_package.sh
-#  - python3 -m pip install generated/dist/pyamtrack-1.0.0-py3-none-any.whl
+  - cd distributions/Python/pyamtrack && ./make_wheel_package.sh && ./test_wheel_package.sh
 
-  # Tigger rebuild image in docker hub libamtrack/libamtrackforjs
+  # Trigger rebuild image in docker hub libamtrack/libamtrackforjs
   - $TRAVIS_BUILD_DIR/distributions/JavaScript/trigger_docker_rebuild.sh
