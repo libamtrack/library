@@ -6,6 +6,7 @@ setuptools.setup(
     packages=['pyamtrack'],
     package_data={'': ['lib/*']},
     python_requires='>=3.6',
+    install_requires=['cffi>=1.13.0'],
     author='Leszek Grzanka',
     author_email="leszek.grzanka@ifj.edu.pl",
     description="libamtrack python wrapper",
