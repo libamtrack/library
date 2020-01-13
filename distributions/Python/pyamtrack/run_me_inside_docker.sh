@@ -10,6 +10,7 @@ make install
 /opt/python/cp36-cp36m/bin/python3 -m pip install /io/cBinder/
 
 # generate extension and make wheel package
+rm -rf /io/generated
 CFLAGS='-std=c99' /opt/python/cp36-cp36m/bin/python3 -m cBinder pyamtrack \
 -f /io/libamtrack/src/ \
 -f /io/libamtrack/include/ \
@@ -25,7 +26,10 @@ compile \
 # generate package once more with adjusted setup.py
 cp /io/setup.py /io/generated
 cd /io/generated
+rm -rf build
+rm -rf dist
 /opt/python/cp36-cp36m/bin/python3 setup.py bdist_wheel
 
 # add manylinux1 tag
+cd /io/generated/dist
 auditwheel repair *whl
