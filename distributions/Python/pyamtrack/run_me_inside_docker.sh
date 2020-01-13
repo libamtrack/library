@@ -21,3 +21,11 @@ compile \
 -i /io/libamtrack/include/ \
 -b /io/gsl/lib/ \
 -l gsl -l gslcblas -l m
+
+# generate package once more with adjusted setup.py
+cp /io/setup.py /io/generated
+cd /io/generated
+/opt/python/cp36-cp36m/bin/python3 setup.py bdist_wheel
+
+# add manylinux1 tag
+auditwheel repair *whl
