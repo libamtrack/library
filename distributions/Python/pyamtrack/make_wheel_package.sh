@@ -26,4 +26,3 @@ docker run --rm -e PLAT=manylinux1_x86_64 -v `pwd`:/io quay.io/pypa/manylinux1_x
 
 # list the generated files
 ls -alh generated/dist/
-ls -alh generated/dist/wheelhouse
