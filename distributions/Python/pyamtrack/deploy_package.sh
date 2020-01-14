@@ -40,9 +40,10 @@ set -x
 echo "User" $PYPIUSER
 
 # make a source package
-pip3 install -U twine setuptools wheel --user
+pip3 install -U setuptools wheel --user
+pip3 install -U twine --user
 
 # upload only if tag present
-if [[ $TRAVIS_TAG != "" ]]; then
+if [[ $TRAVIS_TAG ]]; then
   twine upload $TRAVIS_BUILD_DIR/distributions/Python/pyamtrack/generated/dist/wheelhouse/*.whl
 fi
