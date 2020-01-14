@@ -40,7 +40,7 @@ set -x
 echo "User" $PYPIUSER
 
 # make a source package
-pip install -U twine
+pip3 install -U twine --user
 
 # upload only if tag present
 if [[ $TRAVIS_TAG != "" ]]; then

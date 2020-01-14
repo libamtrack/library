@@ -16,6 +16,7 @@ addons:
   apt:
     packages:
     - gfortran
+    - python3-pip
 
 # run on Ubuntu 16.04
 dist: xenial
