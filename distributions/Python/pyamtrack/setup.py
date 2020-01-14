@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="pyamtrack",
-    version="0.1.0",
+    version="0.1.1",
     packages=['pyamtrack'],
     package_data={'': ['lib/*']},
     python_requires='>=3.6',
@@ -32,6 +32,7 @@ setuptools.setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
 
         # Specify the Python versions you support here.
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8'
     ],
