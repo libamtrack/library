@@ -17,7 +17,6 @@ addons:
     packages:
     - gfortran
     - python3-pip
-    - twine
 
 # run on Ubuntu 16.04
 dist: xenial
@@ -56,7 +55,7 @@ script:
   - $HOME/usr/bin/amtrack_test
   - $HOME/usr/bin/amtrack_demo
   - cd distributions/Python/pyamtrack && ./make_wheel_package.sh && ./test_wheel_package.sh
-  - if [[ "$TRAVIS_TEST_RESULT" == "0" ]] && [[ $TRAVIS_TAG ]]; then $TRAVIS_BUILD_DIR/distributions/Python/pyamtrack/deploy_package.sh; fi
+  - if [[ "$TRAVIS_TEST_RESULT" == "0" ]] && [[ $TRAVIS_COMPILER == "gcc" ]]; then $TRAVIS_BUILD_DIR/distributions/Python/pyamtrack/deploy_package.sh; fi
 
   # Trigger rebuild image in docker hub libamtrack/libamtrackforjs
   - if [[ "$TRAVIS_TEST_RESULT" == "0" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then $TRAVIS_BUILD_DIR/distributions/JavaScript/trigger_docker_rebuild.sh; fi

@@ -38,10 +38,14 @@ write_pypirc
 set -x
 
 echo "User" $PYPIUSER
+pip3 install -U setuptools wheel --user
+
+# TODO travis runs now on Ubuntu 16.04 with Python 3.5
+# newer version of twine require at least Python 3.6, hence we install some older version here
+pip3 install -U "twine<2" --user
+twine --version
 
 # upload only if tag present
 if [[ $TRAVIS_TAG ]]; then
-  pip3 install -U setuptools wheel --user
-  pip3 install -U "twine<2" --user
   python3 -m twine upload $TRAVIS_BUILD_DIR/distributions/Python/pyamtrack/generated/dist/wheelhouse/*.whl
 fi
