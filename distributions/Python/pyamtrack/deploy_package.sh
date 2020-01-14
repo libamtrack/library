@@ -42,5 +42,6 @@ echo "User" $PYPIUSER
 # upload only if tag present
 if [[ $TRAVIS_TAG ]]; then
   pip3 install -U setuptools wheel --user
-  twine upload $TRAVIS_BUILD_DIR/distributions/Python/pyamtrack/generated/dist/wheelhouse/*.whl
+  pip3 install -U "twine<2" --user
+  python3 -m twine upload $TRAVIS_BUILD_DIR/distributions/Python/pyamtrack/generated/dist/wheelhouse/*.whl
 fi
