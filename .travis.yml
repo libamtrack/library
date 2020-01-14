@@ -17,6 +17,7 @@ addons:
     packages:
     - gfortran
     - python3-pip
+    - twine
 
 # run on Ubuntu 16.04
 dist: xenial
