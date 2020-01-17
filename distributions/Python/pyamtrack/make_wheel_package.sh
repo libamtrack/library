@@ -3,7 +3,7 @@
 # get the tool which aids making wheel package
 # it will automatically generate python wrapper for decorated (doxygen) C code
 rm -rf cBinder
-git clone https://github.com/Tetrite/cBinder.git
+git clone -b fix/81-libamtrack-python3 https://github.com/Tetrite/cBinder.git
 
 # copy source files and headers to local folder, so the docker container can access them
 rm -rf libamtrack
@@ -26,4 +26,3 @@ docker run --rm -e PLAT=manylinux1_x86_64 -v `pwd`:/io quay.io/pypa/manylinux1_x
 
 # list the generated files
 ls -alh generated/dist/
-ls -alh generated/dist/wheelhouse
