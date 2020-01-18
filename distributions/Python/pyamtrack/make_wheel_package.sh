@@ -3,7 +3,7 @@
 # get the tool which aids making wheel package
 # it will automatically generate python wrapper for decorated (doxygen) C code
 rm -rf cBinder
-git clone -b fix/81-libamtrack-python3 https://github.com/Tetrite/cBinder.git
+git clone https://github.com/Tetrite/cBinder.git
 
 # copy source files and headers to local folder, so the docker container can access them
 rm -rf libamtrack
