@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="pyamtrack",
-    version="0.1.2",
+    version="0.1.3",
     packages=['pyamtrack'],
     package_data={'': ['lib/*']},
     python_requires='>=3.6',
