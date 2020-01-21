@@ -106,7 +106,7 @@ void AT_dose_Bortfeld_Gy_multi(const long n,
                                double dose_Gy[]) {
     long i;
     for (i = 0; i < n; i++) {
-        dose_Gy[i] = AT_dose_Bortfeld_Gy_single(z_cm[i], E_MeV_u, fluence_cm2, sigma_E_MeV_u, material_no, eps);
+        dose_Gy[i] = AT_dose_Bortfeld_Gy_single(z_cm[i], fluence_cm2, E_MeV_u, sigma_E_MeV_u, material_no, eps);
     }
 }
 
