@@ -25,6 +25,7 @@ compile \
 
 # generate package once more with adjusted setup.py
 cp /io/setup.py /io/generated
+cp /io/version.py /io/generated/pyamtrack/
 cd /io/generated
 rm -rf build
 rm -rf dist

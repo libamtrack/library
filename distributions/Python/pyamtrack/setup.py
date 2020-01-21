@@ -1,8 +1,25 @@
 import setuptools
 
+from pyamtrack.version import git_version
+
+
+def write_version_py(filename='VERSION'):
+    cnt = """%(version)s
+"""
+
+    GIT_REVISION = git_version()
+    a = open(filename, 'w')
+    try:
+        a.write(cnt % {'version': GIT_REVISION})
+    finally:
+        a.close()
+
+
+write_version_py()
+
 setuptools.setup(
     name="pyamtrack",
-    version="0.1.3",
+    version=git_version(),
     packages=['pyamtrack'],
     package_data={'': ['lib/*']},
     python_requires='>=3.6',
