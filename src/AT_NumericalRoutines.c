@@ -718,3 +718,12 @@ double AT_get_interpolated_y_from_interval(const double left_x, const double lef
 		return  left_y + (right_y - left_y)*((intermediate_x - left_x) / (right_x - left_x));
 	}
 }
+
+
+double AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double input_data_xy[][2], const long lenght_of_input_data, onst double intermediate_x[]){
+
+
+
+
+  
+}
