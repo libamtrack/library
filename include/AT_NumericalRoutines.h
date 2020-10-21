@@ -376,11 +376,15 @@ double AT_get_interpolated_y_from_input_2d_table( const double input_data_xy[][2
  * @param[in] input_data_xy
  * @param[in] length_of_input_data
  * @param[in] intermediate_x
+ * @param[in] length_of_output_data
+ * @param[in] pointer of arr
  * @return
  */
 double AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double input_data_xy[][2],
 		const long lenght_of_input_data,
-		const double intermediate_x[]);
+		const double intermediate_x[],
+		const long lenght_of_intermediate_x_data
+		double* intermediate_y);
 
 /**
  *TODO
