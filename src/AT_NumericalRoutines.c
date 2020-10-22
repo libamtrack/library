@@ -720,7 +720,8 @@ double AT_get_interpolated_y_from_interval(const double left_x, const double lef
 }
 
 
-double* AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double input_data_xy[][2], const long lenght_of_input_data, const double intermediate_x[], const long lenght_of_intermediate_x_data,   double* intermediate_y){
+double AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double input_data_xy[][2], const long lenght_of_input_data, const double intermediate_x){
+//, const long lenght_of_intermediate_x_data,   double intermediate_y){
   //auxiliary variables
   double p, qn, sig, un;
   //first derivative tab
@@ -744,14 +745,14 @@ double* AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double 
 
   //first derivative calculation
   for(int i = 1; i <= lenght_of_input_data-2; i++){
-    sig = (input_data_xy[i][0] - input_data_xy[i-1][0])/(input_data_xy[i+1][0] - input_data_xy[i-1][0])
+    sig = (input_data_xy[i][0] - input_data_xy[i-1][0])/(input_data_xy[i+1][0] - input_data_xy[i-1][0]);
     p = sig*y2[i-1] + 2.;
     y2[i] = (sig - 1.)/p;
     u[i] = (6.* ( (input_data_xy[i+1][1] - input_data_xy[i][1])/(input_data_xy[i+1][0] - input_data_xy[i][0])   -  (input_data_xy[i][1] - input_data_xy[i-1][1])/(input_data_xy[i][0] - input_data_xy[i-1][0]))/(input_data_xy[i+1][0] - input_data_xy[i-1][0]) - sig*u[i-1])/p;
   }
 
   //second derivative calculation
-  y2[lenght_of_input_data-1] = (un - qn*u[lenght_of_input_data-2])/(qn * y[lenght_of_input_data -2] + 1.);
+  y2[lenght_of_input_data-1] = (un - qn*u[lenght_of_input_data-2])/(qn * y2[lenght_of_input_data -2] + 1.);
 
   for(int k = lenght_of_input_data - 2; k>0; k--){
     y2[k] = y2[k]*y2[k+1] + u[k];
@@ -760,7 +761,7 @@ double* AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double 
   //intermediate_y calculation
 
 
-  for(int i = 0; i < lenght_of_intermediate_x_data; i++){
+  //for(int i = 0; i < lenght_of_intermediate_x_data; i++){
     //auxiliary variables
     //data indexes
     int k, khi, klo;
@@ -773,7 +774,7 @@ double* AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double 
     //find indexes of data points closest to intermediate_x
     while(khi - klo > 1){
       k = (khi + klo)/2;
-      if(input_data_xy[k][0] > intermediate_x[i]){
+      if(input_data_xy[k][0] > intermediate_x){
         khi = k;
       }
       else{
@@ -783,13 +784,13 @@ double* AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double 
 
     h = input_data_xy[khi][0] - input_data_xy[klo][0];
     
-    a = (input_data_xy[khi][0] - intermediate_x[i])/h;
-    b = (intermediate_x[i] - input_data_xy[klo][0])/h;
+    a = (input_data_xy[khi][0] - intermediate_x)/h;
+    b = (intermediate_x - input_data_xy[klo][0])/h;
     
-    y[i] = a*input_data_xy[klo][1] + b*input_data_xy[khi][1] + ((pow(a, 3) - a)*y2[klo] +(pow(b, 3) -b)*y2[khi])*( pow(h, 2))/6. ;
+    double y = a*input_data_xy[klo][1] + b*input_data_xy[khi][1] + ((pow(a, 3) - a)*y2[klo] +(pow(b, 3) -b)*y2[khi])*( pow(h, 2))/6. ;
 
-  }
+  //}
 
-  return intermediate_y;
+  return y;
 
 }

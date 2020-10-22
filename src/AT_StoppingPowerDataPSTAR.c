@@ -1316,7 +1316,7 @@ int AT_PSTAR_wrapper( const long n,
 
 	        // PSTAR data is parametrized with kinetic energy in [MeV], not in [MeV/u],
 	        // hence we need to change units
-			mass_stopping_power_MeV_cm2_g[i] = AT_get_interpolated_y_from_input_2d_table(
+			mass_stopping_power_MeV_cm2_g[i] = AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(
 					source_for_given_material->energy_and_stopping_power,
 					n_data,
                     AT_E_MeV_from_E_MeV_u(E_MeV_u[i], PARTICLE_PROTON_NUMBER));
