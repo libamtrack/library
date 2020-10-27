@@ -720,8 +720,7 @@ double AT_get_interpolated_y_from_interval(const double left_x, const double lef
 }
 
 
-double AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double input_data_xy[][2], const long lenght_of_input_data, const double intermediate_x){
-//, const long lenght_of_intermediate_x_data,   double intermediate_y){
+void AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double input_data_xy[][2], const long lenght_of_input_data, const double intermediate_x[], const long lenght_of_intermediate_x_data,   double intermediate_y[]){
   //auxiliary variables
   double p, qn, sig, un;
   //first derivative tab
@@ -761,7 +760,7 @@ double AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double i
   //intermediate_y calculation
 
 
-  //for(int i = 0; i < lenght_of_intermediate_x_data; i++){
+  for(int i = 0; i < lenght_of_intermediate_x_data; i++){
     //auxiliary variables
     //data indexes
     int k, khi, klo;
@@ -774,7 +773,7 @@ double AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double i
     //find indexes of data points closest to intermediate_x
     while(khi - klo > 1){
       k = (khi + klo)/2;
-      if(input_data_xy[k][0] > intermediate_x){
+      if(input_data_xy[k][0] > intermediate_x[i]){
         khi = k;
       }
       else{
@@ -784,13 +783,45 @@ double AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double i
 
     h = input_data_xy[khi][0] - input_data_xy[klo][0];
     
-    a = (input_data_xy[khi][0] - intermediate_x)/h;
-    b = (intermediate_x - input_data_xy[klo][0])/h;
+    a = (input_data_xy[khi][0] - intermediate_x[i])/h;
+    b = (intermediate_x[i] - input_data_xy[klo][0])/h;
     
-    double y = a*input_data_xy[klo][1] + b*input_data_xy[khi][1] + ((pow(a, 3) - a)*y2[klo] +(pow(b, 3) -b)*y2[khi])*( pow(h, 2))/6. ;
+    intermediate_y[i] = a*input_data_xy[klo][1] + b*input_data_xy[khi][1] + ((pow(a, 3) - a)*y2[klo] +(pow(b, 3) -b)*y2[khi])*( pow(h, 2))/6. ;
+  }
+}
 
-  //}
 
-  return y;
+double AT_get_interpolated_cubic_spline_y_from_input_2d_table(const double input_data_xy[][2], const long lenght_of_input_data, const double intermediate_x){
+  //create array of size 1 to use function which takes array o x's
+  double x[1]; 
+  x[0] = intermediate_x;
+  double y[1];
+  AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(input_data_xy, lenght_of_input_data, x, 1, y);
+  return y[0];
+}
 
+//there is warning, why???
+//AT_NumericalRoutines.c:812:62: warning: pointers to arrays with different qualifiers are incompatible in ISO C [-Wpedantic]
+//  812 |   AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(temp_input_data_xy, lenght_of_input_data, intermediate_y, lenght_of_intermediate_y_data, intermediate_x);
+//      |                                                              ^~~~~~~~~~~~~~~~~~
+
+void AT_get_interpolated_cubic_spline_x_tab_from_input_2d_table(const double input_data_xy[][2], const long lenght_of_input_data, const double intermediate_y[], const long lenght_of_intermediate_y_data,   double intermediate_x[]){
+  //(x, y) -> (y, x)
+  double temp_input_data_xy[lenght_of_input_data][2];
+  long i =0;
+  for(i=0; i < lenght_of_input_data; i++){
+    temp_input_data_xy[i][0] = input_data_xy[i][1];
+    temp_input_data_xy[i][1] = input_data_xy[i][0];
+  }
+  AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(temp_input_data_xy, lenght_of_input_data, intermediate_y, lenght_of_intermediate_y_data, intermediate_x);
+}
+
+
+double AT_get_interpolated_cubic_spline_x_from_input_2d_table(const double input_data_xy[][2], const long lenght_of_input_data, const double intermediate_y){
+  //create array of size 1 to use function which takes array o x's
+  double y[1]; 
+  y[0] = intermediate_y;
+  double x[1];
+  AT_get_interpolated_cubic_spline_x_tab_from_input_2d_table(input_data_xy, lenght_of_input_data, y, 1, x);
+  return x[0];
 }

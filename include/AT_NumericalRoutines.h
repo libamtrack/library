@@ -372,22 +372,6 @@ double AT_get_interpolated_y_from_input_2d_table( const double input_data_xy[][2
 
 
 /**
- * TODO
- * @param[in] input_data_xy
- * @param[in] length_of_input_data
- * @param[in] intermediate_x
- * @param[in] length_of_output_data
- * @param[in] pointer of arr
- * @return
- */
-double AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double input_data_xy[][2],
-		const long lenght_of_input_data,
-		const double intermediate_x);
-		//,
-		//const long lenght_of_intermediate_x_data
-		//double intermediate_y);
-
-/**
  *TODO
  * @param[in] input_data_xy
  * @param[in] lowest_index
@@ -419,6 +403,60 @@ double AT_get_interpolated_y_from_interval( const double left_x,
 
 // TODO implement linear interpolation on logarithmic scale
 
+
+/**
+ * Cubic-spline interpolation for input (x, y) data table. 
+ * @param[in] input_data_xy ( (x, y) tab)
+ * @param[in] length_of_input_data
+ * @param[in] intermediate_x (tab of x for which y will be interpolated)
+ * @param[in] length_of_output_data
+ * @param[in] intermediate_y (tab of interpolated y, where y[i] = interpoated_function(x[i]))
+ * @return
+ */
+void AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double input_data_xy[][2],
+		const long lenght_of_input_data,
+		const double intermediate_x[],
+		const long lenght_of_intermediate_x_data,
+		double intermediate_y[]);
+
+/**
+ * Cubic-spline interpolation for input (x, y) data table. 
+ * @param[in] input_data_xy ( (x, y) tab)
+ * @param[in] length_of_input_data
+ * @param[in] intermediate_x
+ * @return
+ */
+double AT_get_interpolated_cubic_spline_y_from_input_2d_table(const double input_data_xy[][2],
+		const long lenght_of_input_data,
+		const double intermediate_x);
+
+
+/**
+ * Cubic-spline interpolation for input (x, y) data table. It changes (x, y) to (y, x) and use funciton AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table
+ * @param[in] input_data_xy ( (x, y) tab)
+ * @param[in] length_of_input_data
+ * @param[in] intermediate_y (tab of y for which x will be interpolated)
+ * @param[in] length_of_output_data
+ * @param[in] intermediate_x (tab of interpolated x, where x[i] = interpoated_function(y[i]))
+ * @return
+ */
+void AT_get_interpolated_cubic_spline_x_tab_from_input_2d_table(const double input_data_xy[][2],
+		const long lenght_of_input_data,
+		const double intermediate_y[],
+		const long lenght_of_intermediate_y_data,
+		double intermediate_x[]);
+
+
+/**
+ * Cubic-spline interpolation for input (x, y) data table. 
+ * @param[in] input_data_xy ( (x, y) tab)
+ * @param[in] length_of_input_data
+ * @param[in] intermediate_y
+ * @return
+ */
+double AT_get_interpolated_cubic_spline_x_from_input_2d_table(const double input_data_xy[][2],
+		const long lenght_of_input_data,
+		const double intermediate_y);
 
 
 #endif /* AT_NUMERICALROUTINES_H_ */

@@ -1312,23 +1312,32 @@ int AT_PSTAR_wrapper( const long n,
 	const long n_data = N_PSTAR_DATAPOINTS;
 
 	long i;
+	double E_MeV[n];
+
+	// PSTAR data is parametrized with kinetic energy in [MeV], not in [MeV/u],
+	// hence we need to change units
+	for(i=0; i < n; i++){
+		E_MeV[i] = AT_E_MeV_from_E_MeV_u(E_MeV_u[i], PARTICLE_PROTON_NUMBER);
+	}
+
+	AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(
+		source_for_given_material->energy_and_stopping_power,
+		n_data,
+		E_MeV,
+		n,
+		mass_stopping_power_MeV_cm2_g);
+
 	for(i = 0; i < n; i++){
-
-	        // PSTAR data is parametrized with kinetic energy in [MeV], not in [MeV/u],
-	        // hence we need to change units
-			mass_stopping_power_MeV_cm2_g[i] = AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(
-					source_for_given_material->energy_and_stopping_power,
-					n_data,
-                    AT_E_MeV_from_E_MeV_u(E_MeV_u[i], PARTICLE_PROTON_NUMBER));
-
-			// for particles other than protons we calculate approximate stopping power by
-			// scaling with Z_eff(ion)/Z_eff(proton) where Z_eff is effective charge
-			if( particle_no[i] != PARTICLE_PROTON_NUMBER){
-				double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u[i], particle_no[i]);
-				double Zeff_proton =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u[i], PARTICLE_PROTON_NUMBER);
-				mass_stopping_power_MeV_cm2_g[i] *= gsl_pow_2(Zeff_ion / Zeff_proton);
-			}
+		// for particles other than protons we calculate approximate stopping power by
+		// scaling with Z_eff(ion)/Z_eff(proton) where Z_eff is effective charge
+		if( particle_no[i] != PARTICLE_PROTON_NUMBER){
+			double Zeff_ion    =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u[i], particle_no[i]);
+			double Zeff_proton =  AT_effective_charge_from_E_MeV_u_single(E_MeV_u[i], PARTICLE_PROTON_NUMBER);
+			mass_stopping_power_MeV_cm2_g[i] *= gsl_pow_2(Zeff_ion / Zeff_proton);
 		}
+	}
+
+
 	return AT_Success;
 }
 
