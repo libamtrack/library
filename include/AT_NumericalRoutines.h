@@ -405,7 +405,7 @@ double AT_get_interpolated_y_from_interval( const double left_x,
 
 
 /**
- * Cubic-spline interpolation for input (x, y) data table. 
+ * Cubic-spline interpolation for input (x, y) data table. Created on basis of Numerical Recipes in fortran 77: The art of scientific computing
  * @param[in] input_data_xy ( (x, y) tab)
  * @param[in] length_of_input_data
  * @param[in] intermediate_x (tab of x for which y will be interpolated)
@@ -424,7 +424,7 @@ void AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double inp
  * @param[in] input_data_xy ( (x, y) tab)
  * @param[in] length_of_input_data
  * @param[in] intermediate_x
- * @return
+ * @return interpolated y(intermediate_x)
  */
 double AT_get_interpolated_cubic_spline_y_from_input_2d_table(const double input_data_xy[][2],
 		const long lenght_of_input_data,
