@@ -721,9 +721,8 @@ double AT_get_interpolated_y_from_interval(const double left_x, const double lef
 
 
 void AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double input_data_xy[][2], const long lenght_of_input_data, const double intermediate_x[], const long lenght_of_intermediate_x_data,   double intermediate_y[]){
-  //Created on basis of Numerical Recipes in fortran 77: The art of scientific computing, chapter 3.3 Cubic SPline Interpolation
-
-
+  //Created on basis of Numerical Recipes in fortran 77: The art of scientific computing, chapter 3.3 Cubic Spline Interpolation
+  
   //auxiliary variables
   double p, qn, sig, un;
   //first derivative tab
@@ -811,7 +810,7 @@ double AT_get_interpolated_cubic_spline_y_from_input_2d_table(const double input
 void AT_get_interpolated_cubic_spline_x_tab_from_input_2d_table(const double input_data_xy[][2], const long lenght_of_input_data, const double intermediate_y[], const long lenght_of_intermediate_y_data,   double intermediate_x[]){
   //(x, y) -> (y, x)
   double temp_input_data_xy[lenght_of_input_data][2];
-  long i =0;
+  long i = 0;
   for(i=0; i < lenght_of_input_data; i++){
     temp_input_data_xy[i][0] = input_data_xy[i][1];
     temp_input_data_xy[i][1] = input_data_xy[i][0];
