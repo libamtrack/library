@@ -33,4 +33,4 @@ jobs:
     - name: tests
       run: |
         ./usr/bin/amtrack_demo
-        ./usr/bin/amtrack_plot
+        ./usr/bin/amtrack_test
