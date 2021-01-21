@@ -54,26 +54,26 @@
 /**
  * Location of maximum dose according to Bortfeld dose model
  * @see AT_dose_Bortfeld_Gy_single
- * @param[in] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
- * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in] E_MeV           initial kinetic energy of proton beam [MeV/u]
+ * @param[in] sigma_E_MeV     kinetic energy spread (standard deviation) [MeV/u]
+ * if negative a default value of 0.01 * E_MeV is assumed
  * @param[in] material_no     material code number
  * @see          AT_DataMaterial.h for definition
  * @param[in] eps             fraction of primary fluence contributing to the tail of energy spectrum
  * if negative a default value of 0.03 is assumed
  * @return                    depth at which dose reaches maximum value [cm]
  */
-double AT_max_location_Bortfeld_cm(const double E_MeV_u,
-                                   const double sigma_E_MeV_u,
+double AT_max_location_Bortfeld_cm(const double E_MeV,
+                                   const double sigma_E_MeV,
                                    const long material_no,
                                    const double eps);
 
 /**
  * Range defined as the location on distal part where dose drops to certain fraction of maximum value.
  * @see AT_dose_Bortfeld_Gy_single for details of Bortfeld dose models
- * @param[in] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
- * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in] E_MeV           initial kinetic energy of proton beam [MeV/u]
+ * @param[in] sigma_E_MeV     kinetic energy spread (standard deviation) [MeV/u]
+ * if negative a default value of 0.01 * E_MeV is assumed
  * @param[in] material_no     material code number
  * @see          AT_DataMaterial.h for definition
  * @param[in] eps             fraction of primary fluence contributing to the tail of energy spectrum
@@ -85,8 +85,8 @@ double AT_max_location_Bortfeld_cm(const double E_MeV_u,
  * if negative a default value of 0.8 is assumed
  * @return                    range [cm]
  */
-double AT_range_Bortfeld_cm(const double E_MeV_u,
-                            const double sigma_E_MeV_u,
+double AT_range_Bortfeld_cm(const double E_MeV,
+                            const double sigma_E_MeV,
                             const long material_no,
                             const double eps,
                             const double dose_drop,
@@ -96,34 +96,34 @@ double AT_range_Bortfeld_cm(const double E_MeV_u,
 /**
  * Full width at half-maximum (FWHM) defined as the width of the dose profile at 50% of maximum dose value.
  * @see AT_dose_Bortfeld_Gy_single for details of Bortfeld dose models
- * @param[in] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
- * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in] E_MeV           initial kinetic energy of proton beam [MeV/u]
+ * @param[in] sigma_E_MeV     kinetic energy spread (standard deviation) [MeV/u]
+ * if negative a default value of 0.01 * E_MeV is assumed
  * @param[in] material_no     material code number
  * @see          AT_DataMaterial.h for definition
  * @param[in] eps             fraction of primary fluence contributing to the tail of energy spectrum
  * if negative a default value of 0.03 is assumed
  * @return                    FWHM [cm]
  */
-double AT_fwhm_Bortfeld_cm(const double E_MeV_u,
-                           const double sigma_E_MeV_u,
+double AT_fwhm_Bortfeld_cm(const double E_MeV,
+                           const double sigma_E_MeV,
                            const long material_no,
                            const double eps);
 
 /**
  * Ratio between maximum dose value and the entrance dose (so called "max_to_plateau" ratio).
  * @see AT_dose_Bortfeld_Gy_single for details of Bortfeld dose models
- * @param[in] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
- * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in] E_MeV           initial kinetic energy of proton beam [MeV/u]
+ * @param[in] sigma_E_MeV     kinetic energy spread (standard deviation) [MeV/u]
+ * if negative a default value of 0.01 * E_MeV is assumed
  * @param[in] material_no     material code number
  * @see          AT_DataMaterial.h for definition
  * @param[in] eps             fraction of primary fluence contributing to the tail of energy spectrum
  * if negative a default value of 0.03 is assumed
  * @return                    "max_to_plateau" ratio
  */
-double AT_max_plateau_Bortfeld(const double E_MeV_u,
-                               const double sigma_E_MeV_u,
+double AT_max_plateau_Bortfeld(const double E_MeV,
+                               const double sigma_E_MeV,
                                const long material_no,
                                const double eps);
 
@@ -131,8 +131,8 @@ double AT_max_plateau_Bortfeld(const double E_MeV_u,
  * Energy of the beam which has given range.
  * @see AT_dose_Bortfeld_Gy_single for details of Bortfeld dose models
  * @param[in] range_cm        range [cm]
- * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in] sigma_E_MeV     kinetic energy spread (standard deviation) [MeV/u]
+ * if negative a default value of 0.01 * E_MeV is assumed
  * @param[in] material_no     material code number
  * @see          AT_DataMaterial.h for definition
  * @param[in] eps             fraction of primary fluence contributing to the tail of energy spectrum
@@ -141,23 +141,23 @@ double AT_max_plateau_Bortfeld(const double E_MeV_u,
  * if negative a default value of 0.8 is assumed
  * @return                    energy [MeV/u]
  */
-double AT_energy_Bortfeld_MeV_u(const double range_cm,
-                                const double sigma_E_MeV_u,
-                                const long material_no,
-                                const double eps,
-                                const double dose_drop);
+double AT_energy_Bortfeld_MeV(const double range_cm,
+                              const double sigma_E_MeV,
+                              const long material_no,
+                              const double eps,
+                              const double dose_drop);
 
 /**
  * @see AT_dose_Bortfeld_Gy_single for details of Bortfeld dose models
- * @param[in] range_cm        range [cm]
- * @param[in] fwhm_cm         FWHM [cm]
- * @param[in] max_to_plateau  "max_to_plateau" ratio
- * @param[in] material_no     material code number
+ * @param[in] range_cm         range [cm]
+ * @param[in] fwhm_cm          FWHM [cm]
+ * @param[in] max_to_plateau   "max_to_plateau" ratio
+ * @param[in] material_no      material code number
  * @see          AT_DataMaterial.h for definition
- * @param[in] dose_drop       fraction of max dose at which range is calculated
+ * @param[in] dose_drop        fraction of max dose at which range is calculated
  * if negative a default value of 0.8 is assumed
- * @param[out] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
- * @param[out] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
+ * @param[out] E_MeV           initial kinetic energy of proton beam [MeV/u]
+ * @param[out] sigma_E_MeV     kinetic energy spread (standard deviation) [MeV/u]
  * @param[out] eps             fraction of primary fluence contributing to the tail of energy spectrum
  */
 void AT_fit_Bortfeld(const double range_cm,
@@ -165,8 +165,8 @@ void AT_fit_Bortfeld(const double range_cm,
                      const double max_to_plateau,
                      const long material_no,
                      const double dose_drop,
-                     double * E_MeV_u,
-                     double * sigma_E_MeV_u,
+                     double * E_MeV,
+                     double * sigma_E_MeV,
                      double * eps);
 
 

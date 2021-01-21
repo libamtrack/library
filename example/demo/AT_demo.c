@@ -42,82 +42,94 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    const double E_MeV_u = 150.0;
-    double beta = AT_beta_from_E_single(E_MeV_u);
-    printf("Relative speed of particle with energy %4.2f is equal %1.3f\n", E_MeV_u, beta);
+    const double E_MeV = 150.0;
+
+    const double E_MeV_u = AT_E_MeV_u_from_E_MeV(E_MeV, PARTICLE_PROTON_NUMBER);
+    printf("Proton energy %4.4f [MeV] corresponds to %4.4f [MeV]/u\n", E_MeV, E_MeV_u);
+
+    const double beta = AT_beta_from_E_single(E_MeV_u);
+    printf("Relative speed of proton with energy %4.2f [MeV] is equal %1.3f\n", E_MeV, beta);
 
     const double z_cm = 10;
     const double fluence_cm2 = 1e9;
-    const double sigma_E_MeV_u = 1.0;
+    const double sigma_E_MeV = 1.5;
     const long material_no = 1;
     const double eps = 0.02;
 
     double dose_Gy = AT_dose_Bortfeld_Gy_single(z_cm,
-                                                E_MeV_u,
+                                                E_MeV,
                                                 fluence_cm2,
-                                                sigma_E_MeV_u,
+                                                sigma_E_MeV,
                                                 material_no,
                                                 eps);
 
-    printf("Dose: %g Gy\n", dose_Gy);
+    printf("Dose: %4.3f [Gy] (at fluence %g [1/cm2])\n", dose_Gy, fluence_cm2);
 
     double LETt_keV_um = AT_LET_t_Wilkens_keV_um_single(z_cm,
-                                                        E_MeV_u,
-                                                        sigma_E_MeV_u,
+                                                        E_MeV,
+                                                        sigma_E_MeV,
                                                         material_no);
 
     double LETd_keV_um = AT_LET_d_Wilkens_keV_um_single(z_cm,
-                                                        E_MeV_u,
-                                                        sigma_E_MeV_u,
+                                                        E_MeV,
+                                                        sigma_E_MeV,
                                                         material_no);
 
-    printf("LETt: %g keV/um\n", LETt_keV_um);
-    printf("LETd: %g keV/um\n", LETd_keV_um);
+    printf("LETt: %4.3f [keV/um]\n", LETt_keV_um);
+    printf("LETd: %4.3f [keV/um]\n", LETd_keV_um);
 
-    double max_location_cm = AT_max_location_Bortfeld_cm(E_MeV_u,
-                                                         sigma_E_MeV_u,
+    double max_location_cm = AT_max_location_Bortfeld_cm(E_MeV,
+                                                         sigma_E_MeV,
                                                          material_no,
                                                          eps);
 
-    printf("max location: %g cm\n", max_location_cm);
+    printf("maximum dose located at: %g [cm]\n", max_location_cm);
 
-    double range_cm = AT_range_Bortfeld_cm(E_MeV_u,
-                                           sigma_E_MeV_u,
-                                           material_no,
-                                           eps,
-                                           0.8,
-                                           1);
-
-    printf("range: %g cm\n", range_cm);
-
-    double fwhm_cm = AT_fwhm_Bortfeld_cm(E_MeV_u,
-                                         sigma_E_MeV_u,
-                                         material_no,
-                                         eps);
-
-    printf("FWHM: %g cm\n", fwhm_cm);
-
-    double energy_MeV = AT_energy_Bortfeld_MeV_u(range_cm,
-                                                 sigma_E_MeV_u,
+    const double dose_drop_factor = 0.8;
+    const double range_cm = AT_range_Bortfeld_cm(E_MeV,
+                                                 sigma_E_MeV,
                                                  material_no,
                                                  eps,
-                                                 0.8);
+                                                 dose_drop_factor,
+                                                 1);
 
-    printf("energy: %g MeV\n", energy_MeV);
+    printf("beam range (at %3.2f of max dose): %g cm\n", dose_drop_factor, range_cm);
 
-    double fit_E_MeV_u;
-    double fit_sigma_E_MeV_u;
+    const double fwhm_cm = AT_fwhm_Bortfeld_cm(E_MeV,
+                                               sigma_E_MeV,
+                                               material_no,
+                                               eps);
+
+    printf("FWHM: %g [cm]\n", fwhm_cm);
+
+    const double energy_MeV = AT_energy_Bortfeld_MeV(range_cm,
+                                                     sigma_E_MeV,
+                                                     material_no,
+                                                     eps,
+                                                     0.8);
+
+    printf("energy calculated from range: %g [MeV], original energy: %g [MeV]\n", energy_MeV, E_MeV);
+
+    double fit_E_MeV;
+    double fit_sigma_E_MeV;
     double fit_eps;
 
-    AT_fit_Bortfeld(15.799712435,
-                    1.5986288328329863,
-                    5.198384978576822,
+    const double measured_range_cm = 15.799712435;
+    const double measured_fwhm_cm = 1.5986288328329863;
+    const double measured_max_to_plateau = 5.198384978576822;
+    const double measured_dose_drop_factor = 0.9;
+
+    AT_fit_Bortfeld(measured_range_cm,
+                    measured_fwhm_cm,
+                    measured_max_to_plateau,
                     material_no,
-                    0.9,
-                    &fit_E_MeV_u,
-                    &fit_sigma_E_MeV_u,
+                    measured_dose_drop_factor,
+                    &fit_E_MeV,
+                    &fit_sigma_E_MeV,
                     &fit_eps);
-    printf("E = %g, deltaE = %g, eps = %g\n", fit_E_MeV_u, fit_sigma_E_MeV_u, fit_eps);
+    printf("measured range = %g [cm], FWHM = %g [cm], max/plateau = %g\n", measured_range_cm, measured_fwhm_cm,
+           measured_max_to_plateau);
+    printf("fitted E = %g [MeV], deltaE = %g [MeV], eps = %g\n", fit_E_MeV, fit_sigma_E_MeV, fit_eps);
 
     return EXIT_SUCCESS;
 }

@@ -34,8 +34,8 @@
 
 double AT_dose_Bortfeld_Gy_single(const double z_cm,
                                   const double fluence_cm2,
-                                  const double E_MeV_u,
-                                  const double sigma_E_MeV_u,
+                                  const double E_MeV,
+                                  const double sigma_E_MeV,
                                   const long material_no,
                                   const double eps) {
 
@@ -43,28 +43,27 @@ double AT_dose_Bortfeld_Gy_single(const double z_cm,
     const double beta_cm = 0.012; // slope parameter of fluence reduction relation [1/cm]
     const double gamma = 0.6; // fraction of locally absorbed energy released in non-elastic nuclear interactions
 
-    double p = AT_p_MeV_from_material_no(material_no); // exponent of range-energy relation
-    double alpha = AT_alpha_g_cm2_MeV_from_material_no(material_no); // proportionality factor (0.0022 cm/MeV^p in [1])
+    const double p = AT_p_MeV_from_material_no(material_no); // exponent of range-energy relation
+    const double alpha = AT_alpha_g_cm2_MeV_from_material_no(material_no); // proportionality factor (0.0022 cm/MeV^p in [1])
 
+    const double range_cm = alpha * pow(E_MeV, p);  // range in [cm]
 
-    double range_cm = alpha * pow(E_MeV_u, p);  // range in [cm]
-
-    double ni1 = 1.0 / p;
-    double ni2 = 1.0 + (1.0 / p);
+    const double ni1 = 1.0 / p;
+    const double ni2 = 1.0 + (1.0 / p);
 
     // assign default value to sigma being 1% of kinetic energy
-    double tmp_sigma_E_MeV_u = sigma_E_MeV_u;
-    if (sigma_E_MeV_u < 0)
-        tmp_sigma_E_MeV_u = 0.01 * E_MeV_u;
+    double tmp_sigma_E_MeV = sigma_E_MeV;
+    if (sigma_E_MeV < 0)
+        tmp_sigma_E_MeV = 0.01 * E_MeV;
 
     // assign default value to eps being 0.03 (following Bortfled original paper)
     double tmp_eps = eps;
     if (eps < 0)
         tmp_eps = 0.03;
 
-    double sigma_mono_cm = 0.012 * pow(range_cm, 0.935); // width of Gaussian range straggling
-    double sigma_cm = sqrt(
-            sigma_mono_cm * sigma_mono_cm + pow((tmp_sigma_E_MeV_u * alpha * p * pow(E_MeV_u, p - 1)), 2));
+    const double sigma_mono_cm = 0.012 * pow(range_cm, 0.935); // width of Gaussian range straggling
+    const double sigma_cm = sqrt(
+            sigma_mono_cm * sigma_mono_cm + pow((tmp_sigma_E_MeV * alpha * p * pow(E_MeV, p - 1)), 2));
 
     double dose_Gy = fluence_cm2; // returned value
 
@@ -99,41 +98,41 @@ double AT_dose_Bortfeld_Gy_single(const double z_cm,
 void AT_dose_Bortfeld_Gy_multi(const long n,
                                const double z_cm[],
                                const double fluence_cm2,
-                               const double E_MeV_u,
-                               const double sigma_E_MeV_u,
+                               const double E_MeV,
+                               const double sigma_E_MeV,
                                const long material_no,
                                const double eps,
                                double dose_Gy[]) {
     long i;
     for (i = 0; i < n; i++) {
-        dose_Gy[i] = AT_dose_Bortfeld_Gy_single(z_cm[i], fluence_cm2, E_MeV_u, sigma_E_MeV_u, material_no, eps);
+        dose_Gy[i] = AT_dose_Bortfeld_Gy_single(z_cm[i], fluence_cm2, E_MeV, sigma_E_MeV, material_no, eps);
     }
 }
 
 /****************************************** Wilkens LET model *******************************************************/
 
 double AT_LET_t_Wilkens_keV_um_single(const double z_cm,
-                                      const double E_MeV_u,
-                                      const double sigma_E_MeV_u,
+                                      const double E_MeV,
+                                      const double sigma_E_MeV,
                                       const long material_no) {
 
     double p = AT_p_MeV_from_material_no(material_no); // exponent of range-energy relation
     double alpha = AT_alpha_g_cm2_MeV_from_material_no(material_no); // proportionality factor (0.0022 cm/MeV^p in [1])
 
-    double range_cm = alpha * pow(E_MeV_u, p);  // range in [cm]
+    double range_cm = alpha * pow(E_MeV, p);  // range in [cm]
 
     double regul_factor_cm = 2.0 * 1e-4; // regularization factor in [cm] ( 1cm = 1e4 um)
 
     double ni1 = 1.0 + (1.0 / p);
 
     // assign default value to sigma being 1% of kinetic energy
-    double tmp_sigma_E_MeV_u = sigma_E_MeV_u;
-    if (sigma_E_MeV_u < 0)
-        tmp_sigma_E_MeV_u = 0.01 * E_MeV_u;
+    double tmp_sigma_E_MeV = sigma_E_MeV;
+    if (sigma_E_MeV < 0)
+        tmp_sigma_E_MeV = 0.01 * E_MeV;
 
     double sigma_mono_cm = 0.012 * pow(range_cm, 0.935); // width of Gaussian range straggling
     double sigma_cm = sqrt(
-            sigma_mono_cm * sigma_mono_cm + pow((tmp_sigma_E_MeV_u * alpha * p * pow(E_MeV_u, p - 1)), 2));
+            sigma_mono_cm * sigma_mono_cm + pow((tmp_sigma_E_MeV * alpha * p * pow(E_MeV, p - 1)), 2));
 
     double xi = (z_cm - range_cm) / sigma_cm;
     double zeta = (z_cm - range_cm - regul_factor_cm) / sigma_cm;
@@ -170,25 +169,25 @@ double AT_LET_t_Wilkens_keV_um_single(const double z_cm,
 
 void AT_LET_t_Wilkens_keV_um_multi(const long n,
                                    const double z_cm[],
-                                   const double E_MeV_u,
-                                   const double sigma_E_MeV_u,
+                                   const double E_MeV,
+                                   const double sigma_E_MeV,
                                    const long material_no,
                                    double LET_keV_um[]) {
     long i;
     for (i = 0; i < n; i++) {
-        LET_keV_um[i] = AT_LET_t_Wilkens_keV_um_single(z_cm[i], E_MeV_u, sigma_E_MeV_u, material_no);
+        LET_keV_um[i] = AT_LET_t_Wilkens_keV_um_single(z_cm[i], E_MeV, sigma_E_MeV, material_no);
     }
 }
 
 double AT_LET_d_Wilkens_keV_um_single(const double z_cm,
-                                      const double E_MeV_u,
-                                      const double sigma_E_MeV_u,
+                                      const double E_MeV,
+                                      const double sigma_E_MeV,
                                       const long material_no) {
 
     double p = AT_p_MeV_from_material_no(material_no); // exponent of range-energy relation
     double alpha = AT_alpha_g_cm2_MeV_from_material_no(material_no); // proportionality factor (0.0022 cm/MeV^p in [1])
 
-    double range_cm = alpha * pow(E_MeV_u, p);  // range in [cm]
+    double range_cm = alpha * pow(E_MeV, p);  // range in [cm]
 
     double regul_factor_cm = 2.0 * 1e-4; // regularization factor in [cm] ( 1cm = 1e4 um)
 
@@ -196,13 +195,13 @@ double AT_LET_d_Wilkens_keV_um_single(const double z_cm,
     double ni3 = 2.0 / p;
 
     // assign default value to sigma being 1% of kinetic energy
-    double tmp_sigma_E_MeV_u = sigma_E_MeV_u;
-    if (sigma_E_MeV_u < 0)
-        tmp_sigma_E_MeV_u = 0.01 * E_MeV_u;
+    double tmp_sigma_E_MeV = sigma_E_MeV;
+    if (sigma_E_MeV < 0)
+        tmp_sigma_E_MeV = 0.01 * E_MeV;
 
     double sigma_mono_cm = 0.012 * pow(range_cm, 0.935); // width of Gaussian range straggling
     double sigma_cm = sqrt(
-            sigma_mono_cm * sigma_mono_cm + pow((tmp_sigma_E_MeV_u * alpha * p * pow(E_MeV_u, p - 1)), 2));
+            sigma_mono_cm * sigma_mono_cm + pow((tmp_sigma_E_MeV * alpha * p * pow(E_MeV, p - 1)), 2));
 
     double xi = (z_cm - range_cm) / sigma_cm;
     double zeta = (z_cm - range_cm - regul_factor_cm) / sigma_cm;
@@ -244,13 +243,13 @@ double AT_LET_d_Wilkens_keV_um_single(const double z_cm,
 
 void AT_LET_d_Wilkens_keV_um_multi(const long n,
                                    const double z_cm[],
-                                   const double E_MeV_u,
-                                   const double sigma_E_MeV_u,
+                                   const double E_MeV,
+                                   const double sigma_E_MeV,
                                    const long material_no,
                                    double LET_keV_um[]) {
     long i;
     for (i = 0; i < n; i++) {
-        LET_keV_um[i] = AT_LET_d_Wilkens_keV_um_single(z_cm[i], E_MeV_u, sigma_E_MeV_u, material_no);
+        LET_keV_um[i] = AT_LET_d_Wilkens_keV_um_single(z_cm[i], E_MeV, sigma_E_MeV, material_no);
     }
 }
 
@@ -258,8 +257,8 @@ void AT_LET_d_Wilkens_keV_um_multi(const long n,
 
 double AT_proton_RBE_single(const double z_cm,
                             const double entrance_dose_Gy,
-                            const double E_MeV_u,
-                            const double sigma_E_MeV_u,
+                            const double E_MeV,
+                            const double sigma_E_MeV,
                             const double eps,
                             const double ref_alpha_beta_ratio,
                             const int rbe_model_no) {
@@ -278,10 +277,10 @@ double AT_proton_RBE_single(const double z_cm,
         rbe = 1.1;
     } else {
         fluence_cm2 = entrance_dose_Gy;
-        fluence_cm2 /= AT_dose_Bortfeld_Gy_single(z_cm, 1.0, E_MeV_u, sigma_E_MeV_u, Water_Liquid, eps);
+        fluence_cm2 /= AT_dose_Bortfeld_Gy_single(z_cm, 1.0, E_MeV, sigma_E_MeV, Water_Liquid, eps);
 
-        dose_Gy = AT_dose_Bortfeld_Gy_single(z_cm, fluence_cm2, E_MeV_u, sigma_E_MeV_u, Water_Liquid, eps);
-        let_keV_um = AT_LET_d_Wilkens_keV_um_single(z_cm, E_MeV_u, sigma_E_MeV_u, Water_Liquid);
+        dose_Gy = AT_dose_Bortfeld_Gy_single(z_cm, fluence_cm2, E_MeV, sigma_E_MeV, Water_Liquid, eps);
+        let_keV_um = AT_LET_d_Wilkens_keV_um_single(z_cm, E_MeV, sigma_E_MeV, Water_Liquid);
 
         switch (rbe_model_no) {
             case RBE_Carabe :
@@ -312,15 +311,15 @@ double AT_proton_RBE_single(const double z_cm,
 void AT_proton_RBE_multi(const long n,
                          const double z_cm[],
                          const double entrance_dose_Gy,
-                         const double E_MeV_u,
-                         const double sigma_E_MeV_u,
+                         const double E_MeV,
+                         const double sigma_E_MeV,
                          const double eps,
                          const double ref_alpha_beta_ratio,
                          const int rbe_model_no,
                          double rbe[]) {
     long i;
     for (i = 0; i < n; i++) {
-        rbe[i] = AT_proton_RBE_single(z_cm[i], entrance_dose_Gy, E_MeV_u, sigma_E_MeV_u, eps, ref_alpha_beta_ratio,
+        rbe[i] = AT_proton_RBE_single(z_cm[i], entrance_dose_Gy, E_MeV, sigma_E_MeV, eps, ref_alpha_beta_ratio,
                                       rbe_model_no);
     }
 }
