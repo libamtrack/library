@@ -13,12 +13,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install necessary packagess
+    - name: install necessary packages
       run: |
-        sudo apt-get -y install gfortran libgsl-dev
+        sudo apt-get -y install libgsl-dev
     - name: autoconf
       run: autoreconf --force --install
     - name: configure
-      run: ./configure
+      run: ./configure --prefix=`pwd`/usr
     - name: make
-      run: make
+      run: make -j2
+    - name: make install
+      run: make install
+    - name: tests
+      run: ./usr/bin/amtrack_demo
