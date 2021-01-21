@@ -56,7 +56,7 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    - run: |
+      run: |
         sudo apt-get -y install libgsl-dev
         autoreconf --force --install
         ./configure --prefix=`pwd`/usr
