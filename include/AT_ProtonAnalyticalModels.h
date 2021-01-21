@@ -51,9 +51,9 @@
  * proton beams, Med. Phys. 24(12), 2024ff.
  * @param[in] z_cm            depth in medium [cm]
  * @param[in] fluence_cm2     proton fluence [1/cm2]
- * @param[in] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
- * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in] E_MeV           initial kinetic energy of proton beam [MeV]
+ * @param[in] sigma_E_MeV     kinetic energy spread (standard deviation) [MeV]
+ * if negative a default value of 0.01 * E_MeV is assumed
  * @param[in] material_no     material code number
  * @see          AT_DataMaterial.h for definition
  * @param[in] eps             fraction of primary fluence contributing to the tail of energy spectrum
@@ -62,8 +62,8 @@
  */
 double AT_dose_Bortfeld_Gy_single(const double z_cm,
                                   const double fluence_cm2,
-                                  const double E_MeV_u,
-                                  const double sigma_E_MeV_u,
+                                  const double E_MeV,
+                                  const double sigma_E_MeV,
                                   const long material_no,
                                   const double eps);
 
@@ -74,20 +74,20 @@ double AT_dose_Bortfeld_Gy_single(const double z_cm,
  * @param[in]  n               number of depth steps
  * @param[in]  z_cm            depths in medium [cm] (array of size n)
  * @param[in]  fluence_cm2     proton fluence [1/cm2]
- * @param[in]  E_MeV_u         initial kinetic energy of proton beam [MeV/u]
- * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
- * @param[in] material_no     material code number
+ * @param[in]  E_MeV           initial kinetic energy of proton beam [MeV]
+ * @param[in]  sigma_E_MeV     kinetic energy spread (standard deviation) [MeV]
+ * if negative a default value of 0.01 * E_MeV is assumed
+ * @param[in]  material_no     material code number
  * @see          AT_DataMaterial.h for definition
- * @param[in] eps             fraction of primary fluence contributing to the tail of energy spectrum
+ * @param[in]  eps             fraction of primary fluence contributing to the tail of energy spectrum
  * if negative a default value of 0.03 is assumed
  * @param[out] dose_Gy         doses at given depth [Gy] (array of size n)
  */
 void AT_dose_Bortfeld_Gy_multi(const long n,
                                const double z_cm[],
                                const double fluence_cm2,
-                               const double E_MeV_u,
-                               const double sigma_E_MeV_u,
+                               const double E_MeV,
+                               const double sigma_E_MeV,
                                const long material_no,
                                const double eps,
                                double dose_Gy[]);
@@ -96,16 +96,16 @@ void AT_dose_Bortfeld_Gy_multi(const long n,
 /**
  * Computes track averaged LET according to Wilkens model
  * @param[in] z_cm            depth in medium [cm]
- * @param[in] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
- * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in] E_MeV           initial kinetic energy of proton beam [MeV]
+ * @param[in] sigma_E_MeV     kinetic energy spread (standard deviation) [MeV]
+ * if negative a default value of 0.01 * E_MeV is assumed
  * @param[in] material_no     material code number
  * @see          AT_DataMaterial.h for definition
  * @return                    track averaged LET at given depth [keV/um]
  */
 double AT_LET_t_Wilkens_keV_um_single(const double z_cm,
-                                      const double E_MeV_u,
-                                      const double sigma_E_MeV_u,
+                                      const double E_MeV,
+                                      const double sigma_E_MeV,
                                       const long material_no);
 
 
@@ -113,33 +113,33 @@ double AT_LET_t_Wilkens_keV_um_single(const double z_cm,
  * Computes track averaged LET according to Wilkens model
  * @param[in]  n               number of depth steps
  * @param[in]  z_cm            depths in medium [cm] (array of size n)
- * @param[in]  E_MeV_u         initial kinetic energy of proton beam [MeV/u]
- * @param[in]  sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in]  E_MeV           initial kinetic energy of proton beam [MeV]
+ * @param[in]  sigma_E_MeV     kinetic energy spread (standard deviation) [MeV]
+ * if negative a default value of 0.01 * E_MeV is assumed
  * @param[in]  material_no     material code number
  * @see          AT_DataMaterial.h for definition
  * @param[out] LET_keV_um      track averaged LET at given depth [keV/um] (array of size n)
  */
 void AT_LET_t_Wilkens_keV_um_multi(const long n,
                                    const double z_cm[],
-                                   const double E_MeV_u,
-                                   const double sigma_E_MeV_u,
+                                   const double E_MeV,
+                                   const double sigma_E_MeV,
                                    const long material_no,
                                    double LET_keV_um[]);
 
 /**
  * Computes dose averaged LET according to Wilkens model
  * @param[in] z_cm            depth in medium [cm]
- * @param[in] E_MeV_u         initial kinetic energy of proton beam [MeV/u]
- * @param[in] sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in] E_MeV           initial kinetic energy of proton beam [MeV]
+ * @param[in] sigma_E_MeV     kinetic energy spread (standard deviation) [MeV]
+ * if negative a default value of 0.01 * E_MeV is assumed
  * @param[in] material_no     material code number
  * @see          AT_DataMaterial.h for definition
  * @return                    track averaged LET at given depth [keV/um]
  */
 double AT_LET_d_Wilkens_keV_um_single(const double z_cm,
-                                      const double E_MeV_u,
-                                      const double sigma_E_MeV_u,
+                                      const double E_MeV,
+                                      const double sigma_E_MeV,
                                       const long material_no);
 
 
@@ -147,17 +147,17 @@ double AT_LET_d_Wilkens_keV_um_single(const double z_cm,
  * Computes dose averaged LET according to Wilkens model
  * @param[in]  n               number of depth steps
  * @param[in]  z_cm            depths in medium [cm] (array of size n)
- * @param[in]  E_MeV_u         initial kinetic energy of proton beam [MeV/u]
- * @param[in]  sigma_E_MeV_u   kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in]  E_MeV           initial kinetic energy of proton beam [MeV]
+ * @param[in]  sigma_E_MeV     kinetic energy spread (standard deviation) [MeV]
+ * if negative a default value of 0.01 * E_MeV is assumed
  * @param[in]  material_no     material code number
  * @see          AT_DataMaterial.h for definition
  * @param[out] LET_keV_um      track averaged LET at given depth [keV/um] (array of size n)
  */
 void AT_LET_d_Wilkens_keV_um_multi(const long n,
                                    const double z_cm[],
-                                   const double E_MeV_u,
-                                   const double sigma_E_MeV_u,
+                                   const double E_MeV,
+                                   const double sigma_E_MeV,
                                    const long material_no,
                                    double LET_keV_um[]);
 
@@ -177,9 +177,9 @@ enum AT_RBEModels {
  * Computes proton RBE according to one of several analytical models
  * @param[in] z_cm              depth in medium [cm]
  * @param[in] entrance_dose_Gy  entrance dose [Gy]
- * @param[in] E_MeV_u           initial kinetic energy of proton beam [MeV/u]
- * @param[in] sigma_E_MeV_u     kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
+ * @param[in] E_MeV             initial kinetic energy of proton beam [MeV]
+ * @param[in] sigma_E_MeV       kinetic energy spread (standard deviation) [MeV]
+ * if negative a default value of 0.01 * E_MeV is assumed
  * @param[in] eps              fraction of primary fluence contributing to the tail of energy spectrum
  * if negative a default value of 0.03 is assumed
  * @param[in] ref_alpha_beta_ratio   ratio of alpha to beta (parameters in linear-quadratic model) for reference radiation
@@ -188,8 +188,8 @@ enum AT_RBEModels {
  */
 double AT_proton_RBE_single(const double z_cm,
                             const double entrance_dose_Gy,
-                            const double E_MeV_u,
-                            const double sigma_E_MeV_u,
+                            const double E_MeV,
+                            const double sigma_E_MeV,
                             const double eps,
                             const double ref_alpha_beta_ratio,
                             const int rbe_model_no);
@@ -200,10 +200,10 @@ double AT_proton_RBE_single(const double z_cm,
  * @param[in]  n                 number of depth steps
  * @param[in]  z_cm              depth in medium [cm] (array of size n)
  * @param[in]  entrance_dose_Gy  entrance dose [Gy]
- * @param[in]  E_MeV_u           initial kinetic energy of proton beam [MeV/u]
- * @param[in]  sigma_E_MeV_u     kinetic energy spread (standard deviation) [MeV/u]
- * if negative a default value of 0.01 * E_MeV_u is assumed
- * @param[in] eps               fraction of primary fluence contributing to the tail of energy spectrum
+ * @param[in]  E_MeV             initial kinetic energy of proton beam [MeV]
+ * @param[in]  sigma_E_MeV       kinetic energy spread (standard deviation) [MeV]
+ * if negative a default value of 0.01 * E_MeV is assumed
+ * @param[in]  eps               fraction of primary fluence contributing to the tail of energy spectrum
  * if negative a default value of 0.03 is assumed
  * @param[in]  ref_alpha_beta_ratio   ratio of alpha to beta (parameters in linear-quadratic model) for reference radiation
  * @param[in]  rbe_model_no   TODO
@@ -212,8 +212,8 @@ double AT_proton_RBE_single(const double z_cm,
 void AT_proton_RBE_multi(const long n,
                          const double z_cm[],
                          const double entrance_dose_Gy,
-                         const double E_MeV_u,
-                         const double sigma_E_MeV_u,
+                         const double E_MeV,
+                         const double sigma_E_MeV,
                          const double eps,
                          const double ref_alpha_beta_ratio,
                          const int rbe_model_no,

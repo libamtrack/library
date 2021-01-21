@@ -126,7 +126,7 @@ typedef struct {
   long            LET_data_source;                        /**< Defines the source for stopping power data, see enum AT_LET_data_source [ESSENTIAL]. The user has to make sure that he provides the necessary data. */
 
   double          p_MeV;                                  /**< Prefactor for the power-law description of stopping power: S = p*E^alpha. In MeV^(1/alpha) */
-  double          alpha_g_cm2_MeV;                        /**< Exponent for the power-law description of stopping */
+  double          alpha_g_cm2_MeV;                        /**< Exponent for the power-law description of stopping power */
 
   AT_LET_data     LET_data;                               /**< Stopping power data for the material, see AT_DataLET.h for definition. Will be calculated in case of power-law or given by the user (or read in from PSTAR data?). */
                                                           /**<  LET_data has to hold at_least the proton stopping powers. For any particle where no explicit stopping power data is given, a scaling by Z_eff^2 will be performed. */

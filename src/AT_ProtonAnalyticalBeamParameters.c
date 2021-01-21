@@ -31,8 +31,8 @@
 #include "AT_ProtonAnalyticalBeamParameters.h"
 
 typedef struct {
-    double E_MeV_u;
-    double sigma_E_MeV_u;
+    double E_MeV;
+    double sigma_E_MeV;
     long material_no;
     double eps;
 } _AT_dose_Bortfeld_Gy_negative_params;
@@ -45,8 +45,8 @@ double _AT_dose_Bortfeld_Gy_negative(double x, void *params) {
 
     double result = -AT_dose_Bortfeld_Gy_single(x,
                                                 1e9,
-                                                current_params->E_MeV_u,
-                                                current_params->sigma_E_MeV_u,
+                                                current_params->E_MeV,
+                                                current_params->sigma_E_MeV,
                                                 current_params->material_no,
                                                 current_params->eps);
 
@@ -55,19 +55,19 @@ double _AT_dose_Bortfeld_Gy_negative(double x, void *params) {
 }
 
 
-double AT_max_location_Bortfeld_cm(const double E_MeV_u,
-                                   const double sigma_E_MeV_u,
+double AT_max_location_Bortfeld_cm(const double E_MeV,
+                                   const double sigma_E_MeV,
                                    const long material_no,
                                    const double eps) {
 
     double p = AT_p_MeV_from_material_no(material_no); // exponent of range-energy relation
     double alpha = AT_alpha_g_cm2_MeV_from_material_no(material_no); // proportionality factor (0.0022 cm/MeV^p in [1])
 
-    double max_location_guess_cm = alpha * pow(E_MeV_u, p);  // range in [cm]
+    double max_location_guess_cm = alpha * pow(E_MeV, p);  // range in [cm]
 
     _AT_dose_Bortfeld_Gy_negative_params current_params;
-    current_params.E_MeV_u = E_MeV_u;
-    current_params.sigma_E_MeV_u = sigma_E_MeV_u;
+    current_params.E_MeV = E_MeV;
+    current_params.sigma_E_MeV = sigma_E_MeV;
     current_params.material_no = material_no;
     current_params.eps = eps;
 
@@ -108,8 +108,8 @@ double AT_max_location_Bortfeld_cm(const double E_MeV_u,
 }
 
 typedef struct {
-    double E_MeV_u;
-    double sigma_E_MeV_u;
+    double E_MeV;
+    double sigma_E_MeV;
     long material_no;
     double dose_cut_Gy;
     double eps;
@@ -122,8 +122,8 @@ double _AT_dose_Bortfeld_Gy_root(double x, void *params) {
 
     double result = AT_dose_Bortfeld_Gy_single(-x,
                                                1e9,
-                                               current_params->E_MeV_u,
-                                               current_params->sigma_E_MeV_u,
+                                               current_params->E_MeV,
+                                               current_params->sigma_E_MeV,
                                                current_params->material_no,
                                                current_params->eps);
 
@@ -133,8 +133,8 @@ double _AT_dose_Bortfeld_Gy_root(double x, void *params) {
 }
 
 
-double AT_range_Bortfeld_cm(const double E_MeV_u,
-                            const double sigma_E_MeV_u,
+double AT_range_Bortfeld_cm(const double E_MeV,
+                            const double sigma_E_MeV,
                             const long material_no,
                             const double eps,
                             const double dose_drop,
@@ -143,21 +143,21 @@ double AT_range_Bortfeld_cm(const double E_MeV_u,
     double p = AT_p_MeV_from_material_no(material_no); // exponent of range-energy relation
     double alpha = AT_alpha_g_cm2_MeV_from_material_no(material_no); // proportionality factor (0.0022 cm/MeV^p in [1])
 
-    double range_guess_cm = alpha * pow(E_MeV_u, p);  // range in [cm]
+    double range_guess_cm = alpha * pow(E_MeV, p);  // range in [cm]
 
     double current_dose_drop = dose_drop;
     if (current_dose_drop < 0.0)
         current_dose_drop = 0.8;
 
     _AT_dose_Bortfeld_Gy_root_params current_params;
-    current_params.E_MeV_u = E_MeV_u;
-    current_params.sigma_E_MeV_u = sigma_E_MeV_u;
+    current_params.E_MeV = E_MeV;
+    current_params.sigma_E_MeV = sigma_E_MeV;
     current_params.material_no = material_no;
     current_params.eps = eps;
     current_params.dose_cut_Gy = 0.0;
 
-    double max_location_cm = AT_max_location_Bortfeld_cm(E_MeV_u,
-                                                         sigma_E_MeV_u,
+    double max_location_cm = AT_max_location_Bortfeld_cm(E_MeV,
+                                                         sigma_E_MeV,
                                                          material_no,
                                                          eps);
 
@@ -210,20 +210,20 @@ double AT_range_Bortfeld_cm(const double E_MeV_u,
 }
 
 
-double AT_fwhm_Bortfeld_cm(const double E_MeV_u,
-                           const double sigma_E_MeV_u,
+double AT_fwhm_Bortfeld_cm(const double E_MeV,
+                           const double sigma_E_MeV,
                            const long material_no,
                            const double eps) {
 
-    double distal_50 = AT_range_Bortfeld_cm(E_MeV_u,
-                                            sigma_E_MeV_u,
+    double distal_50 = AT_range_Bortfeld_cm(E_MeV,
+                                            sigma_E_MeV,
                                             material_no,
                                             eps,
                                             0.5,
                                             1);
 
-    double proximal_50 = AT_range_Bortfeld_cm(E_MeV_u,
-                                              sigma_E_MeV_u,
+    double proximal_50 = AT_range_Bortfeld_cm(E_MeV,
+                                              sigma_E_MeV,
                                               material_no,
                                               eps,
                                               0.5,
@@ -240,27 +240,27 @@ double AT_fwhm_Bortfeld_cm(const double E_MeV_u,
 }
 
 
-double AT_max_plateau_Bortfeld(const double E_MeV_u,
-                               const double sigma_E_MeV_u,
+double AT_max_plateau_Bortfeld(const double E_MeV,
+                               const double sigma_E_MeV,
                                const long material_no,
                                const double eps) {
 
     double entrance_dose_Gy = AT_dose_Bortfeld_Gy_single(0.0,
                                                          1e8,
-                                                         E_MeV_u,
-                                                         sigma_E_MeV_u,
+                                                         E_MeV,
+                                                         sigma_E_MeV,
                                                          material_no,
                                                          eps);
 
-    double max_position_cm = AT_max_location_Bortfeld_cm(E_MeV_u,
-                                                         sigma_E_MeV_u,
+    double max_position_cm = AT_max_location_Bortfeld_cm(E_MeV,
+                                                         sigma_E_MeV,
                                                          material_no,
                                                          eps);
 
     double max_dose_Gy = AT_dose_Bortfeld_Gy_single(max_position_cm,
                                                     1e8,
-                                                    E_MeV_u,
-                                                    sigma_E_MeV_u,
+                                                    E_MeV,
+                                                    sigma_E_MeV,
                                                     material_no,
                                                     eps);
 
@@ -273,7 +273,7 @@ double AT_max_plateau_Bortfeld(const double E_MeV_u,
  */
 typedef struct {
     double range_cm;
-    double sigma_E_MeV_u;
+    double sigma_E_MeV;
     long material_no;
     double dose_drop;
     double eps;
@@ -287,7 +287,7 @@ double _AT_range_Bortfeld_Gy(double x, void *params) {
 
 
     double result = AT_range_Bortfeld_cm(x,
-                                         current_params->sigma_E_MeV_u,
+                                         current_params->sigma_E_MeV,
                                          current_params->material_no,
                                          current_params->eps,
                                          current_params->dose_drop,
@@ -299,8 +299,8 @@ double _AT_range_Bortfeld_Gy(double x, void *params) {
 }
 
 
-double AT_energy_Bortfeld_MeV_u(const double range_cm,
-                                const double sigma_E_MeV_u,
+double AT_energy_Bortfeld_MeV(const double range_cm,
+                                const double sigma_E_MeV,
                                 const long material_no,
                                 const double eps,
                                 const double dose_drop) {
@@ -312,7 +312,7 @@ double AT_energy_Bortfeld_MeV_u(const double range_cm,
     double p = AT_p_MeV_from_material_no(material_no); // exponent of range-energy relation
     double alpha = AT_alpha_g_cm2_MeV_from_material_no(material_no); // proportionality factor (0.0022 cm/MeV^p in [1])
 
-    double E_guess_MeV_u = pow(range_cm / alpha, 1.0 / p);
+    double E_guess_MeV = pow(range_cm / alpha, 1.0 / p);
 
     double current_dose_drop = dose_drop;
     if (current_dose_drop < 0.0)
@@ -320,7 +320,7 @@ double AT_energy_Bortfeld_MeV_u(const double range_cm,
 
     _AT_range_Bortfeld_Gy_params current_params;
     current_params.range_cm = range_cm;
-    current_params.sigma_E_MeV_u = sigma_E_MeV_u;
+    current_params.sigma_E_MeV = sigma_E_MeV;
     current_params.material_no = material_no;
     current_params.eps = eps;
     current_params.dose_drop = dose_drop;
@@ -329,9 +329,9 @@ double AT_energy_Bortfeld_MeV_u(const double range_cm,
     int iter = 0, max_iter = 100;
     const gsl_root_fsolver_type *T;
     gsl_root_fsolver *s;
-    double x_root = E_guess_MeV_u;
-    double x_lower = 0.5 * E_guess_MeV_u;
-    double x_upper = 2.0 * E_guess_MeV_u;
+    double x_root = E_guess_MeV;
+    double x_lower = 0.5 * E_guess_MeV;
+    double x_upper = 2.0 * E_guess_MeV;
     gsl_function F;
 
     F.function = &_AT_range_Bortfeld_Gy;
@@ -389,26 +389,26 @@ double _AT_interval2real(double y) {
 
 int
 _AT_chi2_range_fwhm_maxplat(const gsl_vector *x, void *params, gsl_vector *f) {
-    double E_MeV_u = gsl_vector_get(x, 0);
-    double sigma_E_MeV_u = gsl_vector_get(x, 1);
+    double E_MeV = gsl_vector_get(x, 0);
+    double sigma_E_MeV = gsl_vector_get(x, 1);
     double eps = _AT_real2interval(gsl_vector_get(x, 2));
 
     _AT_chi2_range_fwhm_maxplat_params *current_params = (_AT_chi2_range_fwhm_maxplat_params *) params;
 
-    double current_range_cm = AT_range_Bortfeld_cm(E_MeV_u,
-                                                   sigma_E_MeV_u,
+    double current_range_cm = AT_range_Bortfeld_cm(E_MeV,
+                                                   sigma_E_MeV,
                                                    current_params->material_no,
                                                    eps,
                                                    current_params->dose_drop,
                                                    1);
 
-    double current_fwhm_cm = AT_fwhm_Bortfeld_cm(E_MeV_u,
-                                                 sigma_E_MeV_u,
+    double current_fwhm_cm = AT_fwhm_Bortfeld_cm(E_MeV,
+                                                 sigma_E_MeV,
                                                  current_params->material_no,
                                                  eps);
 
-    double current_max_plateau = AT_max_plateau_Bortfeld(E_MeV_u,
-                                                         sigma_E_MeV_u,
+    double current_max_plateau = AT_max_plateau_Bortfeld(E_MeV,
+                                                         sigma_E_MeV,
                                                          current_params->material_no,
                                                          eps);
 
@@ -451,8 +451,8 @@ void AT_fit_Bortfeld(const double range_cm,
                      const double max_to_plateau,
                      const long material_no,
                      const double dose_drop,
-                     double *E_MeV_u,
-                     double *sigma_E_MeV_u,
+                     double *E_MeV,
+                     double *sigma_E_MeV,
                      double *eps) {
 
     /* problem dimensions */
@@ -503,8 +503,8 @@ void AT_fit_Bortfeld(const double range_cm,
     /* iterate until convergence */
     gsl_multifit_nlinear_driver(max_iter, xtol, gtol, ftol, callback, (void *) (&current_params), &info, work);
 
-    *E_MeV_u = gsl_vector_get(work->x, 0);
-    *sigma_E_MeV_u = gsl_vector_get(work->x, 1);
+    *E_MeV = gsl_vector_get(work->x, 0);
+    *sigma_E_MeV = gsl_vector_get(work->x, 1);
     *eps = _AT_real2interval(gsl_vector_get(work->x, 2));
 
     gsl_multifit_nlinear_free(work);
