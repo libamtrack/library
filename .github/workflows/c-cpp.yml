@@ -1,0 +1,24 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install necessary packagess
+      run: |
+        sudo apt-get -y install gfortran libgsl-dev
+    - name: autoconf
+      run: autoreconf --force --install
+    - name: configure
+      run: ./configure
+    - name: make
+      run: make
