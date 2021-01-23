@@ -8,10 +8,6 @@ else
     WASM=1
 fi
 
-#emcmake="/home/osboxes/emsdk/emscripten/1.37.36/./emcmake"
-#emmake="/home/osboxes/emsdk/emscripten/1.37.36/./emmake"
-#emcc="/home/osboxes/emsdk/emscripten/1.37.36/./emcc"
-
 cd .
 mkdir _build
 cd _build
@@ -211,7 +207,7 @@ funs='['
  funs+='"_AT_range_Bortfeld_cm",'
  funs+='"_AT_fwhm_Bortfeld_cm",'
  funs+='"_AT_max_plateau_Bortfeld",'
- funs+='"_AT_energy_Bortfeld_MeV_u",'
+ funs+='"_AT_energy_Bortfeld_MeV",'
  funs+='"_AT_fit_Bortfeld",'
 
 
