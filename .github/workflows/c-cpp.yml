@@ -30,7 +30,12 @@ jobs:
     - name: make install
       run: make install
       
+  test:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
     - name: tests
       run: |
         ./usr/bin/amtrack_demo
         ./usr/bin/amtrack_test
+
