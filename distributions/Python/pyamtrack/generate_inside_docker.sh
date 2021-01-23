@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # compile GSL sources
-cd /io/gsl-2.6
+cd /io/gsl-latest
 ./configure --prefix=/io/gsl
 make -j2
 make install
