@@ -12,8 +12,17 @@ cp -rf ../../../src libamtrack/
 cp -rf ../../../include libamtrack/
 
 # get necessary dependency (latest) version of GSL library
+rm gsl.tar.gz
 wget -q "http://ftpmirror.gnu.org/gnu/gsl/gsl-latest.tar.gz" -O gsl.tar.gz
+
+# unpack into gsl-x.y directory
+rm -rf gsl-?.*
 tar -zxvf gsl.tar.gz
+
+# move into gsl-latest directory
+rm -rf gsl-latest
+mv gsl-?.* gsl-latest
+
 # make directory for GSL installation
 rm -rf gsl
 mkdir gsl
