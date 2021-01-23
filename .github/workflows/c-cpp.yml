@@ -3,8 +3,11 @@ name: Linux Tests
 on:
   push:
     branches: [ master ]
+    tags: '*'
   pull_request:
     branches: [ master ]
+  release:
+    types: [published]
 
 jobs:
   build_and_test:
@@ -38,7 +41,7 @@ jobs:
   
   python_package:
     if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
-    name: test Python bindings
+    name: Test Python bindings
     
     runs-on: ubuntu-latest
     
