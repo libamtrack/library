@@ -23,6 +23,17 @@ compile \
 -b /io/gsl/lib/ \
 -l gsl -l gslcblas -l m
 
+# fix git tags and create clean repo
+cd /io/libamtrack
+TAG=`git describe --tags`
+rm -rf .git
+git init
+git add *
+git config --global user.email "leszek.grzanka@ifj.edu.pl"
+git config --global user.name "Leszek Grzanka"
+git commit -m "Clean commit"
+git tag -a $TAG -m "Tag"
+
 # generate package once more with adjusted setup.py
 cp /io/setup.py /io/generated
 cd /io/generated
