@@ -8,6 +8,7 @@ git clone https://github.com/Tetrite/cBinder.git
 # copy source files and headers to local folder, so the docker container can access them
 rm -rf libamtrack
 mkdir libamtrack
+cp -rf ../../../.git libamtrack/  # needed to evaluate version number from GIT tags
 cp -rf ../../../src libamtrack/
 cp -rf ../../../include libamtrack/
 
@@ -17,7 +18,7 @@ wget -q "http://ftpmirror.gnu.org/gnu/gsl/gsl-latest.tar.gz" -O gsl.tar.gz
 
 # unpack into gsl-x.y directory
 rm -rf gsl-?.*
-tar -zxvf gsl.tar.gz
+tar -zxf gsl.tar.gz
 
 # move into gsl-latest directory
 rm -rf gsl-latest
