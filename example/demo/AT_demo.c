@@ -53,8 +53,12 @@ int main(int argc, char *argv[]) {
     const double z_cm = 10;
     const double fluence_cm2 = 1e9;
     const double sigma_E_MeV = 1.5;
-    const long material_no = 1;
+    const long material_no = Water_Liquid;
     const double eps = 0.02;
+
+    const double er_model = ER_Tabata;
+    const double el_Rex_m = AT_max_electron_range_m( E_MeV_u, material_no, er_model);
+    printf("Max range of delta-ray emitted by ion with energy %4.2f [MeV] is equal %g [mm]\n", E_MeV, el_Rex_m * 1e3);
 
     double dose_Gy = AT_dose_Bortfeld_Gy_single(z_cm,
                                                 E_MeV,
