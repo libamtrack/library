@@ -110,7 +110,7 @@ typedef struct {
   bool            material_established;                   /**< if true, the material has been established, MUST BE SET TO "FALSE" BY USER */
 
   double          density_g_cm3;                          /**< physical density in g/cm3 [ESSENTIAL] */
-  double          I_eV;                                   /**< Ionization potential in eV [ESSENTIAL] */ //TODO: check if this could not be calculated
+  double          I_eV;                                   /**< Ionization potential in eV [ESSENTIAL] */
 
   long            n_elements;                             /**< number of elements constituting the material [ESSENTIAL] */
   long*           elements_Z;                             /**< Atomic numbers Z for the constituting elements, pointer to array of length n_elements [ESSENTIAL] */
@@ -150,7 +150,7 @@ typedef struct {
   const double  alpha_g_cm2_MeV[MATERIAL_DATA_N];
   const double  p_MeV[MATERIAL_DATA_N];
   const double  m_g_cm2[MATERIAL_DATA_N];
-  double        average_A[MATERIAL_DATA_N];
+  double        average_A[MATERIAL_DATA_N]; // TODO check if correct values are used, two alternative averaging method exists (Tabata & Cucinotta)
   double        average_Z[MATERIAL_DATA_N];
   const char*   material_name[MATERIAL_DATA_N];
   long			phase[MATERIAL_DATA_N];
@@ -231,7 +231,7 @@ static AT_table_of_material_data_struct VARIABLE_IS_NOT_USED AT_Material_Data = 
        14.80,             17.62,			19.99,        207.2},
     // average_Z
     {  0.0,
-       7.22,              10.637,           13.0,         6.24,      6.44,
+       2./18. + 8.*16./18.,    10.637,           13.0,         6.24,      6.44,
        8.0,		          7.375,            14.0,         29.0,      74.0,
        6.68,     	      5.91,      	    6.10,    	  6.36,      7.22,
        6.36,           	  6.36,           	5.78,         7.70,      7.71,
@@ -252,7 +252,17 @@ static AT_table_of_material_data_struct VARIABLE_IS_NOT_USED AT_Material_Data = 
 	   phase_condensed, phase_condensed, phase_condensed, phase_condensed}
 };
 
-/* Cucinnotta calculated average A for water as 14.3, but it seems that it is 13.0 (Leszek) *
+/* Cucinotta calculated (TODO ref needed) average A for liquid water as 14.3, as he used an expression: A_av = \sum fi Ai
+ * for water this gives A_av = (2/18)*1 + (16/18)*16 = 14.3333
+ *
+ * Tabata on contrary in his paper from 1972 uses a different formula (see eq 10-12 in 10.1016/0029-554x(72)90463-6):
+ *   Z_av = \sum fi Zi
+ *   (Z/A)_av = \sum fi (Z/A)i
+ *   A_av = Z_av / ( (Z/A)_av )
+ *  for liquid water Tabata formula gives:
+ *    Z_av = (2/18)*1 + (16/18)*8 = 7.22222
+ *    (Z/A)_av = (2/18)*(1/1) + (16/18)*(8/16) = 0.55555
+ *    A_av = 7.22222 / 0.55555 = 13.0
  * looks like error in his article */
 
 
@@ -482,7 +492,10 @@ void AT_electron_density_m3_from_composition( const long n,
 
 
 /**
- * Computes the average mass number for a given material composition
+ * Computes the average mass number A for a given material composition
+ * It is a weighted average where weights are relative fraction of weight of constituents
+ * A_av = \sum fi Ai
+ * Note that this is different from a value used by Tabata in delta electron range modelling
  *
  * @param[in]  n                     number of constituents in material
  * @param[in]  A                     mass numbers of constituents (array of size n)
@@ -496,7 +509,9 @@ void AT_average_A_from_composition( const long n,
 
 
 /**
- * Computes the average atomic number for a given material composition
+ * Computes the average atomic Z number for a given material composition.
+ * It is a weighted average where weights are relative fraction of weight of constituents
+ * Z_av = \sum fi Zi
  *
  * @param[in]  n                     number of constituents in material
  * @param[in]  Z                     atomic numbers of constituents (array of size n)

@@ -43,7 +43,15 @@
 #include "AT_RDD_Tabulated.h"
 
 /**
- * Electron range models code numbers
+ * Electron range models and their code numbers
+ *  1. Dummy electron range model, for testing purposes
+ *  2. TODO ref needed
+ *  3. TODO ref needed
+ *  4. TODO ref needed
+ *  5. TODO ref needed
+ *  6. TODO ref needed
+ *  7. Tabata, T., R. Ito, and S. Okabe. "Generalized semiempirical equations for the extrapolated range of electrons." Nuclear Instruments and Methods 103.1 (1972): 85-91.
+ *  8. TODO ref needed
  */
 enum AT_ERModels{
   ER_Test                  = 1,     /**< dummy electron range models */
@@ -52,7 +60,7 @@ enum AT_ERModels{
       ER_Geiss             = 4,     /**< Geiss(?) electron range model, R = k * E ^ alpha, valid for ?? < w < ? TODO ref needed [Geiss, 1997]*/
       ER_Scholz            = 5,     /**< Scholz(?) electron range model, R = k * E ^ alpha, valid for ?? < w < ? TODO ref needed [Scholz, 2001]*/
       ER_Edmund            = 6,     /**< Edmund(?) electron range model, R = k * w ^ alpha, valid for ?? < w < ? TODO ref needed*/
-      ER_Tabata            = 7,     /**< Tabata electron range model, valid for 0.3keV < w < 30MeV TODO ref needed [Tabata, 1972]*/
+      ER_Tabata            = 7,     /**< Tabata electron range model, valid for 0.3keV < w < 30MeV [Tabata, 1972, DOI: 10.1016/0029-554x(72)90463-6]*/
       ER_Scholz_new        = 8,     /**< New Scholz electron range model, R = k * E ^ alpha, valid for ?? < w < ? TODO ref needed [Scholz, 2008?]*/
       ER_AM_RadDiff		   = 9      /**< Electron range model by A. Mairani considering radical diffusion*/
 };
@@ -132,9 +140,9 @@ double AT_ER_Scholz_range_g_cm2( double E_MeV_u );
 
 
 /**
- *  tau = 2.0 * gsl_pow_2(beta) / (1.0 - gsl_pow_2(beta))
- * (a1_g_cm2)*(((gsl_sf_log(1.0 + a2 * tau))/a2) - ((a3*tau)/(1.0 + a4*pow(tau,a5))) )
- *
+ * tau = T / mc2 = 2 * beta^2 / (1 - beta^2)
+ * Rex = a1*(((log(1 + a2 * tau))/a2) - ((a3*tau)/(1 + a4*tau^a5)) )
+ * Implementation of equation (6) from 10.1016/0029-554x(72)90463-6
  * @param[in] beta
  * @param[in] a1_g_cm2
  * @param[in] a2
@@ -164,6 +172,7 @@ double AT_ER_PowerLaw_alpha( const double E_MeV_u );
 
 /**
  * Tabata model constants
+ * Implementation of equations (6a)-(6c) from 10.1016/0029-554x(72)90463-6
  * @param[in] average_A
  * @param[in] average_Z
  * @param[out] a1_g_cm2

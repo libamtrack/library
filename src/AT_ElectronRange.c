@@ -120,7 +120,7 @@ int getERName(
   const double b9 = 0.109;
   // constants...
   *a1_g_cm2 = b1_g_cm2*average_A / pow(average_Z,b2);
-  *a2 = b3*average_A;
+  *a2 = b3*average_Z;
   *a3 = b4 - b5*average_Z;
   *a4 = b6 - b7*average_Z;
   *a5 = b8 / pow(average_Z,b9);
