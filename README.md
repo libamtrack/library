@@ -20,13 +20,13 @@ libamtrack is a program library and cannot be run as a single executable. A numb
 Refer to README_DEVELOPERS on how to do that.
 
 ## i. Web-interface
-The web interface covers a subset of libamtrack functions for easy access and can be found on libamtrack's website: http://libamtrack.dkfz.org. The sources can be found at (/tools/webgui). The interface development was started by Christoph Kolb within his Bachelor thesis and consolidated by Leszek Grzanka.
+The web interface covers a subset of libamtrack functions for easy access and can be found on libamtrack's website: https://libamtrack.github.io/web/. The sources can be found at (/distributions/JavaScript). The interface development was started by Christoph Kolb within his Bachelor thesis and consolidated by Leszek Grzanka.
 
 ## ii. R
 To access (almost any) function of libamtrack, we recommend to use the R environment. libamtrack is a contributed package (http://cran.r-project.org/web/packages/libamtrack) on the Comprehensive R Archive Network (CRAN, http://cran.r-project.org) and can easily be installed and used from within R. It comes with documentation.
 
 ## iii. Python, Matlab wrappers
-ibamtrack comes with a collection of wrappers for Python and Matlab (/wrapper/Python, /wrapper/Matlab).
+libamtrack comes with a collection of wrappers for Python and Matlab (/distributions/Python, /distributions/Matlab).
 
 ## iv. Use precompiled binaries
 If you want to use libamtrack in your own code, please try to use the precompiled binaries (incl. headers) for your OS (Win, Mac OS X) are found on libamtrack's website. In case you are running Linux (or some exotic OS) you will have to compile and install libamtrack using autotools. But in the future, rpm/deb packages will be provided. 
