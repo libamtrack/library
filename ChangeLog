@@ -15,7 +15,7 @@ Changes in 0.6.1 (2015-05-22)
 Changes in 0.6.0 (2015-05-21)
 =============================
 
-- Major rework on stopping power data: import of tablulated external data possible, cleaned out data implemented
+- Major rework on stopping power data: import of tabulated external data possible, cleaned out data implemented
 
 
 Changes in 0.5.5 (2014-07-07)
