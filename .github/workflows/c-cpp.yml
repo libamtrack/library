@@ -22,18 +22,13 @@ jobs:
       run: |
         sudo apt-get -y install libgsl-dev
         
-    - name: autoconf
-      run: autoreconf --force --install
+    - name: compile and install
+      run: |
+        mkdir build
+        cd build
+        cmake  -DCMAKE_BUILD_TYPE=Release ../ -DCMAKE_INSTALL_PREFIX=$HOME/usr
+        cmake --build . --target install -- -j2
       
-    - name: configure
-      run: ./configure --prefix=`pwd`/usr
-      
-    - name: make
-      run: make -j2
-      
-    - name: make install
-      run: make install
-
     - name: tests
       run: |
         ./usr/bin/amtrack_demo
