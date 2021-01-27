@@ -39,3 +39,6 @@ test/C/amtrack_test
 
 #automatically created backup copies of files
 *~
+
+# Python
+venv/

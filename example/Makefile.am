@@ -1,2 +1,2 @@
-SUBDIRS=basic_plots demo
-DIST_SUBDIRS=basic_plots demo
+SUBDIRS=basic_plots demo test
+DIST_SUBDIRS=basic_plots demo test

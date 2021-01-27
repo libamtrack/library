@@ -83,5 +83,5 @@ AS_CASE([$host_os],
         ])
 AC_SUBST([RTEST_FLAG])
 
-AC_CONFIG_FILES(Makefile src/Makefile test/Makefile test/C/Makefile example/Makefile example/basic_plots/Makefile example/demo/Makefile thirdparty/cernlib/Makefile)
+AC_CONFIG_FILES(Makefile src/Makefile test/Makefile test/C/Makefile example/Makefile example/basic_plots/Makefile example/demo/Makefile example/test/Makefile thirdparty/cernlib/Makefile)
 AC_OUTPUT
