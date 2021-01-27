@@ -43,6 +43,7 @@ install:
 
 # If before_install, install or before_script returns a non-zero exit code, the build is errored and stops immediately.
 before_script:
+  - mkdir build
   - cd build
   - cmake  -DCMAKE_BUILD_TYPE=Release ../ -DCMAKE_INSTALL_PREFIX=$HOME/usr
   - cmake --build . --target install -- -j2
