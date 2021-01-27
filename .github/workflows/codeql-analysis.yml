@@ -17,6 +17,7 @@ on:
 
 jobs:
   analyze:
+    if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     name: Analyze
     runs-on: ubuntu-latest
 
@@ -24,9 +25,6 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'cpp', 'python' ]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
-        # Learn more:
-        # https://docs.github.com/en/free-pro-team@latest/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#changing-the-languages-that-are-analyzed
 
     steps:
     - name: Checkout repository
@@ -42,14 +40,13 @@ jobs:
         # Prefix the list here with "+" to use these queries and those in the config file.
         # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
-    # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-    # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
+    - name: Building code
       run: |
         sudo apt-get -y install libgsl-dev
-        autoreconf --force --install
-        ./configure --prefix=`pwd`/usr
-        make -j2
+        mkdir build
+        cd build
+        cmake  -DCMAKE_BUILD_TYPE=Release ../ -DCMAKE_INSTALL_PREFIX=$HOME/usr
+        cmake --build . --target install -- -j2
     
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
