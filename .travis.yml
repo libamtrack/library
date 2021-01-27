@@ -32,29 +32,26 @@ env:
 # libamtrack needs GSL version 2.5, hence we install it from deb packages of Ubuntu 18.04 repo
 before_install:
   - python3 -V
-  - mkdir m4
   - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/libgslcblas0_2.5+dfsg-5_amd64.deb  # newest GSL (2.5) from Ubuntu 18.04 repo
   - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/libgsl23_2.5+dfsg-5_amd64.deb
   - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/libgsl-dev_2.5+dfsg-5_amd64.deb
   - wget https://launchpad.net/ubuntu/+source/gsl/2.5+dfsg-5/+build/15307668/+files/gsl-bin_2.5+dfsg-5_amd64.deb
-  - sudo dpkg -i *.deb
-  - gsl-config --version # print the currently installed version of GSL
-  - autoreconf --force --install
 
 install:
-  - ./configure --prefix=$HOME/usr
+  - sudo dpkg -i *.deb
+  - gsl-config --version # print the currently installed version of GSL
 
 # If before_install, install or before_script returns a non-zero exit code, the build is errored and stops immediately.
 before_script:
-  - make README
-  - make -j2
-  - make install
+  - mkdir build
+  - cd build
+  - cmake  -DCMAKE_BUILD_TYPE=Release ../ -DCMAKE_INSTALL_PREFIX=$HOME/usr
+  - cmake --build . --target install -- -j2
 
 # If script returns a non-zero exit code, the build is failed, but continues to run before being marked as failed.
 script:
-  - $HOME/usr/bin/amtrack_test
-  - $HOME/usr/bin/amtrack_demo
+  - LD_LIBRARY_PATH=$HOME/usr/lib $HOME/usr/bin/amtrack_test
+  - LD_LIBRARY_PATH=$HOME/usr/lib $HOME/usr/bin/amtrack_demo
 
-  # Trigger rebuild image in docker hub libamtrack/libamtrackforjs
+  # Trigger rebuild image in docker hub libamtrack/libamtrackforjs (not working now)
   - if [[ "$TRAVIS_TEST_RESULT" == "0" ]] && [[ $TRAVIS_BRANCH == "master" ]]; then $TRAVIS_BUILD_DIR/distributions/JavaScript/trigger_docker_rebuild.sh; fi
-

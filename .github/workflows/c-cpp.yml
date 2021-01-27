@@ -22,22 +22,17 @@ jobs:
       run: |
         sudo apt-get -y install libgsl-dev
         
-    - name: autoconf
-      run: autoreconf --force --install
+    - name: compile and install
+      run: |
+        mkdir build
+        cd build
+        cmake  -DCMAKE_BUILD_TYPE=Release ../ -DCMAKE_INSTALL_PREFIX=$HOME/usr
+        cmake --build . --target install -- -j2
       
-    - name: configure
-      run: ./configure --prefix=`pwd`/usr
-      
-    - name: make
-      run: make -j2
-      
-    - name: make install
-      run: make install
-
     - name: tests
       run: |
-        ./usr/bin/amtrack_demo
-        ./usr/bin/amtrack_test      
+        LD_LIBRARY_PATH=$HOME/usr/lib $HOME/usr/bin/amtrack_test
+        LD_LIBRARY_PATH=$HOME/usr/lib $HOME/usr/bin/amtrack_demo
   
   python_package:
     if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"

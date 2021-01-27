@@ -281,7 +281,7 @@ This workflow is replaced by the make target "R-package" (see section 1), but le
 behind that target.
 
 The necessary files for producing an R package from libamtrack are found in:
-  /wrapper/R/R_package                     package folder structure and input files, script for compilation, hardcoded wrappers
+  /distributions/R/package                     package folder structure and input files, script for compilation, hardcoded wrappers
                                            and documentation
   /tools/automatic_wrapper_generation      R scripts for automatic creation of R/C wrappers
 
