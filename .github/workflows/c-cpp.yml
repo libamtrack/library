@@ -31,8 +31,8 @@ jobs:
       
     - name: tests
       run: |
-        ./usr/bin/amtrack_demo
-        ./usr/bin/amtrack_test      
+        LD_LIBRARY_PATH=$HOME/usr/lib $HOME/usr/bin/amtrack_test
+        LD_LIBRARY_PATH=$HOME/usr/lib $HOME/usr/bin/amtrack_demo
   
   python_package:
     if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
