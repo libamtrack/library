@@ -82,7 +82,7 @@ double   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const double r1_m,
   //Dav(r1,r2) = coeff * kernel_av( x1, x2 )
   const double x1 = r1_m / max_electron_range_m;
   const double x2 = r2_m / max_electron_range_m;
-  return Katz_point_coeff_Gy * AT_RDD_Katz_PowerLawER_DaverageKernel_approx(x1, x2, alpha);
+  return Katz_point_coeff_Gy * (1.0/alpha) * AT_RDD_Katz_PowerLawER_DaverageKernel_approx(x1, x2, alpha);
 }
 
 

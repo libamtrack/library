@@ -162,17 +162,17 @@ double AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const double x1,
  *
  * thus:
  *
- * @f[ D(r) = coeff * kernel(r) @f]
+ * @f[ D(r) = coeff * 1/alpha * kernel(r) @f]
  *
- * @f[ Dav(r1,r2) = coeff * 2 / (r2^2 - r1^2) * \int_{r_1}^{r_2} kernel(r) r dr @f]
+ * @f[ Dav(r1,r2) = coeff * 1/alpha * 2 / (r2^2 - r1^2) * \int_{r_1}^{r_2} kernel(r) r dr @f]
  *
  * substituting x1 = r1/rmax , x2 = r2/rmax we will have:
  *
- * @f[ Dav(r1,r2) = coeff * 2 / (x2^2 - x1^2) * \int_x1^x2 kernel(x) x dx @f]
+ * @f[ Dav(r1,r2) = coeff * 1/alpha * 2 / (x2^2 - x1^2) * \int_x1^x2 kernel(x) x dx @f]
  *
  * in other words:
  *
- * @f[ Dav(r1,r2) = coeff * kernel_av( x1, x2 ) @f]
+ * @f[ Dav(r1,r2) = coeff * 1/alpha * kernel_av( x1, x2 ) @f]
  *
  * @param[in] r1_m                     inner radius r1 (lower integration limit) [m]
  * @param[in] r2_m                     outer radius r2 (upper integration limit) [m]
