@@ -57,17 +57,6 @@
 /* --------------------------------------------------- SHELL AVERAGE DOSE ---------------------------------------------------*/
 
 /**
- * Calculate the integral int_x^1 ((1-t)^(a-1))/t dt.
- * The accuacy was estimated at
- *
- * @param[in] x                     lower limit of integration
- * @param[in] a                     used in exponential of integrated function
- * @param[in] iteration_threshold   used for termination condition of a loop
- * @return          calculated value of the integral
- */
-double beta0(double x, double a, double iteration_threshold);
-
-/**
  * Calculates average dose for "old" Katz RDD (derived from linear (on wmax) ER model).
  * Here averaging is done over a shell between radius r_1 and r_2
  *
@@ -106,20 +95,7 @@ double beta0(double x, double a, double iteration_threshold);
  * @f[kernel = 2/(x_2^2 - x_1^2) * \int_{x_1}^{x_2} 1/x^2 * 1/\alpha * (1 - x)^{1/\alpha} x dx = @f]
  * @f[       = 2/(x_2^2 - x_1^2) * \int_{x_1}^{x_2} 1/x * 1/\alpha * (1 - x)^{1/\alpha} dx @f]
  *
- * now we use the information that:
- *
- * @f[ \int 1/x * 1/\alpha * (1 - x)^{1/\alpha} dx = (1-x)^{1/\alpha} ((x-1)/x)^{-1/\alpha} _2F_1(-1/\alpha,-1/\alpha;(\alpha-1)/\alpha;1/x)+constant @f]
- *
- * thus:
- *
- * @f[ kernel =  2/(x_2^2 - x_1^2) * (F2 - F1) @f]
- *
- * where:
- *
- * @f[ F1 = (1-x_1)^{1/\alpha} ((x_1-1)/x_1)^{-1/\alpha} _2F_1(-1/\alpha,-1/\alpha;(\alpha-1)/\alpha;1/x_1) @f]
- * @f[ F2 = (1-x_2)^{1/\alpha} ((x_2-1)/x_2)^{-1/\alpha} _2F_1(-1/\alpha,-1/\alpha;(\alpha-1)/\alpha;1/x_2) @f]
- *
- * here @f$_2F_1@f$ is the special hypergeometric function
+ * It is calculated using the beta0 function to compute the integral.
  *
  * @param[in] x1                     inner radius x1 (lower integration limit)
  * @param[in] x2                     outer radius x2 (upper integration limit)
