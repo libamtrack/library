@@ -57,6 +57,17 @@
 /* --------------------------------------------------- SHELL AVERAGE DOSE ---------------------------------------------------*/
 
 /**
+ * Calculate the integral int_x^1 ((1-t)^(a-1))/t dt.
+ * The accuacy was estimated at
+ *
+ * @param[in] x                     lower limit of integration
+ * @param[in] a                     used in exponential of integrated function
+ * @param[in] iteration_threshold   used for termination condition of a loop
+ * @return          calculated value of the integral
+ */
+double beta0(double x, double a, double iteration_threshold);
+
+/**
  * Calculates average dose for "old" Katz RDD (derived from linear (on wmax) ER model).
  * Here averaging is done over a shell between radius r_1 and r_2
  *

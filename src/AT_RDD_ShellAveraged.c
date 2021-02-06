@@ -30,6 +30,8 @@
 
 #include "AT_RDD_ShellAveraged.h"
 
+#include <gsl/gsl_sf_psi.h>
+
 /* --------------------------------------------------- SHELL AVERAGE DOSE ---------------------------------------------------*/
 
  double   AT_RDD_Katz_LinearER_Daverage_Gy(  const double r1_m,
@@ -41,22 +43,49 @@
   return 2.0 * Katz_point_coeff_Gy * ( log(r2_m/r1_m) - (r2_m - r1_m)/max_electron_range_m ) / (gsl_pow_2(r2_m/max_electron_range_m) - gsl_pow_2(r1_m/max_electron_range_m));
 }
 
+double   beta0(double x, double a, double iteration_threshold) {
+    if (x < 0.99) {
+        // This iterative algorithms computes the value of the beta function very accurately
+        // but converges very slowly when the value of x is very close to 1.
+        double ret = 0.0;
+        double xi = 1.0;
+        long i = 0;
+        while (xi > iteration_threshold) {
+            ret += xi / (a + i);
+            xi *= x;
+            i += 1;
+        }
+        ret *= pow(x, a);
+        return ret;
+    }
+    else {
+        // Series expansion taken from https://www.wolframalpha.com/input/?i=int+-1%2Fx+%281+-+x%29%5E%28a-1%29+dx
+        // This can be obtained by Taylor expansion of the calculated integral + log(x) at x = 0.
+        // Adding more terms didn't improve the accuracy.
+        const double psi_a = gsl_sf_psi(a);
+        const double psi_a_1 = psi_a + 1/a;
+        const double psi_a_2 = psi_a_1 + 1/(a+1);
+        const double psi_a_3 = psi_a_2 + 1/(a+2);
+        const double a2 = a*a;
+        return -psi_a - log(1.0-x) - M_EULER +
+               a*(1.0-x)*(psi_a - psi_a_1 + 1.0) -
+               0.25 * gsl_pow_2(1-x) * (
+                       a * (a - 4*a*psi_a_1 + 2*a*psi_a_2 + 2 * (a-1)*psi_a + 2*psi_a_2 - 3)) +
+               (1.0/18.0)*a*gsl_pow_3(1-x) * (
+                       a2 + 9*a2 * psi_a_2 - 3*a2*psi_a_3 + 3*(a2 - 3*a + 2)*psi_a - 6*a -
+                       9*(a-1)*a*psi_a_1 + 9*a*psi_a_2 - 9*a*psi_a_3 - 6*psi_a_3 + 11);
+    }
+}
 
 double   AT_RDD_Katz_PowerLawER_DaverageKernel(  const double x1,
     const double x2,
     const double alpha){
 
-  // C1 = (1-x1)^(1/alpha) ((x1-1)/x1)^(-1/alpha)
-  // HGF1 =  _2F_1(-1/alpha,-1/alpha;(alpha-1)/alpha;1/x1)
-  // C2 = (1-x2)^(1/alpha) ((x2-1)/x2)^(-1/alpha)
-  // HGF2 =  _2F_1(-1/alpha,-1/alpha;(alpha-1)/alpha;1/x2)
-  // kernel =  2/(x2^2 - x1^2) * (C2* HGF2 - C1 * HGF1)
-  const double alpha_inv = 1.0/alpha;
-  const double C1 = pow( 1.0-x1, alpha_inv ) * pow( (x1-1.0)/x1, -alpha_inv );
-  const double HGF1 = gsl_sf_hyperg_2F1( -alpha_inv, -alpha_inv, 1.0-alpha_inv, 1.0/x1 );
-  const double C2 = pow( 1.0-x2, alpha_inv ) * pow( (x2-1.0)/x2, -alpha_inv );
-  const double HGF2 = gsl_sf_hyperg_2F1( -alpha_inv, -alpha_inv, 1.0-alpha_inv, 1.0/x2 );
-  return 2.0 * (C2 * HGF2 - C1 * HGF1) / (gsl_pow_2(x2) - gsl_pow_2(x1));
+  // this threshold was selected to get the overall error < 1e-10;
+  const double iteration_threshold = 1e-13;
+  const double ch1 = beta0(1-x1, 1+1/alpha, iteration_threshold);
+  const double ch2 = beta0(1-x2, 1+1/alpha, iteration_threshold);
+  return 2.0 * (ch1 - ch2) / (gsl_pow_2(x2) - gsl_pow_2(x1));
 }
 
 
@@ -82,7 +111,7 @@ double   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const double r1_m,
   //Dav(r1,r2) = coeff * kernel_av( x1, x2 )
   const double x1 = r1_m / max_electron_range_m;
   const double x2 = r2_m / max_electron_range_m;
-  return Katz_point_coeff_Gy * (1.0/alpha) * AT_RDD_Katz_PowerLawER_DaverageKernel_approx(x1, x2, alpha);
+  return Katz_point_coeff_Gy * (1.0/alpha) * AT_RDD_Katz_PowerLawER_DaverageKernel(x1, x2, alpha);
 }
 
 
