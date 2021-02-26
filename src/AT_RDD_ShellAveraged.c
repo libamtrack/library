@@ -47,8 +47,8 @@ double   AT_RDD_Katz_PowerLawER_DaverageKernel(  const double x1,
 
   // this threshold was selected to get the overall error < 1e-10;
   const double iteration_threshold = 1e-13;
-  const double ch1 = beta0(1-x1, 1+1/alpha, iteration_threshold);
-  const double ch2 = beta0(1-x2, 1+1/alpha, iteration_threshold);
+  const double ch1 = incomplete_beta_like_function(1-x1, 1+1/alpha, iteration_threshold);
+  const double ch2 = incomplete_beta_like_function(1-x2, 1+1/alpha, iteration_threshold);
   return 2.0 * (ch1 - ch2) / (gsl_pow_2(x2) - gsl_pow_2(x1));
 }
 

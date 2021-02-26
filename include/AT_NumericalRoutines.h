@@ -61,7 +61,7 @@
  * @param[in] epsrel   used for termination condition of a loop
  * @return          calculated value of the integral
  */
-double beta0(const double x, const double a, const double epsrel);
+double incomplete_beta_like_function(const double x, const double a, const double epsrel);
 
 
 /**
