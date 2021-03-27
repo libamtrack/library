@@ -144,6 +144,8 @@ AT_KatzModel_inactivation_cross_section_approximation_m2
 AT_KatzModel_single_field_survival
 AT_KatzModel_mixed_field_survival
 AT_KatzModel_single_field_survival_optimized_for_fluence_vector
+AT_KatzModel_KatzExtTarget_ButtsKatz_TrackWidth
+AT_KatzModel_KatzExtTarget_Zhang_TrackWidth
 
 AT_characteristic_single_scattering_angle_single
 AT_characteristic_single_scattering_angle
@@ -215,13 +217,6 @@ AT_Rutherford_SDCS
 AT_Rutherford_scatter_cross_section
 AT_gyroradius_m
 
-CL_ranlan_idf
-CL_ranlan_cdf
-
-CL_ranlan_cdf
-ROOT_vav_pdf
-ROOT_val_idf
-
 AT_max_location_Bortfeld_cm
 AT_range_Bortfeld_cm
 AT_fwhm_Bortfeld_cm
@@ -266,9 +261,7 @@ AT_Energy_MeV_u_from_Stopping_Power_single
 
 AT_Bethe_energy_loss_MeV_cm2_g
 AT_ICRU_wrapper
-AT_ICRU_wrapper
 
-AT_n_bins_for_single_impact_local_dose_distrib
 AT_n_bins_for_single_impact_local_dose_distrib
 AT_n_bins_for_low_fluence_local_dose_distribution
 AT_low_fluence_local_dose_distribution
@@ -284,5 +277,3 @@ AT_GammaResponseModels
 AT_RBEModels
 RDDModels
 stoppingPowerSource_no
-
-ROOT_GXXXC1
