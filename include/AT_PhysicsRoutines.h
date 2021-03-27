@@ -179,7 +179,7 @@ int AT_gamma_from_E( const long  n,
 
 
 /**
- * Effective charge according to Barkas-Bethe-approximation:
+ * Effective charge according to Barkas-Bethe approximation:
  *
  * Zeff = Z *[1-exp( -125 * beta / Z^(2/3) )]
  *
@@ -188,7 +188,7 @@ int AT_gamma_from_E( const long  n,
  * @param[in]  n                        number of particles
  * @param[in]  beta                     vector of relative particle speed beta = v/c (array of size n)
  * @param[in]  Z                        atomic number Z of ion (array of size n)
- * @param[out] effective_charge of ion
+ * @param[out] effective_charge of ion (array of size n)
  * @return     status code
  */
 int AT_effective_charge_from_beta(  const long  n,
