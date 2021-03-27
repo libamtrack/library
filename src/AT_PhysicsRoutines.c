@@ -40,9 +40,9 @@ double AT_E_MeV_from_E_MeV_u( const double E_MeV_u, const long particle_no){
 }
 
 
- double AT_beta_from_E_single( const double E_MeV ){
-  assert( E_MeV >= 0.);
-  double gamma = AT_gamma_from_E_single(E_MeV);
+ double AT_beta_from_E_single( const double E_MeV_u ){
+  assert( E_MeV_u >= 0.);
+  double gamma = AT_gamma_from_E_single(E_MeV_u);
 
   return sqrt(1.0 - 1.0/gsl_pow_2(gamma));
 }
@@ -71,7 +71,7 @@ double AT_gamma_from_E_single(const double E_MeV_u) {
      *
      * gamma = 1.0 + (E_kin / m_0) * (1/c^2)
      *
-     * Let's use `atomic_mass_unit_MeV_c2` ~= 931 MeV/c^2 - atomic mass unit (u) expressed in units of MeV/c^2
+     * Let's use `atomic_mass_unit_MeV_c2` ~= 931.494 MeV/c^2 - atomic mass unit (u) expressed in units of MeV/c^2
      *
      * E_MeV_u = E_kin * MeV / (m_0 * atomic_mass_unit_MeV) = E_kin_MeV / (m_0 c^2 * atomic_mass_unit_MeV_c2 )
      *
@@ -176,7 +176,7 @@ int AT_E_MeV_u_from_momentum_MeV_c_u(  const long  n,
 
 int AT_effective_charge_from_beta( const long  n,
     const double  beta[],
-    const long   Z[],
+    const long    Z[],
     double        effective_charge[])
 {
   // loop over n particles
@@ -198,7 +198,7 @@ double AT_effective_charge_from_E_MeV_u_single(  const double E_MeV_u,
 
 int AT_effective_charge_from_E_MeV_u( const  long  n,
     const double  E_MeV_u[],
-    const long   particle_no[],
+    const long    particle_no[],
     double        effective_charge[])
 {
   // loop over n particles
