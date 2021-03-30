@@ -39,10 +39,21 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build_and_test]
     steps:
+      - uses: actions/checkout@v2
+      
       - uses: mymindstorm/setup-emsdk@v7
 
-      - name: Verify
-        run: emcc -v
+      - name: Compile GSL
+        run: |
+          pwd
+          ls -al
+          wget -q "http://ftpmirror.gnu.org/gnu/gsl/gsl-latest.tar.gz"
+          mkdir $HOME/gsl-latest
+          tar -xzf gsl-latest.tar.gz -C $HOME/gsl-latest
+          mv $HOME/gsl-latest/** $HOME/gsl-latest/gsl
+          cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$PWD/usr
+          ls $HOME/gsl-latest/gsl
+          ls $HOME/gsl-latest/gsl/usr
   
   python_package:
     if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
@@ -55,23 +66,23 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: make python package
-      run: sudo ./make_wheel_package.sh
-      working-directory: distributions/Python/pyamtrack
+#     - name: make python package
+#       run: sudo ./make_wheel_package.sh
+#       working-directory: distributions/Python/pyamtrack
 
-    - name: test python package
-      run: sudo ./test_wheel_package.sh
-      working-directory: distributions/Python/pyamtrack
+#     - name: test python package
+#       run: sudo ./test_wheel_package.sh
+#       working-directory: distributions/Python/pyamtrack
 
-    - name: publish package to pypi
-      uses: pypa/gh-action-pypi-publish@v1.4.2
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-      with:
-        # Password for your PyPI user or an access token
-        password: ${{ secrets.TWINE_PASSWORD }}
-        # The repository URL to use
-        repository_url: "https://upload.pypi.org/legacy/"
-        # The target directory for distribution
-        packages_dir: distributions/Python/pyamtrack/generated/dist/wheelhouse/
-        # Show verbose output.
-        verbose: true
+#     - name: publish package to pypi
+#       uses: pypa/gh-action-pypi-publish@v1.4.2
+#       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+#       with:
+#         # Password for your PyPI user or an access token
+#         password: ${{ secrets.TWINE_PASSWORD }}
+#         # The repository URL to use
+#         repository_url: "https://upload.pypi.org/legacy/"
+#         # The target directory for distribution
+#         packages_dir: distributions/Python/pyamtrack/generated/dist/wheelhouse/
+#         # Show verbose output.
+#         verbose: true
