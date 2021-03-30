@@ -51,6 +51,20 @@
 
 
 /**
+ * Calculate the integral int_x^1 ((1-t)^(a-1))/t dt.
+ * The accuracy was estimated at 2.152589e-11
+ * This could be calculated using the 2F1 hypergeometric function but, as implemented in GSL 2.5,
+ * it is not accurate enough in the required parameter range.
+ *
+ * @param[in] x        lower limit of integration
+ * @param[in] a        used in exponential of integrated function
+ * @param[in] epsrel   used for termination condition of a loop
+ * @return          calculated value of the integral
+ */
+double incomplete_beta_like_function(const double x, const double a, const double epsrel);
+
+
+/**
  * Computes the convolution of a term (R0 - z)^(ni - 1) with a Gaussian
  * in z with variance sigma^2, i.e.
  * F(z, R0) = 1/(sqrt(2*pi)*sigma) * int_{-inf}^{R0}[ (R0 - z)^(ni - 1) * exp(-(z - z')^2/(2*sigma^2)) * dz']

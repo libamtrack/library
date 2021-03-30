@@ -30,6 +30,47 @@
 
 #include "AT_NumericalRoutines.h"
 
+#include <gsl/gsl_sf_psi.h>
+
+double   incomplete_beta_like_function(const double x, const double a, const double epsrel) {
+    if (x < 0.99) {
+        // This iterative algorithms computes the value of the beta function very accurately
+        // but converges very slowly when the value of x is very close to 1.
+        // It is based on the Taylor expansion of the computed integral at x=1.
+        double ret = 0.0;
+        double xi = 1.0;
+        long i = 0;
+        while (xi > epsrel) {
+            ret += xi / (a + i);
+            xi *= x;
+            i += 1;
+        }
+        ret *= pow(x, a);
+        return ret;
+    }
+    else {
+        // Series expansion taken from https://www.wolframalpha.com/input/?i=int+-1%2Fy+%281+-+y%29%5E%28a-1%29+dy
+        // It is related to the integral calculated by this function though substitution y = 1-x.
+        // The formula below can be obtained by Taylor expansion of the calculated integral + log(y) at y = 0.
+        // The integral alone at y=0 is singular but after adding log(y) it has a finite limit at y=0.
+        // Adding more terms didn't improve the accuracy.
+        // psi_a_1, psi_a_2 and psi_a_3 are, respectively, gsl_sf_psi(a+1), gsl_sf_psi(a+2) and gsl_sf_psi(a+3)
+        // For better performance they are computed using the equality psi(a+1) = psi(a) + 1/a
+        // see here:  https://en.wikipedia.org/w/index.php?title=Digamma_function&oldid=998677411#Relation_to_harmonic_numbers
+        const double psi_a = gsl_sf_psi(a);
+        const double psi_a_1 = psi_a + 1/a;
+        const double psi_a_2 = psi_a_1 + 1/(a+1);
+        const double psi_a_3 = psi_a_2 + 1/(a+2);
+        return -psi_a - log(1.0-x) - M_EULER +
+               a*(1.0-x)*(psi_a - psi_a_1 + 1.0) -
+               0.25 * gsl_pow_2(1-x) * (
+                       a * (a - 4*a*psi_a_1 + 2*a*psi_a_2 + 2 * (a-1)*psi_a + 2*psi_a_2 - 3)) +
+               (1.0/18.0)*a*gsl_pow_3(1-x) * (
+                       a*a + 9*a*a*psi_a_2 - 3*a*a*psi_a_3 + 3*(a*a - 3*a + 2)*psi_a - 6*a -
+                       9*(a-1)*a*psi_a_1 + 9*a*psi_a_2 - 9*a*psi_a_3 - 6*psi_a_3 + 11);
+    }
+}
+
 double AT_range_straggling_convolution(  const double z,
     const double R0,
     const double sigma,

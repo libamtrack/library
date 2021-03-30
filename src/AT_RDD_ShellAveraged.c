@@ -41,22 +41,15 @@
   return 2.0 * Katz_point_coeff_Gy * ( log(r2_m/r1_m) - (r2_m - r1_m)/max_electron_range_m ) / (gsl_pow_2(r2_m/max_electron_range_m) - gsl_pow_2(r1_m/max_electron_range_m));
 }
 
-
 double   AT_RDD_Katz_PowerLawER_DaverageKernel(  const double x1,
     const double x2,
     const double alpha){
 
-  // C1 = (1-x1)^(1/alpha) ((x1-1)/x1)^(-1/alpha)
-  // HGF1 =  _2F_1(-1/alpha,-1/alpha;(alpha-1)/alpha;1/x1)
-  // C2 = (1-x2)^(1/alpha) ((x2-1)/x2)^(-1/alpha)
-  // HGF2 =  _2F_1(-1/alpha,-1/alpha;(alpha-1)/alpha;1/x2)
-  // kernel =  2/(x2^2 - x1^2) * (C2* HGF2 - C1 * HGF1)
-  const double alpha_inv = 1.0/alpha;
-  const double C1 = pow( 1.0-x1, alpha_inv ) * pow( (x1-1.0)/x1, -alpha_inv );
-  const double HGF1 = gsl_sf_hyperg_2F1( -alpha_inv, -alpha_inv, 1.0-alpha_inv, 1.0/x1 );
-  const double C2 = pow( 1.0-x2, alpha_inv ) * pow( (x2-1.0)/x2, -alpha_inv );
-  const double HGF2 = gsl_sf_hyperg_2F1( -alpha_inv, -alpha_inv, 1.0-alpha_inv, 1.0/x2 );
-  return 2.0 * (C2 * HGF2 - C1 * HGF1) / (gsl_pow_2(x2) - gsl_pow_2(x1));
+  // this threshold was selected to get the overall error < 1e-10;
+  const double iteration_threshold = 1e-13;
+  const double ch1 = incomplete_beta_like_function(1-x1, 1+1/alpha, iteration_threshold);
+  const double ch2 = incomplete_beta_like_function(1-x2, 1+1/alpha, iteration_threshold);
+  return 2.0 * (ch1 - ch2) / (gsl_pow_2(x2) - gsl_pow_2(x1));
 }
 
 
@@ -82,7 +75,7 @@ double   AT_RDD_Katz_PowerLawER_Daverage_Gy(  const double r1_m,
   //Dav(r1,r2) = coeff * kernel_av( x1, x2 )
   const double x1 = r1_m / max_electron_range_m;
   const double x2 = r2_m / max_electron_range_m;
-  return Katz_point_coeff_Gy * AT_RDD_Katz_PowerLawER_DaverageKernel_approx(x1, x2, alpha);
+  return Katz_point_coeff_Gy * (1.0/alpha) * AT_RDD_Katz_PowerLawER_DaverageKernel(x1, x2, alpha);
 }
 
 

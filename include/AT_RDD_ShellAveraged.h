@@ -95,20 +95,7 @@
  * @f[kernel = 2/(x_2^2 - x_1^2) * \int_{x_1}^{x_2} 1/x^2 * 1/\alpha * (1 - x)^{1/\alpha} x dx = @f]
  * @f[       = 2/(x_2^2 - x_1^2) * \int_{x_1}^{x_2} 1/x * 1/\alpha * (1 - x)^{1/\alpha} dx @f]
  *
- * now we use the information that:
- *
- * @f[ \int 1/x * 1/\alpha * (1 - x)^{1/\alpha} dx = (1-x)^{1/\alpha} ((x-1)/x)^{-1/\alpha} _2F_1(-1/\alpha,-1/\alpha;(\alpha-1)/\alpha;1/x)+constant @f]
- *
- * thus:
- *
- * @f[ kernel =  2/(x_2^2 - x_1^2) * (F2 - F1) @f]
- *
- * where:
- *
- * @f[ F1 = (1-x_1)^{1/\alpha} ((x_1-1)/x_1)^{-1/\alpha} _2F_1(-1/\alpha,-1/\alpha;(\alpha-1)/\alpha;1/x_1) @f]
- * @f[ F2 = (1-x_2)^{1/\alpha} ((x_2-1)/x_2)^{-1/\alpha} _2F_1(-1/\alpha,-1/\alpha;(\alpha-1)/\alpha;1/x_2) @f]
- *
- * here @f$_2F_1@f$ is the special hypergeometric function
+ * It is calculated using the beta0 function to compute the integral.
  *
  * @param[in] x1                     inner radius x1 (lower integration limit)
  * @param[in] x2                     outer radius x2 (upper integration limit)
@@ -162,17 +149,17 @@ double AT_RDD_Katz_PowerLawER_DaverageKernel_approx(  const double x1,
  *
  * thus:
  *
- * @f[ D(r) = coeff * kernel(r) @f]
+ * @f[ D(r) = coeff * 1/alpha * kernel(r) @f]
  *
- * @f[ Dav(r1,r2) = coeff * 2 / (r2^2 - r1^2) * \int_{r_1}^{r_2} kernel(r) r dr @f]
+ * @f[ Dav(r1,r2) = coeff * 1/alpha * 2 / (r2^2 - r1^2) * \int_{r_1}^{r_2} kernel(r) r dr @f]
  *
  * substituting x1 = r1/rmax , x2 = r2/rmax we will have:
  *
- * @f[ Dav(r1,r2) = coeff * 2 / (x2^2 - x1^2) * \int_x1^x2 kernel(x) x dx @f]
+ * @f[ Dav(r1,r2) = coeff * 1/alpha * 2 / (x2^2 - x1^2) * \int_x1^x2 kernel(x) x dx @f]
  *
  * in other words:
  *
- * @f[ Dav(r1,r2) = coeff * kernel_av( x1, x2 ) @f]
+ * @f[ Dav(r1,r2) = coeff * 1/alpha * kernel_av( x1, x2 ) @f]
  *
  * @param[in] r1_m                     inner radius r1 (lower integration limit) [m]
  * @param[in] r2_m                     outer radius r2 (upper integration limit) [m]
