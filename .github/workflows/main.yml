@@ -51,9 +51,10 @@ jobs:
           mkdir $HOME/gsl-latest
           tar -xzf gsl-latest.tar.gz -C $HOME/gsl-latest
           mv $HOME/gsl-latest/** $HOME/gsl-latest/gsl
-          cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$PWD/usr
+          mkdir $HOME/usr
+          cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$HOME/usr && emmake make -j2 && emmake make install
           ls $HOME/gsl-latest/gsl
-          ls $HOME/gsl-latest/gsl/usr
+          ls $HOME/usr
   
   python_package:
     if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
