@@ -63,7 +63,9 @@ jobs:
           mv $HOME/gsl-latest/** $HOME/gsl-latest/gsl
           mkdir $HOME/usr
           cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$HOME/usr --disable-shared && emmake make -j2 && emmake make install
-          ls $HOME/usr
+          
+      - name: Compile libamtrack webassembly package
+        run: |          
           cd distributions/JavaScript && GSL_INCLUDE_DIRS=$HOME/usr/include GSL_LIBRARY=$HOME/usr/lib/libgsl.a GSL_CBLAS_LIBRARY=$HOME/usr/lib/libgslcblas.a  ./compile_to_js.sh
   
   python_package:
