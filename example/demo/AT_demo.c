@@ -34,6 +34,7 @@
 #include "AT_PhysicsRoutines.h"
 #include "AT_ProtonAnalyticalModels.h"
 #include "AT_ProtonAnalyticalBeamParameters.h"
+#include "AT_RDD.h"
 
 int main(int argc, char *argv[]) {
 
@@ -134,6 +135,35 @@ int main(int argc, char *argv[]) {
     printf("measured range = %g [cm], FWHM = %g [cm], max/plateau = %g\n", measured_range_cm, measured_fwhm_cm,
            measured_max_to_plateau);
     printf("fitted E = %g [MeV], deltaE = %g [MeV], eps = %g\n", fit_E_MeV, fit_sigma_E_MeV, fit_eps);
+
+    const int N = 2;
+    double r_m_tab[] = {1e-13, 1e-8};
+    double rdd_E_MeV_u = 150.0;
+    long particle_no = AT_particle_no_from_particle_name_single("1H");
+    long rdd_model = 6;
+    double KatzPoint_r_min_m = 1e-10;
+    double a0_m = 1e-8;
+    double d_min_Gy = 1e-80;
+    double rdd_parameter[] = {KatzPoint_r_min_m, a0_m, d_min_Gy, 0.0};
+    long stopping_power_source_no = 2;
+    double D_RDD_Gy[2] = {0.0};
+
+    long res = AT_D_RDD_Gy( N,
+                            r_m_tab,
+                            rdd_E_MeV_u,
+                            particle_no,
+                            material_no,
+                            rdd_model,
+                            rdd_parameter,
+                            ER_Waligorski,
+                            stopping_power_source_no,
+                            D_RDD_Gy);
+
+    for(int i=0; i<N; ++i)
+    {
+        printf("%e : %e\n", r_m_tab[i], D_RDD_Gy[i]);
+    }
+
 
     return EXIT_SUCCESS;
 }
