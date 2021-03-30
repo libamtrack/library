@@ -35,7 +35,7 @@
 #include "AT_ProtonAnalyticalModels.h"
 #include "AT_ProtonAnalyticalBeamParameters.h"
 #include "AT_RDD.h"
-#include "AT_KatzModel.h"
+#include "AT_KatzModel_Implementation.h"
 
 int main(int argc, char *argv[]) {
 

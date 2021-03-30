@@ -28,7 +28,7 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "AT_KatzModel.h"
+#include "AT_KatzModel_Implementation.h"
 
 
 double AT_KatzModel_KatzExtTarget_inactivation_probability(
