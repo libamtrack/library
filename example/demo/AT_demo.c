@@ -35,6 +35,7 @@
 #include "AT_ProtonAnalyticalModels.h"
 #include "AT_ProtonAnalyticalBeamParameters.h"
 #include "AT_RDD.h"
+#include "AT_KatzModel.h"
 #include "AT_KatzModel_Implementation.h"
 
 int main(int argc, char *argv[]) {
@@ -141,12 +142,10 @@ int main(int argc, char *argv[]) {
     double r_m_tab[] = {1e-13, 1e-8};
     double rdd_E_MeV_u = 150.0;
     long particle_no = AT_particle_no_from_particle_name_single("1H");
-    long rdd_model = 6;
     double KatzPoint_r_min_m = 1e-10;
     double a0_m = 1e-8;
     double d_min_Gy = 1e-80;
     double rdd_parameter[] = {KatzPoint_r_min_m, a0_m, d_min_Gy, 0.0};
-    long stopping_power_source_no = 2;
     double D_RDD_Gy[2] = {0.0};
 
     long res = AT_D_RDD_Gy( N,
@@ -154,16 +153,17 @@ int main(int argc, char *argv[]) {
                             rdd_E_MeV_u,
                             particle_no,
                             material_no,
-                            rdd_model,
+                            RDD_KatzExtTarget,
                             rdd_parameter,
                             ER_Waligorski,
-                            stopping_power_source_no,
+                            PSTAR,
                             D_RDD_Gy);
 
     for(int i=0; i<N; ++i)
     {
         printf("%e : %e\n", r_m_tab[i], D_RDD_Gy[i]);
     }
+
 
     const double RBE_E_MeV_u = 10.0;
     particle_no = AT_particle_no_from_particle_name_single("12C");
@@ -173,6 +173,16 @@ int main(int argc, char *argv[]) {
     const bool use_approximation = true;
     const double kappa = 1204.;
     const double survival = 0.1;
+    const double a0_um = 10.;
+
+    double sigma_um2_ver1 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no,a0_um,m,D0_Gy,Katz_Linear,PSTAR);
+    double sigma_um2_ver2 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no,a0_um,m,D0_Gy,Katz_PowerLaw,PSTAR);
+    double sigma_um2_ver3 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no,a0_um,m,D0_Gy,Katz_Cucinotta,PSTAR);
+
+    printf("Inactivation cross-section: \n");
+    printf("\tKatz Linear model: %g [um2]\n", sigma_um2_ver1);
+    printf("\tKatz Power-law model: %g [um2]\n", sigma_um2_ver2);
+    printf("\tKatz Cucinotta model: %g [um2]\n", sigma_um2_ver3);
 
     double rbe = AT_KatzModel_single_field_rbe(RBE_E_MeV_u,
                                                particle_no,
@@ -184,7 +194,7 @@ int main(int argc, char *argv[]) {
                                                sigma0_m2,
                                                use_approximation,
                                                kappa,
-                                               stopping_power_source_no,
+                                               PSTAR,
                                                survival);
     printf("RBE = %g\n", rbe);
     return EXIT_SUCCESS;

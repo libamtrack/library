@@ -6,7 +6,7 @@
  */
 
 /*
- *    AT_KatzModel.h
+ *    AT_KatzModel_Implementation.h
  *    ===========================
  *
  *    Copyright 2006, 2010 The libamtrack team
@@ -229,7 +229,6 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2( const doub
  * @param[in] n
  * @param[in] E_MeV_u (array of size n)
  * @param[in] particle_no
- * @param[in] material_no
  * @param[in] rdd_model
  * @param[in] rdd_parameters (array of size 4)
  * @param[in] er_model
