@@ -311,7 +311,7 @@ double AT_KatzModel_inactivation_cross_section_approximation_m2(	const double E_
 
 /**
  * TODO
- * @param[in] fluence_cm2               TODO
+ * @param[in] dose_Gy               TODO
  * @param[in] E_MeV_u                   TODO
  * @param[in] particle_no               TODO
  * @param[in] rdd_model                 TODO
@@ -323,10 +323,9 @@ double AT_KatzModel_inactivation_cross_section_approximation_m2(	const double E_
  * @param[in] use_approximation         TODO
  * @param[in] kappa                     TODO
  * @param[in] stopping_power_source_no  TODO
- * @param[out] survival                 TODO
- * @return status code
+ * @return cell survival
  */
-int AT_KatzModel_single_field_survival( const double fluence_cm2,
+double AT_KatzModel_single_field_survival( const double dose_Gy,
 	const double E_MeV_u,
     const long   particle_no,
     const long   rdd_model,
@@ -337,8 +336,7 @@ int AT_KatzModel_single_field_survival( const double fluence_cm2,
     const double sigma0_m2,
     const bool   use_approximation,
     const double kappa,
-    const long   stopping_power_source_no,
-    double*      survival);
+    const long   stopping_power_source_no);
 
 
 /**
@@ -378,7 +376,7 @@ int AT_KatzModel_mixed_field_survival( const long   number_of_items,
 /**
  * TODO
  * @param[in] number_of_items
- * @param[in] fluence_cm2 (array of size number_of_items)
+ * @param[in] dose_Gy (array of size number_of_items)
  * @param[in] E_MeV_u
  * @param[in] particle_no
  * @param[in] material_no
@@ -395,7 +393,7 @@ int AT_KatzModel_mixed_field_survival( const long   number_of_items,
  * @return
  */
 int AT_KatzModel_single_field_survival_optimized_for_fluence_vector( const long   number_of_items,
-    const double fluence_cm2[],
+    const double dose_Gy[],
 	const double E_MeV_u,
     const long   particle_no,
     const long   rdd_model,

@@ -249,8 +249,8 @@ double AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2(
   inact_prob_parameters.Katz_plateau_Gy            =  Katz_plateau_Gy;
   inact_prob_parameters.Katz_point_coeff_Gy        =  Katz_point_coeff_Gy;
   inact_prob_parameters.D0_Gy  =  D0_Gy;
-  inact_prob_parameters.c               =  c;
-  inact_prob_parameters.m        =  m;
+  inact_prob_parameters.c      =  c;
+  inact_prob_parameters.m      =  m;
 
   F.params = (void*)(&inact_prob_parameters);
   int status = gsl_integration_qag (&F, low_lim_m, max_electron_range_m + a0_m, 0, 1e-4, 1000, GSL_INTEG_GAUSS21, w1, &integral_m2, &error);
@@ -323,16 +323,16 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2(
 
   AT_KatzModel_CucinottaExtTarget_inactivation_probability_parameters inact_prob_parameters;
 
-  inact_prob_parameters.a0_m                       =  a0_m;
-  inact_prob_parameters.KatzPoint_r_min_m          =  KatzPoint_r_min_m;
-  inact_prob_parameters.max_electron_range_m       =  max_electron_range_m;
-  inact_prob_parameters.beta                       =  beta;
-  inact_prob_parameters.C_norm                     =  C_norm;
-  inact_prob_parameters.Cucinotta_plateau_Gy       =  Cucinotta_plateau_Gy;
-  inact_prob_parameters.KatzPoint_coeff_Gy         =  KatzPoint_point_coeff_Gy;
-  inact_prob_parameters.D0_Gy  =  D0_Gy;
-  inact_prob_parameters.c               =  c;
-  inact_prob_parameters.m        =  m;
+  inact_prob_parameters.a0_m                    =  a0_m;
+  inact_prob_parameters.KatzPoint_r_min_m       =  KatzPoint_r_min_m;
+  inact_prob_parameters.max_electron_range_m    =  max_electron_range_m;
+  inact_prob_parameters.beta                    =  beta;
+  inact_prob_parameters.C_norm                  =  C_norm;
+  inact_prob_parameters.Cucinotta_plateau_Gy    =  Cucinotta_plateau_Gy;
+  inact_prob_parameters.KatzPoint_coeff_Gy      =  KatzPoint_point_coeff_Gy;
+  inact_prob_parameters.D0_Gy                   =  D0_Gy;
+  inact_prob_parameters.c                       =  c;
+  inact_prob_parameters.m                       =  m;
 
   F.params = (void*)(&inact_prob_parameters);
   int status = gsl_integration_qag (&F, low_lim_m, max_electron_range_m + a0_m, 0, 1e-4, 1000, GSL_INTEG_GAUSS21, w1, &integral_m2, &error);
@@ -538,8 +538,6 @@ double AT_KatzModel_KatzExtTarget_Zhang_TrackWidth(
 	const double logm = log(m);
 
 	const double XB = exp( gi[0] + gi[1]*logm + gi[2]*logm*logm + gi[3]*pow(logm,3) + gi[4]*pow(logm,4) + gi[5]*pow(logm,5));
-
-
 	const double YB = exp( hi[0] + hi[1]*logm + hi[2]*logm*logm + hi[3]*pow(logm,3) + hi[4]*pow(logm,4) + hi[5]*pow(logm,5));
 
 	double result = -1;
@@ -612,8 +610,7 @@ double AT_KatzModel_single_field_survival_from_sigma(
 
 	double fluence_cm2 = AT_fluence_cm2_from_dose_Gy_single( E_MeV_u, particle_no, dose_Gy, Water_Liquid, stopping_power_source_no ); /* fluence * LET -> dose * density */
 
-	assert( sigma0_m2 > 0);
-
+	assert(sigma0_m2 > 0);
 	assert(sigma_m2 > 0);
 
 	/* fraction of dose delivered in ion kill mode */
@@ -648,8 +645,8 @@ double AT_KatzModel_single_field_survival_from_sigma(
 
 
 /* TODO implement old Katz with kappa and sigma instead of track-width here */
-int AT_KatzModel_single_field_survival(
-    const double fluence_cm2,
+double AT_KatzModel_single_field_survival(
+    const double dose_Gy,
 	const double E_MeV_u,
     const long   particle_no,
     const long   rdd_model,
@@ -660,14 +657,14 @@ int AT_KatzModel_single_field_survival(
     const double sigma0_m2,
     const bool   use_approximation,
     const double kappa,
-    const long   stopping_power_source_no,
-    double * survival){
+    const long   stopping_power_source_no){
 
 	assert( sigma0_m2 > 0);
 
 	/* single particle inactivation cross section calculation */
 	double inactivation_cross_section_m2 = 0.0;
 	double gamma_parameters[5] = {1., D0_Gy, 1., m, 0.};
+	double survival = -1.0;
 
 	if(  use_approximation == false ){
 		int status = AT_KatzModel_inactivation_cross_section_m2(
@@ -685,7 +682,7 @@ int AT_KatzModel_single_field_survival(
 #ifndef NDEBUG
 			fprintf(stderr, "Problem with evaluating inactivation cross section\n");
 #endif
-			return status;
+			return -1.0;
 		}
 	} else {
 		inactivation_cross_section_m2 = AT_KatzModel_inactivation_cross_section_approximation_m2(
@@ -699,16 +696,16 @@ int AT_KatzModel_single_field_survival(
 	}
 
 
-	*survival = AT_KatzModel_single_field_survival_from_sigma(fluence_cm2,
-                                                              E_MeV_u,
-                                                              particle_no,
-                                                              inactivation_cross_section_m2,
-                                                              D0_Gy,
-                                                              m,
-                                                              sigma0_m2,
-                                                              stopping_power_source_no);
+    survival = AT_KatzModel_single_field_survival_from_sigma(dose_Gy,
+                                                             E_MeV_u,
+                                                             particle_no,
+                                                             inactivation_cross_section_m2,
+                                                             D0_Gy,
+                                                             m,
+                                                             sigma0_m2,
+                                                             stopping_power_source_no);
 
-	return EXIT_SUCCESS;
+	return survival;
 }
 
 
@@ -801,7 +798,7 @@ int AT_KatzModel_mixed_field_survival(
 
 int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
 	const long   number_of_items,
-    const double fluence_cm2[],
+    const double dose_Gy[],
 	const double E_MeV_u,
     const long   particle_no,
     const long   rdd_model,
@@ -818,7 +815,7 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
 	assert( sigma0_m2 > 0);
 
 	/* single particle inactivation cross section calculation */
-	double inactivation_cross_section_m2 = 0.0;
+	double sigma_m2 = 0.0;
 	double gamma_parameters[5] = {1., D0_Gy, 1., m, 0.};
 
 	if(  use_approximation == false ){
@@ -831,10 +828,10 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
 				er_model,
 				gamma_parameters,
 				stopping_power_source_no,
-				&inactivation_cross_section_m2);    /* here we use D0, m and a0 */
+				&sigma_m2);    /* here we use D0, m and a0 */
 
 #ifndef NDEBUG
-		printf("Inactivation cross section = %g\n", inactivation_cross_section_m2);
+		printf("Inactivation cross section = %g\n", sigma_m2);
 #endif
 
 		if( status != EXIT_SUCCESS ){
@@ -844,7 +841,7 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
 			return status;
 		}
 	} else {
-		inactivation_cross_section_m2 = AT_KatzModel_inactivation_cross_section_approximation_m2(
+        sigma_m2 = AT_KatzModel_inactivation_cross_section_approximation_m2(
                 E_MeV_u,
                 particle_no,
                 rdd_model,
@@ -856,10 +853,10 @@ int AT_KatzModel_single_field_survival_optimized_for_fluence_vector(
 
 	long i;
 	for( i = 0 ; i < number_of_items ; i++){
-		survival[i] = AT_KatzModel_single_field_survival_from_sigma(fluence_cm2[i],
+		survival[i] = AT_KatzModel_single_field_survival_from_sigma(dose_Gy[i],
                                                                     E_MeV_u,
                                                                     particle_no,
-                                                                    inactivation_cross_section_m2,
+                                                                    sigma_m2,
                                                                     D0_Gy,
                                                                     m,
                                                                     sigma0_m2,
