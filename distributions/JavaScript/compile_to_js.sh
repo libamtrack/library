@@ -116,7 +116,7 @@ funs='['
  funs+='"_AT_KatzModel_inactivation_cross_section_m2",'	
  funs+='"_AT_KatzModel_KatzExtTarget_ButtsKatz_TrackWidth",'	
  funs+='"_AT_KatzModel_KatzExtTarget_Zhang_TrackWidth",'	
- funs+='"_AT_KatzModel_single_field_survival_from_inactivation_cross_section",'	
+ funs+='"_AT_KatzModel_single_field_survival_from_sigma",'	
  funs+='"_AT_KatzModel_inactivation_cross_section_approximation_m2",'	
  funs+='"_AT_KatzModel_single_field_survival",'	
 
