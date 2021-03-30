@@ -243,7 +243,7 @@ funs='['
  funs+='"_AT_RDD_Katz_PowerLawER_dEdx_J_m",'	
  funs+='"_AT_RDD_Katz_LinearER_DSite_Gy",'	
  funs+='"_AT_RDD_Katz_PowerLawER_DSite_Gy",'	
- funs+='"_AT_RDD_KatzSite_Gy",'	
+ funs+='"_AT_RDD_KatzSite_Gy"'	
 
   funs+=']'
 
