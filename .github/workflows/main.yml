@@ -68,6 +68,17 @@ jobs:
         run: |          
           cd distributions/JavaScript && GSL_INCLUDE_DIRS=$HOME/usr/include GSL_LIBRARY=$HOME/usr/lib/libgsl.a GSL_CBLAS_LIBRARY=$HOME/usr/lib/libgslcblas.a  ./compile_to_js.sh
   
+  
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: wasm file
+          path: |
+            distributions/JavaScript/output/libat.wasm
+            distributions/JavaScript/output/libat.js
+          if-no-files-found: error
+          retention-days: 5
+          
   python_package:
     if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     name: Make and test python bindings
