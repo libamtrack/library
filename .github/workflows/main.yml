@@ -64,7 +64,7 @@ jobs:
           tar -xzf gsl-latest.tar.gz -C $HOME/gsl-latest
           mv $HOME/gsl-latest/** $HOME/gsl-latest/gsl
           mkdir $HOME/usr
-          cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$HOME/usr && emmake make && emmake make install
+          cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$HOME/usr --disable-shared && emmake make -j2 && emmake make install
           ls $HOME/usr
   
   python_package:
