@@ -43,7 +43,7 @@
 #include "AT_Histograms.h"
 #include "AT_PhysicsRoutines.h"
 #include "AT_NumericalRoutines.h"
-#include "AT_KatzModel.h"
+#include "AT_KatzModel_Implementation.h"
 #include "AT_Algorithms_GSM.h"
 
 #include <gsl/gsl_rng.h>

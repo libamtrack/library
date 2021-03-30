@@ -46,10 +46,6 @@ gcc
 gfortran
 libgsl0-dev
 
-Plus for development using the Netbeans IDE
-openjdk7
-netbeans (which is prefereably installed in the user's home directory from the Netbeans homepage)
-
 
 Using clang instead of gcc
 --------------------------
@@ -114,19 +110,19 @@ Install MSYS2 as a POSIX-like console for windows:
 
 
 ############################################################################################################################
-1a. Basic workflow for compilation from distributed source
+1a. Basic workflow for compilation from distributed source (on Linux machines)
 ############################################################################################################################
 
-Download source distribution (e.g. from sourceforge), navigate to download directory and untar by
+Download source distribution (e.g. from github), navigate to download directory and unpack by
 
     tar zxvf libamtrack-x.y.tar.gz
 
 Navigate to new directory (cd libamtrack-x.y) and execute
 
-    ./configure
-	make
-	make install
-	
+    mkdir build
+    cd build
+    cmake  -DCMAKE_BUILD_TYPE=Release ../ -DCMAKE_INSTALL_PREFIX=$HOME/usr
+    cmake --build . --target install -- -j2
 
 For tweaking (target, installation directory) please see section 1b. 
 

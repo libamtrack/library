@@ -1,8 +1,8 @@
-#ifndef AT_KATZMODEL_H_
-#define AT_KATZMODEL_H_
+#ifndef AMTRACK_AT_KATZMODEL_H
+#define AMTRACK_AT_KATZMODEL_H
 
 /**
- * @brief Katz model algorithm
+ * @brief Katz model algorithm implementation
  */
 
 /*
@@ -28,440 +28,68 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
-#include "AT_RDD.h"
-#include "AT_GammaResponse.h"
+#include "AT_KatzModel_Implementation.h"
 
 #ifdef HAVE_OPENMP
 #include <omp.h>
 #endif
 
 /**
- * TODO
- * @param[in] r_m
- * @param[in] a0_m
- * @param[in] KatzPoint_r_min_m
- * @param[in] max_electron_range_m
- * @param[in] er_model
- * @param[in] alpha
- * @param[in] Katz_plateau_Gy
- * @param[in] Katz_point_coeff_Gy
- * @param[in] D0_characteristic_dose_Gy
- * @param[in] c_hittedness
- * @param[in] m_number_of_targets
- * @return inactivation probability
+ * Katz model flavours
  */
-double AT_KatzModel_KatzExtTarget_inactivation_probability( const double  r_m,
-    const double  a0_m,
-    const double  KatzPoint_r_min_m,
-    const double  max_electron_range_m,
-    const long    er_model,
-    const double  alpha,
-    const double  Katz_plateau_Gy,
-    const double  Katz_point_coeff_Gy,
-    const double  D0_characteristic_dose_Gy,
-    const double  c_hittedness,
-    const double  m_number_of_targets);
+enum KatzModelFlavour {
+    Katz_Linear            = 1,      /**< based on Butts-Katz linear ER model */
+    Katz_PowerLaw          = 2,      /**< based on Zhang RDD and power law ER model */
+    Katz_Cucinotta         = 3       /**< based on Cucinotta RDD and Tabata ER model (no approximated version!) */
+};
 
 
 /**
- * TODO
- * @param[in] r_m
- * @param[in] a0_m
- * @param[in] KatzPoint_r_min_m
- * @param[in] max_electron_range_m
- * @param[in] beta
- * @param[in] C_norm
- * @param[in] Cucinotta_plateau_Gy
- * @param[in] KatzPoint_point_coeff_Gy
- * @param[in] D0_characteristic_dose_Gy
- * @param[in] c_hittedness
- * @param[in] m_number_of_targets
- * @return inactivation probability
+ * Calculates inactivation cross-section (sigma) for given energy.
+ * Sigma is evaluated by double integration:
+ *  - first of radial dose distribution (over site with radius a0)
+ *  - second of inactivation probability (over all radii)
+ *  Sigma can be calculated using 3 possible combination of radial dose and electron range models
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] a0_um
+ * @param[in] m
+ * @param[in] D0_Gy
+ * @param[in] katz_model_flavour
+ * @param[in] stop_power_source
+ * @return inactivation cross-section (sigma) [um2]
  */
-double AT_KatzModel_CucinottaExtTarget_inactivation_probability( const double  r_m,
-    const double  a0_m,
-    const double  KatzPoint_r_min_m,
-    const double  max_electron_range_m,
-    const double  beta,
-    const double  C_norm,
-    const double  Cucinotta_plateau_Gy,
-    const double  KatzPoint_point_coeff_Gy,
-    const double  D0_characteristic_dose_Gy,
-    const double  c_hittedness,
-    const double  m_number_of_targets);
-
+double AT_KatzModel_sigma_um2_single(const double E_MeV_u,
+                                     const long particle_no,
+                                     const double a0_um,
+                                     const double m,
+                                     const double D0_Gy,
+                                     const long katz_model_flavour,
+                                     const long stop_power_source);
 
 /**
- * TODO
- * @param[in] n                             todo
- * @param[in] r_m                           todo (array of size n)
- * @param[in] E_MeV_u                       todo
- * @param[in] particle_no                   todo
- * @param[in] material_no                   todo
- * @param[in] rdd_model                     todo
- * @param[in] rdd_parameters                todo (array of size 4)
- * @param[in] er_model                      todo
- * @param[in] gamma_parameters              todo (array of size 5)
- * @param[in] stop_power_source             todo
- * @param[out] inactivation_probability     results (array of size n)
- * @return status code
- */
-int AT_KatzModel_inactivation_probability( const long    n,
-    const double  r_m[],
-    const double  E_MeV_u,
-    const long    particle_no,
-    const long    material_no,
-    const long    rdd_model,
-    const double  rdd_parameters[],
-    const long    er_model,
-    const double  gamma_parameters[],
-    const long    stop_power_source,
-    double        inactivation_probability[]);
-
-
-/**
- * TODO
- */
-typedef struct {
-  double  a0_m;
-  double  KatzPoint_r_min_m;
-  double  max_electron_range_m;
-  long    er_model;
-  double  alpha;
-  double  Katz_plateau_Gy;
-  double  Katz_point_coeff_Gy;
-  double  D0_characteristic_dose_Gy;
-  double  c_hittedness;
-  double  m_number_of_targets;
-} AT_KatzModel_KatzExtTarget_inactivation_probability_parameters;
-
-
-/**
- * TODO
- * @param[in] t_m
- * @param[in] params
- * @return TODO
- */
-double AT_KatzModel_KatzExtTarget_inactivation_cross_section_integrand_m( double t_m,
-    void* params);
-
-
-/**
- * TODO
- * @param[in] a0_m
- * @param[in] KatzPoint_r_min_m
- * @param[in] max_electron_range_m
- * @param[in] er_model
- * @param[in] alpha
- * @param[in] Katz_plateau_Gy
- * @param[in] Katz_point_coeff_Gy
- * @param[in] D0_characteristic_dose_Gy
- * @param[in] c_hittedness
- * @param[in] m_number_of_targets
- * @return TODO
- */
-double AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2( const double  a0_m,
-    const double  KatzPoint_r_min_m,
-    const double  max_electron_range_m,
-    const long    er_model,
-    const double  alpha,
-    const double  Katz_plateau_Gy,
-    const double  Katz_point_coeff_Gy,
-    const double  D0_characteristic_dose_Gy,
-    const double  c_hittedness,
-    const double  m_number_of_targets);
-
-
-/**
- * TODO
- */
-typedef struct {
-  double  a0_m;
-  double  KatzPoint_r_min_m;
-  double  max_electron_range_m;
-  double  beta;
-  double  C_norm;
-  double  Cucinotta_plateau_Gy;
-  double  KatzPoint_coeff_Gy;
-  double  D0_characteristic_dose_Gy;
-  double  c_hittedness;
-  double  m_number_of_targets;
-} AT_KatzModel_CucinottaExtTarget_inactivation_probability_parameters;
-
-
-/**
- * TODO
- * @param[in] t_m
- * @param[in] params
- * @return TODO
- */
-double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_integrand_m( double t_m,
-    void* params);
-
-
-/**
- * TODO
- * @param[in] a0_m
- * @param[in] KatzPoint_r_min_m
- * @param[in] max_electron_range_m
- * @param[in] beta
- * @param[in] C_norm
- * @param[in] Cucinotta_plateau_Gy
- * @param[in] KatzPoint_point_coeff_Gy
- * @param[in] D0_characteristic_dose_Gy
- * @param[in] c_hittedness
- * @param[in] m_number_of_targets
- * @return TODO
- */
-double AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2( const double  a0_m,
-    const double  KatzPoint_r_min_m,
-    const double  max_electron_range_m,
-    const double  beta,
-    const double  C_norm,
-    const double  Cucinotta_plateau_Gy,
-    const double  KatzPoint_point_coeff_Gy,
-    const double  D0_characteristic_dose_Gy,
-    const double  c_hittedness,
-    const double  m_number_of_targets);
-
-
-/**
- * TODO
+ * Calculates inactivation cross-section (sigma) for given energy.
+ * Vectorised version of AT_KatzModel_sigma_um2_single
  * @param[in] n
- * @param[in] E_MeV_u (array of size n)
+ * @param[in] E_MeV_u  (array of size n)
  * @param[in] particle_no
- * @param[in] material_no
- * @param[in] rdd_model
- * @param[in] rdd_parameters (array of size 4)
- * @param[in] er_model
- * @param[in] gamma_parameters (array of size 5)
- * @param[in] stop_power_source             todo
- * @param[out] inactivation_cross_section_m2 (array of size n)
+ * @param[in] a0_um
+ * @param[in] m
+ * @param[in] D0_Gy
+ * @param[in] katz_model_flavour
+ * @param[in] stop_power_source
+ * @param[out] sigma_um2 (array of size n)
  * @return status code
  */
-int AT_KatzModel_inactivation_cross_section_m2( const long   n,
-    const double E_MeV_u[],
-    const long   particle_no,
-    const long   material_no,
-    const long   rdd_model,
-    const double rdd_parameters[],
-    const long   er_model,
-    const double gamma_parameters[],
-    const long   stop_power_source,
-    double inactivation_cross_section_m2[]);
+int AT_KatzModel_sigma_um2(
+        const long n,
+        const double E_MeV_u[],
+        const long particle_no,
+        const double a0_um,
+        const double m,
+        const double D0_Gy,
+        const long katz_model_flavour,
+        const long stop_power_source,
+        double sigma_um2[]);
 
-
-/**
- * TODO
- * @param[in] z2kappabeta2  TODO
- * @param[in] m             TODO
- * @return track width
- */
-double AT_KatzModel_KatzExtTarget_ButtsKatz_TrackWidth( const double z2kappabeta2,
-		const double m);
-
-/**
- * TODO
- * @param[in] z2kappabeta2  TODO
- * @param[in] m             TODO
- * @return track width
- */
-double AT_KatzModel_KatzExtTarget_Zhang_TrackWidth(
-		const double z2kappabeta2,
-		const double m);
-
-/**
- * TODO
- * @param[in] fluence_cm2
- * @param[in] E_MeV_u
- * @param[in] particle_no
- * @param[in] material_no
- * @param[in] inactivation_cross_section_m2
- * @param[in] D0_characteristic_dose_Gy
- * @param[in] m_number_of_targets
- * @param[in] sigma0_m2
- * @param[in] stopping_power_source_no
- * @return TODO
- */
-double AT_KatzModel_single_field_survival_from_inactivation_cross_section( const double fluence_cm2,
-	const double E_MeV_u,
-    const long   particle_no,
-    const long   material_no,
-    const double inactivation_cross_section_m2,
-    const double D0_characteristic_dose_Gy,
-    const double m_number_of_targets,
-    const double sigma0_m2,
-    const long   stopping_power_source_no);
-
-
-/**
- * TODO
- * @param[in] E_MeV_u                   TODO
- * @param[in] particle_no               TODO
- * @param[in] material_no               TODO
- * @param[in] rdd_model                 TODO
- * @param[in] er_model                  TODO
- * @param[in] m_number_of_targets       TODO
- * @param[in] sigma0_m2                 TODO
- * @param[in] kappa                     TODO
- * @return status inact cross section
- */
-double AT_KatzModel_inactivation_cross_section_approximation_m2(	const double E_MeV_u,
-		const long   particle_no,
-		const long   material_no,
-		const long   rdd_model,
-		const long   er_model,
-		const double m_number_of_targets,
-		const double sigma0_m2,
-		const double kappa);
-
-/**
- * TODO
- * @param[in] fluence_cm2               TODO
- * @param[in] E_MeV_u                   TODO
- * @param[in] particle_no               TODO
- * @param[in] material_no               TODO
- * @param[in] rdd_model                 TODO
- * @param[in] rdd_parameters            TODO (array of size 4)
- * @param[in] er_model                  TODO
- * @param[in] D0_characteristic_dose_Gy TODO
- * @param[in] m_number_of_targets       TODO
- * @param[in] sigma0_m2                 TODO
- * @param[in] use_approximation         TODO
- * @param[in] kappa                     TODO
- * @param[in] stopping_power_source_no  TODO
- * @param[out] survival                 TODO
- * @return status code
- */
-int AT_KatzModel_single_field_survival( const double fluence_cm2,
-	const double E_MeV_u,
-    const long   particle_no,
-    const long   material_no,
-    const long   rdd_model,
-    const double rdd_parameters[],
-    const long   er_model,
-    const double D0_characteristic_dose_Gy,
-    const double m_number_of_targets,
-    const double sigma0_m2,
-    const bool   use_approximation,
-    const double kappa,
-    const long   stopping_power_source_no,
-    double*      survival);
-
-
-/**
- * TODO
- * @param[in] number_of_items           TODO
- * @param[in] fluence_cm2               TODO (array of size number_of_items)
- * @param[in] E_MeV_u                   TODO (array of size number_of_items)
- * @param[in] particle_no               TODO (array of size number_of_items)
- * @param[in] material_no               TODO
- * @param[in] rdd_model                 TODO
- * @param[in] rdd_parameters            TODO (array of size 4)
- * @param[in] er_model                  TODO
- * @param[in] D0_characteristic_dose_Gy TODO
- * @param[in] m_number_of_targets       TODO
- * @param[in] sigma0_m2                 TODO
- * @param[in] use_approximation         TODO
- * @param[in] kappa                     TODO
- * @param[in] stopping_power_source_no  TODO
- * @param[out] survival                 TODO
- * @return status code
- */
-int AT_KatzModel_mixed_field_survival( const long   number_of_items,
-    double fluence_cm2[],
-	const double E_MeV_u[],
-    const long   particle_no[],
-    const long   material_no,
-    const long   rdd_model,
-    const double rdd_parameters[],
-    const long   er_model,
-    const double D0_characteristic_dose_Gy,
-    const double m_number_of_targets,
-    const double sigma0_m2,
-    const bool   use_approximation,
-    const double kappa,
-    const long   stopping_power_source_no,
-    double*      survival);
-
-
-/**
- * TODO
- * @param[in] number_of_items
- * @param[in] fluence_cm2 (array of size number_of_items)
- * @param[in] E_MeV_u
- * @param[in] particle_no
- * @param[in] material_no
- * @param[in] rdd_model
- * @param[in] rdd_parameters (array of size 4)
- * @param[in] er_model
- * @param[in] D0_characteristic_dose_Gy
- * @param[in] m_number_of_targets
- * @param[in] sigma0_m2
- * @param[in] use_approximation
- * @param[in] kappa
- * @param[in] stopping_power_source_no
- * @param[out] survival (array of size number_of_items)
- * @return
- */
-int AT_KatzModel_single_field_survival_optimized_for_fluence_vector( const long   number_of_items,
-    const double fluence_cm2[],
-	const double E_MeV_u,
-    const long   particle_no,
-    const long   material_no,
-    const long   rdd_model,
-    const double rdd_parameters[],
-    const long   er_model,
-    const double D0_characteristic_dose_Gy,
-    const double m_number_of_targets,
-    const double sigma0_m2,
-    const bool   use_approximation,
-    const double kappa,
-    const long   stopping_power_source_no,
-    double*      survival);
-
-/**
- * TODO
- * @param[in] r_m
- * @param[in] params
- * @return TODO
- */
-double AT_P_RDD(                    double  r_m,
-    void* params);
-
-
-/**
- * TODO
- * @param[in] r_m
- * @param[in] params
- * @return TODO
- */
-double AT_sI_int(                   double  r_m,
-    void* params);
-
-
-/**
- * TODO
- * @param[in] r_m
- * @param[in] params
- * @return TODO
- */
-double AT_D_RDD_Gy_int(             double  r_m,
-    void* params);
-
-
-/**
- * TODO
- */
-typedef struct {
-  double*  E_MeV_u;
-  long*    particle_no;
-  long*    material_no;
-  long*    rdd_model;
-  double*  rdd_parameters;
-  long*    er_model;
-  double   gamma_parameters[5];
-} AT_P_RDD_parameters;
-
-
-#endif /* AT_KATZMODEL_H_ */
+#endif //AMTRACK_AT_KATZMODEL_H

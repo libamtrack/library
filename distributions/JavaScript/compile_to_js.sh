@@ -21,50 +21,16 @@ emmake make -j4
 funs='['	
  
   #----AT_Error.h	
- funs+='"_AT_check_energy_range_single_particle",'	
- funs+='"_AT_check_energy_range_single_field",'	
- funs+='"_AT_check_particle_no_single_particle",'	
- funs+='"_AT_check_particle_no_single_field",'	
- 
+
   #----AT_StoppingPowerDataBethe.h	
- funs+='"_AT_Bethe_wrapper",'	
- funs+='"_AT_el_energy_loss_leading_term_MeV_cm2_g",'	
- funs+='"_AT_Bethe_Stopping_Number",'	
- funs+='"_AT_Bethe_energy_loss_MeV_cm2_g_single",'	
- funs+='"_AT_Bethe_energy_loss_MeV_cm2_g",'	
- 
+
   #----AT_MultipleCoulombScattering.h	
- funs+='"_AT_characteristic_single_scattering_angle_single",'	
- funs+='"_AT_characteristic_single_scattering_angle",'	
- funs+='"_AT_screening_angle_single",'	
- funs+='"_AT_screening_angle",'	
- funs+='"_AT_effective_collision_number_single",'	
- funs+='"_AT_effective_collision_number",'	
- funs+='"_AT_reduced_target_thickness_single",'	
- funs+='"_AT_reduced_target_thickness",'	
- funs+='"_AT_characteristic_multiple_scattering_angle_single",'	
- funs+='"_AT_characteristic_multiple_scattering_angle",'	
- funs+='"_AT_Moliere_function_f0",'	
- funs+='"_AT_Moliere_function_f1",'	
- funs+='"_AT_Moliere_function_f2",'	
- funs+='"_AT_scattering_angle_distribution_single",'	
- funs+='"_AT_scattering_angle_distribution",'	
- funs+='"_AT_Highland_angle_single",'	
- funs+='"_AT_Highland_angle",'	
- 
+
   #----AT_RDD.h	
- funs+='"_AT_RDD_name_from_number",'	
- funs+='"_AT_RDD_number_from_name",'	
- funs+='"_AT_RDD_number_of_parameters",'	
- funs+='"_AT_D_RDD_Gy",'	
- funs+='"_AT_r_RDD_m",'	
- funs+='"_AT_RDD_r_min_m",'	
- funs+='"_AT_RDD_a0_m",'	
- 
+
   #----AT_StoppingPowerDataPSTAR.h	
- funs+='"_AT_PSTAR_wrapper",'	
- 
-  #----AT_EnergyLoss.h	
+
+  #----AT_EnergyLoss.h
  funs+='"_AT_mean_energy_loss_keV",'	
  funs+='"_AT_xi_keV",'	
  funs+='"_AT_kappa_single",'	
@@ -110,17 +76,7 @@ funs='['
  funs+='"_AT_energy_loss_FWHM",'	
  
   #----AT_GammaResponse.h	
- funs+='"_AT_Gamma_name_from_number",'	
- funs+='"_AT_Gamma_number_of_parameters",'	
- funs+='"_AT_gamma_response",'	
- funs+='"_AT_get_gamma_response_for_average_dose",'	
- funs+='"_AT_get_response_distribution_from_dose_distribution",'	
- funs+='"_AT_get_ion_response_from_response_distribution",'	
- funs+='"_AT_get_ion_response_from_dose_distribution",'	
- funs+='"_AT_get_ion_efficiency_from_dose_distribution",'	
- funs+='"_AT_get_ion_efficiency_from_response_distribution",'	
- funs+='"_AT_get_gamma_response",'	
- 
+
   #----AT_StoppingPower.h	
  funs+='"_AT_Mass_Stopping_Power",'	
  funs+='"_AT_Stopping_Power",'	
@@ -145,24 +101,13 @@ funs='['
  funs+='"_AT_energy_Bortfeld_MeV",'
  funs+='"_AT_fit_Bortfeld",'
 
+  #----AT_SuccessiveConvolutions.h
 
-  #----AT_SuccessiveConvolutions.h	
- funs+='"_AT_n_bins_for_single_impact_local_dose_distrib",'	
- funs+='"_AT_single_impact_local_dose_distrib",'	
- funs+='"_AT_n_bins_for_low_fluence_local_dose_distribution",'	
- funs+='"_AT_low_fluence_local_dose_distribution",'	
- funs+='"_AT_SuccessiveConvolutions",'	
- funs+='"_AT_Kellerer_normalize",'	
- funs+='"_AT_Kellerer_interpolation",'	
- funs+='"_AT_Kellerer_reset",'	
- funs+='"_AT_Kellerer_zero",'	
- funs+='"_AT_Kellerer_shrink",'	
- funs+='"_AT_Kellerer_folding",'	
- funs+='"_AT_n_bins_for_DSB_distribution",'	
- funs+='"_AT_get_DSB_distribution",'	
- funs+='"_AT_translate_dose_into_DSB_distribution",'	
- 
-  #----AT_KatzModel.h	
+ #----AT_KatzModel.h
+ funs+='"_AT_KatzModel_sigma_um2_single",'
+ funs+='"_AT_KatzModel_sigma_um2",'
+
+  #----AT_KatzModel_Implementation.h
  funs+='"_AT_KatzModel_KatzExtTarget_inactivation_probability",'	
  funs+='"_AT_KatzModel_CucinottaExtTarget_inactivation_probability",'	
  funs+='"_AT_KatzModel_inactivation_probability",'	
@@ -174,10 +119,7 @@ funs='['
  funs+='"_AT_KatzModel_single_field_survival_from_inactivation_cross_section",'	
  funs+='"_AT_KatzModel_inactivation_cross_section_approximation_m2",'	
  funs+='"_AT_KatzModel_single_field_survival",'	
- funs+='"_AT_KatzModel_mixed_field_survival",'	
- funs+='"_AT_KatzModel_single_field_survival_optimized_for_fluence_vector",'	
- funs+='"_AT_P_RDD",'	
- 
+
   #----AT_PhysicsRoutines.h	
  funs+='"_AT_E_MeV_u_from_E_MeV",'	
  funs+='"_AT_E_MeV_from_E_MeV_u",'	
@@ -226,40 +168,13 @@ funs='['
  funs+='"_AT_fluence_weighted_LET_MeV_cm2_g",'	
  funs+='"_AT_dose_weighted_LET_MeV_cm2_g",'	
  funs+='"_AT_stopping_power_ratio",'	
- funs+='"_AT_mean_number_of_tracks_contrib",'	
- funs+='"_AT_Rutherford_SDCS",'	
- funs+='"_AT_Rutherford_scatter_cross_section",'	
- funs+='"_AT_gyroradius_m",'	
- 
+
   #----AT_DataMaterial.h	
- funs+='"_AT_material_name_from_number",'	
- funs+='"_AT_material_number_from_name",'	
- funs+='"_AT_density_g_cm3_from_material_no",'	
- funs+='"_AT_I_eV_from_material_no",'	
- funs+='"_AT_alpha_g_cm2_MeV_from_material_no",'	
- funs+='"_AT_p_MeV_from_material_no",'	
- funs+='"_AT_m_g_cm2_from_material_no",'	
- funs+='"_AT_average_A_from_material_no",'	
- funs+='"_AT_average_Z_from_material_no",'	
- funs+='"_AT_phase_from_material_no",'	
- funs+='"_AT_electron_density_m3_from_material_no_single",'	
- funs+='"_AT_plasma_energy_J_from_material_no",'	
- funs+='"_AT_electron_density_m3_single",'	
- funs+='"_AT_plasma_energy_J_single",'	
- funs+='"_AT_electron_density_m3_from_composition",'	
- funs+='"_AT_average_A_from_composition",'	
- funs+='"_AT_average_Z_from_composition",'	
- funs+='"_AT_effective_Z_from_composition",'	
- funs+='"_AT_I_eV_from_composition",'	
-  
+
   #----AT_StoppingPowerData.h	
- funs+='"_AT_stopping_power_source_model_name_from_number",'	
- funs+='"_AT_stopping_power_source_model_number_from_name",'	
- 
+
   #----AT_Algorithms_CPP.h	
- funs+='"_AT_run_CPPSC_method",'	
- funs+='"_AT_run_CPPSS_method",'	
- 
+
   #----AT_RDD_ExtendedTarget.h	
  funs+='"_AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy",'	
  funs+='"_AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration",'	
@@ -313,8 +228,7 @@ funs='['
  funs+='"_AT_RDD_Cucinotta_Ddelta_Gy",'	
  funs+='"_AT_RDD_Cucinotta_Dexc_Gy",'	
  funs+='"_AT_RDD_CucinottaPoint_Gy",'	
- funs+='"_AT_inverse_RDD_Cucinotta_m",'	
- 
+
   #----AT_RDD_ShellAveraged.h	
  funs+='"_AT_RDD_Katz_LinearER_Daverage_Gy",'	
  funs+='"_AT_RDD_Katz_PowerLawER_DaverageKernel",'	
@@ -330,10 +244,8 @@ funs='['
  funs+='"_AT_RDD_Katz_LinearER_DSite_Gy",'	
  funs+='"_AT_RDD_Katz_PowerLawER_DSite_Gy",'	
  funs+='"_AT_RDD_KatzSite_Gy",'	
- funs+='"_AT_inverse_RDD_KatzSite_m"'	
- 
-  funs+=']'
 
+  funs+=']'
 
 emcc libat.a libgsl.a libgslcblas.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
 

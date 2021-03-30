@@ -145,7 +145,7 @@ int AT_Stopping_Power_with_no( const long stopping_power_source_no,
 		stopping_power_keV_um[i] *= material_density_g_cm3 / 10.0;
 	}
 
-	return (result);
+	return result;
 }
 
 
