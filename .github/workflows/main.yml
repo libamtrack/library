@@ -43,6 +43,18 @@ jobs:
       
       - uses: mymindstorm/setup-emsdk@v7
 
+      - name: Cache compiled GSL
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: $HOME/usr
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/main.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
       - name: Compile GSL
         run: |
           pwd
@@ -52,8 +64,7 @@ jobs:
           tar -xzf gsl-latest.tar.gz -C $HOME/gsl-latest
           mv $HOME/gsl-latest/** $HOME/gsl-latest/gsl
           mkdir $HOME/usr
-          cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$HOME/usr && emmake make -j2 && emmake make install
-          ls $HOME/gsl-latest/gsl
+          cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$HOME/usr && emmake make && emmake make install
           ls $HOME/usr
   
   python_package:
