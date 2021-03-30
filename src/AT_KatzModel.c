@@ -709,6 +709,133 @@ double AT_KatzModel_single_field_survival(
 }
 
 
+typedef struct {
+    double E_MeV_u;
+    long particle_no;
+    long rdd_model;
+    double *rdd_parameters;
+    long er_model;
+    double D0_Gy;
+    double m;
+    double sigma0_m2;
+    bool use_approximation;
+    double kappa;
+    long stopping_power_source_no;
+    double survival;
+} _AT_KatzModel_survival_root_params;
+
+
+double _AT_KatzModel_survival_root(double x, void *params) {
+    assert(params != NULL);
+
+    _AT_KatzModel_survival_root_params *current_params = (_AT_KatzModel_survival_root_params *) params;
+
+    double result = AT_KatzModel_single_field_survival(x,
+                                                       current_params->E_MeV_u,
+                                                       current_params->particle_no,
+                                                       current_params->rdd_model,
+                                                       current_params->rdd_parameters,
+                                                       current_params->er_model,
+                                                       current_params->D0_Gy,
+                                                       current_params->m,
+                                                       current_params->sigma0_m2,
+                                                       current_params->use_approximation,
+                                                       current_params->kappa,
+                                                       current_params->stopping_power_source_no);
+
+    result -= current_params->survival;
+
+    return result;
+}
+
+
+double AT_KatzModel_single_field_rbe(const double E_MeV_u,
+                                     const long particle_no,
+                                     const long rdd_model,
+                                     const double rdd_parameters[],
+                                     const long er_model,
+                                     const double D0_Gy,
+                                     const double m,
+                                     const double sigma0_m2,
+                                     const bool use_approximation,
+                                     const double kappa,
+                                     const long stopping_power_source_no,
+                                     const double survival) {
+
+    // set default RBE to negative value
+    double rbe = -1;
+
+    // set default survival to 0.1
+    double current_survival = survival;
+    if (current_survival < 0.0)
+        current_survival = 0.1;
+
+    // calculate dose for which reference radiation predicts given survival level
+    // formula below can be derived from following equation (mtarget model with m,D0 parameters ):
+    //   current_survival = 1 - (1 - exp( - D_ref_Gy / D0_Gy))^m
+    double D_ref_Gy = -D0_Gy * log(1. - pow(1. - current_survival, 1. / m));
+
+    // calculate dose for which irradiation with ions predicts given survival level
+    // it is impossible to analytically inverse Katz model formulation, therefore we use GSL numerical solver
+    _AT_KatzModel_survival_root_params current_params;
+    current_params.E_MeV_u = E_MeV_u;
+    current_params.particle_no = particle_no;
+    current_params.rdd_model = rdd_model;
+    current_params.rdd_parameters = (double *) rdd_parameters;
+    current_params.er_model = er_model;
+    current_params.D0_Gy = D0_Gy;
+    current_params.m = m;
+    current_params.sigma0_m2 = sigma0_m2;
+    current_params.use_approximation = use_approximation;
+    current_params.kappa = kappa;
+    current_params.stopping_power_source_no = stopping_power_source_no;
+    current_params.survival = current_survival;
+
+    int status;
+    int iter = 0, max_iter = 1000;
+    const gsl_root_fsolver_type *T;
+    gsl_root_fsolver *s;
+
+    gsl_function F;
+
+    F.function = &_AT_KatzModel_survival_root; // function to solve for (D): f(D) = SF_ion(D) - SF_level
+    F.params = (void *) (&current_params);
+
+    double x_root = D_ref_Gy; // solver initial guess
+
+    // solver lower and upper bounds
+    double x_lower = 0.0;
+    double x_upper = 10000 * D_ref_Gy;
+
+    if (GSL_FN_EVAL(&F, x_lower) * GSL_FN_EVAL(&F, x_upper) > 0) {
+        return -1.0;
+    }
+
+    T = gsl_root_fsolver_brent;
+    s = gsl_root_fsolver_alloc(T);
+    gsl_root_fsolver_set(s, &F, x_lower, x_upper);
+
+    do {
+        iter++;
+        status = gsl_root_fsolver_iterate(s);
+        x_root = gsl_root_fsolver_root(s);
+        x_lower = gsl_root_fsolver_x_lower(s);
+        x_upper = gsl_root_fsolver_x_upper(s);
+        status = gsl_root_test_delta(x_lower, x_upper, 0, 1e-6);
+//        printf("iter %d, lower %g, upper %g, status %d\n", iter, x_lower, x_upper, status);
+    } while (status == GSL_CONTINUE && iter < max_iter);
+
+    gsl_root_fsolver_free(s);
+
+    double D_ion_Gy = x_root;
+
+//    printf("D_ion = %g [Gy]\n", D_ion_Gy);
+
+    rbe = D_ref_Gy / D_ion_Gy;
+
+    return rbe;
+}
+
 
 int AT_KatzModel_mixed_field_survival(
 	const long   number_of_items,

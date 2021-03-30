@@ -35,6 +35,7 @@
 #include "AT_ProtonAnalyticalModels.h"
 #include "AT_ProtonAnalyticalBeamParameters.h"
 #include "AT_RDD.h"
+#include "AT_KatzModel.h"
 
 int main(int argc, char *argv[]) {
 
@@ -164,6 +165,27 @@ int main(int argc, char *argv[]) {
         printf("%e : %e\n", r_m_tab[i], D_RDD_Gy[i]);
     }
 
+    const double RBE_E_MeV_u = 10.0;
+    particle_no = AT_particle_no_from_particle_name_single("12C");
+    const double D0_Gy = 1.1;
+    const double m = 2.36;
+    const double sigma0_m2 = 140.8 * (1e-6) * (1e-6);
+    const bool use_approximation = true;
+    const double kappa = 1204.;
+    const double survival = 0.1;
 
+    double rbe = AT_KatzModel_single_field_rbe(RBE_E_MeV_u,
+                                               particle_no,
+                                               RDD_KatzExtTarget,
+                                               rdd_parameter,
+                                               ER_Waligorski,
+                                               D0_Gy,
+                                               m,
+                                               sigma0_m2,
+                                               use_approximation,
+                                               kappa,
+                                               stopping_power_source_no,
+                                               survival);
+    printf("RBE = %g\n", rbe);
     return EXIT_SUCCESS;
 }

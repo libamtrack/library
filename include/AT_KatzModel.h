@@ -341,6 +341,35 @@ double AT_KatzModel_single_field_survival( const double dose_Gy,
 
 /**
  * TODO
+ * @param[in] E_MeV_u                   TODO
+ * @param[in] particle_no               TODO
+ * @param[in] rdd_model                 TODO
+ * @param[in] rdd_parameters            TODO (array of size 4)
+ * @param[in] er_model                  TODO
+ * @param[in] D0_Gy                     TODO
+ * @param[in] m                         TODO
+ * @param[in] sigma0_m2                 TODO
+ * @param[in] use_approximation         TODO
+ * @param[in] kappa                     TODO
+ * @param[in] stopping_power_source_no  TODO
+ * @param[in] survival                  TODO
+ * @return RBE
+ */
+double AT_KatzModel_single_field_rbe(const double E_MeV_u,
+                                     const long particle_no,
+                                     const long rdd_model,
+                                     const double rdd_parameters[],
+                                     const long er_model,
+                                     const double D0_Gy,
+                                     const double m,
+                                     const double sigma0_m2,
+                                     const bool use_approximation,
+                                     const double kappa,
+                                     const long stopping_power_source_no,
+                                     const double survival);
+
+/**
+ * TODO
  * @param[in] number_of_items           TODO
  * @param[in] fluence_cm2               TODO (array of size number_of_items)
  * @param[in] E_MeV_u                   TODO (array of size number_of_items)
