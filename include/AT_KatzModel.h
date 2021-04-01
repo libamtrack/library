@@ -59,13 +59,14 @@ enum KatzModelFlavour {
  * @param[in] stop_power_source
  * @return inactivation cross-section (sigma) [um2]
  */
-double AT_KatzModel_sigma_um2_single(const double E_MeV_u,
-                                     const long particle_no,
-                                     const double a0_um,
-                                     const double m,
-                                     const double D0_Gy,
-                                     const long katz_model_flavour,
-                                     const long stop_power_source);
+double AT_KatzModel_sigma_um2_single(
+        const double E_MeV_u,
+        const long particle_no,
+        const double a0_um,
+        const double m,
+        const double D0_Gy,
+        const long katz_model_flavour,
+        const long stop_power_source);
 
 /**
  * Calculates inactivation cross-section (sigma) for given energy.
@@ -91,5 +92,48 @@ int AT_KatzModel_sigma_um2(
         const long katz_model_flavour,
         const long stop_power_source,
         double sigma_um2[]);
+
+/**
+ * Calculates approximated inactivation cross-section (sigma) for given energy.
+ * approximation via "trkwid" function
+ * Sigma can be calculated using 2 possible combination of radial dose and electron range models
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] kappa
+ * @param[in] m
+ * @param[in] sigma0_um2
+ * @param[in] katz_model_flavour
+ * @return inactivation cross-section (sigma) [um2]
+ */
+double AT_KatzModel_sigma_approx_um2_single(
+        const double E_MeV_u,
+        const long particle_no,
+        const double kappa,
+        const double m,
+        const double sigma0_um2,
+        const long katz_model_flavour);
+
+/**
+ * Calculates approximated inactivation cross-section (sigma) for given energy.
+ * Vectorised version of AT_KatzModel_sigma_approx_um2_single
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] kappa
+ * @param[in] m
+ * @param[in] sigma0_um2
+ * @param[in] katz_model_flavour
+ * @param[out] sigma_um2 (array of size n)
+ * @return status code
+ */
+int AT_KatzModel_sigma_approx_um2(
+        const long n,
+        const double E_MeV_u[],
+        const long particle_no,
+        const double kappa,
+        const double m,
+        const double sigma0_um2,
+        const long katz_model_flavour,
+        double sigma_um2[]);
+
 
 #endif //AMTRACK_AT_KATZMODEL_H
