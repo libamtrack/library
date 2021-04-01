@@ -106,19 +106,17 @@ funs='['
  #----AT_KatzModel.h
  funs+='"_AT_KatzModel_sigma_um2_single",'
  funs+='"_AT_KatzModel_sigma_um2",'
+ funs+='"_AT_KatzModel_sigma_approx_um2_single",'
+ funs+='"_AT_KatzModel_sigma_approx_um2",'
+ funs+='"_AT_KatzModel_survival_single",'
+ funs+='"_AT_KatzModel_survival",'
+ funs+='"_AT_KatzModel_RBE_single",'
+ funs+='"_AT_KatzModel_RBE",'
 
   #----AT_KatzModel_Implementation.h
- funs+='"_AT_KatzModel_KatzExtTarget_inactivation_probability",'	
- funs+='"_AT_KatzModel_CucinottaExtTarget_inactivation_probability",'	
- funs+='"_AT_KatzModel_inactivation_probability",'	
- funs+='"_AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2",'	
- funs+='"_AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2",'	
- funs+='"_AT_KatzModel_inactivation_cross_section_m2",'	
- funs+='"_AT_KatzModel_KatzExtTarget_ButtsKatz_TrackWidth",'	
- funs+='"_AT_KatzModel_KatzExtTarget_Zhang_TrackWidth",'	
- funs+='"_AT_KatzModel_single_field_survival_from_sigma",'	
- funs+='"_AT_KatzModel_inactivation_cross_section_approximation_m2",'	
- funs+='"_AT_KatzModel_single_field_survival",'	
+ funs+='"_AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2",'
+ funs+='"_AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2",'
+ funs+='"_AT_KatzModel_inactivation_cross_section_m2",'
 
   #----AT_PhysicsRoutines.h	
  funs+='"_AT_E_MeV_u_from_E_MeV",'	
