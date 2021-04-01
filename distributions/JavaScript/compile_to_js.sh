@@ -108,11 +108,13 @@ funs='['
  funs+='"_AT_KatzModel_sigma_um2",'
  funs+='"AT_KatzModel_sigma_approx_um2_single",'
  funs+='"AT_KatzModel_sigma_approx_um2",'
+ funs+='"AT_KatzModel_survival_single",'
+ funs+='"AT_KatzModel_survival",'
 
   #----AT_KatzModel_Implementation.h
  funs+='"_AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2",'
- funs+='"_AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2",'	
- funs+='"_AT_KatzModel_inactivation_cross_section_m2",'	
+ funs+='"_AT_KatzModel_CucinottaExtTarget_inactivation_cross_section_m2",'
+ funs+='"_AT_KatzModel_inactivation_cross_section_m2",'
 
   #----AT_PhysicsRoutines.h	
  funs+='"_AT_E_MeV_u_from_E_MeV",'	

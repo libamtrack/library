@@ -175,9 +175,9 @@ int main(int argc, char *argv[]) {
     const double survival = 0.1;
     const double a0_um = 10.;
 
-    double sigma_um2_ver1 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no,a0_um,m,D0_Gy,Katz_Linear,PSTAR);
-    double sigma_um2_ver2 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no,a0_um,m,D0_Gy,Katz_PowerLaw,PSTAR);
-    double sigma_um2_ver3 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no,a0_um,m,D0_Gy,Katz_Cucinotta,PSTAR);
+    double sigma_um2_ver1 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no,m,D0_Gy,a0_um,Katz_Linear,PSTAR);
+    double sigma_um2_ver2 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no,m,D0_Gy,a0_um,Katz_PowerLaw,PSTAR);
+    double sigma_um2_ver3 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no,m,D0_Gy,a0_um,Katz_Cucinotta,PSTAR);
 
     printf("Inactivation cross-section: \n");
     printf("\tKatz Linear model: %g [um2]\n", sigma_um2_ver1);
