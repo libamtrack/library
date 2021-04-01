@@ -270,15 +270,15 @@ double AT_KatzModel_RBE_single(
     double current_kappa = kappa;
     double current_a0_um = a0_um;
 
-    if (approximate && (kappa < 0) && (a0_um > 0)) {
+    if (approximate && (kappa <= 0.) && (a0_um > 0.)) {
         // approximated model uses m,D0,sigma0,kappa.
         // user provided negative kappa, we use a0 to calculate kappa
         current_kappa = D0_Gy * a0_um * a0_um / 2e-3;  // 2e-15 Gy m2 -> 2e-3 Gy um2
-    } else if (!approximate && (a0_um < 0) && (kappa > 0)) {
+    } else if (!approximate && (a0_um <= 0.) && (kappa > 0.)) {
         // integrated model uses m,D0,sigma0,a0.
         // user provided negative a0, we use kappa to calculate a0
         current_a0_um = sqrt(2e-3 * kappa / D0_Gy);
-    } else {
+    } else if ( (a0_um < 0.) && (kappa < 0.)) {
         return -1.;
     }
 

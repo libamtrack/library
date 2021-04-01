@@ -164,38 +164,42 @@ int main(int argc, char *argv[]) {
         printf("%e : %e\n", r_m_tab[i], D_RDD_Gy[i]);
     }
 
-
     const double RBE_E_MeV_u = 10.0;
     particle_no = AT_particle_no_from_particle_name_single("12C");
     const double D0_Gy = 1.1;
     const double m = 2.36;
-    const double sigma0_m2 = 140.8 * (1e-6) * (1e-6);
+    const double sigma0_um2 = 140.8;
+    const double sigma0_m2 = sigma0_um2 * (1e-6) * (1e-6);
     const bool use_approximation = true;
     const double kappa = 1204.;
     const double survival = 0.1;
     const double a0_um = 10.;
 
-    double sigma_um2_ver1 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no,m,D0_Gy,a0_um,Katz_Linear,PSTAR);
-    double sigma_um2_ver2 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no,m,D0_Gy,a0_um,Katz_PowerLaw,PSTAR);
-    double sigma_um2_ver3 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no,m,D0_Gy,a0_um,Katz_Cucinotta,PSTAR);
+    double sigma_um2_ver1 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no, m, D0_Gy, a0_um, Katz_Linear,
+                                                          PSTAR);
+    double sigma_um2_ver2 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no, m, D0_Gy, a0_um, Katz_PowerLaw,
+                                                          PSTAR);
+    double sigma_um2_ver3 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no, m, D0_Gy, a0_um, Katz_Cucinotta,
+                                                          PSTAR);
 
     printf("Inactivation cross-section: \n");
     printf("\tKatz Linear model: %g [um2]\n", sigma_um2_ver1);
     printf("\tKatz Power-law model: %g [um2]\n", sigma_um2_ver2);
     printf("\tKatz Cucinotta model: %g [um2]\n", sigma_um2_ver3);
 
-    double rbe = AT_KatzModel_single_field_rbe(RBE_E_MeV_u,
-                                               particle_no,
-                                               RDD_KatzExtTarget,
-                                               rdd_parameter,
-                                               ER_Waligorski,
-                                               D0_Gy,
-                                               m,
-                                               sigma0_m2,
-                                               use_approximation,
-                                               kappa,
-                                               PSTAR,
-                                               survival);
+    double rbe = AT_KatzModel_RBE_single(
+            RBE_E_MeV_u,
+            particle_no,
+            m,
+            D0_Gy,
+            sigma0_um2,
+            kappa,
+            -1.,
+            Katz_PowerLaw,
+            true,
+            PSTAR,
+            -1.);
     printf("RBE = %g\n", rbe);
+
     return EXIT_SUCCESS;
 }
