@@ -319,10 +319,17 @@ int AT_KatzModel_RBE(
         const long stopping_power_source_no,
         const double level,
         double rbe[]) {
+
+    printf("debug: \n");
+    printf("n=%ld, particle_no=%ld, m=%g, D0=%g Gy, sigma0=%g um2, kappa=%g, a0=%g um, flavour=%ld, approx=%d, stop_pow=%ld, level=%g\n",
+           n, particle_no, m, D0_Gy, sigma0_um2, kappa, a0_um, katz_model_flavour, approximate, stopping_power_source_no, level);
+
     long i;
     for (i = 0; i < n; i++) {
+        printf("i=%ld, E=%g\t", i, E_MeV_u[i]);
         rbe[i] = AT_KatzModel_RBE_single(E_MeV_u[i], particle_no, m, D0_Gy, sigma0_um2, kappa, a0_um,
                                          katz_model_flavour, approximate, stopping_power_source_no, level);
+        printf("RBE=%g\n", rbe[i]);
     }
     return EXIT_SUCCESS;
 }
