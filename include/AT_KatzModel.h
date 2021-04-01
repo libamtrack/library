@@ -148,7 +148,7 @@ int AT_KatzModel_sigma_approx_um2(
  * @param[in] a0_um
  * @param[in] katz_model_flavour
  * @param[in] approximate
- * @param[in] stop_power_source
+ * @param[in] stopping_power_source_no
  * @return cell survival
  */
 double AT_KatzModel_survival_single(
@@ -179,7 +179,7 @@ double AT_KatzModel_survival_single(
  * @param[in] a0_um
  * @param[in] katz_model_flavour
  * @param[in] approximate
- * @param[in] stop_power_source
+ * @param[in] stopping_power_source_no
  * @param[out] survival (array of size n)
  * @return status code
  */
@@ -197,5 +197,67 @@ int AT_KatzModel_survival(
         const bool approximate,
         const long stopping_power_source_no,
         double survival[]);
+
+
+/**
+ * Calculates RBE for given energy and particle type.
+ * @param[in] E_MeV_u
+ * @param[in] particle_no
+ * @param[in] m
+ * @param[in] D0_Gy
+ * @param[in] sigma0_um2
+ * @param[in] kappa
+ * @param[in] a0_um
+ * @param[in] katz_model_flavour
+ * @param[in] approximate
+ * @param[in] stopping_power_source_no
+ * @param[in] level
+ * @return rbe
+ */
+double AT_KatzModel_RBE_single(
+        const double E_MeV_u,
+        const long particle_no,
+        const double m,
+        const double D0_Gy,
+        const double sigma0_um2,
+        const double kappa,
+        const double a0_um,
+        const long katz_model_flavour,
+        const bool approximate,
+        const long stopping_power_source_no,
+        const double level);
+
+/**
+ * Calculates RBE for given energy and particle type.
+ * Vectorised version of AT_KatzModel_RBE_single
+ * @param[in] n
+ * @param[in] E_MeV_u (array of size n)
+ * @param[in] particle_no
+ * @param[in] m
+ * @param[in] D0_Gy
+ * @param[in] sigma0_um2
+ * @param[in] kappa
+ * @param[in] a0_um
+ * @param[in] katz_model_flavour
+ * @param[in] approximate
+ * @param[in] stopping_power_source_no
+ * @param[in] level
+ * @param[out] rbe (array of size n)
+ * @return status code
+ */
+int AT_KatzModel_RBE(
+        const long n,
+        const double E_MeV_u[],
+        const long particle_no,
+        const double m,
+        const double D0_Gy,
+        const double sigma0_um2,
+        const double kappa,
+        const double a0_um,
+        const long katz_model_flavour,
+        const bool approximate,
+        const long stopping_power_source_no,
+        const double level,
+        double rbe[]);
 
 #endif //AMTRACK_AT_KATZMODEL_H

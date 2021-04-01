@@ -183,7 +183,7 @@ double AT_KatzModel_survival_single(
     } else if (!approximate && (a0_um < 0) && (kappa > 0)) {
         // integrated model uses m,D0,sigma0,a0.
         // user provided negative a0, we use kappa to calculate a0
-        current_a0_um = sqrt(2e-3 * kappa / D0_Gy);
+        current_a0_um = sqrt(2e-3 * kappa / D0_Gy);// 2e-15 Gy m2 -> 2e-3 Gy um2
     } else {
         return -1.;
     }
@@ -202,7 +202,7 @@ double AT_KatzModel_survival_single(
     }
 
     rdd_parameters[0] = AT_RDD_Data.parameter_default[AT_RDD_index_from_RDD_number(rdd_model)][0];
-    rdd_parameters[1] = current_a0_um;
+    rdd_parameters[1] = 1e-6 * current_a0_um; // um -> m
     rdd_parameters[2] = AT_RDD_Data.parameter_default[AT_RDD_index_from_RDD_number(rdd_model)][2];
 
     survival = AT_KatzModel_single_field_survival(
@@ -241,6 +241,88 @@ int AT_KatzModel_survival(
     for (i = 0; i < n; i++) {
         survival[i] = AT_KatzModel_survival_single(dose_Gy[i], E_MeV_u, particle_no, m, D0_Gy, sigma0_um2, kappa, a0_um,
                                                    katz_model_flavour, approximate, stopping_power_source_no);
+    }
+    return EXIT_SUCCESS;
+}
+
+
+double AT_KatzModel_RBE_single(
+        const double E_MeV_u,
+        const long particle_no,
+        const double m,
+        const double D0_Gy,
+        const double sigma0_um2,
+        const double kappa,
+        const double a0_um,
+        const long katz_model_flavour,
+        const bool approximate,
+        const long stopping_power_source_no,
+        const double level) {
+
+    double rbe = -1.;
+
+    double sigma0_m2 = 1e-6 * 1e-6 * sigma0_um2;
+
+    long rdd_model = RDD_Test;
+    double rdd_parameters[3] = {0., 0., 0.};
+    long er_model = ER_Test;
+
+    double current_kappa = kappa;
+    double current_a0_um = a0_um;
+
+    if (approximate && (kappa < 0) && (a0_um > 0)) {
+        // approximated model uses m,D0,sigma0,kappa.
+        // user provided negative kappa, we use a0 to calculate kappa
+        current_kappa = D0_Gy * a0_um * a0_um / 2e-3;  // 2e-15 Gy m2 -> 2e-3 Gy um2
+    } else if (!approximate && (a0_um < 0) && (kappa > 0)) {
+        // integrated model uses m,D0,sigma0,a0.
+        // user provided negative a0, we use kappa to calculate a0
+        current_a0_um = sqrt(2e-3 * kappa / D0_Gy);
+    } else {
+        return -1.;
+    }
+
+    if (katz_model_flavour == Katz_Linear) {
+        rdd_model = RDD_KatzExtTarget;
+        er_model = ER_ButtsKatz;
+    } else if (katz_model_flavour == Katz_PowerLaw) {
+        rdd_model = RDD_KatzExtTarget;
+        er_model = ER_Waligorski;
+    } else if (katz_model_flavour == Katz_Cucinotta) {
+        rdd_model = RDD_CucinottaExtTarget;
+        er_model = ER_Tabata;
+    } else {
+        return -1.;
+    }
+
+    rdd_parameters[0] = AT_RDD_Data.parameter_default[AT_RDD_index_from_RDD_number(rdd_model)][0];
+    rdd_parameters[1] = 1e-6 * current_a0_um; // um -> m
+    rdd_parameters[2] = AT_RDD_Data.parameter_default[AT_RDD_index_from_RDD_number(rdd_model)][2];
+
+    rbe = AT_KatzModel_single_field_rbe(E_MeV_u, particle_no, rdd_model, rdd_parameters, er_model, D0_Gy, m, sigma0_m2,
+                                        approximate, current_kappa, stopping_power_source_no, level);
+    return rbe;
+}
+
+
+int AT_KatzModel_RBE(
+        const long n,
+        const double E_MeV_u[],
+        const long particle_no,
+        const double m,
+        const double D0_Gy,
+        const double sigma0_um2,
+        const double kappa,
+        const double a0_um,
+        const long katz_model_flavour,
+        const bool approximate,
+        const long stopping_power_source_no,
+        const double level,
+        double rbe[]) {
+    long i;
+    for (i = 0; i < n; i++) {
+        rbe[i] = AT_KatzModel_RBE_single(E_MeV_u[i], particle_no, m, D0_Gy, sigma0_um2, kappa, a0_um,
+                                         katz_model_flavour, approximate, stopping_power_source_no, level);
     }
     return EXIT_SUCCESS;
 }

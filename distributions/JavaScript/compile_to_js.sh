@@ -110,6 +110,8 @@ funs='['
  funs+='"AT_KatzModel_sigma_approx_um2",'
  funs+='"AT_KatzModel_survival_single",'
  funs+='"AT_KatzModel_survival",'
+ funs+='"AT_KatzModel_RBE_single",'
+ funs+='"AT_KatzModel_RBE",'
 
   #----AT_KatzModel_Implementation.h
  funs+='"_AT_KatzModel_KatzExtTarget_inactivation_cross_section_m2",'
