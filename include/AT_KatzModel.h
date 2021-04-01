@@ -116,7 +116,8 @@ double AT_KatzModel_sigma_approx_um2_single(
 /**
  * Calculates approximated inactivation cross-section (sigma) for given energy.
  * Vectorised version of AT_KatzModel_sigma_approx_um2_single
- * @param[in] E_MeV_u
+ * @param[in] n
+ * @param[in] E_MeV_u (array of size n)
  * @param[in] particle_no
  * @param[in] kappa
  * @param[in] m
