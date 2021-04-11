@@ -1,0 +1,5 @@
+For use with the Developer Powershell for VS:
+* copy folder gsl into $env:VCToolsInstallDir\include
+* copy files gsl.lib and gslcblas.lib into $env:VCToolsInstallDir\lib\x86
+* run cmake in project root
+* run `msbuild amtrack.sln` to try building everything or `msbuild amtrack.sln -t:amtrack` to try building just the library
