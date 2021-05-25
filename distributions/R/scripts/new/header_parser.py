@@ -59,9 +59,9 @@ def create_wrapper_for_function(fun: CppMethod):
     func_name = fun['name'].replace('_', '.')
     signature = [f'{func_name} <- function(']
     center = ['){']
-    ending = ['\treturn(__RETVAL)', '}']
+    ending = ['\treturn(AUTO__RETVAL)', '}']
     parameter_list = []
-    call_proper = f'\t__RET_PARAMS <- .C({fun["name"]}, '
+    call_proper = f'\tAUTO___RET__PARAMS <- .C({fun["name"]}, '
     call_params = []
     before_call = []
     after_call = []
@@ -123,16 +123,16 @@ def create_wrapper_for_function(fun: CppMethod):
                     f'{"double" if param.type == "single" else param.type}'
                     f'", length = {param.size if param.size else 1})'
                 )
-            after_call.append(f'\t{param.name} <- __RET_PARAMS${param.name}')
+            after_call.append(f'\t{param.name} <- AUTO___RET__PARAMS${param.name}')
 
     call_proper = call_proper + ','.join(call_params) + ')'
     if len(out_params) == 1:
-        after_call.append(f'\t__RETVAL <- {out_params[0].name}')
+        after_call.append(f'\tAUTO__RETVAL <- {out_params[0].name}')
     else:
-        after_call.append(f'''\t__RETVAL <- list({",".join([f'"{p.name}" = {p.name}' for p in out_params])})''')
+        after_call.append(f'''\tAUTO__RETVAL <- list({",".join([f'"{p.name}" = {p.name}' for p in out_params])})''')
 
     return '\n'.join(signature
-                     + parameter_list
+                     + [',\n'.join(parameter_list)]
                      + center
                      + before_call
                      + [call_proper]
