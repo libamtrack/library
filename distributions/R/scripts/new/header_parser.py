@@ -125,7 +125,7 @@ def create_wrapper_for_function(fun: CppMethod):
                 )
             after_call.append(f'\t{param.name} <- AUTO___RET__PARAMS${param.name}')
 
-    call_proper = call_proper + ','.join(call_params) + ')'
+    call_proper = call_proper + ', '.join(call_params) + ')'
     if len(out_params) == 1:
         after_call.append(f'\tAUTO__RETVAL <- {out_params[0].name}')
     else:
@@ -137,7 +137,7 @@ def create_wrapper_for_function(fun: CppMethod):
                      + before_call
                      + [call_proper]
                      + after_call
-                     + ending)
+                     + ending) + '\n\n\n'
 
 
 def create_wrappers_for_header_file(path: str, out_dir: str):
@@ -145,7 +145,7 @@ def create_wrappers_for_header_file(path: str, out_dir: str):
     out_path = out_dir + '/' + Path(path).name.replace('.h', '.R')
     with open(out_path, 'w') as fout:
         for func in extract_functions_from_file(path):
-            print(create_wrapper_for_function(func), file=fout)
+            print(create_wrapper_for_function(func), file=fout, end='')
 
 
 def main():
