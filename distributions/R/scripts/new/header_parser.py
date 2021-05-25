@@ -1,12 +1,14 @@
 import re
 import argparse
-import ctypes
+import ctypes  # used in eval
+import warnings
 from sys import stderr
+from pathlib import Path
 
 from CppHeaderParser import CppHeader, CppMethod, CppVariable
+
 from ctype_translator import mapping
-from pathlib import Path
-import warnings
+
 
 param_regex = re.compile(
     r"""
@@ -144,7 +146,7 @@ def create_wrapper_for_function(fun: CppMethod):
 
 def create_wrappers_for_header_file(path: str, out_dir: str):
     Path(out_dir).mkdir(parents=True, exist_ok=True)
-    out_path = out_dir + '/' + Path(path).name.replace('.h', '.R')
+    out_path = Path(out_dir + '/' + Path(path).name.replace('.h', '.R'))
     with open(out_path, 'w') as fout:
         for func in extract_functions_from_file(path):
             try:

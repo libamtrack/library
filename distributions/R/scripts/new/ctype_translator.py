@@ -1,5 +1,7 @@
 from ctypes import *
 from collections import defaultdict
+
+
 mapping = defaultdict(lambda: 'error.type', {
     c_bool: 'logical',
     c_char: 'character',
