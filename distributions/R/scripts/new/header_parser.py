@@ -61,7 +61,7 @@ def create_wrapper_for_function(fun: CppMethod):
     center = ['){']
     ending = ['\treturn(AUTO__RETVAL)', '}']
     parameter_list = []
-    call_proper = f'\tAUTO___RET__PARAMS <- .C({fun["name"]}, '
+    call_proper = f'\tAUTO___RET__PARAMS <- .C("{fun["name"]}", '
     call_params = []
     before_call = []
     after_call = []
