@@ -1,8 +1,10 @@
 import re
+import argparse
 import ctypes
 from CppHeaderParser import CppHeader, CppMethod, CppVariable
 from ctype_translator import mapping
-from sys import argv
+from pathlib import Path
+import warnings
 
 param_regex = re.compile(
     r"""
@@ -86,6 +88,7 @@ def create_wrapper_for_function(fun: CppMethod):
     list_parameters = sorted(parameters.values(), key=lambda x: x.ord)
     out_params = [p for p in list_parameters if p.mode in ['out', 'in,out']]
     if len(out_params) == 0:
+        warnings.warn(f'{fun["name"]} appears to have no output parameters')
         return ''  # no output parameters, no point in creating a wrapper
     for param in size_parameters:
         try:
@@ -103,7 +106,8 @@ def create_wrapper_for_function(fun: CppMethod):
                 parameters[param.size].targets.append(param)
 
     for param in size_parameters:
-        before_call.append(f'\t{param} <- min({",".join([f"length({target.name})" for target in parameters[param].targets])})')
+        before_call.append(
+            f'\t{param} <- min({",".join([f"length({target.name})" for target in parameters[param].targets])})')
 
     for param in list_parameters:
         call_params.append(param.name)
@@ -136,12 +140,26 @@ def create_wrapper_for_function(fun: CppMethod):
                      + ending)
 
 
+def create_wrappers_for_header_file(path: str, out_dir: str):
+    Path(out_dir).mkdir(parents=True, exist_ok=True)
+    out_path = out_dir + '/' + Path(path).name.replace('.h', '.R')
+    with open(out_path, 'w') as fout:
+        for func in extract_functions_from_file(path):
+            print(create_wrapper_for_function(func), file=fout)
+
+
 def main():
-    all_functions: list[CppMethod] = []
-    for file in argv[1:]:
-        all_functions += CppHeader(file).functions
-    for func in all_functions:
-        print(create_wrapper_for_function(func))
+    parser = argparse.ArgumentParser(
+        description='Create R wrapper for functions declared in a header file(s)'
+    )
+    parser.add_argument('infile', nargs='+',
+                        help='C header files to be parsed')
+    parser.add_argument('-o', dest='out_dir', metavar='output_dir',
+                        help='directory to write wrappers to, (default ./out)',
+                        default='./out')
+    args = parser.parse_args()
+    for infile in args.infile:
+        create_wrappers_for_header_file(infile, args.out_dir)
 
 
 if __name__ == '__main__':
