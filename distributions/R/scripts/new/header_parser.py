@@ -1,6 +1,8 @@
 import re
 import argparse
 import ctypes
+from sys import stderr
+
 from CppHeaderParser import CppHeader, CppMethod, CppVariable
 from ctype_translator import mapping
 from pathlib import Path
@@ -88,7 +90,7 @@ def create_wrapper_for_function(fun: CppMethod):
     list_parameters = sorted(parameters.values(), key=lambda x: x.ord)
     out_params = [p for p in list_parameters if p.mode in ['out', 'in,out']]
     if len(out_params) == 0:
-        warnings.warn(f'{fun["name"]} appears to have no output parameters')
+        warnings.warn(f'{fun["name"]} appears to have no output parameters (defined in {fun["filename"]}')
         return ''  # no output parameters, no point in creating a wrapper
     for param in size_parameters:
         try:
@@ -145,7 +147,10 @@ def create_wrappers_for_header_file(path: str, out_dir: str):
     out_path = out_dir + '/' + Path(path).name.replace('.h', '.R')
     with open(out_path, 'w') as fout:
         for func in extract_functions_from_file(path):
-            print(create_wrapper_for_function(func), file=fout, end='')
+            try:
+                print(create_wrapper_for_function(func), file=fout, end='')
+            except Exception as e:
+                print(e, file=stderr)
 
 
 def main():
