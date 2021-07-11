@@ -97,7 +97,6 @@ double AT_KatzModel_CucinottaExtTarget_inactivation_probability( const double  r
  * @param[in] r_m                           todo (array of size n)
  * @param[in] E_MeV_u                       todo
  * @param[in] particle_no                   todo
- * @param[in] material_no                   todo
  * @param[in] rdd_model                     todo
  * @param[in] rdd_parameters                todo (array of size 4)
  * @param[in] er_model                      todo
