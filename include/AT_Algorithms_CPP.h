@@ -135,12 +135,12 @@ void AT_run_CPPSC_method(  const long  number_of_field_components,
  * @param[in]  gamma_model         index number for chosen gamma response
  * @param[in]  gamma_parameters    parameters for chosen gamma response (array of size 9)
  * @see          AT_GammaResponse.h for definition
- * @param[in] n_runs               (algorithm specific) number of points sampled for local dose distribution
+ * @param[in]  n_runs              (algorithm specific) number of points sampled for local dose distribution
  * @param[in]  N2                  (algorithm specific) number of bins per factor of two in local dose array
  * @param[in]  fluence_factor      factor to scale the fluences given as "fluence_cm2" with
  * @param[in]  write_output        if true, a protocol is written to "SuccessiveConvolutions.txt" in the working directory
  * @param[in]  importance_sampling if unequal zero importance sampling will be applied to the single impact local dose distribution
- * @param[in]  results             array of size 10 to be allocated by the user which will be used to return the results\n
+ * @param[out]  results            array of size 10 to be allocated by the user which will be used to return the results\n
  *    results[0]    efficiency      (algorithm independent)  main result:   particle response at dose D / gamma response at dose D\n
  *    results[1]    d_check         (algorithm independent)  sanity check:  total dose (in Gy) as returned by the algorithm\n
  *    results[2]    S_HCP           (algorithm independent)  absolute particle response\n
