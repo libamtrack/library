@@ -410,8 +410,8 @@ void AT_histo_add_single(      const long number_of_bins,
  * @param[in] histo_type           type of histogram (linear or logarithmic)
  * @see AT_histo_type
  * @param[in] n_values             number of values given
- * @param[in] value                values (array of size number_of_values)
- * @param[in] weight               weights by which the bin frequency content for 'value' is increase (array of size number_of_values)
+ * @param[in] value                values (array of size n_values)
+ * @param[in] weight               weights by which the bin frequency content for 'value' is increase (array of size n_values)
  * @param[in,out] frequency        vector of frequencies for the histogram (array of size number_of_bins)
  */
 void AT_histo_add_multi(      const long number_of_bins,
