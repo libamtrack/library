@@ -305,7 +305,7 @@ long AT_particle_no_from_particle_name_single( const char particle_name[] );
  * Returns particle index numbers for given particle names
  * @param[in]  n             TODO
  * @param[in]  particle_no   particle index numbers (array of size n)
- * @param[out] particle_name corresponding particle names
+ * @param[out] particle_name corresponding particle names (array of size n)
  * @return status
  */
 int AT_particle_name_from_particle_no( const long  n,
@@ -316,8 +316,8 @@ int AT_particle_name_from_particle_no( const long  n,
 /**
  * Returns particle names for given particle numbers
  * @param[in]  n              TODO
- * @param[in]  particle_name  particle names
- * @param[in]  particle_no  type of the particles
+ * @param[in]  particle_name  particle names (array of size n)
+ * @param[out] particle_no    type of the particles (array of size n)
  * @return status
  */
 int AT_particle_no_from_particle_name( const long  n,

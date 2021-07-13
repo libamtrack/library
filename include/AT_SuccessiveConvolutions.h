@@ -313,17 +313,17 @@ void AT_Kellerer_shrink( const long array_size,
  *
  * @param[in]       n_bins             TODO
  * @param[in]       bins_per_factor_2             TODO
- * @param[in]       delta_i             TODO (array of size array_size)
+ * @param[in]       delta_i             TODO (array of size frequency_first_bin_last+bins_per_factor_2)
  * @param[in]       values_first_bin             TODO
- * @param[in]       values_bin_widths             TODO (array of size array_size)
+ * @param[in]       values_bin_widths             TODO (array of size frequency_n_bins_last)
  * @param[in]       frequency_n_bins_last             TODO
  * @param[in]       frequency_first_bin_last             TODO
  * @param[in]       frequency_zero_bin_last             TODO
- * @param[in,out]   frequency_last             TODO (array of size array_size)
+ * @param[in,out]   frequency_last             TODO (array of size n_bins)
  * @param[in,out]   frequency_n_bins             TODO
  * @param[in,out]   frequency_first_bin             TODO
  * @param[in,out]   frequency_zero_bin             TODO
- * @param[in,out]   frequency             TODO (array of size array_size)
+ * @param[in,out]   frequency             TODO (array of size frequency_n_bins_last)
  */
 void AT_Kellerer_folding( const long n_bins,
 		const long bins_per_factor_2,
