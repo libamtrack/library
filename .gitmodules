@@ -1,0 +1,3 @@
+[submodule "ReGenerator"]
+	path = ReGenerator
+	url = git@github.com:libamtrack/ReGenerator.git
