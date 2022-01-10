@@ -102,7 +102,7 @@ jobs:
       working-directory: distributions/Python/pyamtrack
 
     - name: publish package to pypi
-      uses: pypa/gh-action-pypi-publish@v1.4.2
+      uses: pypa/gh-action-pypi-publish@v1.5.0
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
       with:
         # Password for your PyPI user or an access token
