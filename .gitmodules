@@ -1,3 +1,4 @@
 [submodule "ReGenerator"]
-	path = ReGenerator
-	url = git@github.com:libamtrack/ReGenerator.git
+	path = distributions/R
+	url = https://github.com/libamtrack/ReGenerator.git
+	shallow = true
