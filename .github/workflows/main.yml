@@ -134,7 +134,7 @@ jobs:
 
       - name: make R package source
         run: |
-          python prepare.py --desc-path ./DESCRIPTION --version 0.12.0 --out-dir ./out ../../include ../../src
+          python generator/prepare.py --desc-path ./DESCRIPTION --version 0.12.0 --out-dir ./out ../../include ../../src
         working-directory: distributions/R
 
       - name: install R deps
