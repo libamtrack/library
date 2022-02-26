@@ -146,13 +146,13 @@ jobs:
       - name: install R binary package
         run: |
           R --vanilla -e 'setwd("out"); roxygen2::roxygenise(load_code = "source", roclets = "namespace")'
-          R --vanilla -e 'setwd("out");pkgbuild::build(binary = TRUE, needs_compilation = TRUE)'
+          R --vanilla -e 'setwd("out"); pkgbuild::build(binary = TRUE, needs_compilation = TRUE)'
         working-directory: distributions/R
 
       - name: test R binary package
         run: |
           sudo R --vanilla -e 'install.packages("libamtrack_0.12.0_R_x86_64-pc-linux-gnu.tar.gz")'
-          R --vanilla -e 'library(libamtrack)'
+          R --vanilla -e 'library(libamtrack); AT.beta.from.E.single(60)'
         working-directory: distributions/R
          
       - name: 'Upload Artifact'
