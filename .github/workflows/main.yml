@@ -119,11 +119,12 @@ jobs:
     needs: [build_and_test]
     steps:
       - uses: actions/checkout@v2
-      
+        with:
+          submodules: true
+
       - name: Setup Python
         uses: actions/setup-python@v2.3.2
         with:
-          # Version range or exact version of a Python version to use, using SemVer's version range syntax.
           python-version: 3.9
 
       - name: install deps
