@@ -126,8 +126,16 @@ jobs:
           # Version range or exact version of a Python version to use, using SemVer's version range syntax.
           python-version: 3.9
 
-      - name: make R package
+      - name: install R deps
         run: |
-          pip install -r requirements.txt
+          sudo apt-get install -y r-base-core
+          R --vanilla -e 'install.packages("roxygen2", repos="http://cran.us.r-project.org")'
+          R --vanilla -e 'install.packages("pkgbuild", repos="http://cran.us.r-project.org")'
+
+      - name: make R package source
+        run: |
+          pip install -r generator/requirements.txt
           python prepare.py --desc-path ./DESCRIPTION --version 0.12.0 --out-dir ./out ../../include ../../src
         working-directory: distributions/R
+
+
