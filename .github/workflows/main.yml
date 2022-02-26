@@ -145,7 +145,7 @@ jobs:
 
       - name: install R binary package
         run: |
-          R --vanilla -e 'setwd("out"); roxygen2::roxygenise(load_code = "source", roclets = "namespace")'
+          R --vanilla -e 'setwd("out"); roxygen2::roxygenise(load_code = "source")'
           R --vanilla -e 'setwd("out"); pkgbuild::build(binary = TRUE, needs_compilation = TRUE)'
         working-directory: distributions/R
 
