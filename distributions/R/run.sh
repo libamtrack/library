@@ -3,8 +3,15 @@
 # to install newest python on gitpod type:
 # pyenv install 3.10.2 && pyenv local 3.10.2
 
+# to install R and gsl type
+# sudo apt-get install -y r-base-core libgsl-dev
 
-python3 -m venv venv
+# to install R deps type
+# sudo R --vanilla -e 'install.packages("roxygen2", repos="http://cran.us.r-project.org")'
+# sudo R --vanilla -e 'install.packages("pkgbuild", repos="http://cran.us.r-project.org")'
+
+rm -rf venv
+python -m venv venv
 source venv/bin/activate
 
 python -m pip install -r generator/requirements.txt
