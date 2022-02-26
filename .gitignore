@@ -250,4 +250,4 @@ cython_debug/
 # End of https://www.toptal.com/developers/gitignore/api/c,cmake,visualstudiocode,python
 
 distributions/R/out/*
-!distributions/R/out/makevar
+!distributions/R/out/Makevars
