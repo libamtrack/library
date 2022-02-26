@@ -134,7 +134,7 @@ jobs:
 
       - name: make R package source
         run: |
-          python generator/scripts/header_parser.py --namespace ./NAMESPACE --out-dir ls./out/ libamtrack "../../include/*.h"
+          python generator/scripts/header_parser.py --namespace ./NAMESPACE --out-dir ./out/ libamtrack "../../include/*.h"
           python generator/scripts/prepare.py --desc-path ./DESCRIPTION --version 0.12.0 --out-dir ./out ../../include ../../src
         working-directory: distributions/R
 
