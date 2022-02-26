@@ -128,7 +128,7 @@ jobs:
 
       - name: install R deps
         run: |
-          sudo apt-get install -y r-base-core
+          sudo apt-get install -y r-base-core libgsl-dev
           sudo R --vanilla -e 'install.packages("roxygen2", repos="http://cran.us.r-project.org")'
           sudo R --vanilla -e 'install.packages("pkgbuild", repos="http://cran.us.r-project.org")'
 
@@ -137,5 +137,13 @@ jobs:
           pip install -r generator/requirements.txt
           python prepare.py --desc-path ./DESCRIPTION --version 0.12.0 --out-dir ./out ../../include ../../src
         working-directory: distributions/R
+
+      - name: install R binary package
+        run: |
+          R --vanilla -e 'setwd("out"); roxygen2::roxygenise(load_code = "source", roclets = "namespace")'
+          R --vanilla -e 'setwd("out");pkgbuild::build(binary = TRUE, needs_compilation = TRUE)'
+        working-directory: distributions/R
+
+         
 
 
