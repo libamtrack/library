@@ -1,0 +1,15 @@
+Package: libamtrack
+Title: libamtrack library
+Version: ##VERSION##
+Date: ##DATE##
+Authors@R: c(person("Magdalena", "Pastula", role = "aut",
+					email = "pastula@student.agh.edu.pl"),
+             person("Pawel", "Tyszko", role = "aut",
+					email = "tyszko@student.agh.edu.pl"),
+             person("Leszek", "Grzanka", role = c("aut", "cre", "rev", "ths"),
+					email = "grzanka@agh.edu.pl"))
+Description: The libamtrack library
+Depends: R (>= 3.1.0)
+License: MIT
+LazyData: true
+RoxygenNote: 7.1.2
