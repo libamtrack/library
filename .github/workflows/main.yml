@@ -155,5 +155,13 @@ jobs:
           R --vanilla -e 'library(libamtrack)'
         working-directory: distributions/R
          
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: R package
+          path: |
+            distributions/R/libamtrack_0.12.0_R_x86_64-pc-linux-gnu.tar.gz
+          if-no-files-found: error
+          retention-days: 5
 
 
