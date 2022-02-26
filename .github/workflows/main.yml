@@ -3,7 +3,6 @@ name: Linux Tests
 on:
   push:
     branches: [ master ]
-    tags: '*'
   pull_request:
     branches: [ master ]
   release:
@@ -113,3 +112,56 @@ jobs:
         packages_dir: distributions/Python/pyamtrack/generated/dist/wheelhouse/
         # Show verbose output.
         verbose: true
+
+  r_package:
+    if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    needs: [build_and_test]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v2.3.2
+        with:
+          python-version: 3.9
+
+      - name: install deps
+        run: |
+          sudo apt-get install -y r-base-core libgsl-dev
+          pip install -r distributions/R/generator/requirements.txt
+
+      - name: make R package source
+        run: |
+          python generator/scripts/header_parser.py --namespace ./NAMESPACE --out-dir ./out/ libamtrack "../../include/*.h"
+          python generator/scripts/prepare.py --desc-path ./DESCRIPTION --version 0.12.0 --out-dir ./out ../../include ../../src
+        working-directory: distributions/R
+
+      - name: install R deps
+        run: |
+          sudo R --vanilla -e 'install.packages("roxygen2", repos="http://cran.us.r-project.org")'
+          sudo R --vanilla -e 'install.packages("pkgbuild", repos="http://cran.us.r-project.org")'
+
+      - name: install R binary package
+        run: |
+          R --vanilla -e 'setwd("out"); roxygen2::roxygenise(load_code = "source", roclets = "namespace")'
+          R --vanilla -e 'setwd("out"); pkgbuild::build(binary = TRUE, needs_compilation = TRUE)'
+        working-directory: distributions/R
+
+      - name: test R binary package
+        run: |
+          sudo R --vanilla -e 'install.packages("libamtrack_0.12.0_R_x86_64-pc-linux-gnu.tar.gz")'
+          R --vanilla -e 'library(libamtrack); AT.beta.from.E.single(60)'
+        working-directory: distributions/R
+         
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: R package
+          path: |
+            distributions/R/libamtrack_0.12.0_R_x86_64-pc-linux-gnu.tar.gz
+          if-no-files-found: error
+          retention-days: 5
+
+
