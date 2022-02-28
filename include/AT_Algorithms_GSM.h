@@ -234,7 +234,7 @@ void AT_run_GSM_method(  const long  number_of_field_components,
  * @param[in]  material_no                               index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  rdd_model                                 index number for chosen radial dose distribution
- * @param[in]  rdd_parameter                             parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  rdd_parameter                             parameters for chosen radial dose distribution (array of size 4)
  * @see          AT_RDD.h for definition
  * @param[in]  er_model                                  index number for chosen electron-range model
  * @see          AT_ElectronRange.h for definition

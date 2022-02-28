@@ -406,7 +406,6 @@ int AT_KatzModel_mixed_field_survival( const long   number_of_items,
  * @param[in] dose_Gy (array of size number_of_items)
  * @param[in] E_MeV_u
  * @param[in] particle_no
- * @param[in] material_no
  * @param[in] rdd_model
  * @param[in] rdd_parameters (array of size 4)
  * @param[in] er_model

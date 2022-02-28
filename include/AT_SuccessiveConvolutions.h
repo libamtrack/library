@@ -339,6 +339,16 @@ void AT_Kellerer_folding( const long n_bins,
 		double* frequency_zero_bin,
 		double frequency[]);
 
+/**
+ * TODO
+ * @param[in]       n_bins_f               TODO
+ * @param[in]       f_d_Gy                 TODO (array of size n_bins_f)
+ * @param[in]       f_dd_Gy                TODO (array of size n_bins_f)
+ * @param[in]       f                      TODO (array of size n_bins_f)
+ * @param[in]       enhancement_factor     TODO (array of size n_bins_f)
+ * @param[in]       DSB_per_Gy_per_domain  TODO
+ * @return TODO
+ */
 long AT_n_bins_for_DSB_distribution(const long n_bins_f,
 		const double f_d_Gy[],
 		const double f_dd_Gy[],
@@ -346,6 +356,23 @@ long AT_n_bins_for_DSB_distribution(const long n_bins_f,
 		const double enhancement_factor[],
 		const double DSB_per_Gy_per_domain);
 
+/**
+ * TODO
+ * @param[in]       n_bins_f               TODO
+ * @param[in]       f_d_Gy                 TODO (array of size n_bins_f)
+ * @param[in]       f_dd_Gy                TODO (array of size n_bins_f)
+ * @param[in]       f                      TODO (array of size n_bins_f)
+ * @param[in]       enhancement_factor     TODO (array of size n_bins_f)
+ * @param[in]       DSB_per_Gy_per_domain  TODO
+ * @param[in]       domains_per_nucleus  TODO
+ * @param[in]       dsbs  TODO
+ * @param[in]       p_DSB  TODO  (array of size dsbs)
+ * @param[out]      total_pDSBs  TODO
+ * @param[out]      total_nDSBs  TODO
+ * @param[out]      number_of_iDSBs  TODO 
+ * @param[out]      number_of_cDSBs  TODO 
+ * @param[out]      avg_number_of_DSBs_in_cDSBs  TODO 
+ */
 void AT_get_DSB_distribution(const long     n_bins_f,
 		const double         f_d_Gy[],
 		const double         f_dd_Gy[],
@@ -353,8 +380,8 @@ void AT_get_DSB_distribution(const long     n_bins_f,
 		const double         enhancement_factor[],
 		const double         DSB_per_Gy_per_domain,
 		const long           domains_per_nucleus,
-		const long			 max_number_of_DSBs,
-		double				 p_DSB[],
+		const long           dsbs,
+		double               p_DSB[],
 		double*				 total_pDSBs,
 		double*              total_nDSBs,
 		double*				 number_of_iDSBs,

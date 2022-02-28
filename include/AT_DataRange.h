@@ -126,8 +126,8 @@ double AT_CSDA_range_difference_solver( double  E_final_MeV_u,
 /**
  * Computes the ion energy after transversing a slab of material using 
  * the PSTAR data
- * @param[in]  	   E_initial_MeV_u      initial energy of particle per nucleon (array of size n)
- * @param[in]  	   particle_no          particle index (array of size n)
+ * @param[in]  	   E_initial_MeV_u      initial energy of particle per nucleon
+ * @param[in]  	   particle_no          particle index
  * @see          AT_DataParticle.h for definition
  * @param[in]      material_no          material index
  * @see          AT_DataMaterial.h for definition

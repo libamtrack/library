@@ -213,6 +213,18 @@ void AT_lambda_mean_multi( const long n,
 		const double    slab_thickness_um[],
 		double 			lambda_mean[]);
 
+/**
+ * Computes the mean lambda, introduced to enable
+ * average value for Landau distribution. See Geant3 W5013, p.254
+ *
+ * @param[in]  	   E_MeV_u      		energy of particle per amu
+ * @param[in]  	   particle_no  		particle index
+ * @see          AT_DataParticle.h for definition
+ * @param[in]      material_no  		material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]      slab_thickness_um	slab thickness in um
+ * @return	   lambda_mean			mean lambda for given particle
+ */
 double AT_lambda_mean_single( const double	E_MeV_u,
 		const long      particle_no,
 		const long 		material_no,
@@ -220,7 +232,7 @@ double AT_lambda_mean_single( const double	E_MeV_u,
 
 
 /**
- * Computes the mean lambda, introduced to enable
+ * Computes the max lambda, introduced to enable
  * average value for Landau distribution. See Geant3 W5013, p.254
  *
  * @param[in]  	   n      				number of particles
@@ -239,19 +251,73 @@ void AT_lambda_max_multi( const long n,
 		const double    slab_thickness_um[],
 		double 			lambda_max[]);
 
+/**
+ * Computes the max lambda, introduced to enable
+ * average value for Landau distribution. See Geant3 W5013, p.254
+ *
+ * @param[in]  	   E_MeV_u      		energy of particle per amu
+ * @param[in]  	   particle_no  		particle index
+ * @see          AT_DataParticle.h for definition
+ * @param[in]      material_no  		material index
+ * @see          AT_DataMaterial.h for definition
+ * @param[in]      slab_thickness_um	slab thickness in um
+ * @return	   lambda_max			maximum lambda for given particle
+ */
 double AT_lambda_max_single( double lambda_mean );
 
+/**
+ * lambda mode
+ * @return	   lambda_mode
+ */
 double AT_lambda_Landau_Mode();
+
+/**
+ * TODO
+ * @param[in]  	   kappa
+ * @param[in]  	   beta
+ * @return TODO
+ */
 double AT_lambda_Landau_Mean(const double kappa, const double beta );
+
+/**
+ * TODO
+ * @return	   TODO
+ */
 double AT_lambda_Landau_FWHM_left();
+
+/**
+ * TODO
+ * @return	   TODO
+ */
 double AT_lambda_Landau_FWHM_right();
+
+/**
+ * TODO
+ * @return	   TODO
+ */
 double AT_lambda_Landau_FWHM();
 
-
+/**
+ * TODO
+ * @param[in]  	   E_MeV_u
+ * @param[in]  	   particle_no
+ * @param[in]  	   material_no
+ * @param[in]  	   slab_thickness_um
+ * @return	   TODO
+ */
 double AT_energy_loss_keV_Landau_FWHM(const double E_MeV_u,
 		const long particle_no,
 		const long material_no,
 		const double slab_thickness_um);
+
+/**
+ * TODO
+ * @param[in]  	   E_MeV_u
+ * @param[in]  	   particle_no
+ * @param[in]  	   material_no
+ * @param[in]  	   slab_thickness_um
+ * @return	   TODO
+ */
 double AT_energy_loss_keV_Landau_Mode(const double E_MeV_u,
 		const long particle_no,
 		const long material_no,
@@ -281,6 +347,18 @@ void AT_energy_loss_from_lambda_landau_multi( const long n,
 		const double slab_thickness_um[],
 		double energy_loss_keV[]);
 
+/**
+ * Computes the energy loss from the lambda parameter
+ * of the Landau distribution acc. to CERN W5013
+ *
+ * No effective projectile charge is considered!
+ * @param[in]  	   lambda_landau      Landau lambda
+ * @param[in]  	   E_MeV_u      		energy of particle per nucleon
+ * @param[in]  	   particle_no  		particle index
+ * @param[in]      material_no  		material index
+ * @param[in]      slab_thickness_um	slab thickness in um
+ * @return     energy_loss_keV
+ */
 double AT_energy_loss_from_lambda_landau_single( const double lambda_landau,
 		const double E_MeV_u,
 		const long particle_no,

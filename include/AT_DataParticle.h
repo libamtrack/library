@@ -268,7 +268,7 @@ int AT_nuclear_spin_from_particle_no_multi( const long  n,
 
 /**
  * Returns nuclear spin from particle no
- * @param[in]  particle_no    particle index number (array of size n)
+ * @param[in]  particle_no    particle index number
  * @return     nuclear spin
  */
 double AT_nuclear_spin_from_particle_no_single( const long  particle_no );
