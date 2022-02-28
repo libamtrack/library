@@ -1,1 +1,6 @@
 AT_beta_from_E_single
+AT_fluence_cm2_from_dose_Gy
+AT_mean_energy_loss_keV
+AT_dose_Gy_from_fluence_cm2
+AT_run_IGK_method
+AT_dose_weighted_LET_MeV_cm2_g
