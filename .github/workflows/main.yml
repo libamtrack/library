@@ -43,7 +43,7 @@ jobs:
       - uses: mymindstorm/setup-emsdk@v11
 
       - name: Cache compiled GSL
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-node-modules
         with:
