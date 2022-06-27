@@ -10,7 +10,7 @@ setuptools.setup(
         "relative_to": __file__,
         "local_scheme": "no-local-version"
     },
-    setup_requires=['cffi>=1.13.0', 'setuptools_scm'],
+    setup_requires=['cffi>=1.13.0', 'setuptools_scm<7'],
     install_requires=['cffi>=1.13.0'],
     author='Leszek Grzanka',
     author_email="leszek.grzanka@ifj.edu.pl",
@@ -41,6 +41,8 @@ setuptools.setup(
         # Specify the Python versions you support here.
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8'
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10'
     ],
 )
