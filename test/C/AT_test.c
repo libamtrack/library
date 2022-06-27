@@ -49,16 +49,6 @@ int main() {
 
     double test[3];
 
-//    AT_Mass_Stopping_Power(
-//            "/home/greilich/R/x86_64-pc-linux-gnu-library/3.2/libamtrack/extdata/FLUKA_DEDX_WATER_76.8eV.txt",
-//            3,
-//            E_MeV_u,
-//            particle_no,
-//            2,
-//            test);
-//
-//    printf("Ergebnis FromFile: %e, %e, %e\n", test[0], test[1], test[2]);
-
     AT_Mass_Stopping_Power("Bethe",
                            3,
                            E_MeV_u,
