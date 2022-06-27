@@ -9,7 +9,7 @@
  *    Created on: 08.01.2010
  *    Creator: kongruencja
  *
- *    Copyright 2006, 2010 The libamtrack team
+ *    Copyright 2006, 2022 The libamtrack team
  *
  *    This file is part of the AmTrack program (libamtrack.sourceforge.net).
  *
@@ -296,6 +296,9 @@ double AT_max_electron_range_m(  const double E_MeV_u,
       break;
     case ER_AM_RadDiff :
       max_electron_range_g_cm2  =  AT_ER_AM_RadDiff_range_g_cm2(E_MeV_u);
+      break;
+    case ER_Kiefer :
+      max_electron_range_g_cm2  =  AT_ER_Kiefer_range_g_cm2(E_MeV_u);
       break;
     default:
       max_electron_range_g_cm2  =  E_MeV_u; /* ER model Test, echoing E_MeV_u */
