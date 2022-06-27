@@ -183,16 +183,6 @@ funs='['
  funs+='"_AT_inverse_RDD_ExtendedTarget_CucinottaPoint_m",'	
  
   #----AT_ElectronRange.h	
- funs+='"_AT_ER_ButtsKatz_range_g_cm2",'	
- funs+='"_AT_ER_Waligorski_range_g_cm2",'	
- funs+='"_AT_ER_Edmund_range_g_cm2",'	
- funs+='"_AT_ER_Geiss_range_g_cm2",'	
- funs+='"_AT_ER_Scholz_range_g_cm2",'	
- funs+='"_AT_ER_Tabata_range_g_cm2",'	
- funs+='"_AT_ER_PowerLaw_alpha",'	
- funs+='"_AT_ER_Tabata_constants",'	
- funs+='"_AT_ER_Scholz_new_range_g_cm2",'	
- funs+='"_AT_ER_AM_RadDiff_range_g_cm2",'	
  funs+='"_AT_max_electron_ranges_m",'	
  funs+='"_AT_max_electron_range_m",'	
  

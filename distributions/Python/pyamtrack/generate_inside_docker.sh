@@ -11,6 +11,8 @@ make install
 
 # generate extension and make wheel package
 rm -rf /io/generated
+mkdir /io/generated
+cd /io/generated
 CFLAGS='-std=c99' /opt/python/cp36-cp36m/bin/python3 -m cBinder pyamtrack \
 -f /io/libamtrack/src/ \
 -f /io/libamtrack/include/ \

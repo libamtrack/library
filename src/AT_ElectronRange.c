@@ -132,6 +132,11 @@ double AT_ER_AM_RadDiff_range_g_cm2( const double E_MeV_u){
 }
 
 
+double AT_ER_Kiefer_range_g_cm2(double E_MeV_u){
+  assert( (E_MeV_u > 0.) && (E_MeV_u < 1e6));
+  return 6.16e-6 * pow(E_MeV_u, 1.7);
+}
+
 void AT_max_electron_ranges_m( const long  number_of_particles,
     const double  E_MeV_u[],
     const int     material_no,
@@ -209,6 +214,9 @@ void AT_max_electron_ranges_m( const long  number_of_particles,
         break;
       case ER_AM_RadDiff :
         max_electron_range_g_cm2  =  AT_ER_AM_RadDiff_range_g_cm2(E_MeV_u[i]);
+        break;
+      case ER_Kiefer :
+        max_electron_range_g_cm2  =  AT_ER_Kiefer_range_g_cm2(E_MeV_u[i]);
         break;
       default:
         max_electron_range_g_cm2  =  E_MeV_u[i]; /* ER model Test, echoing E_MeV_u */
