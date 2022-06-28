@@ -9,6 +9,7 @@ else
 fi
 
 cd .
+rm -rf _build 
 mkdir _build
 cd _build
 cp ../libgsl.a .
@@ -237,12 +238,11 @@ funs='['
 
 emcc libat.a libgsl.a libgslcblas.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
 
-mkdir -p ../output/
-rm ../output/*
+rm -f ../output/*
 cp libat.a ../output/
 cp libat.html ../output/
 cp libat.wasm ../output/ 2>/dev/null || : #ignore error when build with -s WASM=0
 cp libat.js ../output/
 
 cd ..
-rm -r _build
+rm -rf _build
