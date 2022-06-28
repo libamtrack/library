@@ -253,3 +253,4 @@ distributions/R/out/*
 !distributions/R/out/src
 distributions/R/out/src/*
 !distributions/R/out/src/Makevars
+distributions/JavaScript/output/libat*

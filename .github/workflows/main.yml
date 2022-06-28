@@ -66,10 +66,8 @@ jobs:
           
       - name: Compile libamtrack webassembly package
         run: |          
-         cp $HOME/usr/lib/libgsl.a distributions/JavaScript/
-         cp $HOME/usr/lib/libgslcblas.a distributions/JavaScript/
-         cd distributions/JavaScript && GSL_INCLUDE_DIRS=$HOME/usr/include GSL_LIBRARY=$HOME/usr/lib/libgsl.a GSL_CBLAS_LIBRARY=$HOME/usr/lib/libgslcblas.a  ./compile_to_js.sh
-  
+         GSL_INCLUDE_DIRS=$HOME/usr/include GSL_LIBRARY=$HOME/usr/lib/libgsl.a GSL_CBLAS_LIBRARY=$HOME/usr/lib/libgslcblas.a  ./compile_to_js.sh
+        working-directory: distributions/JavaScript
   
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3

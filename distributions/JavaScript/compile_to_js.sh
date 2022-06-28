@@ -8,29 +8,13 @@ else
     WASM=1
 fi
 
-cd .
-rm -rf _build 
-mkdir _build
-cd _build
-cp ../libgsl.a .
-cp ../libgslcblas.a .
-ls -al .
+rm -rf build 
 
-emcmake cmake .. -DGSL_INCLUDE_DIRS=$GSL_INCLUDE_DIRS -DGSL_LIBRARY=$GSL_LIBRARY -DGSL_CBLAS_LIBRARY=$GSL_CBLAS_LIBRARY
-emmake make -j4
+emcmake cmake -DGSL_INCLUDE_DIRS=$GSL_INCLUDE_DIRS -DGSL_LIBRARY=$GSL_LIBRARY -DGSL_CBLAS_LIBRARY=$GSL_CBLAS_LIBRARY -S . -B build || exit 1
+emmake cmake --build build || exit 1
 
 funs='['	
  
-  #----AT_Error.h	
-
-  #----AT_StoppingPowerDataBethe.h	
-
-  #----AT_MultipleCoulombScattering.h	
-
-  #----AT_RDD.h	
-
-  #----AT_StoppingPowerDataPSTAR.h	
-
   #----AT_EnergyLoss.h
  funs+='"_AT_mean_energy_loss_keV",'	
  funs+='"_AT_xi_keV",'	
@@ -76,8 +60,6 @@ funs='['
  funs+='"_AT_energy_loss_mode",'	
  funs+='"_AT_energy_loss_FWHM",'	
  
-  #----AT_GammaResponse.h	
-
   #----AT_StoppingPower.h	
  funs+='"_AT_Mass_Stopping_Power",'	
  funs+='"_AT_Stopping_Power",'	
@@ -102,9 +84,7 @@ funs='['
  funs+='"_AT_energy_Bortfeld_MeV",'
  funs+='"_AT_fit_Bortfeld",'
 
-  #----AT_SuccessiveConvolutions.h
-
- #----AT_KatzModel.h
+  #----AT_KatzModel.h
  funs+='"_AT_KatzModel_sigma_um2_single",'
  funs+='"_AT_KatzModel_sigma_um2",'
  funs+='"_AT_KatzModel_sigma_approx_um2_single",'
@@ -168,29 +148,16 @@ funs='['
  funs+='"_AT_dose_weighted_LET_MeV_cm2_g",'	
  funs+='"_AT_stopping_power_ratio",'	
 
-  #----AT_DataMaterial.h	
-
-  #----AT_StoppingPowerData.h	
-
-  #----AT_Algorithms_CPP.h	
-
   #----AT_RDD_ExtendedTarget.h	
  funs+='"_AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy",'	
  funs+='"_AT_RDD_ExtendedTarget_KatzPoint_Gy_by_integration",'	
  funs+='"_AT_RDD_ExtendedTarget_KatzPoint_Gy",'	
- funs+='"_AT_inverse_RDD_ExtendedTarget_KatzPoint_m",'	
  funs+='"_AT_RDD_ExtendedTarget_CucinottaPoint_Gy_by_integration",'	
  funs+='"_AT_RDD_ExtendedTarget_CucinottaPoint_Gy",'	
- funs+='"_AT_inverse_RDD_ExtendedTarget_CucinottaPoint_m",'	
  
   #----AT_ElectronRange.h	
  funs+='"_AT_max_electron_ranges_m",'	
  funs+='"_AT_max_electron_range_m",'	
- 
-  #----AT_DataParticle.h	
- funs+='"_AT_atomic_weight_from_particle_no_single",'	
- funs+='"_AT_I_eV_from_particle_no",'	
- funs+='"_AT_nuclear_spin_from_particle_no_single",'	
  
   #----AT_DataRange.h	
  funs+='"_AT_Stopping_Power_Mass_MeV_cm2_g_int",'	
@@ -204,18 +171,9 @@ funs='['
  
   #----AT_RDD_Simple.h	
  funs+='"_AT_RDD_Geiss_Gy",'	
- funs+='"_AT_inverse_RDD_Geiss_m",'	
- funs+='"_AT_RDD_Katz_coeff_Gy",'	
- funs+='"_AT_RDD_Katz_coeff_Gy_general",'	
  funs+='"_AT_RDD_Katz_LinearER_Dpoint_Gy",'	
  funs+='"_AT_RDD_Katz_PowerLawER_Dpoint_Gy",'	
  funs+='"_AT_RDD_KatzPoint_Gy",'	
- funs+='"_AT_inverse_RDD_KatzPoint_LinearER_m",'	
- funs+='"_AT_inverse_RDD_KatzPoint_m",'	
- funs+='"_AT_RDD_Cucinotta_f_shortRange",'	
- funs+='"_AT_RDD_Cucinotta_f_longRange",'	
- funs+='"_AT_RDD_Cucinotta_Ddelta_Gy",'	
- funs+='"_AT_RDD_Cucinotta_Dexc_Gy",'	
  funs+='"_AT_RDD_CucinottaPoint_Gy",'	
 
   #----AT_RDD_ShellAveraged.h	
@@ -223,10 +181,8 @@ funs='['
  funs+='"_AT_RDD_Katz_PowerLawER_DaverageKernel",'	
  funs+='"_AT_RDD_Katz_PowerLawER_DaverageKernel_approx",'	
  funs+='"_AT_RDD_Katz_PowerLawER_Daverage_Gy",'	
- funs+='"_AT_RDD_Cucinotta_Ddelta_average_integrand_m",'	
  funs+='"_AT_RDD_Cucinotta_Ddelta_average_Gy",'	
  funs+='"_AT_RDD_Cucinotta_Dexc_average_Gy",'	
- funs+='"_AT_RDD_Cucinotta_Cnorm",'	
  funs+='"_AT_RDD_Geiss_average_Gy",'	
  funs+='"_AT_RDD_Katz_LinearER_dEdx_J_m",'	
  funs+='"_AT_RDD_Katz_PowerLawER_dEdx_J_m",'	
@@ -236,13 +192,4 @@ funs='['
 
   funs+=']'
 
-emcc libat.a libgsl.a libgslcblas.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
-
-rm -f ../output/*
-cp libat.a ../output/
-cp libat.html ../output/
-cp libat.wasm ../output/ 2>/dev/null || : #ignore error when build with -s WASM=0
-cp libat.js ../output/
-
-cd ..
-rm -rf _build
+emcc build/libat.a $GSL_LIBRARY $GSL_CBLAS_LIBRARY -o output/libat.html -sWASM=$WASM -sEXPORTED_FUNCTIONS="$funs" -sEXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'  || exit 1
