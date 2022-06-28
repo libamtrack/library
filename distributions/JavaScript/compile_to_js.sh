@@ -196,7 +196,7 @@ funs='['
 
   funs+=']'
 
-emcc libat.a libgsl.a libgslcblas.a -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
+emcc libat.a $GSL_LIBRARY $GSL_CBLAS_LIBRARY -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
 
 rm -f ../output/*
 cp libat.a ../output/
