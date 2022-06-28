@@ -1,0 +1,7 @@
+image:
+  file: .gitpod.dockerfile
+
+tasks:
+  - init: |
+      cmake -S . -B build  # cmake -S <path-to-source> -B <path-to-build>
+      cmake --build build
