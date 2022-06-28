@@ -8,14 +8,10 @@ else
     WASM=1
 fi
 
-cd .
-rm -rf _build 
-mkdir _build
-cd _build
-ls -al .
+rm -rf build 
 
-emcmake cmake .. -DGSL_INCLUDE_DIRS=$GSL_INCLUDE_DIRS -DGSL_LIBRARY=$GSL_LIBRARY -DGSL_CBLAS_LIBRARY=$GSL_CBLAS_LIBRARY
-emmake make -j4
+emcmake cmake -DGSL_INCLUDE_DIRS=$GSL_INCLUDE_DIRS -DGSL_LIBRARY=$GSL_LIBRARY -DGSL_CBLAS_LIBRARY=$GSL_CBLAS_LIBRARY -S . -B build || exit 1
+emmake cmake --build build || exit 1
 
 funs='['	
  
@@ -196,13 +192,4 @@ funs='['
 
   funs+=']'
 
-emcc libat.a $GSL_LIBRARY $GSL_CBLAS_LIBRARY -o libat.html -s WASM=$WASM -s EXPORTED_FUNCTIONS="$funs" -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
-
-rm -f ../output/*
-cp libat.a ../output/
-cp libat.html ../output/
-cp libat.wasm ../output/ 2>/dev/null || : #ignore error when build with -s WASM=0
-cp libat.js ../output/
-
-cd ..
-rm -rf _build
+emcc build/libat.a $GSL_LIBRARY $GSL_CBLAS_LIBRARY -o output/libat.html -sWASM=$WASM -sEXPORTED_FUNCTIONS="$funs" -sEXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'  || exit 1
