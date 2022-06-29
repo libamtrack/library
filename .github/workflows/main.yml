@@ -3,6 +3,7 @@ name: Linux Tests
 on:
   push:
     branches: [ master ]
+    tags: ['v*']
   pull_request:
     branches: [ master ]
   release:
@@ -18,8 +19,7 @@ jobs:
     - uses: actions/checkout@v3
       
     - name: install necessary packages
-      run: |
-        sudo apt-get -y install libgsl-dev
+      run: sudo apt-get -y install libgsl-dev
         
     - name: compile and install
       run: |
@@ -98,17 +98,16 @@ jobs:
       run: sudo ./test_wheel_package.sh
       working-directory: distributions/Python/pyamtrack
 
+    - name: check generated files
+      run: ls -alh distributions/Python/pyamtrack/generated/dist/wheelhouse/
+
     - name: publish package to pypi
       uses: pypa/gh-action-pypi-publish@v1.5.0
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
       with:
-        # Password for your PyPI user or an access token
         password: ${{ secrets.TWINE_PASSWORD }}
-        # The repository URL to use
         repository_url: "https://upload.pypi.org/legacy/"
-        # The target directory for distribution
         packages_dir: distributions/Python/pyamtrack/generated/dist/wheelhouse/
-        # Show verbose output.
         verbose: true
 
   r_package:
@@ -157,9 +156,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: R package
-          path: |
-            distributions/R/libamtrack_0.12.0_R_x86_64-pc-linux-gnu.tar.gz
+          path: distributions/R/libamtrack_0.12.0_R_x86_64-pc-linux-gnu.tar.gz
           if-no-files-found: error
           retention-days: 5
-
-
