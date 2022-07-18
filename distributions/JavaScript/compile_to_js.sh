@@ -15,6 +15,10 @@ emmake cmake --build build || exit 1
 
 funs='['	
  
+
+ #----AT_DataParticle.h
+ funs+='"_AT_atomic_weight_from_particle_no_single",'
+
   #----AT_EnergyLoss.h
  funs+='"_AT_Vavilov_energy_loss_distribution",'
  funs+='"_AT_Gauss_energy_loss_distribution",'
