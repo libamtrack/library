@@ -3,7 +3,8 @@
 # compile GSL sources
 cd /io/gsl-latest
 ./configure --prefix=/io/gsl
-make -j2
+#  -j [N], --jobs[=N]          Allow N jobs at once; infinite jobs with no arg.
+make -j
 make install
 
 # install cBinder package from a local folder

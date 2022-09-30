@@ -254,3 +254,9 @@ distributions/R/out/*
 distributions/R/out/src/*
 !distributions/R/out/src/Makevars
 distributions/JavaScript/output/libat*
+
+distributions/Python/pyamtrack/cBinder
+distributions/Python/pyamtrack/gsl-latest
+distributions/Python/pyamtrack/gsl
+distributions/Python/pyamtrack/generated
+distributions/Python/pyamtrack/gsl.tar.gz
