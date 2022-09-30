@@ -28,7 +28,7 @@ compile \
 
 # fix git tags and create clean repo
 cd /io/libamtrack
-TAG=`git describe --tags`
+TAG=`git describe --tags --abbrev=0`
 rm -rf .git
 git init
 git add *
