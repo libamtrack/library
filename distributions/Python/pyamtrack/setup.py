@@ -16,7 +16,7 @@ setuptools.setup(
     author_email="leszek.grzanka@ifj.edu.pl",
     description="libamtrack python wrapper",
     url="https://github.com/libamtrack/library",
-    long_description = 'libamtrack pythonic wrapper',
+    long_description = 'libamtrack python wrapper',
     long_description_content_type='text/x-rst',
     classifiers=[
         # How mature is this project? Common values are
