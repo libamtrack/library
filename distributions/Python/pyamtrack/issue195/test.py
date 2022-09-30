@@ -1,4 +1,5 @@
-import pyamtrack as libam
+import numpy as np
+import pyamtrack.libAT as libam
 
 def GSM_test(E_MeV_u, fluence_cm2):
     
