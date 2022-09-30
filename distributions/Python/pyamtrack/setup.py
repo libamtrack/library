@@ -8,7 +8,6 @@ setuptools.setup(
     use_scm_version= {
         "root": "../libamtrack/",
         "relative_to": __file__,
-#        "version_scheme": "{next_version}",
         "local_scheme": "no-local-version"
     },
     setup_requires=['cffi>=1.13.0', 'setuptools_scm<7'],

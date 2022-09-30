@@ -28,6 +28,8 @@ compile \
 
 # fix git tags and create clean repo
 cd /io/libamtrack || exit 1
+ls -alh . || exit 1
+git describe --tags --abbrev=0 || exit 1
 TAG=`git describe --tags --abbrev=0`
 rm -rf .git || exit 1
 git init || exit 1
