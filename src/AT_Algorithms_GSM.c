@@ -689,15 +689,21 @@ void AT_GSM_local_dose_distrib( const long  number_of_field_components,
     double         dose_frequency_Gy[]){
 
   long    i;
+  
+  printf("AT_GSM_local_dose_distrib\n");
+  printf("input: number_of_field_components: %g \n", number_of_field_components);
 
   /* find maximum of maximal delta-electron ranges */
   double max_r_max_m = 0.0;
   for (i = 0; i < number_of_field_components; i++){
     max_r_max_m    =   GSL_MAX(max_r_max_m, AT_max_electron_range_m(E_MeV_u[i], material_no, er_model));
+    printf("Field %d / %d,  Rmax = %g [m]\n", i, number_of_field_components, max_r_max_m);
   }
+  printf("info: max_r_max_m: %g \n", max_r_max_m);
 
   /* largest r.max --> calculate size of sample area */
   double sample_grid_size_m    = pixel_size_m * nX + 2.01 * max_r_max_m;
+  printf("info: sample_grid_size_m: %g \n", sample_grid_size_m);
 
   long*  number_of_particles_in_field_component   =  (long*)calloc(number_of_field_components, sizeof(double));
   double** x_position = (double**)calloc(number_of_field_components, sizeof(double*));
