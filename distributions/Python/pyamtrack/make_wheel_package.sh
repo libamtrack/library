@@ -10,8 +10,8 @@ rm -rf libamtrack || exit 1
 mkdir libamtrack || exit 1
 # replace with links !!
 cp -rf ../../../.git libamtrack/  || exit 1 # needed to evaluate version number from GIT tags
-ln --symbolic ../../../src libamtrack/ || exit 1
-ln --symbolic ../../../include libamtrack/ || exit 1
+ln --symbolic --target-directory=libamtrack ../../../../src || exit 1
+ln --symbolic --target-directory=libamtrack ../../../../include || exit 1
 
 # get necessary dependency (latest) version of GSL library
 rm -f gsl.tar.gz || exit 1

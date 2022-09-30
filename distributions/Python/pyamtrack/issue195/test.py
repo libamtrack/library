@@ -1,3 +1,5 @@
+import pyamtrack as libam
+
 def GSM_test(E_MeV_u, fluence_cm2):
     
     # this part is probably okay
@@ -34,3 +36,6 @@ def GSM_test(E_MeV_u, fluence_cm2):
                                     p_zero_dose_fraction=zero_dose_fraction,
                                     p_dose_frequency_Gy=dose_frequency_Gy,
                                    )
+
+if __name__ == '__main__':
+    GSM_test(60., 1e8)
