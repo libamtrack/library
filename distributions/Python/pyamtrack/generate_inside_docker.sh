@@ -38,7 +38,10 @@ git commit -m "Clean commit"
 git tag -a $TAG -m "Tag"
 
 # generate package once more with adjusted setup.py
-cp /io/setup.py /io/generated
+# pure `cp` ask for confirmation to overwrite file even with `-f` option
+# this may be due to the fact that `cp` was aliased to `cp -i` (interactive)
+# therefore we avoid this problem by using pure `/bin/cp`
+/bin/cp --force /io/setup.py /io/generated
 cd /io/generated
 rm -rf build
 rm -rf dist
