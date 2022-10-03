@@ -17,10 +17,11 @@ def GSM_test(E_MeV_u, fluence_cm2):
     pixel_size_m = 1e-6 # too coarse, just a test ..
     number_of_bins = 100 # hmm?
     dose_bin_centers = 10 ** np.linspace(np.log10(0.001), np.log10(1), number_of_bins)
-    random_number_generator_seed = [0] * number_of_bins
-    zero_dose_fraction = [0] * number_of_bins
+    random_number_generator_seed = [2705490069]
+    zero_dose_fraction = [0]
     dose_frequency_Gy = [0] * number_of_bins
     
+
     libam.AT_GSM_local_dose_distrib(p_E_MeV_u=[E_MeV_u], 
                                     p_fluence_cm2=[fluence_cm2], 
                                     p_particle_no=[particle_no],
@@ -31,7 +32,7 @@ def GSM_test(E_MeV_u, fluence_cm2):
                                     p_stopping_power_source_no=stopping_power_source_no,
                                     p_nX=nX,
                                     p_pixel_size_m=pixel_size_m,
-                                    p_number_of_bins=number_of_bins,
+#                                    p_number_of_bins=number_of_bins,
                                     p_dose_bin_centers_Gy=dose_bin_centers.tolist(),
                                     p_random_number_generator_seed=random_number_generator_seed,
                                     p_zero_dose_fraction=zero_dose_fraction,
@@ -39,4 +40,4 @@ def GSM_test(E_MeV_u, fluence_cm2):
                                    )
 
 if __name__ == '__main__':
-    GSM_test(60., 1e8)
+    GSM_test(60., 1e6)

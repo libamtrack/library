@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "AT_PhysicsRoutines.h"
 #include "AT_ProtonAnalyticalModels.h"
@@ -37,169 +38,225 @@
 #include "AT_RDD.h"
 #include "AT_KatzModel.h"
 #include "AT_KatzModel_Implementation.h"
+#include "AT_Algorithms_GSM.h"
 
-int main(int argc, char *argv[]) {
+void example_GSM()
+{
+    long int number_of_field_components = 1;
+    double E_MeV_u[1] = {60.0};
+    double fluence_cm2[1] = {1.0e+6};
+    long particle_no[1] = {1001};
+    long material_no = 1;
+    long rdd_model = 3;
+    double a0_m = 1e-8;
+    double rdd_parameter[3] = {a0_m, 0.0, 0.0};
+    long er_model = 6;
+    int stopping_power_source_no = 2;
+    int nX = 100;
+    double pixel_size_m = 1e-6;
+    int number_of_bins = 100;
+    // dose_bin_centers = 10 ** np.linspace(np.log10(0.001), np.log10(1), number_of_bins)
+    double dose_bin_centers_Gy[100];
+    // unsigned long random_number_generator_seed[100];
+    double zero_dose_fraction_run = 0.;
+    double dose_frequency_Gy_run[100];
 
-    if (argc != 1) {
+	/* Create and initialize random number generator */
+	gsl_rng * rng  								= gsl_rng_alloc(gsl_rng_taus);
+	gsl_rng_set(rng, 137);
+	unsigned long  random_number_generator_seed	= gsl_rng_get(rng);
+
+    for (int i = 0; i < 100; i++)
+    {
+        dose_bin_centers_Gy[i] = pow(10, log10(0.001) + i * (log10(1) - log10(0.001)) / (100 - 1));
+        // random_number_generator_seed[i] = 0;
+        dose_frequency_Gy_run[i] = 0.0;
+    }
+
+    AT_GSM_local_dose_distrib(number_of_field_components,
+                              E_MeV_u,
+                              fluence_cm2,
+                              particle_no,
+                              material_no,
+                              rdd_model,
+                              rdd_parameter,
+                              er_model,
+                              stopping_power_source_no,
+                              nX,
+                              pixel_size_m,
+                              number_of_bins,
+                              dose_bin_centers_Gy,
+                              &random_number_generator_seed,
+                              &zero_dose_fraction_run,
+                              dose_frequency_Gy_run);
+}
+
+int main(int argc, char *argv[])
+{
+
+    if (argc != 1)
+    {
         printf("Usage: %s\n", argv[0]);
         return EXIT_FAILURE;
     }
 
-    const double E_MeV = 150.0;
+    // const double E_MeV = 150.0;
 
-    const double E_MeV_u = AT_E_MeV_u_from_E_MeV(E_MeV, PARTICLE_PROTON_NUMBER);
-    printf("Proton energy %4.4f [MeV] corresponds to %4.4f [MeV]/u\n", E_MeV, E_MeV_u);
+    // const double E_MeV_u = AT_E_MeV_u_from_E_MeV(E_MeV, PARTICLE_PROTON_NUMBER);
+    // printf("Proton energy %4.4f [MeV] corresponds to %4.4f [MeV]/u\n", E_MeV, E_MeV_u);
 
-    const double beta = AT_beta_from_E_single(E_MeV_u);
-    printf("Relative speed of proton with energy %4.2f [MeV] is equal %1.3f\n", E_MeV, beta);
+    // const double beta = AT_beta_from_E_single(E_MeV_u);
+    // printf("Relative speed of proton with energy %4.2f [MeV] is equal %1.3f\n", E_MeV, beta);
 
-    const double z_cm = 10;
-    const double fluence_cm2 = 1e9;
-    const double sigma_E_MeV = 1.5;
-    const long material_no = Water_Liquid;
-    const double eps = 0.02;
+    // const double z_cm = 10;
+    // const double fluence_cm2 = 1e9;
+    // const double sigma_E_MeV = 1.5;
+    // const long material_no = Water_Liquid;
+    // const double eps = 0.02;
 
-    const double er_model = ER_Tabata;
-    const double el_Rex_m = AT_max_electron_range_m( E_MeV_u, material_no, er_model);
-    printf("Max range of delta-ray emitted by ion with energy %4.2f [MeV] is equal %g [mm]\n", E_MeV, el_Rex_m * 1e3);
+    // const double er_model = ER_Tabata;
+    // const double el_Rex_m = AT_max_electron_range_m(E_MeV_u, material_no, er_model);
+    // printf("Max range of delta-ray emitted by ion with energy %4.2f [MeV] is equal %g [mm]\n", E_MeV, el_Rex_m * 1e3);
 
-    double dose_Gy = AT_dose_Bortfeld_Gy_single(z_cm,
-                                                E_MeV,
-                                                fluence_cm2,
-                                                sigma_E_MeV,
-                                                material_no,
-                                                eps);
+    // double dose_Gy = AT_dose_Bortfeld_Gy_single(z_cm,
+    //                                             E_MeV,
+    //                                             fluence_cm2,
+    //                                             sigma_E_MeV,
+    //                                             material_no,
+    //                                             eps);
 
-    printf("Dose: %4.3f [Gy] (at fluence %g [1/cm2])\n", dose_Gy, fluence_cm2);
+    // printf("Dose: %4.3f [Gy] (at fluence %g [1/cm2])\n", dose_Gy, fluence_cm2);
 
-    double LETt_keV_um = AT_LET_t_Wilkens_keV_um_single(z_cm,
-                                                        E_MeV,
-                                                        sigma_E_MeV,
-                                                        material_no);
+    // double LETt_keV_um = AT_LET_t_Wilkens_keV_um_single(z_cm,
+    //                                                     E_MeV,
+    //                                                     sigma_E_MeV,
+    //                                                     material_no);
 
-    double LETd_keV_um = AT_LET_d_Wilkens_keV_um_single(z_cm,
-                                                        E_MeV,
-                                                        sigma_E_MeV,
-                                                        material_no);
+    // double LETd_keV_um = AT_LET_d_Wilkens_keV_um_single(z_cm,
+    //                                                     E_MeV,
+    //                                                     sigma_E_MeV,
+    //                                                     material_no);
 
-    printf("LETt: %4.3f [keV/um]\n", LETt_keV_um);
-    printf("LETd: %4.3f [keV/um]\n", LETd_keV_um);
+    // printf("LETt: %4.3f [keV/um]\n", LETt_keV_um);
+    // printf("LETd: %4.3f [keV/um]\n", LETd_keV_um);
 
-    double max_location_cm = AT_max_location_Bortfeld_cm(E_MeV,
-                                                         sigma_E_MeV,
-                                                         material_no,
-                                                         eps);
+    // double max_location_cm = AT_max_location_Bortfeld_cm(E_MeV,
+    //                                                      sigma_E_MeV,
+    //                                                      material_no,
+    //                                                      eps);
 
-    printf("maximum dose located at: %g [cm]\n", max_location_cm);
+    // printf("maximum dose located at: %g [cm]\n", max_location_cm);
 
-    const double dose_drop_factor = 0.8;
-    const double range_cm = AT_range_Bortfeld_cm(E_MeV,
-                                                 sigma_E_MeV,
-                                                 material_no,
-                                                 eps,
-                                                 dose_drop_factor,
-                                                 1);
+    // const double dose_drop_factor = 0.8;
+    // const double range_cm = AT_range_Bortfeld_cm(E_MeV,
+    //                                              sigma_E_MeV,
+    //                                              material_no,
+    //                                              eps,
+    //                                              dose_drop_factor,
+    //                                              1);
 
-    printf("beam range (at %3.2f of max dose): %g cm\n", dose_drop_factor, range_cm);
+    // printf("beam range (at %3.2f of max dose): %g cm\n", dose_drop_factor, range_cm);
 
-    const double fwhm_cm = AT_fwhm_Bortfeld_cm(E_MeV,
-                                               sigma_E_MeV,
-                                               material_no,
-                                               eps);
+    // const double fwhm_cm = AT_fwhm_Bortfeld_cm(E_MeV,
+    //                                            sigma_E_MeV,
+    //                                            material_no,
+    //                                            eps);
 
-    printf("FWHM: %g [cm]\n", fwhm_cm);
+    // printf("FWHM: %g [cm]\n", fwhm_cm);
 
-    const double energy_MeV = AT_energy_Bortfeld_MeV(range_cm,
-                                                     sigma_E_MeV,
-                                                     material_no,
-                                                     eps,
-                                                     0.8);
+    // const double energy_MeV = AT_energy_Bortfeld_MeV(range_cm,
+    //                                                  sigma_E_MeV,
+    //                                                  material_no,
+    //                                                  eps,
+    //                                                  0.8);
 
-    printf("energy calculated from range: %g [MeV], original energy: %g [MeV]\n", energy_MeV, E_MeV);
+    // printf("energy calculated from range: %g [MeV], original energy: %g [MeV]\n", energy_MeV, E_MeV);
 
-    double fit_E_MeV;
-    double fit_sigma_E_MeV;
-    double fit_eps;
+    // double fit_E_MeV;
+    // double fit_sigma_E_MeV;
+    // double fit_eps;
 
-    const double measured_range_cm = 15.799712435;
-    const double measured_fwhm_cm = 1.5986288328329863;
-    const double measured_max_to_plateau = 5.198384978576822;
-    const double measured_dose_drop_factor = 0.9;
+    // const double measured_range_cm = 15.799712435;
+    // const double measured_fwhm_cm = 1.5986288328329863;
+    // const double measured_max_to_plateau = 5.198384978576822;
+    // const double measured_dose_drop_factor = 0.9;
 
-    AT_fit_Bortfeld(measured_range_cm,
-                    measured_fwhm_cm,
-                    measured_max_to_plateau,
-                    material_no,
-                    measured_dose_drop_factor,
-                    &fit_E_MeV,
-                    &fit_sigma_E_MeV,
-                    &fit_eps);
-    printf("measured range = %g [cm], FWHM = %g [cm], max/plateau = %g\n", measured_range_cm, measured_fwhm_cm,
-           measured_max_to_plateau);
-    printf("fitted E = %g [MeV], deltaE = %g [MeV], eps = %g\n", fit_E_MeV, fit_sigma_E_MeV, fit_eps);
+    // AT_fit_Bortfeld(measured_range_cm,
+    //                 measured_fwhm_cm,
+    //                 measured_max_to_plateau,
+    //                 material_no,
+    //                 measured_dose_drop_factor,
+    //                 &fit_E_MeV,
+    //                 &fit_sigma_E_MeV,
+    //                 &fit_eps);
+    // printf("measured range = %g [cm], FWHM = %g [cm], max/plateau = %g\n", measured_range_cm, measured_fwhm_cm,
+    //        measured_max_to_plateau);
+    // printf("fitted E = %g [MeV], deltaE = %g [MeV], eps = %g\n", fit_E_MeV, fit_sigma_E_MeV, fit_eps);
 
-    const int N = 2;
-    double r_m_tab[] = {1e-13, 1e-8};
-    double rdd_E_MeV_u = 150.0;
-    long particle_no = AT_particle_no_from_particle_name_single("1H");
-    double KatzPoint_r_min_m = 1e-10;
-    double a0_m = 1e-8;
-    double d_min_Gy = 1e-80;
-    double rdd_parameter[] = {KatzPoint_r_min_m, a0_m, d_min_Gy, 0.0};
-    double D_RDD_Gy[2] = {0.0};
+    // const int N = 2;
+    // double r_m_tab[] = {1e-13, 1e-8};
+    // double rdd_E_MeV_u = 150.0;
+    // long particle_no = AT_particle_no_from_particle_name_single("1H");
+    // double KatzPoint_r_min_m = 1e-10;
+    // double a0_m = 1e-8;
+    // double d_min_Gy = 1e-80;
+    // double rdd_parameter[] = {KatzPoint_r_min_m, a0_m, d_min_Gy, 0.0};
+    // double D_RDD_Gy[2] = {0.0};
 
-    long res = AT_D_RDD_Gy( N,
-                            r_m_tab,
-                            rdd_E_MeV_u,
-                            particle_no,
-                            material_no,
-                            RDD_KatzExtTarget,
-                            rdd_parameter,
-                            ER_Waligorski,
-                            PSTAR,
-                            D_RDD_Gy);
+    // long res = AT_D_RDD_Gy(N,
+    //                        r_m_tab,
+    //                        rdd_E_MeV_u,
+    //                        particle_no,
+    //                        material_no,
+    //                        RDD_KatzExtTarget,
+    //                        rdd_parameter,
+    //                        ER_Waligorski,
+    //                        PSTAR,
+    //                        D_RDD_Gy);
 
-    for(int i=0; i<N; ++i)
-    {
-        printf("%e : %e\n", r_m_tab[i], D_RDD_Gy[i]);
-    }
+    // for (int i = 0; i < N; ++i)
+    // {
+    //     printf("%e : %e\n", r_m_tab[i], D_RDD_Gy[i]);
+    // }
 
-    const double RBE_E_MeV_u = 10.0;
-    particle_no = AT_particle_no_from_particle_name_single("12C");
-    const double D0_Gy = 1.1;
-    const double m = 2.36;
-    const double sigma0_um2 = 140.8;
-    const double sigma0_m2 = sigma0_um2 * (1e-6) * (1e-6);
-    const bool use_approximation = true;
-    const double kappa = 1204.;
-    const double survival = 0.1;
-    const double a0_um = 10.;
+    // const double RBE_E_MeV_u = 10.0;
+    // particle_no = AT_particle_no_from_particle_name_single("12C");
+    // const double D0_Gy = 1.1;
+    // const double m = 2.36;
+    // const double sigma0_um2 = 140.8;
+    // const double sigma0_m2 = sigma0_um2 * (1e-6) * (1e-6);
+    // const bool use_approximation = true;
+    // const double kappa = 1204.;
+    // const double survival = 0.1;
+    // const double a0_um = 10.;
 
-    double sigma_um2_ver1 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no, m, D0_Gy, a0_um, Katz_Linear,
-                                                          PSTAR);
-    double sigma_um2_ver2 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no, m, D0_Gy, a0_um, Katz_PowerLaw,
-                                                          PSTAR);
-    double sigma_um2_ver3 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no, m, D0_Gy, a0_um, Katz_Cucinotta,
-                                                          PSTAR);
+    // double sigma_um2_ver1 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no, m, D0_Gy, a0_um, Katz_Linear,
+    //                                                       PSTAR);
+    // double sigma_um2_ver2 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no, m, D0_Gy, a0_um, Katz_PowerLaw,
+    //                                                       PSTAR);
+    // double sigma_um2_ver3 = AT_KatzModel_sigma_um2_single(RBE_E_MeV_u, particle_no, m, D0_Gy, a0_um, Katz_Cucinotta,
+    //                                                       PSTAR);
 
-    printf("Inactivation cross-section: \n");
-    printf("\tKatz Linear model: %g [um2]\n", sigma_um2_ver1);
-    printf("\tKatz Power-law model: %g [um2]\n", sigma_um2_ver2);
-    printf("\tKatz Cucinotta model: %g [um2]\n", sigma_um2_ver3);
+    // printf("Inactivation cross-section: \n");
+    // printf("\tKatz Linear model: %g [um2]\n", sigma_um2_ver1);
+    // printf("\tKatz Power-law model: %g [um2]\n", sigma_um2_ver2);
+    // printf("\tKatz Cucinotta model: %g [um2]\n", sigma_um2_ver3);
 
-    double rbe = AT_KatzModel_RBE_single(
-            RBE_E_MeV_u,
-            particle_no,
-            m,
-            D0_Gy,
-            sigma0_um2,
-            kappa,
-            -1.,
-            Katz_PowerLaw,
-            true,
-            PSTAR,
-            -1.);
-    printf("RBE = %g\n", rbe);
+    // double rbe = AT_KatzModel_RBE_single(
+    //     RBE_E_MeV_u,
+    //     particle_no,
+    //     m,
+    //     D0_Gy,
+    //     sigma0_um2,
+    //     kappa,
+    //     -1.,
+    //     Katz_PowerLaw,
+    //     true,
+    //     PSTAR,
+    //     -1.);
+    // printf("RBE = %g\n", rbe);
+
+    example_GSM();
 
     return EXIT_SUCCESS;
 }
