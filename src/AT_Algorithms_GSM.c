@@ -233,7 +233,11 @@ void AT_GSM_local_dose_distrib_from_dose_grid( const long     nX,
         bin_no = AT_histoOld_bin_no(	number_of_bins,
 									bin_centers_Gy,
 									grid[i][j]);
-        frequency[bin_no]  += 1.0;
+        // user could provide bins not spanning whole dose range
+        // we skip the values outside the range
+        if((bin_no >= 0) && (bin_no < number_of_bins)){
+          frequency[bin_no] += 1.0;
+        }
       }
     }
   }

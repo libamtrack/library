@@ -26,7 +26,7 @@ jobs:
         mkdir build
         cd build
         cmake  -DCMAKE_BUILD_TYPE=Release ../ -DCMAKE_INSTALL_PREFIX=$HOME/usr
-        cmake --build . --target install -- -j2
+        cmake --build . --target install -- -j
       
     - name: tests
       run: |
@@ -61,7 +61,7 @@ jobs:
           tar -xzf gsl-latest.tar.gz -C $HOME/gsl-latest
           mv $HOME/gsl-latest/** $HOME/gsl-latest/gsl
           mkdir $HOME/usr
-          cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$HOME/usr --disable-shared && emmake make -j2 && emmake make install
+          cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$HOME/usr --disable-shared && emmake make -j && emmake make install
           ls -al $HOME/usr/lib/
           
       - name: Compile libamtrack webassembly package

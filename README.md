@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/libamtrack/library.svg?branch=master)](https://travis-ci.org/libamtrack/library)
-
 # 1. WHAT IS LIBAMTRACK?
 
 * libamtrack provides computational routines for the prediction of detector response and radiobiological efficiency in heavy charged particle beams.
@@ -10,8 +8,6 @@
 * libamtrack is written in ANSI C.
 * libamtrack is free, open-source software under GNU GPL licence.
 * libamtrack is intended to facilitate the comparison of and the communication on amorphous track models for particle beam research.
-
-libamtrack's main website: http://libamtrack.dkfz.org
 
 
 # 2. HOW CAN I USE LIBAMTRACK?
@@ -43,8 +39,6 @@ This should be the very last alternative - THE FACT THAT YOU ARE LOOKING AT THIS
 Everybody is welcome to read, use and modify (preferably to improve) the code according to GNU GPL 3.
 
 
-
 # 4. WHERE DO I FIND DOCUMENTATION ON LIBAMTRACK?
 
 - The libamtrack manual is found here: /docs/libamtrackManual.pdf
-- On the webpage: libamtrack.dkfz.org
