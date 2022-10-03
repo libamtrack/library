@@ -234,18 +234,19 @@ void AT_run_GSM_method(  const long  number_of_field_components,
  * @param[in]  material_no                               index number for detector material
  * @see          AT_DataMaterial.h for definition
  * @param[in]  rdd_model                                 index number for chosen radial dose distribution
- * @param[in]  rdd_parameter                             parameters for chosen radial dose distribution (array of size depending on chosen model)
+ * @param[in]  rdd_parameter                             parameters for chosen radial dose distribution (array of size 3)
  * @see          AT_RDD.h for definition
  * @param[in]  er_model                                  index number for chosen electron-range model
  * @see          AT_ElectronRange.h for definition
- * @param[in] stopping_power_source_no                   TODO
- * @param[in] nX                                         TODO
- * @param[in] pixel_size_m                               TODO
- * @param[in] number_of_bins                             TODO
- * @param[in] dose_bin_centers_Gy                        TODO
- * @param[out] random_number_generator_seed              TODO
- * @param[out] zero_dose_fraction                        TODO
- * @param[out] dose_frequency_Gy                         TODO
+ * @param[in]      stopping_power_source_no         stopping power source number (PSTAR,...)
+ * @see AT_DataMaterial.h for definition
+ * @param[in] nX                                         number of pixels along one side
+ * @param[in] pixel_size_m                               pixel size [m]
+ * @param[in] number_of_bins                             number of bins in the histogram
+ * @param[in] dose_bin_centers_Gy                        edges in the output dose histogram (array of size number_of_bins)
+ * @param[out] random_number_generator_seed              seed for the random number generator
+ * @param[out] zero_dose_fraction                        fraction of pixels with zero dose
+ * @param[out] dose_frequency_Gy                         values in the output dose histogram (array of size number_of_bins)
  */
 void AT_GSM_local_dose_distrib( const long  number_of_field_components,
     const double   E_MeV_u[],
