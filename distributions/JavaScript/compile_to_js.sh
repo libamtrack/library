@@ -34,6 +34,7 @@ funs='['
 
  #----AT_ProtonAnalyticalModels.h
  funs+='"_AT_dose_Bortfeld_Gy_multi",'
+ funs+='"_AT_dose_Bortfeld_Gy_single",'
  funs+='"_AT_LET_t_Wilkens_keV_um_multi",'
  funs+='"_AT_LET_d_Wilkens_keV_um_multi",'
  funs+='"_AT_proton_RBE_multi",'
