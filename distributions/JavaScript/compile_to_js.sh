@@ -76,6 +76,8 @@ funs='['
  funs+='"_AT_dose_Gy_from_fluence_cm2",'	
  funs+='"_AT_fluence_cm2_from_dose_Gy_single",'	
  funs+='"_AT_fluence_cm2_from_dose_Gy",'	
+ funs+='"_AT_Q_from_E_single",'	
+ funs+='"_AT_Qeff_from_E_single",'	
  
   #----AT_RDD_ExtendedTarget.h	
  funs+='"_AT_RDD_ExtendedTarget_KatzPoint_integrand_Gy",'	
