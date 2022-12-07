@@ -196,6 +196,35 @@ int AT_effective_charge_from_beta(  const long  n,
     const long    Z[],
     double        effective_charge[]);
 
+/**
+ * Q from energy:
+ *
+ * Q = Z^2 / E
+ *
+ * here E is energy per nucleon
+ * 
+ * @param[in]  E_MeV_n                  energy of particle [MeV/nucleon]
+ * @param[in]  particle_no              type of the particle
+ * @return     Q of ion
+ */
+ double AT_Q_from_E_single(  const double E_MeV_n,
+    const long particle_no );
+
+/**
+ * Qeff from energy:
+ *
+ * Q = Zeff^2 / beta^2
+ *
+ * here E is energy per nucleon
+ * 
+ * @param[in]  E_MeV_n                  energy of particle [MeV/nucleon]
+ * @param[in]  particle_no              type of the particle
+ * @return     Qeff of ion
+ */
+ double AT_Qeff_from_E_single(  const double E_MeV_n,
+    const long particle_no );
+
+
 
 /**
  * Get energy spread with depth according to Bohr's classical theory

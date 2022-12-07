@@ -176,6 +176,8 @@ AT_gamma_from_E_single
 AT_gamma_from_E
 AT_effective_charge_from_beta_single
 AT_effective_charge_from_beta
+AT_Q_from_E_single
+AT_Qeff_from_E_single
 AT_energy_straggling_MeV2_cm2_g
 AT_energy_straggling_after_slab_E_MeV_u
 AT_effective_charge_from_E_MeV_u_single

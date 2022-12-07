@@ -340,6 +340,26 @@ int AT_momentum_MeV_c_u_from_E_MeV_u( const long  n,
   return 0;
 }
 
+double AT_Q_from_E_single(  const double E_MeV_n,
+    const long particle_no )
+{
+  int Z = AT_Z_from_particle_no_single(particle_no);
+  double Q = Z*Z / (E_MeV_n * E_MeV_n);
+  return Q;
+}
+
+double AT_Qeff_from_E_single(  const double E_MeV_n,
+    const long particle_no )
+{
+  long A = AT_A_from_particle_no_single(particle_no);
+  double E_MeV = E_MeV_n * A;
+  double E_MeV_u = AT_E_MeV_u_from_E_MeV(E_MeV, particle_no);
+  double beta = AT_beta_from_E_single(E_MeV_u);
+  double Zeff = AT_effective_charge_from_E_MeV_u_single(E_MeV_u, particle_no);
+  double Qeff = Zeff*Zeff / (beta * beta);
+  return Qeff;
+}
+
 void AT_energy_straggling_MeV2_cm2_g(  const long  n,
 	const double	E_MeV_u[],
 	const long	particle_no[],
