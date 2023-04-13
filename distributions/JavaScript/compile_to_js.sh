@@ -97,7 +97,11 @@ funs='['
  funs+='"_AT_CSDA_energy_after_slab_E_MeV_u_multi",'	
  
   #----AT_D_RDD_Gy.h	
- funs+='"_AT_D_RDD_Gy"'
+ funs+='"_AT_D_RDD_Gy",'
+
+ # malloc needed to allocate memory in Module JS object
+
+ funs+='"_malloc"'
 
   funs+=']'
 
