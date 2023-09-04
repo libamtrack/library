@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       
     - name: install necessary packages
       run: sudo apt-get -y install libgsl-dev
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build_and_test]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - uses: mymindstorm/setup-emsdk@v12
 
@@ -88,7 +88,7 @@ jobs:
     needs: [build_and_test]
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         # Number of commits to fetch. 0 indicates all history for all branches and tags.
         # Default: 1
@@ -119,7 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build_and_test]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
 
