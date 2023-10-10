@@ -56,6 +56,12 @@ cd library && mkdir build
 Generate build files for the libamtrack:
 ```bash
 cmake -S . -B build
+```
+
+Build the libamtrack:
+```bash
+cmake -S . -B build
+```
 
 Install the libamtrack:
 ```bash
@@ -86,10 +92,14 @@ Go to `library` directory and then create `build` directory:
 cd library && mkdir build
 ```
 
+Generate build files for the libamtrack:
+```bash
+cmake -S . -B build
+```
+
 Build the libamtrack:
 ```bash
 cmake -S . -B build
-cmake --build build
 ```
 
 Install the libamtrack:
@@ -119,10 +129,14 @@ Go to `library` directory and then create `build` directory:
 cd library && mkdir build
 ```
 
+Generate build files for the libamtrack:
+```bash
+cmake -S . -B build
+```
+
 Build the libamtrack:
 ```bash
 cmake -S . -B build
-cmake --build build
 ```
 
 Install the libamtrack:
