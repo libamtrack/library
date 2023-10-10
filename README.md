@@ -27,12 +27,122 @@ libamtrack comes with a collection of wrappers for Python and Matlab (/distribut
 ## iv. Use precompiled binaries
 If you want to use libamtrack in your own code, please try to use the precompiled binaries (incl. headers) for your OS (Win, Mac OS X) are found on libamtrack's website. In case you are running Linux (or some exotic OS) you will have to compile and install libamtrack using autotools. But in the future, rpm/deb packages will be provided. 
 
-## v. Compile libamtrack from distributed sources
-Download the latest source distribution and use autotools (Windows: MinGW, Mac OS X: XCode) to compile and install.
-
 ## vi. Work with full sources / development
-This should be the very last alternative - THE FACT THAT YOU ARE LOOKING AT THIS FILE MIGHT BE AN INDICATION THAT YOU WANT TO DEVELOPE RATHER THAN JUST USE libamtrack. If not, try (i)-(vi). IF YOU DO, please look at README_DEVELOPERS.
 
+If you want to compile it on your own latest source code of libamtrack, please use this to build and install according to your OS.
+
+### Linux
+
+Requirements:
+- git
+- gcc
+- libtool
+- gfortran
+- libgsl-dev
+- cmake
+
+Get the latest source code of the libamtrack:
+
+```bash
+git clone https://github.com/libamtrack/library.git
+```
+
+Go to `library` directory and then create `build` directory:
+
+```bash
+cd library && mkdir build
+```
+
+Generate build files for the libamtrack:
+```bash
+cmake -S . -B build
+```
+
+Build the libamtrack:
+```bash
+cmake --build build --parallel
+```
+
+Install the libamtrack:
+```bash
+cmake --install build
+```
+
+### Windows(MSYS2)
+
+Get first the [MSYS2](https://www.msys2.org/) and please follow the installation guide.
+
+Requirements:
+- git
+- gcc
+- libtool
+- mingw-w64-x86_64-gcc-libgfortran
+- mingw-w64-x86_64-gsl
+- cmake
+
+Get the latest source code of the libamtrack:
+
+```bash
+git clone https://github.com/libamtrack/library.git
+```
+
+Go to `library` directory and then create `build` directory:
+
+```bash
+cd library && mkdir build
+```
+
+Generate build files for the libamtrack:
+```bash
+cmake -S . -B build
+```
+
+Build the libamtrack:
+```bash
+cmake --build build --parallel
+```
+
+Install the libamtrack:
+```bash
+cmake --install build
+```
+### MacOS
+
+Get first the [Homebrew](https://brew.sh/) to install the required packages.
+
+Requirements:
+- git
+- gcc
+- libtool
+- gsl
+- cmake
+
+Get the latest source code of the libamtrack:
+
+```bash
+git clone https://github.com/libamtrack/library.git
+```
+
+Go to `library` directory and then create `build` directory:
+
+```bash
+cd library && mkdir build
+```
+
+Generate build files for the libamtrack:
+```bash
+cmake -S . -B build
+```
+
+Build the libamtrack:
+```bash
+cmake --build build --parallel
+```
+
+Install the libamtrack:
+```bash
+cmake --install build
+```
 
 # 3. CAN I USE LIBAMTRACK IN MY RESEARCH AND/OR MODIFY THE CODE?
 
