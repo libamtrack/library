@@ -136,7 +136,7 @@ cmake -S . -B build
 
 Build the libamtrack:
 ```bash
-cmake --build build
+cmake --build build --parallel
 ```
 
 Install the libamtrack:
