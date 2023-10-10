@@ -60,7 +60,7 @@ cmake -S . -B build
 
 Build the libamtrack:
 ```bash
-cmake -S . -B build
+cmake --build build
 ```
 
 Install the libamtrack:
