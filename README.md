@@ -29,7 +29,9 @@ If you want to use libamtrack in your own code, please try to use the precompile
 
 ## vi. Work with full sources / development
 
-If you want to get the latest source code, please use this to build and install.
+If you want to compile it on your own latest source code of libamtrack, please use this to build and install according to your OS.
+
+### Linux
 
 Requirements:
 - git
@@ -62,6 +64,72 @@ Install the libamtrack:
 cmake --install build
 ```
 
+### Windows(MSYS2)
+
+Get first the [MSYS2](https://www.msys2.org/) and please follow the installation guide.
+
+Requirements:
+- git
+- gcc
+- libtool
+- mingw-w64-x86_64-gcc-libgfortran
+- mingw-w64-x86_64-gsl
+- cmake
+
+Get the latest source code of the libamtrack:
+
+```bash
+git clone https://github.com/libamtrack/library.git
+```
+
+Go to `library` directory and then create `build` directory:
+
+```bash
+cd library && mkdir build
+```
+
+Build the libamtrack:
+```bash
+cmake -S . -B build
+cmake --build build
+```
+
+Install the libamtrack:
+```bash
+cmake --install build
+```
+### MacOS
+
+Get first the [Homebrew](https://brew.sh/) to install the required packages.
+
+Requirements:
+- git
+- gcc
+- libtool
+- gsl
+- cmake
+
+Get the latest source code of the libamtrack:
+
+```bash
+git clone https://github.com/libamtrack/library.git
+```
+
+Go to `library` directory and then create `build` directory:
+
+```bash
+cd library && mkdir build
+```
+
+Build the libamtrack:
+```bash
+cmake -S . -B build
+cmake --build build
+```
+
+Install the libamtrack:
+```bash
+cmake --install build
 
 # 3. CAN I USE LIBAMTRACK IN MY RESEARCH AND/OR MODIFY THE CODE?
 
