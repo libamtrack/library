@@ -142,6 +142,7 @@ cmake -S . -B build
 Install the libamtrack:
 ```bash
 cmake --install build
+```
 
 # 3. CAN I USE LIBAMTRACK IN MY RESEARCH AND/OR MODIFY THE CODE?
 
