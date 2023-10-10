@@ -53,11 +53,9 @@ Go to `library` directory and then create `build` directory:
 cd library && mkdir build
 ```
 
-Build the libamtrack:
+Generate build files for the libamtrack:
 ```bash
 cmake -S . -B build
-cmake --build build
-```
 
 Install the libamtrack:
 ```bash
