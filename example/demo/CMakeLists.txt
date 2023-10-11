@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.2)
 
 project(amtrack_demo)
 
@@ -14,7 +14,7 @@ target_link_libraries( ${PROJECT_NAME} LINK_PUBLIC amtrack ${GSL_LIBRARIES})
 # You must avoid adding it as a link library when building for Windows.
 # see https://stackoverflow.com/questions/54935559/linking-math-library-in-cmake-file-on-windows-and-linux
 IF (NOT WIN32)
-  target_link_libraries (${PROJECT_NAME} m)
+  target_link_libraries (${PROJECT_NAME} LINK_PUBLIC m)
 ENDIF()
 
 
