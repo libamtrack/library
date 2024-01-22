@@ -70,7 +70,7 @@ jobs:
         working-directory: distributions/JavaScript
   
       - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: wasm file
           path: |
@@ -157,7 +157,7 @@ jobs:
         working-directory: distributions/R
          
       - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: R package
           path: distributions/R/libamtrack_0.12.0_R_x86_64-pc-linux-gnu.tar.gz
