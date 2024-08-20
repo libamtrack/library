@@ -19,6 +19,9 @@ funs='['
  #----AT_DataParticle.h
  funs+='"_AT_atomic_weight_from_particle_no_single",'
 
+ #----AT_DataMaterial.h
+ funs+='"_AT_density_g_cm3_from_material_no",'
+
   #----AT_EnergyLoss.h
  funs+='"_AT_Vavilov_energy_loss_distribution",'
  funs+='"_AT_Gauss_energy_loss_distribution",'
