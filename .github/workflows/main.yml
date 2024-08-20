@@ -40,7 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: mymindstorm/setup-emsdk@v12
+      - uses: mymindstorm/setup-emsdk@v14
 
       - name: Cache compiled GSL
         uses: actions/cache@v4
