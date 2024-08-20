@@ -126,12 +126,13 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: 3.11
 
       - name: install deps
         run: |
           sudo apt-get install -y r-base-core libgsl-dev
           pip install -r distributions/R/generator/requirements.txt
+          pip install "robotpy-cppheaderparser==5.1.1"
 
       - name: make R package source
         run: |
