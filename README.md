@@ -1,4 +1,4 @@
-# 1. WHAT IS LIBAMTRACK?
+# What is libamtrack?
 
 * libamtrack provides computational routines for the prediction of detector response and radiobiological efficiency in heavy charged particle beams.
 * libamtrack is designed for research in proton and ion dosimetry and radiotherapy.
@@ -10,7 +10,7 @@
 * libamtrack is intended to facilitate the comparison of and the communication on amorphous track models for particle beam research.
 
 
-# 2. HOW CAN I USE LIBAMTRACK?
+# 2. How can I use libamtrack?
 
 libamtrack is a program library and cannot be run as a single executable. A number of interfaces is provided with different complexities depending on your needs and experience. They are given below in order of complexity. Please be aware that for option (iv)-(vi) the GNU Scientific Library (GSL) has to be installed on your system.
 Refer to README_DEVELOPERS on how to do that.
@@ -25,7 +25,7 @@ To access (almost any) function of libamtrack, we recommend to use the R environ
 libamtrack comes with a collection of wrappers for Python and Matlab (/distributions/Python, /distributions/Matlab).
 
 ## iv. Use precompiled binaries
-If you want to use libamtrack in your own code, please try to use the precompiled binaries (incl. headers) for your OS (Win, Mac OS X) are found on libamtrack's website. In case you are running Linux (or some exotic OS) you will have to compile and install libamtrack using autotools. But in the future, rpm/deb packages will be provided. 
+If you want to use libamtrack in your own code, please try to use the precompiled binaries (incl. headers) for your OS (Win, Mac OS X) are found on libamtrack's website. In case you are running Linux (or some exotic OS) you will have to compile and install libamtrack using autotools. But in the future, rpm/deb packages will be provided.
 
 ## vi. Work with full sources / development
 
@@ -50,22 +50,23 @@ git clone https://github.com/libamtrack/library.git
 Go to `library` directory and then create `build` directory:
 
 ```bash
-cd library && mkdir build
+cd library && mkdir build && cd build
 ```
 
-Generate build files for the libamtrack:
+To install the library:
+
 ```bash
-cmake -S . -B build
+cmake ..
+cmake --build . --parallel
+sudo make install
 ```
 
-Build the libamtrack:
-```bash
-cmake --build build --parallel
-```
+If you need headers and CMake package files for development, use:
 
-Install the libamtrack:
 ```bash
-cmake --install build
+cmake .. -DBUILD_DEV=ON
+cmake --build . --parallel
+sudo make install
 ```
 
 ### Windows(MSYS2)
@@ -89,26 +90,15 @@ git clone https://github.com/libamtrack/library.git
 Go to `library` directory and then create `build` directory:
 
 ```bash
-cd library && mkdir build
+cd library && mkdir build && cd build
+cmake -S .. -B .
+cmake --build . --parallel
+cmake --install .
 ```
 
-Generate build files for the libamtrack:
-```bash
-cmake -S . -B build
-```
-
-Build the libamtrack:
-```bash
-cmake --build build --parallel
-```
-
-Install the libamtrack:
-```bash
-cmake --install build
-```
 ### MacOS
 
-Get first the [Homebrew](https://brew.sh/) to install the required packages.
+First, install [Homebrew](https://brew.sh/) to manage the required packages.
 
 Requirements:
 - git
@@ -116,6 +106,10 @@ Requirements:
 - libtool
 - gsl
 - cmake
+
+```bash
+brew install git gcc libtool gsl cmake
+```
 
 Get the latest source code of the libamtrack:
 
@@ -126,29 +120,17 @@ git clone https://github.com/libamtrack/library.git
 Go to `library` directory and then create `build` directory:
 
 ```bash
-cd library && mkdir build
+cd library && mkdir build && cd build
+cmake -S .. -B .
+cmake --build . --parallel
+sudo cmake --install .
 ```
 
-Generate build files for the libamtrack:
-```bash
-cmake -S . -B build
-```
-
-Build the libamtrack:
-```bash
-cmake --build build --parallel
-```
-
-Install the libamtrack:
-```bash
-cmake --install build
-```
-
-# 3. CAN I USE LIBAMTRACK IN MY RESEARCH AND/OR MODIFY THE CODE?
+# 3. Can I use libamtrack in my research and/or modify the code?
 
 Everybody is welcome to read, use and modify (preferably to improve) the code according to GNU GPL 3.
 
 
-# 4. WHERE DO I FIND DOCUMENTATION ON LIBAMTRACK?
+# 4. Where do I find documentation on libamtrack?
 
 - The libamtrack manual is found here: /docs/libamtrackManual.pdf
