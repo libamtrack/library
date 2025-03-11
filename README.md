@@ -28,9 +28,9 @@ To access most functions of **libamtrack**, we originally recommended using the 
 libamtrack comes with a collection of wrappers for Python and Matlab (/distributions/Python, /distributions/Matlab).
 
 ## iv. Use precompiled binaries
-If you want to use **libamtrack** in your own code, precompiled binaries (including headers) were previously available for Windows and macOS on the **libamtrack** website. However, **these are no longer available at the moment**.  
+If you want to use **libamtrack** in your own code, precompiled binaries (including headers) were previously available for Windows and macOS on the **libamtrack** website. However, **these are no longer available at the moment**.
 
-For Linux (or other less common operating systems), the library must be compiled and installed manually using **CMake**. While rpm/deb packages were planned, **they are currently not available**.  
+For Linux (or other less common operating systems), the library must be compiled and installed manually using **CMake**. While rpm/deb packages were planned, **they are currently not available**.
 
 
 ## vi. Work with full sources / development
@@ -79,11 +79,11 @@ The **preferred installation method** is to use a **custom directory** rather th
 
 ##### **Recommended Installation Locations**
 Instead of installing to `/usr/local/`, consider these options:
-- **Inside your home directory (recommended for personal use)**  
+- **Inside your home directory (recommended for personal use)**
   ```bash
   $HOME/.local
   ```
-- **A dedicated user directory for local installations**  
+- **A dedicated user directory for local installations**
   ```bash
   $HOME/usr
   ```
@@ -268,6 +268,6 @@ Everybody is welcome to read, use and modify (preferably to improve) the code ac
 
 # 4. Where do I find documentation on libamtrack?
 
-- The **libamtrack** manual is available here: `/docs/libamtrackManual.pdf`.  
+- The **libamtrack** manual is available here: `/docs/libamtrackManual.pdf`.
 
 ⚠ **Note:** This documentation may not be up to date. A new and improved version is currently being developed and will be released soon. Please check the repository or project website for updates.
