@@ -69,6 +69,12 @@ cmake --build . --parallel
 sudo make install
 ```
 
+### Windows (MSVC)
+
+```powershell
+cmake .. -DGSL_INCLUDE_DIR="../vcpkg_installed/x64-windows/include" -DGSL_LIBRARY="../vcpkg_installed/x64-windows/lib/gsl.lib" -DGSL_CBLAS_LIBRARY="../vcpkg_installed/x64-windows/lib/gslcblas.lib" -G "Ninja"
+```
+
 ### Windows(MSYS2)
 
 Get first the [MSYS2](https://www.msys2.org/) and please follow the installation guide.

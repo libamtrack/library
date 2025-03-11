@@ -79,7 +79,7 @@ int AT_FromFile_wrapper( const long n,
 	 double* curE = (double*)calloc(1, sizeof(double));
 	 double* curS = (double*)calloc(1, sizeof(double));
 
-	 bool matches[i];
+	 bool* matches = (bool*)calloc(i, sizeof(bool));
 
 	 for( j = 0; j < n; j++){
 		 if((lastZ == -1)||(lastZ == curZ)){
@@ -120,6 +120,7 @@ int AT_FromFile_wrapper( const long n,
 	 free(E);
 	 free(S);
 
+	 free(matches);
 	 return AT_Success;
 }
 

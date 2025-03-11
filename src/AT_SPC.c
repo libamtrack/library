@@ -28,28 +28,20 @@
 
 #include "AT_SPC.h"
 
-
-int AT_SPC_get_number_of_bytes_in_file(const char* filename){
-	int fd = open(filename, O_RDONLY);
-	if (fd == -1)
-		return -1;
-	struct stat sb;
-	if (fstat(fd, &sb) == -1){
-		close(fd);
-		return -2;
-	}
-	int result = sb.st_size;
-	close(fd);
-	return result;
+// File size retrieval function, modified for Windows
+int AT_SPC_get_number_of_bytes_in_file(const char* filename) {
+    struct stat sb;
+    if (stat(filename, &sb) == -1)
+        return -1;
+    return (int)sb.st_size;
 }
-
 
 int AT_SPC_fast_read_buffer( const char filename[],
 		int content_size,
 		int32_t* content){
 
 	/* open the file */
-	int fd = open(filename, O_RDONLY);
+	int fd = open(filename, O_RDONLY | O_BINARY);
 	if (fd == -1){
 #ifndef NDEBUG
 		printf("open");
@@ -547,248 +539,290 @@ int compare_SPC_Pairs (const void *a,
 }
 
 
-long AT_SPC_number_of_bins_at_range( const char path[],
-		double range_g_cm2){
+long AT_SPC_number_of_bins_at_range(const char path[], double range_g_cm2) {
+    struct spc_pair *table = (struct spc_pair*)calloc(1000, sizeof(struct spc_pair));
+    if (!table) {
+        perror("Memory allocation failed");
+        return -1;
+    }
 
-	DIR *dir;
-	struct dirent *ent;
+    int index = 0;
 
-	// replace 1000 by exact number of .spc files in the directory
-	struct spc_pair * table = (struct spc_pair*)calloc(1000,sizeof(struct spc_pair));
+#ifdef _WIN32
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind;
+    char searchPath[MAX_PATH];
 
-	int index = 0;
+    snprintf(searchPath, sizeof(searchPath), "%s\\*.spc", path); // Use '\\' for Windows
 
-	dir = opendir(path);
-	if (dir != NULL) {
-		/* print all the files and directories within directory */
-		while ((ent = readdir(dir)) != NULL) {
-		    if (strcmp(ent->d_name, ".") == 0) continue;   /* current dir */
-		    if (strcmp(ent->d_name, "..") == 0) continue;  /* parent dir  */
+    hFind = FindFirstFile(searchPath, &findFileData);
+    if (hFind == INVALID_HANDLE_VALUE) {
+        perror("FindFirstFile failed");
+        free(table);
+        return -1;
+    }
 
-		    if( strlen(ent->d_name) > 4){
-		    	char * lastPart = ent->d_name + strlen (ent->d_name) - 4;
-				if( strcmp(lastPart,".spc") == 0){
-					char fullPath[2048];
-					strcpy(fullPath, path);
-					strcat(fullPath, "/");
-					strcat(fullPath, ent->d_name);
+    do {
+        if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+            char fullPath[MAX_PATH];
+            snprintf(fullPath, sizeof(fullPath), "%s\\%s", path, findFileData.cFileName);
 
-					double    E_MeV_u;
-					double    peak_position_g_cm2;
-					long      particle_no;
-					int       material_no;
-					double    normalisation;
-					int       depth_steps_no;
+            double E_MeV_u, peak_position_g_cm2, normalisation;
+            long particle_no;
+            int material_no, depth_steps_no;
 
-					int status = AT_SPC_read_header_from_filename_fast( fullPath,
-							&E_MeV_u,
-							&peak_position_g_cm2,
-							&particle_no,
-							&material_no,
-							&normalisation,
-							&depth_steps_no);
+            int status = AT_SPC_read_header_from_filename_fast(fullPath, &E_MeV_u, &peak_position_g_cm2, 
+                                                              &particle_no, &material_no, &normalisation, &depth_steps_no);
 
-					if( status == EXIT_SUCCESS){
-//						printf("path: %s\npeak %g\n\n", fullPath, peak_position_g_cm2);
-						struct spc_pair tmp;
-						strcpy(tmp.filename, fullPath);
-						tmp.range_gcm2 = peak_position_g_cm2;
-						table[index] = tmp;
-						index++;
-					}
-				}
-		    }
-		}
-		closedir (dir);
-	} else {
-		perror ("could not open directory");
-		return -1;
-	}
+            if (status == EXIT_SUCCESS) {
+                struct spc_pair tmp;
+                strcpy(tmp.filename, fullPath);
+                tmp.range_gcm2 = peak_position_g_cm2;
+                table[index] = tmp;
+                index++;
+            }
+        }
+    } while (FindNextFile(hFind, &findFileData) != 0);
+    FindClose(hFind);
 
-	long result = -1;
+#else  // POSIX (Linux/macOS)
+    DIR *dir;
+    struct dirent *ent;
 
-	qsort (table, index, sizeof (struct spc_pair), compare_SPC_Pairs);
+    dir = opendir(path);
+    if (dir != NULL) {
+        while ((ent = readdir(dir)) != NULL) {
+            if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+                continue; // Skip current and parent directory
 
-	int i;
-	for( i = 0 ; i < index ; i++){
-		if( range_g_cm2 <= table[i].range_gcm2 ){
-			result = AT_SPC_get_number_of_bins_from_filename_fast(table[i].filename );
-			break;
-		}
-	}
+            if (strlen(ent->d_name) > 4 && strcmp(ent->d_name + strlen(ent->d_name) - 4, ".spc") == 0) {
+                char fullPath[2048];
+                snprintf(fullPath, sizeof(fullPath), "%s/%s", path, ent->d_name);
 
-	return result;
+                double E_MeV_u, peak_position_g_cm2, normalisation;
+                long particle_no;
+                int material_no, depth_steps_no;
+
+                int status = AT_SPC_read_header_from_filename_fast(fullPath, &E_MeV_u, &peak_position_g_cm2,
+                                                                  &particle_no, &material_no, &normalisation, &depth_steps_no);
+
+                if (status == EXIT_SUCCESS) {
+                    struct spc_pair tmp;
+                    strcpy(tmp.filename, fullPath);
+                    tmp.range_gcm2 = peak_position_g_cm2;
+                    table[index] = tmp;
+                    index++;
+                }
+            }
+        }
+        closedir(dir);
+    } else {
+        perror("Could not open directory");
+        free(table);
+        return -1;
+    }
+#endif
+
+    long result = -1;
+
+    qsort(table, index, sizeof(struct spc_pair), compare_SPC_Pairs);
+
+    for (int i = 0; i < index; i++) {
+        if (range_g_cm2 <= table[i].range_gcm2) {
+            result = AT_SPC_get_number_of_bins_from_filename_fast(table[i].filename);
+            break;
+        }
+    }
+
+    free(table);
+    return result;
 }
 
 
-int AT_SPC_spectrum_at_range( const char path[],
-		double range_g_cm2,
-		int n,
-		int    depth_step[],
-		double depth_g_cm2[],
-		double E_MeV_u[],
-		double DE_MeV_u[],
-		long   particle_no[],
-		double fluence_cm2[]){
+int AT_SPC_spectrum_at_range(const char path[], double range_g_cm2, int n,
+	int depth_step[], double depth_g_cm2[], double E_MeV_u[], 
+	double DE_MeV_u[], long particle_no[], double fluence_cm2[]) {
+struct spc_pair *table = (struct spc_pair *)calloc(1000, sizeof(struct spc_pair));
+if (!table) {
+perror("Memory allocation failed");
+return EXIT_FAILURE;
+}
 
+int index = 0;
 
-	DIR *dir;
-	struct dirent *ent;
+#ifdef _WIN32
+WIN32_FIND_DATA findFileData;
+HANDLE hFind;
+char searchPath[MAX_PATH];
 
-	// replace 1000 by exact number of .spc files in the directory
-	struct spc_pair * table = (struct spc_pair*)calloc(1000,sizeof(struct spc_pair));
+snprintf(searchPath, sizeof(searchPath), "%s\\*.spc", path);  // Windows uses '\\'
+hFind = FindFirstFile(searchPath, &findFileData);
+if (hFind == INVALID_HANDLE_VALUE) {
+perror("FindFirstFile failed");
+free(table);
+return EXIT_FAILURE;
+}
 
-	int index = 0;
+do {
+if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+char fullPath[MAX_PATH];
+snprintf(fullPath, sizeof(fullPath), "%s\\%s", path, findFileData.cFileName);
 
-	dir = opendir(path);
-	if (dir != NULL) {
-		/* print all the files and directories within directory */
-		while ((ent = readdir(dir)) != NULL) {
-		    if (strcmp(ent->d_name, ".") == 0) continue;   /* current dir */
-		    if (strcmp(ent->d_name, "..") == 0) continue;  /* parent dir  */
+double E_MeV_u, peak_position_g_cm2, normalisation;
+long particle_no;
+int material_no, depth_steps_no;
 
-		    if( strlen(ent->d_name) > 4){
-		    	char * lastPart = ent->d_name + strlen (ent->d_name) - 4;
-				if( strcmp(lastPart,".spc") == 0){
-					char fullPath[2048];
-					strcpy(fullPath, path);
-					strcat(fullPath, "/");
-					strcat(fullPath, ent->d_name);
+int status = AT_SPC_read_header_from_filename_fast(fullPath, &E_MeV_u, &peak_position_g_cm2,
+									 &particle_no, &material_no, &normalisation, &depth_steps_no);
+if (status == EXIT_SUCCESS) {
+struct spc_pair tmp;
+strcpy(tmp.filename, fullPath);
+tmp.range_gcm2 = peak_position_g_cm2;
+table[index] = tmp;
+index++;
+}
+}
+} while (FindNextFile(hFind, &findFileData) != 0);
+FindClose(hFind);
 
-					double    E_MeV_u;
-					double    peak_position_g_cm2;
-					long      particle_no;
-					int       material_no;
-					double    normalisation;
-					int       depth_steps_no;
+#else  // POSIX (Linux/macOS)
+DIR *dir;
+struct dirent *ent;
 
-					int status = AT_SPC_read_header_from_filename_fast( fullPath,
-							&E_MeV_u,
-							&peak_position_g_cm2,
-							&particle_no,
-							&material_no,
-							&normalisation,
-							&depth_steps_no);
+dir = opendir(path);
+if (dir != NULL) {
+while ((ent = readdir(dir)) != NULL) {
+if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+continue; // Skip current and parent directory
 
-					if( status == EXIT_SUCCESS){
-//						printf("path: %s\npeak %g\n\n", fullPath, peak_position_g_cm2);
-						struct spc_pair tmp;
-						strcpy(tmp.filename, fullPath);
-						tmp.range_gcm2 = peak_position_g_cm2;
-						table[index] = tmp;
-						index++;
-					}
-				}
-		    }
-		}
-		closedir (dir);
-	} else {
-		perror ("could not open directory");
-		return -1;
-	}
+if (strlen(ent->d_name) > 4 && strcmp(ent->d_name + strlen(ent->d_name) - 4, ".spc") == 0) {
+char fullPath[2048];
+snprintf(fullPath, sizeof(fullPath), "%s/%s", path, ent->d_name);
 
-	qsort (table, index, sizeof (struct spc_pair), compare_SPC_Pairs);
+double E_MeV_u, peak_position_g_cm2, normalisation;
+long particle_no;
+int material_no, depth_steps_no;
 
-	double ratio = 0.;
+int status = AT_SPC_read_header_from_filename_fast(fullPath, &E_MeV_u, &peak_position_g_cm2,
+										 &particle_no, &material_no, &normalisation, &depth_steps_no);
 
-	// replace 2048 by some constant
-	char previous_file[2048];
-	char next_file[2048];
+if (status == EXIT_SUCCESS) {
+struct spc_pair tmp;
+strcpy(tmp.filename, fullPath);
+tmp.range_gcm2 = peak_position_g_cm2;
+table[index] = tmp;
+index++;
+}
+}
+}
+closedir(dir);
+} else {
+perror("Could not open directory");
+free(table);
+return EXIT_FAILURE;
+}
+#endif
 
-	int i;
-	for( i = 0 ; i < index ; i++){
-		if( range_g_cm2 <= table[i].range_gcm2 ){
-			ratio = (range_g_cm2 - table[i-1].range_gcm2) / (table[i].range_gcm2 - table[i-1].range_gcm2);
-			strcpy(previous_file, table[i-1].filename);
-			strcpy(next_file, table[i].filename);
-			break;
-		}
-	}
+qsort(table, index, sizeof(struct spc_pair), compare_SPC_Pairs);
 
-	int*    depth_step_prev = (int*)calloc(n, sizeof(int));
-	double* depth_g_cm2_prev = (double*)calloc(n, sizeof(double));
-	double* E_MeV_u_prev = (double*)calloc(n, sizeof(double));
-	double* DE_MeV_u_prev = (double*)calloc(n, sizeof(double));
-	long*   particle_no_prev = (long*)calloc(n, sizeof(long));
-	double* fluence_cm2_prev = (double*)calloc(n, sizeof(double));
+double ratio = 0.;
+char previous_file[2048], next_file[2048];
 
-//	printf("prev: %s\nnext: %s\n", previous_file, next_file);
+for (int i = 0; i < index; i++) {
+if (range_g_cm2 <= table[i].range_gcm2) {
+if (i == 0) {
+// Avoid out-of-bounds access
+free(table);
+return EXIT_FAILURE;
+}
+ratio = (range_g_cm2 - table[i - 1].range_gcm2) / (table[i].range_gcm2 - table[i - 1].range_gcm2);
+strcpy(previous_file, table[i - 1].filename);
+strcpy(next_file, table[i].filename);
+break;
+}
+}
 
-	int status = AT_SPC_read_data_from_filename_fast( previous_file,
-			n,
-			depth_step_prev,
-			depth_g_cm2_prev,
-			E_MeV_u_prev,
-			DE_MeV_u_prev,
-			particle_no_prev,
-			fluence_cm2_prev);
+free(table);
 
-	if( status != EXIT_SUCCESS ){
-		free(depth_step_prev);
-		free(depth_g_cm2_prev);
-		free(E_MeV_u_prev);
-		free(DE_MeV_u_prev);
-		free(particle_no_prev);
-		free(fluence_cm2_prev);
-		return EXIT_FAILURE;
-	}
+// Allocate memory for previous and next dataset
+int *depth_step_prev = (int *)calloc(n, sizeof(int));
+double *depth_g_cm2_prev = (double *)calloc(n, sizeof(double));
+double *E_MeV_u_prev = (double *)calloc(n, sizeof(double));
+double *DE_MeV_u_prev = (double *)calloc(n, sizeof(double));
+long *particle_no_prev = (long *)calloc(n, sizeof(long));
+double *fluence_cm2_prev = (double *)calloc(n, sizeof(double));
 
-	int*    depth_step_next = (int*)calloc(n, sizeof(int));
-	double* depth_g_cm2_next = (double*)calloc(n, sizeof(double));
-	double* E_MeV_u_next = (double*)calloc(n, sizeof(double));
-	double* DE_MeV_u_next = (double*)calloc(n, sizeof(double));
-	long*   particle_no_next = (long*)calloc(n, sizeof(long));
-	double* fluence_cm2_next = (double*)calloc(n, sizeof(double));
+if (!depth_step_prev || !depth_g_cm2_prev || !E_MeV_u_prev || !DE_MeV_u_prev || !particle_no_prev || !fluence_cm2_prev) {
+perror("Memory allocation failed");
+return EXIT_FAILURE;
+}
 
-	status = AT_SPC_read_data_from_filename_fast( next_file,
-			n,
-			depth_step_next,
-			depth_g_cm2_next,
-			E_MeV_u_next,
-			DE_MeV_u_next,
-			particle_no_next,
-			fluence_cm2_next);
+int status = AT_SPC_read_data_from_filename_fast(previous_file, n, depth_step_prev, depth_g_cm2_prev,
+							E_MeV_u_prev, DE_MeV_u_prev, particle_no_prev, fluence_cm2_prev);
 
-	if( status != EXIT_SUCCESS ){
-		free(depth_step_prev);
-		free(depth_g_cm2_prev);
-		free(E_MeV_u_prev);
-		free(DE_MeV_u_prev);
-		free(particle_no_prev);
-		free(fluence_cm2_prev);
-		free(depth_step_next);
-		free(depth_g_cm2_next);
-		free(E_MeV_u_next);
-		free(DE_MeV_u_next);
-		free(particle_no_next);
-		free(fluence_cm2_next);
-		return EXIT_FAILURE;
-	}
+if (status != EXIT_SUCCESS) {
+free(depth_step_prev);
+free(depth_g_cm2_prev);
+free(E_MeV_u_prev);
+free(DE_MeV_u_prev);
+free(particle_no_prev);
+free(fluence_cm2_prev);
+return EXIT_FAILURE;
+}
 
+int *depth_step_next = (int *)calloc(n, sizeof(int));
+double *depth_g_cm2_next = (double *)calloc(n, sizeof(double));
+double *E_MeV_u_next = (double *)calloc(n, sizeof(double));
+double *DE_MeV_u_next = (double *)calloc(n, sizeof(double));
+long *particle_no_next = (long *)calloc(n, sizeof(long));
+double *fluence_cm2_next = (double *)calloc(n, sizeof(double));
 
-	// TODO add checks for if both SPC contains data ordered in the same way !!!!
-	for( i = 0; i < n ; i++ ){
-		depth_step[i] = depth_step_prev[i];
-		depth_g_cm2[i] = depth_g_cm2_prev[i];
-		E_MeV_u[i] = E_MeV_u_prev[i];
-		DE_MeV_u[i] = DE_MeV_u_prev[i];
-		particle_no[i] = particle_no_prev[i];
-		fluence_cm2[i] = (1.0 - ratio)*fluence_cm2_prev[i] + ratio * fluence_cm2_next[i];
-	}
+if (!depth_step_next || !depth_g_cm2_next || !E_MeV_u_next || !DE_MeV_u_next || !particle_no_next || !fluence_cm2_next) {
+perror("Memory allocation failed");
+return EXIT_FAILURE;
+}
 
-	free(depth_step_prev);
-	free(depth_g_cm2_prev);
-	free(E_MeV_u_prev);
-	free(DE_MeV_u_prev);
-	free(particle_no_prev);
-	free(fluence_cm2_prev);
+status = AT_SPC_read_data_from_filename_fast(next_file, n, depth_step_next, depth_g_cm2_next,
+						E_MeV_u_next, DE_MeV_u_next, particle_no_next, fluence_cm2_next);
 
-	free(depth_step_next);
-	free(depth_g_cm2_next);
-	free(E_MeV_u_next);
-	free(DE_MeV_u_next);
-	free(particle_no_next);
-	free(fluence_cm2_next);
+if (status != EXIT_SUCCESS) {
+free(depth_step_prev);
+free(depth_g_cm2_prev);
+free(E_MeV_u_prev);
+free(DE_MeV_u_prev);
+free(particle_no_prev);
+free(fluence_cm2_prev);
+free(depth_step_next);
+free(depth_g_cm2_next);
+free(E_MeV_u_next);
+free(DE_MeV_u_next);
+free(particle_no_next);
+free(fluence_cm2_next);
+return EXIT_FAILURE;
+}
 
-	return EXIT_SUCCESS;
+for (int i = 0; i < n; i++) {
+depth_step[i] = depth_step_prev[i];
+depth_g_cm2[i] = depth_g_cm2_prev[i];
+E_MeV_u[i] = E_MeV_u_prev[i];
+DE_MeV_u[i] = DE_MeV_u_prev[i];
+particle_no[i] = particle_no_prev[i];
+fluence_cm2[i] = (1.0 - ratio) * fluence_cm2_prev[i] + ratio * fluence_cm2_next[i];
+}
+
+free(depth_step_prev);
+free(depth_g_cm2_prev);
+free(E_MeV_u_prev);
+free(DE_MeV_u_prev);
+free(particle_no_prev);
+free(fluence_cm2_prev);
+
+free(depth_step_next);
+free(depth_g_cm2_next);
+free(E_MeV_u_next);
+free(DE_MeV_u_next);
+free(particle_no_next);
+free(fluence_cm2_next);
+
+return EXIT_SUCCESS;
 }

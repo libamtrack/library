@@ -29,6 +29,8 @@
  *    If not, see <http://www.gnu.org/licenses/>
  */
 
+#include <math.h>
+
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_min.h>
