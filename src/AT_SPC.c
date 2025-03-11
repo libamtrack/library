@@ -41,7 +41,7 @@ int AT_SPC_fast_read_buffer( const char filename[],
 		int32_t* content){
 
 	/* open the file */
-	int fd = open(filename, O_RDONLY | O_BINARY);
+	int fd = open(filename, O_RDONLY);
 	if (fd == -1){
 #ifndef NDEBUG
 		printf("open");
