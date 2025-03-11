@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "gsl",
-    "getopt",
-    "unistd"
+    "getopt"
   ]
 }

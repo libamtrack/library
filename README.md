@@ -71,7 +71,29 @@ sudo make install
 
 ### Windows (MSVC)
 
-```powershell
+Start 64 bit "x64 Native Tools Command Prompt for VS 2022" and then run the following commands:
+
+```cmd
+vcpkg install --triplet x64-windows
+```
+
+That will install the required dependencies for libamtrack.
+
+Then create the build directory and run the following commands:
+
+```cmd
+mkdir build
+```
+
+Then go to the `build` directory and run the following commands:
+
+```cmd
+cd build
+```
+
+Then run the following command:
+
+```cmd
 cmake .. -DGSL_INCLUDE_DIR="../vcpkg_installed/x64-windows/include" -DGSL_LIBRARY="../vcpkg_installed/x64-windows/lib/gsl.lib" -DGSL_CBLAS_LIBRARY="../vcpkg_installed/x64-windows/lib/gslcblas.lib" -G "Ninja"
 ```
 
