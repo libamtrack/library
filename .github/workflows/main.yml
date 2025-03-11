@@ -17,30 +17,30 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      
+
     - name: install necessary packages
       run: sudo apt-get -y install libgsl-dev
-        
+
     - name: compile and install
       run: |
         mkdir build
         cd build
-        cmake ..  -DCMAKE_BUILD_TYPE=Release 
+        cmake ..  -DCMAKE_BUILD_TYPE=Release
         cmake --build . --parallel
         cmake --install . --prefix $HOME/.local
-      
+
     - name: tests
       run: |
         LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" amtrack_test
         LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" amtrack_demo
-  
+
   javascript_package:
     if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
     needs: [build_and_test]
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: mymindstorm/setup-emsdk@v14
 
       - name: Cache compiled GSL
@@ -64,12 +64,12 @@ jobs:
           mkdir $HOME/usr
           cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$HOME/usr --disable-shared && emmake make -j && emmake make install
           ls -al $HOME/usr/lib/
-          
+
       - name: Compile libamtrack webassembly package
-        run: |          
+        run: |
          GSL_INCLUDE_DIRS=$HOME/usr/include GSL_LIBRARY=$HOME/usr/lib/libgsl.a GSL_CBLAS_LIBRARY=$HOME/usr/lib/libgslcblas.a  ./compile_to_js.sh
         working-directory: distributions/JavaScript
-  
+
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
         with:
