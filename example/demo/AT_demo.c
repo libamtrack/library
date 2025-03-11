@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <getopt.h>
 
 #include "AT_PhysicsRoutines.h"
 #include "AT_ProtonAnalyticalModels.h"
@@ -37,13 +38,24 @@
 #include "AT_RDD.h"
 #include "AT_KatzModel.h"
 #include "AT_KatzModel_Implementation.h"
+#include "AT_version.h"
 
 int main(int argc, char *argv[]) {
 
-    if (argc != 1) {
-        printf("Usage: %s\n", argv[0]);
-        return EXIT_FAILURE;
+    /* use getopt to handle options from argv and argc */
+    int opt;
+    while ((opt = getopt(argc, argv, "V")) != -1) {
+        switch (opt) {
+            case 'V':
+                printf("Version: %s\n", AT_VERSION_GIT);
+                return EXIT_SUCCESS;
+            default:
+                fprintf(stderr, "Usage: %s [-V]\n", argv[0]);
+                return EXIT_FAILURE;
+        }
     }
+
+
 
     const double E_MeV = 150.0;
 
