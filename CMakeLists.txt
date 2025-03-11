@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 
+<<<<<<< HEAD
 project(amtrack LANGUAGES C)
+=======
+project(amtrack LANGUAGES C)  # Explicitly set language to C
+>>>>>>> 10a9717 (newer cmake, add BUILD_DEV option)
 
 # Add option for building development files
 option(BUILD_DEV "Install development files (headers, CMake package config, etc.)" OFF)
@@ -15,6 +19,7 @@ file(GLOB HEADER_FILES "include/*.h")
 # Define the shared library
 add_library(amtrack SHARED ${SOURCE_FILES})
 
+<<<<<<< HEAD
 # Ensure GSL is found
 if (NOT GSL_FOUND)
     message(FATAL_ERROR "GSL not found! Install it using vcpkg or system package manager.")
@@ -80,6 +85,42 @@ if(BUILD_DEV)
 include(\"\${CMAKE_CURRENT_LIST_DIR}/amtrackTargets.cmake\")
 ")
 
+=======
+# Include directories
+target_include_directories(amtrack PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+    ${GSL_INCLUDE_DIRS}
+)
+
+# Link against GSL and GSL CBLAS
+target_link_libraries(amtrack PUBLIC GSL::gsl GSL::gslcblas)
+
+# Require at least C11
+target_compile_features(amtrack PUBLIC c_std_11)
+
+# Install shared library
+install(TARGETS amtrack
+    EXPORT amtrackTargets
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+# Install development files if requested
+if(BUILD_DEV)
+    message(STATUS "Development files will be installed.")
+
+    # Install headers
+    install(DIRECTORY include/ DESTINATION include)
+
+    # Generate and install CMake package config file inline (instead of an external .in file)
+    file(WRITE "${CMAKE_BINARY_DIR}/libamtrackConfig.cmake" "
+@PACKAGE_INIT@
+include(\"\${CMAKE_CURRENT_LIST_DIR}/amtrackTargets.cmake\")
+")
+
+>>>>>>> 10a9717 (newer cmake, add BUILD_DEV option)
     install(FILES "${CMAKE_BINARY_DIR}/libamtrackConfig.cmake"
         DESTINATION lib/cmake/libamtrack
     )
@@ -92,11 +133,16 @@ include(\"\${CMAKE_CURRENT_LIST_DIR}/amtrackTargets.cmake\")
     )
 endif()
 
+<<<<<<< HEAD
 # Build sub-projects (executables)
+=======
+# Build sub-projects
+>>>>>>> 10a9717 (newer cmake, add BUILD_DEV option)
 add_subdirectory("example/demo")
 add_subdirectory("example/basic_plots")
 add_subdirectory("test/C")
 
+<<<<<<< HEAD
 # Ensure executables link to amtrack and depend on it
 foreach(target amtrack_demo amtrack_plots amtrack_test)
     if (TARGET ${target})
@@ -106,5 +152,7 @@ foreach(target amtrack_demo amtrack_plots amtrack_test)
     endif()
 endforeach()
 
+=======
+>>>>>>> 10a9717 (newer cmake, add BUILD_DEV option)
 # CPack Installer (optional)
 include(CPack)
