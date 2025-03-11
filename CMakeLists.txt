@@ -46,6 +46,22 @@ project(libamtrack VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${P
 # Show the full version in logs
 message(STATUS "Building libamtrack version ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}${PROJECT_VERSION_EXTRA}")
 
+# Generate version header
+set(VERSION_HEADER_PATH "${CMAKE_BINARY_DIR}/include/AT_version.h")
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/AT_version.h.in
+    ${VERSION_HEADER_PATH}
+    @ONLY
+)
+
+# Ensure the generated file is included in the build
+include_directories("${CMAKE_BINARY_DIR}/include")
+
+# Install the generated AT_version.h so it's available for development
+install(FILES "${VERSION_HEADER_PATH}" DESTINATION include)
+
+
 # Write version file for installed package
 file(WRITE "${CMAKE_BINARY_DIR}/VERSION" "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${PROJECT_GIT_HASH}")
 install(FILES "${CMAKE_BINARY_DIR}/VERSION" DESTINATION share/libamtrack)
