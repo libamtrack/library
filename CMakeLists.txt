@@ -47,10 +47,10 @@ project(libamtrack VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${P
 message(STATUS "Building libamtrack version ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}${PROJECT_VERSION_EXTRA}")
 
 # Generate version header
-set(VERSION_HEADER_PATH "${CMAKE_BINARY_DIR}/include/AT_version.h")
+set(VERSION_HEADER_PATH "${CMAKE_BINARY_DIR}/include/AT_Version.h")
 
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/AT_version.h.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/AT_Version.h.in
     ${VERSION_HEADER_PATH}
     @ONLY
 )

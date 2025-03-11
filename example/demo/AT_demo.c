@@ -38,7 +38,7 @@
 #include "AT_RDD.h"
 #include "AT_KatzModel.h"
 #include "AT_KatzModel_Implementation.h"
-#include "AT_version.h"
+#include "AT_Version.h"
 
 int main(int argc, char *argv[]) {
 

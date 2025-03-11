@@ -46,7 +46,7 @@
 #include "AT_StoppingPower.h"
 #include "AT_PhysicsRoutines.h"
 #include "AT_DataRange.h"
-#include "AT_version.h"
+#include "AT_Version.h"
 
 char * plottypes[] = {"ER","RDD","LET","CSDArange"};
 int plottypes_nr = 4;
