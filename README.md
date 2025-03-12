@@ -268,4 +268,6 @@ Everybody is welcome to read, use and modify (preferably to improve) the code ac
 
 # 4. Where do I find documentation on libamtrack?
 
-- The libamtrack manual is found here: /docs/libamtrackManual.pdf
+- The **libamtrack** manual is available here: `/docs/libamtrackManual.pdf`.  
+
+⚠ **Note:** This documentation may not be up to date. A new and improved version is currently being developed and will be released soon. Please check the repository or project website for updates.
