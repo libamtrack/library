@@ -645,16 +645,20 @@ int is_element_int(const long element, const long set[], const long n_set, bool 
 }
 
 
- void AT_normalize(     const long n,
-                    const double data[],
-                    double normalized_data[])
-{
-  long i;
-  double sum = AT_sum(n, data);
-
-  for (i = 0; i < n; i++){
-    normalized_data[i] = data[i] / sum;
-  }
+void AT_normalize(const long n, const double data[], double normalized_data[]) {
+    if (n <= 0) {
+        fprintf(stderr, "Warning: Attempted to normalize an empty dataset.\n");
+        return;
+    }
+    long i;
+    double sum = AT_sum(n, data);
+    if (sum == 0) {
+        fprintf(stderr, "Warning: Sum of elements is zero, normalization skipped.\n");
+        return;
+    }
+    for (i = 0; i < n; i++) {
+        normalized_data[i] = data[i] / sum;
+    }
 }
 
 

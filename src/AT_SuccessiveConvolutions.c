@@ -119,6 +119,11 @@ void  AT_single_impact_local_dose_distrib(
 {
 	long i, j;
 
+	if (n <= 0) {
+		fprintf(stderr, "Error: n is zero or negative in AT_single_impact_local_dose_distrib\n");
+		return;
+	}
+
 	/*
 	 * Get relative fluence for beam components
 	 * Convert dose to fluence if necessary
@@ -142,7 +147,7 @@ void  AT_single_impact_local_dose_distrib(
 			fluence_cm2[i] = fluence_cm2_or_dose_Gy[i];
 		}
 	}
-	double*  norm_fluence                                 =  (double*)calloc(n, sizeof(double));
+	double*  norm_fluence  =  (double*)calloc(n, sizeof(double));
 	AT_normalize(    n,
 			fluence_cm2,
 			norm_fluence);
