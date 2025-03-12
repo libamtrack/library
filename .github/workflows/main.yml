@@ -1,4 +1,4 @@
-name: Linux Tests
+name: Linux and Windows Tests
 
 on:
   push:
@@ -10,9 +10,9 @@ on:
     types: [published]
 
 jobs:
-  build_and_test:
+  build_and_test_linux:
     if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
-    name: Compile and test library
+    name: Compile and test library on Linux
     runs-on: ubuntu-latest
 
     steps:
@@ -34,10 +34,43 @@ jobs:
         LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" amtrack_test
         LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" amtrack_demo
   
+  build_and_test_windows:
+    if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
+    name: Compile and test library on Windows
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install vcpkg
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        .\vcpkg\bootstrap-vcpkg.bat
+
+    - name: Install GSL and getopt using vcpkg
+      run: .\vcpkg\vcpkg.exe install gsl getopt
+
+    - name: Add vcpkg to path
+      run: echo "::add-path::$(pwd)\vcpkg\installed\x64-windows\bin"
+
+    - name: compile and install
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DGSL_INCLUDE_DIR="../vcpkg_installed/x64-windows/include" -DGSL_LIBRARY="../vcpkg_installed/x64-windows/lib/gsl.lib" -DGSL_CBLAS_LIBRARY="../vcpkg_installed/x64-windows/lib/gslcblas.lib" -DGETOPT_LIBRARY="../vcpkg_installed/x64-windows/lib/getopt.lib"  -DGETOPT_INCLUDE_DIR="../vcpkg_installed/x64-windows/include" -G "Ninja"
+        cmake --build . --parallel
+        cmake --install . --prefix $HOME/.local
+
+    - name: tests
+      run: |
+        $env:Path += ";$HOME/.local/bin"
+        amtrack_test
+        amtrack_demo
+
   javascript_package:
     if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
-    needs: [build_and_test]
+    needs: [build_and_test_linux]
     steps:
       - uses: actions/checkout@v4
       
