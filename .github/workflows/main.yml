@@ -1,4 +1,4 @@
-name: Linux Tests
+name: CI
 
 on:
   push:
@@ -12,28 +12,64 @@ on:
 jobs:
   build_and_test:
     if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
-    name: Compile and test library
+    name: Compile and test library (Linux)
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       
-    - name: install necessary packages
-      run: sudo apt-get -y install libgsl-dev
+      - name: Install necessary packages
+        run: sudo apt-get -y install libgsl-dev
         
-    - name: compile and install
-      run: |
-        mkdir build
-        cd build
-        cmake ..  -DCMAKE_BUILD_TYPE=Release 
-        cmake --build . --parallel
-        cmake --install . --prefix $HOME/.local
+      - name: Compile and install
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release 
+          cmake --build . --parallel
+          cmake --install . --prefix $HOME/.local
       
-    - name: tests
-      run: |
-        LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" amtrack_test
-        LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" amtrack_demo
-  
+      - name: Run tests
+        run: |
+          LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" amtrack_test
+          LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" amtrack_demo
+
+  build_and_test_windows:
+    if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
+    name: Compile and test library (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup vcpkg and install dependencies
+        shell: pwsh
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          .\bootstrap-vcpkg.bat
+          .\vcpkg.exe install gsl:x64-windows getopt:x64-windows
+          cd ..
+
+      - name: Configure CMake for Windows
+        shell: cmd
+        run: |
+          mkdir build
+          cd build
+          REM Configure using the Visual Studio generator for x64 and set paths from vcpkg
+          cmake .. -A x64 -DGSL_INCLUDE_DIR="%CD%\..\vcpkg\installed\x64-windows\include" -DGSL_LIBRARY="%CD%\..\vcpkg\installed\x64-windows\lib\gsl.lib" -DGSL_CBLAS_LIBRARY="%CD%\..\vcpkg\installed\x64-windows\lib\gslcblas.lib" -DGETOPT_LIBRARY="%CD%\..\vcpkg\installed\x64-windows\lib\getopt.lib" -DGETOPT_INCLUDE_DIR="%CD%\..\vcpkg\installed\x64-windows\include"
+      
+      - name: Build solution
+        shell: cmd
+        run: |
+          cd build
+          cmake --build . --config Release
+
+      - name: Run tests
+        shell: cmd
+        run: |
+          cd build\Release
+          amtrack_test.exe
+          amtrack_demo.exe
+
   javascript_package:
     if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
@@ -54,7 +90,7 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-
+      
       - name: Compile GSL
         run: |
           wget -q "http://ftpmirror.gnu.org/gnu/gsl/gsl-latest.tar.gz"
@@ -67,10 +103,10 @@ jobs:
           
       - name: Compile libamtrack webassembly package
         run: |          
-         GSL_INCLUDE_DIRS=$HOME/usr/include GSL_LIBRARY=$HOME/usr/lib/libgsl.a GSL_CBLAS_LIBRARY=$HOME/usr/lib/libgslcblas.a  ./compile_to_js.sh
+          GSL_INCLUDE_DIRS=$HOME/usr/include GSL_LIBRARY=$HOME/usr/lib/libgsl.a GSL_CBLAS_LIBRARY=$HOME/usr/lib/libgslcblas.a  ./compile_to_js.sh
         working-directory: distributions/JavaScript
-  
-      - name: 'Upload Artifact'
+      
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: wasm file
