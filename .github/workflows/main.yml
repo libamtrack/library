@@ -58,11 +58,14 @@ jobs:
       run: |
         "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all
 
+    - name: make build dir
+      run: mkdir build
+
+
     - name: compile and install
       run: |
-        mkdir build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
+        cmake .. -DGSL_INCLUDE_DIR="../vcpkg_installed/x64-windows/include" -DGSL_LIBRARY="../vcpkg_installed/x64-windows/lib/gsl.lib" -DGSL_CBLAS_LIBRARY="../vcpkg_installed/x64-windows/lib/gslcblas.lib" -DGETOPT_LIBRARY="../vcpkg_installed/x64-windows/lib/getopt.lib"  -DGETOPT_INCLUDE_DIR="../vcpkg_installed/x64-windows/include" -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
         cmake --build . --parallel
         cmake --install . --prefix $env:GITHUB_WORKSPACE/.local
 
