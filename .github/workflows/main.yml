@@ -62,12 +62,25 @@ jobs:
       run: mkdir build
 
 
+    - name: Compile and install
+      env:
+        CMAKE_PREFIX_PATH: ../vcpkg_installed/x64-windows
+        GSL_DIR: ../vcpkg_installed/x64-windows
+        GETOPT_DIR: ../vcpkg_installed/x64-windows
+      working-directory: build
+      run: |
+        cmake .. -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
+        cmake --build . --parallel --config Release
+        cmake --install . --prefix ../.local --config Release
+
+
     - name: compile and install
       run: |
         cd build
-        cmake .. -DGSL_INCLUDE_DIR="../vcpkg_installed/x64-windows/include" -DGSL_LIBRARY="../vcpkg_installed/x64-windows/lib/gsl.lib" -DGSL_CBLAS_LIBRARY="../vcpkg_installed/x64-windows/lib/gslcblas.lib" -DGETOPT_LIBRARY="../vcpkg_installed/x64-windows/lib/getopt.lib"  -DGETOPT_INCLUDE_DIR="../vcpkg_installed/x64-windows/include" -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
-        cmake --build . --parallel
-        cmake --install . --prefix $env:GITHUB_WORKSPACE/.local
+        cmake .. -DGSL_INCLUDE_DIR="../vcpkg_installed/x64-windows/include" -DGSL_LIBRARY="../vcpkg_installed/x64-windows/lib/gsl.lib" -DGSL_CBLAS_LIBRARY="../vcpkg_installed/x64-windows/lib/gslcblas.lib" -DGETOPT_LIBRARY="../vcpkg_installed/x64-windows/lib/getopt.lib" -DGETOPT_INCLUDE_DIR="../vcpkg_installed/x64-windows/include" -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
+        cmake --build . --parallel --config Release
+        cmake --install . --prefix $env:GITHUB_WORKSPACE/.local --config Release
+
 
     - name: tests
       run: |
