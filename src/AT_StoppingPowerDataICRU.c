@@ -143,7 +143,7 @@ int AT_ICRU_wrapper( const long n,
 		return AT_No_ICRU_Data;
 	}
 
-	long Z[n];
+	long * Z = (long *) malloc(n * sizeof(long));
 	AT_Z_from_particle_no(n, particle_no, Z);
 
 	for(i = 0; i < n; i++){
@@ -174,7 +174,7 @@ int AT_ICRU_wrapper( const long n,
 			mass_stopping_power_MeV_cm2_g[i] *= 1000;
 		}
 	}
-
+	free(Z);
 	return AT_Success;
 }
 

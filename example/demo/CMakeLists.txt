@@ -1,21 +1,26 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.16)  # Ensure consistency with main CMakeLists.txt
 
-project(amtrack_demo)
+project(amtrack_demo LANGUAGES C)
 
+# Collect all C source files in the current directory
 file(GLOB SOURCE_FILES "*.c")
 
-include_directories( "../../include")
+# Define the executable
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-add_executable (${PROJECT_NAME} ${SOURCE_FILES} )
+# Include directories (use `PRIVATE` since they are only needed at compile time)
+target_include_directories(${PROJECT_NAME} PRIVATE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../include>
+    $<INSTALL_INTERFACE:include>  # Ensures installed projects find headers correctly
+)
 
-target_link_libraries( ${PROJECT_NAME} LINK_PUBLIC amtrack ${GSL_LIBRARIES})
+# Link against amtrack and GSL
+target_link_libraries(${PROJECT_NAME} PRIVATE amtrack GSL::gsl GSL::gslcblas)
 
-# Visual Studio does not need or want you to explicitly request linking the math library.
-# You must avoid adding it as a link library when building for Windows.
-# see https://stackoverflow.com/questions/54935559/linking-math-library-in-cmake-file-on-windows-and-linux
-IF (NOT WIN32)
-  target_link_libraries (${PROJECT_NAME} LINK_PUBLIC m)
-ENDIF()
+# Ensure the math library (`libm`) is only linked when needed
+if(NOT WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE m)
+endif()
 
-
+# Install the demo binary to `bin`
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)

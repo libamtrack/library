@@ -231,7 +231,7 @@ double AT_fwhm_Bortfeld_cm(const double E_MeV,
 
     double result;
     if (proximal_50 == 0) {
-        result = 1.0 / 0.0;
+        return NAN;
     } else {
         result = distal_50 - proximal_50;
     }

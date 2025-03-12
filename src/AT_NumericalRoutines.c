@@ -44,6 +44,7 @@ double   incomplete_beta_like_function(const double x, const double a, const dou
             ret += xi / (a + i);
             xi *= x;
             i += 1;
+          // free(u);
         }
         ret *= pow(x, a);
         return ret;
@@ -644,16 +645,20 @@ int is_element_int(const long element, const long set[], const long n_set, bool 
 }
 
 
- void AT_normalize(     const long n,
-                    const double data[],
-                    double normalized_data[])
-{
-  long i;
-  double sum = AT_sum(n, data);
-
-  for (i = 0; i < n; i++){
-    normalized_data[i] = data[i] / sum;
-  }
+void AT_normalize(const long n, const double data[], double normalized_data[]) {
+    if (n <= 0) {
+        fprintf(stderr, "Warning: Attempted to normalize an empty dataset.\n");
+        return;
+    }
+    long i;
+    double sum = AT_sum(n, data);
+    if (sum == 0) {
+        fprintf(stderr, "Warning: Sum of elements is zero, normalization skipped.\n");
+        return;
+    }
+    for (i = 0; i < n; i++) {
+        normalized_data[i] = data[i] / sum;
+    }
 }
 
 
@@ -766,12 +771,20 @@ void AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double inp
   
   //auxiliary variables
   double p, qn, sig, un;
-  //first derivative tab
-  double u[lenght_of_input_data];
+  double *u = (double *)malloc(lenght_of_input_data * sizeof(double));
+  if (u == NULL) {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(1);
+  }
+  // double u[lenght_of_input_data];
   //first derivative, points 0, lenght_of_input_data-1 boundary conditions
   double  yp1, ypn;
   //second derivative tab
-  double y2[lenght_of_input_data];
+  double *y2 = (double *)malloc(lenght_of_input_data * sizeof(double));
+  if (y2 == NULL) {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(1);
+  }
 
   //set boundary variables
 
@@ -831,6 +844,9 @@ void AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(const double inp
     
     intermediate_y[i] = a*input_data_xy[klo][1] + b*input_data_xy[khi][1] + ((pow(a, 3) - a)*y2[klo] +(pow(b, 3) -b)*y2[khi])*( pow(h, 2))/6. ;
   }
+
+  free(u);
+  free(y2);
 }
 
 
@@ -850,13 +866,18 @@ double AT_get_interpolated_cubic_spline_y_from_input_2d_table(const double input
 
 void AT_get_interpolated_cubic_spline_x_tab_from_input_2d_table(const double input_data_xy[][2], const long lenght_of_input_data, const double intermediate_y[], const long lenght_of_intermediate_y_data,   double intermediate_x[]){
   //(x, y) -> (y, x)
-  double temp_input_data_xy[lenght_of_input_data][2];
+  double (*temp_input_data_xy)[2] = malloc(lenght_of_input_data * sizeof(*temp_input_data_xy));
+  if (temp_input_data_xy == NULL) {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(1);
+  }
   long i = 0;
   for(i=0; i < lenght_of_input_data; i++){
     temp_input_data_xy[i][0] = input_data_xy[i][1];
     temp_input_data_xy[i][1] = input_data_xy[i][0];
   }
   AT_get_interpolated_cubic_spline_y_tab_from_input_2d_table(temp_input_data_xy, lenght_of_input_data, intermediate_y, lenght_of_intermediate_y_data, intermediate_x);
+  free(temp_input_data_xy);
 }
 
 

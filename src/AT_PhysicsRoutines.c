@@ -565,7 +565,7 @@ void AT_single_impact_dose_Gy( const long n,
     double        single_impact_dose_Gy[])
 {
   long i;
-  double stopping_power_MeV_cm2_g[n];
+  double *stopping_power_MeV_cm2_g = (double*)calloc(n, sizeof(double));
   AT_Mass_Stopping_Power_with_no( stopping_power_source_no,
 		  n,
 		  E_MeV_u,
@@ -578,6 +578,7 @@ void AT_single_impact_dose_Gy( const long n,
                                                                                                                 material_no,
                                                                                                                 er_model));
   }
+  free(stopping_power_MeV_cm2_g);
 }
 
 double  AT_total_D_Gy( const long  number_of_field_components,

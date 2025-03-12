@@ -260,3 +260,5 @@ distributions/Python/pyamtrack/gsl-latest
 distributions/Python/pyamtrack/gsl
 distributions/Python/pyamtrack/generated
 distributions/Python/pyamtrack/gsl.tar.gz
+
+vcpkg_installed/

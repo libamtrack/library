@@ -1312,7 +1312,7 @@ int AT_PSTAR_wrapper( const long n,
 	const long n_data = N_PSTAR_DATAPOINTS;
 
 	long i;
-	double E_MeV[n];
+	double *E_MeV = (double *)malloc(n * sizeof(double));
 
 	// PSTAR data is parametrized with kinetic energy in [MeV], not in [MeV/u],
 	// hence we need to change units
@@ -1336,7 +1336,7 @@ int AT_PSTAR_wrapper( const long n,
 			mass_stopping_power_MeV_cm2_g[i] *= gsl_pow_2(Zeff_ion / Zeff_proton);
 		}
 	}
-
+	free(E_MeV);
 
 	return AT_Success;
 }

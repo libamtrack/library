@@ -37,9 +37,22 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <sys/types.h>
-#include <dirent.h>
+
+
+#ifdef _WIN32  // Windows-specific includes
+    #include <windows.h>
+    #include <io.h> // MSVC equivalent of unistd.h
+    #define open _open
+    #define close _close
+    #define fstat _fstat
+    #define stat _stat
+    #define read _read
+    #define write _write
+#else
+    #include <unistd.h>  // Unix-specific
+    #include <dirent.h>  // Directory operations
+#endif
 
 #include "AT_DataParticle.h"
 #include "AT_DataMaterial.h"
