@@ -44,11 +44,11 @@ jobs:
 
     - name: Install vcpkg
       run: |
-        git clone https://github.com/microsoft/vcpkg.git
-        .\vcpkg\bootstrap-vcpkg.bat
+        git clone --depth 1 https://github.com/microsoft/vcpkg.git
+        .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
 
-    - name: Install GSL and getopt using vcpkg
-      run: .\vcpkg\vcpkg.exe install gsl getopt
+    - name: Install dependencies using vcpkg
+      run: .\vcpkg\vcpkg.exe install
 
     - name: Add vcpkg to path
       run: echo "::add-path::$(pwd)\vcpkg\installed\x64-windows\bin"
