@@ -44,26 +44,26 @@ jobs:
 
     - name: Install vcpkg
       run: |
-        git clone --depth 1 https://github.com/microsoft/vcpkg.git
+        git clone --depth 1 https://github.com/microsoft/vcpkg
         .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
 
-    - name: Install dependencies using vcpkg
+    - name: Install dependencies
       run: .\vcpkg\vcpkg.exe install
 
-    - name: Add vcpkg to path
-      run: echo "::add-path::$(pwd)\vcpkg\installed\x64-windows\bin"
+    - name: Set up vcpkg path
+      run: echo "VCPKG_ROOT=$(pwd)\vcpkg" >> $GITHUB_ENV
 
     - name: compile and install
       run: |
         mkdir build
         cd build
-        cmake .. -DGSL_INCLUDE_DIR="../vcpkg_installed/x64-windows/include" -DGSL_LIBRARY="../vcpkg_installed/x64-windows/lib/gsl.lib" -DGSL_CBLAS_LIBRARY="../vcpkg_installed/x64-windows/lib/gslcblas.lib" -DGETOPT_LIBRARY="../vcpkg_installed/x64-windows/lib/getopt.lib"  -DGETOPT_INCLUDE_DIR="../vcpkg_installed/x64-windows/include" -G "Ninja"
+        cmake .. -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16 2019" -A x64
         cmake --build . --parallel
-        cmake --install . --prefix $HOME/.local
+        cmake --install . --prefix $env:GITHUB_WORKSPACE/.local
 
     - name: tests
       run: |
-        $env:Path += ";$HOME/.local/bin"
+        $env:Path += ";$env:GITHUB_WORKSPACE/.local/bin"
         amtrack_test
         amtrack_demo
 
