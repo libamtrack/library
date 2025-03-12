@@ -53,7 +53,8 @@ jobs:
     - name: Set up vcpkg path
       run: echo "VCPKG_ROOT=$(pwd)\vcpkg" >> $GITHUB_ENV
 
-    - name: Ensure Visual Studio 2019 is installed
+    - name: Check Visual Studio installations
+      shell: cmd
       run: |
         "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all
 
