@@ -17,6 +17,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Ensure full history for git describe
 
     - name: install necessary packages
       run: sudo apt-get -y install libgsl-dev
