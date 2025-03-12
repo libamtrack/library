@@ -53,11 +53,15 @@ jobs:
     - name: Set up vcpkg path
       run: echo "VCPKG_ROOT=$(pwd)\vcpkg" >> $GITHUB_ENV
 
+    - name: Ensure Visual Studio 2019 is installed
+      run: |
+        "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all
+
     - name: compile and install
       run: |
         mkdir build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16 2019" -A x64
+        cmake .. -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
         cmake --build . --parallel
         cmake --install . --prefix $env:GITHUB_WORKSPACE/.local
 
