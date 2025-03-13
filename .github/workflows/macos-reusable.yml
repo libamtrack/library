@@ -2,7 +2,11 @@ name: macOS Build & Test
 
 on:
   workflow_call:
-    # (Add inputs if needed later)
+    inputs:
+      linux_status:
+        description: 'Status of the Linux Build job'
+        required: true
+        type: string
 
 jobs:
   build_and_test_macos:
