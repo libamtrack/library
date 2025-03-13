@@ -31,7 +31,7 @@ jobs:
 
     - name: Clean APT cache to reduce cache size
       run: sudo apt-get clean
-              
+
     - name: compile and install
       run: |
         mkdir build
@@ -49,11 +49,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: libamtrack
-        path:
-          $HOME/.local/lib/libamtrack.so
-          $HOME/.local/lib/libamtrack.a
-          $HOME/.local/bin/amtrack_demo
-          $HOME/.local/bin/amtrack_test
+        path: $HOME/.local/
   
   build_and_test_windows:
     name: Compile and test library on Windows
@@ -68,46 +64,54 @@ jobs:
         path: vcpkg
         key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
         restore-keys: vcpkg-${{ runner.os }}-
-  
+
     - name: Install vcpkg if not cached
       run: |
         if (-Not (Test-Path "vcpkg")) {
           git clone --depth 1 https://github.com/microsoft/vcpkg
           .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
         }
-
+      shell: pwsh
+    
     - name: Restore vcpkg dependencies cache
       uses: actions/cache@v4
       with:
         path: ${{ github.workspace }}/vcpkg_cache
         key: vcpkg-deps-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
         restore-keys: vcpkg-deps-${{ runner.os }}-
-
-    - name: Ensure vcpkg cache directory exists
-      run: mkdir -Force "${{ github.workspace }}/vcpkg_cache"
+    
+    - name: Restore vcpkg installed packages cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ github.workspace }}/vcpkg_installed
+        key: vcpkg-installed-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+        restore-keys: vcpkg-installed-${{ runner.os }}-
+    
+    - name: Ensure vcpkg directories exist
+      run: |
+        mkdir -Force "${{ github.workspace }}/vcpkg_cache"
+        mkdir -Force "${{ github.workspace }}/vcpkg_installed"
       shell: pwsh
-
+    
     - name: Install dependencies
       env:
         VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg_cache
+        VCPKG_INSTALLED_DIR: ${{ github.workspace }}/vcpkg_installed
       run: .\vcpkg\vcpkg.exe install
-
-    - name: Set up vcpkg path
-      run: echo "VCPKG_ROOT=$(pwd)\vcpkg" >> $GITHUB_ENV
-
+    
     - name: Check Visual Studio installations
       shell: cmd
       run: |
         "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all
-
-    - name: make build dir
+    
+    - name: Make build directory
       run: mkdir build
-
+    
     - name: Compile and install
       env:
-        CMAKE_PREFIX_PATH: ../vcpkg_installed/x64-windows
-        GSL_DIR: ../vcpkg_installed/x64-windows
-        GETOPT_DIR: ../vcpkg_installed/x64-windows
+        CMAKE_PREFIX_PATH: ${{ github.workspace }}/vcpkg_installed/x64-windows
+        GSL_DIR: ${{ github.workspace }}/vcpkg_installed/x64-windows
+        GETOPT_DIR: ${{ github.workspace }}/vcpkg_installed/x64-windows
       working-directory: build
       shell: pwsh
       run: |
@@ -116,20 +120,21 @@ jobs:
         cmake --build . --parallel --config Release
         cmake --install . --prefix "$INSTALL_DIR" --config Release
     
-    # - name: Run amtrack_test
-    #   shell: pwsh
-    #   run: '${{ runner.temp }}\libamtrack\bin\amtrack_test.exe'
-    
-    # - name: Run amtrack_demo
-    #   shell: pwsh
-    #   run: '${{ runner.temp }}\libamtrack\bin\amtrack_demo.exe'
-    
+      
+      # - name: Run amtrack_test
+      #   shell: pwsh
+      #   run: '${{ runner.temp }}\libamtrack\bin\amtrack_test.exe'
+      
+      # - name: Run amtrack_demo
+      #   shell: pwsh
+      #   run: '${{ runner.temp }}\libamtrack\bin\amtrack_demo.exe'
+      
     - name: Upload compiled library
       uses: actions/upload-artifact@v4
       with:
         name: libamtrack
-        path: ${{ runner.temp }}/libamtrack/bin/
-    
+        path: ${{ runner.temp }}/libamtrack/
+
 
   javascript_package:
     runs-on: ubuntu-latest
