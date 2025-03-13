@@ -16,8 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          
+          - fetch-depth: 0
+
       # Install required system packages
       - name: Install system packages
         run: sudo apt-get install -y --no-install-recommends libgsl-dev
@@ -164,20 +164,25 @@ jobs:
         if: steps.cache-gsl.outputs.cache-hit != 'true'
         run: |
           wget -q "http://ftpmirror.gnu.org/gnu/gsl/gsl-latest.tar.gz"
-          mkdir $HOME/gsl-latest
-          tar -xzf gsl-latest.tar.gz -C $HOME/gsl-latest
-          mv $HOME/gsl-latest/** $HOME/gsl-latest/gsl
-          mkdir $HOME/usr
-          cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$HOME/usr --disable-shared && emmake make -j && emmake make install
-          ls -al $HOME/usr/lib/
+          mkdir -p "${{ github.workspace }}/gsl-latest"
+          tar -xzf gsl-latest.tar.gz -C "${{ github.workspace }}/gsl-latest"
+          mv "${{ github.workspace }}/gsl-latest/"* "${{ github.workspace }}/gsl-latest/gsl"
+          mkdir -p "${{ github.workspace }}/usr"
+          cd "${{ github.workspace }}/gsl-latest/gsl" && emconfigure ./configure --prefix="${{ github.workspace }}/usr" --disable-shared && emmake make -j && emmake make install
+          ls -al "${{ github.workspace }}/usr/lib/"
+          ls -al "${{ github.workspace }}/usr/include/"
 
-      - name: Compile libamtrack webassembly package
-        run: |
-         GSL_INCLUDE_DIRS=$HOME/usr/include GSL_LIBRARY=$HOME/usr/lib/libgsl.a GSL_CBLAS_LIBRARY=$HOME/usr/lib/libgslcblas.a  ./compile_to_js.sh
+      # Build the WebAssembly package using the compiled GSL
+      - name: Build WebAssembly Package
         working-directory: distributions/JavaScript
+        env:
+          GSL_INCLUDE_DIRS: "${{ github.workspace }}/usr/include"
+          GSL_LIBRARY: "${{ github.workspace }}/usr/lib/libgsl.a"
+          GSL_CBLAS_LIBRARY: "${{ github.workspace }}/usr/lib/libgslcblas.a"
+        run: ./compile_to_js.sh
 
-      - name: 'Upload Artifact'
-
+      # Archive the WebAssembly build artifact
+      - name: Upload WebAssembly Artifact
         uses: actions/upload-artifact@v4
         with:
           name: libamtrack-wasm
