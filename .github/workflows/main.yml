@@ -71,6 +71,10 @@ jobs:
         key: vcpkg-deps-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
         restore-keys: vcpkg-deps-${{ runner.os }}-
 
+    - name: Ensure vcpkg cache directory exists
+      run: mkdir -Force "${{ github.workspace }}/vcpkg_cache"
+      shell: pwsh
+
     - name: Install dependencies
       env:
         VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg_cache
