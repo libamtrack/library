@@ -52,11 +52,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Create directories for vcpkg caches and installations
-      - name: Create vcpkg directories
+      # Create directories for build, vcpkg caches and installations
+      - name: Create vcpkg and build directories
         run: |
           mkdir -Force "${{ github.workspace }}/vcpkg_cache"
           mkdir -Force "${{ github.workspace }}/vcpkg_installed"
+          mkdir -Force build
         shell: pwsh
 
       # Restore the vcpkg source cache
