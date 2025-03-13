@@ -1,0 +1,89 @@
+name: Windows Build & Test
+
+on:
+  workflow_run:
+    workflows: ["Linux Build & Test"]
+    types:
+      - completed
+
+jobs:
+  build_and_test_windows:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create vcpkg and build directories
+        run: |
+          mkdir -Force "${{ github.workspace }}/vcpkg_cache"
+          mkdir -Force "${{ github.workspace }}/vcpkg_installed"
+          mkdir -Force build
+        shell: pwsh
+
+      - name: Restore vcpkg cache
+        id: cache-vcpkg
+        uses: actions/cache@v4
+        with:
+          path: vcpkg
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-${{ runner.os }}-
+
+      - name: Install vcpkg
+        if: steps.cache-vcpkg.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth 1 https://github.com/microsoft/vcpkg
+          .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+        shell: pwsh
+
+      - name: Restore vcpkg deps cache
+        id: cache-vcpkg-deps
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/vcpkg_cache
+          key: vcpkg-deps-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-deps-${{ runner.os }}-
+
+      - name: Restore vcpkg installed cache
+        id: cache-vcpkg-installed
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/vcpkg_installed
+          key: vcpkg-installed-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-installed-${{ runner.os }}-
+
+      - name: Create vcpkg directories if needed
+        if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true' || steps.cache-vcpkg-installed.outputs.cache-hit != 'true'
+        run: |
+          mkdir -Force "${{ github.workspace }}/vcpkg_cache"
+          mkdir -Force "${{ github.workspace }}/vcpkg_installed"
+        shell: pwsh
+
+      - name: Install vcpkg dependencies
+        if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true' || steps.cache-vcpkg-installed.outputs.cache-hit != 'true'
+        env:
+          VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg_cache
+          VCPKG_INSTALLED_DIR: ${{ github.workspace }}/vcpkg_installed
+        run: .\vcpkg\vcpkg.exe install
+
+      - name: Build & Install libamtrack (Windows)
+        env:
+          CMAKE_PREFIX_PATH: ${{ github.workspace }}/vcpkg_installed/x64-windows
+          GSL_DIR: ${{ github.workspace }}/vcpkg_installed/x64-windows
+          GETOPT_DIR: ${{ github.workspace }}/vcpkg_installed/x64-windows
+        working-directory: build
+        shell: pwsh
+        run: |
+          $INSTALL_DIR = "${{ runner.temp }}\libamtrack"
+          cmake .. -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
+          cmake --build . --parallel --config Release
+          cmake --install . --prefix "$INSTALL_DIR" --config Release
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libamtrack-windows
+          path: ${{ runner.temp }}/libamtrack/
+          if-no-files-found: error
+          retention-days: 5
