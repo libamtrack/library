@@ -46,6 +46,7 @@
 #include "AT_StoppingPower.h"
 #include "AT_PhysicsRoutines.h"
 #include "AT_DataRange.h"
+#include "AT_Version.h"
 
 char * plottypes[] = {"ER","RDD","LET","CSDArange"};
 int plottypes_nr = 4;
@@ -96,12 +97,13 @@ int main( int argc, char* argv[]){
 				{"xlogscale", no_argument  , 0, 'l'},
 				{"npoints", required_argument  , 0, 'm'},
 				{"particle", required_argument  , 0, 'p'},
+                {"version", no_argument, 0, 'V'},
 				{0, 0, 0, 0}
 		};
 
 		int option_index = 0; /* getopt_long stores the option index here. */
 
-		c = getopt_long (argc, argv, "t:n:x:lm:p:s:y:", long_options, &option_index);
+		c = getopt_long (argc, argv, "t:n:x:lm:p:s:y:V:", long_options, &option_index);
 
 		if (c == -1) /* Detect the end of the options. */
 			break;
@@ -157,6 +159,10 @@ int main( int argc, char* argv[]){
 				fprintf(stderr, "Error in decoding submodeltype (--submodeltype option)\n");
 			}
 			break;
+
+        case 'V':
+            printf("Version: %s\n", AT_VERSION_GIT);
+            return EXIT_SUCCESS;
 
 		case '?': /* getopt_long already printed an error message. */
 			break;
