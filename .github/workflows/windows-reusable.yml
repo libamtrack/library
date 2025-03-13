@@ -1,15 +1,17 @@
 name: Windows Build & Test
 
 on:
-  workflow_run:
-    workflows: ["Linux Build & Test"]
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      linux_status:
+        description: 'Status of the Linux Build job'
+        required: true
+        type: string
 
 jobs:
   build_and_test_windows:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: windows-latest
+    if: ${{ inputs.linux_status == 'success' }}
     steps:
       - uses: actions/checkout@v4
         with:

@@ -1,18 +1,14 @@
 name: Linux Build & Test
 
 on:
-  push:
-    branches: [ master ]
-    tags: ['v*']
-  pull_request:
-    branches: [ master ]
-  release:
-    types: [published]
+  workflow_call:
+    # (Add inputs if needed later)
 
 jobs:
   build_and_test_linux:
-    name: Linux Build & Test
     runs-on: ubuntu-latest
+    outputs:
+      linux_status: ${{ job.status }}
     steps:
       - uses: actions/checkout@v4
         with:
