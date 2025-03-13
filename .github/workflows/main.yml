@@ -39,8 +39,10 @@ jobs:
       - name: Upload compiled library
         uses: actions/upload-artifact@v4
         with:
-          name: libamtrack
+          name: libamtrack-linux
           path: "${{ runner.temp }}/usr/"
+          if-no-files-found: error
+          retention-days: 5
 
   build_and_test_windows:
     name: Compile and test library on Windows
@@ -49,6 +51,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Ensure vcpkg directories exist
+      run: |
+        mkdir -Force "${{ github.workspace }}/vcpkg_cache"
+        mkdir -Force "${{ github.workspace }}/vcpkg_installed"
+      shell: pwsh
 
     - name: Restore vcpkg cache
       id: cache-vcpkg
@@ -95,12 +103,6 @@ jobs:
         VCPKG_INSTALLED_DIR: ${{ github.workspace }}/vcpkg_installed
       run: .\vcpkg\vcpkg.exe install
     
-    
-    - name: Check Visual Studio installations
-      shell: cmd
-      run: |
-        "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all
-    
     - name: Make build directory
       run: mkdir build
     
@@ -117,7 +119,6 @@ jobs:
         cmake --build . --parallel --config Release
         cmake --install . --prefix "$INSTALL_DIR" --config Release
     
-      
       # - name: Run amtrack_test
       #   shell: pwsh
       #   run: '${{ runner.temp }}\libamtrack\bin\amtrack_test.exe'
@@ -129,18 +130,19 @@ jobs:
     - name: Upload compiled library
       uses: actions/upload-artifact@v4
       with:
-        name: libamtrack
+        name: libamtrack-windows
         path: ${{ runner.temp }}/libamtrack/
-
+        if-no-files-found: error
+        retention-days: 5
 
   javascript_package:
     runs-on: ubuntu-latest
     needs: [build_and_test_linux]
     steps:
       - uses: actions/checkout@v4
-      
+        
       - name: Ensure GSL install directory exists
-        run: mkdir -p $HOME/usr
+        run: mkdir -p "${{ github.workspace }}/usr"
 
       - uses: mymindstorm/setup-emsdk@v14
 
@@ -148,36 +150,36 @@ jobs:
         id: cache-gsl
         uses: actions/cache@v4
         with:
-          path: $HOME/usr
+          path: ${{ github.workspace }}/usr
           key: ${{ runner.os }}-gsl-${{ hashFiles('**/main.yml') }}
           restore-keys: |
             ${{ runner.os }}-gsl-
             ${{ runner.os }}-
-    
+      
       - name: Compile GSL
         if: steps.cache-gsl.outputs.cache-hit != 'true'
         run: |
           wget -q "http://ftpmirror.gnu.org/gnu/gsl/gsl-latest.tar.gz"
-          mkdir -p $HOME/gsl-latest
-          tar -xzf gsl-latest.tar.gz -C $HOME/gsl-latest
-          mv $HOME/gsl-latest/** $HOME/gsl-latest/gsl
-          mkdir -p $HOME/usr
-          cd $HOME/gsl-latest/gsl/ && emconfigure ./configure --prefix=$HOME/usr --disable-shared && emmake make -j && emmake make install
-          ls -al $HOME/usr/lib/
-          ls -al $HOME/usr/include/
-              
+          mkdir -p "${{ github.workspace }}/gsl-latest"
+          tar -xzf gsl-latest.tar.gz -C "${{ github.workspace }}/gsl-latest"
+          mv "${{ github.workspace }}/gsl-latest/"* "${{ github.workspace }}/gsl-latest/gsl"
+          mkdir -p "${{ github.workspace }}/usr"
+          cd "${{ github.workspace }}/gsl-latest/gsl/" && emconfigure ./configure --prefix="${{ github.workspace }}/usr" --disable-shared && emmake make -j && emmake make install
+          ls -al "${{ github.workspace }}/usr/lib/"
+          ls -al "${{ github.workspace }}/usr/include/"
+                
       - name: Compile libamtrack webassembly package
         working-directory: distributions/JavaScript
         env:
-          GSL_INCLUDE_DIRS: $HOME/usr/include
-          GSL_LIBRARY: $HOME/usr/lib/libgsl.a
-          GSL_CBLAS_LIBRARY: $HOME/usr/lib/libgslcblas.a
+          GSL_INCLUDE_DIRS: "${{ github.workspace }}/usr/include"
+          GSL_LIBRARY: "${{ github.workspace }}/usr/lib/libgsl.a"
+          GSL_CBLAS_LIBRARY: "${{ github.workspace }}/usr/lib/libgslcblas.a"
         run: ./compile_to_js.sh
 
-      - name: 'Upload Artifact'
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: wasm file
+          name: libamtrack-wasm
           path: |
             distributions/JavaScript/output/libat.wasm
             distributions/JavaScript/output/libat.js
