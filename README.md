@@ -16,7 +16,7 @@ libamtrack is a program library and cannot be run as a single executable. A numb
 Refer to README_DEVELOPERS on how to do that.
 
 ## i. Web-interface
-The web interface covers a subset of libamtrack functions for easy access and can be found on libamtrack's website: https://libamtrack.github.io/web/. The sources can be found at (/distributions/JavaScript). The interface development was started by Christoph Kolb within his Bachelor thesis and consolidated by Leszek Grzanka....
+The web interface covers a subset of libamtrack functions for easy access and can be found on libamtrack's website: https://libamtrack.github.io/web/. The sources can be found at (/distributions/JavaScript). The interface development was started by Christoph Kolb within his Bachelor thesis and consolidated by Leszek Grzanka.
 
 ## ii. R
 

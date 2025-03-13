@@ -17,19 +17,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create vcpkg and build directories
+      - name: Install system packages
+        run: sudo apt-get install -y --no-install-recommends libgsl-dev
+
+      - name: Build & Install libamtrack (Linux)
         run: |
-          mkdir -Force "${{ github.workspace }}/vcpkg_cache"
-          mkdir -Force "${{ github.workspace }}/vcpkg_installed"
-          mkdir -Force build
-        shell: pwsh
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          cmake --build . --parallel
+          cmake --install . --prefix "${{ runner.temp }}/usr"
+      
+      - name: Run Linux Tests
+        run: |
+          export PATH="${{ runner.temp }}/usr/bin:$PATH"
+          export LD_LIBRARY_PATH="${{ runner.temp }}/usr/lib:$LD_LIBRARY_PATH"
+          amtrack_test
+          amtrack_demo
 
-      # (Additional steps for caching, installing vcpkg, and building libamtrack)
-
-      - name: Upload Windows Artifact
+      - name: Upload Linux Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: libamtrack-windows
-          path: ${{ runner.temp }}/libamtrack/
+          name: libamtrack-linux
+          path: "${{ runner.temp }}/usr/"
           if-no-files-found: error
           retention-days: 5
