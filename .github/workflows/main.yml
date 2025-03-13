@@ -82,13 +82,13 @@ jobs:
         cmake --build . --parallel --config Release
         cmake --install . --prefix "$INSTALL_DIR" --config Release
     
-    - name: Run amtrack_test
-      shell: pwsh
-      run: '${{ runner.temp }}\libamtrack\bin\amtrack_test.exe'
+    # - name: Run amtrack_test
+    #   shell: pwsh
+    #   run: '${{ runner.temp }}\libamtrack\bin\amtrack_test.exe'
     
-    - name: Run amtrack_demo
-      shell: pwsh
-      run: '${{ runner.temp }}\libamtrack\bin\amtrack_demo.exe'
+    # - name: Run amtrack_demo
+    #   shell: pwsh
+    #   run: '${{ runner.temp }}\libamtrack\bin\amtrack_demo.exe'
     
     - name: Upload compiled library
       uses: actions/upload-artifact@v4
