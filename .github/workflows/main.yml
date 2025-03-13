@@ -50,12 +50,30 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install vcpkg
+    - name: Restore vcpkg cache
+      uses: actions/cache@v4
+      with:
+        path: vcpkg
+        key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+        restore-keys: vcpkg-${{ runner.os }}-
+  
+    - name: Install vcpkg if not cached
       run: |
-        git clone --depth 1 https://github.com/microsoft/vcpkg
-        .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+        if (-Not (Test-Path "vcpkg")) {
+          git clone --depth 1 https://github.com/microsoft/vcpkg
+          .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+        }
+
+    - name: Restore vcpkg dependencies cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ github.workspace }}/vcpkg_cache
+        key: vcpkg-deps-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+        restore-keys: vcpkg-deps-${{ runner.os }}-
 
     - name: Install dependencies
+      env:
+        VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg_cache
       run: .\vcpkg\vcpkg.exe install
 
     - name: Set up vcpkg path
