@@ -1,0 +1,61 @@
+name: JavaScript Package (WebAssembly)
+
+on:
+  workflow_run:
+    workflows: ["Linux Build & Test"]
+    types:
+      - completed
+
+jobs:
+  javascript_package:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create local GSL directory
+        run: mkdir -p "${{ github.workspace }}/usr"
+
+      - uses: mymindstorm/setup-emsdk@v14
+
+      - name: Cache compiled GSL
+        id: cache-gsl
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/usr
+          key: ${{ runner.os }}-gsl-${{ hashFiles('**/main.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-gsl-
+            ${{ runner.os }}-
+
+      - name: Compile GSL for WebAssembly
+        if: steps.cache-gsl.outputs.cache-hit != 'true'
+        run: |
+          wget -q "http://ftpmirror.gnu.org/gnu/gsl/gsl-latest.tar.gz"
+          mkdir -p "${{ github.workspace }}/gsl-latest"
+          tar -xzf gsl-latest.tar.gz -C "${{ github.workspace }}/gsl-latest"
+          mv "${{ github.workspace }}/gsl-latest/"* "${{ github.workspace }}/gsl-latest/gsl"
+          mkdir -p "${{ github.workspace }}/usr"
+          cd "${{ github.workspace }}/gsl-latest/gsl" && emconfigure ./configure --prefix="${{ github.workspace }}/usr" --disable-shared && emmake make -j && emmake make install
+          ls -al "${{ github.workspace }}/usr/lib/"
+          ls -al "${{ github.workspace }}/usr/include/"
+
+      - name: Build WebAssembly Package
+        working-directory: distributions/JavaScript
+        env:
+          GSL_INCLUDE_DIRS: "${{ github.workspace }}/usr/include"
+          GSL_LIBRARY: "${{ github.workspace }}/usr/lib/libgsl.a"
+          GSL_CBLAS_LIBRARY: "${{ github.workspace }}/usr/lib/libgslcblas.a"
+        run: ./compile_to_js.sh
+
+      - name: Upload WebAssembly Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libamtrack-wasm
+          path: |
+            distributions/JavaScript/output/libat.wasm
+            distributions/JavaScript/output/libat.js
+          if-no-files-found: error
+          retention-days: 5
