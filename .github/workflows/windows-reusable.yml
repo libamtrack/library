@@ -1,0 +1,35 @@
+name: Windows Build & Test
+
+on:
+  workflow_call:
+    inputs:
+      linux_status:
+        description: 'Status of the Linux Build job'
+        required: true
+        type: string
+
+jobs:
+  build_and_test_windows:
+    runs-on: windows-latest
+    if: ${{ inputs.linux_status == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create vcpkg and build directories
+        run: |
+          mkdir -Force "${{ github.workspace }}/vcpkg_cache"
+          mkdir -Force "${{ github.workspace }}/vcpkg_installed"
+          mkdir -Force build
+        shell: pwsh
+
+      # (Additional steps for caching, installing vcpkg, and building libamtrack)
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libamtrack-windows
+          path: ${{ runner.temp }}/libamtrack/
+          if-no-files-found: error
+          retention-days: 5

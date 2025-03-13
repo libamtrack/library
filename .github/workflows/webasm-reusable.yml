@@ -1,15 +1,17 @@
 name: JavaScript Package (WebAssembly)
 
 on:
-  workflow_run:
-    workflows: ["Linux Build & Test"]
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      linux_status:
+        description: 'Status of the Linux Build job'
+        required: true
+        type: string
 
 jobs:
   javascript_package:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    if: ${{ inputs.linux_status == 'success' }}
     steps:
       - uses: actions/checkout@v4
         with:

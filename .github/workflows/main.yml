@@ -1,0 +1,33 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ master ]
+    tags: ['v*']
+  pull_request:
+    branches: [ master ]
+  release:
+    types: [published]
+
+jobs:
+  build_and_test_linux:
+    name: Linux Build & Test
+    uses: ./.github/workflows/linux-reusable.yml
+    outputs:
+      linux_status: ${{ jobs.build_and_test_linux.outputs.linux_status }}
+
+  build_and_test_windows:
+    name: Windows Build & Test
+    needs: build_and_test_linux
+    if: ${{ needs.build_and_test_linux.outputs.linux_status == 'success' }}
+    uses: ./.github/workflows/windows-reusable.yml
+    with:
+      linux_status: ${{ needs.build_and_test_linux.outputs.linux_status }}
+
+  javascript_package:
+    name: JavaScript Package (WebAssembly)
+    needs: build_and_test_linux
+    if: ${{ needs.build_and_test_linux.outputs.linux_status == 'success' }}
+    uses: ./.github/workflows/webassembly-reusable.yml
+    with:
+      linux_status: ${{ needs.build_and_test_linux.outputs.linux_status }}
