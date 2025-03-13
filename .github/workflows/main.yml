@@ -1,4 +1,4 @@
-name: Linux Tests
+name: Linux and Windows Tests
 
 on:
   push:
@@ -10,54 +10,158 @@ on:
     types: [published]
 
 jobs:
-  build_and_test:
-    if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
-    name: Compile and test library
+  build_and_test_linux:
+    name: Linux Build & Test
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Ensure full history for git describe
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      # Install required system packages
+      - name: Install system packages
+        run: sudo apt-get install -y --no-install-recommends libgsl-dev
 
-    - name: install necessary packages
-      run: sudo apt-get -y install libgsl-dev
+      # Build and install libamtrack into a temporary directory
+      - name: Build & Install libamtrack (Linux)
+        run: |
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          cmake --build . --parallel
+          cmake --install . --prefix "${{ runner.temp }}/usr"
+      
+      # Run tests using the installed libraries and binaries
+      - name: Run Linux Tests
+        run: |
+          export PATH="${{ runner.temp }}/usr/bin:$PATH"
+          export LD_LIBRARY_PATH="${{ runner.temp }}/usr/lib:$LD_LIBRARY_PATH"
+          amtrack_test
+          amtrack_demo
 
-    - name: compile and install
-      run: |
-        mkdir build
-        cd build
-        cmake ..  -DCMAKE_BUILD_TYPE=Release
-        cmake --build . --parallel
-        cmake --install . --prefix $HOME/.local
+      # Archive the installation directory as an artifact
+      - name: Upload Linux Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libamtrack-linux
+          path: "${{ runner.temp }}/usr/"
+          if-no-files-found: error
+          retention-days: 5
 
-    - name: tests
-      run: |
-        LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" amtrack_test
-        LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" amtrack_demo
-
-  javascript_package:
-    if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
-    runs-on: ubuntu-latest
-    needs: [build_and_test]
+  build_and_test_windows:
+    name: Windows Build & Test
+    needs: [build_and_test_linux]
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
+      # Create directories for build, vcpkg caches and installations
+      - name: Create vcpkg and build directories
+        run: |
+          mkdir -Force "${{ github.workspace }}/vcpkg_cache"
+          mkdir -Force "${{ github.workspace }}/vcpkg_installed"
+          mkdir -Force build
+        shell: pwsh
+
+      # Restore the vcpkg source cache
+      - name: Restore vcpkg cache
+        id: cache-vcpkg
+        uses: actions/cache@v4
+        with:
+          path: vcpkg
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-${{ runner.os }}-
+
+      # Install vcpkg only if the cache was not restored
+      - name: Install vcpkg
+        if: steps.cache-vcpkg.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth 1 https://github.com/microsoft/vcpkg
+          .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+        shell: pwsh
+
+      # Restore caches for vcpkg dependencies and installed packages
+      - name: Restore vcpkg deps cache
+        id: cache-vcpkg-deps
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/vcpkg_cache
+          key: vcpkg-deps-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-deps-${{ runner.os }}-
+
+      - name: Restore vcpkg installed cache
+        id: cache-vcpkg-installed
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/vcpkg_installed
+          key: vcpkg-installed-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-installed-${{ runner.os }}-
+
+      # Ensure vcpkg directories exist if caches were not hit
+      - name: Create vcpkg directories if needed
+        if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true' || steps.cache-vcpkg-installed.outputs.cache-hit != 'true'
+        run: |
+          mkdir -Force "${{ github.workspace }}/vcpkg_cache"
+          mkdir -Force "${{ github.workspace }}/vcpkg_installed"
+        shell: pwsh
+
+      # Install vcpkg dependencies if not restored from cache
+      - name: Install vcpkg dependencies
+        if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true' || steps.cache-vcpkg-installed.outputs.cache-hit != 'true'
+        env:
+          VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg_cache
+          VCPKG_INSTALLED_DIR: ${{ github.workspace }}/vcpkg_installed
+        run: .\vcpkg\vcpkg.exe install
+
+      # Create build directory and build libamtrack using vcpkg dependencies
+      - name: Build & Install libamtrack (Windows)
+        env:
+          CMAKE_PREFIX_PATH: ${{ github.workspace }}/vcpkg_installed/x64-windows
+          GSL_DIR: ${{ github.workspace }}/vcpkg_installed/x64-windows
+          GETOPT_DIR: ${{ github.workspace }}/vcpkg_installed/x64-windows
+        working-directory: build
+        shell: pwsh
+        run: |
+          $INSTALL_DIR = "${{ runner.temp }}\libamtrack"
+          cmake .. -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
+          cmake --build . --parallel --config Release
+          cmake --install . --prefix "$INSTALL_DIR" --config Release
+
+      # Archive the Windows build artifact
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libamtrack-windows
+          path: ${{ runner.temp }}/libamtrack/
+          if-no-files-found: error
+          retention-days: 5
+
+  javascript_package:
+    name: JavaScript Package (WebAssembly)
+    runs-on: ubuntu-latest
+    needs: [build_and_test_linux]
+    steps:
+      - uses: actions/checkout@v4
+
+      # Create the local GSL install directory in the workspace
+      - name: Create local GSL directory
+        run: mkdir -p "${{ github.workspace }}/usr"
+
       - uses: mymindstorm/setup-emsdk@v14
 
+      # Cache compiled GSL for reuse
       - name: Cache compiled GSL
+        id: cache-gsl
         uses: actions/cache@v4
-        env:
-          cache-name: cache-node-modules
         with:
-          path: $HOME/usr
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/main.yml') }}
+          path: ${{ github.workspace }}/usr
+          key: ${{ runner.os }}-gsl-${{ hashFiles('**/main.yml') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
+            ${{ runner.os }}-gsl-
             ${{ runner.os }}-
 
-      - name: Compile GSL
+      # Compile GSL if cache not found
+      - name: Compile GSL for WebAssembly
+        if: steps.cache-gsl.outputs.cache-hit != 'true'
         run: |
           wget -q "http://ftpmirror.gnu.org/gnu/gsl/gsl-latest.tar.gz"
           mkdir $HOME/gsl-latest
@@ -73,9 +177,10 @@ jobs:
         working-directory: distributions/JavaScript
 
       - name: 'Upload Artifact'
+
         uses: actions/upload-artifact@v4
         with:
-          name: wasm file
+          name: libamtrack-wasm
           path: |
             distributions/JavaScript/output/libat.wasm
             distributions/JavaScript/output/libat.js
