@@ -11,7 +11,7 @@ on:
 
 jobs:
   build_and_test_linux:
-    if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
+    if: 'github.repository == "libamtrack/library" && !contains(github.event.head_commit.message, "[ci skip]") && !contains(github.event.head_commit.message, "[skip ci]")'
     name: Compile and test library on Linux
     runs-on: ubuntu-latest
 
@@ -33,9 +33,19 @@ jobs:
       run: |
         LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" amtrack_test
         LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" amtrack_demo
+
+    - name: upload compiled library
+      uses: actions/upload-artifact@v4
+      with:
+        name: libamtrack
+        path:
+          $HOME/.local/lib/libamtrack.so
+          $HOME/.local/lib/libamtrack.a
+          $HOME/.local/bin/amtrack_demo
+          $HOME/.local/bin/amtrack_test
   
   build_and_test_windows:
-    if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
+    if: 'github.repository == "libamtrack/library" && !contains(github.event.head_commit.message, "[ci skip]") && !contains(github.event.head_commit.message, "[skip ci]")'
     name: Compile and test library on Windows
     runs-on: windows-latest
 
@@ -74,12 +84,21 @@ jobs:
 
     - name: tests
       run: |
-        $env:Path += ";$env:GITHUB_WORKSPACE/.local/bin"
         amtrack_test
         amtrack_demo
 
+    - name: upload compiled library
+      uses: actions/upload-artifact@v4
+      with:
+        name: libamtrack
+        path:
+          .local/bin/amtrack.dll
+          .local/bin/amtrack.lib
+          .local/bin/amtrack.exp
+          .local/bin/amtrack.pdb
+
   javascript_package:
-    if: "github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
+    if: github.repository == 'libamtrack/library' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-latest
     needs: [build_and_test_linux, build_and_test_windows]
     steps:
