@@ -77,23 +77,25 @@ jobs:
       working-directory: build
       shell: pwsh
       run: |
+        $INSTALL_DIR="${{ runner.temp }}\libamtrack"
         cmake .. -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
         cmake --build . --parallel --config Release
-        cmake --install . --prefix "$env:LOCALAPPDATA\libamtrack" --config Release
-
+        cmake --install . --prefix "$INSTALL_DIR" --config Release
+    
     - name: Run amtrack_test
       shell: pwsh
-      run: '$env:LOCALAPPDATA\libamtrack\bin\amtrack_test.exe'
+      run: '${{ runner.temp }}\libamtrack\bin\amtrack_test.exe'
     
     - name: Run amtrack_demo
       shell: pwsh
-      run: '$env:LOCALAPPDATA\libamtrack\bin\amtrack_demo.exe'
+      run: '${{ runner.temp }}\libamtrack\bin\amtrack_demo.exe'
     
     - name: Upload compiled library
       uses: actions/upload-artifact@v4
       with:
         name: libamtrack
-        path: ${{ env.LOCALAPPDATA }}/libamtrack/bin/
+        path: ${{ runner.temp }}/libamtrack/bin/
+    
 
   javascript_package:
     runs-on: ubuntu-latest
