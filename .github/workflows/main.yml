@@ -18,6 +18,14 @@ jobs:
     name: Linux Build & Test
     uses: ./.github/workflows/linux-reusable.yml
 
+  build_and_test_macos:
+    name: macOS Build & Test
+    needs: build_and_test_linux
+    if: ${{ needs.build_and_test_linux.result == 'success' }}
+    uses: ./.github/workflows/macos-reusable.yml
+    with:
+      linux_status: ${{ needs.build_and_test_linux.result }}
+
   build_and_test_windows:
     name: Windows Build & Test
     needs: build_and_test_linux

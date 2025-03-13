@@ -1,0 +1,44 @@
+name: macOS Build & Test
+
+on:
+  workflow_call:
+    inputs:
+      linux_status:
+        description: 'Status of the Linux Build job'
+        required: true
+        type: string
+
+jobs:
+  build_and_test_macos:
+    runs-on: macos-latest
+    outputs:
+      macos_status: ${{ job.status }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install system packages
+        run: brew install gsl
+
+      - name: Build & Install libamtrack (macOS)
+        run: |
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          cmake --build . --parallel
+          cmake --install . --prefix "${{ runner.temp }}/usr"
+      
+      - name: Run macOS Tests
+        run: |
+          export PATH="${{ runner.temp }}/usr/bin:$PATH"
+          export DYLD_LIBRARY_PATH="${{ runner.temp }}/usr/lib:$DYLD_LIBRARY_PATH"
+          amtrack_test
+          amtrack_demo
+
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libamtrack-macos
+          path: "${{ runner.temp }}/usr/"
+          if-no-files-found: error
+          retention-days: 5
