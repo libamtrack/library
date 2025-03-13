@@ -17,18 +17,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       
-    - name: Install apt-fast for faster package installation
-      run: |
-        sudo add-apt-repository -y ppa:apt-fast/stable
-        sudo apt-get update
-        sudo apt-get install -y apt-fast
+    # - name: Install apt-fast for faster package installation
+    #   run: |
+    #     sudo add-apt-repository -y ppa:apt-fast/stable
+    #     sudo apt-get update
+    #     sudo apt-get install -y apt-fast
 
     - name: Install necessary packages
       run: |
-        sudo apt-fast install -y --no-install-recommends libgsl-dev
+        sudo apt install -y --no-install-recommends libgsl-dev
 
-    - name: Clean APT cache to reduce cache size
-      run: sudo apt-get clean
+    # - name: Clean APT cache to reduce cache size
+    #   run: sudo apt-get clean
 
     - name: compile and install
       run: |
@@ -72,6 +72,7 @@ jobs:
       shell: pwsh
   
     - name: Restore vcpkg dependencies cache
+      id: cache-vcpkg-deps
       uses: actions/cache@v4
       with:
         path: ${{ github.workspace }}/vcpkg_cache
@@ -79,6 +80,7 @@ jobs:
         restore-keys: vcpkg-deps-${{ runner.os }}-
     
     - name: Restore vcpkg installed packages cache
+      id: cache-vcpkg-installed
       uses: actions/cache@v4
       with:
         path: ${{ github.workspace }}/vcpkg_installed
@@ -86,16 +88,19 @@ jobs:
         restore-keys: vcpkg-installed-${{ runner.os }}-
     
     - name: Ensure vcpkg directories exist
+      if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true' || steps.cache-vcpkg-installed.outputs.cache-hit != 'true'
       run: |
         mkdir -Force "${{ github.workspace }}/vcpkg_cache"
         mkdir -Force "${{ github.workspace }}/vcpkg_installed"
       shell: pwsh
     
     - name: Install dependencies
+      if: steps.cache-vcpkg-deps.outputs.cache-hit != 'true' || steps.cache-vcpkg-installed.outputs.cache-hit != 'true'
       env:
         VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg_cache
         VCPKG_INSTALLED_DIR: ${{ github.workspace }}/vcpkg_installed
       run: .\vcpkg\vcpkg.exe install
+    
     
     - name: Check Visual Studio installations
       shell: cmd
@@ -140,6 +145,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Ensure GSL install directory exists
+        run: mkdir -p $HOME/usr
+
       - uses: mymindstorm/setup-emsdk@v14
 
       - name: Cache compiled GSL
@@ -164,10 +172,13 @@ jobs:
           ls -al $HOME/usr/lib/
               
       - name: Compile libamtrack webassembly package
-        run: |          
-         GSL_INCLUDE_DIRS=$HOME/usr/include GSL_LIBRARY=$HOME/usr/lib/libgsl.a GSL_CBLAS_LIBRARY=$HOME/usr/lib/libgslcblas.a  ./compile_to_js.sh
         working-directory: distributions/JavaScript
-  
+        env:
+          GSL_INCLUDE_DIRS: $HOME/usr/include
+          GSL_LIBRARY: $HOME/usr/lib/libgsl.a
+          GSL_CBLAS_LIBRARY: $HOME/usr/lib/libgslcblas.a
+        run: ./compile_to_js.sh
+
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
         with:
