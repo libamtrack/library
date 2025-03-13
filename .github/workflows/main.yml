@@ -31,8 +31,10 @@ jobs:
         
       - name: Run tests
         run: |
-          LD_LIBRARY_PATH="${{ runner.temp }}/usr/lib:$LD_LIBRARY_PATH" amtrack_test
-          LD_LIBRARY_PATH="${{ runner.temp }}/usr/lib:$LD_LIBRARY_PATH" amtrack_demo
+          export PATH="${{ runner.temp }}/usr/bin:$PATH"
+          export LD_LIBRARY_PATH="${{ runner.temp }}/usr/lib:$LD_LIBRARY_PATH"
+          amtrack_test
+          amtrack_demo
 
       - name: Upload compiled library
         uses: actions/upload-artifact@v4
