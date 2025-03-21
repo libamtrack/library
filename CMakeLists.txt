@@ -82,23 +82,43 @@ option(BUILD_EXAMPLES "Build example projects" ON)
 ###############################################################################
 # Configure GSL dependency
 ###############################################################################
-include(FetchContent)
-FetchContent_Declare(
-  gsl
-  GIT_REPOSITORY https://github.com/ampl/gsl.git
-  GIT_TAG v2.7.0
+
+
+include(ExternalProject)
+
+# Define the version of GSL you want to use
+set(GSL_VERSION 2.7.1)
+set(GSL_PREFIX ${CMAKE_BINARY_DIR}/gsl)
+
+# Download and build GSL as shared libraries
+ExternalProject_Add(
+    gsl
+    URL https://ftp.gnu.org/gnu/gsl/gsl-${GSL_VERSION}.tar.gz
+    PREFIX ${GSL_PREFIX}
+    CONFIGURE_COMMAND ${GSL_PREFIX}/src/gsl/configure --prefix=${GSL_PREFIX} --enable-shared
+    BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} -j
+    INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} install
+    BUILD_IN_SOURCE 1
 )
 
-set(GSL_BUILD_TESTS OFF CACHE BOOL "Disable GSL tests" FORCE)
-set(GSL_BUILD_DOCS OFF CACHE BOOL "Disable GSL documentation" FORCE)
-set(NO_AMPL_BINDINGS 1 CACHE BOOL "Disable AMPL bindings" FORCE)
-set(GSL_DISABLE_TESTS 1 CACHE BOOL "Disable GSL tests" FORCE)
-set(DOCUMENTATION OFF CACHE BOOL "Disable GSL documentation" FORCE)
+# Ensure that GSL is installed before including its directories
+ExternalProject_Get_Property(gsl install_dir)
+set(GSL_INCLUDE_DIR ${install_dir}/include)
+set(GSL_LIBRARY_DIR ${install_dir}/lib)
 
-FetchContent_MakeAvailable(gsl)
+# Create custom CMake targets for GSL
+add_library(GSL::gsl SHARED IMPORTED)
+set_target_properties(GSL::gsl PROPERTIES
+    IMPORTED_LOCATION ${GSL_LIBRARY_DIR}/libgsl${CMAKE_SHARED_LIBRARY_SUFFIX}
+    # INTERFACE_INCLUDE_DIRECTORIES ${GSL_INCLUDE_DIR}
+)
 
-add_library(GSL::gsl ALIAS gsl)
-add_library(GSL::gslcblas ALIAS gsl)
+add_library(GSL::gslcblas SHARED IMPORTED)
+set_target_properties(GSL::gslcblas PROPERTIES
+    IMPORTED_LOCATION ${GSL_LIBRARY_DIR}/libgslcblas${CMAKE_SHARED_LIBRARY_SUFFIX}
+    # INTERFACE_INCLUDE_DIRECTORIES ${GSL_INCLUDE_DIR}
+)
+
 
 # -----------------------------------------------------------------------------
 # Collect source and header files
@@ -110,10 +130,13 @@ file(GLOB HEADER_FILES "include/*.h")
 # Create the shared library target
 # -----------------------------------------------------------------------------
 add_library(amtrack SHARED ${SOURCE_FILES})
+
+add_dependencies(amtrack gsl)
+
 target_include_directories(amtrack PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
-    ${GSL_INCLUDE_DIRS}
+    ${GSL_INCLUDE_DIR}
 )
 target_link_libraries(amtrack PUBLIC GSL::gsl GSL::gslcblas)
 target_compile_features(amtrack PUBLIC c_std_11)
@@ -149,7 +172,9 @@ endif()
 # Installation of the libamtrack target
 # -----------------------------------------------------------------------------
 option(LIBAMTRACK_INSTALL "Install libamtrack targets" ON)
+message((STATUS "  LIBAMTRACK_INSTALL: ${LIBAMTRACK_INSTALL}"))
 if (LIBAMTRACK_INSTALL)
+    message(STATUS "libamtrack targets will be installed.")
     install(FILES "${VERSION_HEADER_PATH}" DESTINATION include)
     install(FILES "${CMAKE_BINARY_DIR}/VERSION" DESTINATION share/libamtrack)
     install(FILES "${CMAKE_BINARY_DIR}/libamtrackConfigVersion.cmake"
@@ -161,6 +186,10 @@ if (LIBAMTRACK_INSTALL)
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin
     )
+else()
+    message(STATUS "libamtrack targets will not be installed.")
+    # file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/include")
+    # message(STATUS "removing ${CMAKE_INSTALL_PREFIX}/include")
 endif()
 
 # -----------------------------------------------------------------------------
