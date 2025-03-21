@@ -190,8 +190,11 @@ if (LIBAMTRACK_INSTALL)
     install(DIRECTORY ${GSL_INCLUDE_DIR}/ DESTINATION include)
     # install ${GSL_LIBRARY_DIR}/libgslcblas${CMAKE_SHARED_LIBRARY_SUFFIX} in lib
     install(FILES ${GSL_LIBRARY_DIR}/libgslcblas${CMAKE_SHARED_LIBRARY_SUFFIX} DESTINATION lib)
+    install(FILES ${GSL_LIBRARY_DIR}/libgslcblas${CMAKE_SHARED_LIBRARY_SUFFIX} DESTINATION gsl/lib)
+
     # install ${GSL_LIBRARY_DIR}/libgsl${CMAKE_SHARED_LIBRARY_SUFFIX} in lib
     install(FILES ${GSL_LIBRARY_DIR}/libgsl${CMAKE_SHARED_LIBRARY_SUFFIX} DESTINATION lib)
+    install(FILES ${GSL_LIBRARY_DIR}/libgsl${CMAKE_SHARED_LIBRARY_SUFFIX} DESTINATION gsl/lib)
 
     # install(TARGETS GSL::gsl
     #     # EXPORT amtrackTargets
