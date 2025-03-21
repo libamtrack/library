@@ -71,13 +71,34 @@ write_basic_package_version_file(
 option(BUILD_DEV "Install development files (headers, CMake package config, etc.)" OFF)
 option(BUILD_EXAMPLES "Build example projects" ON)
 
-# -----------------------------------------------------------------------------
-# Locate Dependencies
-# -----------------------------------------------------------------------------
-find_package(GSL REQUIRED)
-if (NOT GSL_FOUND)
-    message(FATAL_ERROR "GSL not found! Install it using vcpkg or your system package manager.")
-endif()
+# # -----------------------------------------------------------------------------
+# # Locate Dependencies
+# # -----------------------------------------------------------------------------
+# find_package(GSL REQUIRED)
+# if (NOT GSL_FOUND)
+#     message(FATAL_ERROR "GSL not found! Install it using vcpkg or your system package manager.")
+# endif()
+
+###############################################################################
+# Configure GSL dependency
+###############################################################################
+include(FetchContent)
+FetchContent_Declare(
+  gsl
+  GIT_REPOSITORY https://github.com/ampl/gsl.git
+  GIT_TAG v2.7.0
+)
+
+set(GSL_BUILD_TESTS OFF CACHE BOOL "Disable GSL tests" FORCE)
+set(GSL_BUILD_DOCS OFF CACHE BOOL "Disable GSL documentation" FORCE)
+set(NO_AMPL_BINDINGS 1 CACHE BOOL "Disable AMPL bindings" FORCE)
+set(GSL_DISABLE_TESTS 1 CACHE BOOL "Disable GSL tests" FORCE)
+set(DOCUMENTATION OFF CACHE BOOL "Disable GSL documentation" FORCE)
+
+FetchContent_MakeAvailable(gsl)
+
+add_library(GSL::gsl ALIAS gsl)
+add_library(GSL::gslcblas ALIAS gsl)
 
 # -----------------------------------------------------------------------------
 # Collect source and header files
