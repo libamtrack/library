@@ -23,12 +23,6 @@ set(PROJECT_VERSION_MAJOR ${CMAKE_MATCH_1})
 set(PROJECT_VERSION_MINOR ${CMAKE_MATCH_2})
 set(PROJECT_VERSION_PATCH "0") # Default patch version
 
-# Extract Major.Minor.Patch from tag
-string(REGEX MATCH "([0-9]+)\\.([0-9]+)" VERSION_MATCH ${GIT_VERSION})
-set(PROJECT_VERSION_MAJOR ${CMAKE_MATCH_1})
-set(PROJECT_VERSION_MINOR ${CMAKE_MATCH_2})
-set(PROJECT_VERSION_PATCH "0") # Default patch version
-
 # Detect additional commits since the last tag
 string(REGEX MATCH "[0-9]+\\.[0-9]+-([0-9]+)-g([a-f0-9]+)" GIT_COMMIT_MATCH ${GIT_VERSION})
 if (CMAKE_MATCH_1)
@@ -121,12 +115,15 @@ if (WIN32)
     set_target_properties(amtrack PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 endif()
 
-install(TARGETS amtrack
-    EXPORT amtrackTargets
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
-)
+option(LIBAMTRACK_INSTALL "Install libamtrack targets" ON)
+if(LIBAMTRACK_INSTALL)
+  install(TARGETS amtrack
+      EXPORT amtrackTargets
+      LIBRARY DESTINATION lib
+      ARCHIVE DESTINATION lib
+      RUNTIME DESTINATION bin
+  )
+endif()
 
 if(BUILD_DEV)
     message(STATUS "Development files will be installed.")
