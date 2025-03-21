@@ -14,8 +14,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install system packages
-        run: sudo apt-get install -y --no-install-recommends libgsl-dev
+      # - name: Install system packages
+      #   run: sudo apt-get install -y --no-install-recommends libgsl-dev
 
       - name: Build & Install libamtrack (Linux)
         run: |

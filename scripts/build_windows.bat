@@ -15,11 +15,11 @@ if exist %INSTALL_DIR% (
 )
 
 :: Clean previous build artifacts
-cmake --build %BUILD_DIR% --target clean
-if %errorlevel% neq 0 (
-    echo [ERROR] Cleaning build directory failed.
-    exit /b %errorlevel%
-)
+@REM cmake --build %BUILD_DIR% --target clean
+@REM if %errorlevel% neq 0 (
+@REM     echo [ERROR] Cleaning build directory failed.
+@REM     exit /b %errorlevel%
+@REM )
 
 :: Configure CMake with the specified build and install directories
 cmake -S . -B %BUILD_DIR% ^

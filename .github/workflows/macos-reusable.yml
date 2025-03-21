@@ -18,8 +18,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install system packages
-        run: brew install gsl
+      # - name: Install system packages
+      #   run: brew install gsl
 
       - name: Build & Install libamtrack (macOS)
         run: |
