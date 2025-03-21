@@ -131,7 +131,7 @@ file(GLOB HEADER_FILES "include/*.h")
 # -----------------------------------------------------------------------------
 add_library(amtrack SHARED ${SOURCE_FILES})
 
-add_dependencies(amtrack gsl)
+add_dependencies(amtrack GSL::gsl GSL::gslcblas)
 
 target_include_directories(amtrack PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -186,6 +186,19 @@ if (LIBAMTRACK_INSTALL)
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin
     )
+    # install whole ${GSL_INCLUDE_DIR} in include
+    install(DIRECTORY ${GSL_INCLUDE_DIR}/ DESTINATION include)
+    # install ${GSL_LIBRARY_DIR}/libgslcblas${CMAKE_SHARED_LIBRARY_SUFFIX} in lib
+    install(FILES ${GSL_LIBRARY_DIR}/libgslcblas${CMAKE_SHARED_LIBRARY_SUFFIX} DESTINATION lib)
+    # install ${GSL_LIBRARY_DIR}/libgsl${CMAKE_SHARED_LIBRARY_SUFFIX} in lib
+    install(FILES ${GSL_LIBRARY_DIR}/libgsl${CMAKE_SHARED_LIBRARY_SUFFIX} DESTINATION lib)
+
+    # install(TARGETS GSL::gsl
+    #     # EXPORT amtrackTargets
+    #     LIBRARY DESTINATION lib
+    #     ARCHIVE DESTINATION lib
+    #     RUNTIME DESTINATION bin
+    # )
 else()
     message(STATUS "libamtrack targets will not be installed.")
     # file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/include")
