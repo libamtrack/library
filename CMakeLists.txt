@@ -51,10 +51,8 @@ configure_file(
     @ONLY
 )
 include_directories("${CMAKE_BINARY_DIR}/include")
-install(FILES "${VERSION_HEADER_PATH}" DESTINATION include)
 
 file(WRITE "${CMAKE_BINARY_DIR}/VERSION" "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${PROJECT_GIT_HASH}")
-install(FILES "${CMAKE_BINARY_DIR}/VERSION" DESTINATION share/libamtrack)
 
 # -----------------------------------------------------------------------------
 # Create CMake package configuration files for versioning
@@ -65,9 +63,7 @@ write_basic_package_version_file(
     VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}
     COMPATIBILITY AnyNewerVersion
 )
-install(FILES "${CMAKE_BINARY_DIR}/libamtrackConfigVersion.cmake"
-    DESTINATION lib/cmake/libamtrack
-)
+
 
 # -----------------------------------------------------------------------------
 # Define options for development and examples
@@ -133,6 +129,11 @@ endif()
 # -----------------------------------------------------------------------------
 option(LIBAMTRACK_INSTALL "Install libamtrack targets" ON)
 if (LIBAMTRACK_INSTALL)
+    install(FILES "${VERSION_HEADER_PATH}" DESTINATION include)
+    install(FILES "${CMAKE_BINARY_DIR}/VERSION" DESTINATION share/libamtrack)
+    install(FILES "${CMAKE_BINARY_DIR}/libamtrackConfigVersion.cmake"
+        DESTINATION lib/cmake/libamtrack
+    )
     install(TARGETS amtrack
         EXPORT amtrackTargets
         LIBRARY DESTINATION lib
