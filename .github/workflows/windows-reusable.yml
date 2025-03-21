@@ -17,12 +17,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Create vcpkg and build directories
-      #   run: |
-      #     mkdir -Force "${{ github.workspace }}/vcpkg_cache"
-      #     mkdir -Force "${{ github.workspace }}/vcpkg_installed"
-      #     mkdir -Force build
-      #   shell: pwsh
+      - name: Create vcpkg and build directories
+        run: |
+          # mkdir -Force "${{ github.workspace }}/vcpkg_cache"
+          # mkdir -Force "${{ github.workspace }}/vcpkg_installed"
+          mkdir -Force build
+        shell: pwsh
 
       # - name: Restore vcpkg cache
       #   id: cache-vcpkg
