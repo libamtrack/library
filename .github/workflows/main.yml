@@ -1,4 +1,7 @@
 name: CI Pipeline
+permissions:
+  contents: read
+  pull-requests: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
