@@ -655,7 +655,7 @@ void AT_GSM_multiple_local_dose_distrib( const long  number_of_field_components,
 		}
 
 		*mean_d_check_Gy		+=	cur_d_check_Gy;
-		*sd_d_check_Gy			+=	cur_d_check_Gy * cur_d_check_Gy;
+		*sd_d_check_Gy			+=	(double)cur_d_check_Gy * cur_d_check_Gy;
 	}
 
 	/* Effective calculation of running mean and stdev of x in n runs: */
