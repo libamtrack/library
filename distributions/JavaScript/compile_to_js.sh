@@ -112,7 +112,7 @@ emcc build/libat.a ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} \
     -o output/libat.js \
     -sWASM=${WASM} \
     -sEXPORTED_FUNCTIONS="${funs}" \
-    -sEXPORTED_RUNTIME_METHODS='["ccall", "cwrap", "HEAPF64", "HEAPF32", "HEAPU8", "HEAPU16", "HEAPU32", "HEAPI8", "HEAPI16", "HEAPI32"]' \
+    -sEXPORTED_RUNTIME_METHODS='["ccall", "cwrap", "HEAPF64", "HEAPF32", "HEAPU8", "HEAPU16", "HEAPU32"]' \
     -sMODULARIZE=1 \
     -sEXPORT_NAME="createModule" \
     -sALLOW_MEMORY_GROWTH=1 \
