@@ -17,9 +17,9 @@ This directory contains language-specific and platform-specific distributions of
 
 ### JavaScript
 
-- **Status:** Empty/Placeholder
-- **Description:** Contains only an empty README.md file
-- **Note:** No active development visible
+- **Status:** active development moved to separate repository
+- **Description:** Contains only an README.md file
+- **Note:** Active development moved to https://github.com/libamtrack/web/
 
 ### Linux
 
