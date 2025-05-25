@@ -118,4 +118,8 @@ emcc build/libat.a ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} \
     -sALLOW_MEMORY_GROWTH=1 \
     -sENVIRONMENT='web' \
     -O3 \
-    || { echo "emcc failed"; exit 1; }
+    || { echo "emcc failed with return code $?"; \
+          echo "Diagnostic information:"; \
+          echo "  WASM: $WASM"; \
+          echo "  EXPORTED_FUNCTIONS: $funs"; \
+          exit 1; }
