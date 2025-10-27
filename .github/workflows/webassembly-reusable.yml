@@ -56,7 +56,7 @@ jobs:
         run: ./compile_to_js.sh
 
       - name: Upload WebAssembly Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: libamtrack-wasm
           path: |
