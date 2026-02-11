@@ -52,7 +52,7 @@ void AT_run_IGK_method(  const long  number_of_field_components,
     double*       P_I,
     double*       P_g)
 {
-  long   i, j;
+  aaaaaaaaaaaaaalong   i, j;
   long   n_tmp      = 1;
 
   /* Clear return values */
