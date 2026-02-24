@@ -27,7 +27,7 @@ jobs:
 
       - name: Cache compiled GSL
         id: cache-gsl
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ github.workspace }}/usr
           key: ${{ runner.os }}-gsl-${{ hashFiles('**/webassembly-reusable.yml') }}

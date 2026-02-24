@@ -29,7 +29,7 @@ jobs:
 
       - name: Restore vcpkg cache
         id: cache-vcpkg
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: vcpkg
           key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
@@ -44,7 +44,7 @@ jobs:
 
       - name: Restore vcpkg deps cache
         id: cache-vcpkg-deps
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ github.workspace }}/vcpkg_cache
           key: vcpkg-deps-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
@@ -52,7 +52,7 @@ jobs:
 
       - name: Restore vcpkg installed cache
         id: cache-vcpkg-installed
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ github.workspace }}/vcpkg_installed
           key: vcpkg-installed-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
