@@ -23,7 +23,7 @@ jobs:
       - name: Create local GSL directory
         run: mkdir -p "${{ github.workspace }}/usr"
 
-      - uses: mymindstorm/setup-emsdk@v14
+      - uses: mymindstorm/setup-emsdk@v16
 
       - name: Cache compiled GSL
         id: cache-gsl
