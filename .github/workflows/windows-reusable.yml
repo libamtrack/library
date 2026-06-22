@@ -81,7 +81,7 @@ jobs:
         shell: pwsh
         run: |
           $INSTALL_DIR = "${{ runner.temp }}\libamtrack"
-          cmake .. -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64
+          cmake .. -DCMAKE_BUILD_TYPE=Release -A x64
           cmake --build . --parallel --config Release
           cmake --install . --prefix "$INSTALL_DIR" --config Release
 
