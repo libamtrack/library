@@ -484,7 +484,7 @@ double AT_lambda_Vavilov_FWHM_right(const double kappa, const double beta) {
 }
 
 double AT_lambda_Vavilov_FWHM(const double kappa, const double beta) {
-    return (AT_lambda_Vavilov_FWHM_right(kappa, beta) - AT_lambda_Landau_FWHM_left(kappa, beta));
+    return (AT_lambda_Vavilov_FWHM_right(kappa, beta) - AT_lambda_Vavilov_FWHM_left(kappa, beta));
 }
 
 double AT_energy_loss_keV_Vavilov_FWHM(const double E_MeV_u,
