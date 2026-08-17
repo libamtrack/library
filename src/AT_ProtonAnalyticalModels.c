@@ -90,7 +90,8 @@ double AT_dose_Bortfeld_Gy_single(const double z_cm,
     dose_Gy *= (factor1 + factor2);
 
     dose_Gy *= 1.6021766e-10;  // convert MeV/g into Gy
-
+    if (dose_Gy <= 0)
+        dose_Gy = NAN;
     return dose_Gy;
 }
 
