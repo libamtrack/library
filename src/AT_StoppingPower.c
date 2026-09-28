@@ -170,7 +170,27 @@ int AT_Stopping_Power_with_no( const long stopping_power_source_no,
 	return result;
 }
 
+int AT_Stopping_Power_E_MeV_with_no( const long stopping_power_source_no,
+		const long n,
+		const double E_MeV[],
+		const long particle_no[],
+		const long material_no,
+		double stopping_power_keV_um[]){
+	
+	double *E_MeV_u = malloc((size_t)n * sizeof(*E_MeV_u));
+	for (long i = 0; i < n; i++) {
+		E_MeV_u[i] = AT_E_MeV_u_from_E_MeV(E_MeV[i], particle_no[i]);
+	}
+	int result = AT_Stopping_Power_with_no(stopping_power_source_no,
+			n,
+			E_MeV_u,
+			particle_no,
+			material_no,
+			stopping_power_keV_um);
 
+	free(E_MeV_u);
+	return result;
+}
 
 double AT_Energy_MeV_u_from_Stopping_Power_single( const long stopping_power_source_no,
 		const double Stopping_Power_MeV_cm2_g,

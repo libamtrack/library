@@ -161,6 +161,14 @@ int AT_Stopping_Power_with_no( const long stopping_power_source_no,
 		const long particle_no[],
 		const long material_no,
 		double stopping_power_keV_um[]);
+
+int AT_Stopping_Power_E_MeV_with_no( const long stopping_power_source_no,
+		const long n,
+		const double E_MeV[],
+		const long particle_no[],
+		const long material_no,
+		double stopping_power_keV_um[]);
+
 /**
  * TODO
  * @param[in] stopping_power_source_no
