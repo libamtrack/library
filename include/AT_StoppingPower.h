@@ -132,6 +132,13 @@ int AT_Mass_Stopping_Power_with_no( const long stopping_power_source_no,
 		const long material_no,
 		double stopping_power_MeV_cm2_g[]);
 
+int AT_Mass_Stopping_Power_E_MeV_with_no( const long stopping_power_source_no,
+		const long n,
+		const double E_MeV[],
+		const long particle_no[],
+		const long material_no,
+		double stopping_power_MeV_cm2_g[]);
+
 /**
  * Retrieves the electronic stopping power in keV/um for
  * the requested energies and particles for a specified
