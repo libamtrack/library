@@ -293,7 +293,7 @@ int AT_Mass_Stopping_Power_E_MeV_u_single( const long stopping_power_source_no,
 		const double E_MeV_u, const long particle_no,
 		const long material_no, double *stopping_power_MeV_cm2_g){
 
-	return AT_Mass_Stopping_Power_E_MeV_with_no(stopping_power_source_no,
+	return AT_Mass_Stopping_Power_with_no(stopping_power_source_no,
 			1,
 			&E_MeV_u,
 			&particle_no,
