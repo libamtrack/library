@@ -222,12 +222,11 @@ double AT_Energy_MeV_u_from_Stopping_Power_single( const long stopping_power_sou
  * @param[in]  E_MeV                     total kinetic energy in MeV
  * @param[in]  particle_no               particle number
  * @param[in]  material_no               material number
- * @param[out] stopping_power_keV_um     stopping power in keV/um
- * @return     status
+ * @return     stopping power in keV/um
  */
-int AT_Stopping_Power_E_MeV_single( const long stopping_power_source_no,
+double AT_Stopping_Power_E_MeV_single( const long stopping_power_source_no,
 		const double E_MeV, const long particle_no,
-		const long material_no, double *stopping_power_keV_um);
+		const long material_no);
 
 /**
  * Retrieves the mass stopping power in MeV*cm2/g
@@ -240,12 +239,11 @@ int AT_Stopping_Power_E_MeV_single( const long stopping_power_source_no,
  * @param[in]  E_MeV                     total kinetic energy in MeV
  * @param[in]  particle_no               particle number
  * @param[in]  material_no               material number
- * @param[out] stopping_power_MeV_cm2_g  mass stopping power in MeV*cm2/g
- * @return     status
+ * @return     mass stopping power in MeV*cm2/g
  */
-int AT_Mass_Stopping_Power_E_MeV_single( const long stopping_power_source_no,
+double AT_Mass_Stopping_Power_E_MeV_single( const long stopping_power_source_no,
 		const double E_MeV, const long particle_no,
-		const long material_no, double *stopping_power_MeV_cm2_g);
+		const long material_no);
 
 /**
  * Retrieves the stopping power in keV/um for a
@@ -255,12 +253,11 @@ int AT_Mass_Stopping_Power_E_MeV_single( const long stopping_power_source_no,
  * @param[in]  E_MeV_u                   kinetic energy in MeV/u
  * @param[in]  particle_no               particle number
  * @param[in]  material_no               material number
- * @param[out] stopping_power_keV_um     stopping power in keV/um
- * @return     status
+ * @return     stopping power in keV/um
  */
-int AT_Stopping_Power_E_MeV_u_single( const long stopping_power_source_no,
+double AT_Stopping_Power_E_MeV_u_single( const long stopping_power_source_no,
 		const double E_MeV_u, const long particle_no,
-		const long material_no, double *stopping_power_keV_um);
+		const long material_no);
 
 /**
  * Retrieves the mass stopping power in MeV*cm2/g
@@ -270,11 +267,10 @@ int AT_Stopping_Power_E_MeV_u_single( const long stopping_power_source_no,
  * @param[in]  E_MeV_u                   kinetic energy in MeV/u
  * @param[in]  particle_no               particle number
  * @param[in]  material_no               material number
- * @param[out] stopping_power_MeV_cm2_g  mass stopping power in MeV*cm2/g
- * @return     status
+ * @return     mass stopping power in MeV*cm2/g
  */
-int AT_Mass_Stopping_Power_E_MeV_u_single( const long stopping_power_source_no,
+double AT_Mass_Stopping_Power_E_MeV_u_single( const long stopping_power_source_no,
 		const double E_MeV_u, const long particle_no,
-		const long material_no, double *stopping_power_MeV_cm2_g);
+		const long material_no);
 
 #endif /* AT_STOPPINGPOWER_H_ */
