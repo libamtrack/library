@@ -136,7 +136,7 @@ int AT_Mass_Stopping_Power_with_no( const long stopping_power_source_no,
  * Retrieves the electronic mass stopping power in MeV*cm2/g
  * for total kinetic energies given in MeV.
  *
- * Each E_MeV[i] value is converted to MeV/u using particle_no[i]
+ * Each E_MeV[i] value is converted internally to MeV/u using particle_no[i]
  * before the stopping power is calculated.
  *
  * @param[in]   stopping_power_source_no  id of the data source
@@ -181,7 +181,7 @@ int AT_Stopping_Power_with_no( const long stopping_power_source_no,
  * Retrieves the electronic stopping power in keV/um
  * for total kinetic energies given in MeV.
  *
- * Each E_MeV[i] value is converted to MeV/u using particle_no[i]
+ * Each E_MeV[i] value is converted internally to MeV/u using particle_no[i]
  * before the stopping power is calculated.
  *
  * @param[in]   stopping_power_source_no  id of the data source
