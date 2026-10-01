@@ -133,6 +133,11 @@ int AT_Mass_Stopping_Power_E_MeV_with_no( const long stopping_power_source_no,
 		double stopping_power_MeV_cm2_g[]){
 
 	double *E_MeV_u = malloc((size_t)n * sizeof(*E_MeV_u));
+	if (E_MeV_u == NULL) {
+		fprintf(stderr, "Memory allocation failed\n");
+		exit(1);
+	}
+
 	for (long i = 0; i < n; i++) {
 		E_MeV_u[i] = AT_E_MeV_u_from_E_MeV(E_MeV[i], particle_no[i]);
 	}
@@ -178,6 +183,11 @@ int AT_Stopping_Power_E_MeV_with_no( const long stopping_power_source_no,
 		double stopping_power_keV_um[]){
 	
 	double *E_MeV_u = malloc((size_t)n * sizeof(*E_MeV_u));
+	if (E_MeV_u == NULL) {
+		fprintf(stderr, "Memory allocation failed\n");
+		exit(1);
+	}
+	
 	for (long i = 0; i < n; i++) {
 		E_MeV_u[i] = AT_E_MeV_u_from_E_MeV(E_MeV[i], particle_no[i]);
 	}
