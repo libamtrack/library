@@ -133,6 +133,28 @@ int AT_Mass_Stopping_Power_with_no( const long stopping_power_source_no,
 		double stopping_power_MeV_cm2_g[]);
 
 /**
+ * Retrieves the electronic mass stopping power in MeV*cm2/g
+ * for total kinetic energies given in MeV.
+ *
+ * Each E_MeV[i] value is converted internally to MeV/u using particle_no[i]
+ * before the stopping power is calculated.
+ *
+ * @param[in]   stopping_power_source_no  id of the data source
+ * @param[in]   n                         number of energies / particles
+ * @param[in]   E_MeV                     total kinetic energies in MeV (array of size n)
+ * @param[in]   particle_no               particle numbers (array of size n)
+ * @param[in]   material_no               material number
+ * @param[out]  stopping_power_MeV_cm2_g  stopping powers (array of size n)
+ * @return      status
+ */
+int AT_Mass_Stopping_Power_E_MeV_with_no( const long stopping_power_source_no,
+		const long n,
+		const double E_MeV[],
+		const long particle_no[],
+		const long material_no,
+		double stopping_power_MeV_cm2_g[]);
+
+/**
  * Retrieves the electronic stopping power in keV/um for
  * the requested energies and particles for a specified
  * material and data source. The data source is thereby
@@ -154,6 +176,29 @@ int AT_Stopping_Power_with_no( const long stopping_power_source_no,
 		const long particle_no[],
 		const long material_no,
 		double stopping_power_keV_um[]);
+
+/**
+ * Retrieves the electronic stopping power in keV/um
+ * for total kinetic energies given in MeV.
+ *
+ * Each E_MeV[i] value is converted internally to MeV/u using particle_no[i]
+ * before the stopping power is calculated.
+ *
+ * @param[in]   stopping_power_source_no  id of the data source
+ * @param[in]   n                         number of energies / particles
+ * @param[in]   E_MeV                     total kinetic energies in MeV (array of size n)
+ * @param[in]   particle_no               particle numbers (array of size n)
+ * @param[in]   material_no               material number
+ * @param[out]  stopping_power_keV_um     stopping powers (array of size n)
+ * @return      status
+ */
+int AT_Stopping_Power_E_MeV_with_no( const long stopping_power_source_no,
+		const long n,
+		const double E_MeV[],
+		const long particle_no[],
+		const long material_no,
+		double stopping_power_keV_um[]);
+
 /**
  * TODO
  * @param[in] stopping_power_source_no
@@ -166,6 +211,66 @@ double AT_Energy_MeV_u_from_Stopping_Power_single( const long stopping_power_sou
 		const double Stopping_Power_MeV_cm2_g, const long particle_no,
 		const long material_no);
 
+/**
+ * Retrieves the stopping power in keV/um for a
+ * single particle with total kinetic energy given in MeV.
+ *
+ * The total kinetic energy is converted to MeV/u using particle_no
+ * before the stopping power is calculated.
+ *
+ * @param[in]  stopping_power_source_no  id of the data source
+ * @param[in]  E_MeV                     total kinetic energy in MeV
+ * @param[in]  particle_no               particle number
+ * @param[in]  material_no               material number
+ * @return     stopping power in keV/um
+ */
+double AT_Stopping_Power_E_MeV_single( const long stopping_power_source_no,
+		const double E_MeV, const long particle_no,
+		const long material_no);
 
+/**
+ * Retrieves the mass stopping power in MeV*cm2/g
+ * for a single particle with total kinetic energy given in MeV.
+ *
+ * The total kinetic energy is converted to MeV/u using particle_no
+ * before the stopping power is calculated.
+ *
+ * @param[in]  stopping_power_source_no  id of the data source
+ * @param[in]  E_MeV                     total kinetic energy in MeV
+ * @param[in]  particle_no               particle number
+ * @param[in]  material_no               material number
+ * @return     mass stopping power in MeV*cm2/g
+ */
+double AT_Mass_Stopping_Power_E_MeV_single( const long stopping_power_source_no,
+		const double E_MeV, const long particle_no,
+		const long material_no);
+
+/**
+ * Retrieves the stopping power in keV/um for a
+ * single particle with kinetic energy given in MeV/u.
+ *
+ * @param[in]  stopping_power_source_no  id of the data source
+ * @param[in]  E_MeV_u                   kinetic energy in MeV/u
+ * @param[in]  particle_no               particle number
+ * @param[in]  material_no               material number
+ * @return     stopping power in keV/um
+ */
+double AT_Stopping_Power_E_MeV_u_single( const long stopping_power_source_no,
+		const double E_MeV_u, const long particle_no,
+		const long material_no);
+
+/**
+ * Retrieves the mass stopping power in MeV*cm2/g
+ * for a single particle with kinetic energy given in MeV/u.
+ *
+ * @param[in]  stopping_power_source_no  id of the data source
+ * @param[in]  E_MeV_u                   kinetic energy in MeV/u
+ * @param[in]  particle_no               particle number
+ * @param[in]  material_no               material number
+ * @return     mass stopping power in MeV*cm2/g
+ */
+double AT_Mass_Stopping_Power_E_MeV_u_single( const long stopping_power_source_no,
+		const double E_MeV_u, const long particle_no,
+		const long material_no);
 
 #endif /* AT_STOPPINGPOWER_H_ */
