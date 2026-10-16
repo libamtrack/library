@@ -51,6 +51,11 @@ int AT_ICRU_wrapper( const long n,
 		double mass_stopping_power_MeV_cm2_g[]);
 
 
+int AT_ICRU_energy_bounds( long material_no,
+		long particle_no,
+		double *minimum,
+		double *maximum);
+
 /**
  * @struct AT_stopping_power_ICRU_table
  * TODO
