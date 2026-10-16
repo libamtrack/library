@@ -66,6 +66,11 @@ int AT_PSTAR_wrapper( const long n,
 		const char info[],
 		double mass_stopping_power_MeV_cm2_g[]);
 
+
+int AT_PSTAR_energy_bounds( long material_no,
+		double *minimum,
+    	double *maximum);
+
 /** PSTAR data downloaded from NIST database: http://www.nist.gov/pml/data/star/index.cfm
  * Stopping-Power and Range Tables
  * for Electrons, Protons, and Helium Ions
