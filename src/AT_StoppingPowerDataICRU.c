@@ -29,6 +29,7 @@
  */
 
 #include "AT_StoppingPowerDataICRU.h"
+#include "AT_Error.h"
 
 AT_stopping_power_ICRU_table_struct AT_stopping_power_ICRU_table[2] = {
 		{   Water_Liquid,
@@ -185,19 +186,24 @@ int AT_ICRU_energy_bounds(
     double *maximum) {
     if (material_no != Water_Liquid &&
         material_no != Aluminum_Oxide) {
-        return -1;
+        return AT_No_ICRU_Data;
     }
+
     long atomic_number = AT_Z_from_particle_no_single(particle_no);
     if (atomic_number > 18) {
-        return -1;
+        return AT_No_ICRU_Data;
     }
+
     const AT_stopping_power_ICRU_table_struct *table =
         &AT_stopping_power_ICRU_table[material_no - 1];
+
     *minimum = table->energy_and_stopping_power[0][0];
     *maximum = table->energy_and_stopping_power[0]
         [table->number_of_data_points - 1];
+
     if (atomic_number == 2) {
         *maximum = 250.0;
     }
-    return 0;
+
+    return AT_Success;
 }

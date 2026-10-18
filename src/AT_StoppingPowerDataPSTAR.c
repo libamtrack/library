@@ -1,4 +1,5 @@
 #include "AT_StoppingPowerDataPSTAR.h"
+#include "AT_Error.h"
 
 /*
  * PSTAR contains experimental stopping power data for protons
@@ -1346,15 +1347,18 @@ int AT_PSTAR_energy_bounds(
     double *minimum,
     double *maximum) {
     if (material_no < 0 || material_no >= N_PSTAR_MATERIALS) {
-        return -1;
+        return AT_No_PSTAR_Data;
     }
+
     const PSTAR_data_for_material_struct *table =
         PSTAR_data.stopping_power_source_data[material_no];
-    if (table == NULL || table->number_of_data_points <= 0) {
-        return -1;
+    if (table == NULL) {
+        return AT_No_PSTAR_Data;
     }
+
     *minimum = table->energy_and_stopping_power[0][0];
     *maximum = table->energy_and_stopping_power[
-        table->number_of_data_points - 1][0];
-    return 0;
+        N_PSTAR_DATAPOINTS - 1][0];
+
+    return AT_Success;
 }
