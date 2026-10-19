@@ -129,6 +129,24 @@ AT_stopping_power_ICRU_table_struct AT_stopping_power_ICRU_table[2] = {
 
 
 
+static long AT_ICRU_max_atomic_number(const long material_no) {
+	if (material_no == Water_Liquid) {
+		return 18;
+	}
+	if (material_no == Aluminum_Oxide) {
+		return 10;
+	}
+	return 0;
+}
+
+static int AT_ICRU_has_data_for_atomic_number(
+		const long material_no,
+		const long atomic_number) {
+	const long max_atomic_number =
+		AT_ICRU_max_atomic_number(material_no);
+	return atomic_number >= 1 && atomic_number <= max_atomic_number;
+}
+
 int AT_ICRU_wrapper( const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
@@ -149,7 +167,7 @@ int AT_ICRU_wrapper( const long n,
 
 	for(i = 0; i < n; i++){
 
-		if( Z[i] > 18){				/* Data for H ... Ar */
+		if(!AT_ICRU_has_data_for_atomic_number(material_no, Z[i])){
 			mass_stopping_power_MeV_cm2_g[i]	= -1.0;
 			continue;
 		}
@@ -189,7 +207,7 @@ static int AT_ICRU_energy_bounds(long material_no,
     }
 
     long atomic_number = AT_Z_from_particle_no_single(particle_no);
-    if (atomic_number > 18) {
+    if (!AT_ICRU_has_data_for_atomic_number(material_no, atomic_number)) {
         return AT_No_ICRU_Data;
     }
 

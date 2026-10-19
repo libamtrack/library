@@ -323,11 +323,6 @@ int AT_Stopping_Power_has_data(const long stopping_power_source_no,
         const long particle_no,
         const long material_no)
 {
-    const long Z = AT_Z_from_particle_no_single(particle_no);
-    const long A = AT_A_from_particle_no_single(particle_no);
-    if (Z < 0 || A < 0) {
-        return 0;
-    }
     switch (stopping_power_source_no) {
         case FromFile:
             /*
@@ -336,18 +331,21 @@ int AT_Stopping_Power_has_data(const long stopping_power_source_no,
              */
             return 0;
         case Bethe:
-            /*
-             * Bethe is an analytical model and supports all
-             * defined materials and particles.
-             */
-            return material_no >= 0 && material_no < MATERIAL_DATA_N;
+            /* Bethe is an analytical model, not a finite data table. */
+            return 1;
         case PSTAR:
+            if (AT_Z_from_particle_no_single(particle_no) < 1 ||
+                    AT_A_from_particle_no_single(particle_no) < 1) {
+                return 0;
+            }
             return material_no >= Water_Liquid &&
                    material_no <= Copper;
         case ICRU:
-            return (material_no == Water_Liquid ||
-                    material_no == Aluminum_Oxide) &&
-                   Z <= 18;
+            if (AT_Z_from_particle_no_single(particle_no) < 1 ||
+                    AT_A_from_particle_no_single(particle_no) < 1) {
+                return 0;
+            }
+            return AT_ICRU_min_energy_MeV_u(material_no, particle_no) >= 0.0;
         default:
             return 0;
     }
