@@ -273,4 +273,8 @@ double AT_Mass_Stopping_Power_E_MeV_u_single( const long stopping_power_source_n
 		const double E_MeV_u, const long particle_no,
 		const long material_no);
 
+
+int AT_Stopping_Power_has_data(const long stopping_power_source_no,
+        const long particle_no, const long material_no);
+
 #endif /* AT_STOPPINGPOWER_H_ */
