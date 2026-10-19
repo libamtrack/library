@@ -179,31 +179,42 @@ int AT_ICRU_wrapper( const long n,
 	return AT_Success;
 }
 
-int AT_ICRU_energy_bounds(
-    long material_no,
-    long particle_no,
-    double *minimum,
-    double *maximum) {
+double AT_ICRU_min_energy(long material_no, long particle_no) {
     if (material_no != Water_Liquid &&
         material_no != Aluminum_Oxide) {
-        return AT_No_ICRU_Data;
+        return -1.0;
     }
 
     long atomic_number = AT_Z_from_particle_no_single(particle_no);
     if (atomic_number > 18) {
-        return AT_No_ICRU_Data;
+        return -1.0;
     }
 
     const AT_stopping_power_ICRU_table_struct *table =
         &AT_stopping_power_ICRU_table[material_no - 1];
 
-    *minimum = table->energy_and_stopping_power[0][0];
-    *maximum = table->energy_and_stopping_power[0]
-        [table->number_of_data_points - 1];
+    return table->energy_and_stopping_power[0][0];
+}
 
-    if (atomic_number == 2) {
-        *maximum = 250.0;
+double AT_ICRU_max_energy(long material_no, long particle_no) {
+    if (material_no != Water_Liquid &&
+        material_no != Aluminum_Oxide) {
+        return -1.0;
     }
 
-    return AT_Success;
+    long atomic_number = AT_Z_from_particle_no_single(particle_no);
+    if (atomic_number > 18) {
+        return -1.0;
+    }
+
+    const AT_stopping_power_ICRU_table_struct *table =
+        &AT_stopping_power_ICRU_table[material_no - 1];
+
+    double maximum = table->energy_and_stopping_power[0]
+        [table->number_of_data_points - 1];
+    if (atomic_number == 2) {
+        maximum = 250.0;
+    }
+
+    return maximum;
 }

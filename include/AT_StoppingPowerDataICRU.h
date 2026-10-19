@@ -51,19 +51,24 @@ int AT_ICRU_wrapper( const long n,
 		double mass_stopping_power_MeV_cm2_g[]);
 
 /**
- * Returns the minimum and maximum kinetic energy per nucleon covered by the
- * ICRU stopping-power table for a material and particle.
+ * @brief Returns the minimum kinetic energy covered by the ICRU data.
  *
- * @param[in]  material_no Material number.
- * @param[in]  particle_no Particle number.
- * @param[out] minimum     Minimum kinetic energy in MeV/u.
- * @param[out] maximum     Maximum kinetic energy in MeV/u.
- * @return AT_Success when data are available, or AT_No_ICRU_Data otherwise.
+ * @param[in] material_no Material number identifying the material.
+ * @param[in] particle_no Particle number identifying the particle.
+ * @return Minimum tabulated kinetic energy in MeV/u, or -1.0 if
+ *         material_no or particle_no has no ICRU data.
  */
-int AT_ICRU_energy_bounds( long material_no,
-		long particle_no,
-		double *minimum,
-		double *maximum);
+double AT_ICRU_min_energy(long material_no, long particle_no);
+
+/**
+ * @brief Returns the maximum kinetic energy covered by the ICRU data.
+ *
+ * @param[in] material_no Material number identifying the material.
+ * @param[in] particle_no Particle number identifying the particle.
+ * @return Maximum tabulated kinetic energy in MeV/u, or -1.0 if
+ *         material_no or particle_no has no ICRU data.
+ */
+double AT_ICRU_max_energy(long material_no, long particle_no);
 
 /**
  * @struct AT_stopping_power_ICRU_table
