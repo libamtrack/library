@@ -29,6 +29,7 @@
  */
 
 #include "AT_StoppingPowerDataICRU.h"
+#include "AT_Error.h"
 
 AT_stopping_power_ICRU_table_struct AT_stopping_power_ICRU_table[2] = {
 		{   Water_Liquid,
@@ -128,6 +129,24 @@ AT_stopping_power_ICRU_table_struct AT_stopping_power_ICRU_table[2] = {
 
 
 
+static long AT_ICRU_max_atomic_number(const long material_no) {
+	if (material_no == Water_Liquid) {
+		return 18;
+	}
+	if (material_no == Aluminum_Oxide) {
+		return 10;
+	}
+	return 0;
+}
+
+static int AT_ICRU_has_data_for_atomic_number(
+		const long material_no,
+		const long atomic_number) {
+	const long max_atomic_number =
+		AT_ICRU_max_atomic_number(material_no);
+	return atomic_number >= 1 && atomic_number <= max_atomic_number;
+}
+
 int AT_ICRU_wrapper( const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
@@ -148,7 +167,7 @@ int AT_ICRU_wrapper( const long n,
 
 	for(i = 0; i < n; i++){
 
-		if( Z[i] > 18){				/* Data for H ... Ar */
+		if(!AT_ICRU_has_data_for_atomic_number(material_no, Z[i])){
 			mass_stopping_power_MeV_cm2_g[i]	= -1.0;
 			continue;
 		}
@@ -178,3 +197,50 @@ int AT_ICRU_wrapper( const long n,
 	return AT_Success;
 }
 
+static int AT_ICRU_energy_bounds(long material_no,
+    long particle_no,
+    double *minimum,
+    double *maximum) {
+    if (material_no != Water_Liquid &&
+        material_no != Aluminum_Oxide) {
+        return AT_No_ICRU_Data;
+    }
+
+    long atomic_number = AT_Z_from_particle_no_single(particle_no);
+    if (!AT_ICRU_has_data_for_atomic_number(material_no, atomic_number)) {
+        return AT_No_ICRU_Data;
+    }
+
+    const AT_stopping_power_ICRU_table_struct *table =
+        &AT_stopping_power_ICRU_table[material_no - 1];
+
+    *minimum = table->energy_and_stopping_power[0][0];
+    *maximum = table->energy_and_stopping_power[0]
+        [table->number_of_data_points - 1];
+
+    if (atomic_number == 2) {
+        *maximum = 250.0;
+    }
+
+    return AT_Success;
+}
+
+double AT_ICRU_min_energy_MeV_u(long material_no, long particle_no) {
+    double minimum;
+    double maximum;
+    if (AT_ICRU_energy_bounds(material_no, particle_no,
+                              &minimum, &maximum) != AT_Success) {
+        return -1.0;
+    }
+    return minimum;
+}
+
+double AT_ICRU_max_energy_MeV_u(long material_no, long particle_no) {
+    double minimum;
+    double maximum;
+    if (AT_ICRU_energy_bounds(material_no, particle_no,
+                              &minimum, &maximum) != AT_Success) {
+        return -1.0;
+    }
+    return maximum;
+}

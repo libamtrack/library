@@ -318,3 +318,35 @@ double AT_Mass_Stopping_Power_E_MeV_u_single( const long stopping_power_source_n
 			&stopping_power_MeV_cm2_g);
 	return stopping_power_MeV_cm2_g;
 }
+
+int AT_Stopping_Power_has_data(const long stopping_power_source_no,
+        const long particle_no,
+        const long material_no)
+{
+    switch (stopping_power_source_no) {
+        case FromFile:
+            /*
+             * The filename and file contents are not provided here,
+             * so availability cannot be checked.
+             */
+            return 0;
+        case Bethe:
+            /* Bethe is an analytical model, not a finite data table. */
+            return 1;
+        case PSTAR:
+            if (AT_Z_from_particle_no_single(particle_no) < 1 ||
+                    AT_A_from_particle_no_single(particle_no) < 1) {
+                return 0;
+            }
+            return material_no >= Water_Liquid &&
+                   material_no <= Copper;
+        case ICRU:
+            if (AT_Z_from_particle_no_single(particle_no) < 1 ||
+                    AT_A_from_particle_no_single(particle_no) < 1) {
+                return 0;
+            }
+            return AT_ICRU_min_energy_MeV_u(material_no, particle_no) >= 0.0;
+        default:
+            return 0;
+    }
+}
