@@ -66,18 +66,24 @@ int AT_PSTAR_wrapper( const long n,
 		const char info[],
 		double mass_stopping_power_MeV_cm2_g[]);
 
+
 /**
- * Returns the minimum and maximum kinetic energies covered by the PSTAR
- * stopping-power table for a material.
+ * @brief Returns the minimum kinetic energy covered by the PSTAR data.
  *
- * @param[in]  material_no Material number.
- * @param[out] minimum     Minimum kinetic energy in MeV.
- * @param[out] maximum     Maximum kinetic energy in MeV.
- * @return AT_Success when data are available, or AT_No_PSTAR_Data otherwise.
+ * @param[in] material_no Material number identifying the material.
+ * @return Minimum tabulated kinetic energy in MeV, or -1.0 if
+ *         material_no is outside the PSTAR material range.
  */
-int AT_PSTAR_energy_bounds( long material_no,
-		double *minimum,
-		double *maximum);
+double AT_PSTAR_min_energy(long material_no);
+
+/**
+ * @brief Returns the maximum kinetic energy covered by the PSTAR data.
+ *
+ * @param[in] material_no Material number identifying the material.
+ * @return Maximum tabulated kinetic energy in MeV, or -1.0 if
+ *         material_no is outside the PSTAR material range.
+ */
+double AT_PSTAR_max_energy(long material_no);
 
 /** PSTAR data downloaded from NIST database: http://www.nist.gov/pml/data/star/index.cfm
  * Stopping-Power and Range Tables
