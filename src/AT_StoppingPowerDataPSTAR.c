@@ -1359,20 +1359,20 @@ static int AT_PSTAR_energy_bounds(long material_no,
 	return AT_Success;
 }
 
-double AT_PSTAR_min_energy(long material_no) {
+double AT_PSTAR_min_energy_MeV_u(long material_no) {
 	double minimum;
 	double maximum;
 	if (AT_PSTAR_energy_bounds(material_no, &minimum, &maximum) != AT_Success) {
 		return -1.0;
 	}
-	return minimum;
+	return AT_E_MeV_u_from_E_MeV(minimum, PARTICLE_PROTON_NUMBER);
 }
 
-double AT_PSTAR_max_energy(long material_no) {
+double AT_PSTAR_max_energy_MeV_u(long material_no) {
 	double minimum;
 	double maximum;
 	if (AT_PSTAR_energy_bounds(material_no, &minimum, &maximum) != AT_Success) {
 		return -1.0;
 	}
-	return maximum;
+	return AT_E_MeV_u_from_E_MeV(maximum, PARTICLE_PROTON_NUMBER);
 }

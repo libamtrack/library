@@ -58,7 +58,7 @@ int AT_ICRU_wrapper( const long n,
  * @return Minimum tabulated kinetic energy in MeV/u, or -1.0 if
  *         material_no or particle_no has no ICRU data.
  */
-double AT_ICRU_min_energy(long material_no, long particle_no);
+double AT_ICRU_min_energy_MeV_u(long material_no, long particle_no);
 
 /**
  * @brief Returns the maximum kinetic energy covered by the ICRU data.
@@ -68,7 +68,7 @@ double AT_ICRU_min_energy(long material_no, long particle_no);
  * @return Maximum tabulated kinetic energy in MeV/u, or -1.0 if
  *         material_no or particle_no has no ICRU data.
  */
-double AT_ICRU_max_energy(long material_no, long particle_no);
+double AT_ICRU_max_energy_MeV_u(long material_no, long particle_no);
 
 /**
  * @struct AT_stopping_power_ICRU_table

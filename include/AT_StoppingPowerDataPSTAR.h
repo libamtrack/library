@@ -71,19 +71,19 @@ int AT_PSTAR_wrapper( const long n,
  * @brief Returns the minimum kinetic energy covered by the PSTAR data.
  *
  * @param[in] material_no Material number identifying the material.
- * @return Minimum tabulated kinetic energy in MeV, or -1.0 if
+ * @return Minimum tabulated kinetic energy in MeV/u, or -1.0 if
  *         material_no is outside the PSTAR material range.
  */
-double AT_PSTAR_min_energy(long material_no);
+double AT_PSTAR_min_energy_MeV_u(long material_no);
 
 /**
  * @brief Returns the maximum kinetic energy covered by the PSTAR data.
  *
  * @param[in] material_no Material number identifying the material.
- * @return Maximum tabulated kinetic energy in MeV, or -1.0 if
+ * @return Maximum tabulated kinetic energy in MeV/u, or -1.0 if
  *         material_no is outside the PSTAR material range.
  */
-double AT_PSTAR_max_energy(long material_no);
+double AT_PSTAR_max_energy_MeV_u(long material_no);
 
 /** PSTAR data downloaded from NIST database: http://www.nist.gov/pml/data/star/index.cfm
  * Stopping-Power and Range Tables

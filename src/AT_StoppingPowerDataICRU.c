@@ -207,7 +207,7 @@ static int AT_ICRU_energy_bounds(long material_no,
     return AT_Success;
 }
 
-double AT_ICRU_min_energy(long material_no, long particle_no) {
+double AT_ICRU_min_energy_MeV_u(long material_no, long particle_no) {
     double minimum;
     double maximum;
     if (AT_ICRU_energy_bounds(material_no, particle_no,
@@ -217,7 +217,7 @@ double AT_ICRU_min_energy(long material_no, long particle_no) {
     return minimum;
 }
 
-double AT_ICRU_max_energy(long material_no, long particle_no) {
+double AT_ICRU_max_energy_MeV_u(long material_no, long particle_no) {
     double minimum;
     double maximum;
     if (AT_ICRU_energy_bounds(material_no, particle_no,
