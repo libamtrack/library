@@ -72,7 +72,7 @@ int AT_PSTAR_wrapper( const long n,
  *
  * @param[in] material_no Material number identifying the material.
  * @return Minimum tabulated kinetic energy in MeV/u, or -1.0 if
- *         material_no is outside the PSTAR material range.
+ *         no PSTAR data are available for material_no.
  */
 double AT_PSTAR_min_energy_MeV_u(long material_no);
 
@@ -81,7 +81,7 @@ double AT_PSTAR_min_energy_MeV_u(long material_no);
  *
  * @param[in] material_no Material number identifying the material.
  * @return Maximum tabulated kinetic energy in MeV/u, or -1.0 if
- *         material_no is outside the PSTAR material range.
+ *         no PSTAR data are available for material_no.
  */
 double AT_PSTAR_max_energy_MeV_u(long material_no);
 

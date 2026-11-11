@@ -1345,16 +1345,19 @@ int AT_PSTAR_wrapper( const long n,
 static int AT_PSTAR_energy_bounds(long material_no,
 		double *minimum,
 		double *maximum) {
+	const PSTAR_data_for_material_struct *table;
+
 	if (material_no < 0 || material_no >= N_PSTAR_MATERIALS) {
 		return AT_No_PSTAR_Data;
 	}
 
-	*minimum =
-		PSTAR_data.stopping_power_source_data[material_no]
-			->energy_and_stopping_power[0][0];
-	*maximum =
-		PSTAR_data.stopping_power_source_data[material_no]
-			->energy_and_stopping_power[N_PSTAR_DATAPOINTS - 1][0];
+	table = PSTAR_data.stopping_power_source_data[material_no];
+	if (table == NULL) {
+		return AT_No_PSTAR_Data;
+	}
+
+	*minimum = table->energy_and_stopping_power[0][0];
+	*maximum = table->energy_and_stopping_power[N_PSTAR_DATAPOINTS - 1][0];
 
 	return AT_Success;
 }
