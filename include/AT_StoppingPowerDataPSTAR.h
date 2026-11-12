@@ -66,6 +66,38 @@ int AT_PSTAR_wrapper( const long n,
 		const char info[],
 		double mass_stopping_power_MeV_cm2_g[]);
 
+
+/**
+ * @brief Returns the minimum kinetic energy covered by the PSTAR data.
+ *
+ * @param[in] material_no Material number identifying the material.
+ * @return Minimum tabulated kinetic energy in MeV/u, or -1.0 if
+ *         no PSTAR data are available for material_no.
+ */
+double AT_PSTAR_min_energy_MeV_u(long material_no);
+
+/**
+ * @brief Returns the maximum kinetic energy covered by the PSTAR data.
+ *
+ * @param[in] material_no Material number identifying the material.
+ * @return Maximum tabulated kinetic energy in MeV/u, or -1.0 if
+ *         no PSTAR data are available for material_no.
+ */
+double AT_PSTAR_max_energy_MeV_u(long material_no);
+
+/**
+ * Checks whether PSTAR stopping-power data are available for a particle
+ * and material combination.
+ *
+ * Particles other than protons are calculated from the proton PSTAR
+ * tables by effective-charge scaling.
+ *
+ * @param[in] particle_no particle number
+ * @param[in] material_no material number
+ * @return 1 if PSTAR data are available, or 0 otherwise
+ */
+int AT_PSTAR_has_data(long particle_no, long material_no);
+
 /** PSTAR data downloaded from NIST database: http://www.nist.gov/pml/data/star/index.cfm
  * Stopping-Power and Range Tables
  * for Electrons, Protons, and Helium Ions

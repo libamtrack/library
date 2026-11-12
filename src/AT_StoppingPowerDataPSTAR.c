@@ -1,4 +1,5 @@
 #include "AT_StoppingPowerDataPSTAR.h"
+#include "AT_Error.h"
 
 /*
  * PSTAR contains experimental stopping power data for protons
@@ -1341,3 +1342,53 @@ int AT_PSTAR_wrapper( const long n,
 	return AT_Success;
 }
 
+static int AT_PSTAR_energy_bounds(long material_no,
+		double *minimum,
+		double *maximum) {
+	const PSTAR_data_for_material_struct *table;
+
+	if (material_no < 0 || material_no >= N_PSTAR_MATERIALS) {
+		return AT_No_PSTAR_Data;
+	}
+
+	table = PSTAR_data.stopping_power_source_data[material_no];
+	if (table == NULL) {
+		return AT_No_PSTAR_Data;
+	}
+
+	*minimum = table->energy_and_stopping_power[0][0];
+	*maximum = table->energy_and_stopping_power[N_PSTAR_DATAPOINTS - 1][0];
+
+	return AT_Success;
+}
+
+double AT_PSTAR_min_energy_MeV_u(long material_no) {
+	double minimum;
+	double maximum;
+	if (AT_PSTAR_energy_bounds(material_no, &minimum, &maximum) != AT_Success) {
+		return -1.0;
+	}
+	return AT_E_MeV_u_from_E_MeV(minimum, PARTICLE_PROTON_NUMBER);
+}
+
+double AT_PSTAR_max_energy_MeV_u(long material_no) {
+	double minimum;
+	double maximum;
+	if (AT_PSTAR_energy_bounds(material_no, &minimum, &maximum) != AT_Success) {
+		return -1.0;
+	}
+	return AT_E_MeV_u_from_E_MeV(maximum, PARTICLE_PROTON_NUMBER);
+}
+
+int AT_PSTAR_has_data(long particle_no, long material_no) {
+    if (AT_Z_from_particle_no_single(particle_no) < 1 ||
+        AT_A_from_particle_no_single(particle_no) < 1) {
+        return 0;
+    }
+
+    if (material_no < 0 || material_no >= N_PSTAR_MATERIALS) {
+        return 0;
+    }
+
+    return PSTAR_data.stopping_power_source_data[material_no] != NULL;
+}
