@@ -1,6 +1,8 @@
 #ifndef AT_STOPPINGPOWERDATAICRU_H_
 #define AT_STOPPINGPOWERDATAICRU_H_
 
+#define ICRU_HELIUM_MAX_E_MEV_U 250.0
+
 /**
  * @brief Stopping power
  */

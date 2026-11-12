@@ -219,7 +219,7 @@ static int AT_ICRU_energy_bounds(long particle_no,
         [table->number_of_data_points - 1];
 
     if (atomic_number == 2) {
-        *maximum = 250.0;
+        *maximum = ICRU_HELIUM_MAX_E_MEV_U;
     }
 
     return AT_Success;
