@@ -244,3 +244,16 @@ double AT_ICRU_max_energy_MeV_u(long particle_no, long material_no) {
     }
     return maximum;
 }
+
+int AT_ICRU_has_data(const long particle_no, const long material_no) {
+    const long atomic_number = AT_Z_from_particle_no_single(particle_no);
+
+    if (atomic_number < 1 ||
+        AT_A_from_particle_no_single(particle_no) < 1) {
+        return 0;
+    }
+
+    return AT_ICRU_has_data_for_atomic_number(
+        material_no,
+        atomic_number);
+}

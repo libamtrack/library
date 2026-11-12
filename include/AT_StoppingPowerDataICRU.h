@@ -72,6 +72,8 @@ double AT_ICRU_min_energy_MeV_u(long particle_no, long material_no);
  */
 double AT_ICRU_max_energy_MeV_u(long particle_no, long material_no);
 
+int AT_ICRU_has_data(const long particle_no, const long material_no);
+
 /**
  * @struct AT_stopping_power_ICRU_table
  * TODO
