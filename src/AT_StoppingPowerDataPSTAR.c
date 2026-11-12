@@ -1379,3 +1379,16 @@ double AT_PSTAR_max_energy_MeV_u(long material_no) {
 	}
 	return AT_E_MeV_u_from_E_MeV(maximum, PARTICLE_PROTON_NUMBER);
 }
+
+int AT_PSTAR_has_data(long particle_no, long material_no) {
+    if (AT_Z_from_particle_no_single(particle_no) < 1 ||
+        AT_A_from_particle_no_single(particle_no) < 1) {
+        return 0;
+    }
+
+    if (material_no < 0 || material_no >= N_PSTAR_MATERIALS) {
+        return 0;
+    }
+
+    return PSTAR_data.stopping_power_source_data[material_no] != NULL;
+}

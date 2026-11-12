@@ -85,6 +85,8 @@ double AT_PSTAR_min_energy_MeV_u(long material_no);
  */
 double AT_PSTAR_max_energy_MeV_u(long material_no);
 
+int AT_PSTAR_has_data(long particle_no, long material_no);
+
 /** PSTAR data downloaded from NIST database: http://www.nist.gov/pml/data/star/index.cfm
  * Stopping-Power and Range Tables
  * for Electrons, Protons, and Helium Ions
