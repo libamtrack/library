@@ -321,8 +321,7 @@ double AT_Mass_Stopping_Power_E_MeV_u_single( const long stopping_power_source_n
 
 int AT_Stopping_Power_has_data(const long stopping_power_source_no,
         const long particle_no,
-        const long material_no)
-{
+        const long material_no) {
     switch (stopping_power_source_no) {
         case FromFile:
             /*
@@ -345,8 +344,72 @@ int AT_Stopping_Power_has_data(const long stopping_power_source_no,
                     AT_A_from_particle_no_single(particle_no) < 1) {
                 return 0;
             }
-            return AT_ICRU_min_energy_MeV_u(material_no, particle_no) >= 0.0;
+            return AT_ICRU_min_energy_MeV_u(particle_no, material_no) >= 0.0;
         default:
             return 0;
+    }
+}
+
+double AT_Stopping_Power_E_MeV_u_min(
+        long stopping_power_source_no,
+        long particle_no,
+        long material_no) {
+    switch (stopping_power_source_no) {
+    case PSTAR:
+        if (!AT_Stopping_Power_has_data(PSTAR, particle_no, material_no)) {
+            return -1.0;
+        }
+
+        return AT_PSTAR_min_energy_MeV_u(material_no);
+
+    case ICRU:
+        if (!AT_Stopping_Power_has_data(ICRU, particle_no, material_no)) {
+            return -1.0;
+        }
+
+        return AT_ICRU_min_energy_MeV_u(particle_no, material_no);
+
+    case Bethe:
+        if (!AT_Stopping_Power_has_data(Bethe, particle_no, material_no)) {
+            return -1.0;
+        }
+
+        return BETHE_LOWER_LIMIT_E_MEV_U;
+
+    case FromFile:
+    default:
+        return -1.0;
+    }
+}
+
+double AT_Stopping_Power_E_MeV_u_max(
+    long stopping_power_source_no,
+    long particle_no,
+    long material_no) {
+    switch (stopping_power_source_no) {
+    case PSTAR:
+        if (!AT_Stopping_Power_has_data(PSTAR, particle_no, material_no)) {
+            return -1.0;
+        }
+
+        return AT_PSTAR_max_energy_MeV_u(material_no);
+
+    case ICRU:
+        if (!AT_Stopping_Power_has_data(ICRU, particle_no, material_no)) {
+            return -1.0;
+        }
+
+        return AT_ICRU_max_energy_MeV_u(particle_no, material_no);
+
+    case Bethe:
+        if (!AT_Stopping_Power_has_data(Bethe, particle_no, material_no)) {
+            return -1.0;
+        }
+
+        return HUGE_VAL;;
+
+    case FromFile:
+    default:
+        return -1.0;
     }
 }

@@ -197,8 +197,8 @@ int AT_ICRU_wrapper( const long n,
 	return AT_Success;
 }
 
-static int AT_ICRU_energy_bounds(long material_no,
-    long particle_no,
+static int AT_ICRU_energy_bounds(long particle_no, 
+	long material_no,
     double *minimum,
     double *maximum) {
     if (material_no != Water_Liquid &&
@@ -225,20 +225,20 @@ static int AT_ICRU_energy_bounds(long material_no,
     return AT_Success;
 }
 
-double AT_ICRU_min_energy_MeV_u(long material_no, long particle_no) {
+double AT_ICRU_min_energy_MeV_u(long particle_no, long material_no) {
     double minimum;
     double maximum;
-    if (AT_ICRU_energy_bounds(material_no, particle_no,
+    if (AT_ICRU_energy_bounds(particle_no, material_no, 
                               &minimum, &maximum) != AT_Success) {
         return -1.0;
     }
     return minimum;
 }
 
-double AT_ICRU_max_energy_MeV_u(long material_no, long particle_no) {
+double AT_ICRU_max_energy_MeV_u(long particle_no, long material_no) {
     double minimum;
     double maximum;
-    if (AT_ICRU_energy_bounds(material_no, particle_no,
+    if (AT_ICRU_energy_bounds(particle_no, material_no, 
                               &minimum, &maximum) != AT_Success) {
         return -1.0;
     }
