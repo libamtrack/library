@@ -85,6 +85,17 @@ double AT_PSTAR_min_energy_MeV_u(long material_no);
  */
 double AT_PSTAR_max_energy_MeV_u(long material_no);
 
+/**
+ * Checks whether PSTAR stopping-power data are available for a particle
+ * and material combination.
+ *
+ * Particles other than protons are calculated from the proton PSTAR
+ * tables by effective-charge scaling.
+ *
+ * @param[in] particle_no particle number
+ * @param[in] material_no material number
+ * @return 1 if PSTAR data are available, or 0 otherwise
+ */
 int AT_PSTAR_has_data(long particle_no, long material_no);
 
 /** PSTAR data downloaded from NIST database: http://www.nist.gov/pml/data/star/index.cfm

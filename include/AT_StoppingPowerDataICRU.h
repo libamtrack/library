@@ -72,6 +72,14 @@ double AT_ICRU_min_energy_MeV_u(long particle_no, long material_no);
  */
 double AT_ICRU_max_energy_MeV_u(long particle_no, long material_no);
 
+/**
+ * Checks whether ICRU stopping-power data are available for a particle
+ * and material combination.
+ *
+ * @param[in] particle_no particle number
+ * @param[in] material_no material number
+ * @return 1 if ICRU data are available, or 0 otherwise
+ */
 int AT_ICRU_has_data(const long particle_no, const long material_no);
 
 /**
