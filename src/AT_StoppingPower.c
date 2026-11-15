@@ -333,18 +333,9 @@ int AT_Stopping_Power_has_data(const long stopping_power_source_no,
             /* Bethe is an analytical model, not a finite data table. */
             return 1;
         case PSTAR:
-            if (AT_Z_from_particle_no_single(particle_no) < 1 ||
-                    AT_A_from_particle_no_single(particle_no) < 1) {
-                return 0;
-            }
-            return material_no >= Water_Liquid &&
-                   material_no <= Copper;
+            return AT_PSTAR_has_data(particle_no, material_no);
         case ICRU:
-            if (AT_Z_from_particle_no_single(particle_no) < 1 ||
-                    AT_A_from_particle_no_single(particle_no) < 1) {
-                return 0;
-            }
-            return AT_ICRU_min_energy_MeV_u(particle_no, material_no) >= 0.0;
+            return AT_ICRU_has_data(particle_no, material_no);
         default:
             return 0;
     }
@@ -360,7 +351,7 @@ double AT_Stopping_Power_E_MeV_u_min(
             return -1.0;
         }
 
-        return AT_PSTAR_min_energy_MeV_u(material_no);
+        return AT_PSTAR_min_energy_MeV_u(particle_no, material_no);
 
     case ICRU:
         if (!AT_Stopping_Power_has_data(ICRU, particle_no, material_no)) {
@@ -392,7 +383,7 @@ double AT_Stopping_Power_E_MeV_u_max(
             return -1.0;
         }
 
-        return AT_PSTAR_max_energy_MeV_u(material_no);
+        return AT_PSTAR_max_energy_MeV_u(particle_no, material_no);
 
     case ICRU:
         if (!AT_Stopping_Power_has_data(ICRU, particle_no, material_no)) {
@@ -406,7 +397,7 @@ double AT_Stopping_Power_E_MeV_u_max(
             return -1.0;
         }
 
-        return HUGE_VAL;;
+        return HUGE_VAL;
 
     case FromFile:
     default:

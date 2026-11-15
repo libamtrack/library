@@ -70,20 +70,22 @@ int AT_PSTAR_wrapper( const long n,
 /**
  * @brief Returns the minimum kinetic energy covered by the PSTAR data.
  *
+ * @param[in] particle_no Particle number identifying the particle.
  * @param[in] material_no Material number identifying the material.
  * @return Minimum tabulated kinetic energy in MeV/u, or -1.0 if
- *         no PSTAR data are available for material_no.
+ *         no PSTAR data are available for the particle and material.
  */
-double AT_PSTAR_min_energy_MeV_u(long material_no);
+double AT_PSTAR_min_energy_MeV_u(long particle_no, long material_no);
 
 /**
  * @brief Returns the maximum kinetic energy covered by the PSTAR data.
  *
+ * @param[in] particle_no Particle number identifying the particle.
  * @param[in] material_no Material number identifying the material.
  * @return Maximum tabulated kinetic energy in MeV/u, or -1.0 if
- *         no PSTAR data are available for material_no.
+ *         no PSTAR data are available for the particle and material.
  */
-double AT_PSTAR_max_energy_MeV_u(long material_no);
+double AT_PSTAR_max_energy_MeV_u(long particle_no, long material_no);
 
 /**
  * Checks whether PSTAR stopping-power data are available for a particle
