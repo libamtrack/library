@@ -297,9 +297,9 @@ int AT_Stopping_Power_has_data(const long stopping_power_source_no,
  * @return minimum kinetic energy in MeV/u, or -1.0 if no data are available
  */
 double AT_Stopping_Power_E_MeV_u_min(
-    long stopping_power_source_no,
-    long particle_no,
-    long material_no);
+		const long stopping_power_source_no,
+		const long particle_no,
+		const long material_no);
 
 /**
  * Returns the maximum kinetic energy in MeV/u for which stopping-power
@@ -312,8 +312,8 @@ double AT_Stopping_Power_E_MeV_u_min(
  * @return maximum kinetic energy in MeV/u, or -1.0 if no data are available
  */
 double AT_Stopping_Power_E_MeV_u_max(
-    long stopping_power_source_no,
-    long particle_no,
-    long material_no);
+		const long stopping_power_source_no,
+		const long particle_no,
+		const long material_no);
 
 #endif /* AT_STOPPINGPOWER_H_ */

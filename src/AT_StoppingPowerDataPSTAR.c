@@ -1291,11 +1291,11 @@ PSTAR_data_struct PSTAR_data =
 
 
 static const PSTAR_data_for_material_struct *AT_PSTAR_table(const long material_no) {
-    if (material_no < 0 || material_no >= N_PSTAR_MATERIALS) {
-        return NULL;
-    }
+	if (material_no < 0 || material_no >= N_PSTAR_MATERIALS) {
+		return NULL;
+	}
 
-    return PSTAR_data.stopping_power_source_data[material_no];
+	return PSTAR_data.stopping_power_source_data[material_no];
 }
 
 int AT_PSTAR_wrapper( const long n,
@@ -1379,14 +1379,14 @@ double AT_PSTAR_E_MeV_u_max(long particle_no, long material_no) {
 }
 
 int AT_PSTAR_has_data(long particle_no, long material_no) {
-    if (AT_Z_from_particle_no_single(particle_no) < 1 ||
-        AT_A_from_particle_no_single(particle_no) < 1) {
-        return 0;
-    }
+	if (AT_Z_from_particle_no_single(particle_no) < 1 ||
+			AT_A_from_particle_no_single(particle_no) < 1) {
+		return 0;
+	}
 
-    if (material_no < 0 || material_no >= N_PSTAR_MATERIALS) {
-        return 0;
-    }
+	if (material_no < 0 || material_no >= N_PSTAR_MATERIALS) {
+		return 0;
+	}
 
-    return AT_PSTAR_table(material_no) != NULL;
+	return AT_PSTAR_table(material_no) != NULL;
 }

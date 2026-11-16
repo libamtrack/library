@@ -320,26 +320,26 @@ double AT_Mass_Stopping_Power_E_MeV_u_single( const long stopping_power_source_n
 }
 
 int AT_Stopping_Power_has_data(const long stopping_power_source_no,
-        const long particle_no,
-        const long material_no) {
-    switch (stopping_power_source_no) {
-        case FromFile:
-            /*
-             * The filename and file contents are not provided here,
-             * so availability cannot be checked.
-             */
-            return 0;
-        case Bethe:
-            /* Bethe is an analytical model, not a finite data table. */
-            return AT_Z_from_particle_no_single(particle_no) >= 1 &&
-    			AT_material_index_from_material_number(material_no) >= 0;
-        case PSTAR:
-            return AT_PSTAR_has_data(particle_no, material_no);
-        case ICRU:
-            return AT_ICRU_has_data(particle_no, material_no);
-        default:
-            return 0;
-    }
+		const long particle_no,
+		const long material_no) {
+	switch (stopping_power_source_no) {
+	case FromFile:
+		/*
+		 * The filename and file contents are not provided here,
+		 * so availability cannot be checked.
+		 */
+		return 0;
+	case Bethe:
+		/* Bethe is an analytical model, not a finite data table. */
+		return AT_Z_from_particle_no_single(particle_no) >= 1 &&
+				AT_material_index_from_material_number(material_no) >= 0;
+	case PSTAR:
+		return AT_PSTAR_has_data(particle_no, material_no);
+	case ICRU:
+		return AT_ICRU_has_data(particle_no, material_no);
+	default:
+		return 0;
+	}
 }
 
 double AT_Stopping_Power_E_MeV_u_min( const long stopping_power_source_no,
