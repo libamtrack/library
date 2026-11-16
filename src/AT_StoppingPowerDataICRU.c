@@ -194,42 +194,42 @@ int AT_ICRU_wrapper( const long n,
 }
 
 int AT_ICRU_has_data(const long particle_no, const long material_no) {
-    const long atomic_number = AT_Z_from_particle_no_single(particle_no);
+	const long atomic_number = AT_Z_from_particle_no_single(particle_no);
 
-    if (atomic_number < 1 ||
-        AT_A_from_particle_no_single(particle_no) < 1) {
-        return 0;
-    }
+	if (atomic_number < 1 ||
+			AT_A_from_particle_no_single(particle_no) < 1) {
+		return 0;
+	}
 
-    return AT_ICRU_has_data_for_atomic_number(
-        material_no,
-        atomic_number);
+	return AT_ICRU_has_data_for_atomic_number(
+			material_no,
+			atomic_number);
 }
 
 double AT_ICRU_E_MeV_u_min(
-        const long particle_no,
-        const long material_no) {
-    if (!AT_ICRU_has_data(particle_no, material_no)) {
-        return -1.0;
-    }
+		const long particle_no,
+		const long material_no) {
+	if (!AT_ICRU_has_data(particle_no, material_no)) {
+		return -1.0;
+	}
 
-    return AT_stopping_power_ICRU_table[material_no - 1]
-        .energy_and_stopping_power[0][0];
+	return AT_stopping_power_ICRU_table[material_no - 1]
+			.energy_and_stopping_power[0][0];
 }
 
 double AT_ICRU_E_MeV_u_max(
-        const long particle_no,
-        const long material_no) {
-    if (!AT_ICRU_has_data(particle_no, material_no)) {
-        return -1.0;
-    }
+		const long particle_no,
+		const long material_no) {
+	if (!AT_ICRU_has_data(particle_no, material_no)) {
+		return -1.0;
+	}
 
-    if (AT_Z_from_particle_no_single(particle_no) == 2) {
-        return ICRU_HELIUM_MAX_E_MEV_U;
-    }
+	if (AT_Z_from_particle_no_single(particle_no) == 2) {
+		return ICRU_HELIUM_MAX_E_MEV_U;
+	}
 
-    return AT_stopping_power_ICRU_table[material_no - 1]
-        .energy_and_stopping_power[0]
-        [AT_stopping_power_ICRU_table[material_no - 1]
-                .number_of_data_points - 1];
+	return AT_stopping_power_ICRU_table[material_no - 1]
+			.energy_and_stopping_power[0]
+			[AT_stopping_power_ICRU_table[material_no - 1]
+					.number_of_data_points - 1];
 }
