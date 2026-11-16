@@ -70,6 +70,11 @@ int AT_PSTAR_wrapper( const long n,
 /**
  * @brief Returns the minimum kinetic energy covered by the PSTAR data.
  *
+ * PSTAR tables are tabulated in MeV for protons.
+ * AT_PSTAR_wrapper converts the input E_MeV_u to the corresponding
+ * proton energy in MeV for the table lookup. Therefore, these limits
+ * are returned in MeV/u and are the same for all valid particles.
+ *
  * @param[in] particle_no Particle number identifying the particle.
  * @param[in] material_no Material number identifying the material.
  * @return Minimum tabulated kinetic energy in MeV/u, or -1.0 if
@@ -79,6 +84,11 @@ double AT_PSTAR_min_energy_MeV_u(long particle_no, long material_no);
 
 /**
  * @brief Returns the maximum kinetic energy covered by the PSTAR data.
+ *
+ * PSTAR tables are tabulated in MeV for protons.
+ * AT_PSTAR_wrapper converts the input E_MeV_u to the corresponding
+ * proton energy in MeV for the table lookup. Therefore, these limits
+ * are returned in MeV/u and are the same for all valid particles.
  *
  * @param[in] particle_no Particle number identifying the particle.
  * @param[in] material_no Material number identifying the material.
