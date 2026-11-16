@@ -354,7 +354,7 @@ double AT_Stopping_Power_E_MeV_u_min( const long stopping_power_source_no,
 		/* below this limit AT_Bethe_wrapper returns zero */
 		return BETHE_LOWER_LIMIT_E_MEV_U;
 	case PSTAR:
-		return AT_PSTAR_E_MeV_u_min(particle_no, material_no);
+		return AT_PSTAR_min_energy_MeV_u(particle_no, material_no);
 	case ICRU:
 		return AT_ICRU_E_MeV_u_min(particle_no, material_no);
 	default:
@@ -374,7 +374,7 @@ double AT_Stopping_Power_E_MeV_u_max( const long stopping_power_source_no,
 		/* analytical formula, no upper limit */
 		return HUGE_VAL;
 	case PSTAR:
-		return AT_PSTAR_E_MeV_u_max(particle_no, material_no);
+		return AT_PSTAR_max_energy_MeV_u(particle_no, material_no);
 	case ICRU:
 		return AT_ICRU_E_MeV_u_max(particle_no, material_no);
 	default:
