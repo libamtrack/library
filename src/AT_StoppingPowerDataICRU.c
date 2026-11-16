@@ -177,7 +177,7 @@ int AT_ICRU_wrapper( const long n,
 			continue;
 		}
 
-		if (Z[i] == 2 && E_MeV_u[i] > 250){   // Data for He only until 250 MeV/u = 1000 MeV !
+		if (Z[i] == 2 && E_MeV_u[i] > ICRU_HELIUM_MAX_E_MEV_U){   // Data for He only until 250 MeV/u = 1000 MeV !
 			mass_stopping_power_MeV_cm2_g[i]	= -1.0;
 			continue;
 		}
