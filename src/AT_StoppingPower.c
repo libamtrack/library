@@ -358,7 +358,7 @@ double AT_Stopping_Power_E_MeV_u_min(
             return -1.0;
         }
 
-        return AT_ICRU_min_energy_MeV_u(particle_no, material_no);
+        return AT_ICRU_E_MeV_u_min(particle_no, material_no);
 
     case Bethe:
         if (!AT_Stopping_Power_has_data(Bethe, particle_no, material_no)) {
@@ -390,7 +390,7 @@ double AT_Stopping_Power_E_MeV_u_max(
             return -1.0;
         }
 
-        return AT_ICRU_max_energy_MeV_u(particle_no, material_no);
+        return AT_ICRU_E_MeV_u_max(particle_no, material_no);
 
     case Bethe:
         if (!AT_Stopping_Power_has_data(Bethe, particle_no, material_no)) {

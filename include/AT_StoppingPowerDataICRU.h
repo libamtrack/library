@@ -1,6 +1,7 @@
 #ifndef AT_STOPPINGPOWERDATAICRU_H_
 #define AT_STOPPINGPOWERDATAICRU_H_
 
+/** ICRU 49 data for helium end at 250 MeV/u (1000 MeV for He-4). */
 #define ICRU_HELIUM_MAX_E_MEV_U 250.0
 
 /**
@@ -60,7 +61,7 @@ int AT_ICRU_wrapper( const long n,
  * @return Minimum tabulated kinetic energy in MeV/u, or -1.0 if
  *         no ICRU data are available for the particle and material.
  */
-double AT_ICRU_min_energy_MeV_u(long particle_no, long material_no);
+double AT_ICRU_E_MeV_u_min(long particle_no, long material_no);
 
 /**
  * @brief Returns the maximum kinetic energy covered by the ICRU data.
@@ -70,7 +71,7 @@ double AT_ICRU_min_energy_MeV_u(long particle_no, long material_no);
  * @return Maximum tabulated kinetic energy in MeV/u, or -1.0 if
  *         no ICRU data are available for the particle and material.
  */
-double AT_ICRU_max_energy_MeV_u(long particle_no, long material_no);
+double AT_ICRU_E_MeV_u_max(long particle_no, long material_no);
 
 /**
  * Checks whether ICRU stopping-power data are available for a particle
