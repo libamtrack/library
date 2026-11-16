@@ -37,9 +37,9 @@
 
 int main() {
 
-    if (AT_PSTAR_min_energy_MeV_u(PARTICLE_PROTON_NUMBER,
+    if (AT_PSTAR_E_MeV_u_min(PARTICLE_PROTON_NUMBER,
                                   User_Defined_Material) != -1.0 ||
-            AT_PSTAR_max_energy_MeV_u(PARTICLE_PROTON_NUMBER,
+            AT_PSTAR_E_MeV_u_max(PARTICLE_PROTON_NUMBER,
                                       User_Defined_Material) != -1.0) {
         fprintf(stderr, "PSTAR bounds should be unavailable for user-defined material\n");
         return EXIT_FAILURE;

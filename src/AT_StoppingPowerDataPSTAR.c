@@ -1357,7 +1357,7 @@ int AT_PSTAR_wrapper( const long n,
 	return AT_Success;
 }
 
-double AT_PSTAR_min_energy_MeV_u(long particle_no, long material_no) {
+double AT_PSTAR_E_MeV_u_min(long particle_no, long material_no) {
 	if (!AT_PSTAR_has_data(particle_no, material_no)) {
 		return -1.0;
 	}
@@ -1367,7 +1367,7 @@ double AT_PSTAR_min_energy_MeV_u(long particle_no, long material_no) {
 	return AT_E_MeV_u_from_E_MeV(table_p->energy_and_stopping_power[0][0], PARTICLE_PROTON_NUMBER);
 }
 
-double AT_PSTAR_max_energy_MeV_u(long particle_no, long material_no) {
+double AT_PSTAR_E_MeV_u_max(long particle_no, long material_no) {
 	if (!AT_PSTAR_has_data(particle_no, material_no)) {
 		return -1.0;
 	}
