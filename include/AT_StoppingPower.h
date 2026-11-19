@@ -273,4 +273,47 @@ double AT_Mass_Stopping_Power_E_MeV_u_single( const long stopping_power_source_n
 		const double E_MeV_u, const long particle_no,
 		const long material_no);
 
+/**
+ * Checks whether stopping-power data are available for a source,
+ * particle, and material combination.
+ * For FromFile, no filename is provided, so this function always returns 0.
+ *
+ * @param[in] stopping_power_source_no stopping-power data-source id
+ * @param[in] particle_no particle number
+ * @param[in] material_no material number
+ * @return 1 if data are available, or 0 otherwise
+ */
+int AT_Stopping_Power_has_data(const long stopping_power_source_no,
+		const long particle_no,
+		const long material_no);
+
+/**
+ * Returns the minimum kinetic energy in MeV/u for which stopping-power
+ * data are available for the requested source, particle, and material.
+ *
+ * @param[in] stopping_power_source_no stopping-power data-source id
+ * @param[in] particle_no particle number
+ * @param[in] material_no material number
+ * @return minimum kinetic energy in MeV/u, or -1.0 if no data are available
+ */
+double AT_Stopping_Power_E_MeV_u_min(
+		const long stopping_power_source_no,
+		const long particle_no,
+		const long material_no);
+
+/**
+ * Returns the maximum kinetic energy in MeV/u for which stopping-power
+ * data are available for the requested source, particle, and material.
+ * For Bethe there is no upper limit and HUGE_VAL is returned.
+ *
+ * @param[in] stopping_power_source_no stopping-power data-source id
+ * @param[in] particle_no particle number
+ * @param[in] material_no material number
+ * @return maximum kinetic energy in MeV/u, or -1.0 if no data are available
+ */
+double AT_Stopping_Power_E_MeV_u_max(
+		const long stopping_power_source_no,
+		const long particle_no,
+		const long material_no);
+
 #endif /* AT_STOPPINGPOWER_H_ */

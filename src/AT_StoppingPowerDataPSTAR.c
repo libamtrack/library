@@ -1,4 +1,5 @@
 #include "AT_StoppingPowerDataPSTAR.h"
+#include "AT_Error.h"
 
 /*
  * PSTAR contains experimental stopping power data for protons
@@ -1289,6 +1290,14 @@ PSTAR_data_struct PSTAR_data =
 						&PSTAR_Copper } };
 
 
+static const PSTAR_data_for_material_struct *AT_PSTAR_table(const long material_no) {
+	if (material_no < 0 || material_no >= N_PSTAR_MATERIALS) {
+		return NULL;
+	}
+
+	return PSTAR_data.stopping_power_source_data[material_no];
+}
+
 int AT_PSTAR_wrapper( const long n,
 		const double E_MeV_u[],
 		const long particle_no[],
@@ -1296,13 +1305,20 @@ int AT_PSTAR_wrapper( const long n,
 		const char info[],
 		double mass_stopping_power_MeV_cm2_g[]){
 
-	const PSTAR_data_for_material_struct * source_for_given_material = PSTAR_data.stopping_power_source_data[material_no];
+	const PSTAR_data_for_material_struct *source_for_given_material =
+			AT_PSTAR_table(material_no);
 
 	if( source_for_given_material == NULL ){
-		char material_name[MATERIAL_NAME_LENGTH];
-		AT_material_name_from_number(material_no,material_name);
 #ifndef NDEBUG
-		printf("Missing data for material [%s] in PSTAR data.\n", material_name);
+		if (material_no >= 0 && material_no < MATERIAL_DATA_N) {
+			char material_name[MATERIAL_NAME_LENGTH];
+			AT_material_name_from_number(material_no, material_name);
+			printf("Missing data for material [%s] in PSTAR data.\n",
+					material_name);
+		} else {
+			printf("Missing data for material number [%ld] in PSTAR data.\n",
+					material_no);
+		}
 #endif
 		return AT_No_PSTAR_Data;
 	}
@@ -1341,3 +1357,36 @@ int AT_PSTAR_wrapper( const long n,
 	return AT_Success;
 }
 
+double AT_PSTAR_E_MeV_u_min(long particle_no, long material_no) {
+	if (!AT_PSTAR_has_data(particle_no, material_no)) {
+		return -1.0;
+	}
+
+	const PSTAR_data_for_material_struct *table_p = AT_PSTAR_table(material_no);
+
+	return AT_E_MeV_u_from_E_MeV(table_p->energy_and_stopping_power[0][0], PARTICLE_PROTON_NUMBER);
+}
+
+double AT_PSTAR_E_MeV_u_max(long particle_no, long material_no) {
+	if (!AT_PSTAR_has_data(particle_no, material_no)) {
+		return -1.0;
+	}
+
+	const PSTAR_data_for_material_struct *table_p = AT_PSTAR_table(material_no);
+
+	return AT_E_MeV_u_from_E_MeV(table_p->energy_and_stopping_power[N_PSTAR_DATAPOINTS - 1][0], PARTICLE_PROTON_NUMBER);
+
+}
+
+int AT_PSTAR_has_data(long particle_no, long material_no) {
+	if (AT_Z_from_particle_no_single(particle_no) < 1 ||
+			AT_A_from_particle_no_single(particle_no) < 1) {
+		return 0;
+	}
+
+	if (material_no < 0 || material_no >= N_PSTAR_MATERIALS) {
+		return 0;
+	}
+
+	return AT_PSTAR_table(material_no) != NULL;
+}

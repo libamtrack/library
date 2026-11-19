@@ -32,9 +32,18 @@
 #include <stdlib.h>
 
 #include "AT_StoppingPower.h"
+#include "AT_StoppingPowerDataPSTAR.h"
 #include "AT_DataRange.h"
 
 int main() {
+
+    if (AT_PSTAR_E_MeV_u_min(PARTICLE_PROTON_NUMBER,
+                                  User_Defined_Material) != -1.0 ||
+            AT_PSTAR_E_MeV_u_max(PARTICLE_PROTON_NUMBER,
+                                      User_Defined_Material) != -1.0) {
+        fprintf(stderr, "PSTAR bounds should be unavailable for user-defined material\n");
+        return EXIT_FAILURE;
+    }
 
     double Test = AT_CSDA_range_g_cm2_single(270.55,
                                              0.1,
